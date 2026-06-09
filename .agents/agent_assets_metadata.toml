@@ -24,3 +24,9 @@ id = "vFQF-2PIxvEF08cYBYfem"
 uri = "file://docs/DEAD_COMPONENT_SALVAGE_REPORT.md"
 type = "text"
 title = "Dead Component Product Salvage Report"
+
+[[outputs]]
+id = "iZA8qU6ORAzDlmFP0TMeK"
+uri = "file://docs/EMOTIONAL_ARCHITECTURE_AUDIT.md"
+type = "text"
+title = "The Syndicate — Emotional Architecture Audit"
