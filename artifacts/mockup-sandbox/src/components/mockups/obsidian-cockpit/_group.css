@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.obsidian-board {
+  --bg-obsidian: 220 10% 4%;
+  --bg-panel: 220 10% 8%;
+  --bg-surface: 220 10% 12%;
+  
+  --accent-cyan: 180 100% 50%;
+  --accent-blue: 210 100% 60%;
+  
+  --text-primary: 0 0% 95%;
+  --text-muted: 220 10% 60%;
+  --text-dark: 220 10% 30%;
+  
+  --border-dim: 220 10% 15%;
+  --border-bright: 220 10% 25%;
+  
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: hsl(var(--bg-obsidian));
+  color: hsl(var(--text-primary));
+}
+
+.obsidian-board .font-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+.obsidian-board .font-serif {
+  font-family: 'Fraunces', serif;
+}
+
+.obsidian-board .glow-cyan {
+  box-shadow: 0 0 15px -5px hsl(var(--accent-cyan));
+}
+.obsidian-board .border-cyan {
+  border-color: hsl(var(--accent-cyan) / 0.5);
+}

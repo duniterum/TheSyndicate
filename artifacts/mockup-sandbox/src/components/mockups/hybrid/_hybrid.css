@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+.hybrid-board {
+  --hy-bg: #050507;
+  --hy-surface: #0e0e11;
+  --hy-surface-raised: #18181c;
+  --hy-border: #232328;
+  --hy-border-glow: rgba(245, 158, 11, 0.2);
+  
+  --hy-text-100: #ffffff;
+  --hy-text-200: #e4e4e7;
+  --hy-text-300: #a1a1aa;
+  --hy-text-400: #71717a;
+  
+  --hy-accent-gold: #f59e0b;
+  --hy-accent-cyan: #22d3ee;
+  --hy-accent-red: #ef4444;
+  --hy-accent-green: #10b981;
+
+  --hy-font-sans: 'Outfit', sans-serif;
+  --hy-font-mono: 'Space Mono', monospace;
+  --hy-font-serif: 'Fraunces', serif;
+
+  font-family: var(--hy-font-sans);
+  background-color: var(--hy-bg);
+  color: var(--hy-text-200);
+}
+
+.hybrid-board h1, .hybrid-board h2, .hybrid-board h3, .hybrid-board h4 {
+  font-family: var(--hy-font-sans);
+  color: var(--hy-text-100);
+}
+
+.hybrid-board .font-mono {
+  font-family: var(--hy-font-mono);
+}
+
+.hybrid-board .font-serif {
+  font-family: var(--hy-font-serif);
+}
+
+.hy-section {
+  border-bottom: 1px dashed var(--hy-border);
+  padding-bottom: 5rem;
+}
+
+.hy-label {
+  color: var(--hy-accent-gold);
+  font-family: var(--hy-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.hy-panel {
+  background-color: var(--hy-surface);
+  border: 1px solid var(--hy-border);
+  border-radius: 0.5rem;
+}

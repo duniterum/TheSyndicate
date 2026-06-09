@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+.collector-board {
+  --font-sans: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: 'Fraunces', serif;
+
+  --bg-base: #050505;
+  --bg-surface: #0a0a0a;
+  --bg-surface-elevated: #141414;
+  
+  --border-dim: #222222;
+  --border-focus: #333333;
+  --border-gold: rgba(196, 164, 109, 0.3);
+
+  --text-main: #EDEDED;
+  --text-muted: #888888;
+  --text-gold: #C4A46D;
+
+  --accent-gold: #C4A46D;
+  --accent-gold-dim: rgba(196, 164, 109, 0.15);
+
+  --status-success: #4CAF50;
+  --status-pending: #FF9800;
+
+  font-family: var(--font-sans);
+  background-color: var(--bg-base);
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+.collector-board ::selection {
+  background: var(--accent-gold);
+  color: #000;
+}
+
+.vault-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.engraved-text {
+  background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(180deg, #E6D0A3 0%, #9B7D46 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.artifact-frame {
+  background: #000;
+  border: 1px solid var(--border-gold);
+  padding: 8px;
+  position: relative;
+}
+
+.artifact-frame::before {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px; right: 2px; bottom: 2px;
+  border: 1px solid rgba(196, 164, 109, 0.1);
+  pointer-events: none;
+}
