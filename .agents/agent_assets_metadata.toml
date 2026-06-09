@@ -30,3 +30,9 @@ id = "iZA8qU6ORAzDlmFP0TMeK"
 uri = "file://docs/EMOTIONAL_ARCHITECTURE_AUDIT.md"
 type = "text"
 title = "The Syndicate — Emotional Architecture Audit"
+
+[[outputs]]
+id = "urTue-hksJTy22kkruRMU"
+uri = "file://docs/STORY_ENGINE_AND_EMOTIONAL_OPERATING_SYSTEM.md"
+type = "text"
+title = "Story Engine & Emotional Operating System (Doctrine)"
