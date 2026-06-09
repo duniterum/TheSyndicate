@@ -1,0 +1,156 @@
+Recalibration before continuing.
+
+Stop thinking page-first.
+
+Stop thinking component-first.
+
+Stop thinking CSS-first.
+
+Think protocol-first.
+
+The objective is not to redesign My Syndicate.
+
+The objective is to redesign The Syndicate.
+
+The current codebase inherited a visual philosophy:
+museum + editorial + warm ivory + framed artifacts.
+
+That philosophy is no longer the correct foundation.
+
+Preserve the doctrine.
+
+Do not preserve the aesthetic.
+
+Doctrine that must remain fixed:
+
+* SYN is the seat.
+* Artifacts are the memory.
+* The protocol is alive.
+* Everything important is verifiable on-chain.
+* Chapters matter.
+* Early membership matters.
+* No fake data.
+* No fake rewards.
+* No fake activity.
+* Truth before marketing.
+
+Everything else can be challenged.
+
+Important realization:
+
+The product is not:
+
+* a brochure
+* a landing page
+* a museum
+* a documentation site
+
+The product is becoming:
+
+a member operating system.
+
+A member should eventually be able to:
+
+* manage their seat
+* view portfolio
+* view owned artifacts
+* track progression
+* track protocol evolution
+* follow chapter progression
+* review historical activity
+* verify everything
+* participate in referrals
+* share identity
+* return daily
+
+This means the experience should evolve toward:
+
+public site = conversion
+member cockpit = retention
+
+The cockpit is not a profile page.
+
+The cockpit is the destination.
+
+The public site exists to get people there.
+
+Archive is not a gallery.
+
+Archive is not a museum.
+
+Archive is a living protocol memory system.
+
+Chronicle is not a blog.
+
+Chronicle is the evolving story of the protocol.
+
+Proof is not documentation.
+
+Proof is trust infrastructure.
+
+Before implementation:
+
+Produce the Canvas exploration.
+
+Show three complete directions.
+
+Direction A:
+Obsidian Cockpit
+(member operating system first)
+
+Direction B:
+Collector Protocol
+(artifact ownership first)
+
+Direction C:
+Hybrid
+(member cockpit + collector archive + protocol dashboard)
+
+For each direction:
+
+Show how it affects:
+
+* Home
+* Join
+* My Syndicate
+* Archive
+* Chronicle
+* Proof
+* Mobile
+* Logo
+* Favicon
+* Navigation
+* Card system
+* Typography
+* Dashboard widgets
+
+Most important:
+
+Do not merely darken the current site.
+
+Do not create "dark museum."
+
+Do not create "dark beige."
+
+Do not create "current site but darker."
+
+Start from a blank sheet.
+
+Challenge every visual assumption.
+
+Also prepare a dedicated NFT / Archive exploration.
+
+The NFT section is one of the flagship experiences of the protocol.
+
+I will provide additional reference images before Archive direction is finalized.
+
+The goal is not visual polish.
+
+The goal is a world-class protocol experience.
+
+No implementation yet.
+
+Canvas exploration first.
+Visual direction approval second.
+Design system third.
+Implementation fourth.
