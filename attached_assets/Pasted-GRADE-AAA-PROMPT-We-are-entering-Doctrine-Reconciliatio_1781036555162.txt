@@ -1,0 +1,145 @@
+GRADE AAA PROMPT
+
+We are entering Doctrine Reconciliation Mode.
+
+No product implementation.
+
+No UI work.
+
+No route work.
+
+No cockpit work.
+
+No Archive work.
+
+No Chronicle work.
+
+No referrals.
+
+No tests.
+
+No code.
+
+This is a doctrine-governance pass only.
+
+The Doctrine System Audit is approved.
+
+Your task is now to verify whether the conclusions of that audit are fully correct and whether any additional doctrine drift exists.
+
+Perform a complete doctrine reconciliation audit across the entire repository.
+
+Read:
+
+VISION.md
+NORTH_STAR_SYSTEM.md
+INFORMATION_HIERARCHY.md
+CONSTITUTION_SUMMARY.md
+DOCUMENTATION_AUTHORITY_MAP.md
+STORY_ENGINE_AND_EMOTIONAL_OPERATING_SYSTEM.md
+EMOTIONAL_ARCHITECTURE_AUDIT.md
+PRODUCT_MEMORY_AND_FUTURE_LOOPS.md
+SCARCITY_STATUS_PERMANENCE_AUDIT.md
+Archive doctrine
+Chronicle doctrine
+My Syndicate doctrine
+Any other doctrine, architecture, constitution, strategy, audit, operating-system, memory, identity, storytelling, emotional-loop, scarcity, rank, chapter, artifact, seat, archive, chronicle, protocol, or governance documents not already included.
+
+Goal:
+
+Determine whether the Doctrine System Audit missed anything.
+
+Specifically verify:
+
+Authority structure
+Is there exactly one authority hierarchy?
+Do all doctrine docs agree?
+Which docs are unregistered?
+Which docs are misclassified?
+Which docs should be constitutional?
+Which docs should be supporting?
+Which docs should be historical?
+Identity doctrine
+Is there already a hidden identity apex doc?
+Is identity actually owned by Scarcity Status Permanence?
+Is identity owned by Story Engine?
+Is identity owned elsewhere?
+Is there duplication?
+Emotional-loop doctrine
+North Star loops
+Emotional Architecture loops
+Story Engine loops
+
+Are these:
+
+complementary
+duplicated
+contradictory
+
+Recommend one canonical ownership model.
+
+Rank doctrine
+Find every remaining rank definition.
+
+Classify:
+
+participation
+positional
+cumulative USDC
+identity
+recognition
+metadata
+
+Identify all contradictions.
+
+Story doctrine
+Verify:
+SYN is the seat
+Artifacts are memory
+Chronicle is canon
+Activity is ledger
+Chapters
+Wake Behind You
+Chronicle Witness
+Co-witness set
+
+Are these fully aligned everywhere?
+
+Artifact doctrine
+Verify:
+First Signal
+Patron Seal
+Seat Record
+Protocol Chronicle
+Archive1155
+SeatRecord721
+
+Find any remaining drift.
+
+Deliverable
+
+Produce:
+
+DOCTRINE RECONCILIATION REPORT
+
+with:
+
+confirmed findings
+new findings
+contradictions
+missing registrations
+recommended authority hierarchy
+recommended reading order
+recommended ownership map
+recommended doctrine graph
+
+Do NOT modify any file.
+
+Do NOT rewrite any document.
+
+Do NOT create any document.
+
+Audit only.
+
+The objective is simple:
+
+Before any future AI touches product code, ensure the doctrine system itself cannot drift.
