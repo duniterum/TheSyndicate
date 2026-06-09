@@ -16,6 +16,11 @@ export default defineConfig({
     // Replit canvas preview injects (dev only). Production behaviour unchanged.
     client: { entry: "client" },
   },
+  // Force-enable nitro and pin a Node-server target for the Replit deployment
+  // build (produces .output/server/index.mjs, run with `node`). Inside the
+  // Lovable sandbox this override is ignored — that build is forced back to
+  // cloudflare-module — so this is safe for both pipelines.
+  nitro: { preset: "node-server" },
   vite: {
     server: {
       allowedHosts: true,
