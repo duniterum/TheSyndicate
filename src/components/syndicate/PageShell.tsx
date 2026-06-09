@@ -3,6 +3,7 @@ import { Header } from "@/components/syndicate/Header";
 import { DemoBanner } from "@/components/syndicate/DemoBanner";
 import { Footer } from "@/components/syndicate/Sections";
 import { IdentityRibbon } from "@/components/syndicate/IdentityRibbon";
+import { BrandMark } from "@/components/syndicate/Logo";
 
 export function PageShell({
   eyebrow,
@@ -38,36 +39,29 @@ export function PageShell({
             className="relative overflow-hidden border-b"
             style={{ borderColor: "var(--border)", background: "var(--background)" }}
           >
-            <div aria-hidden className="absolute inset-0 grid-bg opacity-20" />
+            <div aria-hidden className="absolute inset-0 grid-bg opacity-25" />
             <div
               aria-hidden
               className="pointer-events-none absolute -top-32 -right-24 size-[420px] rounded-full opacity-15 blur-3xl"
               style={{ background: "var(--gradient-gold)" }}
             />
             <div className="relative mx-auto max-w-7xl px-5 md:px-8 pt-12 md:pt-20 pb-10 md:pb-14">
-              <div className="flex items-center gap-3 mb-5">
-                <span
-                  aria-hidden
-                  className="inline-flex items-center justify-center size-9 rounded-full"
-                  style={{
-                    background: "var(--gradient-gold)",
-                    boxShadow: "var(--shadow-glow-gold)",
-                  }}
-                >
-                  <span className="font-serif text-base font-semibold text-[#1a1a1a]">S</span>
-                </span>
-                <span className="mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-                  {eyebrow ?? "The Syndicate"}
-                </span>
+              <div className="border-l-2 pl-5 md:pl-7" style={{ borderColor: "var(--accent)" }}>
+                <div className="flex items-center gap-3 mb-5">
+                  <BrandMark size="md" />
+                  <span className="mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                    {eyebrow ?? "The Syndicate"}
+                  </span>
+                </div>
+                <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.04] text-foreground max-w-3xl">
+                  {title}
+                </h1>
+                {description && (
+                  <p className="mt-5 max-w-2xl text-base md:text-lg text-foreground/75 leading-relaxed">
+                    {description}
+                  </p>
+                )}
               </div>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight leading-[1.04] text-foreground max-w-3xl">
-                {title}
-              </h1>
-              {description && (
-                <p className="mt-5 max-w-2xl text-base md:text-lg text-foreground/75 leading-relaxed">
-                  {description}
-                </p>
-              )}
             </div>
           </section>
         )}

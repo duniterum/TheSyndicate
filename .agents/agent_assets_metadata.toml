@@ -1,0 +1,20 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "w3wGek7lFg3KPN31UU5W-"
+uri = "file://screenshots/phaseB/before-home-desktop.jpg"
+type = "image"
+title = "BEFORE — Home (soft museum / gold gradient shell)"
+
+[[outputs]]
+id = "OkdYCHCu94Awsq9YHHjWD"
+uri = "file://screenshots/phaseB/after-home-desktop.jpg"
+type = "image"
+title = "AFTER — Home (Obsidian Cockpit shell)"
+
+[[outputs]]
+id = "fyPDPMER2TSCXNlI3AB_m"
+uri = "file://screenshots/phaseB/after-roadmap-desktop.jpg"
+type = "image"
+title = "AFTER — PageShell route (/roadmap) cockpit hero"

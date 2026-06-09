@@ -76,15 +76,15 @@ export function MobileJoinBar() {
         <Link
           to={cfg.verifyHref}
           onClick={() => track("verify_click", { surface: cfg.primarySurface })}
-          className="rounded-md border border-border px-2.5 py-2 mono text-[10px] uppercase tracking-[0.18em] text-foreground/85 hover:border-[color:var(--gold)]/60"
+          className="rounded-[3px] border border-border px-2.5 py-2 mono text-[10px] uppercase tracking-[0.18em] text-foreground/85 hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] transition-colors"
         >
           Verify
         </Link>
         <Link
           to={cfg.primaryHref}
           onClick={() => track("join_cta_click", { surface: cfg.primarySurface, cta: cfg.primaryLabel })}
-          className="rounded-md px-3 py-2 text-sm font-medium tracking-wide"
-          style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)", color: "oklch(0.20 0.005 60)" }}
+          className="mono rounded-[3px] px-3.5 py-2 text-[12px] font-bold uppercase tracking-[0.14em]"
+          style={{ background: "var(--accent)", color: "var(--accent-foreground)", boxShadow: "var(--shadow-glow-gold)" }}
         >
           {cfg.primaryLabel}
         </Link>

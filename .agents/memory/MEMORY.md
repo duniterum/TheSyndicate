@@ -1,3 +1,2 @@
-- [Design token harmonization](design-token-harmonization.md) — rules for replacing hardcoded oklch/navy colors with theme-aware Tailwind tokens in this codebase.
-- [SSR theme hydration](ssr-theme-hydration.md) — provider seeds initial theme then syncs after mount; how to distinguish a real hydration bug from a canvas-preview artifact, plus DEV-only mitigations.
-- [Tailwind v4 @theme inline + cascade](tailwind-v4-theme-inline-cascade.md) — `@theme inline` bakes token values into utilities; override a utility for a scope only with UNLAYERED rules, not @layer base or per-scope var redefs.
+- [Tailwind v4 arbitrary colors](tailwind-v4-arbitrary-colors.md) — color-mix arbitrary values compile; `/opacity` on arbitrary var() colors is unreliable — use color-mix or inline style.
+- [Obsidian Cockpit theme doctrine](obsidian-cockpit-doctrine.md) — accent is cyan in DARK (default) only; light theme intentionally stays gold/ivory. Serif (Fraunces) only inside `.editorial-serif`.

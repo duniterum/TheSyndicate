@@ -63,7 +63,8 @@ export function IdentityRibbon() {
         style={{ background: "color-mix(in oklab, var(--gold) 4%, var(--background))", borderColor: "var(--border)" }}
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8 py-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-          <span className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          <span className="mono inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            <span className="size-1.5 rounded-full pulse-dot" style={{ background: "var(--accent)" }} />
             Your seat
           </span>
           <span className="text-xs md:text-sm text-foreground/85">
@@ -126,7 +127,8 @@ export function IdentityRibbon() {
       style={{ background: "color-mix(in oklab, var(--gold) 6%, var(--background))", borderColor: "var(--border)" }}
     >
       <div className="mx-auto max-w-7xl px-5 md:px-8 py-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
+        <span className="mono inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
+          <span className="size-1.5 rounded-full pulse-dot" style={{ background: "var(--accent)" }} />
           Your seat
         </span>
         <span className="mono text-xs md:text-sm font-semibold text-foreground">

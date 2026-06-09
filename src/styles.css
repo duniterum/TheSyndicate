@@ -13,9 +13,9 @@
  *   - Kuldmuna Arhiiv — NOPE Creative → dark mode + protocol seal anchor
  *
  * Typography:
- *   --font-serif   Instrument Serif → H1/H2 story, archive titles, quotes
- *   --font-sans    Work Sans        → body, UI, buttons, nav, dashboards
- *   --font-mono    JetBrains Mono   → addresses, hashes, IDs, on-chain data
+ *   --font-sans      Space Grotesk → display, UI, buttons, nav, dashboards (default)
+ *   --font-mono      Space Mono    → addresses, hashes, IDs, on-chain data, telemetry
+ *   --font-editorial Fraunces      → Chronicle / whitepaper ONLY (`.editorial-serif` scope)
  *
  * Color philosophy:
  *   Gold     = membership / rank / identity / premium CTA / protocol seal
@@ -97,7 +97,7 @@
  * Verify cyan #0E9AA7 · Success #16A34A · Warning #D97706 · Danger #DC2626
  * ============================================================ */
 :root {
-  --radius: 0.625rem;
+  --radius: 0.25rem;                              /* Obsidian Cockpit: crisp instrument geometry */
 
   --background: oklch(0.965 0.014 85);            /* #F7F3EA warm ivory */
   --foreground: oklch(0.20 0.005 60);             /* #111 graphite */
@@ -226,8 +226,8 @@
   --gradient-gold: linear-gradient(135deg, oklch(0.92 0.14 195), oklch(0.70 0.13 205));
   --gradient-card: linear-gradient(180deg, oklch(0.155 0.008 255 / 0.95), oklch(0.13 0.008 255 / 0.85));
 
-  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.45), 0 8px 24px -12px oklch(0 0 0 / 0.60);
-  --shadow-elevated: 0 1px 2px oklch(0 0 0 / 0.55), 0 24px 60px -24px oklch(0 0 0 / 0.75);
+  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.40);
+  --shadow-elevated: 0 1px 2px oklch(0 0 0 / 0.50), 0 24px 60px -24px oklch(0 0 0 / 0.70);
   --shadow-glow-gold: 0 0 0 1px oklch(0.88 0.15 195 / 0.30), 0 14px 40px -14px oklch(0.88 0.15 195 / 0.45);
   --shadow-glow-navy: 0 0 0 1px oklch(0.68 0.16 250 / 0.30), 0 14px 40px -14px oklch(0.68 0.16 250 / 0.45);
   --shadow-glow-verify: 0 0 0 1px oklch(0.88 0.15 195 / 0.30), 0 14px 40px -14px oklch(0.88 0.15 195 / 0.45);

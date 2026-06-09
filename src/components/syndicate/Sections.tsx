@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { importSynToWallet, MetaMaskIcon } from "@/lib/wallet-import";
 import { BuildStamp } from "@/components/syndicate/BuildStamp";
 import { HeartSignalTrigger } from "@/components/syndicate/HeartSignalModal";
+import { BrandMark, Wordmark } from "@/components/syndicate/Logo";
 import { useSaleStats, fmtSyn } from "@/lib/sale-hooks";
 import {
   AnimatedNumber,
@@ -1870,7 +1871,8 @@ export function Footer() {
           </a>
           <button
             onClick={importSynToWallet}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-[var(--gold)]/50 px-2.5 py-1 text-foreground hover:bg-[var(--gold)]/10 transition-colors"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-[3px] px-2.5 py-1 text-foreground transition-colors hover:text-[color:var(--accent)]"
+            style={{ border: "1px solid color-mix(in oklab, var(--accent) 45%, transparent)" }}
             title="Add SYN to MetaMask / Core / Rabby"
           >
             <MetaMaskIcon className="size-3.5" />
@@ -1883,15 +1885,22 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-8 mb-12">
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="size-7 rounded-md" style={{ background: "var(--gradient-navy)" }} />
-              <span className="font-semibold">The Syndicate</span>
+              <BrandMark size="sm" />
+              <Wordmark />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               A transparent on-chain protocol on Avalanche. Every member is recorded
               and every USDC route is publicly verifiable.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Pill tone="navy">On-chain · Avalanche</Pill>
+            <div className="mt-5 flex flex-col gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full pulse-dot" style={{ background: "var(--success)" }} />
+                Network · Avalanche C-Chain
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full" style={{ background: "var(--accent)" }} />
+                Status · Live &amp; verifiable
+              </span>
             </div>
           </div>
 

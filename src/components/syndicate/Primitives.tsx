@@ -27,11 +27,14 @@ export function SectionHeader({
   return (
     <div className={`max-w-4xl ${align === "center" ? "mx-auto text-center" : ""} mb-14`}>
       {eyebrow && (
-        <div className="mono text-[12px] uppercase tracking-[0.26em] mb-6" style={{ color: "var(--gold)" }}>
+        <div
+          className={`mono text-[12px] uppercase tracking-[0.26em] mb-6 ${align === "left" ? "border-l-2 pl-3" : ""}`}
+          style={{ color: "var(--accent)", borderColor: align === "left" ? "var(--accent)" : undefined }}
+        >
           {eyebrow}
         </div>
       )}
-      <h2 className="font-serif text-fluid-h2 font-normal tracking-tight text-foreground">
+      <h2 className="font-serif text-fluid-h2 font-semibold tracking-tight text-foreground">
         {title}
       </h2>
       {description && (
@@ -259,7 +262,7 @@ export function Pill({
 }) {
   const cls =
     tone === "gold"
-      ? "border-[var(--gold)]/40 text-[color:oklch(0.5_0.13_75)] bg-[var(--gold)]/10"
+      ? "border-[color:color-mix(in_oklab,var(--accent)_45%,transparent)] text-[color:var(--accent)] bg-[color:color-mix(in_oklab,var(--accent)_10%,transparent)]"
       : tone === "navy"
       ? "border-border/60 text-foreground/80 bg-muted/30"
       : tone === "success"
@@ -271,7 +274,7 @@ export function Pill({
       : "border-border/60 text-muted-foreground bg-muted/30";
   return (
     <span
-      className={`mono inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${cls}`}
+      className={`mono inline-flex items-center gap-1.5 rounded-[3px] border px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${cls}`}
     >
       {children}
     </span>
@@ -326,18 +329,16 @@ export function CTAButton({
   className?: string;
 }) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-md px-6 py-3.5 text-base font-medium tracking-wide transition-all duration-200 whitespace-nowrap";
+    "mono inline-flex items-center justify-center gap-2 rounded-[3px] px-6 py-3.5 text-[13px] uppercase tracking-[0.14em] transition-all duration-200 whitespace-nowrap";
   const styles =
     variant === "gold"
-      ? "text-[oklch(0.22_0.025_260)] hover:translate-y-[-1px]"
+      ? "font-bold hover:brightness-110"
       : variant === "navy"
-      ? "text-[var(--primary-foreground)] hover:translate-y-[-1px]"
-      : "text-foreground border border-border/60 bg-background/60 hover:bg-card";
+      ? "font-semibold text-foreground border border-border hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+      : "font-medium text-muted-foreground hover:text-foreground";
   const style =
     variant === "gold"
-      ? { background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)" }
-      : variant === "navy"
-      ? { background: "var(--gradient-navy)", boxShadow: "var(--shadow-glow-navy)" }
+      ? { background: "var(--accent)", color: "var(--accent-foreground)", boxShadow: "var(--shadow-glow-gold)" }
       : undefined;
   return (
     <a href={href} className={`${base} ${styles} ${className}`} style={style}>
@@ -555,7 +556,7 @@ export function SecondaryButton({
   className?: string;
 }) {
   return (
-    <CTAButton variant="ghost" href={href} className={className}>
+    <CTAButton variant="navy" href={href} className={className}>
       {children}
     </CTAButton>
   );
