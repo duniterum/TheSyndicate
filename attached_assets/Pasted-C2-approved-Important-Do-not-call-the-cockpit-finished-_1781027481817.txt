@@ -1,0 +1,121 @@
+C2 approved.
+
+Important:
+Do not call the cockpit finished yet.
+
+C1 = foundation.
+C2 = retention loop.
+Now proceed to Wave C3 only.
+
+Wave C3 = Ownership / Collector Loop.
+
+Goal:
+The cockpit must clearly answer:
+
+“What do I own?”
+“What can I collect next?”
+“What artifact belongs to this chapter?”
+“What is live vs pending?”
+“What can I verify?”
+
+Before coding C3, audit the current artifact/archive widgets and data sources.
+
+Use:
+
+* MyArchivePreview
+* Archive artifact config/catalog
+* useArchiveBalances
+* useArchiveArtifactReads
+* MintProgressTracker if safe
+* Archive1155 reads
+* existing artifact cards
+* Product memory doc entry for GenesisNFTProgress renamed to Artifact / Archive Mint Progress
+* First Signal / Patron Seal / Seat Record doctrine
+
+C3 requirements:
+
+1. My Holdings & Artifacts
+   Show:
+
+* SYN owned / received
+* USDC routed
+* artifacts owned
+* First Signal owned count
+* Patron Seal owned count
+* proof links
+* empty states if none
+
+2. Collect Next
+   Show only real/canonical artifact opportunities:
+
+* The First Signal — LIVE
+
+  * ID 1
+  * 0.50 USDC
+  * wallet limit 5
+  * uncapped supply
+* Patron Seal — LIVE
+
+  * ID 3
+  * 5.00 USDC
+  * wallet limit 5
+  * max supply 10,000
+* Seat Record — PENDING
+
+  * future ERC-721
+  * do not present as mintable
+  * do not confuse with Archive1155
+
+3. Artifact Mint Progress
+   Rewrite the old GenesisNFTProgress concept safely:
+
+* never use “Genesis NFT”
+* never use false 1,000 supply
+* First Signal is uncapped, so do not show a false supply progress bar for it
+* Patron Seal can show progress toward 10,000 if live total minted is available
+* if total minted is not available, show status/owned/availability only
+
+4. Truth rules
+   No fake supply.
+   No fake minted count.
+   No fake scarcity.
+   No “Mint Genesis NFT.”
+   No “pending NFT contract” for Archive1155.
+   No hardcoded artifact price if canonical config exists.
+   No stale artifact naming.
+
+5. UX goal
+   This should feel like a collector inventory inside the cockpit:
+
+* owned artifacts
+* claimable/live artifacts
+* pending future artifacts
+* verification links
+* chapter meaning
+* artifact meaning
+* beautiful but compact
+
+6. Performance
+   Do not block cockpit load on artifact reads.
+   Use skeletons / partial rendering.
+   If one artifact read fails, the rest of the cockpit still works.
+
+Before coding:
+
+1. Audit artifact widgets and hooks.
+2. State what data is LIVE / CACHED / PENDING / unavailable.
+3. State final C3 section order.
+4. State files expected to change.
+5. Then implement C3.
+6. Stop and report.
+
+Do not touch:
+
+* Archive flagship page redesign
+* NFT engine changes
+* Episodes
+* Referral
+* Proof hub
+* Home redesign
+
+C3 is cockpit-only.

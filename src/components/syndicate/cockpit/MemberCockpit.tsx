@@ -30,7 +30,7 @@ import {
 } from "@/components/syndicate/Primitives";
 import { ConnectCTA } from "@/components/syndicate/ConnectCTA";
 import { ShareActions } from "@/components/syndicate/ShareActions";
-import { MyArchivePreview } from "@/components/syndicate/MyArchivePreview";
+import { CockpitCollector } from "./CockpitCollector";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { CockpitMemory } from "./CockpitMemory";
 import { WalletAvatar } from "./WalletAvatar";
@@ -125,13 +125,13 @@ export function MemberCockpit() {
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <StatusPill status={isConnected ? "LIVE" : "PENDING"} />
           <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
-            Owned Artifacts
+            Holdings, Artifacts &amp; Collecting
           </h2>
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            · Archive1155 · live balanceOf
+            · what you own · what to collect next · live vs pending
           </span>
         </div>
-        <MyArchivePreview />
+        <CockpitCollector record={record} />
       </Section>
     </>
   );
