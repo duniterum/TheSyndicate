@@ -40,8 +40,12 @@ export type ArchiveReadsResult = {
   connectedWallet: `0x${string}` | undefined;
   reads: Record<number, ArchiveIdRead>;
   // Global Pausable.paused() flag for the Archive1155 contract.
-  // `undefined` while loading or if the read fails (treated as not paused for
-  // display, but the mint write-path still refuses when undefined-with-error).
+  // `undefined` means UNKNOWN — either still loading OR the read failed;
+  // distinguish the two via `pausedError`. Truth-sensitive UI must NOT collapse
+  // an unknown pause state into "not paused" / mint-open: the cockpit collector
+  // requires an explicit `paused === false` before asserting ACTIVE · MINT OPEN
+  // (an unreadable pause degrades to PAUSE UNREADABLE, never Collect), and the
+  // mint write-path likewise refuses to proceed when pause is undefined.
   paused: boolean | undefined;
   pausedError: string | null;
 };
