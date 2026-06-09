@@ -1,10 +1,10 @@
 // Theme system for The Syndicate.
 //
-// Default = LIGHT. Dark is available immediately via the ThemeToggle in the
-// header (desktop) and mobile drawer / sticky mobile CTA bar. The preference
-// is persisted to localStorage under STORAGE_KEY. We deliberately do NOT
-// auto-follow `prefers-color-scheme` on first visit — the brand decision is
-// "light is default".
+// Default = DARK (Obsidian Cockpit, approved Direction A). Light remains
+// available via the ThemeToggle in the header (desktop) and mobile drawer /
+// sticky mobile CTA bar. The preference is persisted to localStorage under
+// STORAGE_KEY. We deliberately do NOT auto-follow `prefers-color-scheme` on
+// first visit — the brand decision is "obsidian dark is default".
 //
 // To avoid a flash of incorrect theme on first paint, an inline script is
 // injected in src/routes/__root.tsx (RootShell) that reads the same key and
@@ -24,7 +24,7 @@ type Ctx = {
 const ThemeContext = createContext<Ctx | undefined>(undefined);
 
 function readInitial(): Theme {
-  if (typeof document === "undefined") return "light";
+  if (typeof document === "undefined") return "dark";
   // Trust the class applied by the inline script in RootShell — single source.
   return document.documentElement.classList.contains("dark") ? "dark" : "light";
 }
@@ -85,7 +85,7 @@ export const THEME_BOOT_SCRIPT = `
 (function(){try{
   var k='${STORAGE_KEY}';
   var s=localStorage.getItem(k);
-  var theme=(s==='dark'||s==='light')?s:'light';
+  var theme=(s==='dark'||s==='light')?s:'dark';
   var r=document.documentElement;
   if(theme==='dark')r.classList.add('dark');else r.classList.remove('dark');
   r.style.colorScheme=theme;

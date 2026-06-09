@@ -1,2 +1,3 @@
 - [Design token harmonization](design-token-harmonization.md) — rules for replacing hardcoded oklch/navy colors with theme-aware Tailwind tokens in this codebase.
-- [SSR theme hydration](ssr-theme-hydration.md) — theme provider seeds "light" then syncs after mount; how to tell a REAL hydration bug from a canvas-preview artifact; DEV-only mitigations: client.tsx onRecoverableError (hydration mismatch) + dev-recovery.ts guarded reload (duplicate-React) to silence the crash detector, both stripped from prod.
+- [SSR theme hydration](ssr-theme-hydration.md) — provider seeds initial theme then syncs after mount; how to distinguish a real hydration bug from a canvas-preview artifact, plus DEV-only mitigations.
+- [Tailwind v4 @theme inline + cascade](tailwind-v4-theme-inline-cascade.md) — `@theme inline` bakes token values into utilities; override a utility for a scope only with UNLAYERED rules, not @layer base or per-scope var redefs.

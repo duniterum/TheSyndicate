@@ -73,9 +73,17 @@
   --color-warning: var(--warning);
   --color-danger: var(--destructive);
 
-  --font-serif: "Instrument Serif", "Cormorant Garamond", "Times New Roman", ui-serif, Georgia, serif;
-  --font-sans: "Work Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* Obsidian Cockpit type system:
+     Space Grotesk = UI / display    Space Mono = on-chain data
+     Fraunces = Chronicle / whitepaper editorial ONLY.
+
+     The display/heading slot (`font-serif` utility) resolves to Space Grotesk
+     by default — serif is RETIRED from dashboards. True editorial serif
+     (--font-editorial) is re-enabled only inside the `.editorial-serif` scope. */
+  --font-serif: var(--font-sans);
+  --font-editorial: "Fraunces", "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Space Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   /* Keep --font-display alias so existing components don't break */
   --font-display: var(--font-sans);
@@ -158,66 +166,71 @@
 }
 
 /* ============================================================
- * DARK THEME — Kuldmuna Arhiiv mood (cinematic archive)
- * Page #050505 · Panel #0D0D0F · Raised #151518 · Border #26262B
- * Text #F7F4EA / #B8B8B8 / #777
+ * DARK THEME — OBSIDIAN COCKPIT (default, approved Direction A)
+ * Instrument-grade cockpit: obsidian field, neon-cyan accent, mono data.
+ * Page #090A0C · Panel #121418 · Surface #1B1E23 · Border #21242A
+ * Text #F2F2F2 / #8E97A3 (muted) · Accent neon cyan #00FFFF
+ * Gold + verify are REPOINTED to cyan so legacy accents read on-brand.
  * ============================================================ */
 .dark {
-  --background: oklch(0.07 0 0);                  /* #050505 */
-  --foreground: oklch(0.955 0.012 85);            /* #F7F4EA */
-  --ivory: oklch(0.955 0.012 85);
-  --champagne: oklch(0.86 0.040 85);
-  --panel: oklch(0.12 0.005 285);                 /* #0D0D0F */
-  --graphite: oklch(0.76 0 0);
+  --background: oklch(0.105 0.008 255);           /* #090A0C obsidian */
+  --foreground: oklch(0.96 0 0);                  /* #F2F2F2 */
+  --ivory: oklch(0.96 0 0);
+  --champagne: oklch(0.80 0.02 255);
+  --panel: oklch(0.155 0.008 255);                /* #121418 */
+  --graphite: oklch(0.72 0.01 255);
 
-  --card: oklch(0.165 0.005 285);                 /* #151518 */
-  --card-foreground: oklch(0.955 0.012 85);
-  --popover: oklch(0.165 0.005 285);
-  --popover-foreground: oklch(0.955 0.012 85);
+  --card: oklch(0.155 0.008 255);                 /* #121418 panel */
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.155 0.008 255);
+  --popover-foreground: oklch(0.96 0 0);
 
-  --primary: oklch(0.955 0.012 85);
-  --primary-foreground: oklch(0.12 0.005 285);
+  /* Primary action = neon cyan */
+  --primary: oklch(0.88 0.15 195);
+  --primary-foreground: oklch(0.12 0.01 255);
 
-  --secondary: oklch(0.22 0.005 285);
-  --secondary-foreground: oklch(0.955 0.012 85);
+  --secondary: oklch(0.205 0.008 255);            /* #1B1E23 raised surface */
+  --secondary-foreground: oklch(0.96 0 0);
 
-  --muted: oklch(0.18 0.005 285);
-  --muted-foreground: oklch(0.55 0 0);            /* #777 */
-  --text-secondary: oklch(0.76 0 0);              /* #B8B8B8 */
+  --muted: oklch(0.18 0.008 255);
+  --muted-foreground: oklch(0.64 0.012 255);      /* #8E97A3 */
+  --text-secondary: oklch(0.76 0.01 255);
 
-  --accent: oklch(0.81 0.155 85);                 /* gold bright */
-  --accent-foreground: oklch(0.12 0.005 285);
+  --accent: oklch(0.88 0.15 195);                 /* neon cyan */
+  --accent-foreground: oklch(0.12 0.01 255);
 
-  --gold: oklch(0.81 0.155 85);                   /* in dark mode gold = bright variant */
-  --gold-bright: oklch(0.84 0.16 85);
-  --gold-antique: oklch(0.56 0.11 75);
-  --gold-soft: oklch(0.45 0.08 80);
+  /* Gold repointed to cyan in the obsidian system */
+  --gold: oklch(0.88 0.15 195);
+  --gold-bright: oklch(0.92 0.14 195);
+  --gold-antique: oklch(0.70 0.12 200);
+  --gold-soft: oklch(0.30 0.06 200);
 
-  --navy: oklch(0.30 0.05 260);
-  --navy-soft: oklch(0.44 0.07 260);
+  --navy: oklch(0.68 0.16 250);                   /* accent blue */
+  --navy-soft: oklch(0.55 0.12 250);
 
-  --verify: oklch(0.66 0.115 210);                /* #10ADBA */
-  --verify-soft: oklch(0.30 0.06 210);
-  --success: oklch(0.68 0.17 145);                /* #22C55E */
-  --warning: oklch(0.74 0.16 65);                 /* #F59E0B */
+  --verify: oklch(0.88 0.15 195);                 /* cyan */
+  --verify-soft: oklch(0.30 0.06 200);
+  --success: oklch(0.72 0.17 150);                /* #22C55E */
+  --warning: oklch(0.80 0.15 80);                 /* amber */
   --destructive: oklch(0.62 0.21 27);             /* #EF4444 */
   --destructive-foreground: oklch(0.98 0 0);
 
-  --border: oklch(0.27 0.005 285);                /* #26262B */
-  --input: oklch(0.27 0.005 285);
-  --ring: oklch(0.81 0.155 85 / 50%);
+  --border: oklch(0.235 0.008 255);               /* #21242A dim */
+  --input: oklch(0.235 0.008 255);
+  --ring: oklch(0.88 0.15 195 / 50%);
 
   --gradient-hero:
-    radial-gradient(1100px 600px at 12% -10%, oklch(0.45 0.08 80 / 0.40), transparent 60%),
-    radial-gradient(900px 500px at 95% 0%, oklch(0.30 0.06 210 / 0.18), transparent 60%),
-    linear-gradient(180deg, oklch(0.07 0 0), oklch(0.10 0.005 285));
-  --gradient-gold: linear-gradient(135deg, oklch(0.84 0.16 85), oklch(0.60 0.12 70));
-  --gradient-card: linear-gradient(180deg, oklch(0.165 0.005 285 / 0.95), oklch(0.13 0.005 285 / 0.85));
+    radial-gradient(1100px 600px at 12% -10%, oklch(0.55 0.12 195 / 0.16), transparent 60%),
+    radial-gradient(900px 500px at 95% 0%, oklch(0.55 0.12 250 / 0.12), transparent 60%),
+    linear-gradient(180deg, oklch(0.105 0.008 255), oklch(0.13 0.008 255));
+  --gradient-gold: linear-gradient(135deg, oklch(0.92 0.14 195), oklch(0.70 0.13 205));
+  --gradient-card: linear-gradient(180deg, oklch(0.155 0.008 255 / 0.95), oklch(0.13 0.008 255 / 0.85));
 
-  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.40), 0 8px 24px -12px oklch(0 0 0 / 0.55);
-  --shadow-elevated: 0 1px 2px oklch(0 0 0 / 0.50), 0 24px 60px -24px oklch(0 0 0 / 0.70);
-  --shadow-glow-gold: 0 0 0 1px oklch(0.81 0.155 85 / 0.30), 0 14px 40px -14px oklch(0.81 0.155 85 / 0.50);
-  --shadow-glow-verify: 0 0 0 1px oklch(0.66 0.115 210 / 0.30), 0 14px 40px -14px oklch(0.66 0.115 210 / 0.45);
+  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.45), 0 8px 24px -12px oklch(0 0 0 / 0.60);
+  --shadow-elevated: 0 1px 2px oklch(0 0 0 / 0.55), 0 24px 60px -24px oklch(0 0 0 / 0.75);
+  --shadow-glow-gold: 0 0 0 1px oklch(0.88 0.15 195 / 0.30), 0 14px 40px -14px oklch(0.88 0.15 195 / 0.45);
+  --shadow-glow-navy: 0 0 0 1px oklch(0.68 0.16 250 / 0.30), 0 14px 40px -14px oklch(0.68 0.16 250 / 0.45);
+  --shadow-glow-verify: 0 0 0 1px oklch(0.88 0.15 195 / 0.30), 0 14px 40px -14px oklch(0.88 0.15 195 / 0.45);
 }
 
 @layer base {
@@ -240,8 +253,8 @@
   }
   .dark body {
     background-image:
-      radial-gradient(1100px 700px at 88% -8%, oklch(0.45 0.08 80 / 0.18), transparent 60%),
-      radial-gradient(900px 600px at -8% 12%, oklch(0.30 0.06 210 / 0.10), transparent 60%);
+      radial-gradient(1100px 700px at 88% -8%, oklch(0.55 0.12 195 / 0.10), transparent 60%),
+      radial-gradient(900px 600px at -8% 12%, oklch(0.55 0.12 250 / 0.08), transparent 60%);
     background-attachment: fixed;
   }
   :root:not(.dark) body {
@@ -255,15 +268,25 @@
     color: var(--foreground);
   }
 
-  /* Serif for editorial headings. Components that opt-in via .font-serif
-     OR via h1/h2 inside .prose-serif containers receive Instrument Serif. */
-  .font-serif, .prose-serif h1, .prose-serif h2, .prose-serif h3, .prose-serif blockquote {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    letter-spacing: -0.01em;
+  /* Display headings (`font-serif` slot) render Space Grotesk by default —
+     the blank-sheet cockpit look. Tightened weight/tracking for display use. */
+  .font-serif {
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
   .font-sans { font-family: var(--font-sans); }
   .font-mono { font-family: var(--font-mono); }
+}
+
+/* Editorial serif (Fraunces) — Chronicle / whitepaper ONLY. Kept UNLAYERED so
+   it overrides the Tailwind `font-serif` utility (which `@theme inline` bakes to
+   Space Grotesk); layered base rules would otherwise lose to @layer utilities. */
+.editorial-serif .font-serif,
+.editorial-serif h1, .editorial-serif h2, .editorial-serif h3, .editorial-serif blockquote,
+.prose-serif h1, .prose-serif h2, .prose-serif h3, .prose-serif blockquote {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 @utility glass-card {

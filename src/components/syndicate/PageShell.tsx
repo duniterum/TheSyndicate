@@ -10,6 +10,7 @@ export function PageShell({
   description,
   children,
   hideHeader = false,
+  serif = false,
 }: {
   eyebrow?: string;
   title: string;
@@ -18,10 +19,13 @@ export function PageShell({
   /** When true, suppress the default editorial header (used by routes that
    *  own their own full-bleed hero, e.g. /nft Chapter I hero). */
   hideHeader?: boolean;
+  /** When true, scope this page into editorial serif (Fraunces). Reserved for
+   *  the Chronicle and whitepaper — serif is retired everywhere else. */
+  serif?: boolean;
 }) {
   return (
     <div
-      className="min-h-dvh text-foreground pb-20 md:pb-0 overflow-x-hidden"
+      className={`min-h-dvh text-foreground pb-20 md:pb-0 overflow-x-hidden${serif ? " editorial-serif" : ""}`}
       style={{ background: "var(--background)" }}
     >
       <DemoBanner />

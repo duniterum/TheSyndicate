@@ -7,12 +7,11 @@ import { useUserBalances, fmtUsdc, fmtAddress } from "@/lib/sale-hooks";
 /**
  * Developer-only wallet session readout.
  *
- * Visibility rules (gated, never default-on in production):
- *   1. import.meta.env.DEV  → always shown
- *   2. localStorage.setItem("syn:debug", "1") → shown
- *   3. ?debug=wallet query param → shown for the session
+ * Visibility rules (gated, never default-on — including dev):
+ *   1. localStorage.setItem("syn:debug", "1") → shown
+ *   2. ?debug=wallet query param → shown for the session (and persisted)
  *
- * Real users on the published site see nothing.
+ * Both real users and developers see nothing unless explicitly opted in.
  */
 export function WalletDebugPanel() {
   const [enabled, setEnabled] = useState(false);
@@ -20,7 +19,6 @@ export function WalletDebugPanel() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const dev = !!import.meta.env.DEV;
     const ls = (() => {
       try {
         return window.localStorage.getItem("syn:debug") === "1";
@@ -36,7 +34,7 @@ export function WalletDebugPanel() {
         /* ignore */
       }
     }
-    setEnabled(dev || ls || qs);
+    setEnabled(ls || qs);
   }, []);
 
   const { address, isConnected, status } = useAccount();

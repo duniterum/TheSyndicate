@@ -107,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap",
       },
     ],
     scripts: [
@@ -147,7 +147,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" style={{ colorScheme: "light" }} suppressHydrationWarning>
+    <html lang="en" style={{ colorScheme: "dark" }} suppressHydrationWarning>
       <head>
         {/* DEV ONLY: one guarded full reload if the long-lived preview tab ends
             up with duplicate React modules after a server restart ("Invalid
@@ -156,8 +156,8 @@ function RootShell({ children }: { children: ReactNode }) {
         {import.meta.env.DEV && (
           <script dangerouslySetInnerHTML={{ __html: DEV_HYDRATION_RECOVERY_SCRIPT }} />
         )}
-        {/* Set theme class BEFORE hydration to avoid a flash of light when user
-            previously chose dark. Default = light when no preference exists. */}
+        {/* Set theme class BEFORE hydration to avoid a flash of the wrong theme.
+            Default = dark (Obsidian Cockpit) when no preference exists. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         <HeadContent />
       </head>

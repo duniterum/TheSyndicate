@@ -48,6 +48,7 @@ function ChroniclePage() {
 
   return (
     <PageShell
+      serif
       eyebrow="Chronicle"
       title="The protocol's own record"
       description="Written in the protocol's voice, oldest first. Entries appear only when their on-chain anchor already exists. Nothing here is editorial."

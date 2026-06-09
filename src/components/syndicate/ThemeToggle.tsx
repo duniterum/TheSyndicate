@@ -5,7 +5,7 @@
 //   - "pill"   labeled pill for the mobile drawer
 //   - "mini"   ultra-compact for the sticky mobile CTA bar
 //
-// Persisted via lib/theme. Default = light (no system follow on first visit).
+// Persisted via lib/theme. Default = dark (Obsidian Cockpit); no system follow on first visit.
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/lib/theme";
