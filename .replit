@@ -30,8 +30,16 @@ args = "bun run dev -- --port 5000 --host 0.0.0.0"
 waitForPort = 5000
 
 [[ports]]
+localPort = 3001
+externalPort = 3001
+
+[[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 23636
+externalPort = 3000
 
 [deployment]
 deploymentTarget = "autoscale"
