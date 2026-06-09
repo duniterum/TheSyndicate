@@ -1,0 +1,93 @@
+Approved.
+
+The test/comment hardening is complete.
+
+Now proceed to Wave C4 only.
+
+Wave C4 = Progression / Story Loop.
+
+Goal:
+The cockpit must clearly answer:
+
+* What chapter am I in?
+* How close is the protocol to the next chapter?
+* How close am I to the next rank?
+* What is sealing next?
+* Why does early membership matter?
+* What should I watch next?
+
+Use only real thresholds and derived values.
+
+Canonical chapter thresholds:
+
+* Genesis Signal: Member #1–333
+* First Thousand: #334–1,000
+* The Expansion: #1,001–3,333
+* First Ten Thousand: #3,334–10,000
+* Open Era: #10,001+
+
+Canonical rank thresholds:
+Use the existing config only.
+Do not invent new rank names or thresholds.
+
+C4 should include or improve:
+
+1. My Chapter & Progression
+
+* current chapter
+* current member number if available
+* progress to next chapter threshold
+* next chapter name
+* what changes emotionally/story-wise at the next seal
+
+2. Rank Progress
+
+* current rank
+* next rank
+* SYN / USDC needed if already available from existing logic
+* no fake XP
+* no fake gamification numbers
+
+3. What’s Sealing Next
+
+* next real member-number milestone
+* #333 / #1,000 / #3,333 / #10,000
+* no countdown timers
+* no dates unless derived from live data
+* no fabricated scarcity
+
+4. Story Context
+   Use concise language:
+
+* early member number matters
+* chapters seal history
+* artifacts remember protocol moments
+* cockpit lets members track the protocol while it moves
+
+5. Mobile
+   Must be compact:
+
+* no giant empty sections
+* progress cards must stack cleanly
+* no duplicated chapter/rank panels
+
+Before coding C4:
+
+1. Audit existing progression/chapter/rank widgets and hooks.
+2. State which are LIVE / derived / cached / pending.
+3. State which widgets will be reused, merged, or ignored.
+4. State files expected to change.
+5. Then implement C4.
+6. Stop and report.
+
+Do not touch:
+
+* Archive page redesign
+* Episodes feature
+* Referral
+* Proof hub
+* Home redesign
+* NFT engine
+* Contract logic
+
+C4 is cockpit-only.
