@@ -1,0 +1,93 @@
+Stop.
+
+Do not redesign /my-syndicate yet.
+
+After reviewing the latest video, I believe the issue is not doctrine, data, or features.
+
+The issue is composition.
+
+And before composing again, I want one final synthesis pass across the ENTIRE codebase.
+
+Reason:
+
+Throughout the archaeology work you repeatedly discovered that the best pieces were not on the current page:
+
+* MemberCockpitCandidate
+* SinceYourLastVisit
+* SinceLastVisitStory
+* ActivityHeartbeat
+* WhatChangedForYou
+* RankHub
+* SeatRecordPanel
+* ShareableCards
+* MythologyWall
+* DayOneArchive
+* ProtocolStorySoFar
+* ActivityMilestones
+* NeighboursStrip
+* Member profile routes
+* Labs prototypes
+* Hidden Archive widgets
+* Dead-component salvage items
+
+My concern:
+
+We are redesigning using only the currently mounted cockpit.
+
+I want to know whether the strongest cockpit already exists in fragments elsewhere.
+
+Task:
+
+Perform a final “Cockpit Synthesis Audit”.
+
+Do not code.
+
+Do not redesign.
+
+Do not change UI.
+
+Audit only.
+
+Questions to answer:
+
+1. If you ignored the current /my-syndicate completely and rebuilt it from the best existing widgets in the repository, what would the final cockpit structure be?
+
+2. Which currently mounted widgets would survive unchanged?
+
+3. Which hidden/lab/dead widgets are actually superior to what is currently mounted?
+
+4. Which existing widgets should replace current sections?
+
+5. Which widgets are duplicated and should be merged?
+
+6. Which widgets are visually strongest?
+
+7. Which widgets are emotionally strongest?
+
+8. Which widgets best express:
+
+   * identity
+   * memory
+   * co-witnessing
+   * progression
+   * anticipation
+   * proof
+
+9. Produce a final cockpit architecture diagram using ONLY:
+
+   * existing widgets
+   * existing data
+   * existing hooks
+   * existing doctrine
+
+10. Then score:
+
+Current cockpit: X/100
+
+Best possible cockpit using existing repo assets: Y/100
+
+Gap: Z points
+
+Only after this synthesis audit should we do the final visual redesign pass.
+
+The goal is to ensure we are not rebuilding while ignoring better assets already hidden elsewhere in the codebase.
