@@ -1,0 +1,98 @@
+Good plan, but recalibrate before Phase C.
+
+Do not design /my-syndicate only from what is currently rendered.
+
+Search the whole project first, including:
+
+* backup files
+* dead/unrendered components
+* old Lovable components
+* docs
+* archived widgets
+* unused exports
+* previous cockpit/dashboard widgets
+* product-memory docs
+* sections hidden in large files
+* anything that may contain old but valuable widget ideas
+
+Goal:
+Find the best available building blocks and ideas for a Grade AAA Member Cockpit.
+
+The current page may not show all the best ideas.
+
+Important:
+Some old widgets may have stale facts or wrong language, but valuable structure.
+
+Do not copy stale data.
+Do not reuse fabricated numbers.
+Do not resurrect dead components blindly.
+
+Instead, classify:
+
+1. Reuse as-is
+2. Rewrite with live data
+3. Merge into cockpit section
+4. Preserve for future
+5. Delete / ignore
+
+Search specifically for widgets related to:
+
+* wallet dashboard
+* member identity
+* rank progress
+* chapter progress
+* artifact ownership
+* NFT/archive ownership
+* mint progress
+* live activity
+* since last visit
+* what changed while away
+* protocol pulse
+* referral
+* reputation
+* vault / liquidity / treasury
+* holder distribution
+* member registry
+* protocol health
+* chronicle / episodes
+* return loops
+* share profile
+* proof / verification
+* settings / profile
+
+Then produce a Cockpit Widget Inventory Report:
+
+For each useful widget / idea:
+
+* file
+* component name
+* current status rendered/dead/backup
+* what it shows
+* data source
+* live/cached/pending/fake
+* whether it fits Phase C
+* how it should be reused or rewritten
+* risk of using it
+* risk of ignoring it
+
+Only after this inventory, propose the final /my-syndicate section structure again.
+
+Do not code yet.
+
+The objective is not just a clean dashboard.
+
+The objective is the best possible Member Operating System:
+
+* identity
+* holdings
+* owned artifacts
+* progression
+* chapter status
+* live protocol movement
+* what changed while away
+* collect next
+* do next
+* proof
+* future loops
+
+Use the whole codebase memory, not only the current route.
