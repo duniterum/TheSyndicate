@@ -18,3 +18,9 @@ id = "fyPDPMER2TSCXNlI3AB_m"
 uri = "file://screenshots/phaseB/after-roadmap-desktop.jpg"
 type = "image"
 title = "AFTER — PageShell route (/roadmap) cockpit hero"
+
+[[outputs]]
+id = "vFQF-2PIxvEF08cYBYfem"
+uri = "file://docs/DEAD_COMPONENT_SALVAGE_REPORT.md"
+type = "text"
+title = "Dead Component Product Salvage Report"

@@ -1,0 +1,94 @@
+Recalibration before any deletion or cleanup.
+
+Do not assume dead component = useless idea.
+
+Some dead/unrendered components may contain important product concepts that drifted out of the app:
+
+* GenesisNFTProgress
+* EPISODES
+* WhyComeBackTomorrow
+* WhitepaperPreview
+* narrative/retention modules
+* old archive/story modules
+
+These may be outdated in wording, but conceptually important.
+
+Before deleting or ignoring them, classify them.
+
+Use this framework:
+
+1. Delete
+   Only if the component is obsolete, duplicated, false, and has no useful product idea.
+
+2. Rewrite and reuse
+   If the component contains a strong concept but stale terminology or wrong facts.
+
+3. Preserve as future backlog
+   If the idea is valuable but not ready for implementation.
+
+4. Merge into another component
+   If it overlaps with Chronicle, Archive, My Syndicate, Activity, or Proof.
+
+Important distinctions:
+
+Archive1155 is live.
+The First Signal is live.
+Patron Seal is live.
+Seat Record ERC-721 is future / PENDING.
+
+Do not mix:
+
+* The First Signal
+* Genesis NFT
+* Seat Record
+* Patron Seal
+* Archive1155
+* future SeatRecord721
+
+Also:
+
+The “episodes” idea may be important for the TV-series/addiction loop.
+The “Why Come Back Tomorrow” idea may be important for retention.
+The “GenesisNFTProgress” idea may be wrong in data but valuable as an artifact/progress module.
+
+Do not delete product memory.
+
+Audit dead components as product archaeology.
+
+Create a Dead Component Product Salvage Report:
+
+For each dead/unrendered component:
+
+* file
+* component name
+* current status
+* what is factually wrong
+* what product idea it contains
+* whether to delete / rewrite / backlog / merge
+* where it should live if reused
+* risk of keeping it
+* risk of deleting it
+
+Goal:
+
+Clean the codebase without losing the original Syndicate vision.
+
+This project is:
+
+* member cockpit
+* live protocol
+* Chronicle
+* Archive
+* artifacts
+* chapters
+* progression
+* return loops
+* verifiable on-chain proof
+
+Do not flatten the product into only what is currently rendered.
+
+Many of the best future loops may be hiding in old dead components.
+
+Audit first.
+No deletion yet.
+No rewrite yet.
