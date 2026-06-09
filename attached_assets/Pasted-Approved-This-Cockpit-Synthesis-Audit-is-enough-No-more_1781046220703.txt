@@ -1,0 +1,115 @@
+Approved.
+
+This Cockpit Synthesis Audit is enough.
+
+No more full-repo archaeology.
+No more parallel explorers.
+No more doctrine.
+No more audits unless a blocker appears.
+
+Now execute block by block.
+
+Current goal:
+Rebuild /my-syndicate around the stronger 7-zone cockpit architecture.
+
+But start with Block 1 only.
+
+Block 1 = Above-the-fold “One Seat” cockpit.
+
+Use the synthesis finding:
+
+The problem is not missing data.
+The problem is composition.
+
+The current page shattered the seat into too many separate sections.
+The new top must feel like one dominant object:
+
+MY SEAT
+Everything else orbits the seat.
+
+Files allowed:
+
+* MemberCockpit.tsx
+* WakeBehindYou.tsx
+* CockpitBadges.tsx
+* CockpitProgression.tsx if needed
+* CockpitActionRail / existing action rail code
+* local cockpit styling/classes
+
+Do not touch:
+
+* Archive page
+* Home page
+* Activity page
+* MythologyWall
+* ActivityHeartbeat
+* NeighboursStrip
+* routing/proof sections
+* deployment config
+* doctrine docs
+* contract logic
+
+Block 1 requirements:
+
+1. Create one composed above-the-fold cockpit module.
+   It should combine:
+
+* Member #
+* Chapter / cohort
+* Wake Behind You
+* real badges
+* wallet / joined block
+* quiet rank recognition
+* primary action rail
+* compact chapter progress
+
+2. Remove stacked-report feeling above the fold.
+   Do not render Wake as a separate disconnected report card.
+   Do not render identity, wake, chapter, and actions as unrelated blocks.
+   Compose them into one premium cockpit panel.
+
+3. Visual target:
+
+* premium crypto command center
+* dense but readable
+* less empty black space
+* fewer repeated bordered cards
+* stronger visual hierarchy
+* Member # dominant
+* Wake Behind You emotionally strong
+* Rank quiet
+* actions clear
+
+4. Truth rules:
+   No fake data.
+   No fake badges.
+   No new features.
+   No leaderboard.
+   No score.
+   No XP.
+   No spend ladder.
+   No countdown.
+   No contract changes.
+
+5. Before coding:
+   Give a short Block 1 plan only:
+
+* exact layout change
+* exact files touched
+* exact data used
+* what is moved/merged
+* what stays untouched
+
+Then implement Block 1.
+
+After implementation:
+
+* run typecheck
+* run relevant cockpit tests
+* run doctrine guard if touched text could matter
+* screenshot desktop
+* screenshot mobile if possible
+* report visible before/after
+* stop
+
+Do not continue to Block 2 automatically.

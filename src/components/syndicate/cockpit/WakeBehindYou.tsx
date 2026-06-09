@@ -6,6 +6,10 @@
 // visitor it is the inverse: an invitation to anchor a place before more of
 // the story moves past.
 //
+// Composition: this renders as an INTEGRATED band (a thin gold rule + the
+// content) so it reads as a zone of the one composed seat panel, never as a
+// separate bordered report card. The owning panel provides the frame.
+//
 // Truth doctrine (binding):
 //   • Members count is the live indexed unique-wallet total (idx.totals.members)
 //     and your member number is your indexed first-purchase order. The wake is
@@ -14,12 +18,31 @@
 //     reward, yield, priority, or financial language.
 //   • While the index is still reading we show nothing rather than a fake 0.
 
+import type { ReactNode } from "react";
 import { useAccount } from "wagmi";
 import { Link } from "@tanstack/react-router";
 import { useHolderIndex } from "@/lib/holder-index";
 
 const fmtInt = (n: number) =>
   n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+
+// Integrated band shell — a thin gold rule + the eyebrow. No card chrome; the
+// composed seat panel owns the border and background.
+function WakeBand({ children }: { children: ReactNode }) {
+  return (
+    <div className="relative pl-4">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 w-0.5 rounded-full"
+        style={{ background: "var(--gradient-gold)" }}
+      />
+      <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] mb-2">
+        The wake behind you
+      </div>
+      {children}
+    </div>
+  );
+}
 
 export function WakeBehindYou() {
   const { address, isConnected } = useAccount();
@@ -33,18 +56,7 @@ export function WakeBehindYou() {
     const hasWake = behind > 0;
 
     return (
-      <div
-        className="mt-4 relative overflow-hidden rounded-xl border border-[var(--gold)]/25 bg-card/60 p-5 sm:p-6"
-        style={{ boxShadow: "var(--shadow-glow-gold)" }}
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 w-1"
-          style={{ background: "var(--gradient-gold)" }}
-        />
-        <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] mb-2">
-          The wake behind you
-        </div>
+      <WakeBand>
         {hasWake ? (
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span className="font-serif text-4xl md:text-5xl leading-none text-gradient-gold tabular-nums">
@@ -65,7 +77,7 @@ export function WakeBehindYou() {
           historical coordinate, identity and story only. It is not a reward, a
           rate, or a priority; earlier is simply earlier.
         </p>
-      </div>
+      </WakeBand>
     );
   }
 
@@ -75,20 +87,12 @@ export function WakeBehindYou() {
   // read settles into member or visitor.
   if (isConnected && idx.isLoading) {
     return (
-      <div className="mt-4 relative overflow-hidden rounded-xl border border-[var(--gold)]/25 bg-card/60 p-5 sm:p-6">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 w-1"
-          style={{ background: "var(--gradient-gold)" }}
-        />
-        <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] mb-2">
-          The wake behind you
-        </div>
+      <WakeBand>
         <p className="text-sm text-muted-foreground leading-relaxed" role="status">
           Reading your place from Avalanche… your wake appears once your
           purchase history is indexed.
         </p>
-      </div>
+      </WakeBand>
     );
   }
 
@@ -96,15 +100,7 @@ export function WakeBehindYou() {
   const showCount = idx.hasData && members > 0;
 
   return (
-    <div className="mt-4 relative overflow-hidden rounded-xl border border-[var(--gold)]/25 bg-card/60 p-5 sm:p-6">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 w-1"
-        style={{ background: "var(--gradient-gold)" }}
-      />
-      <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] mb-2">
-        The wake behind you
-      </div>
+    <WakeBand>
       <div className="text-lg md:text-2xl font-serif text-foreground leading-snug max-w-2xl">
         Join now to anchor your place before the story moves further.
       </div>
@@ -122,6 +118,6 @@ export function WakeBehindYou() {
           {isConnected ? "Anchor your seat →" : "Join The Syndicate →"}
         </Link>
       </div>
-    </div>
+    </WakeBand>
   );
 }
