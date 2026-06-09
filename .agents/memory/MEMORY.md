@@ -2,7 +2,7 @@
 - [Obsidian Cockpit theme doctrine](obsidian-cockpit-doctrine.md) — accent is cyan in DARK (default) only; light theme intentionally stays gold/ivory. Serif (Fraunces) only inside `.editorial-serif`.
 - [Syndicate copy canon](syndicate-copy-canon.md) — canonical CTA/status/identity vocabulary; "Join The Syndicate"/"Buy More SYN", LIVE/PARTIAL/PENDING, Member≠Holder≠Collector, Seat≠Seat Record.
 - [Archive artifact truth gating](archive-artifact-truth-gating.md) — only assert "mint open" when active===true AND paused===false; pause-unknown must degrade, never imply open; uncapped never gets a supply bar.
-- [my-syndicate doctrine test](my-syndicate-doctrine-test.md) — it string-scans route source; ~5 assertions are STALE since route delegates to MemberCockpit. Don't "fix" route to satisfy them.
+- [my-syndicate doctrine test](my-syndicate-doctrine-test.md) — source-string-scans BOTH route + MemberCockpit; stale assertions rewritten to composition checks. Moving a surface between those files (or renaming a token) breaks the scan even when the page is correct — fix the token, not the move.
 - [Chapter boundary semantics](chapter-boundary-semantics.md) — a chapter SEALS at endN; the NEXT chapter OPENS at next.startN (=endN+1). "opens at" copy must use startN, never endN.
 - [Cockpit member/visitor gating](cockpit-member-visitor-gating.md) — during idx.isLoading a real member's record is briefly undefined; gate any visitor/"Join now" branch on isLoading or you flash a join CTA at members.
 - [Doctrine guard ↔ Authority Map decoupling](doctrine-guard-decoupling.md) — guard uses hardcoded CANONICAL_DOCS/DOC_BANNED, not the map; reclassifying docs in the map has no auto-enforcement until the test arrays are edited (a code pass).
