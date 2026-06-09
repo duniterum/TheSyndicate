@@ -88,7 +88,7 @@ export function SynLiveStatus() {
           <article className="rounded-2xl border border-border/50 bg-card/40 backdrop-blur p-6 flex flex-col gap-5">
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-3">
-                Verify Onchain
+                Verify on-chain
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <ExplorerLink href={SYN_EXPLORERS.avascan} label="View on Avascan" />

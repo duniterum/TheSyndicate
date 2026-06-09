@@ -16,7 +16,7 @@ type Planned = { label: string; trigger: string };
 const PLANNED: Planned[] = [
   { label: "Protocol-Owned Liquidity Fees", trigger: "Trader Joe LP fee accrual hook · planned" },
   { label: "Treasury Deployment Revenue",   trigger: "Vault deployment policy v1 · planned" },
-  { label: "NFT Revenue",                   trigger: "Genesis NFT contract · planned" },
+  { label: "Artifact Revenue",              trigger: "Archive1155 artifact mints · live" },
   { label: "Protocol Services",             trigger: "Services launch · planned" },
   { label: "Partner Revenue",               trigger: "First partnership · planned" },
   { label: "Premium Access Revenue",        trigger: "Gated module · planned" },

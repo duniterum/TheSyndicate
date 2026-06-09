@@ -79,7 +79,7 @@ export function IdentityRibbon() {
             to="/join"
             className="ml-auto mono text-[10px] uppercase tracking-[0.22em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline"
           >
-            Take a seat →
+            Join The Syndicate →
           </Link>
         </div>
       </div>
@@ -111,7 +111,7 @@ export function IdentityRibbon() {
             to="/join"
             className="ml-auto mono text-[10px] uppercase tracking-[0.22em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline"
           >
-            Join now →
+            Join The Syndicate →
           </Link>
         </div>
       </div>

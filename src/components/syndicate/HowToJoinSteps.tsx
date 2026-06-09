@@ -27,7 +27,7 @@ const steps = [
   },
   {
     n: 4,
-    title: "Become a Member",
+    title: "Join The Syndicate",
     body: "Your wallet is now part of the protocol. You get a member number and a permanent chapter — Genesis Signal, First Thousand, The Expansion, First Ten Thousand, or Open Era.",
   },
   {

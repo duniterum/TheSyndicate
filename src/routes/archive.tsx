@@ -243,7 +243,7 @@ export function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {})
               title: "Join",
               body:
                 "Buy SYN with USDC and take your seat in The Syndicate. Your seat is verifiable on Avalanche today.",
-              cta: { to: "/join", label: "Take your seat →" } as const,
+              cta: { to: "/join", label: "Join The Syndicate →" } as const,
               tone: "LIVE" as const,
             },
             {

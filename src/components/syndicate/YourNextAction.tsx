@@ -56,7 +56,7 @@ export function YourNextAction() {
       step: "Step 2 of 4",
       title: "Buy SYN on the Membership Sale",
       reason: "This wallet is not yet indexed as a member. Joining seals your member number and chapter on-chain.",
-      cta: "Buy SYN with USDC →",
+      cta: "Join The Syndicate →",
       to: "/join",
       source: "INDEXED",
     };

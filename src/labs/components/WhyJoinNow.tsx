@@ -87,7 +87,7 @@ export function WhyJoinNow() {
       </div>
 
       <div className="mt-10 flex flex-wrap items-center gap-3">
-        <CTAButton variant="gold" href="/join">Buy SYN with USDC →</CTAButton>
+        <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>
         <CTAButton variant="ghost" href="/transparency">Verify before you join</CTAButton>
       </div>
 

@@ -32,7 +32,7 @@ export function StartHereCard() {
   const stops: { label: string; to: string; desc: string }[] = [
     { label: "Verify everything", to: "/transparency", desc: "Live contracts, wallets, flows" },
     { label: "Read the protocol", to: "/whitepaper", desc: "How USDC enters and routes" },
-    { label: "Become a member", to: "/join", desc: "Mint SYN, hold rank, participate" },
+    { label: "Join The Syndicate", to: "/join", desc: "Mint SYN, hold rank, participate" },
   ];
 
   return (

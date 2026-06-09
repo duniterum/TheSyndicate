@@ -4,7 +4,7 @@
 // Phase 5 harmonization: the bar adapts its primary CTA to the current
 // route so it always matches the page intent:
 //   /nft, /nfts          → Mint  + Verify
-//   /token, /liquidity   → Buy SYN + Verify
+//   /token, /liquidity   → Join + Verify
 //   /join                → hidden (the page IS the CTA)
 //   everything else      → Join + Verify
 //
@@ -36,7 +36,7 @@ function configForRoute(path: string): BarConfig | null {
   }
   if (path === "/token" || path === "/liquidity") {
     return {
-      primaryLabel: "Buy SYN",
+      primaryLabel: "Join",
       primaryHref: "/join",
       primarySurface: "mobile_buy_bar",
       verifyHref: "/transparency",

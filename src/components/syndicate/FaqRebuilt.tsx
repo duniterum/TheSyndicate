@@ -18,7 +18,7 @@ const ENTRIES: Entry[] = [
   // Basics
   { cat: "Basics", q: "What is The Syndicate?", a: "A transparent on-chain protocol. Members join with USDC, receive SYN, build identity in a public archive, and follow a verifiable Vault and routing system." },
   { cat: "Basics", q: "What is verifiable today?", a: "SYN token contract, Membership Sale contract, the Vault / Liquidity / Operations wallets, every USDC purchase, every 70/20/10 routing transfer, every SYN allocation wallet, and the SYN/USDC LP on Trader Joe. All live on Avalanche C-Chain, verifiable on Avascan, Sourcify, and Routescan." },
-  { cat: "Basics", q: "What is PENDING vs LIVE?", a: "LIVE means the contract is deployed and the data is read directly from chain. PENDING means the underlying primitive (programmatic Vault contract, Genesis NFT, on-chain governance, AI Layer) is not yet deployed and is clearly labeled — never mixed with live numbers." },
+  { cat: "Basics", q: "What is PENDING vs LIVE?", a: "LIVE means the contract is deployed and the data is read directly from chain. PENDING means the underlying primitive (programmatic Vault contract, Seat Record contract, on-chain governance, AI Layer) is not yet deployed and is clearly labeled — never mixed with live numbers." },
   { cat: "Basics", q: "Why early matters?", a: "The first members shape culture, get the lowest Founder Numbers, and are visible in the public archive forever. Recognition and archive placement compound for those present at the start — no bonus tokens, no yield." },
 
   // SYN

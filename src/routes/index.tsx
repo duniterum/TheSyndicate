@@ -90,7 +90,7 @@ function Index() {
       {/* ZONE 1.6 — COMPRESSED CTA: one primary, one secondary, one tertiary */}
       <Section id="home-pulse-cta">
         <div className="flex flex-wrap items-center gap-3">
-          <CTAButton variant="gold" href="/join">Buy SYN with USDC →</CTAButton>
+          <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>
           <CTAButton variant="ghost" href="/nft">Mint The First Signal</CTAButton>
           <a
             href="/registry"
@@ -149,7 +149,7 @@ function Index() {
           description="Open the live Membership Sale on Avalanche. Same rate for everyone: every USDC routes 70% Vault, 20% Liquidity, 10% Operations."
         />
         <div className="flex flex-wrap gap-3">
-          <CTAButton variant="gold" href="/join">Buy SYN with USDC →</CTAButton>
+          <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>
           <CTAButton variant="ghost" href="/transparency">Open transparency</CTAButton>
           <CTAButton variant="ghost" href="/registry">See full registry</CTAButton>
         </div>

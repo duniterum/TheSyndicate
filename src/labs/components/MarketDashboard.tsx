@@ -118,7 +118,7 @@ export function MarketDashboard() {
         ))}
       </div>
       <div className="mt-6 flex flex-wrap gap-3">
-        <CTAButton variant="gold" href="/join">Buy SYN with USDC →</CTAButton>
+        <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>
         <CTAButton variant="ghost" href={LP_POOL.traderJoeUrl}>Trade on Trader Joe ↗</CTAButton>
         <CTAButton variant="ghost" href="/liquidity">Liquidity dashboard →</CTAButton>
       </div>

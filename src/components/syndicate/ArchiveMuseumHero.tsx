@@ -68,7 +68,7 @@ export function ArchiveMuseumHero() {
                   boxShadow: "var(--shadow-glow-gold)",
                 }}
               >
-                Take your seat →
+                Join The Syndicate →
               </Link>
               <a
                 href="#how-it-works"

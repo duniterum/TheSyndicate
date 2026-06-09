@@ -187,7 +187,7 @@ export function MetricCard({
             rel="noopener noreferrer"
             className="mono text-[11px] uppercase tracking-[0.2em] text-[var(--verify)] hover:text-[var(--gold)] transition-colors"
           >
-            Verify onchain ↗
+            Verify on-chain ↗
           </a>
         ) : (
           <span className="mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">

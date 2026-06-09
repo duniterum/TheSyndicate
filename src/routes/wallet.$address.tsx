@@ -398,7 +398,7 @@ function HolderView({
               to="/join"
               className="mono text-[11px] uppercase tracking-[0.18em] px-3 py-2 rounded border border-[var(--gold)]/60 text-[var(--gold)] hover:bg-[var(--gold)]/10"
             >
-              Become a member →
+              Join The Syndicate →
             </Link>
             {explorer ? (
               <ProofButton href={explorer}>Avascan ↗</ProofButton>

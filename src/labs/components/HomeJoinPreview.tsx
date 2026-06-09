@@ -88,7 +88,7 @@ export function HomeJoinPreview() {
           <Pill tone="gold">● {SALE_STATUS_LABEL}</Pill>
           <div className="flex flex-wrap gap-3">
             <CTAButton variant="ghost" href="/join">Full Calculator & Tiers →</CTAButton>
-            <CTAButton variant="gold" href="/join">Buy SYN with USDC →</CTAButton>
+            <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>
           </div>
         </div>
       </GlassCard>

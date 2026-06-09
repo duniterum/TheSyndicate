@@ -47,16 +47,16 @@ export type VaultAsset = {
   chain: string;
   explorerUrl: string;
   category: "stablecoin" | "crypto" | "utility reserve";
-  status: "Live" | "Mock" | "Coming Soon";
+  status: "LIVE" | "PARTIAL" | "PENDING";
 };
 
 export const VAULT_ASSETS: VaultAsset[] = [
-  { symbol: "USDC", balance: 42_500,   usdValue: 42_500, chain: "Base",      explorerUrl: "#", category: "stablecoin",      status: "Mock" },
-  { symbol: "ETH",  balance: 18.4,     usdValue: 64_400, chain: "Ethereum",  explorerUrl: "#", category: "crypto",          status: "Mock" },
-  { symbol: "WBTC", balance: 0.31,     usdValue: 31_000, chain: "Ethereum",  explorerUrl: "#", category: "crypto",          status: "Mock" },
-  { symbol: "AVAX", balance: 1_250,    usdValue: 37_500, chain: "Avalanche", explorerUrl: "#", category: "crypto",          status: "Mock" },
-  { symbol: "SOL",  balance: 410,      usdValue: 61_500, chain: "Solana",    explorerUrl: "#", category: "crypto",          status: "Mock" },
-  { symbol: "SYN",  balance: 350_000_000, usdValue: null, chain: "Selected Chain", explorerUrl: "#", category: "utility reserve", status: "Mock" },
+  { symbol: "USDC", balance: 42_500,   usdValue: 42_500, chain: "Base",      explorerUrl: "#", category: "stablecoin",      status: "PENDING" },
+  { symbol: "ETH",  balance: 18.4,     usdValue: 64_400, chain: "Ethereum",  explorerUrl: "#", category: "crypto",          status: "PENDING" },
+  { symbol: "WBTC", balance: 0.31,     usdValue: 31_000, chain: "Ethereum",  explorerUrl: "#", category: "crypto",          status: "PENDING" },
+  { symbol: "AVAX", balance: 1_250,    usdValue: 37_500, chain: "Avalanche", explorerUrl: "#", category: "crypto",          status: "PENDING" },
+  { symbol: "SOL",  balance: 410,      usdValue: 61_500, chain: "Solana",    explorerUrl: "#", category: "crypto",          status: "PENDING" },
+  { symbol: "SYN",  balance: 350_000_000, usdValue: null, chain: "Selected Chain", explorerUrl: "#", category: "utility reserve", status: "PENDING" },
 ];
 
 export type VaultInflow = {
@@ -66,15 +66,15 @@ export type VaultInflow = {
   txCount: number;
   latestTx: string;
   description: string;
-  status: "Live" | "Mock" | "Coming Soon";
+  status: "LIVE" | "PARTIAL" | "PENDING";
 };
 
 export const VAULT_INFLOWS: VaultInflow[] = [
-  { source: "Membership Access",  internalKey: "membershipSales", amount: 182_000, txCount: 428, latestTx: "#", description: "USDC received from founding member access", status: "Mock" },
-  { source: "Genesis NFT Mints",  internalKey: "nftMints",        amount: 8_420,   txCount: 126, latestTx: "#", description: "Optional achievement NFT mints",            status: "Mock" },
-  { source: "LP Fees",            internalKey: "lpFees",          amount: 1_140,   txCount: 312, latestTx: "#", description: "Liquidity pool trading fees",               status: "Mock" },
-  { source: "Partnerships",       internalKey: "partnerships",    amount: 0,       txCount: 0,   latestTx: "#", description: "Future ecosystem partnerships",             status: "Coming Soon" },
-  { source: "Other Revenue",      internalKey: "otherRevenue",    amount: 0,       txCount: 0,   latestTx: "#", description: "Marketplace, AI services, future revenue",  status: "Coming Soon" },
+  { source: "Membership Access",  internalKey: "membershipSales", amount: 182_000, txCount: 428, latestTx: "#", description: "USDC received from founding member access", status: "PENDING" },
+  { source: "Artifact Mints",     internalKey: "nftMints",        amount: 8_420,   txCount: 126, latestTx: "#", description: "Optional Archive artifact mints",            status: "PENDING" },
+  { source: "LP Fees",            internalKey: "lpFees",          amount: 1_140,   txCount: 312, latestTx: "#", description: "Liquidity pool trading fees",               status: "PENDING" },
+  { source: "Partnerships",       internalKey: "partnerships",    amount: 0,       txCount: 0,   latestTx: "#", description: "Future ecosystem partnerships",             status: "PENDING" },
+  { source: "Other Revenue",      internalKey: "otherRevenue",    amount: 0,       txCount: 0,   latestTx: "#", description: "Marketplace, AI services, future revenue",  status: "PENDING" },
 ];
 
 export const VAULT_ALLOCATION = {

@@ -331,7 +331,7 @@ export function JoinSection() {
                 <Pill tone="success">SALE LIVE</Pill>
               </div>
               <CTAButton variant="gold" href="/join" className="w-full">
-                Buy SYN with USDC →
+                Join The Syndicate →
               </CTAButton>
             </div>
           </div>
@@ -613,8 +613,8 @@ function AssetIcon({ symbol }: { symbol: string }) {
   );
 }
 
-function StatusTag({ status }: { status: "Live" | "Mock" | "Coming Soon" }) {
-  const tone = status === "Live" ? "success" : status === "Mock" ? "gold" : "muted";
+function StatusTag({ status }: { status: "LIVE" | "PARTIAL" | "PENDING" }) {
+  const tone = status === "LIVE" ? "success" : status === "PARTIAL" ? "gold" : "muted";
   return <Pill tone={tone as "success" | "gold" | "muted"}>{status}</Pill>;
 }
 
@@ -646,7 +646,7 @@ export function VaultPolicy() {
   const summary: Array<{ label: string; value: React.ReactNode; hint?: string; accent?: "gold" | "navy"; live?: boolean }> = [
     { label: "Total Assets",                value: <span className="mono">{VAULT_ASSETS.length}</span>,           hint: "Asset categories tracked" },
     { label: "Membership Access (USDC)",    value: <AnimatedNumber value={membership} prefix="$" />,              hint: "Inflow from founding members" },
-    { label: "NFT Mint Revenue",            value: <AnimatedNumber value={nft} prefix="$" />,                     hint: "Genesis NFT mints", accent: "navy" },
+    { label: "NFT Mint Revenue",            value: <AnimatedNumber value={nft} prefix="$" />,                     hint: "Artifact mints", accent: "navy" },
     { label: "Other Ecosystem Revenue",     value: <AnimatedNumber value={otherRevenue} prefix="$" />,            hint: "LP fees · partnerships · other", accent: "navy" },
     { label: "Liquidity Reserve",           value: <AnimatedNumber value={Math.round(liquidityReserve)} prefix="$" />, hint: "20% allocation policy" },
     { label: "Operations Reserve",          value: <AnimatedNumber value={Math.round(operationsReserve)} prefix="$" />, hint: "10% allocation policy", accent: "navy" },
@@ -675,7 +675,7 @@ export function VaultPolicy() {
           <GlassCard glow="gold" className="lg:col-span-1 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <Pill tone="gold">Hero</Pill>
-              <StatusTag status="Mock" />
+              <StatusTag status="PENDING" />
             </div>
             <div className="mono text-[10px] uppercase tracking-[0.22em] text-[color:oklch(0.5_0.13_75)]">Total Vault Value</div>
             <div className="mono text-5xl md:text-6xl font-semibold text-gradient-gold leading-none">
@@ -684,7 +684,7 @@ export function VaultPolicy() {
             <div className="mono text-[11px] text-muted-foreground">USD-equivalent across all Vault assets</div>
             <div className="mt-auto pt-3 border-t border-border/60 flex items-center justify-between">
               <a href={verifyOnchain("vault")} className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--navy-soft)] hover:text-[var(--gold)]">
-                Verify onchain →
+                Verify on-chain →
               </a>
               <span className="mono text-[10px] text-muted-foreground">Auto-refresh planned</span>
             </div>
@@ -973,7 +973,7 @@ export function Allocation() {
               <li className="flex justify-between"><span>Hidden Unlocks</span><span className="mono text-[var(--destructive)]">None</span></li>
             </ul>
             <a href={verifyOnchain("founder")} className="mt-5 inline-block mono text-[10px] uppercase tracking-[0.2em] text-[var(--navy-soft)] hover:text-[var(--gold)]">
-              Verify onchain →
+              Verify on-chain →
             </a>
           </GlassCard>
         </div>

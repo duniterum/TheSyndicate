@@ -6,7 +6,7 @@ import { PendingModuleNotice } from "@/components/syndicate/PendingModuleNotice"
 export const Route = createFileRoute("/ai")({
   head: () => ({
     meta: [
-      { title: "AI Syndicate Layer — Coming Soon | The Syndicate" },
+      { title: "AI Syndicate Layer — Pending | The Syndicate" },
       { name: "description", content: "Future AI Syndicate Layer: agents, signal generation, and member tooling. Not yet built." },
       { property: "og:title", content: "The Syndicate — AI Layer" },
       { property: "og:description", content: "Future module. Not yet active." },

@@ -125,7 +125,7 @@ const DOSSIERS: Dossier[] = [
     status: "pending",
   },
   {
-    label: "Genesis NFT Contract",
+    label: "Seat Record Contract (ERC-721)",
     address: "PENDING",
     explorerHref: null,
     network: "Avalanche C-Chain (planned)",
@@ -136,7 +136,7 @@ const DOSSIERS: Dossier[] = [
     ownerLabel: "—",
     upgradeable: "pending",
     standard: "ERC721 (planned)",
-    description: "Achievement NFTs for member milestones. Spec frozen pending Phase 5.",
+    description: "Future ERC-721 Seat Record — the optional post-purchase identity record. Not deployed; clearly marked PENDING. (The live Archive1155 artifact contract is listed separately.)",
     status: "pending",
   },
   {

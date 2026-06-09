@@ -332,7 +332,7 @@ function CockpitHeader({
               className="inline-flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-medium text-[oklch(0.22_0.025_260)] transition-transform hover:-translate-y-px"
               style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)" }}
             >
-              {record ? "Buy more SYN →" : "Take your seat →"}
+              {record ? "Buy More SYN →" : "Join The Syndicate →"}
             </Link>
           </div>
         </div>
@@ -389,7 +389,7 @@ function CockpitActionRail({
           className="group rounded-md border border-[var(--gold)]/70 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20 px-3 py-3 text-left transition-colors"
         >
           <div className="mono text-[11px] uppercase tracking-[0.18em] font-semibold text-foreground">
-            {isMember ? "Buy more SYN" : "Buy SYN"}
+            {isMember ? "Buy More SYN" : "Join The Syndicate"}
             <span className="ml-1 text-muted-foreground group-hover:text-[var(--gold)]">→</span>
           </div>
           <div className="mt-1 text-[11px] text-muted-foreground leading-snug">

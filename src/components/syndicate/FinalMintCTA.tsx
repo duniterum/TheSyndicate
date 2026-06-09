@@ -21,8 +21,8 @@ export function FinalMintCTA() {
         eyebrow="Chapter I · Closing record"
         title="Mint the opening signal."
         description="Preserve your place in Chapter I of The Syndicate Archive. Once Chapter I closes, the First Signal can never be issued again."
-        primary={{ label: "Mint Now", href: "#first-signal-showcase" }}
-        secondary={{ label: "Verify On-chain ↗", href: verifyUrl }}
+        primary={{ label: "Mint The First Signal", href: "#first-signal-showcase" }}
+        secondary={{ label: "Verify on-chain ↗", href: verifyUrl }}
       />
       <p className="mt-6 text-center mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
         <Link

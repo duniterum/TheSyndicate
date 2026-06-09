@@ -12,7 +12,7 @@
 //     "verify"     — Proof/Data pages (/activity /vault /liquidity /token /transparency)
 //                     → Verify on-chain + Open registry
 //     "editorial"  — Editorial/Story pages (/docs /whitepaper /chapters /archive /founders /ranks)
-//                     → Take your seat + Read the protocol
+//                     → Join The Syndicate + Browse the Archive
 //
 // Use it like:
 //     <RouteFinalCTA preset="verify" />
@@ -39,7 +39,7 @@ const PRESETS: Record<Preset, PresetConfig> = {
     ),
     description:
       "Buy SYN on the live Membership Sale. Same rate for everyone — every USDC routes 70% Vault, 20% Liquidity, 10% Operations, all on-chain.",
-    primary: { label: "Buy SYN with USDC →", href: "/join" },
+    primary: { label: "Join The Syndicate →", href: "/join" },
     secondary: { label: "Verify on Avascan", href: "/transparency" },
   },
   mint: {
@@ -47,7 +47,7 @@ const PRESETS: Record<Preset, PresetConfig> = {
     title: <>Mint the opening signal.</>,
     description:
       "Preserve your place in Chapter I of The Syndicate Archive. Once Chapter I closes, the First Signal can never be issued again.",
-    primary: { label: "Mint Now", href: "/nft#first-signal-showcase" },
+    primary: { label: "Mint The First Signal", href: "/nft#first-signal-showcase" },
     secondary: { label: "Verify on-chain ↗", href: "/transparency" },
   },
   verify: {
@@ -60,7 +60,7 @@ const PRESETS: Record<Preset, PresetConfig> = {
     description:
       "Read the contracts, follow the addresses, check the transactions. The Protocol Registry lists every wallet, every status, every explorer link.",
     primary: { label: "Open Protocol Registry", href: "/registry" },
-    secondary: { label: "Take your seat", href: "/join" },
+    secondary: { label: "Join The Syndicate", href: "/join" },
   },
   editorial: {
     eyebrow: "Next step",
@@ -71,7 +71,7 @@ const PRESETS: Record<Preset, PresetConfig> = {
     ),
     description:
       "Stories explain what The Syndicate is becoming. Membership records that you were there when it was written.",
-    primary: { label: "Take your seat", href: "/join" },
+    primary: { label: "Join The Syndicate", href: "/join" },
     secondary: { label: "Browse the Archive", href: "/archive" },
   },
 };

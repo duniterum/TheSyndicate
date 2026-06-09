@@ -10,7 +10,7 @@ import { StatusPill } from "./Primitives";
  *
  * Usage:
  *   <PendingModuleNotice
- *     module="Genesis NFTs"
+ *     module="Seat Record"
  *     subtitle="Planned protocol module. Not live today."
  *     secondary="Not included in live metrics or protocol totals."
  *   />

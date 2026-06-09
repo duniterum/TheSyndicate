@@ -27,7 +27,7 @@ export function Hero() {
         {/* Live / Pending status rows */}
         <div className="hidden md:flex flex-col gap-2 mb-6 max-w-3xl">
           <StatusRow label="LIVE" tone="live" items={["SYN Token", "Membership Sale", "LP Pool", "USDC Routing"]} />
-          <StatusRow label="PENDING" tone="pending" items={["NFT", "Governance", "Vault Contract", "AI Layer"]} />
+          <StatusRow label="PENDING" tone="pending" items={["Seat Record", "Governance", "Vault Contract", "AI Layer"]} />
         </div>
         <div className="md:hidden mb-5">
           <span className="mono inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-400">
@@ -48,8 +48,8 @@ export function Hero() {
         </p>
 
         <p className="mt-3 max-w-2xl text-xs md:text-sm text-muted-foreground leading-relaxed">
-          No financial promise. No governance token. No live NFT contract. No rewards.
-          SYN is the seat; NFT Archive Artifacts are the pending memory layer.
+          No financial promise. No governance token. No rewards.
+          SYN is the seat; Archive Artifacts are the live memory layer — The First Signal mints now on Avalanche, while the future Seat Record contract stays clearly marked PENDING.
           A seat is your identity in the story. The flywheel — routing, vault, liquidity, activity, chapters — is the product.
         </p>
 
