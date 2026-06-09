@@ -23,7 +23,6 @@ import { useAccount } from "wagmi";
 import {
   GlassCard,
   Pill,
-  ProgressBar,
   Section,
   StatusPill,
   AnimatedNumber,
@@ -40,13 +39,7 @@ import { WalletAvatar } from "./WalletAvatar";
 import { useHolderIndex, type HolderRecord } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
 import { useUserBalances, fmtSyn, fmtAddress } from "@/lib/sale-hooks";
-import {
-  CHAPTERS,
-  getActiveChapter,
-  getChapterByMemberNumber,
-  getChapterProgress,
-  getRemainingSeats,
-} from "@/lib/chapters";
+import { getChapterByMemberNumber } from "@/lib/chapters";
 import {
   LP_POOL,
   explorerUrlForAddress,
@@ -91,10 +84,12 @@ export function MemberCockpit() {
   return (
     <>
       <Section id="my-seat" className="pt-6 md:pt-8 pb-4">
-        {/* ONE composed seat panel. Identity, the wake behind you, a compact
-            chapter-progress glance, and the action rail read as a single
-            dominant object — "MY SEAT, everything orbits it" — instead of four
-            separately bordered report cards stacked on top of each other. */}
+        {/* ONE composed seat panel. Identity, the wake behind you, and the
+            action rail read as a single dominant object — "MY SEAT, everything
+            orbits it" — instead of separately bordered report cards stacked on
+            top of each other. Chapter / progression storytelling lives exactly
+            once, directly below, in <CockpitProgression/> — the panel no longer
+            repeats it. */}
         <div
           className="relative overflow-hidden rounded-2xl border border-[var(--gold)]/30 bg-card/70"
           style={{ boxShadow: "var(--shadow-glow-gold)" }}
@@ -112,13 +107,6 @@ export function MemberCockpit() {
             your member number; visitors get the inverse invitation. */}
           <div className="border-t border-border/40 px-5 sm:px-6 md:px-8 py-5">
             <WakeBehindYou />
-          </div>
-
-          {/* Compact chapter progress — a single glance line. The full story
-              loop (why early matters, all chapters) stays below in
-              <CockpitProgression/>. */}
-          <div className="border-t border-border/40 px-5 sm:px-6 md:px-8 py-5">
-            <SeatProgressStrip />
           </div>
 
           {/* Actions — one unified rail at the base of the panel. */}
@@ -474,92 +462,6 @@ function RailInternal({ to, label, hint }: { to: string; label: string; hint: st
       </div>
       <div className="mt-1 text-[11px] text-muted-foreground leading-snug">{hint}</div>
     </Link>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-// SeatProgressStrip — compact chapter-progress glance for the seat panel.
-// One line: your chapter (or where the next seat would land), your position
-// within a capped chapter, and how close the active chapter is to sealing.
-// Every value is a pure derivation from chapters.ts + the indexed member
-// count. Truth-gated: the uncapped Open Era never shows a bar, and an unread
-// member count shows a pending note instead of a fake 0% bar. The full story
-// loop lives below the fold in <CockpitProgression/>.
-// ─────────────────────────────────────────────────────────────────────────
-function SeatProgressStrip() {
-  const { address } = useAccount();
-  const idx = useHolderIndex();
-  const record = address ? idx.getByWallet(address) : undefined;
-  const members = idx.totals.members;
-
-  const active = getActiveChapter(members);
-  const prog = getChapterProgress(members);
-  const next = CHAPTERS[active.index];
-  const uncapped = active.endN === null || active.capacity === null;
-  const remaining = getRemainingSeats(members);
-
-  const shownChapter = record
-    ? getChapterByMemberNumber(record.memberNumber)
-    : getChapterByMemberNumber(idx.totals.nextMemberNumber);
-  const myPosition =
-    record && shownChapter.capacity !== null
-      ? record.memberNumber - shownChapter.startN + 1
-      : undefined;
-
-  return (
-    <div>
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
-            {record ? "Your chapter" : "Where the next seat lands"}
-          </span>
-          <span className="font-serif text-base md:text-lg text-foreground truncate">
-            {shownChapter.label}
-          </span>
-        </div>
-        <Link
-          to="/chapters"
-          className="mono text-[10px] uppercase tracking-[0.16em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline shrink-0"
-        >
-          All chapters →
-        </Link>
-      </div>
-
-      {record && myPosition !== undefined ? (
-        <div className="mono text-[11px] uppercase tracking-[0.16em] text-foreground mb-2">
-          You hold seat {fmtInt(myPosition)} of{" "}
-          {fmtInt(shownChapter.capacity as number)} in this chapter
-        </div>
-      ) : null}
-
-      {!idx.hasData ? (
-        <p className="text-sm text-muted-foreground" role="status">
-          Reading the live member count from Avalanche…
-        </p>
-      ) : uncapped ? (
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Open-ended era — no seat cap. Membership stays open to every
-          qualifying wallet.
-        </p>
-      ) : (
-        <>
-          <div className="flex items-baseline justify-between gap-2 mb-1.5">
-            <span className="mono text-[11px] text-foreground tabular-nums">
-              {fmtInt(prog.filled)} / {fmtInt(prog.target as number)} seats
-            </span>
-            <span className="mono text-[11px] text-muted-foreground tabular-nums">
-              {prog.pct.toFixed(prog.pct < 10 ? 1 : 0)}%
-            </span>
-          </div>
-          <ProgressBar value={prog.pct} max={100} tone="gold" />
-          <div className="mono text-[11px] text-muted-foreground mt-2">
-            {fmtInt(Math.max(0, remaining))} seats until{" "}
-            {next ? next.shortLabel : "the next chapter"} opens at #
-            {fmtInt(next ? next.startN : (active.endN as number) + 1)}.
-          </div>
-        </>
-      )}
-    </div>
   );
 }
 
