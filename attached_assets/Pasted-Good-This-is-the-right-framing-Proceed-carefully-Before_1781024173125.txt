@@ -1,0 +1,157 @@
+Good. This is the right framing.
+
+Proceed carefully.
+
+Before deleting or rewriting any dead component, create a permanent product-memory document first.
+
+Name it something like:
+
+docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md
+
+It must preserve the valuable concepts discovered in dead code:
+
+1. EpisodeEngine
+   Purpose:
+   The Syndicate as an episodic protocol / TV-series loop.
+   Future home:
+   Chronicle + Chapters + Activity.
+   Status:
+   Backlog, do not ship with fabricated data.
+
+2. WhyComeBackTomorrow
+   Purpose:
+   Retention loop / daily return engine.
+   Future home:
+   My Syndicate cockpit.
+   Status:
+   Backlog, rebuild only with live deltas:
+   new members, purchases, chapter progress, artifact mints, vault/liquidity movement, personal activity.
+
+3. GenesisNFTProgress
+   Rename concept:
+   Artifact Mint Progress / Archive Mint Progress.
+   Purpose:
+   Show artifact mint progress using live Archive1155 reads.
+   Future home:
+   Archive / NFT.
+   Status:
+   Rewrite later.
+   Important:
+   Never use the false “Genesis NFT 1,000 supply” idea again.
+   The First Signal is uncapped.
+   Patron Seal is 10,000.
+   Seat Record is future ERC-721.
+
+4. Constitution
+   Purpose:
+   Protocol doctrine / immutable rules.
+   Future home:
+   Docs or Constitution section.
+   Status:
+   Rewrite lightly and reuse.
+
+5. MeasuredFomo
+   Rename concept:
+   Chapter Urgency / Real Milestone Pressure.
+   Purpose:
+   Urgency based on real thresholds, especially Genesis Signal sealing at Member #333.
+   Future home:
+   Join / Chapters.
+   Status:
+   Rewrite with real data only.
+
+6. DistributionIntel
+   Purpose:
+   Holder/member distribution analytics.
+   Future home:
+   Registry / Transparency / Proof.
+   Status:
+   Merge and wire to real indexer.
+
+7. SyndicateIndex
+   Purpose:
+   Composite protocol health score.
+   Future home:
+   Protocol Health / Transparency.
+   Status:
+   Backlog only until real scoring engine exists.
+
+8. DayOneArchive
+   Purpose:
+   Sealed Day One launch memory.
+   Future home:
+   Chronicle Entry 1.
+   Status:
+   Merge into Chronicle.
+
+9. IdeaSection
+   Purpose:
+   Core protocol philosophy.
+   Future home:
+   Chronicle / About / editorial intro.
+   Status:
+   Merge if wording is stronger.
+
+After preserving this product memory:
+
+Safe actions:
+
+A. Delete only truly dangerous dead components:
+
+* ActivityFeed, because it contains static fake ledger and wrong sale address.
+* JoinSection, only after preserving the one idea of live founder/member-number preview.
+
+B. Do NOT delete the concepts behind:
+
+* EpisodeEngine
+* WhyComeBackTomorrow
+* GenesisNFTProgress
+* Constitution
+* MeasuredFomo
+* DistributionIntel
+* SyndicateIndex
+* DayOneArchive
+
+C. For live imprecise copy:
+Fix VERIFY_ENTITIES / VaultPolicy label:
+“NFT Contract” → “Archive Contract (Archive1155)”
+because “NFT Contract” now risks confusion with the future Seat Record ERC-721.
+
+Important doctrine reminders:
+
+Archive1155 is live.
+The First Signal is live.
+Patron Seal is live.
+Seat Record ERC-721 is future / PENDING.
+The First Signal is NOT “Genesis NFT.”
+The First Signal is uncapped.
+Patron Seal supply is 10,000.
+Seat Record is not Archive1155.
+SYN is the seat.
+Artifacts are the memory.
+
+Do not flatten the project into only currently rendered pages.
+
+Some dead code contains the original long-term product vision:
+
+* episodic protocol
+* return loops
+* artifact progression
+* member cockpit
+* chapter urgency
+* protocol health
+* collector memory
+
+Preserve that vision before cleanup.
+
+Order:
+
+1. Create product-memory doc.
+2. Fix the live imprecise “NFT Contract” label.
+3. Delete only ActivityFeed and JoinSection if confirmed no imports and after preserving the founder-preview idea.
+4. Do not rewrite dormant loops yet.
+5. Stop and report.
+
+No feature implementation yet.
+No fabricated data.
+No deletion of product memory.
