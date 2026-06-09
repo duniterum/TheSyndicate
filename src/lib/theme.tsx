@@ -39,9 +39,23 @@ function apply(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(() => readInitial());
+  // Initial render MUST match the server (always "light") to avoid a hydration
+  // mismatch. The boot script in RootShell has already applied the correct
+  // `.dark` class to <html>, so the page looks right before React hydrates.
+  // After mount we sync React state to that class — no flash, no mismatch.
+  const [theme, setThemeState] = useState<Theme>("light");
+  const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => { apply(theme); }, [theme]);
+  useEffect(() => {
+    setThemeState(readInitial());
+    setHydrated(true);
+  }, []);
+
+  // Only write back to the DOM once we've synced from it, so the first
+  // post-mount pass doesn't strip the class the boot script set.
+  useEffect(() => {
+    if (hydrated) apply(theme);
+  }, [theme, hydrated]);
 
   const setTheme = useCallback((t: Theme) => setThemeState(t), []);
   const toggleTheme = useCallback(() => setThemeState((t) => (t === "dark" ? "light" : "dark")), []);

@@ -1,1 +1,2 @@
 - [Design token harmonization](design-token-harmonization.md) — rules for replacing hardcoded oklch/navy colors with theme-aware Tailwind tokens in this codebase.
+- [SSR theme hydration](ssr-theme-hydration.md) — theme provider must seed state "light" (match server) then sync DOM class after mount; reading DOM in useState init causes hydration + "Invalid hook call" errors. Also Vite allowedHosts for preview.
