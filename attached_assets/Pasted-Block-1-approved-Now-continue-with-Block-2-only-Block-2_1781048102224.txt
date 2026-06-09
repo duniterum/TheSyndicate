@@ -1,0 +1,81 @@
+Block 1 approved.
+
+Now continue with Block 2 only.
+
+Block 2 = Co-witnessing + progression consolidation.
+
+Goal:
+Make the cockpit feel less duplicated and more alive.
+
+Scope:
+/my-syndicate only.
+
+Allowed files:
+
+* MemberCockpit.tsx
+* CockpitProgression.tsx
+* WakeBehindYou.tsx if needed
+* existing neighbour/member position component if already known from the synthesis
+* only the smallest helper import needed
+
+Do not search the whole repo.
+Do not dispatch explorers.
+Do not touch Archive/Home/Activity/Proof/deployment/doctrine/contracts.
+
+Tasks:
+
+1. Remove duplicate chapter/progression feeling
+   Right now chapter progress appears twice:
+
+* compact strip inside the new One Seat panel
+* full CockpitProgression below
+
+Consolidate so the full CockpitProgression below does not repeat the same information.
+Either:
+
+* convert CockpitProgression into a lighter story/context band, or
+* move its unique content into the One Seat panel and remove the duplicated visual section if tests allow.
+
+Keep tests green.
+
+2. Add co-witnessing/social presence if simple
+   If NeighboursStrip is already known and easy to import safely:
+
+* show nearby members before/after the user’s seat
+* frame as co-witnessing / “seats around you”
+* no leaderboard
+* no rank
+* no wealth comparison
+
+If it requires too much wiring, skip it and report why. Do not search the entire repo again.
+
+3. Keep Wake Behind You as the main emotional loop
+   It must remain visually strong and integrated.
+
+4. Preserve truth rules
+   No fake members.
+   No fake neighbours.
+   No fake social proof.
+   No fake XP/score/leaderboard.
+   No rank emphasis.
+   No countdowns.
+   No contract changes.
+
+Before coding:
+Give a short Block 2 plan only:
+
+* what duplication is removed
+* whether NeighboursStrip is reused or skipped
+* files touched
+* data used
+
+Then implement Block 2.
+
+After:
+
+* typecheck
+* relevant cockpit tests
+* doctrine guard if needed
+* screenshot
+* architect review
+* stop.
