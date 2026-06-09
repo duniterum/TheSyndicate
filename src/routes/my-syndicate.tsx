@@ -23,9 +23,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAccount } from "wagmi";
 import { PageShell } from "@/components/syndicate/PageShell";
-import { MemberCard } from "@/components/syndicate/MemberCard";
-import { SeatRecordPanel } from "@/components/syndicate/SeatRecordPanel";
-import { MyArchivePreview } from "@/components/syndicate/MyArchivePreview";
+import { MemberCockpit } from "@/components/syndicate/cockpit/MemberCockpit";
 import { MyPurchaseRouting } from "@/components/syndicate/MyPurchaseRouting";
 import {
   MyReferralCard,
@@ -37,14 +35,12 @@ import {
   Section,
   StatusPill,
 } from "@/components/syndicate/Primitives";
-import { CommandStrip } from "@/components/syndicate/CommandStrip";
 import { ConnectCTA } from "@/components/syndicate/ConnectCTA";
 import { useHolderIndex } from "@/lib/holder-index";
 import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { useProtocolEvents } from "@/lib/protocol-events";
 import { isValidTxHash } from "@/components/syndicate/TxProofDrawer";
-import { explorerUrlForAddress, txExplorerUrl } from "@/lib/syndicate-config";
-import { fmtAddress } from "@/lib/sale-hooks";
+import { txExplorerUrl } from "@/lib/syndicate-config";
 import { ARCHIVE_DISCLAIMER } from "@/lib/archive-config";
 
 export const Route = createFileRoute("/my-syndicate")({
@@ -76,13 +72,6 @@ export const Route = createFileRoute("/my-syndicate")({
 });
 
 // ─── small local helpers ───────────────────────────────────────────────
-const fmtInt = (n: number | undefined) =>
-  n === undefined ? "—" : n.toLocaleString("en-US", { maximumFractionDigits: 0 });
-const fmtUsdc = (n: number | undefined, d = 2) =>
-  n === undefined
-    ? "—"
-    : `$${n.toLocaleString("en-US", { maximumFractionDigits: d })}`;
-
 function SectionEyebrow({
   label,
   status,
@@ -121,9 +110,7 @@ function MySyndicatePage() {
       description=""
       hideHeader
     >
-      <CommandStrip />
-      <SeatSection />
-      <AssetsSection />
+      <MemberCockpit />
       <ActivitySection />
       <SealingNextSection />
       <ChronicleSection />
@@ -131,128 +118,6 @@ function MySyndicatePage() {
       <HorizonSection />
       <ProtocolContextSection />
     </PageShell>
-  );
-}
-
-// ─── § 1 My Seat ───────────────────────────────────────────────────────
-function SeatSection() {
-  const { address, isConnected } = useAccount();
-  const idx = useHolderIndex();
-  const record = address ? idx.getByWallet(address) : undefined;
-  const status: "LIVE" | "PENDING" | "PARTIAL" =
-    !isConnected ? "PENDING" : idx.isLoading ? "PARTIAL" : record ? "LIVE" : "PENDING";
-
-  return (
-    <Section id="my-seat" className="pt-6 md:pt-8 pb-4">
-      <SectionEyebrow label="My Seat" status={status} hint="permanent · sealed on-chain" />
-      <GlassCard className="p-4 sm:p-5 md:p-6 border-[var(--gold)]/30">
-        <div className="flex flex-wrap items-center gap-3 pb-3 mb-4 border-b border-border/40">
-          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Wallet
-          </span>
-          {isConnected && address ? (
-            <a
-              href={explorerUrlForAddress(address) ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mono text-sm text-foreground hover:text-[var(--gold)] underline-offset-4 hover:underline"
-            >
-              {fmtAddress(address)} ↗
-            </a>
-          ) : (
-            <ConnectCTA message="Connect wallet to see your seat." />
-          )}
-          {isConnected && (
-            <Pill tone={record ? "success" : "muted"}>
-              {record ? "Member" : "Not yet a member"}
-            </Pill>
-          )}
-        </div>
-        <MemberCard />
-      </GlassCard>
-    </Section>
-  );
-}
-
-// ─── § 2 My Assets ─────────────────────────────────────────────────────
-function AssetsSection() {
-  const { address, isConnected } = useAccount();
-  const idx = useHolderIndex();
-  const record = address ? idx.getByWallet(address) : undefined;
-  const status: "LIVE" | "PENDING" | "PARTIAL" =
-    !isConnected ? "PENDING" : idx.isLoading ? "PARTIAL" : record ? "LIVE" : "PENDING";
-
-  return (
-    <Section id="my-assets" className="py-4">
-      <SectionEyebrow
-        label="My Assets"
-        status={status}
-        hint="SYN · Archive1155 · Seat Record"
-      />
-
-      {/* SYN row — read-only count, no price, no PnL */}
-      <GlassCard className="p-4 mb-3">
-        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-          <div>
-            <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              SYN received
-            </div>
-            <div className="mono text-2xl md:text-3xl font-semibold text-foreground tabular-nums">
-              {record ? fmtInt(Math.round(record.cumulativeSyn)) : "—"}
-            </div>
-            <div className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground mt-0.5">
-              cumulative · sealed on-chain
-            </div>
-          </div>
-          <div>
-            <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              USDC routed
-            </div>
-            <div className="mono text-2xl md:text-3xl font-semibold text-foreground tabular-nums">
-              {record ? fmtUsdc(record.cumulativeUsdc) : "—"}
-            </div>
-            <div className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground mt-0.5">
-              70 / 20 / 10 · contract-enforced
-            </div>
-          </div>
-          <div>
-            <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Purchases
-            </div>
-            <div className="mono text-2xl md:text-3xl font-semibold text-foreground tabular-nums">
-              {record ? fmtInt(record.purchaseCount) : "—"}
-            </div>
-            <div className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground mt-0.5">
-              sealed events
-            </div>
-          </div>
-        </div>
-        {!isConnected && (
-          <div className="mt-3">
-            <ConnectCTA message="Connect wallet to see your SYN position." hint="USDC routed · purchases · receipts" />
-          </div>
-        )}
-        {isConnected && !record && (
-          <p className="mt-3 text-sm text-muted-foreground">
-            No Membership Sale purchases recorded for this wallet yet.{" "}
-            <Link
-              to="/join"
-              className="text-foreground underline-offset-4 hover:underline"
-            >
-              See the Membership Sale →
-            </Link>
-          </p>
-        )}
-      </GlassCard>
-
-      {/* Archive1155 holdings */}
-      <div className="mb-3">
-        <MyArchivePreview />
-      </div>
-
-      {/* Seat Record (PENDING ERC-721) */}
-      <SeatRecordPanel />
-    </Section>
   );
 }
 

@@ -1,0 +1,97 @@
+Proceed with your recommendations, but with one important correction:
+
+Do not build “My Syndicate” as a normal dashboard.
+
+Build it as the Member Cockpit — the addictive personal home base of the protocol.
+
+My decisions:
+
+1. Vault USDC
+   Omit mocked vault USDC movement entirely from cockpit deltas and pulse.
+   Do not show MOCK/DEMO inside My Syndicate.
+   Only show real live or honestly pending data.
+
+2. Referral
+   Pending-only.
+   No fake codes, no fake earnings, no simulated referrers.
+   Design the module structure, but clearly label it as coming later.
+
+3. Settings
+   For now: pending shell only.
+   Do not create local fake profile infrastructure yet.
+   But design the future structure cleanly:
+   display name, avatar, featured artifact, shareable profile, privacy, notifications.
+
+4. Joined date
+   Yes, add the block-timestamp read and cache it.
+
+5. Build scope
+   Use phased implementation.
+
+Phase 1:
+
+* premium Profile Header
+* unified Action Rail
+* Portfolio / Wallet View
+* Owned Artifacts gallery
+* remove CTA chaos
+* make the page feel like a real crypto cockpit
+
+Phase 2:
+
+* What Happened While You Were Away
+* Personal Activity Timeline
+* Live Protocol Pulse
+* momentum / evolution engine
+
+Phase 3:
+
+* pending Referral shell
+* pending Settings shell
+* deeper caching / performance improvements
+
+Very important design direction:
+This must not feel like a museum, empty profile page, or generic admin dashboard.
+
+It should feel like:
+Zapper + Zerion + Phantom wallet + premium crypto cockpit + on-chain RPG progression + living protocol chronicle.
+
+The user should immediately see:
+
+* who they are
+* what they own
+* what changed
+* what they can do next
+* what the protocol is doing live
+* what chapter they are part of
+* what they can collect next
+
+The cockpit must create retention.
+
+Public site = conversion.
+My Syndicate = retention, identity, ownership, progression, and addiction loop.
+
+Hard rules:
+
+* no fake data
+* no fake referral rewards
+* no mocked vault movement
+* no financial promises
+* no breaking contract reads
+* no changing token economics
+* no changing chapter/rank thresholds
+* no changing addresses
+* no hiding LIVE / PENDING truth
+
+After Phase 1, report:
+
+* files changed
+* exact visual sections changed
+* before/after summary
+* which data is live
+* which data is cached
+* which data is pending
+* screenshots or clear section references
+* confirmation no protocol logic was changed
+
+Start Phase 1 only.
