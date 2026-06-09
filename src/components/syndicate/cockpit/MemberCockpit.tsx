@@ -33,6 +33,7 @@ import { ShareActions } from "@/components/syndicate/ShareActions";
 import { CockpitCollector } from "./CockpitCollector";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { CockpitMemory } from "./CockpitMemory";
+import { CockpitProgression } from "./CockpitProgression";
 import { WalletAvatar } from "./WalletAvatar";
 import { useHolderIndex, type HolderRecord } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
@@ -101,6 +102,13 @@ export function MemberCockpit() {
         />
         <CockpitActionRail isConnected={isConnected} address={address} isMember={Boolean(record)} />
       </Section>
+
+      {/* Wave C4 — progression / story loop. Sits right under the seat so the
+          page reads "who you are → where you fit in the story → what changed
+          while you were away". Answers current chapter, progress to the next
+          chapter threshold (= next real member-number milestone), and why early
+          member numbers matter — story/identity only, never financial. */}
+      <CockpitProgression />
 
       {/* Wave C2 — retention loop. Answers "what changed while I was away?"
           immediately under the seat: protocol deltas since your last visit

@@ -3,3 +3,4 @@
 - [Syndicate copy canon](syndicate-copy-canon.md) — canonical CTA/status/identity vocabulary; "Join The Syndicate"/"Buy More SYN", LIVE/PARTIAL/PENDING, Member≠Holder≠Collector, Seat≠Seat Record.
 - [Archive artifact truth gating](archive-artifact-truth-gating.md) — only assert "mint open" when active===true AND paused===false; pause-unknown must degrade, never imply open; uncapped never gets a supply bar.
 - [my-syndicate doctrine test](my-syndicate-doctrine-test.md) — it string-scans route source; ~5 assertions are STALE since route delegates to MemberCockpit. Don't "fix" route to satisfy them.
+- [Chapter boundary semantics](chapter-boundary-semantics.md) — a chapter SEALS at endN; the NEXT chapter OPENS at next.startN (=endN+1). "opens at" copy must use startN, never endN.
