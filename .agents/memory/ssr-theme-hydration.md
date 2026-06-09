@@ -14,3 +14,13 @@ A theme/dark-mode provider in this SSR app (TanStack Start) must render the SAME
 
 # Preview host config
 `vite.config.ts` uses the `@lovable.dev/vite-tanstack-config` wrapper. Pass extra Vite config via the `vite: {...}` key (deep-merged after the wrapper's own config, React dedupe preserved). `server.allowedHosts: true` is required so the proxied `*.replit.dev` preview host isn't blocked.
+
+# Distinguishing a REAL hydration bug from a dev-preview HMR artifact
+Not every "Invalid hook call" + "Hydration failed" in the console is an app bug. There are TWO distinct sources here; diagnose before touching code:
+
+1. **Genuine app mismatch** (the theme-init bug above) — reproduces on EVERY fresh load, in any browser, and the error stack contains APP component frames. Fixable in code.
+2. **Dev-preview HMR artifact** — reproduces ONLY in the long-lived canvas preview iframe after it has been WebSocket-reconnected / hot-updated many times (agent restarts, edits, or `node_modules/.vite` cache clears). The error stack is ENTIRELY inside `/node_modules/.vite/deps/react-dom_client.js?v=<hash>` with NO app frames, and the message is "more than one copy of React" (version-skewed React across old vs new `?v=` optimized-dep bundles in one stale tab). It is NOT an app bug and has NO code fix.
+
+**Why:** `<html>` already has `suppressHydrationWarning` and the theme boot script is tolerated, so the theme path is not a live mismatch. The decisive test: a brand-new/fresh load (screenshot tool's headless browser, `curl`, production build) is CLEAN at the SAME moment the stale canvas tab errors. The `?v=` hash only drifts because of manual `.vite` cache clearing — do NOT clear it; that self-induces the skew.
+
+**How to apply:** If fresh loads are clean but the canvas tab errors, it's the artifact #2 — leave code at baseline; a hard refresh of the preview clears it. Don't chase head/body inline `<script>` placement (red herring) and don't empty `head().scripts` SEO JSON-LD trying to "fix" it. `__root.tsx` exports a `Route` alongside the component, so Vite can't Fast-Refresh it ("Route export incompatible") and full-reloads on `__root` edits — that reload is when the skew surfaces during agent churn, not during normal user browsing.
