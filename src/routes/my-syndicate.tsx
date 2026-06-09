@@ -24,6 +24,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAccount } from "wagmi";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { MemberCockpit } from "@/components/syndicate/cockpit/MemberCockpit";
+import { CockpitProof } from "@/components/syndicate/cockpit/CockpitProof";
 import { MyPurchaseRouting } from "@/components/syndicate/MyPurchaseRouting";
 import {
   MyReferralCard,
@@ -501,15 +502,16 @@ function HorizonSection() {
   );
 }
 
-// ─── § 8 Protocol Context — links out only ─────────────────────────────
+// ─── § 8 Protocol Context — proof panel + claim sources + links out ────
 function ProtocolContextSection() {
   return (
     <Section id="protocol-context" className="py-4">
       <SectionEyebrow
         label="Protocol Context"
         status="LIVE"
-        hint="links out · not duplicated here"
+        hint="contracts · claim sources · links out"
       />
+      <CockpitProof />
       <GlassCard className="p-3">
         <ul className="flex flex-wrap gap-4 text-sm">
           <li>

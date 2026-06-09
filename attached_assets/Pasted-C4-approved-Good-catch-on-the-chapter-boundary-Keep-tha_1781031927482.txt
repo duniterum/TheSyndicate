@@ -1,0 +1,114 @@
+C4 approved.
+
+Good catch on the chapter boundary.
+
+Keep that rule permanently:
+
+* A chapter seals at its endN.
+* The next chapter opens at next.startN.
+* Never confuse #333 sealing with #334 opening.
+
+Now proceed to Wave C5 only.
+
+Wave C5 = Proof / Future / Final Cockpit Integrity.
+
+Goal:
+Finish the cockpit without adding fake future systems.
+
+C5 should answer:
+
+* What can I verify?
+* Which claims are live on-chain?
+* Which contracts power this cockpit?
+* Which future systems are pending?
+* What is not live yet?
+* What should the user trust, and why?
+
+C5 should include or improve:
+
+1. Verify & Context
+   A compact cockpit proof panel:
+
+* Membership Sale contract
+* SYN token
+* Archive1155 contract
+* LP pool
+* Vault / Liquidity / Operations wallets if already available
+* links to explorer / transparency / activity
+* clear LIVE / PARTIAL / PENDING status
+
+2. Claim → Source Table
+   For cockpit claims:
+
+* Member #
+* SYN received
+* USDC routed
+* artifacts owned
+* chapter
+* rank
+* live activity
+* artifact mintability
+  Show where each comes from:
+* contract read
+* indexed event
+* derived config
+* pending future contract
+
+3. Horizon PENDING
+   Only honest pending modules:
+
+* Seat Record ERC-721
+* Referral
+* Reputation
+* Governance
+* AI Layer
+* Marketplace if present
+  Each must clearly say PENDING.
+  No simulated rewards.
+  No fake referral codes.
+  No fake scores.
+  No fake roadmap dates.
+
+4. Final cockpit integrity pass
+   Audit /my-syndicate top to bottom:
+
+* no SIMULATED public cards
+* no MOCK
+* no Coming Soon if status should be PENDING
+* no Genesis NFT
+* no false supplies
+* no fake countdowns
+* no financial return language
+* no duplicate contradictory widgets
+* no obsolete old component still visible
+
+Before coding C5:
+
+1. Audit existing proof/context/horizon widgets.
+2. State what is LIVE / DERIVED / INDEXED / PENDING.
+3. State what will be reused / merged / ignored.
+4. State files expected to change.
+5. Then implement C5.
+6. Stop and report.
+
+After C5:
+Provide a full Phase C cockpit completion report:
+
+* C1–C5 summary
+* files changed
+* widgets added/removed/demoted
+* live/cached/pending matrix
+* remaining known issues
+* stale tests still failing
+* recommended next phase
+
+Do not touch:
+
+* Archive flagship page redesign
+* Home redesign
+* Proof hub outside cockpit
+* Episodes feature
+* Contract logic
+* Tokenomics
+* thresholds
+* addresses
