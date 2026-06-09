@@ -1,0 +1,87 @@
+Stop Phase 1 here.
+
+The current result is functionally better, but visually it is still the same old site.
+
+I do not want more rearranging inside the existing CSS constraints.
+
+Before coding again, do a full visual identity reset audit.
+
+Read the entire styling/design layer:
+
+* src/styles.css
+* Tailwind config if present
+* theme files
+* layout primitives
+* button/card primitives
+* header/nav/footer
+* mobile layout rules
+* typography utilities
+* spacing utilities
+* all global CSS constraints
+* favicon/logo/brand assets
+* every component that forces the current beige/museum/editorial look
+
+Then report:
+
+1. Which CSS/design constraints are forcing the current look?
+2. Which components hardcode the current beige/museum style?
+3. Which typography rules create the tiny spaced-out mono labels?
+4. Which layout rules create the empty whitespace and weak dashboard density?
+5. Which rules hurt mobile/responsiveness?
+6. Which reusable primitives must be rebuilt from scratch?
+7. Which pages/components depend on the old design system?
+8. Why did the cockpit still look like the old site after Phase 1?
+
+Important:
+Do not preserve the old visual identity.
+
+Preserve the protocol vision, data, contracts, story, and truth discipline — not the current look.
+
+The site needs a complete new visual identity:
+
+* new logo direction
+* new favicon direction
+* new dashboard visual language
+* new color system
+* new button system
+* new card system
+* new typography scale
+* new spacing system
+* new mobile-first layout system
+* new responsive rules
+* new cockpit density
+* new premium crypto dashboard feel
+
+The target is not museum.
+The target is:
+premium crypto cockpit + live protocol dashboard + member operating system + collector inventory + on-chain progression engine.
+
+Think:
+Zapper / Zerion / Phantom / Coinbase portfolio / Hyperliquid / Axiom / modern DeFi dashboards.
+
+But keep The Syndicate soul:
+SYN is the seat.
+Artifacts are the memory.
+The protocol is alive.
+The member has a cockpit.
+Everything important is verifiable on-chain.
+
+Also remove the visible WALLET DEBUG panel from production/preview UI unless explicitly in dev mode behind a toggle. It makes the site look broken.
+
+Do not implement yet.
+
+First give me a Visual Identity Reset Plan:
+
+* what old system to remove
+* what new design system to create
+* exact visual direction
+* desktop layout principles
+* mobile layout principles
+* logo/favicon proposal
+* cockpit redesign principles
+* pages affected
+* migration phases
+* risks
+* confirmation that protocol logic will not change
+
+After approval, we rebuild the visual layer properly from scratch.
