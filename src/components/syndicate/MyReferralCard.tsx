@@ -1,64 +1,42 @@
-// My Referral — personal, SIMULATED preview surface inside the cockpit.
+// My Referral / Reputation — personal cockpit surfaces, demoted to honest
+// PENDING shells (Wave C1).
 //
 // Doctrine: docs/LEGAL_DISCLOSURE_REFERRAL.md + PROTOCOL_IN_PUBLIC_DOCTRINE.
-//   • Commission comes ONLY from the Operations slice (10% of gross).
-//   • Vault and Liquidity are never touched by referrals.
-//   • Everything here is SIMULATED until the CommissionRouter ships.
+//   • No contract has shipped for either surface, so there is nothing live to
+//     show. We say so plainly instead of rendering fabricated estimators,
+//     tier ladders, or simulated scores.
+//   • Status vocabulary is LIVE / PARTIAL / PENDING only — never "SIMULATED".
+//   • Referral commission, when it ships, is paid ONLY from the 10% Operations
+//     slice. Vault and Liquidity are never touched. Recognition, not payout.
 
-import { useAccount } from "wagmi";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { GlassCard, Pill, Section, SectionHeader } from "./Primitives";
-import { SimPill } from "@/components/preview/PreviewPrimitives";
-import {
-  CommissionEstimator,
-  TierLadderPreview,
-} from "@/components/preview/ReferralPreview";
+import { GlassCard, Pill, Section, SectionHeader, StatusPill } from "./Primitives";
 
 export function MyReferralCard() {
-  const { address, isConnected } = useAccount();
-  const linkPreview =
-    isConnected && address
-      ? `https://thesyndicate.money/join?ref=${address.slice(0, 6)}…${address.slice(-4)}`
-      : "https://thesyndicate.money/join?ref=0xYourWallet…";
-
   return (
     <Section id="my-referral">
       <SectionHeader
-        eyebrow="Referral · Preview"
-        title={<>Your link, tier, and <span className="text-gradient-gold">estimator</span></>}
-        description="Referral commission is paid only from the 10% Operations slice. Vault and Liquidity are never touched. SIMULATED until the CommissionRouter contract ships."
+        eyebrow="Referral · Pending"
+        title={<>Bring members. Recognition, <span className="text-gradient-gold">not payout</span></>}
+        description="The referral surface is not live yet. When the CommissionRouter contract ships, commission is paid only from the 10% Operations slice — Vault and Liquidity are never touched. Nothing is being tracked or owed today."
       />
       <GlassCard className="p-5">
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          <SimPill />
+          <StatusPill status="PENDING" />
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Future commission router · Preview shape only
+            No contract deployed · nothing to claim yet
           </span>
         </div>
 
-        <div className="mb-4">
-          <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">
-            Your link (preview)
-          </div>
-          <div className="mono text-xs text-foreground/80 break-all p-3 rounded-md bg-muted/30 border border-dashed border-border">
-            {linkPreview}
-          </div>
-          {!isConnected && (
-            <p className="mt-2 text-[11px] text-muted-foreground">
-              Connect a wallet to preview your link shape. The real link will derive from
-              your wallet at launch.
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          <TierLadderPreview />
-          <CommissionEstimator />
-        </div>
+        <p className="text-sm text-foreground/85 leading-relaxed">
+          Your referral link will derive from your wallet at launch. Until the
+          router is deployed there is no link to share, no balance to estimate,
+          and no commission accruing — so we show none.
+        </p>
 
         <div className="mt-4 border-t border-border/40 pt-3 text-[11px] text-muted-foreground leading-relaxed">
           Referral commission is routed from Operations only. Vault and Liquidity
-          routing are never touched. No contract has been deployed for this surface yet.
+          routing are never touched.
           <div className="mt-2">
             <RouterLink to="/referral" className="underline-offset-4 hover:underline text-foreground">
               Read the public explainer →
@@ -74,15 +52,15 @@ export function MyReputationConceptCard() {
   return (
     <Section id="my-reputation">
       <SectionHeader
-        eyebrow="Reputation · Concept"
+        eyebrow="Reputation · Pending"
         title={<>Ranked by <span className="text-gradient-gold">durability</span>, not dollars</>}
-        description="Future Builder Records will reflect retention, durability, and referrer age — gross USDC is a tiebreaker only. No formula is locked yet."
+        description="Builder Records are a future concept, not a live score. They will reflect retention, durability, and referrer age — gross USDC is a tiebreaker only. No formula is locked and nothing is scored yet."
       />
       <GlassCard className="p-5">
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          <SimPill />
+          <StatusPill status="PENDING" />
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Concept card · No live score yet
+            Concept only · no live score yet
           </span>
         </div>
         <ul className="text-sm text-foreground/85 space-y-1.5">
@@ -96,7 +74,7 @@ export function MyReputationConceptCard() {
           <Pill tone="muted">Not a top-earners board</Pill>
         </div>
         <p className="mt-3 text-[11px] text-muted-foreground">
-          See the simulated public leaderboard on{" "}
+          Read how reputation is intended to work on{" "}
           <RouterLink to="/referral" className="underline-offset-4 hover:underline text-foreground">
             /referral
           </RouterLink>

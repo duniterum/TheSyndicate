@@ -440,12 +440,12 @@ function GrowthSection() {
       <SectionEyebrow
         label="My Growth"
         status="PENDING"
-        hint="referral · recognition · builder record · SIMULATED"
+        hint="referral · recognition · builder record · PENDING contracts"
       />
       <details className="group surface elevated">
         <summary className="cursor-pointer list-none p-3 flex items-center justify-between gap-3">
           <span className="mono text-[11px] uppercase tracking-[0.2em] text-foreground">
-            Growth previews · SIMULATED until contracts ship
+            Growth surfaces · PENDING until contracts ship
           </span>
           <span className="mono text-[10px] text-muted-foreground group-open:hidden">
             expand ↓

@@ -1,3 +1,4 @@
 - [Tailwind v4 arbitrary colors](tailwind-v4-arbitrary-colors.md) — color-mix arbitrary values compile; `/opacity` on arbitrary var() colors is unreliable — use color-mix or inline style.
 - [Obsidian Cockpit theme doctrine](obsidian-cockpit-doctrine.md) — accent is cyan in DARK (default) only; light theme intentionally stays gold/ivory. Serif (Fraunces) only inside `.editorial-serif`.
 - [Syndicate copy canon](syndicate-copy-canon.md) — canonical CTA/status/identity vocabulary; "Join The Syndicate"/"Buy More SYN", LIVE/PARTIAL/PENDING, Member≠Holder≠Collector, Seat≠Seat Record.
+- [my-syndicate doctrine test](my-syndicate-doctrine-test.md) — it string-scans route source; ~5 assertions are STALE since route delegates to MemberCockpit. Don't "fix" route to satisfy them.

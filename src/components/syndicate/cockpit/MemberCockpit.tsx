@@ -31,6 +31,7 @@ import {
 import { ConnectCTA } from "@/components/syndicate/ConnectCTA";
 import { ShareActions } from "@/components/syndicate/ShareActions";
 import { MyArchivePreview } from "@/components/syndicate/MyArchivePreview";
+import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { WalletAvatar } from "./WalletAvatar";
 import { useHolderIndex, type HolderRecord } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
@@ -99,6 +100,11 @@ export function MemberCockpit() {
         />
         <CockpitActionRail isConnected={isConnected} address={address} isMember={Boolean(record)} />
       </Section>
+
+      {/* Protocol-live snapshot — what the protocol is doing right now, read
+          live from Avalanche. Sits between identity and holdings so the page
+          reads: your seat → the protocol's pulse → what you hold. */}
+      <LivePulseStrip />
 
       <Section id="my-assets" className="py-4">
         <CockpitPortfolio
