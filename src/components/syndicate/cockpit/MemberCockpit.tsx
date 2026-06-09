@@ -32,6 +32,7 @@ import { ConnectCTA } from "@/components/syndicate/ConnectCTA";
 import { ShareActions } from "@/components/syndicate/ShareActions";
 import { MyArchivePreview } from "@/components/syndicate/MyArchivePreview";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
+import { CockpitMemory } from "./CockpitMemory";
 import { WalletAvatar } from "./WalletAvatar";
 import { useHolderIndex, type HolderRecord } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
@@ -101,9 +102,15 @@ export function MemberCockpit() {
         <CockpitActionRail isConnected={isConnected} address={address} isMember={Boolean(record)} />
       </Section>
 
+      {/* Wave C2 — retention loop. Answers "what changed while I was away?"
+          immediately under the seat: protocol deltas since your last visit
+          (first-visit safe), your wallet memory timeline, and wallet-scoped
+          milestones. Real/cached deltas only — never fabricated. */}
+      <CockpitMemory />
+
       {/* Protocol-live snapshot — what the protocol is doing right now, read
           live from Avalanche. Sits between identity and holdings so the page
-          reads: your seat → the protocol's pulse → what you hold. */}
+          reads: your seat → since you were away → the protocol's pulse → what you hold. */}
       <LivePulseStrip />
 
       <Section id="my-assets" className="py-4">

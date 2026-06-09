@@ -1,0 +1,110 @@
+Good. C1 is approved.
+
+Important recalibration:
+
+C1 was foundation only.
+
+It did not yet create the addictive cockpit.
+
+It only confirmed/kept:
+
+* Identity Ribbon
+* My Seat hero
+* Action rail
+* Protocol-live snapshot
+* Referral/reputation demoted to PENDING
+
+Now proceed to Wave C2 only.
+
+Wave C2 = Retention / Addiction Loop.
+
+Goal:
+When a member returns, the page must immediately answer:
+
+“What changed while I was away?”
+
+This is one of the most important loops in the whole project.
+
+Use existing live/cached widgets and product memory:
+
+* SinceYourLastVisit
+* SinceLastVisitStory
+* ActivityHeartbeat
+* WhyItMattersToMe
+* WhatChangedForYou
+* last-visit functions
+* live activity hooks
+* holder index deltas
+* purchase events
+* archive events if available
+
+But do not resurrect the old WhyComeBackTomorrow component directly.
+Use its concept only.
+
+C2 must build or assemble:
+
+1. Since You Were Away panel
+   Show only real/cached deltas:
+
+* new members since last visit
+* new purchases since last visit
+* protocol activity since last visit
+* your wallet activity since last visit
+* chapter progress since last visit
+* artifact mints since last visit if available
+* rank/chapter changes if available
+
+2. First-visit fallback
+   If no prior visit memory:
+
+* show “First visit recorded”
+* explain what will be tracked next time
+* no fake history
+
+3. Personal Memory Timeline
+   Wallet-specific if connected:
+
+* first purchase
+* latest purchase
+* purchases count
+* artifacts owned/minted if available
+* proof links
+* “No wallet events yet” state if empty
+
+4. ActivityHeartbeat / WhyItMattersToMe
+   Use only if they are live-data-safe.
+   If they include fabricated or stale data, rewrite or omit.
+
+5. Loading/caching behavior
+   Must be fast:
+
+* instant shell
+* cached last-known state
+* stale-while-revalidate if available
+* per-section skeletons
+* no one slow chain read should block the cockpit
+
+Hard rules:
+
+* no fake data
+* no simulated referral
+* no fake vault movement
+* no fabricated “tomorrow” reasons
+* no fake countdowns
+* no fabricated protocol score
+* no Genesis NFT wording
+* no false 1,000 supply
+* no touching C3 Collect Next yet unless needed for a truth issue
+
+Before coding C2:
+
+1. Audit the exact widgets/hooks you will use.
+2. State which deltas are LIVE, CACHED, PENDING, or unavailable.
+3. State where the panel will sit in the page order.
+4. State what files you expect to touch.
+5. Then implement C2.
+6. Stop and report.
+
+Also:
+Do not rewrite stale doctrine tests right now unless they block build.
+Flag them separately for a later test-maintenance pass.
