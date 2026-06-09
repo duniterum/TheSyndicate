@@ -1,0 +1,122 @@
+Stop before deciding Rank.
+
+We may be asking the wrong question.
+
+The real question is not only:
+
+“What is Rank?”
+
+The real question is:
+
+“What are all identity, recognition, and progression systems inside The Syndicate?”
+
+Perform a full Identity Systems Audit.
+
+No code.
+No edits.
+No doctrine rewrites.
+
+Audit every module that can express identity, recognition, history, contribution, or progression:
+
+1. Member Number
+2. Seat / SYN
+3. Chapter
+4. Rank
+5. Reputation
+6. Artifacts / NFTs / Archive1155
+7. Seat Record ERC-721
+8. Chronicle witness
+9. Activity history
+10. Referral
+11. LP / liquidity participation
+12. Trader / swap activity
+13. Vault / routing participation
+14. Governance
+15. AI layer
+16. Marketplace
+17. Builder / contributor identity
+18. Founder / early member identity
+19. Wallet profile / public member page
+20. Anything else in the code/docs that creates status, recognition, progression, or identity
+
+For each system, answer:
+
+* What is it technically?
+* What does it emotionally mean?
+* Is it LIVE / DERIVED / INDEXED / PENDING / FUTURE?
+* What real data powers it?
+* Is it personal, social, financial, historical, collectible, or operational?
+* Does it create identity, recognition, progression, memory, access, or action?
+* Does it risk becoming wealth-coded?
+* Does it risk becoming fake gamification?
+* Does it overlap with Rank or Reputation?
+* Should it be primary, secondary, hidden, pending, or removed?
+
+Then create a map:
+
+Primary Identity:
+What defines who I am?
+
+Historical Identity:
+What proves when I arrived and what I witnessed?
+
+Collector Identity:
+What memories/artifacts I own?
+
+Participation Identity:
+What I did over time?
+
+Capital/Routing Identity:
+What I routed, without turning it into wealth hierarchy?
+
+Social Identity:
+Who I brought / who joined around me?
+
+Operational Identity:
+LP, trader, vault, liquidity, contributor actions.
+
+Future Identity:
+Seat Record, governance, AI, marketplace, reputation.
+
+Important:
+
+Do not assume Rank is the main identity system.
+
+Maybe Rank is only a secondary descriptor.
+
+Maybe the true identity stack is:
+
+1. Member Number
+2. Chapter
+3. Artifacts
+4. Activity / Chronicle witness
+5. Reputation later
+6. Rank as secondary contribution tier
+
+Also audit whether current UI over-emphasizes Rank compared to:
+
+* Member Number
+* Chapter
+* Artifacts
+* Wake Behind You
+* Chronicle witness
+* LP participation
+* referral participation
+* activity history
+
+Deliverable:
+
+Identity Systems Audit.
+
+Then recommend:
+
+1. Which systems should be primary identity.
+2. Which should be secondary recognition.
+3. Which should be future reputation.
+4. Which should never become a leaderboard.
+5. Which should never be tied to wealth.
+6. Which should be removed or demoted.
+7. How Rank should be interpreted after seeing the full identity map.
+
+Do not decide yet.
+Audit first.
