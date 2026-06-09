@@ -160,38 +160,60 @@ function VerifyLink() {
   );
 }
 
-// ── owned ownership pill (per canonical artifact) ───────────────────────────
-function OwnedChip({
+// ── owned artifact as a MEMORY (not an inventory row) ───────────────────────
+// When held, the artifact reads as a kept moment — what answering it meant —
+// with the live balanceOf carried quietly underneath as proof, never as the
+// headline. When not held, it stays a soft, honest invitation.
+function ArtifactMemory({
   name,
+  ownedMeaning,
+  unownedMeaning,
   balance,
   error,
   loading,
 }: {
   name: string;
+  ownedMeaning: string;
+  unownedMeaning: string;
   balance: bigint | undefined;
   error?: string;
   loading: boolean;
 }) {
   const owns = balance !== undefined && balance > 0n;
   return (
-    <div className="surface elevated px-3 py-2 flex items-center justify-between gap-3">
-      <span className="text-sm font-semibold text-foreground truncate">{name}</span>
-      <span
-        className="mono text-xs shrink-0"
-        title={error ?? undefined}
-      >
+    <div className="surface elevated p-4 flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-sm font-semibold text-foreground truncate">{name}</span>
         {error ? (
-          <span className="text-destructive">Read error</span>
-        ) : balance !== undefined ? (
-          <span className={owns ? "text-[var(--success)]" : "text-muted-foreground"}>
-            ×{balance.toString()}
+          <span
+            className="mono text-[10px] uppercase tracking-[0.14em] text-destructive shrink-0"
+            title={error}
+          >
+            read error
           </span>
+        ) : owns ? (
+          <Pill tone="success">In your Archive</Pill>
+        ) : balance !== undefined ? (
+          <Pill tone="muted">Not yet kept</Pill>
         ) : loading ? (
-          <span className="text-muted-foreground/70">Read pending</span>
+          <span className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70 shrink-0">
+            read pending
+          </span>
         ) : (
-          <span className="text-muted-foreground/70">—</span>
+          <span className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70 shrink-0">
+            —
+          </span>
         )}
-      </span>
+      </div>
+      <p className="text-[12px] text-muted-foreground leading-relaxed">
+        {owns ? ownedMeaning : unownedMeaning}
+      </p>
+      {owns && (
+        <div className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+          held ×{balance.toString()}
+          <span className="ml-1 text-[var(--success)]">live balanceOf</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -447,16 +469,13 @@ export function CockpitCollector({ record }: { record?: HolderRecord }) {
   const walletUrl = address ? explorerUrlForAddress(address) : null;
   const firstSignalBal = balances.balances[1]?.balance;
   const patronSealBal = balances.balances[3]?.balance;
-  const ownsAny =
-    (firstSignalBal !== undefined && firstSignalBal > 0n) ||
-    (patronSealBal !== undefined && patronSealBal > 0n);
 
   return (
     <GlassCard className="p-5">
       {/* ── 1 · My Holdings & Artifacts ───────────────────────────────── */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <span className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
-          What you own
+          Memories you hold
         </span>
         <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
           · live balanceOf · Archive1155
@@ -510,15 +529,23 @@ export function CockpitCollector({ record }: { record?: HolderRecord }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <OwnedChip name="The First Signal" balance={firstSignalBal} error={balances.balances[1]?.error ?? undefined} loading={balances.isLoading} />
-            <OwnedChip name="Patron Seal" balance={patronSealBal} error={balances.balances[3]?.error ?? undefined} loading={balances.isLoading} />
+            <ArtifactMemory
+              name="The First Signal"
+              ownedMeaning="You answered the first public signal of the Archive — a memory of being early, kept permanently on-chain."
+              unownedMeaning="The first public signal of the Archive. Collect it to mark that you were here when it opened."
+              balance={firstSignalBal}
+              error={balances.balances[1]?.error ?? undefined}
+              loading={balances.isLoading}
+            />
+            <ArtifactMemory
+              name="Patron Seal"
+              ownedMeaning="You sealed your patronage of the Archive — a chosen mark of support you carry. No rank, no wealth-coding, no financial rights."
+              unownedMeaning="An optional mark of support for the Archive. One tier only — no rank, no wealth-coding, no financial rights."
+              balance={patronSealBal}
+              error={balances.balances[3]?.error ?? undefined}
+              loading={balances.isLoading}
+            />
           </div>
-
-          {!ownsAny && !balances.isLoading && (
-            <p className="text-[12px] text-muted-foreground leading-relaxed">
-              No artifacts owned yet — collect a canonical artifact below. Owned artifacts appear here as live reads.
-            </p>
-          )}
 
           <div className="flex flex-wrap items-center gap-3 text-[11px]">
             <a

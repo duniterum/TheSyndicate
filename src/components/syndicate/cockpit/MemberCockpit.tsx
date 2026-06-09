@@ -33,6 +33,8 @@ import { CockpitCollector } from "./CockpitCollector";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { CockpitMemory } from "./CockpitMemory";
 import { CockpitProgression } from "./CockpitProgression";
+import { CockpitBadges } from "./CockpitBadges";
+import { WakeBehindYou } from "./WakeBehindYou";
 import { WalletAvatar } from "./WalletAvatar";
 import { useHolderIndex, type HolderRecord } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
@@ -89,6 +91,11 @@ export function MemberCockpit() {
           record={record}
           loading={idx.isLoading}
         />
+        {/* Wake Behind You — the emotional gravity line. Sits directly under
+            the seat identity so "who you are" is immediately followed by "how
+            much of the story formed behind you". Real wake = indexed members −
+            your member number; visitors get the inverse invitation. */}
+        <WakeBehindYou />
         <CockpitActionRail isConnected={isConnected} address={address} isMember={Boolean(record)} />
       </Section>
 
@@ -229,15 +236,7 @@ function CockpitHeader({
               <div className="font-serif text-4xl md:text-5xl leading-none text-gradient-gold">
                 #{record ? record.memberNumber.toLocaleString("en-US") : idx.totals.nextMemberNumber.toLocaleString("en-US")}
               </div>
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                {chapter ? (
-                  <Pill tone="gold">{chapter.shortLabel}</Pill>
-                ) : (
-                  <Pill tone="muted">Would join {getChapterByMemberNumber(idx.totals.nextMemberNumber).shortLabel}</Pill>
-                )}
-                {record?.currentRank && <Pill tone="navy">{record.currentRank.name}</Pill>}
-                {record?.eligibility.foundersBadge && <Pill tone="gold">Genesis Signal</Pill>}
-              </div>
+              <CockpitBadges record={record} nextMemberNumber={idx.totals.nextMemberNumber} />
             </div>
           </div>
 
