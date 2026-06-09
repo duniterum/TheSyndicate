@@ -27,22 +27,52 @@ header on line 1.
 
 ---
 
+## Doctrine reading order (canonical)
+
+Any future AI or contributor reads doctrine in this exact order before
+touching product work:
+
+1. `docs/VISION.md` — what it is / is not
+2. `docs/NORTH_STAR_SYSTEM.md` — what we measure (verified members; the six loops)
+3. `docs/STORY_ENGINE_AND_EMOTIONAL_OPERATING_SYSTEM.md` — how it means / feels / behaves
+4. `docs/INFORMATION_HIERARCHY.md` — how it surfaces
+5. `docs/SCARCITY_STATUS_PERMANENCE_AUDIT.md` — identity / the seat (supporting facets: `docs/MYTHOLOGY_AND_COHORT_IDENTITY_AUDIT.md`)
+6. `docs/RANK_CONSTITUTIONAL_RULING.md` — rank doctrine
+7. `docs/DOCUMENTATION_AUTHORITY_MAP.md` (this file) — precedence + vocabulary + classification
+8. Domain docs as needed — Archive · Chronicle · My Syndicate · loops (`docs/LOOP_OWNERSHIP_DECISION.md`)
+
+---
+
 ## CANONICAL
 
 The doctrine layer. Vision, gates, decision frameworks.
 
-- `docs/VISION.md`
-- `docs/CONSTITUTION_SUMMARY.md`
+### Constitutional layer (highest authority — read first, in order)
+
+1. `docs/VISION.md` — **constitutional.** What the protocol is / is not; pillars; phased roadmap. The apex.
+2. `docs/NORTH_STAR_SYSTEM.md` — **constitutional.** Metric doctrine: verified members, the six loops, "live or PENDING". *(Reclassified HISTORICAL → CANONICAL 2026-06-09.)*
+3. `docs/STORY_ENGINE_AND_EMOTIONAL_OPERATING_SYSTEM.md` — **constitutional (behavioral).** How the protocol means / feels / behaves over time. *(Registered 2026-06-09.)*
+4. `docs/INFORMATION_HIERARCHY.md` — **constitutional.** The 10-second contract; homepage zones; cross-route + navigation rules. *(Reclassified HISTORICAL → CANONICAL 2026-06-09.)*
+5. `docs/SCARCITY_STATUS_PERMANENCE_AUDIT.md` — **constitutional (identity apex).** The seat is the product; the five constitutive facts.
+6. `docs/RANK_CONSTITUTIONAL_RULING.md` — **constitutional (rank doctrine).** Canonical definition of Rank; supersedes all prior rank meanings. *(Registered 2026-06-09.)*
+7. `docs/CONSTITUTION_SUMMARY.md` — index + ratification record of the constitutional layer.
+
+### Doctrine & frameworks
+
 - `docs/AAA_DECISION_LENSES.md`
 - `docs/FOUNDER_MULTI_HAT_EVALUATION_FRAMEWORK.md`
 - `docs/INFINITE_NARRATIVE_AUDIT.md`
-- `docs/SCARCITY_STATUS_PERMANENCE_AUDIT.md`
-- `docs/MYTHOLOGY_AND_COHORT_IDENTITY_AUDIT.md`
+- `docs/MYTHOLOGY_AND_COHORT_IDENTITY_AUDIT.md` — identity (cultural facet; subordinate to the SCARCITY identity apex).
 - `docs/ARCHITECTURE_PROPOSAL_AAA.md`
 - `docs/TERMINOLOGY_GLOSSARY.md`
 - `docs/PRE_CONTRACT_ALIGNMENT_AUDIT.md`
 - `docs/PROTOCOL_EXECUTION_CONTROL_SYSTEM.md` — severity + decision-outcome framework, release gates, activation gates, invariants
 - `docs/DOCUMENTATION_AUTHORITY_MAP.md` (this file)
+
+### Supporting doctrine (canonical, subordinate to the constitutional layer)
+
+- `docs/EMOTIONAL_ARCHITECTURE_AUDIT.md` — behavioral-loop research catalog; subordinate to the North Star six-loop registry. *(Registered 2026-06-09.)*
+- `docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md` — product-memory record protecting salvageable concepts and entity distinctions. *(Registered 2026-06-09.)*
 
 ### Precedence rule (when docs disagree)
 
@@ -128,7 +158,6 @@ carry a `Historical note` header.
 - `docs/FULL_SITE_AAA_AUDIT.md`
 - `docs/FULL_SITE_STRUCTURE_AND_HEALTH_REPORT.md`
 - `docs/IMPLEMENTATION_EXECUTION_PLAN.md`
-- `docs/INFORMATION_HIERARCHY.md`
 - `docs/INFORMATION_HIERARCHY_MASTER_PLAN.md`
 - `docs/LIGHTHOUSE_PRE_ADS_AUDIT.md`
 - `docs/LIVE_DATA_COMPLETION_AUDIT.md`
@@ -145,7 +174,6 @@ carry a `Historical note` header.
 - `docs/MVP_READINESS_AND_CONVERSION_AUDIT.md`
 - `docs/NAVIGATION_IA_AUDIT.md`
 - `docs/NFT_FINAL_ARCHITECTURE_AUDIT.md`
-- `docs/NORTH_STAR_SYSTEM.md`
 - `docs/P6_EXECUTION_AND_READINESS_REPORT.md`
 - `docs/P6_IMPLEMENTATION_AND_ARCHIVE_REPORT.md`
 - `docs/P9_PRODUCT_JUDGMENT_RECALIBRATION.md`
@@ -217,6 +245,17 @@ match the chapter system. Carry a `Historical note` header.
 | Patron Seal at 9 USDC                                                                                   | Patron Seal at **5.00 USDC** (catalog + on-chain agree).                                                                                                                               |
 | Seat Record inside Archive1155 as an active mint                                                        | SeatRecord721 — separate, future contract. Archive1155 ID 2 stays reserved/disabled.                                                                                                   |
 | Any language implying NFT equity, yield, dividends, revenue share, Vault ownership, LP ownership, or governance rights | NFTs are collectible protocol memories with **no financial rights**.                                                                                                         |
+| Rank as a USDC entry-size **public status** tier ("status tier unlocked by USDC entry size") | Rank is **structural, on-chain-derived recognition** — mutable, secondary, conferring nothing. USDC may be a private input, never the public meaning. See `docs/RANK_CONSTITUTIONAL_RULING.md`. |
+| `scoreMultiplier`-based rank · "Compounder Score" multiplier tied to rank | Rank confers **nothing** — no multiplier, discount, yield, or governance weight. Recognition is standing, never reward. |
+| "Founder" as a **rank name** (e.g. a $100 tier) | "Founder" is a frozen **cohort identity fact** (founders-cohort flag), never a purchase tier. Rank names must not reuse identity vocabulary. |
+| "Genesis Circle" as a **rank name** (e.g. a $10,000 tier) | "Genesis" belongs to **Chapter I — Genesis Signal**. Rank names must not reuse chapter vocabulary. |
+| Rank as **primary identity** | Identity = the permanent seat + five constitutive facts. Rank is the mutable layer; it is **not** one of them. |
+| Rank as a **leaderboard** / positional ladder of people | Rank is relative standing, never a scarce finite ladder of people. Cohort > rank, always. |
+
+> **Note (2026-06-09):** the six rank rows above are registered here as binding
+> doctrine. Wiring them into the automated `doctrine-guard.test.ts` `DOC_BANNED`
+> scan (and adding the newly-constitutional docs to its `CANONICAL_DOCS` list)
+> is a **code** follow-up, intentionally out of scope of this docs-only pass.
 
 ---
 
@@ -252,6 +291,14 @@ Source of truth in code: `src/lib/chapters.ts`.
 - Artifacts are the memory.
 - **SeatRecord721** is a future, separate identity contract.
 - **Archive1155 ID 2** remains reserved/disabled.
+
+### Rank doctrine
+
+- Rank is **structural, on-chain-derived recognition** — mutable, secondary, conferring nothing.
+- Rank is **not** identity, **not** wealth-coded, **not** a reward/multiplier, **not** a leaderboard.
+- Rank is permanently subordinate to the **seat** (identity) and **cohort/chapter** (belonging): cohort > rank, always.
+- Home: `/ranks` and public member pages (a secondary line, below member # / chapter / founders flag). Never the hero. Never the member's own private cockpit.
+- Canonical ruling: `docs/RANK_CONSTITUTIONAL_RULING.md` (supersedes all prior rank meanings).
 
 ---
 

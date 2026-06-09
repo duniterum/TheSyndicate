@@ -25,8 +25,8 @@ If a term is not in this glossary, do not invent a new one — extend this file 
 | **SYN** | The Syndicate membership token. ERC20 on Avalanche C-Chain. Fixed 1,000,000,000 supply. |
 | **Vault Reserve** | The 25% SYN allocation (250,000,000 SYN) reserved for long-term backing. Distinct from "Vault Wallet". |
 | **Access Rate** | 1 SYN = $0.01 USDC. Fixed, identical for everyone. |
-| **Rank** | Status tier unlocked by USDC entry size. Never grants bonus tokens or cheaper SYN. |
-| **Compounder Score** | Visibility/governance-weight multiplier tied to rank. |
+| **Rank** | Status tier unlocked by USDC entry size. Never grants bonus tokens or cheaper SYN. **[SUPERSEDED 2026-06-09 — see `docs/RANK_CONSTITUTIONAL_RULING.md`: Rank is structural on-chain recognition, not a USDC entry-size public status tier. USDC may be a private input, never the public meaning.]** |
+| **Compounder Score** | Visibility/governance-weight multiplier tied to rank. **[SUPERSEDED 2026-06-09 — see `docs/RANK_CONSTITUTIONAL_RULING.md`: rank confers nothing; no multiplier, governance weight, or leaderboard.]** |
 
 ## Status pills
 

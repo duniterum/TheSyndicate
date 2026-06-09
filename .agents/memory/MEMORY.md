@@ -4,3 +4,5 @@
 - [Archive artifact truth gating](archive-artifact-truth-gating.md) — only assert "mint open" when active===true AND paused===false; pause-unknown must degrade, never imply open; uncapped never gets a supply bar.
 - [my-syndicate doctrine test](my-syndicate-doctrine-test.md) — it string-scans route source; ~5 assertions are STALE since route delegates to MemberCockpit. Don't "fix" route to satisfy them.
 - [Chapter boundary semantics](chapter-boundary-semantics.md) — a chapter SEALS at endN; the NEXT chapter OPENS at next.startN (=endN+1). "opens at" copy must use startN, never endN.
+- [Doctrine guard ↔ Authority Map decoupling](doctrine-guard-decoupling.md) — guard uses hardcoded CANONICAL_DOCS/DOC_BANNED, not the map; reclassifying docs in the map has no auto-enforcement until the test arrays are edited (a code pass).
+- [Rank doctrine](rank-constitutional-ruling.md) — Rank = mutable structural on-chain recognition, conferring nothing, subordinate to seat+cohort; NOT identity/wealth/reward/leaderboard. scoreMultiplier + "Founder"/"Genesis Circle" tier names retired.

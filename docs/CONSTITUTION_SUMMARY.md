@@ -24,6 +24,24 @@ All three are authoritative. Any conflict between them and any other
 document — audit, plan, spec, README — is resolved in favor of the
 constitution.
 
+### Behavioral & rank constitution (registered 2026-06-09)
+
+4. **`docs/STORY_ENGINE_AND_EMOTIONAL_OPERATING_SYSTEM.md`** — the
+   highest-level **behavioral** doctrine: how the protocol means, feels,
+   and behaves over time. Constitutional, alongside the three above.
+5. **`docs/SCARCITY_STATUS_PERMANENCE_AUDIT.md`** — the **identity**
+   apex: the seat is the product; the five constitutive facts. (Already
+   constitutional via "Core Asset" below; named here for the reading order.)
+6. **`docs/RANK_CONSTITUTIONAL_RULING.md`** — the canonical **Rank**
+   doctrine. Rank is structural on-chain recognition, subordinate to seat
+   and cohort; never identity, wealth, reward, or leaderboard. Supersedes
+   all prior rank meanings.
+
+Canonical doctrine reading order (full map in
+`docs/DOCUMENTATION_AUTHORITY_MAP.md`): VISION → NORTH_STAR_SYSTEM →
+STORY_ENGINE → INFORMATION_HIERARCHY → SCARCITY / identity →
+RANK_CONSTITUTIONAL_RULING → Authority Map → domain docs.
+
 ---
 
 ## SUPPORTING FRAMEWORKS (still authoritative within their scope)
@@ -159,10 +177,13 @@ component, copy block, route, or module, read in order:
 
 1. `docs/VISION.md`
 2. `docs/NORTH_STAR_SYSTEM.md`
-3. `docs/INFORMATION_HIERARCHY.md`
-4. `docs/PRODUCT_DECISION_FRAMEWORK.md`
-5. `docs/MVP_ECOSYSTEM_ROADMAP.md` (Stop Building Test only)
-6. This document (`CONSTITUTION_SUMMARY.md`)
+3. `docs/STORY_ENGINE_AND_EMOTIONAL_OPERATING_SYSTEM.md`
+4. `docs/INFORMATION_HIERARCHY.md`
+5. `docs/SCARCITY_STATUS_PERMANENCE_AUDIT.md`
+6. `docs/RANK_CONSTITUTIONAL_RULING.md`
+7. `docs/PRODUCT_DECISION_FRAMEWORK.md`
+8. `docs/MVP_ECOSYSTEM_ROADMAP.md` (Stop Building Test only)
+9. This document (`CONSTITUTION_SUMMARY.md`)
 
 Then, and only then, the relevant reference audits.
 
