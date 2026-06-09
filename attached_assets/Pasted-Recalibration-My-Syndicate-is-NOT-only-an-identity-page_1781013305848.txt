@@ -1,0 +1,213 @@
+Recalibration: My Syndicate is NOT only an identity page.
+
+It must become the member cockpit.
+
+The goal is that once a wallet connects, the user does not want to leave.
+
+Think of /my-syndicate as:
+
+* personal dashboard
+* wallet cockpit
+* member profile
+* progression center
+* owned artifacts gallery
+* referral hub
+* activity memory
+* live protocol feed
+* buy/sell/action center
+* “what happened while I was away” engine
+
+Core idea:
+The public site converts visitors.
+My Syndicate retains members.
+
+Do not reduce My Syndicate to “Member # / Rank.”
+That is only the top identity layer.
+
+The full cockpit should include:
+
+1. Member Profile Header
+
+* wallet avatar / generated profile image
+* optional profile logo / badge / artifact visual
+* wallet address
+* Member #
+* current rank
+* current chapter
+* SYN balance
+* joined date / first purchase transaction
+* next milestone
+
+2. Main Action Rail
+   Clear fast actions:
+
+* Buy SYN / Claim more seat power
+* Sell / Trade SYN
+* Add liquidity
+* View proof
+* Invite / referral
+* Settings
+* Share my member profile
+
+No CTA chaos. One primary action, then useful secondary actions.
+
+3. Portfolio / Wallet View
+   Rendered from blockchain:
+
+* SYN owned
+* USDC spent through membership sale
+* NFTs / artifacts owned
+* LP position if available
+* rank progress
+* contribution history
+* current member status
+* links to explorer proof
+
+4. Owned Artifacts
+   A beautiful gallery of NFTs / protocol artifacts owned by the wallet.
+   Not a museum.
+   This is personal inventory / personal archive.
+   Each artifact should show:
+
+* image
+* title
+* chapter
+* mint status
+* token ID
+* verification link
+* story meaning
+
+5. What Happened While You Were Away
+   This is critical for addiction.
+
+When a member returns, show:
+
+* new members joined
+* new purchases
+* vault changed
+* liquidity changed
+* rank changed
+* chapter progress changed
+* new artifact available
+* referral activity
+* protocol milestones reached
+
+This should feel like:
+“Your protocol moved while you were gone.”
+
+6. Personal Activity Timeline
+   A wallet-specific timeline:
+
+* first joined
+* bought SYN
+* rank upgraded
+* minted artifact
+* referral earned
+* LP action
+* chapter participation
+* wallet proof links
+
+7. Live Protocol Pulse
+   Small live feed inside cockpit:
+
+* latest buys
+* latest members
+* latest artifact mints
+* latest vault/liquidity movement
+* next member number
+* progress to next chapter
+
+8. Referral Hub
+   Even if referral is not fully live, design carefully:
+
+* if live: show code, invites, earned rewards, referred members
+* if pending: show transparent “Referral system coming” without fake earnings
+* never promise unavailable rewards
+* never show fake data
+
+9. Settings / Profile
+   Allow future-ready UX:
+
+* display name
+* avatar / badge preference
+* featured artifact
+* notification preferences
+* shareable profile view
+* privacy options
+  If not implemented yet, design the structure but keep it clearly pending.
+
+10. Performance Requirements
+    Because this cockpit reads from blockchain, it must be fast.
+
+Implement with:
+
+* skeleton loading states
+* cached reads where safe
+* stale-while-revalidate behavior
+* batched contract reads where possible
+* lazy loading for heavy sections
+* no blocking the entire page because one blockchain call is slow
+* graceful partial data display
+* clear LIVE / CACHED / PENDING indicators where useful
+* no fake data
+
+Important:
+Fast perceived loading matters more than waiting for every chain read.
+
+The page should load instantly with:
+
+* shell
+* cached last-known state
+* skeletons
+* then live refresh
+
+11. Design Direction
+    This page should feel like a premium crypto cockpit:
+
+* dense but clean
+* dashboard-native
+* cinematic dark interface
+* personal and addictive
+* not empty
+* not a museum
+* not a generic profile page
+
+Think:
+Zapper + Zerion + Phantom wallet + Coinbase portfolio + on-chain RPG progression + protocol chronicle.
+
+12. Do NOT break:
+
+* contract addresses
+* live reads
+* membership sale flow
+* rank thresholds
+* chapter thresholds
+* NFT logic
+* verification links
+* LIVE / PARTIAL / PENDING honesty
+* no fake numbers
+* no fake referral rewards
+* no financial promises
+
+Deliverable:
+Do not implement randomly.
+
+First produce a My Syndicate Cockpit Architecture Plan:
+
+* page sections
+* data needed for each section
+* which data is already available
+* which data is missing
+* which components can be reused
+* which components must be created
+* loading/caching strategy
+* mobile layout
+* desktop layout
+* what stays live
+* what can be cached
+* what must remain pending
+
+Then wait for approval before coding.
+
+The goal:
+My Syndicate should become the addictive personal home base of the protocol.
