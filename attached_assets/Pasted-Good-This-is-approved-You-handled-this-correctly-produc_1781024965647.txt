@@ -1,0 +1,85 @@
+Good.
+
+This is approved.
+
+You handled this correctly:
+
+* product memory preserved first
+* dangerous fake/static ActivityFeed removed
+* obsolete JoinSection removed only after saving the live founder-preview idea
+* Archive Contract label fixed
+* doctrine preserved
+* no dormant loops rewritten prematurely
+
+Now stop treating this as cleanup.
+
+We are back to the main roadmap.
+
+Current approved state:
+
+Completed:
+
+* Phase A: Obsidian design foundation
+* Phase B: shell + brand
+* Protocol language harmonization
+* Product-memory preservation
+* dangerous dead-code cleanup
+
+Not yet completed:
+
+* Phase C: My Syndicate Cockpit redesign
+* Archive / NFT flagship redesign
+* Proof hub improvements
+* Mobile full QA
+* Home page deeper experience redesign
+* Chronicle / Episodes future loop
+
+Next step:
+
+Proceed to Phase C only:
+
+My Syndicate Cockpit.
+
+But before coding Phase C, give me a short implementation plan based on the current post-cleanup codebase.
+
+Phase C goal:
+
+/my-syndicate becomes the member operating system.
+
+It must show:
+
+* who I am
+* what I own
+* what changed while I was away
+* what the protocol is doing live
+* what chapter I am in
+* what I can do next
+* what I can collect next
+* what I can verify
+
+Build with:
+
+* live blockchain data where available
+* cached/skeleton loading where needed
+* no fake data
+* no fake referral
+* no fake vault movement
+* PENDING where not live
+* fast perceived loading
+* mobile-first layout
+
+Do not touch Archive yet.
+Do not implement Episodes yet.
+Do not implement WhyComeBackTomorrow yet unless it is rebuilt with live deltas and scoped inside My Syndicate.
+Do not implement referral beyond pending shell.
+
+Order for Phase C:
+
+1. Audit current /my-syndicate after Phase A/B changes.
+2. Identify reusable live data hooks.
+3. Propose final cockpit section order.
+4. Identify what is live / cached / pending.
+5. Identify mobile layout.
+6. Then wait for approval before coding.
+
+No large automatic implementation yet.
