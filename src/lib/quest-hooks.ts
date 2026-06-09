@@ -29,7 +29,7 @@ export type Quest = {
  * - First Purchase: any TokensPurchased event with buyer = user
  * - Long-Term Holder: earliest purchase ≥ 90 days ago AND SYN balance > 0
  * - LP Provider: user holds JLP tokens (balanceOf > 0 on the pair)
- * - Rank Climber: SYN balance reaches Founder rank (10,000 SYN)
+ * - Rank Climber: SYN balance reaches Vanguard rank (10,000 SYN)
  * - Episode Participant: governance not live → locked
  * - Referral: tracking not live → locked
  *
@@ -83,9 +83,9 @@ export function useUserQuestProgress(): {
     }
 
     const rank = rankForSyn(synBalance).current;
-    const founderUsdc = 100;
-    const founderSyn = founderUsdc / ACCESS_RATE_USDC_PER_SYN; // 10,000
-    const founderPct = Math.min(100, (synBalance / founderSyn) * 100);
+    const vanguardUsdc = 100;
+    const vanguardSyn = vanguardUsdc / ACCESS_RATE_USDC_PER_SYN; // 10,000
+    const vanguardPct = Math.min(100, (synBalance / vanguardSyn) * 100);
 
     const quests: Quest[] = [
       {
@@ -136,20 +136,20 @@ export function useUserQuestProgress(): {
       },
       {
         id: "rank-climber",
-        title: "Reach Founder Rank",
+        title: "Reach Vanguard Rank",
         detail: "Hold ≥ 10,000 SYN (≈ $100 contribution).",
-        reward: "Founder archive marker",
+        reward: "Vanguard archive marker",
         state: !connected
           ? "not_started"
-          : synBalance >= founderSyn
+          : synBalance >= vanguardSyn
             ? "complete"
             : synBalance > 0
               ? "in_progress"
               : "not_started",
-        progress: !connected ? 0 : founderPct,
+        progress: !connected ? 0 : vanguardPct,
         progressLabel: !connected
           ? "Connect wallet to track"
-          : `${rank?.name ?? "—"} · ${synBalance.toLocaleString("en-US", { maximumFractionDigits: 0 })} / ${founderSyn.toLocaleString("en-US")} SYN`,
+          : `${rank?.name ?? "—"} · ${synBalance.toLocaleString("en-US", { maximumFractionDigits: 0 })} / ${vanguardSyn.toLocaleString("en-US")} SYN`,
         rewardStatus: "PLANNED",
       },
       {

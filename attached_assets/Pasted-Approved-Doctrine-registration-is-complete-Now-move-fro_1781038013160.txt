@@ -1,0 +1,97 @@
+Approved.
+
+Doctrine registration is complete.
+
+Now move from doctrine to a limited code-debt enforcement pass.
+
+Scope:
+Code/tests only.
+No UI redesign.
+No new features.
+No cockpit additions yet.
+
+Goal:
+Make the codebase stop contradicting the new Rank Constitutional Ruling.
+
+Tasks:
+
+1. Update doctrine guard wiring
+   The doctrine-guard test currently uses a hardcoded canonical-doc list and does not read the Authority Map.
+
+Do not over-engineer.
+
+Add the new canonical docs to the hardcoded guard list:
+
+* STORY_ENGINE_AND_EMOTIONAL_OPERATING_SYSTEM.md
+* RANK_CONSTITUTIONAL_RULING.md
+
+If safe, also add:
+
+* EMOTIONAL_ARCHITECTURE_AUDIT.md
+* PRODUCT_MEMORY_AND_FUTURE_LOOPS.md
+
+But do not break valid historical quotations. If the support docs contain quoted forbidden terms, keep them out of strict guard and flag.
+
+2. Rank code debt audit
+   Find every rank-related implementation that contradicts the ruling:
+
+* scoreMultiplier
+* Compounder Score
+* Founder rank name
+* Genesis Circle rank name
+* "$X to next rank"
+* rank as public leaderboard
+* rank as primary identity
+* rank in cockpit hero
+* rank gating any benefit
+* rank reward/multiplier wording
+
+Do not blindly delete.
+
+Classify:
+FIX NOW / FLAG / DEFER.
+
+3. Safe fixes now
+   Only fix low-risk contradictions:
+
+* remove or neutralize scoreMultiplier if unused or only used for banned Compounder Score
+* rename Founder rank if it collides with founder cohort
+* rename Genesis Circle rank if it collides with Chapter I
+* remove "$X to next rank" from primary cockpit surfaces
+* make rank visually secondary
+* update public-facing copy that presents rank as spend ladder
+
+4. Preserve functionality
+   Do not break:
+
+* member indexing
+* rankForUsdc if still needed
+* existing member records
+* route rendering
+* tests unrelated to rank
+
+5. Tests
+   Run:
+
+* doctrine guard
+* rank/ruling tests if added
+* cockpit gating tests
+* typecheck
+* architect review
+
+6. Report
+   After completion, report:
+
+* files changed
+* rank contradictions fixed
+* rank contradictions deferred
+* tests passed/failed
+* any stale tests left
+* what remains before visible cockpit identity execution
+
+Do not implement Wake Behind You yet.
+Do not implement identity hierarchy yet.
+Do not redesign UI yet.
+
+This pass is only:
+Rank ruling enforcement + guard wiring + low-risk code debt cleanup.

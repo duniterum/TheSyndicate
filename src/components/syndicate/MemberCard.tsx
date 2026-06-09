@@ -98,9 +98,9 @@ export function MemberCard() {
             Rank
           </div>
           <div className="text-lg font-semibold">{record.currentRank?.name ?? "—"}</div>
-          {record.nextRank && record.usdcToNextRank !== null ? (
+          {record.nextRank ? (
             <div className="mono text-[10px] text-muted-foreground">
-              {fmtUsd(record.usdcToNextRank)} to {record.nextRank.name}
+              Next: {record.nextRank.name}
             </div>
           ) : null}
         </div>

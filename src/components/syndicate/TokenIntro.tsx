@@ -10,7 +10,7 @@ const IS = [
 ];
 
 const ENABLES = [
-  { title: "Rank & identity", body: "Your SYN balance maps to one of twelve public ranks, from Citizen to Genesis Circle." },
+  { title: "Rank & identity", body: "Your SYN balance maps to one of twelve public ranks, from Citizen to Cornerstone." },
   { title: "Archive identity", body: "Your membership is recorded as verifiable on-chain participation, not as a payout claim." },
   { title: "Future modules", body: "Pending modules only count once they are deployed, public, and verifiable." },
   { title: "Archive presence", body: "A permanent Founder Number and a row in the public member registry." },

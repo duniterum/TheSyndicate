@@ -83,7 +83,7 @@ function YourRank({ record, nextMemberNumber, hasData }: {
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">No wallet connected</span>
         </div>
         <p className="text-sm text-muted-foreground">
-          Connect a wallet to see your current rank and the gap to the next rank. The ranks below are public — nothing requires connection to read.
+          Connect a wallet to see the rank your contribution reflects. Rank is recognition only — no payout, no entitlement. The ranks below are public — nothing requires connection to read.
         </p>
       </GlassCard>
     );
@@ -118,7 +118,6 @@ function YourRank({ record, nextMemberNumber, hasData }: {
 
   const current = record.currentRank;
   const next = record.nextRank;
-  const gap = record.usdcToNextRank;
 
   return (
     <GlassCard className="p-6">
@@ -135,9 +134,9 @@ function YourRank({ record, nextMemberNumber, hasData }: {
         <div>
           <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Next rank</div>
           <div className="text-xl font-semibold">{next?.name ?? "Top tier reached"}</div>
-          {next && gap !== null && (
+          {next && (
             <div className="text-xs text-muted-foreground mt-1">
-              {fmtUsd(gap, 2)} more · then {next.name}
+              Recognition only — no payout, no entitlement.
             </div>
           )}
         </div>

@@ -17,8 +17,7 @@ export function RankSimulator() {
       ? Math.min(100, Math.max(0, ((usdc - current.usdc) / (next.usdc - current.usdc)) * 100))
       : 100;
     const archiveNo = 428 + Math.floor((usdc / 5) % 7);
-    const mul = current?.scoreMultiplier ?? 1.0;
-    const score = Math.round(40 + Math.log10(Math.max(usdc, 1)) * 60 * mul);
+    const score = Math.round(40 + Math.log10(Math.max(usdc, 1)) * 60);
     return { syn, current, next, vault: f.vault, lp: f.lp, ops: f.ops, gapUsdc, gapSyn, pctToNext, archiveNo, score };
   }, [usdc]);
 

@@ -251,11 +251,7 @@ function MemberView({
           <Stat label="SYN received" value={fmtN(Math.round(record.cumulativeSyn))} />
           <Stat
             label="Next rank"
-            value={
-              record.nextRank
-                ? `${record.nextRank.name} · ${fmtUsd(record.usdcToNextRank ?? 0)} to go`
-                : "Top tier"
-            }
+            value={record.nextRank ? record.nextRank.name : "Top tier"}
           />
           <Stat
             label="Live SYN balance"

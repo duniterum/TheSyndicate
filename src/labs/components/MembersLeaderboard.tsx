@@ -96,7 +96,7 @@ export function MembersLeaderboard() {
       </GlassCard>
 
       <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed">
-        Score formula: <span className="mono">rankMultiplier × √(usdcTotal) × (1 + log₂(1 + purchaseCount))</span>.
+        Score formula: <span className="mono">√(usdcTotal) × (1 + log₂(1 + purchaseCount))</span>.
         Holding-duration and governance multipliers ship when those contracts deploy.
       </p>
     </Section>
@@ -128,7 +128,7 @@ function Row({ entry, index }: { entry: LeaderboardEntry; index: number }) {
           </div>
         )}
       </td>
-      <td className="py-3 px-4 text-right mono text-xs font-semibold">{fmtNum(entry.compounderScore, 2)}</td>
+      <td className="py-3 px-4 text-right mono text-xs font-semibold">{fmtNum(entry.archiveWeight, 2)}</td>
       <td className="py-3 px-4 mono text-xs text-muted-foreground">{entry.rank?.name ?? "—"}</td>
       <td className="py-3 px-4 text-right mono text-xs">${fmtNum(entry.usdcTotal, 2)}</td>
       <td className="py-3 px-4 text-right mono text-xs">{fmtNum(entry.synTotal)}</td>

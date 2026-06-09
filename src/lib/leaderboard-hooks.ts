@@ -15,20 +15,22 @@ export type LeaderboardEntry = {
   firstBlock: bigint;
   lastBlock: bigint;
   rank: RankTier | null;
-  compounderScore: number;
+  archiveWeight: number;
   isDemo?: boolean;
 };
 
 /**
  * Archive weight (V1 proxy, transparent + auditable):
- *   score = rankMultiplier × sqrt(usdcTotal) × (1 + log2(1 + purchaseCount))
+ *   weight = sqrt(usdcTotal) × (1 + log2(1 + purchaseCount))
  *
- *  - rank multiplier rewards conviction
  *  - sqrt(usdc) prevents whale dominance
  *  - log(purchaseCount) rewards repeated participation, not single bursts
+ *
+ * Per the Rank Constitutional Ruling, rank carries no economic weight, so no
+ * rank multiplier feeds this ordering — it reflects participation only.
  */
-function computeScore(usdc: number, purchases: number, mult: number) {
-  return mult * Math.sqrt(usdc) * (1 + Math.log2(1 + purchases));
+function computeScore(usdc: number, purchases: number) {
+  return Math.sqrt(usdc) * (1 + Math.log2(1 + purchases));
 }
 
 const DEMO_ENTRIES: LeaderboardEntry[] = [
@@ -50,10 +52,10 @@ const DEMO_ENTRIES: LeaderboardEntry[] = [
     firstBlock: 0n,
     lastBlock: 0n,
     rank: r,
-    compounderScore: computeScore(usdc as number, count as number, r?.scoreMultiplier ?? 1),
+    archiveWeight: computeScore(usdc as number, count as number),
     isDemo: true,
   };
-}).sort((a, b) => b.compounderScore - a.compounderScore);
+}).sort((a, b) => b.archiveWeight - a.archiveWeight);
 
 function entryFromHolder(h: HolderRecord): LeaderboardEntry {
   return {
@@ -64,7 +66,7 @@ function entryFromHolder(h: HolderRecord): LeaderboardEntry {
     firstBlock: h.firstPurchaseBlock,
     lastBlock: h.lastPurchaseBlock,
     rank: h.currentRank,
-    compounderScore: computeScore(h.cumulativeUsdc, h.purchaseCount, h.currentRank?.scoreMultiplier ?? 1),
+    archiveWeight: computeScore(h.cumulativeUsdc, h.purchaseCount),
   };
 }
 
@@ -81,7 +83,7 @@ export function useMembersLeaderboard() {
       };
     }
     const entries = idx.ordered.map(entryFromHolder);
-    entries.sort((a, b) => b.compounderScore - a.compounderScore);
+    entries.sort((a, b) => b.archiveWeight - a.archiveWeight);
     return {
       isLoading: idx.isLoading,
       isError: idx.isError,

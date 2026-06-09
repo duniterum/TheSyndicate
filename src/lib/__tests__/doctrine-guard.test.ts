@@ -92,6 +92,13 @@ const BANNED: Array<{ name: string; re: RegExp; allowFiles?: Set<string> }> = [
   { name: "Open #1,001+",                re: /Open #1,001\+/ },
   { name: "Chapter I — The Beginning",   re: /Chapter I\s*[—-]\s*The Beginning/i },
   { name: "Genesis 10 doctrine",         re: /\bGenesis 10\b/ },
+  // ─── Rank Constitutional Ruling — retired rank vocabulary ───────────────
+  // Rank confers no economic benefit; the wealth multiplier and the
+  // identity-colliding apex tier name were retired. They must not reappear in
+  // rendered source. (src/labs is a quarantine and is NOT in SCAN_ROOTS.)
+  { name: "Rank wealth multiplier",        re: /scoreMultiplier/ },
+  { name: "Compounder Score (retired)",    re: /[Cc]ompounder/ },
+  { name: "Genesis Circle rank (renamed)", re: /Genesis Circle/ },
 ];
 
 function walk(dir: string, out: string[] = []): string[] {
@@ -185,6 +192,10 @@ const CANONICAL_DOCS = [
   "docs/ARCHITECTURE_PROPOSAL_AAA.md",
   "docs/TERMINOLOGY_GLOSSARY.md",
   "docs/PRE_CONTRACT_ALIGNMENT_AUDIT.md",
+  "docs/STORY_ENGINE_AND_EMOTIONAL_OPERATING_SYSTEM.md",
+  "docs/RANK_CONSTITUTIONAL_RULING.md",
+  "docs/EMOTIONAL_ARCHITECTURE_AUDIT.md",
+  "docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md",
 ] as const;
 
 const DOC_BANNED: Array<{ name: string; re: RegExp }> = [

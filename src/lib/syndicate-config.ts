@@ -132,25 +132,24 @@ export type RankTier = {
   usdc: number;       // entry USDC amount
   syn: number;        // SYN received at fixed rate (1 SYN = $0.01)
   group: "Open Entry" | "Active Members" | "Deep Supporters" | "High-Conviction";
-  scoreMultiplier: number;
   manual?: boolean;
   badge: string;
   benefits: string[];
 };
 
 export const RANKS_V2: RankTier[] = [
-  { name: "Citizen",           usdc: 5,      syn: 500,       group: "Open Entry",       scoreMultiplier: 1.0,  badge: "Citizen badge",           benefits: ["Citizen badge", "Public on-chain member entry", "Permanent archive record"] },
-  { name: "Scout",             usdc: 10,     syn: 1_000,     group: "Open Entry",       scoreMultiplier: 1.1,  badge: "Scout badge",             benefits: ["Scout badge", "Permanent archive record", "Public wallet page"] },
-  { name: "Operator",          usdc: 25,     syn: 2_500,     group: "Open Entry",       scoreMultiplier: 1.25, badge: "Operator badge",          benefits: ["Operator badge", "Public wallet page", "Activity visibility"] },
-  { name: "Builder",           usdc: 50,     syn: 5_000,     group: "Active Members",   scoreMultiplier: 1.4,  badge: "Builder badge",           benefits: ["Builder badge", "Higher profile visibility", "Permanent archive record"] },
-  { name: "Strategist",        usdc: 75,     syn: 7_500,     group: "Active Members",   scoreMultiplier: 1.55, badge: "Strategist badge",        benefits: ["Strategist badge", "Higher profile visibility", "Visible member profile"] },
-  { name: "Founder",           usdc: 100,    syn: 10_000,    group: "Active Members",   scoreMultiplier: 1.75, badge: "Founder badge",           benefits: ["Founder badge", "Stronger archive recognition", "Public member number"] },
-  { name: "Architect",         usdc: 250,    syn: 25_000,    group: "Deep Supporters",  scoreMultiplier: 2.0,  badge: "Architect badge",         benefits: ["Architect badge", "Higher visibility", "Permanent archive recognition"] },
-  { name: "Patron",            usdc: 500,    syn: 50_000,    group: "Deep Supporters",  scoreMultiplier: 2.3,  badge: "Patron badge",            benefits: ["Patron badge", "Recognition placement", "Permanent archive recognition"] },
-  { name: "Council Candidate", usdc: 1_000,  syn: 100_000,   group: "Deep Supporters",  scoreMultiplier: 2.7,  badge: "Council Candidate badge", benefits: ["Council Candidate badge", "Public recognition", "Permanent archive recognition"] },
-  { name: "Council",           usdc: 2_500,  syn: 250_000,   group: "High-Conviction",  scoreMultiplier: 3.2,  manual: true, badge: "Council badge",        benefits: ["Council badge", "Manual onboarding", "Permanent archive recognition"] },
-  { name: "Inner Circle",      usdc: 5_000,  syn: 500_000,   group: "High-Conviction",  scoreMultiplier: 3.8,  manual: true, badge: "Inner Circle badge",   benefits: ["Inner Circle badge", "Permanent archive recognition", "Manual onboarding"] },
-  { name: "Genesis Circle",    usdc: 10_000, syn: 1_000_000, group: "High-Conviction",  scoreMultiplier: 4.5,  manual: true, badge: "Genesis Circle badge", benefits: ["Genesis Circle badge", "Deepest archive recognition", "Manual review onboarding"] },
+  { name: "Citizen",           usdc: 5,      syn: 500,       group: "Open Entry",       badge: "Citizen badge",           benefits: ["Citizen badge", "Public on-chain member entry", "Permanent archive record"] },
+  { name: "Scout",             usdc: 10,     syn: 1_000,     group: "Open Entry",       badge: "Scout badge",             benefits: ["Scout badge", "Permanent archive record", "Public wallet page"] },
+  { name: "Operator",          usdc: 25,     syn: 2_500,     group: "Open Entry",       badge: "Operator badge",          benefits: ["Operator badge", "Public wallet page", "Activity visibility"] },
+  { name: "Builder",           usdc: 50,     syn: 5_000,     group: "Active Members",   badge: "Builder badge",           benefits: ["Builder badge", "Higher profile visibility", "Permanent archive record"] },
+  { name: "Strategist",        usdc: 75,     syn: 7_500,     group: "Active Members",   badge: "Strategist badge",        benefits: ["Strategist badge", "Higher profile visibility", "Visible member profile"] },
+  { name: "Vanguard",          usdc: 100,    syn: 10_000,    group: "Active Members",   badge: "Vanguard badge",          benefits: ["Vanguard badge", "Stronger archive recognition", "Public member number"] },
+  { name: "Architect",         usdc: 250,    syn: 25_000,    group: "Deep Supporters",  badge: "Architect badge",         benefits: ["Architect badge", "Higher visibility", "Permanent archive recognition"] },
+  { name: "Patron",            usdc: 500,    syn: 50_000,    group: "Deep Supporters",  badge: "Patron badge",            benefits: ["Patron badge", "Recognition placement", "Permanent archive recognition"] },
+  { name: "Council Candidate", usdc: 1_000,  syn: 100_000,   group: "Deep Supporters",  badge: "Council Candidate badge", benefits: ["Council Candidate badge", "Public recognition", "Permanent archive recognition"] },
+  { name: "Council",           usdc: 2_500,  syn: 250_000,   group: "High-Conviction",  manual: true, badge: "Council badge",        benefits: ["Council badge", "Manual onboarding", "Permanent archive recognition"] },
+  { name: "Inner Circle",      usdc: 5_000,  syn: 500_000,   group: "High-Conviction",  manual: true, badge: "Inner Circle badge",   benefits: ["Inner Circle badge", "Permanent archive recognition", "Manual onboarding"] },
+  { name: "Cornerstone",       usdc: 10_000, syn: 1_000_000, group: "High-Conviction",  manual: true, badge: "Cornerstone badge", benefits: ["Cornerstone badge", "Deepest archive recognition", "Manual review onboarding"] },
 ];
 
 export function rankForUsdc(usdc: number): { current: RankTier | null; next: RankTier | null } {
@@ -552,20 +551,20 @@ export const HOME_RANK_LADDER: HomeRank[] = [
   { name: "Operator",          usdc: 25,     syn: 2_500,     group: "open" },
   { name: "Builder",           usdc: 50,     syn: 5_000,     group: "active" },
   { name: "Strategist",        usdc: 75,     syn: 7_500,     group: "active" },
-  { name: "Founder",           usdc: 100,    syn: 10_000,    group: "active" },
+  { name: "Vanguard",          usdc: 100,    syn: 10_000,    group: "active" },
   { name: "Architect",         usdc: 250,    syn: 25_000,    group: "deep" },
   { name: "Patron",            usdc: 500,    syn: 50_000,    group: "deep" },
   { name: "Council Candidate", usdc: 1_000,  syn: 100_000,   group: "deep" },
   { name: "Council",           usdc: 2_500,  syn: 250_000,   group: "council" },
   { name: "Inner Circle",      usdc: 5_000,  syn: 500_000,   group: "council" },
-  { name: "Genesis Circle",    usdc: 10_000, syn: 1_000_000, group: "council" },
+  { name: "Cornerstone",       usdc: 10_000, syn: 1_000_000, group: "council" },
 ];
 
 // ─── Membership Journey (7 steps) ───
 export type JourneyStep = { key: string; label: string; status: "live" | "next" | "pending"; detail: string };
 export const JOURNEY_STEPS: JourneyStep[] = [
   { key: "buy",       label: "Buy SYN",         status: "live",    detail: "USDC → SYN at $0.01, on Avalanche." },
-  { key: "rank",      label: "Unlock Rank",     status: "live",    detail: "Your purchases map to a public rank." },
+  { key: "rank",      label: "Reflect Rank",    status: "live",    detail: "Your contribution maps to a public rank — recognition only." },
   { key: "registry",  label: "Join Registry",   status: "live",    detail: "Wallet recorded onchain in the sale contract." },
   { key: "archive",   label: "Access Archive",  status: "next",    detail: "Member archive + episode access (rolling)." },
   { key: "participate", label: "Participate",   status: "next",    detail: "Verified activity and contributor paths." },

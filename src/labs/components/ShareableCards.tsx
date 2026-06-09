@@ -200,7 +200,7 @@ export function MemberCard() {
   const { current: rank } = rankForSyn(synAmount);
 
   // Archive weight is an identity-only display value, not a reward or entitlement.
-  const archiveWeight = Math.floor((usdcAmount || 5) * (rank?.scoreMultiplier ?? 1));
+  const archiveWeight = Math.floor(usdcAmount || 5);
 
   const verification: "VERIFIED" | "PENDING" =
     isConnected && synAmount > 0 ? "VERIFIED" : "PENDING";

@@ -49,7 +49,7 @@ const ENTRIES: Entry[] = [
 
   // Ranks & Identity
   { cat: "Ranks & Identity", q: "What is a Founder Number?", a: "A permanent archive ID assigned in join order. The first members carry the lowest numbers forever." },
-  { cat: "Ranks & Identity", q: "How do ranks work?", a: "Rank is derived directly from on-chain SYN balance — there are twelve tiers from Citizen to Genesis Circle. Ranks unlock archive recognition and visibility, never bonus tokens or a better rate." },
+  { cat: "Ranks & Identity", q: "How do ranks work?", a: "Rank is derived directly from on-chain SYN balance — there are twelve tiers from Citizen to Cornerstone. Rank reflects archive recognition and visibility, never bonus tokens, payouts, or a better rate." },
   { cat: "Ranks & Identity", q: "Do ranks give cheaper SYN?", a: "No. Rank reflects status, visibility, and future module access only. Token price is fixed for everyone." },
 
   // NFT Archive

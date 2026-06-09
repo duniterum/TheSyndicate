@@ -82,8 +82,8 @@ export function CanonicalSpec() {
               <h3 className="text-lg font-semibold text-foreground mb-2">Access Rate</h3>
               <p className="text-2xl font-mono text-primary">{ACCESS_RATE_LABEL}</p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Fixed rate. Larger purchases unlock rank and archive recognition —
-                never cheaper SYN. ({ACCESS_RATE_USDC_PER_SYN} USDC per SYN)
+                Fixed rate. Larger contributions reflect a higher rank and archive
+                recognition — never cheaper SYN. ({ACCESS_RATE_USDC_PER_SYN} USDC per SYN)
               </p>
             </div>
             <div>

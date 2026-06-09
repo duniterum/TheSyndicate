@@ -262,16 +262,17 @@ export function Leaderboard() {
   );
 }
 
-/* ─────────────────────── 08. (removed) Reputation Model / Compounder Score
+/* ─────────────────────── 08. (removed) Reputation / rank-score model
  * ─────────────────────── 09. (removed) NFT Layer with hardcoded mock badges
  *
  * Both sections were dead exports — never imported by any route or component
  * (verified via grep on 2026-06-05). They carried constitution-banned content
- * (hardcoded "642" rank, "Decade Member" badge, "Compounder" framing, mock
- * NFT placeholders with $1–$10 mint range). Removed during the final
- * pre-launch repair pass. If a real reputation or NFT surface is built later,
- * model it on the canonical on-chain hooks (useProtocolPulse / useHolderIndex)
- * and avoid mock data per the Trust model rule.
+ * (hardcoded "642" rank, "Decade Member" badge, a rank-weighted reputation
+ * score, mock NFT placeholders with $1–$10 mint range). Removed during the
+ * final pre-launch repair pass. Per the Rank Constitutional Ruling, rank
+ * confers no economic benefit and must never drive a weighted score. If a
+ * real reputation or NFT surface is built later, model it on the canonical
+ * on-chain hooks (useProtocolPulse / useHolderIndex) and avoid mock data.
  */
 
 /* ─────────────────────── 10. The Vault Balance Sheet ─────────────────────── */
@@ -1017,13 +1018,10 @@ export function MembershipCalculator() {
   const [usdc, setUsdc] = useState(121);
   const calc = useMemo(() => {
     const syn = usdc / ACCESS_RATE_USDC_PER_SYN;
-    const { current, next } = rankForSyn(syn);
-    const synToNext = next ? Math.max(0, next.syn - syn) : 0;
+    const { current } = rankForSyn(syn);
     const f = vaultFlow(usdc);
     return {
       syn, rank: current?.name ?? "Below Citizen",
-      synToNext, nextRankName: next?.name ?? "—",
-      scoreMul: current?.scoreMultiplier ?? 1.0,
       ...f,
     };
   }, [usdc]);
@@ -1033,7 +1031,7 @@ export function MembershipCalculator() {
       <SectionHeader
         eyebrow="19 — Calculator"
         title={<>Membership <span className="text-gradient-gold">calculator</span></>}
-        description="Type any USDC amount — $3, $7, $25, $121, $777. See SYN received, rank unlocked, the gap to the next rank, and exactly how your USDC flows into the Vault."
+        description="Type any USDC amount — $3, $7, $25, $121, $777. See SYN received, the rank it reflects, and exactly how your USDC flows into the Vault."
       />
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
         <GlassCard className="lg:col-span-2 flex flex-col gap-4">
@@ -1074,10 +1072,10 @@ export function MembershipCalculator() {
               <div className="mono text-3xl font-semibold text-gradient-gold mt-1">{Math.round(calc.syn).toLocaleString("en-US")}</div>
             </div>
             <div className="surface p-4">
-              <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Rank Unlocked</div>
+              <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Rank Reflected</div>
               <div className="text-2xl font-semibold text-foreground mt-1">{calc.rank}</div>
               <div className="mono mt-1 text-[11px] text-muted-foreground">
-                {calc.synToNext > 0 ? `Needs ${Math.ceil(calc.synToNext).toLocaleString("en-US")} SYN for ${calc.nextRankName}` : "Top tier reached"}
+                Recognition only — no bonus tokens, no better rate.
               </div>
             </div>
             <div className="surface p-4">
@@ -1702,7 +1700,7 @@ export function FAQ() {
 /* ─────────────────────── 30. Docs ─────────────────────── */
 const DOCS: Array<{ title: string; summary: string; href: string }> = [
   { title: "Start Here",         summary: "What The Syndicate is, who it's for, and how to participate.",     href: "/whitepaper" },
-  { title: "Membership & Ranks", summary: "Twelve ranks from Citizen ($5) to Genesis Circle ($10,000).",      href: "/ranks" },
+  { title: "Membership & Ranks", summary: "Twelve ranks from Citizen ($5) to Cornerstone ($10,000).",        href: "/ranks" },
   { title: "Token Utility",      summary: "What SYN does — and what it is not.",                               href: "/token" },
   { title: "Vault Flow",         summary: "70% Vault · 20% Liquidity · 10% Operations.",                       href: "/vault" },
   { title: "Risk Disclosure",    summary: "Public experiment, total-loss possibility, no guarantees.",         href: "/faq" },

@@ -25,7 +25,6 @@ import {
   Pill,
   Section,
   StatusPill,
-  ProgressBar,
   AnimatedNumber,
 } from "@/components/syndicate/Primitives";
 import { ConnectCTA } from "@/components/syndicate/ConnectCTA";
@@ -69,16 +68,6 @@ function copy(text: string) {
   } catch {
     /* best-effort */
   }
-}
-
-// Progress within the current rank band toward the next rank (0..1).
-function rankProgress(record: HolderRecord): number {
-  const cur = record.currentRank;
-  const next = record.nextRank;
-  if (!cur || !next) return cur && !next ? 1 : 0;
-  const span = next.usdc - cur.usdc;
-  if (span <= 0) return 0;
-  return Math.max(0, Math.min(1, (record.cumulativeUsdc - cur.usdc) / span));
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -175,8 +164,6 @@ function CockpitHeader({
   const chapter = record ? getChapterByMemberNumber(record.memberNumber) : undefined;
   const joinedUnix = record ? chainTime.blockToUnix(record.firstPurchaseBlock) : undefined;
   const walletUrl = address ? explorerUrlForAddress(address) : null;
-
-  const progress = record ? rankProgress(record) : 0;
 
   const shareText = record && chapter
     ? `I hold Member #${record.memberNumber} of The Syndicate — ${chapter.shortLabel} · ${record.currentRank?.name ?? "Member"} · ${fmtInt(Math.round(record.cumulativeSyn))} SYN received. Verified on-chain.`
@@ -317,25 +304,17 @@ function CockpitHeader({
 
           {/* Next milestone + primary action */}
           <div className="lg:w-64 lg:border-l lg:border-border/40 lg:pl-6">
-            {record && record.nextRank && record.usdcToNextRank !== null ? (
-              <div className="mb-4">
-                <div className="flex items-baseline justify-between gap-2 mb-1.5">
-                  <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                    Next milestone
-                  </span>
-                  <span className="mono text-[11px] text-foreground">{record.nextRank.name}</span>
-                </div>
-                <ProgressBar value={progress * 100} max={100} tone="gold" />
-                <div className="mono text-[10px] text-muted-foreground mt-1.5">
-                  {fmtUsd(record.usdcToNextRank)} routed to {record.nextRank.name}
-                </div>
-              </div>
-            ) : record ? (
+            {record ? (
               <div className="mb-4">
                 <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   Recognition
                 </span>
-                <div className="mono text-sm text-foreground mt-1">Top tier reached</div>
+                <div className="mono text-sm text-foreground mt-1">
+                  {record.currentRank?.name ?? "Citizen"}
+                </div>
+                <p className="mono text-[10px] text-muted-foreground mt-1 leading-relaxed">
+                  Derived from USDC routed. Recognition only — no payout, no rate change, no entitlement.
+                </p>
               </div>
             ) : (
               <div className="mb-4">
@@ -527,11 +506,7 @@ function CockpitPortfolio({
       {
         label: "Recognition",
         value: record?.currentRank?.name ?? "—",
-        sub: record?.nextRank && record.usdcToNextRank !== null
-          ? `${fmtUsd(record.usdcToNextRank)} to ${record.nextRank.name}`
-          : record?.currentRank
-            ? "top tier reached"
-            : "derived from USDC routed",
+        sub: "derived from USDC routed · no payout",
         live: Boolean(record),
       },
       {

@@ -40,6 +40,9 @@ The live NFT is Archive1155 **The First Signal (ID1)** — mints now. The pendin
 is the **Seat Record (ERC-721)**. A status rail listing generic "NFT" as PENDING contradicts the
 live First Signal — label the pending item "Seat Record", not "NFT".
 
+## Rank tier names + framing (see rank-constitutional-ruling.md)
+Rank ladder renames: `$100` tier **Vanguard** (was "Founder"), `$10,000` tier **Cornerstone** (was "Genesis Circle"). Rank copy is recognition-only — never "$X to next rank"/"Rank unlocked"/spend-ladder. "Founder #"/founderNumber is identity, not a rank.
+
 ## on-chain spelling
 Body prose canonical = **"on-chain"** (dominant). "onchain"/"Onchain" prose split (~80 instances)
 was left as a flagged follow-up — a blanket `\bonchain` sweep risks hitting URL fragments /

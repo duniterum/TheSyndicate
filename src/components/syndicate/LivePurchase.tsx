@@ -78,7 +78,7 @@ export function LivePurchase() {
 
   // Calculator math (off-chain mirror at fixed rate; quote on-chain on demand later).
   const synOut = usdc * 100;
-  const { current, next } = rankForUsdc(usdc);
+  const { current } = rankForUsdc(usdc);
   const flow = vaultFlow(usdc);
 
   // Write hooks
@@ -372,10 +372,10 @@ export function LivePurchase() {
             <div className="rounded-lg border border-border/50 bg-background/60 p-4 space-y-2">
               <Row label="USDC amount" value={fmtUsd(usdc)} />
               <Row label="SYN received" value={`${synOut.toLocaleString("en-US")} SYN`} accent />
-              <Row label="Rank unlocked" value={current?.name ?? "Below Citizen"} />
+              <Row label="Rank reflected" value={current?.name ?? "Below Citizen"} />
               <Row
-                label="Next rank gap"
-                value={next ? `${fmtUsd(Math.max(0, next.usdc - usdc))} → ${next.name}` : "Top tier"}
+                label="Recognition"
+                value="No payout · no rate change"
               />
               <div className="h-px bg-border/40 my-2" />
               <Row label="→ Vault (70%)" value={fmtUsd(flow.vault)} />
@@ -587,7 +587,7 @@ function SuccessReceipt({
       <dl className="space-y-1 text-xs">
         <Row label="USDC paid" value={fmtUsd(usdc)} />
         <Row label="SYN received" value={`${synOut.toLocaleString("en-US")} SYN`} accent />
-        {rank && <Row label="Rank unlocked" value={rank} />}
+        {rank && <Row label="Rank reflected" value={rank} />}
         <Row label="→ Vault" value={fmtUsd(flow.vault)} />
         <Row label="→ Liquidity" value={fmtUsd(flow.lp)} />
         <Row label="→ Operations" value={fmtUsd(flow.ops)} />
