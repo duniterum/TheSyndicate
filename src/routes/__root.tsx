@@ -17,6 +17,7 @@ import { WalletDebugPanel } from "../components/syndicate/WalletDebugPanel";
 import { MobileJoinBar } from "../components/syndicate/MobileJoinBar";
 import { StaleBuildBanner } from "../components/syndicate/StaleBuildBanner";
 import { ThemeProvider, THEME_BOOT_SCRIPT } from "../lib/theme";
+import { DEV_HYDRATION_RECOVERY_SCRIPT } from "../lib/dev-recovery";
 import { avascanTokenUrl, snowtraceTokenUrl } from "../lib/chain-registry";
 import { SYNDICATE_CONFIG } from "../lib/syndicate-config";
 
@@ -148,6 +149,13 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en" style={{ colorScheme: "light" }} suppressHydrationWarning>
       <head>
+        {/* DEV ONLY: one guarded full reload if the long-lived preview tab ends
+            up with duplicate React modules after a server restart ("Invalid
+            hook call"). Paired with onRecoverableError in src/client.tsx.
+            Stripped from production. */}
+        {import.meta.env.DEV && (
+          <script dangerouslySetInnerHTML={{ __html: DEV_HYDRATION_RECOVERY_SCRIPT }} />
+        )}
         {/* Set theme class BEFORE hydration to avoid a flash of light when user
             previously chose dark. Default = light when no preference exists. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />

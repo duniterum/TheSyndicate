@@ -11,6 +11,10 @@ export default defineConfig({
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // Custom client entry (src/client.tsx) so we can pass onRecoverableError to
+    // hydrateRoot and silence the benign, auto-recovered hydration mismatch the
+    // Replit canvas preview injects (dev only). Production behaviour unchanged.
+    client: { entry: "client" },
   },
   vite: {
     server: {
