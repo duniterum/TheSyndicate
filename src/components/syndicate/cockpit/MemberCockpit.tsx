@@ -35,6 +35,7 @@ import { CockpitMemory } from "./CockpitMemory";
 import { CockpitProgression } from "./CockpitProgression";
 import { CockpitBadges } from "./CockpitBadges";
 import { WakeBehindYou } from "./WakeBehindYou";
+import { SeatsAroundYou } from "./SeatsAroundYou";
 import { WalletAvatar } from "./WalletAvatar";
 import { useHolderIndex, type HolderRecord } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
@@ -115,6 +116,13 @@ export function MemberCockpit() {
           </div>
         </div>
       </Section>
+
+      {/* Co-witnesses — the quiet social layer. Directly below the seat panel so
+          the page reads "who you are → who sits beside you → where you fit in
+          the story". Shows the real members on either side of your seat (order
+          of entry only — no amounts, no rank, no standing). Wake stays the
+          primary surface; this never becomes a leaderboard. */}
+      <SeatsAroundYou />
 
       {/* Wave C4 — progression / story loop. Sits right under the seat so the
           page reads "who you are → where you fit in the story → what changed
