@@ -1,0 +1,263 @@
+# Documentation Authority Map
+
+Status: **binding**. This is the single source of truth for how to read every
+markdown file in `docs/`. The protocol has gone through several audit waves;
+earlier waves used vocabulary and cohort names that have since been superseded.
+Without an authority map, an old audit can quietly drive a new implementation
+decision in the wrong direction.
+
+> **Rule:** future implementation, design, and review work may rely **only**
+> on CANONICAL and OPERATIONAL docs. HISTORICAL and DEPRECATED docs are kept
+> for record. They are not implementation authority.
+
+---
+
+## Authority classes
+
+| Class            | Meaning                                                                                          | May guide future work? |
+| ---------------- | ------------------------------------------------------------------------------------------------ | ---------------------- |
+| **CANONICAL**    | Current source of truth. Doctrine, constitution, gates, vision.                                  | **Yes**                |
+| **OPERATIONAL**  | Current checklists, runbooks, integration status, contract maps, plans.                          | **Yes**                |
+| **HISTORICAL**   | Audit snapshot or report from a previous wave. Kept for record.                                  | No                     |
+| **DEPRECATED**   | Superseded and would be dangerous if referenced as-is. Kept only for traceability.               | No                     |
+
+Docs that contain pre-doctrine vocabulary (see "Superseded doctrines" below)
+must either be CANONICAL with surgical updates, or carry a `Historical note`
+header on line 1.
+
+---
+
+## CANONICAL
+
+The doctrine layer. Vision, gates, decision frameworks.
+
+- `docs/VISION.md`
+- `docs/CONSTITUTION_SUMMARY.md`
+- `docs/AAA_DECISION_LENSES.md`
+- `docs/FOUNDER_MULTI_HAT_EVALUATION_FRAMEWORK.md`
+- `docs/INFINITE_NARRATIVE_AUDIT.md`
+- `docs/SCARCITY_STATUS_PERMANENCE_AUDIT.md`
+- `docs/MYTHOLOGY_AND_COHORT_IDENTITY_AUDIT.md`
+- `docs/ARCHITECTURE_PROPOSAL_AAA.md`
+- `docs/TERMINOLOGY_GLOSSARY.md`
+- `docs/PRE_CONTRACT_ALIGNMENT_AUDIT.md`
+- `docs/PROTOCOL_EXECUTION_CONTROL_SYSTEM.md` — severity + decision-outcome framework, release gates, activation gates, invariants
+- `docs/DOCUMENTATION_AUTHORITY_MAP.md` (this file)
+
+### Precedence rule (when docs disagree)
+
+1. **On-chain truth** (live read from Avalanche C-Chain 43114)
+2. **Canonical registries** (`contract-registry.ts`, `archive-id-registry.ts`, `chain-registry.ts`, `execution-gates.ts`)
+3. **Execution gates** (`scripts/check-execution-gates.mjs`, `PROTOCOL_EXECUTION_CONTROL_SYSTEM.md`)
+4. **Current canonical docs** (this CANONICAL list)
+5. **Operational docs** (OPERATIONAL list below)
+6. **Historical docs** (HISTORICAL list — record only, never authority)
+
+## OPERATIONAL
+
+Active runbooks, registries, integration maps, deployment state, contract
+specs that match the deployed reality. Safe to reference for current work.
+
+> **Do not infer chain, explorer, address, or ABI data.** Import from the
+> canonical registry (`src/lib/chain-registry.ts`,
+> `src/lib/contract-registry.ts`, `src/lib/archive-id-registry.ts`).
+> Operational entry point: `docs/CANONICAL_REGISTRY.md`. Activation
+> checklist: `docs/ACTIVATION_RUNBOOK.md`.
+
+- `docs/CANONICAL_REGISTRY.md`
+- `docs/ACTIVATION_RUNBOOK.md`
+- `docs/HOLDER_INDEX_ARCHITECTURE.md`
+- `docs/DEPLOYMENT_STATE_V1.md`
+- `docs/CONTRACT_INTEGRATION_STATUS.md`
+- `docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md`
+- `docs/WALLET_TRANSACTION_ARCHITECTURE.md` — canonical wallet/session, tx lifecycle, payment flow, explorer, error classifier, future-NFT checklist
+- `docs/SALE_FLOW_INVARIANTS.md` — six write-path invariants (registry · freshness · pinning · sync · explorer · mint-hash persistence)
+- `docs/DEFERRED_WORK_LEDGER.md` — single place for intentionally deferred items (severity · why · revisit · prerequisite)
+- `docs/DATA_SOURCE_MAP.md`
+- `docs/DATA_VERIFICATION_REGISTRY.md`
+- `docs/TRANSACTION_TAG_REGISTRY.md`
+- `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`
+- `docs/SMART_CONTRACTS_DEFERRED.md`
+- `docs/SMART_CONTRACT_DECISIONS_PENDING.md`
+- `docs/SOLIDITY_REVIEW_STATE.md`
+- `docs/ACCESSIBILITY_CHECKLIST.md`
+- `docs/ANALYTICS_READINESS_PLAN.md`
+- `docs/MONITORING_READINESS_PLAN.md`
+- `docs/PRODUCTION_LOCK_CHECKLIST.md`
+- `docs/REAL_USER_TEST_PLAN.md`
+- `docs/MVP_TESTING_SCRIPT.md`
+- `docs/OG_RENDERING_STRATEGY.md`
+- `docs/OG_RENDERING_VERIFICATION.md`
+- `docs/SEARCH_SUBMISSION_NOTES.md`
+- `docs/FULL_SITE_MAP.md`
+- `docs/NFT_ARCHIVE_DESIGN_REFERENCES.md`
+- `docs/NFT_ARCHIVE_VERIFIABILITY_MATRIX.md`
+
+> Docs that were previously treated as operational but still carry
+> pre-doctrine vocabulary (NFT_ARCHIVE V1 specs, ARCHIVE_9_SLOT_READINESS_AUDIT,
+> FINISHING_PHASE_ROADMAP, LIVING_PROTOCOL_AUDIT, WAVE_3B_GATE) have been
+> moved to HISTORICAL with a header warning. The code remains the truth for
+> any value those docs used to track.
+
+
+
+## HISTORICAL
+
+Audit snapshots, completion reports, and recalibration records from previous
+waves. Useful for understanding how we arrived here; **must not** be used as
+implementation authority. Any of these that contain pre-doctrine vocabulary
+carry a `Historical note` header.
+
+- `docs/AAA_FOUNDER_READINESS_REPORT.md`
+- `docs/AAA_HOLISTIC_FOUNDER_AUDIT.md`
+- `docs/CODE_HEALTH_AUDIT.md`
+- `docs/CONTENT_CONSISTENCY_AUDIT.md`
+- `docs/FINAL_AAA_SELF_AUDIT.md`
+- `docs/FINAL_CACHE_PARITY_SAFETY_REPORT.md`
+- `docs/FINAL_EXECUTION_SPRINT_REPORT.md`
+- `docs/FINAL_INFORMATION_ARCHITECTURE_DECISION.md`
+- `docs/FINAL_LAUNCH_FIX_REPORT.md`
+- `docs/FINAL_PRE_ADS_LOCK_REPORT.md`
+- `docs/FINAL_PRE_ADS_QA_AND_MEASUREMENT_REPORT.md`
+- `docs/FINAL_PRE_LAUNCH_VERIFICATION_REPORT.md`
+- `docs/FINAL_PROFESSIONAL_POLISH_REPORT.md`
+- `docs/FINAL_PROJECT_HEALTH_AND_REPAIR_REPORT.md`
+- `docs/FINAL_USER_FACING_COMPLETION_REPORT.md`
+- `docs/FIRST_TIME_VISITOR_ACTION_AUDIT.md`
+- `docs/FULL_FLYWHEEL_RESTORATION_REPORT.md`
+- `docs/FULL_SITE_AAA_AUDIT.md`
+- `docs/FULL_SITE_STRUCTURE_AND_HEALTH_REPORT.md`
+- `docs/IMPLEMENTATION_EXECUTION_PLAN.md`
+- `docs/INFORMATION_HIERARCHY.md`
+- `docs/INFORMATION_HIERARCHY_MASTER_PLAN.md`
+- `docs/LIGHTHOUSE_PRE_ADS_AUDIT.md`
+- `docs/LIVE_DATA_COMPLETION_AUDIT.md`
+- `docs/LIVE_PRODUCTION_P6_P8_PARITY_REPAIR_REPORT.md`
+- `docs/LIVE_SITE_DISCREPANCY_AUDIT.md`
+- `docs/LIVE_SITE_PARITY_AND_TRUTH_CLEANUP_REPORT.md`
+- `docs/LOOP_OWNERSHIP_DECISION.md`
+- `docs/LOW_COST_FINAL_HARDENING_REPORT.md`
+- `docs/MASTER_PROTOCOL_CONTEXT.md`
+- `docs/MULTI_HAT_SITE_SCORECARD.md`
+- `docs/MVP_BEHAVIOR_METRICS.md`
+- `docs/MVP_CONFUSION_SIGNALS.md`
+- `docs/MVP_READINESS_AUDIT.md`
+- `docs/MVP_READINESS_AND_CONVERSION_AUDIT.md`
+- `docs/NAVIGATION_IA_AUDIT.md`
+- `docs/NFT_FINAL_ARCHITECTURE_AUDIT.md`
+- `docs/NORTH_STAR_SYSTEM.md`
+- `docs/P6_EXECUTION_AND_READINESS_REPORT.md`
+- `docs/P6_IMPLEMENTATION_AND_ARCHIVE_REPORT.md`
+- `docs/P9_PRODUCT_JUDGMENT_RECALIBRATION.md`
+- `docs/PRE_ADS_DESIGN_CTA_COPY_RISK_REPORT.md`
+- `docs/PRE_LAUNCH_HARDENING_REPORT.md`
+- `docs/PREVIEW_RENDERED_TRUTH_FAILURE_REPORT.md`
+- `docs/PRODUCT_ARCHITECTURE_MAP.md`
+- `docs/PRODUCT_DECISION_FRAMEWORK.md`
+- `docs/PRODUCTION_PARITY_AND_VISUAL_FLYWHEEL_REPORT.md`
+- `docs/PRODUCTION_PARITY_FAILURE_REPORT.md`
+- `docs/PROTOCOL_COHESION_AUDIT.md`
+- `docs/PROTOCOL_TRUTH_LAYER_REPORT.md`
+- `docs/PUBLISH_CONFIRMATION_REPORT.md`
+- `docs/RANK_DISTRIBUTION_SPEC.md`
+- `docs/RETURN_LOOP_ARCHITECTURE.md`
+- `docs/ROUTE_ARCHITECTURE_AUDIT.md`
+- `docs/ROUTE_STALE_SYSTEM_REPAIR_REPORT.md`
+- `docs/SCALABILITY_AND_ARCHITECTURE_AUDIT.md`
+- `docs/SITE_HARMONIZATION_AUDIT.md`
+- `docs/SITE_REDESIGN_EXECUTION_REPORT.md`
+- `docs/STATUS_EMPTY_PENDING_AUDIT.md`
+- `docs/STEP_BY_STEP_FROM_HERE.md`
+- `docs/STORY_ENGINE_AUDIT.md`
+- `docs/SYNDICATE_PROTOCOL_MODEL.md`
+- `docs/TECHNICAL_DEBT_AND_LAUNCH_RISK_REPORT.md`
+- `docs/TRANSPARENCY_ROUTE_TRUTH_REPAIR_REPORT.md`
+- `docs/UX_CTA_FLOW_AUDIT.md`
+- `docs/VISUAL_FLYWHEEL_AND_PROTOCOL_ECONOMY_REPORT.md`
+- `docs/WALLET_SESSION_AUDIT.md`
+- `docs/WALLET_UX_FLOWS.md`
+- `docs/WAVE_P_EXECUTION_REPORT.md`
+- `docs/WAVE_3B_GATE.md`
+- `docs/ARCHIVE_ENGINE_SPEC.md`
+- `docs/ARCHIVE_ENGINE_V1.md`
+- `docs/ARCHIVE_ENGINE_V1_INTEGRATION_REPORT.md`
+- `docs/ARCHIVE_9_SLOT_READINESS_AUDIT.md`
+- `docs/CHAPTER_ARCHIVES_QA.md`
+- `docs/FINISHING_PHASE_ROADMAP.md`
+- `docs/LIVING_PROTOCOL_AUDIT.md`
+- `docs/NFT_ARCHIVE_EXPLAINED.md`
+- `docs/NFT_ARCHIVE_METADATA_PHILOSOPHY.md`
+- `docs/NFT_ARCHIVE_SMART_CONTRACT_ARCHITECTURE_V1.md`
+- `docs/NFT_ARCHIVE_SOLIDITY_SPEC_V1.md`
+- `docs/NFT_ARCHIVE_TOKEN_CATALOG_V1.md`
+- `docs/NFT_ARCHIVE_VISUAL_SYSTEM_V1.md`
+- `docs/TRANSPARENCY_ROUTE_TRUTH_REPAIR_REPORT.md`
+
+
+## DEPRECATED
+
+Superseded by current doctrine. Names and cohorts in these docs no longer
+match the chapter system. Carry a `Historical note` header.
+
+- `docs/CHAPTER_ARCHIVES_SPEC.md` — uses First 100 / First 500 / First 1000 cohort system, replaced by the five canonical chapters.
+- `docs/MEMBER_WALL_SPEC.md` — same.
+- `docs/FOUNDERS_HALL_SPEC.md` — built around "first 100 founders" cohort, not the canonical Chapter I Genesis Signal (#1–#333).
+- `docs/MVP_ECOSYSTEM_ROADMAP.md` — uses pre-doctrine cohort permalinks.
+
+---
+
+## Superseded doctrines (never re-introduce in CANONICAL or OPERATIONAL docs)
+
+| Banned / obsolete                                                                                       | Replaced by                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Genesis 10", "first 10", "First 100", "First 500", "First 1000", "Genesis #1–#10"                      | The five canonical chapters (Chapter I Genesis Signal #1–#333 · II First Thousand #334–#1,000 · III The Expansion #1,001–#3,333 · IV First Ten Thousand #3,334–#10,000 · V Open Era).  |
+| "Chapter I — The Beginning"                                                                             | "Chapter I — Genesis Signal".                                                                                                                                                          |
+| Archive as primary public navigation                                                                    | NFT is the public route. Archive is deep-lore vocabulary only.                                                                                                                         |
+| "Relic" as primary public NFT language                                                                  | "NFT" / "Collection" / "Artifact" (Artifact is secondary, Relic is deep lore only — never live UI).                                                                                    |
+| Patron Seal at 9 USDC                                                                                   | Patron Seal at **5.00 USDC** (catalog + on-chain agree).                                                                                                                               |
+| Seat Record inside Archive1155 as an active mint                                                        | SeatRecord721 — separate, future contract. Archive1155 ID 2 stays reserved/disabled.                                                                                                   |
+| Any language implying NFT equity, yield, dividends, revenue share, Vault ownership, LP ownership, or governance rights | NFTs are collectible protocol memories with **no financial rights**.                                                                                                         |
+
+---
+
+## Current canonical doctrines
+
+### Vocabulary
+
+- **Public:** NFT · Collection · Chapter · Member
+- **Secondary:** Protocol Memory · Artifact
+- **Deep lore (docs and long-form only):** Archive · Chronicle · Signal · Seal
+
+### Chapter doctrine
+
+- Chapter I — **Genesis Signal** — Member #1 – #333
+- Chapter II — **First Thousand** — Member #334 – #1,000
+- Chapter III — **The Expansion** — Member #1,001 – #3,333
+- Chapter IV — **First Ten Thousand** — Member #3,334 – #10,000
+- Chapter V — **Open Era** — Member #10,001 +
+
+Source of truth in code: `src/lib/chapters.ts`.
+
+### NFT doctrine
+
+- NFTs are collectible protocol memories.
+- Not every milestone becomes an NFT.
+- IDs 4–8 keep their on-chain names.
+- ID 9 is **Protocol Chronicle**, not configured on-chain yet.
+- No NFT implies financial rights.
+
+### Seat doctrine
+
+- SYN is the seat.
+- Artifacts are the memory.
+- **SeatRecord721** is a future, separate identity contract.
+- **Archive1155 ID 2** remains reserved/disabled.
+
+---
+
+## Enforcement
+
+A docs guard test (`src/lib/__tests__/doctrine-guard.test.ts`) scans every
+CANONICAL doc for the banned vocabulary above and fails the suite if any
+appears. Historical and Deprecated docs may contain the old terms **only**
+when their first non-empty line begins with `Historical note:`.

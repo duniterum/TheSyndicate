@@ -1,0 +1,165 @@
+You are receiving the full codebase of The Syndicate.
+
+Your job is NOT to reinvent the product.
+
+Your job is to stabilize, modernize, harmonize, and improve the existing site without breaking the working protocol.
+
+Critical context:
+This project already went through many AI design iterations where pages became inconsistent, vision drifted, routes became stale, copy became confused, and working systems were accidentally weakened.
+
+Do not repeat that mistake.
+
+The Syndicate is an on-chain membership protocol on Avalanche.
+
+Core vision:
+SYN is the seat.
+Artifacts are the memory.
+The site is a live protocol, a member registry, a treasury dashboard, and a collectible archive.
+It must feel premium, simple, verifiable, cinematic, and crypto-native.
+
+Your priorities, in order:
+
+1. Preserve working systems
+   Before changing anything, inspect and protect:
+
+* contract addresses
+* on-chain reads/writes
+* sale flow
+* wallet connection
+* member registry
+* My Syndicate
+* Activity feed
+* Vault / Liquidity data
+* Archive1155 / NFT logic
+* chapter thresholds
+* rank thresholds
+* LIVE / PARTIAL / PENDING status logic
+* all verification links
+
+Do not change these unless clearly broken.
+
+2. Fix the “stuck AI redesign problem”
+   Do not create a new disconnected design direction.
+   Do not redesign one page while leaving the rest inconsistent.
+   Do not add fake content.
+   Do not bury important actions.
+   Do not replace working logic with mockups.
+   Do not invent financial promises.
+   Do not change the story model.
+
+3. Global design harmonization
+   Create one unified design system across the whole app:
+
+* same header logic
+* same footer logic
+* same section spacing
+* same card style
+* same button hierarchy
+* same typography
+* same status badges
+* same dashboard modules
+* same mobile behavior
+* same premium dark crypto aesthetic
+
+The site should feel like one serious product, not pages made by different AIs.
+
+4. Modern crypto style
+   Use best practices from premium crypto dashboards and DeFi analytics:
+
+* clean dark interface
+* strong contrast
+* sharp data cards
+* elegant gradients only where useful
+* better visual hierarchy
+* better spacing
+* fewer weak decorative sections
+* more useful protocol data
+* clearer CTAs
+* cleaner mobile layout
+
+Do not make it childish, generic SaaS, or overdesigned.
+
+5. Preserve the story
+   The emotional model is:
+
+* member number matters
+* early chapter matters
+* the protocol is unfolding like a series
+* buying SYN means taking a seat
+* artifacts remember protocol history
+* verification creates trust
+
+Keep this storytelling everywhere.
+
+6. Homepage goal
+   The homepage must answer immediately:
+
+* What is this?
+* Why join now?
+* What do I get?
+* Is it live?
+* Can I verify it?
+* What is the next action?
+
+Primary CTA: Join / Claim Seat.
+Secondary CTA: Verify On-chain.
+
+7. NFT / Archive goal
+   The generated artifact must be the hero.
+   Do not make the NFT page look like a generic metadata table.
+   The page should feel like a premium collectible archive:
+
+* artifact visual first
+* meaning second
+* mint / supply / ownership status
+* contract verification
+* protocol story
+
+8. Copy cleanup
+   Rewrite weak copy, but keep the doctrine.
+   Use simple, premium, direct language.
+   No hype.
+   No fake promises.
+   No “guaranteed returns.”
+   No “yield.”
+   No confusing technical overload.
+
+9. Performance and code cleanup
+   Improve:
+
+* unused code
+* duplicate components
+* unnecessary re-renders
+* image optimization
+* lazy loading
+* caching where safe
+* bundle size
+* responsive behavior
+* accessibility
+* SEO metadata
+
+But never cache live protocol data in a way that makes it misleading.
+
+10. Work safely
+    Make changes in phases:
+    Phase 1: audit and list protected systems.
+    Phase 2: global design tokens/components.
+    Phase 3: layout harmonization.
+    Phase 4: page-level cleanup.
+    Phase 5: performance cleanup.
+    Phase 6: final verification.
+
+At the end, report:
+
+* files changed
+* what improved
+* what was intentionally not changed
+* confirmation that protocol logic was preserved
+* confirmation that live/on-chain data still works
+* confirmation that no fake numbers or promises were added
+* confirmation that desktop and mobile were checked
+
+Final quality bar:
+The result should feel like a premium live crypto protocol, not a random AI-generated website.
+
+Improve the site deeply, but do not destroy the system.

@@ -1,0 +1,239 @@
+// Generic onchain event scanners for the /activity mini-explorer.
+// All scanners chunk at 2000-block windows to stay within Avalanche public
+// RPC log-range limits. Newest-first, capped by `limit`.
+
+import { useQuery } from "@tanstack/react-query";
+import { usePublicClient } from "wagmi";
+import { formatUnits, parseAbiItem, getAddress } from "viem";
+import { CONTRACTS, USDC_DECIMALS, SYN_DECIMALS, SALE_DEPLOYMENT_BLOCK, LP_POOL } from "./syndicate-config";
+
+const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
+const SYN  = CONTRACTS.SYN_CONTRACT_ADDRESS  as `0x${string}`;
+const PAIR = LP_POOL.pairAddress              as `0x${string}`;
+
+const TRANSFER = parseAbiItem("event Transfer(address indexed from, address indexed to, uint256 value)");
+const SWAP     = parseAbiItem("event Swap(address indexed sender, uint256 amount0In, uint256 amount1In, uint256 amount0Out, uint256 amount1Out, address indexed to)");
+const MINT     = parseAbiItem("event Mint(address indexed sender, uint256 amount0, uint256 amount1)");
+const BURN     = parseAbiItem("event Burn(address indexed sender, uint256 amount0, uint256 amount1, address indexed to)");
+
+const CHUNK = 2_000n;
+
+async function scan<T>(
+  publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
+  fromBlock: bigint,
+  fetchChunk: (start: bigint, end: bigint) => Promise<T[]>,
+): Promise<T[]> {
+  const tip = await publicClient.getBlockNumber();
+  const from = fromBlock > tip ? tip : fromBlock;
+  const out: T[] = [];
+  for (let start = from; start <= tip; start += CHUNK + 1n) {
+    const end = start + CHUNK > tip ? tip : start + CHUNK;
+    try {
+      const chunk = await fetchChunk(start, end);
+      out.push(...chunk);
+    } catch {
+      // Skip windows the RPC rejects.
+    }
+  }
+  return out;
+}
+
+// ─── USDC transfers in/out of any wallet (Treasury Flows) ────────────────
+
+export type UsdcFlow = {
+  direction: "in" | "out";
+  counterparty: string;
+  amount: number;          // USDC
+  blockNumber: bigint;
+  txHash: string;
+  logIndex: number;
+};
+
+export function useUsdcFlows(wallet: string, opts?: { fromBlock?: bigint; limit?: number }) {
+  const publicClient = usePublicClient();
+  const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
+  const limit = opts?.limit ?? 50;
+  const target = wallet as `0x${string}`;
+
+  return useQuery({
+    queryKey: ["usdc-flows", wallet, String(fromBlock), limit],
+    enabled: Boolean(publicClient),
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+    queryFn: async (): Promise<UsdcFlow[]> => {
+      if (!publicClient) return [];
+      const inLogs = await scan(publicClient, fromBlock, (start, end) =>
+        publicClient.getLogs({ address: USDC, event: TRANSFER, args: { to: target }, fromBlock: start, toBlock: end }),
+      );
+      const outLogs = await scan(publicClient, fromBlock, (start, end) =>
+        publicClient.getLogs({ address: USDC, event: TRANSFER, args: { from: target }, fromBlock: start, toBlock: end }),
+      );
+      const all: UsdcFlow[] = [];
+      const push = (l: typeof inLogs[number], dir: "in" | "out") => {
+        const args = l.args as { from?: string; to?: string; value?: bigint };
+        if (!args.from || !args.to || args.value === undefined) return;
+        all.push({
+          direction: dir,
+          counterparty: dir === "in" ? args.from : args.to,
+          amount: Number(formatUnits(args.value, USDC_DECIMALS)),
+          blockNumber: l.blockNumber ?? 0n,
+          txHash: l.transactionHash ?? "",
+          logIndex: l.logIndex ?? 0,
+        });
+      };
+      inLogs.forEach((l) => push(l, "in"));
+      outLogs.forEach((l) => push(l, "out"));
+      all.sort((a, b) => (a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1));
+      return limit > 0 ? all.slice(0, limit) : all;
+    },
+  });
+}
+
+// ─── LP Swaps (buys / sells against SYN/USDC pair) ───────────────────────
+
+export type LpSwap = {
+  kind: "buy" | "sell";       // buy = SYN out, USDC in
+  synAmount: number;
+  usdcAmount: number;
+  trader: string;
+  blockNumber: bigint;
+  txHash: string;
+  logIndex: number;
+};
+
+export function useLpSwaps(opts?: { fromBlock?: bigint; limit?: number }) {
+  const publicClient = usePublicClient();
+  const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
+  const limit = opts?.limit ?? 50;
+
+  return useQuery({
+    queryKey: ["lp-swaps", String(fromBlock), limit],
+    enabled: Boolean(publicClient),
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+    queryFn: async (): Promise<LpSwap[]> => {
+      if (!publicClient) return [];
+      // token0/token1 ordering — fetch once.
+      const [t0, t1] = await Promise.all([
+        publicClient.readContract({ address: PAIR, abi: [{ type: "function", name: "token0", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] }] as const, functionName: "token0" }),
+        publicClient.readContract({ address: PAIR, abi: [{ type: "function", name: "token1", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] }] as const, functionName: "token1" }),
+      ]);
+      const synIs0 = (t0 as string).toLowerCase() === SYN.toLowerCase();
+      const synDec = SYN_DECIMALS;
+      const usdcDec = USDC_DECIMALS;
+
+      const logs = await scan(publicClient, fromBlock, (start, end) =>
+        publicClient.getLogs({ address: PAIR, event: SWAP, fromBlock: start, toBlock: end }),
+      );
+      const out: LpSwap[] = [];
+      for (const l of logs) {
+        const a = l.args as { sender?: string; to?: string; amount0In?: bigint; amount1In?: bigint; amount0Out?: bigint; amount1Out?: bigint };
+        if (a.amount0In === undefined || a.amount1In === undefined || a.amount0Out === undefined || a.amount1Out === undefined) continue;
+        const syn0 = synIs0 ? a.amount0Out - a.amount0In : a.amount1Out - a.amount1In; // signed SYN delta to trader
+        const usdc0 = synIs0 ? a.amount1Out - a.amount1In : a.amount0Out - a.amount0In; // signed USDC delta to trader
+        const synAbs = syn0 < 0n ? -syn0 : syn0;
+        const usdcAbs = usdc0 < 0n ? -usdc0 : usdc0;
+        out.push({
+          kind: syn0 > 0n ? "buy" : "sell",
+          synAmount: Number(formatUnits(synAbs, synDec)),
+          usdcAmount: Number(formatUnits(usdcAbs, usdcDec)),
+          trader: a.to ?? a.sender ?? "0x",
+          blockNumber: l.blockNumber ?? 0n,
+          txHash: l.transactionHash ?? "",
+          logIndex: l.logIndex ?? 0,
+        });
+      }
+      out.sort((a, b) => (a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1));
+      return limit > 0 ? out.slice(0, limit) : out;
+    },
+  });
+}
+
+// ─── LP add / remove (Mint / Burn) ───────────────────────────────────────
+
+export type LpLiquidityEvent = {
+  kind: "add" | "remove";
+  synAmount: number;
+  usdcAmount: number;
+  actor: string;
+  blockNumber: bigint;
+  txHash: string;
+  logIndex: number;
+};
+
+export function useLpLiquidityEvents(opts?: { fromBlock?: bigint; limit?: number }) {
+  const publicClient = usePublicClient();
+  const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
+  const limit = opts?.limit ?? 25;
+
+  return useQuery({
+    queryKey: ["lp-liquidity", String(fromBlock), limit],
+    enabled: Boolean(publicClient),
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+    queryFn: async (): Promise<LpLiquidityEvent[]> => {
+      if (!publicClient) return [];
+      const [t0] = await Promise.all([
+        publicClient.readContract({ address: PAIR, abi: [{ type: "function", name: "token0", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] }] as const, functionName: "token0" }),
+      ]);
+      const synIs0 = (t0 as string).toLowerCase() === SYN.toLowerCase();
+
+      const mints = await scan(publicClient, fromBlock, (start, end) =>
+        publicClient.getLogs({ address: PAIR, event: MINT, fromBlock: start, toBlock: end }),
+      );
+      const burns = await scan(publicClient, fromBlock, (start, end) =>
+        publicClient.getLogs({ address: PAIR, event: BURN, fromBlock: start, toBlock: end }),
+      );
+
+      const out: LpLiquidityEvent[] = [];
+      for (const l of mints) {
+        const a = l.args as { sender?: string; amount0?: bigint; amount1?: bigint };
+        if (a.amount0 === undefined || a.amount1 === undefined) continue;
+        out.push({
+          kind: "add",
+          synAmount: Number(formatUnits(synIs0 ? a.amount0 : a.amount1, SYN_DECIMALS)),
+          usdcAmount: Number(formatUnits(synIs0 ? a.amount1 : a.amount0, USDC_DECIMALS)),
+          actor: a.sender ?? "0x",
+          blockNumber: l.blockNumber ?? 0n,
+          txHash: l.transactionHash ?? "",
+          logIndex: l.logIndex ?? 0,
+        });
+      }
+      for (const l of burns) {
+        const a = l.args as { sender?: string; to?: string; amount0?: bigint; amount1?: bigint };
+        if (a.amount0 === undefined || a.amount1 === undefined) continue;
+        out.push({
+          kind: "remove",
+          synAmount: Number(formatUnits(synIs0 ? a.amount0 : a.amount1, SYN_DECIMALS)),
+          usdcAmount: Number(formatUnits(synIs0 ? a.amount1 : a.amount0, USDC_DECIMALS)),
+          actor: a.to ?? a.sender ?? "0x",
+          blockNumber: l.blockNumber ?? 0n,
+          txHash: l.transactionHash ?? "",
+          logIndex: l.logIndex ?? 0,
+        });
+      }
+      out.sort((a, b) => (a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1));
+      return limit > 0 ? out.slice(0, limit) : out;
+    },
+  });
+}
+
+// ─── New-holder derivation from purchase event stream ────────────────────
+
+export function firstSeenBuyers<T extends { buyer: string; blockNumber: bigint; logIndex: number; txHash: string; usdcAmount: number; synAmount: number }>(
+  events: T[],
+): Array<{ buyer: string; blockNumber: bigint; txHash: string; logIndex: number; usdcAmount: number; synAmount: number }> {
+  // Walk oldest → newest, keep only first occurrence per buyer.
+  const sorted = [...events].sort((a, b) => (a.blockNumber === b.blockNumber ? a.logIndex - b.logIndex : a.blockNumber > b.blockNumber ? 1 : -1));
+  const seen = new Set<string>();
+  const out: Array<{ buyer: string; blockNumber: bigint; txHash: string; logIndex: number; usdcAmount: number; synAmount: number }> = [];
+  for (const e of sorted) {
+    let key: string;
+    try { key = getAddress(e.buyer).toLowerCase(); } catch { key = e.buyer.toLowerCase(); }
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ buyer: e.buyer, blockNumber: e.blockNumber, txHash: e.txHash, logIndex: e.logIndex, usdcAmount: e.usdcAmount, synAmount: e.synAmount });
+  }
+  out.reverse(); // newest holder first
+  return out;
+}

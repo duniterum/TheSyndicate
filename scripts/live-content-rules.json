@@ -1,0 +1,189 @@
+[
+  {
+    "path": "/",
+    "must": ["The Syndicate", "Members", "USDC"],
+    "mustNot": [
+      "Compounder Score",
+      "transparent onchain society",
+      "Episode #001",
+      "DEMO PREVIEW",
+      "Compounding Society"
+    ],
+    "notes": "Homepage must follow the 6-zone hierarchy and pass the 10-second rule."
+  },
+  {
+    "path": "/join",
+    "must": ["Join", "USDC"],
+    "mustNot": [
+      "Compounder Score",
+      "score multiplier",
+      "governance participation",
+      "proposal eligibility",
+      "private strategy room",
+      "Genesis NFT eligibility"
+    ]
+  },
+  {
+    "path": "/vault",
+    "must": ["Vault"],
+    "mustNot": ["DEMO PREVIEW", "Compounder Score"]
+  },
+  {
+    "path": "/tokenomics",
+    "must": ["Tokenomics"],
+    "mustNot": [
+      "Compounder Score",
+      "governance-approved unlocks",
+      "proposal eligibility",
+      "community rewards",
+      "achievements"
+    ]
+  },
+  {
+    "path": "/token",
+    "must": ["SYN"],
+    "mustNot": ["Compounder Score"]
+  },
+  {
+    "path": "/liquidity",
+    "must": ["Liquidity"],
+    "mustNot": ["Compounder Score", "score multiplier"]
+  },
+  {
+    "path": "/activity",
+    "must": ["Activity"],
+    "mustNot": ["preview", "Compounder Score", "quests", "achievements", "DEMO PREVIEW"]
+  },
+  {
+    "path": "/transparency",
+    "must": ["Transparency"],
+    "mustNot": [
+      "Compounder Score",
+      "transparent onchain society",
+      "what is live, what is pending, what is a preview",
+      "Founder Number contract",
+      "Episodes",
+      "NFT count",
+      "Members count",
+      "Member directory",
+      "Member Directory",
+      "Activity feed",
+      "PREVIEW",
+      "20 — Verify",
+      "Every payment, verifiable",
+      "governance weight",
+      "AI analyst",
+      "AI analyst / governance / risk modules"
+    ]
+  },
+  {
+    "path": "/members",
+    "must": ["Members"],
+    "mustNot": ["preview", "Compounder Score", "quests", "achievements", "score multiplier"]
+  },
+  {
+    "path": "/founders",
+    "must": ["Founders"],
+    "mustNot": ["preview", "Founder Number contract", "Compounder Score", "quests", "achievements"]
+  },
+  {
+    "path": "/chapters",
+    "must": ["Chapter"],
+    "mustNot": ["preview", "Episodes", "Episode #001", "quests", "achievements", "DEMO PREVIEW"]
+  },
+  {
+    "path": "/episodes",
+    "must": ["Chapter"],
+    "mustNot": ["Episode #001", "quests", "Genesis NFT eligibility", "DEMO PREVIEW"]
+  },
+  {
+    "path": "/ranks",
+    "must": ["Rank"],
+    "mustNot": ["Compounder Score", "score multiplier", "governance participation"]
+  },
+  {
+    "path": "/roadmap",
+    "must": ["Roadmap"],
+    "mustNot": ["achievements", "Compounder Score"]
+  },
+  {
+    "path": "/docs",
+    "must": ["Docs"],
+    "mustNot": ["Compounder Score"]
+  },
+  {
+    "path": "/faq",
+    "must": ["FAQ"],
+    "mustNot": ["Compounder Score", "governance participation", "private strategy room"]
+  },
+  {
+    "path": "/whitepaper",
+    "must": ["Whitepaper"],
+    "mustNot": ["achievements", "Compounder Score"]
+  },
+  {
+    "path": "/nft",
+    "must": ["First Signal", "ACTIVE", "MINT OPEN", "0.50 USDC", "wallet limit"],
+    "mustNot": [
+      "Archive contract is not deployed",
+      "No public Archive mint is active yet",
+      "No drop is active yet",
+      "no public drop active yet",
+      "Public drops activated 0",
+      "Public drops activated: 0",
+      "NO PUBLIC DROP ACTIVATED",
+      "public artifact minting is not active yet",
+      "Validation Phase",
+      "Nothing is mintable today",
+      "ID 1 configured not active",
+      "The First Signal configured not active",
+      "PENDING CONTRACT for The First Signal",
+      "Mint ID 2",
+      "floor price",
+      "trading volume"
+    ]
+  },
+  {
+    "path": "/nfts",
+    "must": ["First Signal", "MINT OPEN"],
+    "mustNot": [
+      "Archive contract is not deployed",
+      "No drop is active yet",
+      "No public Archive mint is active yet",
+      "Public drops activated 0",
+      "Nothing is mintable today",
+      "Validation Phase",
+      "Genesis NFT eligibility",
+      "quests"
+    ]
+  },
+  {
+    "path": "/archive",
+    "must": ["First Signal", "MINT OPEN", "0.50 USDC"],
+    "mustNot": [
+      "Archive contract is not deployed",
+      "No drop is active yet",
+      "No public Archive mint is active yet",
+      "Public drops activated 0",
+      "Nothing is mintable today",
+      "Validation Phase",
+      "PENDING CONTRACT for The First Signal",
+      "Mint ID 2"
+    ]
+  },
+  {
+    "path": "/my-syndicate",
+    "must": ["Archive"],
+    "mustNot": [
+      "Archive contract is not deployed",
+      "No drop is active yet",
+      "Public drops activated 0",
+      "Nothing is mintable today"
+    ]
+  },
+  {
+    "path": "/registry",
+    "must": ["Registry"],
+    "mustNot": ["achievements", "Compounder Score"]
+  }
+]

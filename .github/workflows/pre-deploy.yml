@@ -1,0 +1,44 @@
+name: Pre-deploy gate
+
+# Blocks deploy only on BLOCKER results from the protocol health system.
+# WARN-level findings are reported in the job summary but do not fail.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  protocol-health:
+    name: Protocol health (BLOCKER gate)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # The health script has no runtime deps — it parses the registry
+      # source directly. Skip install to keep the gate fast.
+      - name: Run protocol health check
+        run: |
+          set -o pipefail
+          node scripts/check-protocol-health.mjs | tee /tmp/health.log
+
+      - name: Run canonical explorer-URL check
+        run: node scripts/check-explorer-canonical.mjs
+
+      - name: Publish summary
+        if: always()
+        run: |
+          {
+            echo "## Protocol Health Gate"
+            echo ""
+            echo '```'
+            cat /tmp/health.log || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

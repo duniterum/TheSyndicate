@@ -1,0 +1,1 @@
+- [Design token harmonization](design-token-harmonization.md) — rules for replacing hardcoded oklch/navy colors with theme-aware Tailwind tokens in this codebase.

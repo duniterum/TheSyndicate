@@ -1,0 +1,423 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * The Syndicate — premium design system (Wave 1 recalibration).
+ *
+ * References (locked):
+ *   - Museum Plus — Sick Agency      → /nft Archive anchor (warm ivory, framed artifacts)
+ *   - Tactyc — Vektora               → live proof/dashboard anchor (investor-grade)
+ *   - Kuldmuna Arhiiv — NOPE Creative → dark mode + protocol seal anchor
+ *
+ * Typography:
+ *   --font-serif   Instrument Serif → H1/H2 story, archive titles, quotes
+ *   --font-sans    Work Sans        → body, UI, buttons, nav, dashboards
+ *   --font-mono    JetBrains Mono   → addresses, hashes, IDs, on-chain data
+ *
+ * Color philosophy:
+ *   Gold     = membership / rank / identity / premium CTA / protocol seal
+ *   Cyan     = verification / live data / on-chain proof / source links
+ *   Green    = success only
+ *   Amber    = warning only
+ *   Red      = error/danger only
+ *
+ * Light is the DEFAULT. Dark applies when <html> carries `.dark` class.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  /* shadcn-style semantic surface tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand semantic tokens */
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-gold-antique: var(--gold-antique);
+  --color-gold-soft: var(--gold-soft);
+  --color-champagne: var(--champagne);
+  --color-ivory: var(--ivory);
+  --color-panel: var(--panel);
+  --color-navy: var(--navy);
+  --color-navy-soft: var(--navy-soft);
+  --color-graphite: var(--graphite);
+
+  --color-verify: var(--verify);
+  --color-verify-soft: var(--verify-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--destructive);
+
+  --font-serif: "Instrument Serif", "Cormorant Garamond", "Times New Roman", ui-serif, Georgia, serif;
+  --font-sans: "Work Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Keep --font-display alias so existing components don't break */
+  --font-display: var(--font-sans);
+}
+
+/* ============================================================
+ * LIGHT THEME (default)
+ * Page #F7F3EA · Card #FFFFFF · Soft panel #EFE8D8
+ * Text #111 / #57534E / #78716C · Border #DED6C8
+ * Gold #C99A2E / #EAB929 · Antique #9A742D
+ * Verify cyan #0E9AA7 · Success #16A34A · Warning #D97706 · Danger #DC2626
+ * ============================================================ */
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.965 0.014 85);            /* #F7F3EA warm ivory */
+  --foreground: oklch(0.20 0.005 60);             /* #111 graphite */
+  --ivory: oklch(0.965 0.014 85);
+  --champagne: oklch(0.945 0.020 85);
+  --panel: oklch(0.93 0.022 85);                  /* #EFE8D8 soft panel */
+  --graphite: oklch(0.30 0.005 60);
+
+  --card: oklch(1 0 0);                            /* #FFFFFF */
+  --card-foreground: oklch(0.20 0.005 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.005 60);
+
+  /* Primary = graphite/charcoal text-on-light surfaces */
+  --primary: oklch(0.20 0.005 60);
+  --primary-foreground: oklch(0.985 0.010 85);
+
+  --secondary: oklch(0.93 0.022 85);
+  --secondary-foreground: oklch(0.20 0.005 60);
+
+  --muted: oklch(0.945 0.014 85);
+  --muted-foreground: oklch(0.50 0.010 60);       /* #78716C */
+
+  /* Accent = gold */
+  --accent: oklch(0.81 0.155 85);                 /* #EAB929 */
+  --accent-foreground: oklch(0.20 0.005 60);
+
+  --gold: oklch(0.71 0.13 80);                    /* #C99A2E syndicate gold */
+  --gold-bright: oklch(0.81 0.155 85);            /* #EAB929 */
+  --gold-antique: oklch(0.56 0.11 75);            /* #9A742D */
+  --gold-soft: oklch(0.88 0.075 85);
+
+  /* Navy retained for legacy components */
+  --navy: oklch(0.30 0.05 260);
+  --navy-soft: oklch(0.44 0.07 260);
+
+  /* Functional */
+  --verify: oklch(0.63 0.11 215);                 /* #0E9AA7 verification cyan */
+  --verify-soft: oklch(0.93 0.04 215);
+  --success: oklch(0.63 0.17 145);                /* #16A34A */
+  --warning: oklch(0.66 0.16 60);                 /* #D97706 */
+  --destructive: oklch(0.59 0.21 27);             /* #DC2626 */
+  --destructive-foreground: oklch(0.985 0 0);
+
+  --border: oklch(0.86 0.018 80);                 /* #DED6C8 */
+  --input: oklch(0.86 0.018 80);
+  --ring: oklch(0.71 0.13 80 / 50%);
+
+  /* Secondary muted text token (#57534E) — exposed for cases requiring deeper contrast */
+  --text-secondary: oklch(0.46 0.008 60);
+
+  /* Gradients & effects */
+  --gradient-hero:
+    radial-gradient(1100px 600px at 12% -10%, oklch(0.88 0.075 85 / 0.55), transparent 60%),
+    radial-gradient(900px 500px at 95% 0%, oklch(0.78 0.06 250 / 0.10), transparent 60%),
+    linear-gradient(180deg, oklch(0.965 0.014 85), oklch(0.945 0.018 85));
+  --gradient-gold: linear-gradient(135deg, oklch(0.81 0.155 85), oklch(0.66 0.13 75));
+  --gradient-navy: linear-gradient(135deg, oklch(0.34 0.06 260), oklch(0.22 0.05 265));
+  --gradient-card: linear-gradient(180deg, oklch(1 0 0 / 0.95), oklch(0.985 0.010 85 / 0.85));
+
+  --shadow-soft: 0 1px 2px oklch(0.20 0 0 / 0.04), 0 8px 24px -12px oklch(0.20 0 0 / 0.10);
+  --shadow-elevated: 0 1px 2px oklch(0.20 0 0 / 0.06), 0 24px 60px -24px oklch(0.20 0 0 / 0.18);
+  --shadow-glow-gold: 0 0 0 1px oklch(0.71 0.13 80 / 0.25), 0 14px 40px -14px oklch(0.71 0.13 80 / 0.40);
+  --shadow-glow-navy: 0 0 0 1px oklch(0.28 0.05 260 / 0.20), 0 14px 40px -14px oklch(0.28 0.05 260 / 0.30);
+  --shadow-glow-verify: 0 0 0 1px oklch(0.63 0.11 215 / 0.25), 0 14px 40px -14px oklch(0.63 0.11 215 / 0.35);
+}
+
+/* ============================================================
+ * DARK THEME — Kuldmuna Arhiiv mood (cinematic archive)
+ * Page #050505 · Panel #0D0D0F · Raised #151518 · Border #26262B
+ * Text #F7F4EA / #B8B8B8 / #777
+ * ============================================================ */
+.dark {
+  --background: oklch(0.07 0 0);                  /* #050505 */
+  --foreground: oklch(0.955 0.012 85);            /* #F7F4EA */
+  --ivory: oklch(0.955 0.012 85);
+  --champagne: oklch(0.86 0.040 85);
+  --panel: oklch(0.12 0.005 285);                 /* #0D0D0F */
+  --graphite: oklch(0.76 0 0);
+
+  --card: oklch(0.165 0.005 285);                 /* #151518 */
+  --card-foreground: oklch(0.955 0.012 85);
+  --popover: oklch(0.165 0.005 285);
+  --popover-foreground: oklch(0.955 0.012 85);
+
+  --primary: oklch(0.955 0.012 85);
+  --primary-foreground: oklch(0.12 0.005 285);
+
+  --secondary: oklch(0.22 0.005 285);
+  --secondary-foreground: oklch(0.955 0.012 85);
+
+  --muted: oklch(0.18 0.005 285);
+  --muted-foreground: oklch(0.55 0 0);            /* #777 */
+  --text-secondary: oklch(0.76 0 0);              /* #B8B8B8 */
+
+  --accent: oklch(0.81 0.155 85);                 /* gold bright */
+  --accent-foreground: oklch(0.12 0.005 285);
+
+  --gold: oklch(0.81 0.155 85);                   /* in dark mode gold = bright variant */
+  --gold-bright: oklch(0.84 0.16 85);
+  --gold-antique: oklch(0.56 0.11 75);
+  --gold-soft: oklch(0.45 0.08 80);
+
+  --navy: oklch(0.30 0.05 260);
+  --navy-soft: oklch(0.44 0.07 260);
+
+  --verify: oklch(0.66 0.115 210);                /* #10ADBA */
+  --verify-soft: oklch(0.30 0.06 210);
+  --success: oklch(0.68 0.17 145);                /* #22C55E */
+  --warning: oklch(0.74 0.16 65);                 /* #F59E0B */
+  --destructive: oklch(0.62 0.21 27);             /* #EF4444 */
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.27 0.005 285);                /* #26262B */
+  --input: oklch(0.27 0.005 285);
+  --ring: oklch(0.81 0.155 85 / 50%);
+
+  --gradient-hero:
+    radial-gradient(1100px 600px at 12% -10%, oklch(0.45 0.08 80 / 0.40), transparent 60%),
+    radial-gradient(900px 500px at 95% 0%, oklch(0.30 0.06 210 / 0.18), transparent 60%),
+    linear-gradient(180deg, oklch(0.07 0 0), oklch(0.10 0.005 285));
+  --gradient-gold: linear-gradient(135deg, oklch(0.84 0.16 85), oklch(0.60 0.12 70));
+  --gradient-card: linear-gradient(180deg, oklch(0.165 0.005 285 / 0.95), oklch(0.13 0.005 285 / 0.85));
+
+  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.40), 0 8px 24px -12px oklch(0 0 0 / 0.55);
+  --shadow-elevated: 0 1px 2px oklch(0 0 0 / 0.50), 0 24px 60px -24px oklch(0 0 0 / 0.70);
+  --shadow-glow-gold: 0 0 0 1px oklch(0.81 0.155 85 / 0.30), 0 14px 40px -14px oklch(0.81 0.155 85 / 0.50);
+  --shadow-glow-verify: 0 0 0 1px oklch(0.66 0.115 210 / 0.30), 0 14px 40px -14px oklch(0.66 0.115 210 / 0.45);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    /* Fluid responsive base: 16px on small screens → 18px on desktop */
+    font-size: clamp(16px, 0.95rem + 0.25vw, 18px);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Mobile QA hardening: never allow rogue horizontal overflow. */
+    overflow-x: hidden;
+  }
+  body {
+    background-image: none;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(1100px 700px at 88% -8%, oklch(0.45 0.08 80 / 0.18), transparent 60%),
+      radial-gradient(900px 600px at -8% 12%, oklch(0.30 0.06 210 / 0.10), transparent 60%);
+    background-attachment: fixed;
+  }
+  :root:not(.dark) body {
+    background-image:
+      radial-gradient(1100px 700px at 88% -8%, oklch(0.88 0.075 85 / 0.40), transparent 60%),
+      radial-gradient(900px 600px at -8% 12%, oklch(0.78 0.06 250 / 0.06), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background: oklch(0.71 0.13 80 / 0.30);
+    color: var(--foreground);
+  }
+
+  /* Serif for editorial headings. Components that opt-in via .font-serif
+     OR via h1/h2 inside .prose-serif containers receive Instrument Serif. */
+  .font-serif, .prose-serif h1, .prose-serif h2, .prose-serif h3, .prose-serif blockquote {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .font-sans { font-family: var(--font-sans); }
+  .font-mono { font-family: var(--font-mono); }
+}
+
+@utility glass-card {
+  background: var(--gradient-card);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility surface {
+  background: var(--card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility panel {
+  background: var(--panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+@utility glow-border-gold { box-shadow: var(--shadow-glow-gold); }
+@utility glow-border-navy { box-shadow: var(--shadow-glow-navy); }
+@utility glow-border-verify { box-shadow: var(--shadow-glow-verify); }
+@utility elevated { box-shadow: var(--shadow-elevated); }
+
+@utility text-gradient-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility text-gradient-navy {
+  background: var(--gradient-navy);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum", "ss01";
+  letter-spacing: -0.01em;
+}
+
+@utility hairline {
+  background-image: linear-gradient(90deg, transparent, var(--color-border), transparent);
+  height: 1px;
+  width: 100%;
+}
+
+@utility grid-bg {
+  background-image:
+    linear-gradient(to right, oklch(0.20 0 0 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.20 0 0 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+.dark .grid-bg {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.04) 1px, transparent 1px);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+@utility pulse-dot { animation: pulse-dot 1.8s ease-in-out infinite; }
+
+@keyframes ticker {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+@utility ticker-anim { animation: ticker 40s linear infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@utility shimmer {
+  background: linear-gradient(90deg, transparent, oklch(0.20 0 0 / 0.06), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ============================================================
+ * Image frame — unified treatment for every visual artifact
+ * across the site (archive previews, hero imagery, chapter cards).
+ * Museum Plus inspiration: ivory mat, fine border, subtle inner shadow.
+ * ============================================================ */
+@utility image-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: var(--card);
+  border: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--foreground) 4%, transparent),
+    0 1px 2px color-mix(in oklab, var(--foreground) 6%, transparent),
+    0 12px 32px -16px color-mix(in oklab, var(--foreground) 18%, transparent);
+}
+@utility image-frame-gold {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: var(--card);
+  border: 1px solid color-mix(in oklab, var(--gold) 35%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--gold) 18%, transparent),
+    0 12px 32px -16px color-mix(in oklab, var(--gold) 30%, transparent);
+}
+
+/* Fluid typography helpers — use on headings instead of fixed text-Nxl ladders */
+@utility text-fluid-h1 {
+  font-size: clamp(2.5rem, 1.6rem + 4.2vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+@utility text-fluid-h2 {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+@utility text-fluid-h3 {
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+@utility amount-hero {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: clamp(3.5rem, 2rem + 7vw, 7.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+}
+@utility amount-xl {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: clamp(2.5rem, 1.6rem + 3.6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+@utility amount-lg {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+}

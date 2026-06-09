@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /labs
+Disallow: /labs/
+
+Sitemap: https://thesyndicate.money/sitemap.xml
