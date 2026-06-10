@@ -1,0 +1,92 @@
+Stop before doing another visual polish pass.
+
+I need an honest answer first.
+
+The problem is not colors anymore.
+The problem is not doctrine anymore.
+The problem is not data anymore.
+The problem is not caching anymore.
+
+The problem is layout courage.
+
+The /my-syndicate page still risks becoming the same stacked-card format with better styling.
+
+I want a Grade AAA crypto cockpit, not a prettier report page.
+
+Look at serious dashboards:
+
+* portfolio cockpit
+* crypto exchange dashboard
+* wallet OS
+* trading terminal
+* premium SaaS analytics
+* Zerion / Zapper / DeBank / Phantom-style density
+* Hyperliquid-style clarity
+* Nansen-style data hierarchy
+
+They do not just stack 20 cards vertically.
+
+They use:
+
+* composed dashboard grids
+* avatar/profile identity zones
+* primary/secondary rails
+* sticky action areas
+* compact metric clusters
+* hierarchy by size, not just borders
+* charts/progress/data modules
+* fewer repeated cards
+* visually distinct modules
+* strong above-the-fold density
+* user/profile identity as a system
+
+Question first:
+
+What is blocking you from changing /my-syndicate more radically?
+
+Answer honestly:
+
+1. Are tests forcing the current stacked section structure?
+2. Are components too coupled?
+3. Are route-level sections pinned by doctrine tests?
+4. Are you avoiding layout changes because you fear breaking data logic?
+5. Are you only restyling cards because it is safer?
+6. What files/tests would need to change to allow a true dashboard layout?
+7. Which current sections should be removed, merged, or moved into tabs/rails?
+8. What would you do if you were allowed to redesign the layout like a real product designer, while keeping the same truthful data?
+
+After answering, do not implement yet.
+
+Give me two options:
+
+Option A — Safe polish
+Small improvements, same structure.
+
+Option B — True cockpit redesign
+Real layout change:
+
+* avatar / member identity header
+* left identity rail or top profile band
+* center activity/memory/asset panels
+* right protocol pulse / actions / proof rail
+* tabs or collapsible secondary sections
+* fewer vertical cards
+* less scroll
+* stronger dashboard density
+* clearer mobile strategy
+
+For each option:
+
+* what changes visually
+* files touched
+* tests affected
+* risk level
+* expected improvement score
+* what must be relaxed or updated
+* cost estimate
+
+Then recommend one.
+
+Do not code.
+
+I want to know whether we are blocked by technical constraints or by conservative design decisions.
