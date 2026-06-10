@@ -123,33 +123,33 @@ function MySyndicatePage() {
 }
 
 // ─── § 3 Activity ──────────────────────────────────────────────────────
+// Demoted to a compact "recent live movement" strip. Your block-anchored
+// HISTORY lives once, in the cockpit memory spine above (Since You Were Away →
+// Your history); this strip only surfaces the few most recent on-chain events
+// and hands off to the full ledger. Deliberately subordinate so the page no
+// longer stacks two parallel wallet-history reports.
 function ActivitySection() {
   const { address, isConnected } = useAccount();
   const { events, isLoading, isError } = useProtocolEvents({ limit: 200 });
-  const idx = useHolderIndex();
-  const record = address ? idx.getByWallet(address) : undefined;
 
   const lower = address?.toLowerCase();
   const mine = lower
-    ? events
-        .filter(
-          (e) =>
-            (e.actor && e.actor.toLowerCase() === lower) ||
-            (e.detail && e.detail.toLowerCase().includes(lower)),
-        )
-        .slice(0, 8)
+    ? events.filter(
+        (e) =>
+          (e.actor && e.actor.toLowerCase() === lower) ||
+          (e.detail && e.detail.toLowerCase().includes(lower)),
+      )
     : [];
+  const recent = mine.slice(0, 3);
 
   const status: "LIVE" | "PARTIAL" | "PENDING" =
     !isConnected
       ? "PENDING"
-      : isLoading
+      : isLoading || isError
         ? "PARTIAL"
-        : isError
-          ? "PARTIAL"
-          : mine.length > 0
-            ? "LIVE"
-            : "PENDING";
+        : mine.length > 0
+          ? "LIVE"
+          : "PENDING";
 
   const KIND_LABEL: Record<string, string> = {
     purchase: "Purchase",
@@ -166,83 +166,83 @@ function ActivitySection() {
     "nft-mint-other": "Mint",
   };
 
+  const fullLedger = (
+    <Link
+      to="/activity"
+      className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline shrink-0"
+    >
+      Full ledger →
+    </Link>
+  );
+
   return (
     <Section id="activity" className="py-4">
       <SectionEyebrow
         label="Activity"
         status={status}
-        hint="recent on-chain movement for this wallet"
+        hint="recent live on-chain movement · your full history lives in Since You Were Away above"
       />
-      <GlassCard className="p-3 md:p-4">
+      <div className="surface elevated p-3">
         {!isConnected ? (
-          <ConnectCTA message="Connect wallet to see recent on-chain movement." hint="indexed events · last 200 blocks" />
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-sm text-muted-foreground">
+              Connect your wallet to see recent on-chain movement.
+            </span>
+            {fullLedger}
+          </div>
         ) : isLoading ? (
           <p className="text-sm text-muted-foreground">Scanning recent blocks…</p>
-        ) : mine.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No recent movement found for this wallet.{" "}
-            {record ? (
-              <Link
-                to="/activity"
-                className="text-foreground underline-offset-4 hover:underline"
-              >
-                Open the full ledger →
-              </Link>
-            ) : (
-              <Link to="/join" className="text-foreground underline-offset-4 hover:underline">
-                See the Membership Sale →
-              </Link>
-            )}
-          </p>
+        ) : recent.length === 0 ? (
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-sm text-muted-foreground">
+              No recent movement for this wallet — your block-anchored history is
+              in Since You Were Away above.
+            </span>
+            {fullLedger}
+          </div>
         ) : (
-          <ol className="divide-y divide-border/40">
-            {mine.map((e) => {
-              const valid = isValidTxHash(e.txHash);
-              return (
-                <li
-                  key={e.id}
-                  className="flex items-center gap-2 py-2 px-1 min-w-0"
-                >
-                  <span className="mono text-[10px] uppercase tracking-[0.16em] px-1.5 py-0.5 rounded border border-border/50 text-muted-foreground shrink-0">
-                    {KIND_LABEL[e.kind] ?? "Event"}
-                  </span>
-                  <span className="text-xs text-foreground truncate flex-1 min-w-0">
-                    {e.title}
-                  </span>
-                  <span className="mono text-[10px] text-muted-foreground/80 shrink-0 tabular-nums">
-                    blk {e.blockNumber.toString()}
-                  </span>
-                  {valid ? (
-                    <a
-                      href={txExplorerUrl(e.txHash)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mono text-[10px] text-muted-foreground hover:text-[var(--gold)] underline-offset-4 hover:underline shrink-0"
-                    >
-                      verify ↗
-                    </a>
-                  ) : (
-                    <span className="mono text-[10px] text-muted-foreground/60 shrink-0">
-                      pending
+          <>
+            <ol className="divide-y divide-border/40">
+              {recent.map((e) => {
+                const valid = isValidTxHash(e.txHash);
+                return (
+                  <li
+                    key={e.id}
+                    className="flex items-center gap-2 py-1.5 px-0.5 min-w-0"
+                  >
+                    <span className="mono text-[9px] uppercase tracking-[0.16em] px-1.5 py-0.5 rounded border border-border/50 text-muted-foreground shrink-0">
+                      {KIND_LABEL[e.kind] ?? "Event"}
                     </span>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
+                    <span className="text-xs text-foreground truncate flex-1 min-w-0">
+                      {e.title}
+                    </span>
+                    {valid ? (
+                      <a
+                        href={txExplorerUrl(e.txHash)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mono text-[10px] text-muted-foreground hover:text-[var(--gold)] underline-offset-4 hover:underline shrink-0"
+                      >
+                        verify ↗
+                      </a>
+                    ) : (
+                      <span className="mono text-[10px] text-muted-foreground/60 shrink-0">
+                        pending
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+            <div className="mt-2 pt-2 border-t border-border/40 flex items-center justify-between gap-2">
+              <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Recent movement · full history in Since You Were Away above
+              </span>
+              {fullLedger}
+            </div>
+          </>
         )}
-        <div className="mt-3 pt-3 border-t border-border/40 flex items-center justify-between">
-          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Source · indexed on-chain events
-          </span>
-          <Link
-            to="/activity"
-            className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline"
-          >
-            Full ledger →
-          </Link>
-        </div>
-      </GlassCard>
+      </div>
     </Section>
   );
 }
