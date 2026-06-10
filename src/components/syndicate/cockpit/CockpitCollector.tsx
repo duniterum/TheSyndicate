@@ -18,11 +18,10 @@
 //   • One failed read never breaks the cockpit — per-field "Read pending/error".
 //
 // No write paths here. The actual mint flow lives on /nft.
-import { useAccount } from "wagmi";
+import { useCockpitAccount, useCockpitArchiveBalances, useCockpitUserBalances } from "@/lib/dev/cockpit-fixtures";
 import { Link } from "@tanstack/react-router";
 import { GlassCard, Pill, StatusPill } from "@/components/syndicate/Primitives";
-import { useArchiveBalances } from "@/lib/archive-balances-hook";
-import { useUserBalances, fmtSyn } from "@/lib/sale-hooks";
+import { fmtSyn } from "@/lib/sale-hooks";
 import {
   useArchiveArtifactReads,
   formatRelativeTime,
@@ -625,10 +624,10 @@ function CollectCard({
 
 // ── main ────────────────────────────────────────────────────────────────────
 export function CockpitCollector({ record }: { record?: HolderRecord }) {
-  const { address, isConnected } = useAccount();
-  const balances = useArchiveBalances(OWNED_IDS);
+  const { address, isConnected } = useCockpitAccount();
+  const balances = useCockpitArchiveBalances(OWNED_IDS);
   const reads = useArchiveArtifactReads(READ_IDS);
-  const userBal = useUserBalances(); // live SYN held (balanceOf)
+  const userBal = useCockpitUserBalances(); // live SYN held (balanceOf)
 
   const walletUrl = address ? explorerUrlForAddress(address) : null;
   const firstSignalBal = balances.balances[1]?.balance;

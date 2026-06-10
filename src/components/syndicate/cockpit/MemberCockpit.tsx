@@ -19,7 +19,7 @@
 
 import { useMemo, useRef } from "react";
 import { Link } from "@tanstack/react-router";
-import { useAccount } from "wagmi";
+import { useCockpitAccount, useCockpitHolderIndex, useCockpitUserBalances } from "@/lib/dev/cockpit-fixtures";
 import {
   GlassCard,
   Pill,
@@ -38,9 +38,9 @@ import { CockpitBadges } from "./CockpitBadges";
 import { WakeBehindYou } from "./WakeBehindYou";
 import { SeatsAroundYou } from "./SeatsAroundYou";
 import { WalletAvatar } from "./WalletAvatar";
-import { useHolderIndex, type HolderRecord } from "@/lib/holder-index";
+import { type HolderRecord } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
-import { useUserBalances, fmtSyn, fmtAddress } from "@/lib/sale-hooks";
+import { fmtSyn, fmtAddress } from "@/lib/sale-hooks";
 import { getChapterByMemberNumber } from "@/lib/chapters";
 import {
   LP_POOL,
@@ -78,8 +78,8 @@ function copy(text: string) {
 // Entry — composes the four Phase 1 surfaces.
 // ─────────────────────────────────────────────────────────────────────────
 export function MemberCockpit() {
-  const { address, isConnected } = useAccount();
-  const idx = useHolderIndex();
+  const { address, isConnected } = useCockpitAccount();
+  const idx = useCockpitHolderIndex();
   const record = address ? idx.getByWallet(address) : undefined;
   const headerRef = useRef<HTMLDivElement | null>(null);
 
@@ -191,7 +191,7 @@ function CockpitHeader({
   loading: boolean;
 }) {
   const chainTime = useChainTime();
-  const idx = useHolderIndex();
+  const idx = useCockpitHolderIndex();
 
   const status: "LIVE" | "PARTIAL" | "PENDING" = !isConnected
     ? "PENDING"
@@ -493,7 +493,7 @@ function CockpitPortfolio({
   record?: HolderRecord;
   loading: boolean;
 }) {
-  const balances = useUserBalances();
+  const balances = useCockpitUserBalances();
 
   const status: "LIVE" | "PARTIAL" | "PENDING" = !isConnected
     ? "PENDING"

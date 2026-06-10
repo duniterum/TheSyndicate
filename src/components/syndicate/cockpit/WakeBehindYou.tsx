@@ -19,9 +19,8 @@
 //   • While the index is still reading we show nothing rather than a fake 0.
 
 import type { ReactNode } from "react";
-import { useAccount } from "wagmi";
 import { Link } from "@tanstack/react-router";
-import { useHolderIndex } from "@/lib/holder-index";
+import { useCockpitAccount, useCockpitHolderIndex } from "@/lib/dev/cockpit-fixtures";
 
 const fmtInt = (n: number) =>
   n.toLocaleString("en-US", { maximumFractionDigits: 0 });
@@ -45,8 +44,8 @@ function WakeBand({ children }: { children: ReactNode }) {
 }
 
 export function WakeBehindYou() {
-  const { address, isConnected } = useAccount();
-  const idx = useHolderIndex();
+  const { address, isConnected } = useCockpitAccount();
+  const idx = useCockpitHolderIndex();
   const record = address ? idx.getByWallet(address) : undefined;
   const members = idx.totals.members;
 

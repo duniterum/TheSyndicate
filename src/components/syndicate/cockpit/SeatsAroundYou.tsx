@@ -20,9 +20,8 @@
 //   • Order of entry is identity/story only — earlier is earlier, never better.
 
 import type { ReactNode } from "react";
-import { useAccount } from "wagmi";
 import { Section, StatusPill } from "@/components/syndicate/Primitives";
-import { useHolderIndex } from "@/lib/holder-index";
+import { useCockpitAccount, useCockpitHolderIndex } from "@/lib/dev/cockpit-fixtures";
 
 const fmtInt = (n: number) =>
   n.toLocaleString("en-US", { maximumFractionDigits: 0 });
@@ -124,8 +123,8 @@ function SeatChip({ slot }: { slot: Slot }) {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 export function SeatsAroundYou() {
-  const { address, isConnected } = useAccount();
-  const idx = useHolderIndex();
+  const { address, isConnected } = useCockpitAccount();
+  const idx = useCockpitHolderIndex();
   const record = address ? idx.getByWallet(address) : undefined;
 
   // ── Member: the real seats on either side of theirs ──────────────────────
