@@ -11,6 +11,8 @@ Connected cockpit states (member identity, wake behind you, seats around you, li
 
 **Why it's production-safe:** deploy runs `vite build` (not the dev server), so `import.meta.env.DEV` is statically `false` → every fixture branch is dead-code-eliminated, presets tree-shaken, `?cockpit` ignored. Off-state wrappers are pure pass-throughs; live data paths untouched.
 
+**Debugging limitation (important):** because `import.meta.env.DEV` is `false` in EVERY `vite build` — including `vite build --mode development` / `build:dev` — the fixtures activate ONLY under the live `vite dev` server, never in a built artifact. So you CANNOT use `?cockpit=` to reproduce a production-only SSR/hydration bug: the bug needs the prod bundle, but the prod bundle has the fixtures compiled out. (And even under dev the fixture applies identically on server+client, so it would never manifest a server≠client mismatch.) For prod-only hydration crashes, rely on logic + an established in-repo pattern, not a fixture repro.
+
 **Why it lives in `src/lib/dev/` and NOT `src/lib/preview/`:** the CI guard `scripts/check-preview-labels.mjs` scans only `src/lib/preview` + `src/components/preview` and forbids `<StatusPill status="LIVE">` / explorer links there. The dev fixtures intentionally render the cockpit's REAL connected look (LIVE pills, explorer link for the synthetic address), so they must stay outside the guard's roots.
 
 **Truth boundary:** only synthesize the VIEWER'S OWN identity/balances. Never fixture artifact supply/mint status — `useArchiveArtifactReads` stays on the real hook. Never share a fixture screenshot as proof of live state.

@@ -11,7 +11,7 @@
 // No invented thresholds. No fake ownership. If a value is unknown we
 // omit it — never guess.
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useAccount } from "wagmi";
 import { useHolderIndex } from "@/lib/holder-index";
@@ -47,6 +47,10 @@ export function WhatChangedForYou() {
   const { events } = useProtocolEvents({ limit: 200 });
   const balances = useArchiveBalances([1, 3]);
   const embedded = useCockpitEmbed();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const record = address ? idx.getByWallet(address) : undefined;
 
@@ -72,6 +76,14 @@ export function WhatChangedForYou() {
       }),
     [record, events, balances.balances, pulse.buyers, pulse.usdcRaised, mintFlags],
   );
+
+  // Wallet-scoped + client-only. The server has no wallet, so it always renders
+  // null here. Defer ALL output until after mount so the first client paint
+  // matches the server (null). Otherwise a reconnected wallet makes the client
+  // render this whole subtree where the server rendered nothing — a structural
+  // hydration mismatch (React #418) that trips the route error boundary.
+  // Same pattern as NextMemberHero.
+  if (!mounted) return null;
 
   // Render nothing if not connected — keeps /my-syndicate clean for visitors.
   if (!isConnected) return null;
