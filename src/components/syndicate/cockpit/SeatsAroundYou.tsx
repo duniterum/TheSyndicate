@@ -37,12 +37,18 @@ const shortWallet = (w: string) => `${w.slice(0, 6)}…${w.slice(-4)}`;
 // ─── Shell ───────────────────────────────────────────────────────────────
 // A quiet bordered surface (NOT the gold-glow seat panel) with the eyebrow and
 // one-line framing. Keeps the band visually subordinate to the hero panel.
-function Shell({ live, children }: { live: boolean; children: ReactNode }) {
+function Shell({
+  status,
+  children,
+}: {
+  status: "LIVE" | "PARTIAL" | "PENDING";
+  children: ReactNode;
+}) {
   return (
     <Section id="seats-around" className="py-4">
       <div className="rounded-xl border border-border/50 bg-card/40 px-5 sm:px-6 md:px-8 py-5">
         <div className="flex flex-wrap items-center gap-2 mb-1">
-          <StatusPill status={live ? "LIVE" : "PENDING"} />
+          <StatusPill status={status} />
           <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
             Seats around you
           </h2>
@@ -167,7 +173,7 @@ export function SeatsAroundYou() {
     ];
 
     return (
-      <Shell live>
+      <Shell status="LIVE">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {slots.map((slot, n) => (
             <SeatChip key={n} slot={slot} />
@@ -181,7 +187,7 @@ export function SeatsAroundYou() {
   //    pending shell rather than the visitor preview (mirrors WakeBehindYou). ──
   if (isConnected && idx.isLoading) {
     return (
-      <Shell live={false}>
+      <Shell status="PENDING">
         <p
           className="text-sm text-muted-foreground leading-relaxed"
           role="status"
@@ -193,10 +199,27 @@ export function SeatsAroundYou() {
     );
   }
 
+  // ── Connected, resolved WITH ERROR — the index failed to read. This wallet
+  //    may be a member, so never assert "no seat" or a visitor CTA. Show a
+  //    quiet PARTIAL state with no fabricated neighbours. ───────────────────
+  if (isConnected && idx.isError) {
+    return (
+      <Shell status="PARTIAL">
+        <p
+          className="text-sm text-muted-foreground leading-relaxed max-w-2xl"
+          role="status"
+        >
+          Unable to read the seats around yours right now — the live member index
+          didn't respond. They'll reappear once it reconnects.
+        </p>
+      </Shell>
+    );
+  }
+
   // ── Connected, resolved, but no seat for this wallet yet ─────────────────
   if (isConnected) {
     return (
-      <Shell live={false}>
+      <Shell status="PENDING">
         <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
           No seat for this wallet yet. Once you take your place, the members on
           either side of yours appear here as your co-witnesses.
@@ -207,7 +230,7 @@ export function SeatsAroundYou() {
 
   // ── Visitor preview — never fabricate neighbours ─────────────────────────
   return (
-    <Shell live={false}>
+    <Shell status="PENDING">
       <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
         Connect to see the seats around yours — the members who entered just
         before and just after your place.

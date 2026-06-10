@@ -17,12 +17,15 @@ only) as long as it carries NO amounts, NO rank, NO USDC, NO standing/comparison
 **How to apply:** never add value/rank/"ahead-behind" framing to this band, or it
 becomes the leaderboard the doctrine forbids.
 
-**Shared member/visitor gating gap (Wake + Seats).**
-Both `WakeBehindYou` and `SeatsAroundYou` decide member-vs-visitor from
-`record` presence + `idx.isLoading` only — they do NOT check `idx.isError`. On a
-RESOLVED-WITH-ERROR read (isError true, isLoading false, record undefined) they
-assert non-membership (Join CTA / "no seat for this wallet yet") to a wallet that
-may actually be a member.
-**Why:** copied gating pattern, deferred as non-blocking polish.
-**How to apply:** if you add an `isError` branch, add it to BOTH bands together —
-fixing one leaves the inconsistency.
+**Shared member/visitor gating order (Wake + Seats) — keep in lockstep.**
+Both `WakeBehindYou` and `SeatsAroundYou` gate in this exact order:
+`record` (member) → `isConnected && isLoading` (pending) → `isConnected && isError`
+(quiet PARTIAL: "Unable to read your seat/the seats right now…", no count, no
+neighbours, no "no seat", no Join CTA) → connected-non-member / visitor preview.
+**Why:** on a RESOLVED-WITH-ERROR read (isError true, isLoading false, record
+undefined) a real member would otherwise be shown visitor/"no seat" language. The
+record branch is first so a cached member always wins; isError sits before any
+non-membership assertion.
+**How to apply:** never reorder these branches, and if you change one band's
+gating, change BOTH — they are intentionally identical. SeatsAroundYou's Shell
+takes `status: LIVE|PARTIAL|PENDING` (canonical StatusPill), not a boolean.

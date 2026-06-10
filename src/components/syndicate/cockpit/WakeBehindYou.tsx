@@ -96,6 +96,20 @@ export function WakeBehindYou() {
     );
   }
 
+  // ── Connected, resolved WITH ERROR — the index failed to read. This wallet
+  //    may well be a member, so we must NOT assert the visitor "Join" CTA on a
+  //    failed read. Show a quiet partial state and no fabricated count. ──────
+  if (isConnected && idx.isError) {
+    return (
+      <WakeBand>
+        <p className="text-sm text-muted-foreground leading-relaxed" role="status">
+          Unable to read your seat right now — the live index didn't respond.
+          Your wake will reappear once it reconnects.
+        </p>
+      </WakeBand>
+    );
+  }
+
   // ── Visitor / not-yet-a-member: invitation to anchor a place ─────────────
   const showCount = idx.hasData && members > 0;
 
