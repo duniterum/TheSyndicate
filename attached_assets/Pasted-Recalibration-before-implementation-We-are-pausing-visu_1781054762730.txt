@@ -1,0 +1,109 @@
+Recalibration before implementation.
+
+We are pausing visual cockpit work.
+
+Do not add new widgets.
+Do not redesign.
+Do not do more doctrine.
+Do not search the whole repo again.
+Do not dispatch explorers unless absolutely necessary.
+
+The new priority is performance.
+
+The site must feel instant.
+
+Problem:
+The app keeps re-fetching and re-scanning blockchain history to rediscover facts that are already known.
+
+Example:
+If I am Member #1, the site should not wait on every visit to rediscover that from zero.
+
+A Grade AAA cockpit should behave like this:
+
+1. show last-known trusted data instantly
+2. mark it as cached / refreshing if needed
+3. refresh in the background
+4. update to live when confirmed
+
+Not:
+
+blank UI → full RPC scan → render.
+
+Use the Performance & Blockchain Data Caching Audit as source of truth.
+
+Execution mode:
+Block by block.
+No giant refactor.
+No full-site rewrite.
+
+Start with Performance Block P0 only.
+
+P0 = collapse duplicate purchase-event scans.
+
+Audit finding:
+useLivePurchaseEvents currently includes limit in the query key, but limit only affects the final slice.
+This causes multiple full historical scans for:
+limit 1
+limit 25
+limit 30
+limit 100
+limit 1000
+limit 5000
+limit 0
+
+That is wasteful.
+
+P0 goal:
+There should be one canonical purchase-events query per chain/sale contract.
+All callers should reuse the same cached raw event list.
+limit should be applied client-side after the canonical query result, not by forking full scans.
+
+Rules:
+
+* no change to displayed data
+* no change to contract logic
+* no change to event parsing
+* no new UI
+* no new doctrine
+* no persistent cache yet
+* no incremental indexing yet
+* no QueryClient global changes yet
+* P0 only
+
+Implementation expectations:
+
+1. Refactor useLivePurchaseEvents so the expensive scan has one canonical queryKey, not one per limit.
+2. Preserve all caller behavior:
+
+   * limit > 0 returns the newest N events
+   * limit 0 or undefined behavior must remain correct according to current semantics
+   * ordering must remain unchanged
+   * error/loading states must remain unchanged
+3. Ensure useHolderIndex, ProtocolHeartbeat, LivePulseStrip/freshness callers, Activity pages, and any other consumers no longer trigger duplicate full scans just because they request different limits.
+4. Avoid breaking TanStack Query cache.
+5. Add or update a focused test if practical:
+
+   * prove the canonical query key does not include limit
+   * prove slicing happens after fetching
+   * prove different limits share the same underlying cache path
+6. Run:
+
+   * typecheck
+   * relevant activity/holder-index tests
+   * cockpit tests if touched indirectly
+   * doctrine guard if any scanned source changes
+   * architect review
+
+Report:
+
+* files changed
+* old queryKey
+* new queryKey
+* how limit is applied now
+* which duplicate scans are eliminated
+* tests passed/failed
+* any deferred issues
+
+Stop after P0.
+
+Do not continue to P1 without approval.
