@@ -1,0 +1,99 @@
+Replit, before we add new economic layers, please audit the current The Syndicate project and report the real implemented system.
+
+Do not implement changes yet.
+
+Goal:
+Give us the exact current mental model, data sources, contract reads, database/storage logic, and UI assumptions so we stop inventing duplicate systems.
+
+Please report:
+
+1. Current contracts and addresses
+
+* SYN token contract
+* Membership sale contract
+* NFT / Archive1155 contract
+* Vault, Liquidity, Operations wallets
+* Any referral-related contract/code if present
+* Any burn address currently used or reserved
+
+2. Token supply data
+
+* Total supply
+* Circulating supply: is it calculated? If yes, how?
+* Non-circulating wallets: founder, vault, liquidity, partnerships, contributors, future ecosystem, distribution, etc.
+* Burned supply: is it tracked? If no burn address exists, propose the safest minimal option.
+* Airdropped / distributed supply: is this tracked separately?
+* SYN sold through membership sale
+* SYN held by sale/distribution wallet
+* SYN in LP
+* SYN in treasury wallets
+
+3. Current membership/rank model
+
+* Exact rank names
+* Required SYN or USDC per rank
+* Where this data lives in code
+* Whether rank is based on current wallet balance, cumulative purchase, or both
+* Current member number logic
+* Current Chapter/Era threshold logic
+* Any conflict between “Founder” as rank and “Founder Era” as historical cohort
+
+4. Current revenue/income streams
+
+* Membership sale routing percentages
+* Token sale price
+* Minimum buy
+* NFT sale prices
+* NFT wallet limits and max supply
+* LP fee visibility
+* Any referral preview currently shown
+* Whether referral rewards are live, simulated, or placeholder only
+
+5. Current NFT/artifact model
+
+* Which NFT IDs are active
+* Which are reserved/disabled
+* Current prices, max supply, wallet limits
+* How NFT ownership is read
+* Whether NFTs are connected to ranks, referrals, Chronicle, or only displayed as collectibles
+
+6. Current Chronicle / activity model
+
+* What events are currently indexed
+* Purchases
+* LP activity
+* NFT mints
+* treasury routing
+* rank changes
+* referrals, if any
+* Where verified activities are stored/rendered
+* Which activities are on-chain verified vs manually written
+
+7. Current frontend presentation
+
+* Where token address, supply, circulating supply, burned supply, rank, member number, LP, vault, NFT, and sale info are displayed
+* Which pages contain this info
+* What is hidden too deep or duplicated
+* What should be surfaced better for normal users
+
+8. Minimal-change recommendations
+   After the audit, propose the safest minimal changes to make the system clearer without breaking current contracts:
+
+* Better token info card
+* Circulating supply / burned supply display
+* Contract address visibility
+* “Seat → Era → Rank → Artifact → Rewards” model
+* Chronicle verified activity improvements
+* Referral readiness
+* Burn address readiness
+* No duplicate Bronze/Silver/Gold system unless it maps to existing ranks
+
+Important:
+Do not invent new economics.
+Separate:
+A) already implemented
+B) displayed but simulated
+C) coded but inactive
+D) proposed future layer
+
+Return the answer as a clean table-based report.
