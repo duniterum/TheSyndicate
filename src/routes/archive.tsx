@@ -342,13 +342,51 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
         </GlassCard>
       </Section>
 
-      {/* ─── 5. (Future Collector View removed — replaced by Mythology Wall above.) */}
+      {/* ─── 4.5 Current Chapter Panel — lifted: ownership/momentum sits right
+           after the My-Archive preview, before the deeper proof surfaces */}
+      <Section id="current-chapter">
+        <SectionHeader
+          eyebrow="Current Chapter · DERIVED FROM ON-CHAIN DATA"
+          title={<>The <span className="text-gradient-gold">active</span> chapter</>}
+          description="Chapter state is derived from indexed Membership Sale purchases. The Chapter Artifact for Genesis — The First Signal — is configured in the Archive contract and its public mint is OPEN at 0.50 USDC on Avalanche."
+        />
+        <GlassCard className="p-5 md:p-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <Stat label="Chapter" value={chapter?.label ?? "—"} />
+            <Stat
+              label="Member range"
+              value={chapter ? rangeLabel(chapter.id, chapter.capacity) : "—"}
+            />
+            <Stat label="Members so far" value={fmtCount(memberCount)} />
+            <Stat
+              label="Remaining seats"
+              value={chapter ? fmtCount(chapter.remaining) : "—"}
+            />
+            <Stat
+              label="Status"
+              value={chapter && chapter.remaining > 0 ? "OPEN" : chapter ? "SEALED" : "—"}
+            />
+          </div>
 
-      {/* ─── 6. Contract status (read-only verification) ─────────────── */}
-      <Section id="contract-status">
-        <ArchiveContractStatus />
-        <ArchiveGlossary />
+          <div className="mt-6 border-t border-border/40 pt-5">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <Pill tone="success">ACTIVE · MINT OPEN</Pill>
+              <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Active Chapter Artifact
+              </span>
+            </div>
+            <h3 className="text-lg font-semibold text-foreground">The First Signal</h3>
+            <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+              The Genesis Chapter Artifact — configured in the deployed
+              Archive contract.{" "}
+              <span className="text-foreground">Price: 0.50 USDC (+ Avalanche gas) · wallet limit 5.</span>{" "}
+              Open during Chapter I (Genesis Signal · Members #1 – #333).
+            </p>
+          </div>
+        </GlassCard>
       </Section>
+
+      {/* ─── 5. (Future Collector View removed — replaced by Mythology Wall above.) */}
 
       {/* ─── 6.5 Plain-language FAQ ──────────────────────────────────── */}
       <ArchiveFaq />
@@ -445,49 +483,6 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
         </div>
       </Section>
 
-      {/* ─── 10. Current Chapter Panel ──────────────────────────────── */}
-      <Section id="current-chapter">
-        <SectionHeader
-          eyebrow="Current Chapter · DERIVED FROM ON-CHAIN DATA"
-          title={<>The <span className="text-gradient-gold">active</span> chapter</>}
-          description="Chapter state is derived from indexed Membership Sale purchases. The Chapter Artifact for Genesis — The First Signal — is configured in the Archive contract and its public mint is OPEN at 0.50 USDC on Avalanche."
-        />
-        <GlassCard className="p-5 md:p-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <Stat label="Chapter" value={chapter?.label ?? "—"} />
-            <Stat
-              label="Member range"
-              value={chapter ? rangeLabel(chapter.id, chapter.capacity) : "—"}
-            />
-            <Stat label="Members so far" value={fmtCount(memberCount)} />
-            <Stat
-              label="Remaining seats"
-              value={chapter ? fmtCount(chapter.remaining) : "—"}
-            />
-            <Stat
-              label="Status"
-              value={chapter && chapter.remaining > 0 ? "OPEN" : chapter ? "SEALED" : "—"}
-            />
-          </div>
-
-          <div className="mt-6 border-t border-border/40 pt-5">
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <Pill tone="success">ACTIVE · MINT OPEN</Pill>
-              <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                Active Chapter Artifact
-              </span>
-            </div>
-            <h3 className="text-lg font-semibold text-foreground">The First Signal</h3>
-            <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-              The Genesis Chapter Artifact — configured in the deployed
-              Archive contract.{" "}
-              <span className="text-foreground">Price: 0.50 USDC (+ Avalanche gas) · wallet limit 5.</span>{" "}
-              Open during Chapter I (Genesis Signal · Members #1 – #333).
-            </p>
-          </div>
-        </GlassCard>
-      </Section>
-
       {/* ─── 11. Future Artifact Types — mythology vocabulary only ──── */}
       <Section id="future-types">
         <SectionHeader
@@ -528,6 +523,13 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
         </p>
       </Section>
 
+
+      {/* ─── 11.5 Contract status — moved DOWN: read-only verification sits low,
+           near the legal/registry detail (technical detail lower) */}
+      <Section id="contract-status">
+        <ArchiveContractStatus />
+        <ArchiveGlossary />
+      </Section>
 
       {/* ─── 12. Legal / disclaimer footer ──────────────────────────── */}
       <Section id="legal">

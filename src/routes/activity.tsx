@@ -75,30 +75,8 @@ function ActivityPage() {
       {/* Milestones — what the protocol has already sealed + what's next */}
       <ActivityMilestones />
 
-
-      {/* Filter chips + main newest-first feed */}
-      <Section id="protocol-events">
-        <SectionHeader
-          eyebrow="Latest Protocol Events"
-          title={<>Every <span className="text-gradient-gold">on-chain movement</span>, newest first</>}
-          description="Click any chip to scope the feed. Every row links to the originating transaction on Avascan with a Verify chip — even when the feed is sourced from direct RPC fallback."
-        />
-        <div className="mb-4">
-          <ActivityFilterChips value={filter} onChange={setFilter} counts={counts} />
-        </div>
-        <ProtocolEventsFeed limit={80} filter={filter} withSection={false} />
-      </Section>
-
-      {/* Bucketed timeline — recency view (Wave 3A) */}
-      <ProtocolTimeline limit={80} />
-
-      {/* Canonical story timeline — doctrine order, single proof per episode */}
-      <StoryTimeline />
-
-
-
-
-      {/* Aggregate sale stats */}
+      {/* Aggregate sale stats — headline 70/20/10 totals lifted above the deep
+          per-event feeds/timelines (momentum before raw data) */}
       <Section id="live-stats">
         <SectionHeader
           eyebrow="Live Sale Stats"
@@ -123,6 +101,25 @@ function ActivityPage() {
           </div>
         </GlassCard>
       </Section>
+
+      {/* Filter chips + main newest-first feed */}
+      <Section id="protocol-events">
+        <SectionHeader
+          eyebrow="Latest Protocol Events"
+          title={<>Every <span className="text-gradient-gold">on-chain movement</span>, newest first</>}
+          description="Click any chip to scope the feed. Every row links to the originating transaction on Avascan with a Verify chip — even when the feed is sourced from direct RPC fallback."
+        />
+        <div className="mb-4">
+          <ActivityFilterChips value={filter} onChange={setFilter} counts={counts} />
+        </div>
+        <ProtocolEventsFeed limit={80} filter={filter} withSection={false} />
+      </Section>
+
+      {/* Bucketed timeline — recency view (Wave 3A) */}
+      <ProtocolTimeline limit={80} />
+
+      {/* Canonical story timeline — doctrine order, single proof per episode */}
+      <StoryTimeline />
 
       <Section id="event-feed">
         <SectionHeader

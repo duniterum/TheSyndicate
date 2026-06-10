@@ -114,21 +114,21 @@ function Index() {
       {/* ZONE 2.5 — FLYWHEEL (full product, not only the seat) */}
       <Flywheel />
 
-      {/* ZONE 3 — STORY (narrative + Loop D supporting) */}
+      {/* ZONE 4 — IDENTITY (who you become — lifted above the deep narrative) */}
+      <IdentityZone />
+
+      {/* ZONE 5 — CONVERSION (why/how/what — lifted above deep story for action clarity) */}
+      <WhyJoinSimple />
+      <HowToJoinSteps />
+      <WhatChangesAfterJoining />
+
+      {/* ZONE 3 — STORY (narrative + Loop D supporting — now below conversion) */}
       <StorySoFar />
       <StoryTimeline />
       <ProtocolMoments />
 
       {/* ZONE 3.5 — ARCHIVE TEASER (compact, optional memory layer) */}
       <HomeArchiveTeaser />
-
-      {/* ZONE 4 — IDENTITY */}
-      <IdentityZone />
-
-      {/* ZONE 5 — CONVERSION */}
-      <WhyJoinSimple />
-      <HowToJoinSteps />
-      <WhatChangesAfterJoining />
 
       {/* ZONE 6 — PROOF (snapshot only; deep proof lives on dedicated routes) */}
       <HomeTransparencySnapshot />

@@ -35,6 +35,9 @@ export const Route = createFileRoute("/join")({
         />
         <MemberCard />
       </Section>
+      {/* Action lifted directly under member identity — buy first, explain the
+          split right after (identity → action → proof) */}
+      <LivePurchase />
       <Section id="split-visualizer">
         <SectionHeader
           eyebrow="Where every $1 goes"
@@ -43,7 +46,6 @@ export const Route = createFileRoute("/join")({
         />
         <SplitVisualizer />
       </Section>
-      <LivePurchase />
       <SeatRecordPanel />
       <AccessRate />
       <MembershipCalculator />
