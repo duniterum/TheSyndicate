@@ -14,6 +14,12 @@ import {
   saveLpEventsSnapshot,
   mergeScannedEvents,
 } from "./lp-events-cache";
+import {
+  usdcFlowsCacheKey,
+  loadUsdcFlowsSnapshot,
+  saveUsdcFlowsSnapshot,
+  mergeUsdcFlows,
+} from "./usdc-flows-cache";
 
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
 const SYN  = CONTRACTS.SYN_CONTRACT_ADDRESS  as `0x${string}`;
@@ -95,6 +101,7 @@ export type UsdcFlow = {
 export function useUsdcFlows(wallet: string, opts?: { fromBlock?: bigint; limit?: number }) {
   const publicClient = usePublicClient();
   const queryClient = useQueryClient();
+  const chainId = useChainId();
   const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
   const limit = opts?.limit ?? 50;
   const target = wallet as `0x${string}`;
@@ -108,17 +115,37 @@ export function useUsdcFlows(wallet: string, opts?: { fromBlock?: bigint; limit?
       if (!publicClient) return [];
       // One shared head read for BOTH the in and out scans (P4c).
       const tip = (await fetchSharedChainTip(publicClient, queryClient)).number;
-      const { events: inLogs } = await scan(publicClient, fromBlock, tip, (start, end) =>
+
+      // P4e incremental: resume from the persisted cursor instead of replaying
+      // deploymentBlock→head every refetch, for BOTH the inbound and outbound
+      // scans. Parsing/ordering/values are unchanged; a corrupt/absent cache
+      // degrades to a full scan. We persist ONLY when both scans completed (no
+      // failed chunk), so a partial RPC failure can never advance the cursor
+      // past an unscanned gap. A self-transfer emits one log matching both
+      // filters, so the merge dedupes by txHash:logIndex:direction — preserving
+      // the prior code's two-row (in + out) output for that log.
+      const cacheKey = usdcFlowsCacheKey({ chainId, wallet, fromBlock });
+      const cached = loadUsdcFlowsSnapshot<UsdcFlow>(cacheKey);
+      const scanStart = computeIncrementalScanStart({
+        fromBlock,
+        tip,
+        lastScannedBlock: cached?.lastScannedBlock,
+        overlap: REORG_OVERLAP,
+      });
+
+      const { events: inLogs, complete: inComplete } = await scan(publicClient, scanStart, tip, (start, end) =>
         publicClient.getLogs({ address: USDC, event: TRANSFER, args: { to: target }, fromBlock: start, toBlock: end }),
       );
-      const { events: outLogs } = await scan(publicClient, fromBlock, tip, (start, end) =>
+      const { events: outLogs, complete: outComplete } = await scan(publicClient, scanStart, tip, (start, end) =>
         publicClient.getLogs({ address: USDC, event: TRANSFER, args: { from: target }, fromBlock: start, toBlock: end }),
       );
-      const all: UsdcFlow[] = [];
+      const complete = inComplete && outComplete;
+
+      const fresh: UsdcFlow[] = [];
       const push = (l: typeof inLogs[number], dir: "in" | "out") => {
         const args = l.args as { from?: string; to?: string; value?: bigint };
         if (!args.from || !args.to || args.value === undefined) return;
-        all.push({
+        fresh.push({
           direction: dir,
           counterparty: dir === "in" ? args.from : args.to,
           amount: Number(formatUnits(args.value, USDC_DECIMALS)),
@@ -129,8 +156,13 @@ export function useUsdcFlows(wallet: string, opts?: { fromBlock?: bigint; limit?
       };
       inLogs.forEach((l) => push(l, "in"));
       outLogs.forEach((l) => push(l, "out"));
-      all.sort((a, b) => (a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1));
-      return limit > 0 ? all.slice(0, limit) : all;
+
+      const merged = mergeUsdcFlows(cached?.events ?? [], fresh);
+      if (complete && merged.length > 0) {
+        const nextLastScanned = cached && cached.lastScannedBlock > tip ? cached.lastScannedBlock : tip;
+        saveUsdcFlowsSnapshot(cacheKey, merged, nextLastScanned);
+      }
+      return limit > 0 ? merged.slice(0, limit) : merged;
     },
   });
 }
