@@ -1,0 +1,121 @@
+Stop all UI/design work.
+
+The live custom domain still shows:
+
+“This page didn’t load”
+on /my-syndicate when wallet is connected.
+
+This is now the highest priority.
+
+Do not guess.
+Do not make a local-only fix.
+Do not continue visual work.
+
+Task:
+Diagnose the production wallet/session crash.
+
+Answer with facts.
+
+Check:
+
+1. Deployment truth
+
+* What commit is currently served by thesyndicate.money?
+* What commit is currently served by the Replit production URL?
+* Are they the same build?
+* Is thesyndicate.money actually pointing to this Replit deployment?
+* If not, where is it pointing?
+
+2. Error type
+   Determine whether the error is:
+
+* SSR/server error
+* React route error boundary
+* hydration mismatch
+* wallet/session client crash
+* wrong deployed build
+* domain/CDN stale build
+
+3. Wallet/session architecture
+   Explain exactly how wallet state works:
+
+* wagmi config
+* connectors
+* autoConnect/reconnect behavior
+* wallet session persistence
+* cookie/localStorage/sessionStorage usage
+* server vs client wallet state
+* connected vs disconnected render path
+* account switch handling
+* wallet cache invalidation
+* query invalidation on connect/disconnect
+
+4. Payment flow architecture
+   Explain:
+
+* how connected wallet enters Join/Buy flow
+* how allowance is checked
+* approve → buy sequence
+* what happens if allowance is undefined/loading
+* what happens on wrong network
+* what hooks run only when connected
+* which connected-only components mount on /my-syndicate
+
+5. Crash reproduction
+   Reproduce on the exact live domain:
+   https://thesyndicate.money/my-syndicate
+
+Use a connected wallet if possible.
+If not possible, use the closest fixture but clearly say it is not production-equivalent.
+
+Collect:
+
+* browser console error
+* component stack
+* route match
+* exact file/component throwing
+* whether disconnected state works
+* whether connected state crashes
+* whether refresh fixes or repeats
+
+6. Compare with local/dev
+   Check:
+
+* local preview disconnected
+* local preview connected fixture
+* Replit production URL
+* custom domain
+
+If local works but domain fails, explain why.
+
+7. Fix
+   Only after identifying root cause:
+
+* apply the smallest fix
+* do not redesign
+* do not refactor the whole wallet system
+* do not touch unrelated UI
+
+8. Verify
+   Cost-controlled:
+
+* typecheck
+* one targeted test if practical
+* live connected wallet check if possible
+* disconnected check
+* Replit URL check
+* custom domain check
+
+Report:
+
+* root cause
+* files changed
+* whether custom domain is serving correct build
+* whether wallet connected state works
+* remaining risks
+
+Important:
+Do not spend another hour on theories.
+The goal is to answer:
+“Why does /my-syndicate crash on thesyndicate.money with a connected wallet?”
+and fix that exact issue.

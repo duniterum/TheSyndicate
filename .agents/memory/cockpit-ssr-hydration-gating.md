@@ -1,16 +1,55 @@
 ---
 name: Wallet-gated SSR hydration gating
-description: Why wallet-gated null-vs-subtree components crash connected users in production only, and the mounted-gate cure.
+description: Why wallet-gated components crash connected users in production only, and the centralized mounted-gate cure on /my-syndicate.
 ---
 
-**Rule:** any component on an SSR route that returns `null` when disconnected but a full subtree when connected (branching on wagmi `isConnected`) will hydration-mismatch and can escalate to the root CatchBoundary ("This page didn't load") — but ONLY in production, ONLY for connected wallets.
+**Rule:** on an SSR route, ANY render that differs in STRUCTURE between the
+disconnected and connected branches — `if (!isConnected) return null` vs a
+subtree, an inline `{isConnected && <el>}` / `{record && <el>}` (renders nothing
+vs an element), or a structural early-return like Wake/Seats
+`if (isConnected && idx.isLoading) return <card>` — will hydration-mismatch and
+can escalate to the root CatchBoundary ("This page didn't load"), but ONLY in
+production, ONLY for connected wallets.
 
-**Why:** `src/lib/wagmi.ts` uses `ssr:true` with NO cookieStorage, so the SERVER has no wallet and always renders the disconnected branch (`null`). A reconnected CLIENT renders the connected subtree on its first paint. Server `null` ≠ client subtree = a structural hydration mismatch (React #418 class). Disconnected users never see it (both sides render `null`); the dev server never reproduces it (lenient hydration + the prod bundle differs). Minified production strict hydration turns the otherwise-recoverable mismatch fatal at the boundary.
+**Why:** `src/lib/wagmi.ts` uses `ssr:true` with NO cookieStorage, so the SERVER
+has no wallet and always renders the disconnected branch. A reconnected CLIENT
+reports `isConnected` (and an `address`) SYNCHRONOUSLY on its first paint (wagmi
+cache hydrates from localStorage), so the first client render produces the
+connected subtree the server never emitted. Server ≠ first client = structural
+mismatch (React #418/#423 class). Disconnected users never see it; the dev
+server never reproduces it (lenient hydration + unminified). Minified prod strict
+hydration turns the otherwise-recoverable mismatch fatal at the boundary.
 
-**Cure:** a mounted gate placed BEFORE the `if (!isConnected) return null` check:
-`const [mounted,setMounted]=useState(false); useEffect(()=>setMounted(true),[]); if(!mounted) return null;`
-First client render === server render === `null`; the connected content reveals post-mount as a client-only update, so there is no SSR HTML to mismatch. `src/components/syndicate/NextMemberHero.tsx` is the canonical in-repo pattern — its comment explicitly cites the wagmi cache hydrating synchronously on the client.
+**Cure that actually worked (centralized at the wallet-state source):**
+`useCockpitAccount` (`src/lib/dev/cockpit-fixtures.ts`) now returns
+`{address: undefined, isConnected: false}` until a mounted gate flips post-mount
+(`const [mounted,setMounted]=useState(false); useEffect(()=>setMounted(true),[]); if(!mounted) return {address:undefined,isConnected:false}`).
+ALL FOUR cockpit consumers (MemberCockpit, SeatsAroundYou, CockpitCollector,
+WakeBehindYou) inherit it, and because every cockpit wallet branch derives from
+this hook — `isConnected`, `address`, and `record = address ? idx.getByWallet(address) : undefined`
+— the WHOLE cockpit collapses to the disconnected branch on first client paint =
+matches SSR. One gate fixes the lot; the connected cockpit reveals as a
+client-only update post-mount. **Do not remove this gate.**
 
-**How to apply:** when adding ANY wallet-gated section to an SSR route, never branch `null`-vs-subtree on `isConnected` without the mounted gate. Components that always render a wrapper/Shell in every state (a ternary INSIDE an always-rendered element) are already safe — that is why the sibling cockpit surfaces (SeatsAroundYou, WakeBehindYou, IdentityRibbon, CockpitProgression/Collector/Memory) did not crash. Known latent same-shape candidate OFF the cockpit route: `WalletBadge` in `LivePurchase.tsx` (`/join`); leave it unless a connected-wallet crash actually surfaces there.
+**Correction to a prior belief:** a previous fix gated ONLY `WhatChangedForYou`
+and the note claimed the inline-`&&` cockpit siblings were "safe because they
+render a wrapper in every state." That was WRONG — a ternary `{c ? <A/> : <B/>}`
+inside an always-rendered wrapper IS safe (one element either way), but inline
+`{c && <el>}` and structural early-returns are NOT. They were the residual crash.
 
-**Repro caveat:** you cannot reproduce this with the `?cockpit=` DEV fixtures — they are `import.meta.env.DEV`-gated and DEV is `false` in every build (see cockpit-dev-fixtures.md). Verify by publishing and loading the live `/my-syndicate` with a connected wallet — the only environment where it ever reproduced.
+**Still-valid per-component gates:** `NextMemberHero.tsx` and
+`WhatChangedForYou.tsx` keep their own mounted gates because they are NOT fed by
+`useCockpitAccount` (they call wagmi `useAccount` directly). Route helpers that
+use raw `useAccount` (`ActivityStrip`, `ChronicleBlock` in `my-syndicate.tsx`)
+are genuinely safe — they always render their wrapper with a ternary inside, so
+only StatusPill TEXT differs (non-fatal).
+
+**How to apply:** any NEW wallet-gated cockpit surface should consume
+`useCockpitAccount` (gets the gate for free). Any wallet-gated surface OUTSIDE
+the cockpit that branches null-vs-subtree on `isConnected`/`address`-derived data
+needs its own mounted gate.
+
+**Repro caveat:** cannot reproduce with `?cockpit=` DEV fixtures (DEV-gated, DEV
+is false in every build) NOR on the dev server. Verify ONLY by publishing and
+loading live `/my-syndicate` with a connected wallet — the sole environment where
+it reproduces.

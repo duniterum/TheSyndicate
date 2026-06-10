@@ -25,6 +25,7 @@
 //     still come from the real on-chain reads. No contract or write paths.
 // ─────────────────────────────────────────────────────────────────────────
 
+import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { useAccount } from "wagmi";
 import {
@@ -180,6 +181,22 @@ export function useCockpitAccount(): {
 } {
   const real = useAccount();
   const preset = usePreviewPreset();
+
+  // SSR hydration gate. src/lib/wagmi.ts uses ssr:true with NO cookieStorage, so
+  // the SERVER never has a wallet and always renders the disconnected branch. A
+  // reconnected wagmi client, however, reports isConnected (and an address)
+  // synchronously on its FIRST paint. Any cockpit surface that branches
+  // null-vs-subtree on connection ({isConnected && …}, {record && …}) would then
+  // render a connected subtree the server never produced — a structural
+  // hydration mismatch that, in production, escalates to the root CatchBoundary
+  // ("This page didn't load") for connected wallets only. Reporting disconnected
+  // (and address undefined, so address-derived records collapse too) until after
+  // mount makes the first client render === the server render; the connected
+  // cockpit reveals as a client-only update post-mount. See NextMemberHero.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return { address: undefined, isConnected: false };
+
   if (import.meta.env.DEV && preset) {
     return { address: seatWallet(PRESETS[preset].memberNumber), isConnected: true };
   }
