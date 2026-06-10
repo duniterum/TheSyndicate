@@ -1,0 +1,270 @@
+THE SYNDICATE — ECONOMIC REALITY, PROTOCOL INTELLIGENCE & REVENUE-PER-MEMBER AUDIT
+
+Read-only.
+
+No implementation.
+No code changes.
+No refactors.
+No new contracts.
+
+Goal:
+Before adding referral, burn, boosters, new NFTs, or membership complexity, audit the current system from five hats:
+
+Founder
+CTO
+Tokenomics lead
+UX/conversion lead
+Legal-risk aware operator
+
+We need to understand how The Syndicate can increase revenue per member while staying clean, modular, scalable, legally careful, and aligned with the existing protocol model.
+
+Core thesis:
+
+The Syndicate should not add complexity first.
+
+It should make existing protocol intelligence impossible to miss, then use the current Seat → Era → Rank → Artifact → Activity → Chronicle model to increase action, conversion, retention, and revenue per member.
+
+---
+
+## PART 1 — CURRENT ECONOMIC REALITY
+
+List all current and potential income streams already supported by the project.
+
+Separate:
+
+A) Live and contract-backed
+B) Live but frontend-only / simulated
+C) Built but inactive
+D) Future / not built
+
+Include:
+
+* Membership / SYN sale
+* 70 / 20 / 10 routing
+* NFT sales
+* LP fees / LP visibility
+* Referral preview
+* Future referral contract
+* Future burn events
+* Future artifact drops
+* Future SeatRecord721
+* Future paid protocol intelligence / data surfaces
+
+For each stream, report:
+
+* source of truth
+* current percentage / price / fee / split
+* contract or frontend source
+* where it is displayed
+* whether it creates protocol revenue
+* whether it increases Vault, Liquidity, Operations, or member incentives
+* current user clarity score
+
+---
+
+## PART 2 — REVENUE PER MEMBER ANALYSIS
+
+The key question:
+
+Why would a user spend more than the minimum $5?
+
+Audit whether the current site clearly explains:
+
+* why buy $5
+* why buy $10
+* why buy $25
+* why buy $50
+* why buy $100+
+* why mint First Signal
+* why mint Patron Seal
+* why return later
+* why invite someone later
+* why provide liquidity later
+
+Use current rank ladder, NFT pricing, chapter system, and Chronicle logic.
+
+Do not invent a new ladder.
+
+Identify where the site fails to create a clear reason to increase purchase size.
+
+---
+
+## PART 3 — EXISTING PROGRESSION MODEL
+
+Audit the current model:
+
+Seat
+→ Era
+→ Rank
+→ Artifact
+→ Activity
+→ Chronicle
+→ Future Rewards
+
+Confirm:
+
+* which parts are already implemented
+* which parts are visible
+* which parts are hidden
+* which parts are only simulated
+* which parts create economic action
+
+Very important:
+Do not introduce Bronze / Silver / Gold or a second membership system unless it maps to the existing rank ladder.
+
+---
+
+## PART 4 — RANK, ARTIFACT & FUTURE REWARD ALIGNMENT
+
+We are considering future reward logic where:
+
+* Rank gives base referral commission
+* Artifacts may give limited/event-based boosters
+* Rewards remain active-member referral rewards, not passive income
+* No staking required
+* No promise of profit
+* No guaranteed yield
+
+Audit whether the current architecture could support this later without confusion.
+
+Example future model, NOT implementation:
+
+Rank = base commission
+Artifact = temporary/special booster
+Era = historical prestige
+Seat = identity
+Chronicle = proof/history
+
+Evaluate:
+
+* would this create duplicate systems?
+* which existing data structures could support it?
+* what should remain PENDING?
+* what legal-risk language is needed?
+* what must not be displayed as live?
+
+---
+
+## PART 5 — PROTOCOL INTELLIGENCE VISIBILITY
+
+Audit which existing live data should be surfaced more clearly to increase investor trust and conversion.
+
+Include:
+
+* token contract address
+* total supply
+* circulating supply
+* burned supply / burn readiness
+* non-circulating wallets
+* SYN sold
+* USDC raised
+* Vault value
+* Liquidity value
+* Operations routing
+* NFT mints
+* member count
+* chapter progress
+* rank distribution
+* latest verified activity
+
+Rank by impact:
+
+1. must surface now
+2. useful soon
+3. keep deep
+4. postpone
+
+---
+
+## PART 6 — BURN READINESS WITHOUT BURNING NOW
+
+We do not want to burn now.
+
+But we want the architecture ready.
+
+Audit the cleanest future burn model:
+
+* burn address readiness
+* founder burn event possibility
+* protocol burn event possibility
+* automated burn possibility
+* how burned supply should be calculated
+* how burn events should appear in Chronicle
+* how to avoid fake burn claims
+* how to show “Burned: 0” honestly today
+
+No implementation yet.
+
+---
+
+## PART 7 — CHRONICLE AS ECONOMIC STORY ENGINE
+
+Audit how current verified activities can become economic narrative.
+
+Examples:
+
+* Member joined
+* Member upgraded rank
+* NFT minted
+* Treasury increased
+* LP created / added
+* Chapter threshold approached
+* Chapter sealed
+* Future referral milestone
+* Future burn milestone
+
+For each event:
+
+* is data already available?
+* is it on-chain?
+* can it become a Chronicle entry?
+* does it increase trust?
+* does it increase urgency?
+* does it increase revenue per member?
+
+---
+
+## PART 8 — MINIMAL-CHANGE ROADMAP
+
+Give a minimal-change roadmap that respects:
+
+* no new contracts first
+* less is more
+* no duplicate systems
+* clean UX
+* clear CTA
+* mobile-first
+* 7-year-old to 77-year-old understandable
+* verifiable data over marketing claims
+* scalable modular architecture
+
+Separate:
+
+Phase 0: surface existing truth
+Phase 1: improve conversion and revenue per member
+Phase 2: strengthen Chronicle/story loops
+Phase 3: prepare referral/burn/reward modules
+Phase 4: only then consider new smart contracts
+
+---
+
+## PART 9 — FINAL FOUNDER VERDICT
+
+Answer brutally:
+
+1. What is already strong?
+2. What is hidden but valuable?
+3. What is confusing users?
+4. What blocks revenue per member?
+5. What should be built next?
+6. What should not be built yet?
+7. What could become dangerous legally?
+8. What is the fastest path to more revenue without breaking architecture?
+
+Return a table-based founder-grade report.
+
+Do not implement.
+
+Do not invent.
+
+Separate current reality from projected ideas.
