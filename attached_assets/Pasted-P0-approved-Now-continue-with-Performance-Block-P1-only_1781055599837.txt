@@ -1,0 +1,91 @@
+P0 approved.
+
+Now continue with Performance Block P1 only.
+
+P1 = instant holder-index snapshot + QueryClient defaults.
+
+Goal:
+When a member revisits /my-syndicate, the app should not start from zero to rediscover known identity.
+
+It should:
+
+1. render last-known holder index / member record quickly
+2. refresh in background
+3. avoid focus-refetch storms
+
+Scope:
+Performance only.
+
+Do not:
+
+* change UI design
+* add widgets
+* touch doctrine
+* touch contracts
+* touch Archive/Home redesign
+* implement incremental indexing yet
+* implement wallet/archive balance persistence yet
+* do full-repo archaeology
+
+Tasks:
+
+1. QueryClient defaults
+   In router/query client setup, add sane defaults:
+
+* refetchOnWindowFocus: false
+* refetchOnReconnect: true
+* retry: 2
+* gcTime long enough for navigation/reload efficiency
+* sensible default staleTime, with per-query overrides preserved
+
+2. Holder-index persistent snapshot
+   Persist the holder-index / purchase-events result locally so cold reload can hydrate faster.
+
+Preferred:
+
+* persist the canonical purchase-events query from P0, or holder-index snapshot if simpler
+* cache key must include chainId / sale address / deployment block or a version buster
+* client-only localStorage access guarded for SSR
+* stale snapshot must not be presented as freshly LIVE if there is a truth label available
+* background refresh still runs
+
+3. Safety
+
+* no fake data
+* no altered event parsing
+* no changed ordering
+* no changed member numbers
+* no changed displayed totals except faster availability
+* if cache is corrupt or version-mismatched, ignore it safely
+
+4. Tests
+   Add/update focused tests where practical:
+
+* cache key includes contract/version identity
+* corrupt cache falls back safely
+* QueryClient defaults set correctly
+* persisted snapshot does not change ordering/limit semantics
+
+5. Verification
+   Run:
+
+* typecheck
+* P0 test
+* holder-index/activity tests
+* cockpit tests if indirectly affected
+* doctrine guard if scanned files changed
+* architect review
+
+Report:
+
+* files changed
+* QueryClient defaults added
+* what is persisted
+* cache key/version strategy
+* how stale/corrupt cache behaves
+* before/after expected UX
+* tests passed/failed
+* deferred items
+
+Stop after P1.
+Do not start P2 without approval.

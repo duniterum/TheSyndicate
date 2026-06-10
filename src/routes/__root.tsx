@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Web3Provider } from "../components/syndicate/Web3Provider";
+import { PurchaseEventsHydrator } from "../components/syndicate/PurchaseEventsHydrator";
 import { WalletAccountSynchronizer } from "../components/syndicate/WalletAccountSynchronizer";
 import { WalletDebugPanel } from "../components/syndicate/WalletDebugPanel";
 import { MobileJoinBar } from "../components/syndicate/MobileJoinBar";
@@ -176,6 +177,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Web3Provider>
+          <PurchaseEventsHydrator />
           <WalletAccountSynchronizer />
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />

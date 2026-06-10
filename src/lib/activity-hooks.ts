@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { usePublicClient } from "wagmi";
+import { usePublicClient, useChainId } from "wagmi";
 import { formatUnits, parseAbiItem } from "viem";
 import { CONTRACTS, USDC_DECIMALS, SYN_DECIMALS, SALE_DEPLOYMENT_BLOCK } from "./syndicate-config";
+import { savePurchaseEventsSnapshot, purchaseEventsCacheKey } from "./purchase-events-cache";
 
 const SALE = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
 
@@ -49,6 +50,7 @@ export function applyPurchaseLimit(events: PurchaseEvent[], limit: number): Purc
  */
 export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: number }) {
   const publicClient = usePublicClient();
+  const chainId = useChainId();
   const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
   const limit = opts?.limit ?? 50;
 
@@ -104,6 +106,16 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
       results.sort((a, b) =>
         a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1,
       );
+      // P1: persist the canonical full list so a cold reload hydrates instantly.
+      // Guarded to non-empty so a transient/partial scan never clobbers a good
+      // snapshot; the helper is SSR- and quota-safe. Does not alter what is
+      // returned to callers — `select` still narrows the list per-limit.
+      if (results.length > 0) {
+        savePurchaseEventsSnapshot(
+          purchaseEventsCacheKey({ chainId, sale: SALE, fromBlock }),
+          results,
+        );
+      }
       // Return the FULL canonical list — callers narrow it via `select` below.
       return results;
     },
