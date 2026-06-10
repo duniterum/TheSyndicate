@@ -1,0 +1,118 @@
+Good. I tested for now and it works.
+
+Now stop publish verification unless a real issue appears.
+
+Next task: preserve and visually surface the hidden work.
+
+Important:
+Do not delete valuable old widgets.
+Do not silently remove paid/dev work.
+Do not bury useful Lovable/labs/museum components.
+
+Goal:
+Create only 2 categorized visual pages where we can see the existing unused / hidden / lab / museum / old widgets.
+
+This is a preservation and selection tool, not a production feature.
+
+Pages:
+
+1. /labs/design-museum
+   Purpose:
+   Visual archive of UI/design/story widgets.
+   Categories:
+
+* Cockpit / Member OS widgets
+* Archive / NFT / Artifact widgets
+* Story / Chronicle / Episode widgets
+* Growth / Referral / Reputation widgets
+* Proof / Transparency widgets
+* Old Lovable / Museum / Lab experiments
+* Deprecated-but-interesting components
+
+2. /labs/component-index
+   Purpose:
+   Technical index of components.
+   Categories:
+
+* currently mounted in product
+* hidden/lab only
+* dead/unmounted
+* duplicate concepts
+* candidates to reuse
+* candidates to rewrite
+* candidates to keep archived only
+
+Hard rules:
+
+* no deletion
+* no production navigation unless under Labs/internal area
+* no fake data presented as live
+* if a widget needs fixture data, label it FIXTURE / ARCHIVE / LAB
+* no contract logic changes
+* no wallet/payment changes
+* no doctrine changes
+* no repo-wide redesign
+
+Execution mode:
+Use previous knowledge and targeted file lookup only.
+No giant audit report.
+No full repo archaeology unless needed to find component exports.
+Build the two pages visually.
+
+For each widget/card shown, include:
+
+* component name
+* current status: mounted / hidden / dead / lab / deprecated
+* category
+* why it may be useful
+* reuse recommendation: use / rewrite / archive / ignore
+* risk note if it contains fake data, stale copy, or wrong doctrine
+
+Start with the known discovered assets:
+
+* MemberCockpitCandidate
+* SinceYourLastVisit
+* SinceLastVisitStory
+* ActivityHeartbeat
+* WhatChangedForYou
+* RankHub
+* SeatRecordPanel
+* ShareableCards
+* MythologyWall
+* DayOneArchive
+* ProtocolStorySoFar
+* ActivityMilestones
+* NeighboursStrip
+* MyArchivePreview
+* GenesisNFTProgress / Artifact progress equivalent if present
+* WhyComeBackTomorrow if preserved in docs/dead code
+* ArchiveMuseumHero
+* Old Lovable/museum-style components if present
+
+Before coding:
+Give a max 10-line plan:
+
+* which routes will be added
+* where they live
+* how they are protected as labs/internal
+* how fixture/stale widgets will be labeled
+
+Then implement.
+
+Verification:
+
+* typecheck
+* one render check for each page
+* no full suite
+* no architect unless high-risk
+
+Report:
+
+* pages created
+* categories included
+* number of widgets surfaced
+* most promising reuse candidates
+* risky/deprecated widgets preserved but labeled
+* what remains to add later
+
+Stop after this.

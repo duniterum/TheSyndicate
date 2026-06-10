@@ -38,10 +38,13 @@ import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AiRouteImport } from './routes/ai'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LabsIndexRouteImport } from './routes/labs.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
 import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
+import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museum'
 import { Route as LabsDesignArchiveRouteImport } from './routes/labs.design-archive'
+import { Route as LabsComponentIndexRouteImport } from './routes/labs.component-index'
 import { Route as ChaptersSlugRouteImport } from './routes/chapters.$slug'
 import { Route as ApiChatRouteImport } from './routes/api.chat'
 import { Route as XTxHashRouteImport } from './routes/x.tx.$hash'
@@ -197,6 +200,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabsIndexRoute = LabsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LabsRoute,
+} as any)
 const WalletAddressRoute = WalletAddressRouteImport.update({
   id: '/wallet/$address',
   path: '/wallet/$address',
@@ -212,9 +220,19 @@ const LabsInvariantsRoute = LabsInvariantsRouteImport.update({
   path: '/invariants',
   getParentRoute: () => LabsRoute,
 } as any)
+const LabsDesignMuseumRoute = LabsDesignMuseumRouteImport.update({
+  id: '/design-museum',
+  path: '/design-museum',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsDesignArchiveRoute = LabsDesignArchiveRouteImport.update({
   id: '/design-archive',
   path: '/design-archive',
+  getParentRoute: () => LabsRoute,
+} as any)
+const LabsComponentIndexRoute = LabsComponentIndexRouteImport.update({
+  id: '/component-index',
+  path: '/component-index',
   getParentRoute: () => LabsRoute,
 } as any)
 const ChaptersSlugRoute = ChaptersSlugRouteImport.update({
@@ -297,10 +315,13 @@ export interface FileRoutesByFullPath {
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
+  '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
+  '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
+  '/labs/': typeof LabsIndexRoute
   '/api/og/health': typeof ApiOgHealthRoute
   '/api/public/protocol-health': typeof ApiPublicProtocolHealthRouteWithChildren
   '/x/tx/$hash': typeof XTxHashRoute
@@ -321,7 +342,6 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/founders': typeof FoundersRoute
   '/join': typeof JoinRoute
-  '/labs': typeof LabsRouteWithChildren
   '/liquidity': typeof LiquidityRoute
   '/members': typeof MembersRoute
   '/my-syndicate': typeof MySyndicateRoute
@@ -341,10 +361,13 @@ export interface FileRoutesByTo {
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
+  '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
+  '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
+  '/labs': typeof LabsIndexRoute
   '/api/og/health': typeof ApiOgHealthRoute
   '/api/public/protocol-health': typeof ApiPublicProtocolHealthRouteWithChildren
   '/x/tx/$hash': typeof XTxHashRoute
@@ -386,10 +409,13 @@ export interface FileRoutesById {
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
+  '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
+  '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
+  '/labs/': typeof LabsIndexRoute
   '/api/og/health': typeof ApiOgHealthRoute
   '/api/public/protocol-health': typeof ApiPublicProtocolHealthRouteWithChildren
   '/x/tx/$hash': typeof XTxHashRoute
@@ -432,10 +458,13 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/api/chat'
     | '/chapters/$slug'
+    | '/labs/component-index'
     | '/labs/design-archive'
+    | '/labs/design-museum'
     | '/labs/invariants'
     | '/milestone/$id'
     | '/wallet/$address'
+    | '/labs/'
     | '/api/og/health'
     | '/api/public/protocol-health'
     | '/x/tx/$hash'
@@ -456,7 +485,6 @@ export interface FileRouteTypes {
     | '/faq'
     | '/founders'
     | '/join'
-    | '/labs'
     | '/liquidity'
     | '/members'
     | '/my-syndicate'
@@ -476,10 +504,13 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/api/chat'
     | '/chapters/$slug'
+    | '/labs/component-index'
     | '/labs/design-archive'
+    | '/labs/design-museum'
     | '/labs/invariants'
     | '/milestone/$id'
     | '/wallet/$address'
+    | '/labs'
     | '/api/og/health'
     | '/api/public/protocol-health'
     | '/x/tx/$hash'
@@ -520,10 +551,13 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/api/chat'
     | '/chapters/$slug'
+    | '/labs/component-index'
     | '/labs/design-archive'
+    | '/labs/design-museum'
     | '/labs/invariants'
     | '/milestone/$id'
     | '/wallet/$address'
+    | '/labs/'
     | '/api/og/health'
     | '/api/public/protocol-health'
     | '/x/tx/$hash'
@@ -779,6 +813,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/labs/': {
+      id: '/labs/'
+      path: '/'
+      fullPath: '/labs/'
+      preLoaderRoute: typeof LabsIndexRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/wallet/$address': {
       id: '/wallet/$address'
       path: '/wallet/$address'
@@ -800,11 +841,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsInvariantsRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/design-museum': {
+      id: '/labs/design-museum'
+      path: '/design-museum'
+      fullPath: '/labs/design-museum'
+      preLoaderRoute: typeof LabsDesignMuseumRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/design-archive': {
       id: '/labs/design-archive'
       path: '/design-archive'
       fullPath: '/labs/design-archive'
       preLoaderRoute: typeof LabsDesignArchiveRouteImport
+      parentRoute: typeof LabsRoute
+    }
+    '/labs/component-index': {
+      id: '/labs/component-index'
+      path: '/component-index'
+      fullPath: '/labs/component-index'
+      preLoaderRoute: typeof LabsComponentIndexRouteImport
       parentRoute: typeof LabsRoute
     }
     '/chapters/$slug': {
@@ -886,13 +941,19 @@ const ChaptersRouteWithChildren = ChaptersRoute._addFileChildren(
 )
 
 interface LabsRouteChildren {
+  LabsComponentIndexRoute: typeof LabsComponentIndexRoute
   LabsDesignArchiveRoute: typeof LabsDesignArchiveRoute
+  LabsDesignMuseumRoute: typeof LabsDesignMuseumRoute
   LabsInvariantsRoute: typeof LabsInvariantsRoute
+  LabsIndexRoute: typeof LabsIndexRoute
 }
 
 const LabsRouteChildren: LabsRouteChildren = {
+  LabsComponentIndexRoute: LabsComponentIndexRoute,
   LabsDesignArchiveRoute: LabsDesignArchiveRoute,
+  LabsDesignMuseumRoute: LabsDesignMuseumRoute,
   LabsInvariantsRoute: LabsInvariantsRoute,
+  LabsIndexRoute: LabsIndexRoute,
 }
 
 const LabsRouteWithChildren = LabsRoute._addFileChildren(LabsRouteChildren)
