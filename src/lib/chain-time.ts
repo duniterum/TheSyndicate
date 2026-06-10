@@ -6,7 +6,7 @@
 // When a subgraph or indexer lands we will swap in real per-block timestamps
 // without changing the signature.
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import { usePublicClient } from "wagmi";
 
 export const AVA_BLOCK_SECONDS = 2;
@@ -22,6 +22,20 @@ export const CHAIN_TIP_QUERY_KEY = ["chain-tip"] as const;
 export type ChainTip = { number: bigint; unix: number };
 
 /**
+ * Shared queryFn for the chain tip. Throws instead of returning undefined
+ * (react-query v5 forbids an undefined queryFn result). Used by BOTH the
+ * useChainTip observer and the imperative fetchSharedChainTip(), so scanners
+ * and render-time consumers resolve the head through ONE cached query.
+ */
+async function chainTipQueryFn(
+  publicClient: ReturnType<typeof usePublicClient>,
+): Promise<ChainTip> {
+  if (!publicClient) throw new Error("publicClient unavailable");
+  const block = await publicClient.getBlock();
+  return { number: block.number, unix: Number(block.timestamp) };
+}
+
+/**
  * Single source of truth for the current Avalanche head block and its
  * timestamp. getBlock() is a superset of getBlockNumber(), so this one query
  * feeds both the pulse's block-number recency math and chain-time's unix
@@ -34,14 +48,27 @@ export function useChainTip() {
     enabled: Boolean(publicClient),
     refetchInterval: 30_000,
     staleTime: 15_000,
-    queryFn: async (): Promise<ChainTip> => {
-      // Unreachable while disabled (enabled gates on publicClient). Throw
-      // instead of returning undefined — react-query v5 forbids an undefined
-      // queryFn result.
-      if (!publicClient) throw new Error("publicClient unavailable");
-      const block = await publicClient.getBlock();
-      return { number: block.number, unix: Number(block.timestamp) };
-    },
+    queryFn: () => chainTipQueryFn(publicClient),
+  });
+}
+
+/**
+ * Imperative read of the SHARED chain tip for use inside event-scanner
+ * queryFns, which cannot call the useChainTip hook (P4c). Resolves through the
+ * same CHAIN_TIP_QUERY_KEY cache: when a fresh tip (≤ staleTime) already exists
+ * — fetched by the render-time observer or a sibling scanner this cycle — it is
+ * returned with no new RPC; otherwise ONE getBlock populates the shared entry
+ * for every consumer. Replaces each scanner's independent getBlockNumber() head
+ * fetch, so the whole app agrees on a single head block.
+ */
+export async function fetchSharedChainTip(
+  publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
+  queryClient: QueryClient,
+): Promise<ChainTip> {
+  return queryClient.fetchQuery({
+    queryKey: CHAIN_TIP_QUERY_KEY,
+    staleTime: 15_000,
+    queryFn: () => chainTipQueryFn(publicClient),
   });
 }
 

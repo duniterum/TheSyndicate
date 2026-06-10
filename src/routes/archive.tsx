@@ -1,9 +1,9 @@
 // /archive — internal/protocol route for the NFT Archive experience.
 //
-// Public-facing visitors land on /nft (preferred SEO route) which renders
-// the SAME experience. /archive remains a valid route so existing links,
-// docs, and internal references continue to work. Both routes import
-// `ArchivePage` from this file.
+// Public-facing visitors land on /nft (preferred SEO route), which renders its
+// own NftPage. /archive remains a valid route so existing links, docs, and
+// internal references continue to work; it renders ArchivePage, defined locally
+// below and NOT exported, so this route file stays code-split (P5).
 //
 // Doctrine:
 //   SYN is the seat. Artifacts are the memory.
@@ -195,9 +195,10 @@ function mythToneClass(s: MythologyState): { tone: "success" | "navy" | "muted" 
 }
 
 // ───────────────────────────────────────────────────────────────────────
-// Page component — exported so /nft and /nfts can reuse it.
+// Page component — local to this route (not exported) so this route file
+// stays code-split. /nft and /nfts render their own NftPage, not ArchivePage.
 // ───────────────────────────────────────────────────────────────────────
-export function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
+function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
   const truth = useProtocolTruth();
   const chapter = truth.chapterProgress.value;
   const memberCount = truth.members.value;

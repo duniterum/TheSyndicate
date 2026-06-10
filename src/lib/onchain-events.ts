@@ -3,9 +3,17 @@
 // RPC log-range limits. Newest-first, capped by `limit`.
 
 import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
-import { usePublicClient } from "wagmi";
+import { usePublicClient, useChainId } from "wagmi";
 import { formatUnits, parseAbiItem, getAddress } from "viem";
 import { CONTRACTS, USDC_DECIMALS, SYN_DECIMALS, SALE_DEPLOYMENT_BLOCK, LP_POOL } from "./syndicate-config";
+import { fetchSharedChainTip } from "./chain-time";
+import { REORG_OVERLAP, computeIncrementalScanStart } from "./activity-hooks";
+import {
+  lpEventsCacheKey,
+  loadLpEventsSnapshot,
+  saveLpEventsSnapshot,
+  mergeScannedEvents,
+} from "./lp-events-cache";
 
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
 const SYN  = CONTRACTS.SYN_CONTRACT_ADDRESS  as `0x${string}`;
@@ -45,24 +53,32 @@ async function getSynIs0(
   return order.token0.toLowerCase() === SYN.toLowerCase();
 }
 
+/**
+ * Chunked log scan over [fromBlock, tip]. The caller passes `tip` (resolved
+ * once via the shared chain-tip, P4c) instead of each scan fetching its own
+ * head. Returns the events AND whether EVERY chunk succeeded — incremental
+ * callers must not persist (or advance their cursor) on an incomplete scan.
+ */
 async function scan<T>(
   publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
   fromBlock: bigint,
+  tip: bigint,
   fetchChunk: (start: bigint, end: bigint) => Promise<T[]>,
-): Promise<T[]> {
-  const tip = await publicClient.getBlockNumber();
+): Promise<{ events: T[]; complete: boolean }> {
   const from = fromBlock > tip ? tip : fromBlock;
   const out: T[] = [];
+  let complete = true;
   for (let start = from; start <= tip; start += CHUNK + 1n) {
     const end = start + CHUNK > tip ? tip : start + CHUNK;
     try {
       const chunk = await fetchChunk(start, end);
       out.push(...chunk);
     } catch {
-      // Skip windows the RPC rejects.
+      // Skip windows the RPC rejects, but remember the gap.
+      complete = false;
     }
   }
-  return out;
+  return { events: out, complete };
 }
 
 // ─── USDC transfers in/out of any wallet (Treasury Flows) ────────────────
@@ -78,6 +94,7 @@ export type UsdcFlow = {
 
 export function useUsdcFlows(wallet: string, opts?: { fromBlock?: bigint; limit?: number }) {
   const publicClient = usePublicClient();
+  const queryClient = useQueryClient();
   const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
   const limit = opts?.limit ?? 50;
   const target = wallet as `0x${string}`;
@@ -89,10 +106,12 @@ export function useUsdcFlows(wallet: string, opts?: { fromBlock?: bigint; limit?
     staleTime: 30_000,
     queryFn: async (): Promise<UsdcFlow[]> => {
       if (!publicClient) return [];
-      const inLogs = await scan(publicClient, fromBlock, (start, end) =>
+      // One shared head read for BOTH the in and out scans (P4c).
+      const tip = (await fetchSharedChainTip(publicClient, queryClient)).number;
+      const { events: inLogs } = await scan(publicClient, fromBlock, tip, (start, end) =>
         publicClient.getLogs({ address: USDC, event: TRANSFER, args: { to: target }, fromBlock: start, toBlock: end }),
       );
-      const outLogs = await scan(publicClient, fromBlock, (start, end) =>
+      const { events: outLogs } = await scan(publicClient, fromBlock, tip, (start, end) =>
         publicClient.getLogs({ address: USDC, event: TRANSFER, args: { from: target }, fromBlock: start, toBlock: end }),
       );
       const all: UsdcFlow[] = [];
@@ -131,6 +150,7 @@ export type LpSwap = {
 export function useLpSwaps(opts?: { fromBlock?: bigint; limit?: number }) {
   const publicClient = usePublicClient();
   const queryClient = useQueryClient();
+  const chainId = useChainId();
   const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
   const limit = opts?.limit ?? 50;
 
@@ -141,15 +161,28 @@ export function useLpSwaps(opts?: { fromBlock?: bigint; limit?: number }) {
     staleTime: 30_000,
     queryFn: async (): Promise<LpSwap[]> => {
       if (!publicClient) return [];
-      // LP token ordering is immutable — read once and cache forever (P3).
+      // Shared head (P4c) + immutable LP token ordering (P3).
+      const tip = (await fetchSharedChainTip(publicClient, queryClient)).number;
       const synIs0 = await getSynIs0(publicClient, queryClient);
       const synDec = SYN_DECIMALS;
       const usdcDec = USDC_DECIMALS;
 
-      const logs = await scan(publicClient, fromBlock, (start, end) =>
+      // P4b incremental: resume from the persisted cursor instead of replaying
+      // deploymentBlock→head every refetch. Parsing, ordering, and the returned
+      // values are unchanged; a corrupt/absent cache degrades to a full scan.
+      const cacheKey = lpEventsCacheKey({ chainId, pair: PAIR, kind: "swaps", fromBlock });
+      const cached = loadLpEventsSnapshot<LpSwap>(cacheKey);
+      const scanStart = computeIncrementalScanStart({
+        fromBlock,
+        tip,
+        lastScannedBlock: cached?.lastScannedBlock,
+        overlap: REORG_OVERLAP,
+      });
+
+      const { events: logs, complete } = await scan(publicClient, scanStart, tip, (start, end) =>
         publicClient.getLogs({ address: PAIR, event: SWAP, fromBlock: start, toBlock: end }),
       );
-      const out: LpSwap[] = [];
+      const fresh: LpSwap[] = [];
       for (const l of logs) {
         const a = l.args as { sender?: string; to?: string; amount0In?: bigint; amount1In?: bigint; amount0Out?: bigint; amount1Out?: bigint };
         if (a.amount0In === undefined || a.amount1In === undefined || a.amount0Out === undefined || a.amount1Out === undefined) continue;
@@ -157,7 +190,7 @@ export function useLpSwaps(opts?: { fromBlock?: bigint; limit?: number }) {
         const usdc0 = synIs0 ? a.amount1Out - a.amount1In : a.amount0Out - a.amount0In; // signed USDC delta to trader
         const synAbs = syn0 < 0n ? -syn0 : syn0;
         const usdcAbs = usdc0 < 0n ? -usdc0 : usdc0;
-        out.push({
+        fresh.push({
           kind: syn0 > 0n ? "buy" : "sell",
           synAmount: Number(formatUnits(synAbs, synDec)),
           usdcAmount: Number(formatUnits(usdcAbs, usdcDec)),
@@ -167,8 +200,15 @@ export function useLpSwaps(opts?: { fromBlock?: bigint; limit?: number }) {
           logIndex: l.logIndex ?? 0,
         });
       }
-      out.sort((a, b) => (a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1));
-      return limit > 0 ? out.slice(0, limit) : out;
+
+      // Merge with cached history (dedupe overlap by txHash:logIndex, sort
+      // newest-first — identical to the prior single-scan output).
+      const merged = mergeScannedEvents(cached?.events ?? [], fresh);
+      if (complete && merged.length > 0) {
+        const nextLastScanned = cached && cached.lastScannedBlock > tip ? cached.lastScannedBlock : tip;
+        saveLpEventsSnapshot(cacheKey, merged, nextLastScanned);
+      }
+      return limit > 0 ? merged.slice(0, limit) : merged;
     },
   });
 }
@@ -188,6 +228,7 @@ export type LpLiquidityEvent = {
 export function useLpLiquidityEvents(opts?: { fromBlock?: bigint; limit?: number }) {
   const publicClient = usePublicClient();
   const queryClient = useQueryClient();
+  const chainId = useChainId();
   const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
   const limit = opts?.limit ?? 25;
 
@@ -198,21 +239,34 @@ export function useLpLiquidityEvents(opts?: { fromBlock?: bigint; limit?: number
     staleTime: 30_000,
     queryFn: async (): Promise<LpLiquidityEvent[]> => {
       if (!publicClient) return [];
-      // LP token ordering is immutable — read once and cache forever (P3).
+      // Shared head (P4c) + immutable LP token ordering (P3).
+      const tip = (await fetchSharedChainTip(publicClient, queryClient)).number;
       const synIs0 = await getSynIs0(publicClient, queryClient);
 
-      const mints = await scan(publicClient, fromBlock, (start, end) =>
+      // P4b incremental: resume from the persisted cursor. A mint OR burn chunk
+      // failure marks the scan incomplete, so we never persist over a gap.
+      const cacheKey = lpEventsCacheKey({ chainId, pair: PAIR, kind: "liquidity", fromBlock });
+      const cached = loadLpEventsSnapshot<LpLiquidityEvent>(cacheKey);
+      const scanStart = computeIncrementalScanStart({
+        fromBlock,
+        tip,
+        lastScannedBlock: cached?.lastScannedBlock,
+        overlap: REORG_OVERLAP,
+      });
+
+      const { events: mints, complete: mintsComplete } = await scan(publicClient, scanStart, tip, (start, end) =>
         publicClient.getLogs({ address: PAIR, event: MINT, fromBlock: start, toBlock: end }),
       );
-      const burns = await scan(publicClient, fromBlock, (start, end) =>
+      const { events: burns, complete: burnsComplete } = await scan(publicClient, scanStart, tip, (start, end) =>
         publicClient.getLogs({ address: PAIR, event: BURN, fromBlock: start, toBlock: end }),
       );
+      const complete = mintsComplete && burnsComplete;
 
-      const out: LpLiquidityEvent[] = [];
+      const fresh: LpLiquidityEvent[] = [];
       for (const l of mints) {
         const a = l.args as { sender?: string; amount0?: bigint; amount1?: bigint };
         if (a.amount0 === undefined || a.amount1 === undefined) continue;
-        out.push({
+        fresh.push({
           kind: "add",
           synAmount: Number(formatUnits(synIs0 ? a.amount0 : a.amount1, SYN_DECIMALS)),
           usdcAmount: Number(formatUnits(synIs0 ? a.amount1 : a.amount0, USDC_DECIMALS)),
@@ -225,7 +279,7 @@ export function useLpLiquidityEvents(opts?: { fromBlock?: bigint; limit?: number
       for (const l of burns) {
         const a = l.args as { sender?: string; to?: string; amount0?: bigint; amount1?: bigint };
         if (a.amount0 === undefined || a.amount1 === undefined) continue;
-        out.push({
+        fresh.push({
           kind: "remove",
           synAmount: Number(formatUnits(synIs0 ? a.amount0 : a.amount1, SYN_DECIMALS)),
           usdcAmount: Number(formatUnits(synIs0 ? a.amount1 : a.amount0, USDC_DECIMALS)),
@@ -235,8 +289,13 @@ export function useLpLiquidityEvents(opts?: { fromBlock?: bigint; limit?: number
           logIndex: l.logIndex ?? 0,
         });
       }
-      out.sort((a, b) => (a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1));
-      return limit > 0 ? out.slice(0, limit) : out;
+
+      const merged = mergeScannedEvents(cached?.events ?? [], fresh);
+      if (complete && merged.length > 0) {
+        const nextLastScanned = cached && cached.lastScannedBlock > tip ? cached.lastScannedBlock : tip;
+        saveLpEventsSnapshot(cacheKey, merged, nextLastScanned);
+      }
+      return limit > 0 ? merged.slice(0, limit) : merged;
     },
   });
 }

@@ -1,0 +1,91 @@
+Performance work is now sufficiently understood.
+
+Switch operating mode.
+
+From now on:
+
+DO NOT perform explorer phases, doctrine rediscovery, architecture rediscovery, repo-wide searches, memory updates, or repeated planning passes for performance work already approved.
+
+Assume the following is already understood and approved:
+
+* P0 canonical purchase-event query
+* P1 persistence layer
+* P2 wallet-read persistence
+* P3 global read tuning
+* P4a incremental purchase-event indexing
+* cost-control doctrine
+* SSR safety doctrine
+* truth doctrine
+
+New execution mode:
+
+IMPLEMENTATION SPRINT MODE
+
+Rules:
+
+1. Read only the files directly required by the task.
+
+2. No parallel explorers.
+
+3. No architecture rediscovery.
+
+4. No "let me inspect the whole system".
+
+5. No memory updates.
+
+6. No architect review unless:
+
+   * contract logic changes
+   * event parsing changes
+   * write flows change
+   * user-visible truth claims change
+
+7. No full-suite runs.
+
+Run only:
+
+* tsc
+* tests directly affected
+
+8. One consolidated report at the end.
+
+9. If multiple approved performance blocks can be executed safely together, execute them in a single sprint.
+
+Current sprint objective:
+
+Evaluate and execute together if safe:
+
+P4b
+
+* incremental indexing for LP swaps
+* incremental indexing for LP liquidity events
+
+P4c
+
+* scanners consume shared chain-tip instead of individual getBlockNumber calls
+
+P4d
+
+* freshness-signals alignment with shared chain-tip where possible
+
+P5
+
+* route code splitting for bundle-warning routes (archive/nft and other bundle-flagged routes)
+
+Before coding:
+give a 10-line maximum risk assessment.
+
+If risk is low:
+execute all eligible blocks in one sprint.
+
+Then provide:
+
+* files changed
+* expected RPC reduction
+* expected bandwidth reduction
+* expected UX improvement
+* remaining largest bottleneck
+
+Do not stop between sub-blocks.
+Do not re-discover architecture already understood.
+Execute the sprint.

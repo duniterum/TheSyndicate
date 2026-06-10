@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePublicClient, useChainId } from "wagmi";
 import { formatUnits, parseAbiItem } from "viem";
 import { CONTRACTS, USDC_DECIMALS, SYN_DECIMALS, SALE_DEPLOYMENT_BLOCK } from "./syndicate-config";
@@ -8,6 +8,7 @@ import {
   savePurchaseEventsSnapshot,
   purchaseEventsCacheKey,
 } from "./purchase-events-cache";
+import { fetchSharedChainTip } from "./chain-time";
 
 const SALE = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
 
@@ -108,6 +109,7 @@ export function computeIncrementalScanStart(args: {
  */
 export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: number }) {
   const publicClient = usePublicClient();
+  const queryClient = useQueryClient();
   const chainId = useChainId();
   const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
   const limit = opts?.limit ?? 50;
@@ -128,7 +130,9 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
     staleTime: 30_000,
     queryFn: async (): Promise<PurchaseEvent[]> => {
       if (!publicClient) return [];
-      const tip = await publicClient.getBlockNumber();
+      // Resolve the head through the SHARED chain-tip cache (P4c) rather than a
+      // dedicated getBlockNumber() — the same tip feeds freshness and the pulse.
+      const tip = (await fetchSharedChainTip(publicClient, queryClient)).number;
 
       // P4a incremental indexing: resume from the persisted cursor instead of
       // replaying deploymentBlock→head every refetch. A corrupt/absent cache

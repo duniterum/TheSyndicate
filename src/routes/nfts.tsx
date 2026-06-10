@@ -6,7 +6,7 @@
 // /nfts is kept as a valid alias for any existing inbound links and
 // search results, with a canonical pointing to /nft.
 import { createFileRoute } from "@tanstack/react-router";
-import { NftPage } from "./nft";
+import { NftPage } from "@/components/syndicate/NftPage";
 
 export const Route = createFileRoute("/nfts")({
   head: () => ({

@@ -1,10 +1,11 @@
 // Live scanner for SyndicateArchive1155 mint events (TransferSingle from 0x0).
 // Used by the "Recent collectors" rail on /nft. Newest-first, no fabrication —
 // when the indexer returns nothing, the UI surfaces that honestly.
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePublicClient } from "wagmi";
 import { parseAbiItem } from "viem";
 import { ARCHIVE_NFT_CONTRACT_ADDRESS } from "./syndicate-config";
+import { fetchSharedChainTip } from "./chain-time";
 
 const ARCHIVE = ARCHIVE_NFT_CONTRACT_ADDRESS as `0x${string}`;
 const ZERO = "0x0000000000000000000000000000000000000000".toLowerCase();
@@ -25,6 +26,7 @@ export type ArchiveMintEvent = {
 /** Scans the most recent ~LOOKBACK blocks for Archive mints (from = 0x0). */
 export function useArchiveMintEvents(opts?: { lookbackBlocks?: bigint; limit?: number; ids?: readonly number[] }) {
   const publicClient = usePublicClient();
+  const queryClient = useQueryClient();
   const lookback = opts?.lookbackBlocks ?? 200_000n; // ~4–5 days on Avalanche
   const limit = opts?.limit ?? 10;
   const idFilter = opts?.ids ? new Set(opts.ids.map((n) => Number(n))) : null;
@@ -36,7 +38,8 @@ export function useArchiveMintEvents(opts?: { lookbackBlocks?: bigint; limit?: n
     staleTime: 30_000,
     queryFn: async (): Promise<ArchiveMintEvent[]> => {
       if (!publicClient) return [];
-      const tip = await publicClient.getBlockNumber();
+      // Shared chain-tip (P4c) instead of an independent getBlockNumber().
+      const tip = (await fetchSharedChainTip(publicClient, queryClient)).number;
       const from = tip > lookback ? tip - lookback : 0n;
       const CHUNK = 2_000n;
       const out: ArchiveMintEvent[] = [];

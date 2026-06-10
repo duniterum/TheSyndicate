@@ -5,7 +5,7 @@
 // estimated.
 //
 // Sources:
-//   • rpcHeadBlock     ← publicClient.getBlockNumber()
+//   • rpcHeadBlock     ← shared chain-tip (useChainTip / CHAIN_TIP_QUERY_KEY)
 //   • latestEventBlock ← max(blockNumber) over useLivePurchaseEvents
 //   • indexerProbe     ← GET /api/public/indexer/health
 //
@@ -15,8 +15,8 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { usePublicClient } from "wagmi";
 import { useLivePurchaseEvents } from "./activity-hooks";
+import { useChainTip } from "./chain-time";
 
 export const AVALANCHE_BLOCK_TIME_SEC = 2;
 
@@ -52,20 +52,18 @@ export type FreshnessSignals = {
  * probe. Re-renders every 10s so the "Xs ago" counters tick.
  */
 export function useFreshnessSignals(): FreshnessSignals {
-  const publicClient = usePublicClient();
-
-  // 1. RPC head — refetch every 15s.
-  const head = useQuery({
-    queryKey: ["freshness", "rpc-head"],
-    enabled: Boolean(publicClient),
-    refetchInterval: 15_000,
-    staleTime: 5_000,
-    queryFn: async () => {
-      if (!publicClient) return null;
-      const n = await publicClient.getBlockNumber();
-      return { block: n, at: Date.now() };
-    },
-  });
+  // 1. RPC head — the SHARED chain-tip query (also powering chain-time and the
+  // homepage pulse), not a second independent head fetch (P4d). The head block
+  // value and the lag math below are unchanged; only the SOURCE is unified, so
+  // every "where is the chain right now?" surface reads one head block. Because
+  // the purchase scan now resolves its tip from this same shared query, the most
+  // common cause of a spurious negative blocksBehindTip — freshness and the scan
+  // reading DIFFERENT RPC nodes (cross-source skew) — is removed. The head is
+  // still not strictly monotonic across time (a later read can hit a lagging
+  // node), so the prior lag semantics (no clamp) are otherwise preserved, and a
+  // transient negative remains theoretically possible. Cadence note: the head
+  // now refreshes on the shared chain-tip interval, not freshness's old one.
+  const head = useChainTip();
 
   // 2. Latest activity event (reuses the existing canonical hook —
   // no second RPC scan).
@@ -99,8 +97,8 @@ export function useFreshnessSignals(): FreshnessSignals {
   }, []);
 
   const now = Date.now();
-  const rpcHeadBlock = head.data?.block;
-  const rpcHeadFetchedAt = head.data?.at;
+  const rpcHeadBlock = head.data?.number;
+  const rpcHeadFetchedAt = head.dataUpdatedAt || undefined;
   const rpcAgeSec =
     rpcHeadFetchedAt !== undefined ? Math.max(0, Math.floor((now - rpcHeadFetchedAt) / 1000)) : undefined;
 
