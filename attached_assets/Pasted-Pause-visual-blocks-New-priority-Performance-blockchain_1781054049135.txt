@@ -1,0 +1,132 @@
+Pause visual blocks.
+
+New priority: Performance + blockchain data caching architecture.
+
+Reason:
+The /my-syndicate page is still lagging because member identity and other blockchain data are fetched repeatedly. I already know I am Member #1, but the page waits again to rediscover it. This is not Grade AAA.
+
+Goal:
+Make all blockchain-powered pages feel instant, while staying truthful.
+
+Do not implement blindly.
+
+First perform a targeted performance audit — not full repo archaeology.
+
+Scope:
+All blockchain data fetching across the app, especially:
+
+* /my-syndicate
+* /activity
+* /members
+* /transparency
+* /nft / archive
+* LivePulseStrip
+* holder index
+* archive balances
+* protocol pulse
+* LP stats
+* treasury/vault reads
+* event logs
+
+Audit:
+
+1. Which hooks fetch blockchain data?
+2. Which hooks repeatedly scan logs?
+3. Which hooks already use TanStack Query cache?
+4. Which data is global and cacheable?
+5. Which data is wallet-specific and cacheable by wallet address?
+6. Which data is static/canonical config and should never refetch?
+7. Which data is live-critical and should refresh often?
+8. Which data can be stale for 30s / 1min / 5min / 1h?
+9. Which data should persist in localStorage or IndexedDB?
+10. Which data should be preloaded once and shared across pages?
+
+Then propose a caching strategy.
+
+Best-practice target:
+
+1. Instant shell
+   The page renders immediately with last-known cached data.
+
+2. Stale-while-revalidate
+   Show cached member #, chapter, artifacts, balances, pulse, etc. instantly.
+   Then refresh in background.
+
+3. Persistent cache
+   For slow/indexed data:
+
+* holder index
+* member number
+* chapter
+* wake behind you
+* ordered members
+* latest purchases
+* archive ownership
+  persist last-known snapshot locally.
+
+4. Query cache discipline
+   Use consistent queryKey patterns:
+
+* ["holder-index", chainId]
+* ["member-record", chainId, wallet]
+* ["archive-balances", chainId, wallet]
+* ["protocol-pulse", chainId]
+* ["lp-stats", chainId]
+* ["treasury-assets", chainId]
+* ["activity-events", chainId]
+
+5. Freshness policy
+   Suggested:
+
+* static config: infinite
+* holder index: stale 30–60s, persist snapshot
+* wallet balances: stale 15–30s
+* archive ownership: stale 30–60s
+* protocol pulse: stale 15–30s
+* LP stats: stale 15–30s
+* full logs / activity history: stale 1–5min
+* historical block timestamps: infinite
+* contract registry: infinite
+
+6. No wasteful duplicate reads
+   If /my-syndicate already fetched holder index, LivePulseStrip / WakeBehindYou / SeatsAroundYou / ProtocolHeartbeat should reuse the same cached result, not trigger separate scans.
+
+7. Graceful truth labels
+   Cached data should show:
+
+* CACHED / refreshing
+* LIVE when refreshed
+* PARTIAL if RPC fails
+  But do not make the UI feel broken while refreshing.
+
+8. Bandwidth protection
+   Avoid refetch-on-focus storms.
+   Avoid multiple components independently scanning the same logs.
+   Avoid re-reading immutable history every page visit.
+   Chunk event log scans and persist last scanned block if possible.
+
+9. Implementation proposal
+   Do not code yet.
+
+Deliver:
+Performance & Blockchain Data Caching Audit
+
+Include:
+
+* current bottlenecks
+* biggest duplicate reads
+* recommended cache architecture
+* persistent cache plan
+* staleTime / gcTime policy
+* what to implement first
+* risks
+* exact files likely touched
+
+Then stop.
+
+After approval we implement block by block:
+Block P1: holder-index persistent cache
+Block P2: wallet-specific cache
+Block P3: archive/LP/pulse cache tuning
+Block P4: event-log incremental indexing
+Block P5: UX loading state polish
