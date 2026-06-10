@@ -22,7 +22,7 @@ import type { PurchaseEvent } from "./activity-hooks";
  * Schema/version buster. Bump this whenever the stored shape changes so old
  * snapshots are ignored rather than mis-read.
  */
-export const PURCHASE_EVENTS_CACHE_VERSION = "v1";
+export const PURCHASE_EVENTS_CACHE_VERSION = "v2";
 
 const KEY_PREFIX = "syn:purchase-events";
 
@@ -61,11 +61,15 @@ type StoredEvent = {
 type StoredSnapshot = {
   v: string;
   updatedAt: number;
+  // Highest block this snapshot's scan has covered (P4a incremental cursor).
+  // Stored as a string because JSON cannot represent bigint.
+  lastScannedBlock: string;
   events: StoredEvent[];
 };
 
 export type PurchaseEventsSnapshot = {
   updatedAt: number;
+  lastScannedBlock: bigint;
   events: PurchaseEvent[];
 };
 
@@ -130,10 +134,15 @@ function fromStored(raw: unknown): PurchaseEvent | null {
  * Preserves the array order exactly (the list is newest-first as produced by
  * the scan; we never re-sort here).
  */
-export function serializePurchaseEvents(events: PurchaseEvent[], updatedAt: number): string {
+export function serializePurchaseEvents(
+  events: PurchaseEvent[],
+  updatedAt: number,
+  lastScannedBlock: bigint,
+): string {
   const snap: StoredSnapshot = {
     v: PURCHASE_EVENTS_CACHE_VERSION,
     updatedAt,
+    lastScannedBlock: lastScannedBlock.toString(),
     events: events.map(toStored),
   };
   return JSON.stringify(snap);
@@ -157,6 +166,14 @@ export function deserializePurchaseEvents(raw: string | null | undefined): Purch
   const o = parsed as Record<string, unknown>;
   if (o.v !== PURCHASE_EVENTS_CACHE_VERSION) return undefined;
   if (!isFiniteNumber(o.updatedAt)) return undefined;
+  if (typeof o.lastScannedBlock !== "string") return undefined;
+  let lastScannedBlock: bigint;
+  try {
+    lastScannedBlock = BigInt(o.lastScannedBlock);
+  } catch {
+    return undefined;
+  }
+  if (lastScannedBlock < 0n) return undefined;
   if (!Array.isArray(o.events)) return undefined;
 
   const events: PurchaseEvent[] = [];
@@ -165,7 +182,7 @@ export function deserializePurchaseEvents(raw: string | null | undefined): Purch
     if (!ev) return undefined;
     events.push(ev);
   }
-  return { updatedAt: o.updatedAt, events };
+  return { updatedAt: o.updatedAt, lastScannedBlock, events };
 }
 
 function getStorage(): Storage | undefined {
@@ -192,11 +209,15 @@ export function loadPurchaseEventsSnapshot(key: string): PurchaseEventsSnapshot 
 }
 
 /** SSR- and quota-safe save. Failures degrade silently (no persistence). */
-export function savePurchaseEventsSnapshot(key: string, events: PurchaseEvent[]): void {
+export function savePurchaseEventsSnapshot(
+  key: string,
+  events: PurchaseEvent[],
+  lastScannedBlock: bigint,
+): void {
   const storage = getStorage();
   if (!storage) return;
   try {
-    storage.setItem(key, serializePurchaseEvents(events, Date.now()));
+    storage.setItem(key, serializePurchaseEvents(events, Date.now(), lastScannedBlock));
   } catch {
     // Quota exceeded / storage disabled — degrade to no snapshot.
   }

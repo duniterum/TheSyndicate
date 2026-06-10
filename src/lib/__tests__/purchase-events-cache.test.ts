@@ -76,16 +76,17 @@ describe("P1 · purchaseEventsCacheKey identity", () => {
 });
 
 describe("P1 · serialize/deserialize preserves data, bigints and order", () => {
-  it("round-trips identically (bigints intact, order unchanged)", () => {
-    const snap = deserializePurchaseEvents(serializePurchaseEvents(NEWEST_FIRST, 123));
+  it("round-trips identically (bigints + lastScannedBlock intact, order unchanged)", () => {
+    const snap = deserializePurchaseEvents(serializePurchaseEvents(NEWEST_FIRST, 123, 87_200_000n));
     expect(snap).toBeDefined();
     expect(snap!.updatedAt).toBe(123);
+    expect(snap!.lastScannedBlock).toBe(87_200_000n);
     expect(snap!.events).toEqual(NEWEST_FIRST);
     expect(snap!.events.map((e) => e.blockNumber)).toEqual([500n, 400n, 300n, 200n, 100n]);
   });
 
   it("does not change limit semantics after persistence", () => {
-    const snap = deserializePurchaseEvents(serializePurchaseEvents(NEWEST_FIRST, 1))!;
+    const snap = deserializePurchaseEvents(serializePurchaseEvents(NEWEST_FIRST, 1, 1n))!;
     for (const n of [0, 1, 2, 5000]) {
       expect(applyPurchaseLimit(snap.events, n)).toEqual(applyPurchaseLimit(NEWEST_FIRST, n));
     }
@@ -110,13 +111,23 @@ describe("P1 · corrupt / mismatched cache falls back safely", () => {
   });
 
   it("rejects a snapshot with any malformed event", () => {
-    const good = JSON.parse(serializePurchaseEvents(NEWEST_FIRST, 1));
+    const good = JSON.parse(serializePurchaseEvents(NEWEST_FIRST, 1, 1n));
     good.events[2] = { ...good.events[2], blockNumber: "not-a-bigint" };
     expect(deserializePurchaseEvents(JSON.stringify(good))).toBeUndefined();
 
-    const missingField = JSON.parse(serializePurchaseEvents(NEWEST_FIRST, 1));
+    const missingField = JSON.parse(serializePurchaseEvents(NEWEST_FIRST, 1, 1n));
     delete missingField.events[0].usdcAmount;
     expect(deserializePurchaseEvents(JSON.stringify(missingField))).toBeUndefined();
+  });
+
+  it("rejects a v2 snapshot missing or with a non-numeric lastScannedBlock", () => {
+    const missing = JSON.parse(serializePurchaseEvents(NEWEST_FIRST, 1, 1n));
+    delete missing.lastScannedBlock;
+    expect(deserializePurchaseEvents(JSON.stringify(missing))).toBeUndefined();
+
+    const bad = JSON.parse(serializePurchaseEvents(NEWEST_FIRST, 1, 1n));
+    bad.lastScannedBlock = "not-a-bigint";
+    expect(deserializePurchaseEvents(JSON.stringify(bad))).toBeUndefined();
   });
 });
 
@@ -129,15 +140,16 @@ describe("P1 · storage is SSR- and quota-safe", () => {
     // Default vitest env is node — `window` is undefined here.
     expect(typeof window).toBe("undefined");
     expect(loadPurchaseEventsSnapshot("any-key")).toBeUndefined();
-    expect(() => savePurchaseEventsSnapshot("any-key", NEWEST_FIRST)).not.toThrow();
+    expect(() => savePurchaseEventsSnapshot("any-key", NEWEST_FIRST, 1n)).not.toThrow();
   });
 
-  it("save then load round-trips through window.localStorage", () => {
+  it("save then load round-trips events AND the cursor through localStorage", () => {
     vi.stubGlobal("window", { localStorage: makeStorage() });
     const key = purchaseEventsCacheKey({ chainId: 43114, sale: "0xabc", fromBlock: 1n });
-    savePurchaseEventsSnapshot(key, NEWEST_FIRST);
+    savePurchaseEventsSnapshot(key, NEWEST_FIRST, 87_200_000n);
     const snap = loadPurchaseEventsSnapshot(key);
     expect(snap?.events).toEqual(NEWEST_FIRST);
+    expect(snap?.lastScannedBlock).toBe(87_200_000n);
   });
 
   it("swallows a quota error on save", () => {
@@ -146,6 +158,6 @@ describe("P1 · storage is SSR- and quota-safe", () => {
       throw new Error("QuotaExceededError");
     };
     vi.stubGlobal("window", { localStorage: throwing });
-    expect(() => savePurchaseEventsSnapshot("k", NEWEST_FIRST)).not.toThrow();
+    expect(() => savePurchaseEventsSnapshot("k", NEWEST_FIRST, 1n)).not.toThrow();
   });
 });

@@ -3,7 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { usePublicClient, useChainId } from "wagmi";
 import { formatUnits, parseAbiItem } from "viem";
 import { CONTRACTS, USDC_DECIMALS, SYN_DECIMALS, SALE_DEPLOYMENT_BLOCK } from "./syndicate-config";
-import { savePurchaseEventsSnapshot, purchaseEventsCacheKey } from "./purchase-events-cache";
+import {
+  loadPurchaseEventsSnapshot,
+  savePurchaseEventsSnapshot,
+  purchaseEventsCacheKey,
+} from "./purchase-events-cache";
 
 const SALE = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
 
@@ -35,6 +39,60 @@ export type PurchaseEvent = {
  */
 export function applyPurchaseLimit(events: PurchaseEvent[], limit: number): PurchaseEvent[] {
   return limit > 0 ? events.slice(0, limit) : events;
+}
+
+/**
+ * Reorg-safety overlap (P4a). Incremental scans restart this many blocks below
+ * the last scanned block so a shallow reorg near the tip re-resolves correctly
+ * instead of being missed.
+ */
+export const REORG_OVERLAP = 50n;
+
+/** Canonical unique identity of a purchase log: its tx hash + log position. */
+export function purchaseEventKey(e: PurchaseEvent): string {
+  return `${e.txHash}:${e.logIndex}`;
+}
+
+/**
+ * Merge a cached purchase list with a freshly scanned window. Dedupes by
+ * `purchaseEventKey` — the re-scanned reorg overlap intentionally re-emits
+ * events already cached — preferring the freshly scanned copy on collision, and
+ * returns newest-first using the EXACT same comparator as the scan, so callers
+ * (e.g. the holder index) see identical ordering and values.
+ */
+export function mergePurchaseEvents(prev: PurchaseEvent[], next: PurchaseEvent[]): PurchaseEvent[] {
+  const byKey = new Map<string, PurchaseEvent>();
+  for (const e of prev) byKey.set(purchaseEventKey(e), e);
+  for (const e of next) byKey.set(purchaseEventKey(e), e);
+  const merged = [...byKey.values()];
+  merged.sort((a, b) =>
+    a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1,
+  );
+  return merged;
+}
+
+/**
+ * Pure: where should an incremental scan begin? With no prior cursor it starts
+ * at the deployment block (a full scan, clamped to the tip). Otherwise it
+ * resumes `overlap` blocks below the last scanned block, anchored to the tip
+ * when the RPC head lags behind our cursor, and clamped to [fromBlock, tip] so
+ * we never request a range past the head.
+ */
+export function computeIncrementalScanStart(args: {
+  fromBlock: bigint;
+  tip: bigint;
+  lastScannedBlock?: bigint;
+  overlap: bigint;
+}): bigint {
+  const { fromBlock, tip, lastScannedBlock, overlap } = args;
+  if (lastScannedBlock === undefined) {
+    return fromBlock > tip ? tip : fromBlock;
+  }
+  const anchor = lastScannedBlock < tip ? lastScannedBlock : tip;
+  const candidate = anchor - overlap;
+  let start = candidate > fromBlock ? candidate : fromBlock;
+  if (start > tip) start = tip;
+  return start;
 }
 
 /**
@@ -71,10 +129,24 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
     queryFn: async (): Promise<PurchaseEvent[]> => {
       if (!publicClient) return [];
       const tip = await publicClient.getBlockNumber();
-      const from = fromBlock > tip ? tip : fromBlock;
+
+      // P4a incremental indexing: resume from the persisted cursor instead of
+      // replaying deploymentBlock→head every refetch. A corrupt/absent cache
+      // degrades to a full scan; a small REORG_OVERLAP re-validates the tip for
+      // shallow reorgs. Event parsing, ordering, and returned values unchanged.
+      const cacheKey = purchaseEventsCacheKey({ chainId, sale: SALE, fromBlock });
+      const cached = loadPurchaseEventsSnapshot(cacheKey);
+      const scanStart = computeIncrementalScanStart({
+        fromBlock,
+        tip,
+        lastScannedBlock: cached?.lastScannedBlock,
+        overlap: REORG_OVERLAP,
+      });
+
       const CHUNK = 2_000n;
-      const results: PurchaseEvent[] = [];
-      for (let start = from; start <= tip; start += CHUNK + 1n) {
+      const fresh: PurchaseEvent[] = [];
+      let anyChunkFailed = false;
+      for (let start = scanStart; start <= tip; start += CHUNK + 1n) {
         const end = start + CHUNK > tip ? tip : start + CHUNK;
         try {
           const logs = await publicClient.getLogs({
@@ -86,7 +158,7 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
           for (const l of logs) {
             const args = l.args as { buyer?: string; purchaseId?: bigint; usdcAmount?: bigint; synAmount?: bigint; vaultAmount?: bigint; liquidityAmount?: bigint; operationsAmount?: bigint };
             if (!args.buyer || args.purchaseId === undefined || args.usdcAmount === undefined || args.synAmount === undefined || args.vaultAmount === undefined || args.liquidityAmount === undefined || args.operationsAmount === undefined) continue;
-            results.push({
+            fresh.push({
               buyer: args.buyer,
               purchaseId: args.purchaseId,
               usdcAmount: Number(formatUnits(args.usdcAmount, USDC_DECIMALS)),
@@ -100,24 +172,27 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
             });
           }
         } catch {
-          // Some public RPCs reject large windows — skip and continue.
+          // Some public RPCs reject large windows — skip the chunk but remember
+          // the failure so we never persist (and advance the cursor over) a gap.
+          anyChunkFailed = true;
         }
       }
-      results.sort((a, b) =>
-        a.blockNumber === b.blockNumber ? b.logIndex - a.logIndex : b.blockNumber > a.blockNumber ? 1 : -1,
-      );
-      // P1: persist the canonical full list so a cold reload hydrates instantly.
-      // Guarded to non-empty so a transient/partial scan never clobbers a good
-      // snapshot; the helper is SSR- and quota-safe. Does not alter what is
-      // returned to callers — `select` still narrows the list per-limit.
-      if (results.length > 0) {
-        savePurchaseEventsSnapshot(
-          purchaseEventsCacheKey({ chainId, sale: SALE, fromBlock }),
-          results,
-        );
+
+      // Merge the freshly scanned window with the cached history, dedupe by
+      // txHash:logIndex (the re-scanned overlap re-emits cached events), and sort
+      // newest-first exactly as before.
+      const merged = mergePurchaseEvents(cached?.events ?? [], fresh);
+
+      // Persist only a COMPLETE scan (no failed chunk), and only with data — never
+      // clobber a good snapshot with a partial result or advance the cursor over a
+      // gap. Keep the cursor from regressing if the RPC head lagged our last scan.
+      if (!anyChunkFailed && merged.length > 0) {
+        const nextLastScanned = cached && cached.lastScannedBlock > tip ? cached.lastScannedBlock : tip;
+        savePurchaseEventsSnapshot(cacheKey, merged, nextLastScanned);
       }
+
       // Return the FULL canonical list — callers narrow it via `select` below.
-      return results;
+      return merged;
     },
     select,
   });

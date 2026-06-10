@@ -1,0 +1,106 @@
+Approved.
+
+Cost-control policy remains active.
+
+Proceed with Performance Block P4a only.
+
+P4a = incremental indexing for TokensPurchased only.
+
+Do not implement LP swaps, LP liquidity, archive mints, or all scanners yet.
+
+Goal:
+Convert the canonical TokensPurchased scan from:
+
+deployment block → head every time
+
+to:
+
+cached last scanned block → head
+
+while preserving correctness.
+
+Scope:
+Only the canonical purchase-events path created in P0/P1.
+
+Allowed files:
+
+* activity-hooks.ts
+* purchase-events-cache.ts
+* focused tests
+* smallest helper file if truly necessary
+
+Do not:
+
+* touch UI
+* touch doctrine
+* touch contract logic
+* change event parsing
+* change displayed values
+* change LP scanners
+* change archive scanners
+* change onchain-events.ts unless absolutely necessary
+* do full-repo search
+* run full test suite
+* run architect review unless you change event parsing logic
+
+Implementation requirements:
+
+1. Persist:
+
+* events
+* lastScannedBlock
+* chainId / sale address / deployment block / cache version
+
+2. On refetch:
+
+* read cached events + lastScannedBlock
+* choose scanStart = max(deploymentBlock, lastScannedBlock - REORG_OVERLAP)
+* scan scanStart → head
+* merge old + new events
+* dedupe by txHash + logIndex if available
+* if logIndex is not available, use the safest existing unique event key
+* sort newest-first exactly as before
+* update lastScannedBlock only after successful complete scan
+
+3. Reorg / partial failure safety:
+
+* small overlap window, e.g. 50 blocks
+* never persist a partial scan if any chunk fails
+* if cache is corrupt, ignore and full scan
+* if head is behind lastScannedBlock, full/overlap safe fallback
+
+4. Preserve semantics:
+
+* limit behavior from P0 unchanged
+* ordering unchanged
+* loading/error states unchanged
+* holder index output unchanged except faster availability
+* no fake data
+
+5. Cost-control verification:
+   Run only:
+
+* typecheck
+* purchase-events-cache tests
+* purchase-events-canonical tests
+* one focused new incremental-indexing test
+* one render check only if needed
+
+Do not run full suite.
+Do not chase known stale tests.
+Do not update memory unless there is a durable architecture decision beyond this block.
+
+6. Report short:
+
+* files changed
+* algorithm
+* cache key
+* reorg overlap
+* dedupe key
+* partial failure behavior
+* tests run
+* what was skipped to control cost
+* next recommended block
+
+Stop after P4a.
+Do not continue to P4b without approval.
