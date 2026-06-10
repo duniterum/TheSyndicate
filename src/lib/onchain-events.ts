@@ -2,7 +2,7 @@
 // All scanners chunk at 2000-block windows to stay within Avalanche public
 // RPC log-range limits. Newest-first, capped by `limit`.
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { usePublicClient } from "wagmi";
 import { formatUnits, parseAbiItem, getAddress } from "viem";
 import { CONTRACTS, USDC_DECIMALS, SYN_DECIMALS, SALE_DEPLOYMENT_BLOCK, LP_POOL } from "./syndicate-config";
@@ -17,6 +17,33 @@ const MINT     = parseAbiItem("event Mint(address indexed sender, uint256 amount
 const BURN     = parseAbiItem("event Burn(address indexed sender, uint256 amount0, uint256 amount1, address indexed to)");
 
 const CHUNK = 2_000n;
+
+const TOKEN0_ABI = [{ type: "function", name: "token0", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] }] as const;
+
+/** Shared query key for the LP pair's IMMUTABLE token ordering (P3). */
+export const LP_TOKEN_ORDER_KEY = ["lp-token-order", PAIR] as const;
+
+/**
+ * Resolve whether SYN is token0 of the pair. The pair's token ordering is
+ * immutable, so it is read ONCE and cached with infinite staleTime instead of
+ * being re-read on every event scan (token0/token1 were previously fetched
+ * inside each scan's queryFn).
+ */
+async function getSynIs0(
+  publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
+  queryClient: QueryClient,
+): Promise<boolean> {
+  const order = await queryClient.fetchQuery({
+    queryKey: LP_TOKEN_ORDER_KEY,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    queryFn: async (): Promise<{ token0: string }> => {
+      const t0 = await publicClient.readContract({ address: PAIR, abi: TOKEN0_ABI, functionName: "token0" });
+      return { token0: t0 as string };
+    },
+  });
+  return order.token0.toLowerCase() === SYN.toLowerCase();
+}
 
 async function scan<T>(
   publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
@@ -103,6 +130,7 @@ export type LpSwap = {
 
 export function useLpSwaps(opts?: { fromBlock?: bigint; limit?: number }) {
   const publicClient = usePublicClient();
+  const queryClient = useQueryClient();
   const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
   const limit = opts?.limit ?? 50;
 
@@ -113,12 +141,8 @@ export function useLpSwaps(opts?: { fromBlock?: bigint; limit?: number }) {
     staleTime: 30_000,
     queryFn: async (): Promise<LpSwap[]> => {
       if (!publicClient) return [];
-      // token0/token1 ordering — fetch once.
-      const [t0, t1] = await Promise.all([
-        publicClient.readContract({ address: PAIR, abi: [{ type: "function", name: "token0", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] }] as const, functionName: "token0" }),
-        publicClient.readContract({ address: PAIR, abi: [{ type: "function", name: "token1", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] }] as const, functionName: "token1" }),
-      ]);
-      const synIs0 = (t0 as string).toLowerCase() === SYN.toLowerCase();
+      // LP token ordering is immutable — read once and cache forever (P3).
+      const synIs0 = await getSynIs0(publicClient, queryClient);
       const synDec = SYN_DECIMALS;
       const usdcDec = USDC_DECIMALS;
 
@@ -163,6 +187,7 @@ export type LpLiquidityEvent = {
 
 export function useLpLiquidityEvents(opts?: { fromBlock?: bigint; limit?: number }) {
   const publicClient = usePublicClient();
+  const queryClient = useQueryClient();
   const fromBlock = opts?.fromBlock ?? SALE_DEPLOYMENT_BLOCK;
   const limit = opts?.limit ?? 25;
 
@@ -173,10 +198,8 @@ export function useLpLiquidityEvents(opts?: { fromBlock?: bigint; limit?: number
     staleTime: 30_000,
     queryFn: async (): Promise<LpLiquidityEvent[]> => {
       if (!publicClient) return [];
-      const [t0] = await Promise.all([
-        publicClient.readContract({ address: PAIR, abi: [{ type: "function", name: "token0", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] }] as const, functionName: "token0" }),
-      ]);
-      const synIs0 = (t0 as string).toLowerCase() === SYN.toLowerCase();
+      // LP token ordering is immutable — read once and cache forever (P3).
+      const synIs0 = await getSynIs0(publicClient, queryClient);
 
       const mints = await scan(publicClient, fromBlock, (start, end) =>
         publicClient.getLogs({ address: PAIR, event: MINT, fromBlock: start, toBlock: end }),

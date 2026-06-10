@@ -4,8 +4,7 @@
 // derived from a LIVE field, or undefined → caller renders "—".
 
 import { useMemo } from "react";
-import { useReadContracts, usePublicClient } from "wagmi";
-import { useQuery } from "@tanstack/react-query";
+import { useReadContracts } from "wagmi";
 import { formatUnits } from "viem";
 import {
   CONTRACTS,
@@ -14,6 +13,7 @@ import {
 } from "./syndicate-config";
 import { ERC20_ABI } from "./sale-abi";
 import { useSaleStats, useLpStats } from "./sale-hooks";
+import { useChainTip } from "./chain-time";
 import { useHolderIndex, type HolderWindowDelta } from "./holder-index";
 
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
@@ -54,7 +54,6 @@ export type ProtocolPulse = {
 export function useProtocolPulse(): ProtocolPulse {
   const sale = useSaleStats();
   const lp = useLpStats();
-  const publicClient = usePublicClient();
   // Reuse the holder-index event scan — derive "most recent purchase" from
   // idx.latest[0] instead of triggering a second {limit:1} chain scan with a
   // different query key (which was duplicating log-range RPC work).
@@ -70,14 +69,9 @@ export function useProtocolPulse(): ProtocolPulse {
     query: { refetchInterval: 60_000, staleTime: 30_000 },
   });
 
-  // Current block — cheap, cached for 30s, used for "X ago" derivation.
-  const tip = useQuery({
-    queryKey: ["pulse-tip"],
-    enabled: Boolean(publicClient),
-    refetchInterval: 30_000,
-    staleTime: 15_000,
-    queryFn: async () => (publicClient ? await publicClient.getBlockNumber() : undefined),
-  });
+  // Current head block — the SHARED chain-tip query (also powering chain-time),
+  // not a second independent head fetch. Used for "X ago" derivation.
+  const tip = useChainTip();
 
   return useMemo<ProtocolPulse>(() => {
     const usdcRaised = sale.totalUsdcRaised !== undefined
@@ -100,9 +94,10 @@ export function useProtocolPulse(): ProtocolPulse {
     const operationsUsdc = b2 !== undefined ? Number(formatUnits(b2, USDC_DECIMALS)) : undefined;
 
     const lastRec = idx.latest[0];
+    const tipBlock = tip.data?.number;
     let lastBuyAgoSeconds: number | undefined;
-    if (lastRec && tip.data !== undefined) {
-      const delta = tip.data > lastRec.lastPurchaseBlock ? tip.data - lastRec.lastPurchaseBlock : 0n;
+    if (lastRec && tipBlock !== undefined) {
+      const delta = tipBlock > lastRec.lastPurchaseBlock ? tipBlock - lastRec.lastPurchaseBlock : 0n;
       lastBuyAgoSeconds = Number(delta) * AVA_BLOCK_SECONDS;
     }
 
@@ -123,7 +118,7 @@ export function useProtocolPulse(): ProtocolPulse {
       lastBuySyn: lastRec?.lastPurchaseSyn,
       lastBuyTxHash: lastRec?.lastPurchaseTx,
       nextMemberNumber,
-      asOfBlock: tip.data,
+      asOfBlock: tipBlock,
       deltas: idx.deltas,
     };
   }, [sale, buckets.data, buckets.isLoading, lp.tvlUsd, lp.synPriceUsd, tip.data, idx.latest, idx.totals, idx.deltas, idx.isLoading]);

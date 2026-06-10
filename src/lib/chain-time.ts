@@ -11,6 +11,40 @@ import { usePublicClient } from "wagmi";
 
 export const AVA_BLOCK_SECONDS = 2;
 
+/**
+ * Shared chain-tip query key (P3). One head-block read serves every
+ * "where is the chain right now?" consumer — chain-time's relative timestamps
+ * AND the homepage protocol pulse — instead of each hook fetching the head
+ * block independently under its own key.
+ */
+export const CHAIN_TIP_QUERY_KEY = ["chain-tip"] as const;
+
+export type ChainTip = { number: bigint; unix: number };
+
+/**
+ * Single source of truth for the current Avalanche head block and its
+ * timestamp. getBlock() is a superset of getBlockNumber(), so this one query
+ * feeds both the pulse's block-number recency math and chain-time's unix
+ * derivations. Cached briefly and shared via CHAIN_TIP_QUERY_KEY.
+ */
+export function useChainTip() {
+  const publicClient = usePublicClient();
+  return useQuery({
+    queryKey: CHAIN_TIP_QUERY_KEY,
+    enabled: Boolean(publicClient),
+    refetchInterval: 30_000,
+    staleTime: 15_000,
+    queryFn: async (): Promise<ChainTip> => {
+      // Unreachable while disabled (enabled gates on publicClient). Throw
+      // instead of returning undefined — react-query v5 forbids an undefined
+      // queryFn result.
+      if (!publicClient) throw new Error("publicClient unavailable");
+      const block = await publicClient.getBlock();
+      return { number: block.number, unix: Number(block.timestamp) };
+    },
+  });
+}
+
 export type ChainTime = {
   tipBlock: bigint | undefined;
   tipUnix: number | undefined; // seconds since epoch
@@ -22,19 +56,7 @@ export type ChainTime = {
 };
 
 export function useChainTime(): ChainTime {
-  const publicClient = usePublicClient();
-
-  const q = useQuery({
-    queryKey: ["chain-time-tip"],
-    enabled: Boolean(publicClient),
-    refetchInterval: 60_000,
-    staleTime: 30_000,
-    queryFn: async () => {
-      if (!publicClient) return undefined;
-      const block = await publicClient.getBlock();
-      return { number: block.number, unix: Number(block.timestamp) };
-    },
-  });
+  const q = useChainTip();
 
   const tipBlock = q.data?.number;
   const tipUnix = q.data?.unix;

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { CHAIN_TIP_QUERY_KEY } from "@/lib/chain-time";
 import {
   useAccount,
   useChainId,
@@ -113,8 +114,7 @@ export function LivePurchase() {
       // confirming block, so invalidate immediately and again at 4s/12s/30s.
       const invalidate = () => {
         queryClient.invalidateQueries({ queryKey: ["live-purchases"] });
-        queryClient.invalidateQueries({ queryKey: ["pulse-tip"] });
-        queryClient.invalidateQueries({ queryKey: ["chain-time-tip"] });
+        queryClient.invalidateQueries({ queryKey: CHAIN_TIP_QUERY_KEY });
       };
       invalidate();
       const t1 = setTimeout(invalidate, 4_000);

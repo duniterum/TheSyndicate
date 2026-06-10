@@ -1,0 +1,78 @@
+P2 approved.
+
+Continue with Performance Block P3 only.
+
+P3 = global protocol data cache tuning + duplicate read cleanup.
+
+Goal:
+After holder-index and wallet-specific data are cached, optimize global protocol reads that power the cockpit/site pulse.
+
+Scope:
+Performance only.
+
+Do not:
+
+* redesign UI
+* add widgets
+* touch doctrine
+* touch contracts
+* change event parsing
+* implement incremental event indexing yet
+* do full-repo archaeology
+
+Target global reads from the audit:
+
+* protocol pulse
+* LP stats
+* treasury / vault / routing balances
+* chain tip queries
+* immutable LP token0/token1 reads
+* any duplicated global read where two hooks fetch the same data
+
+Tasks:
+
+1. Audit only the global hooks already identified in the performance audit:
+
+   * protocol-pulse.ts
+   * chain-time.ts
+   * sale-hooks.ts LP stats
+   * treasury-hooks.ts
+   * onchain-events.ts token0/token1
+2. Remove duplicate chain-tip fetches if safe.
+   Example: pulse-tip and chain-time-tip should not both fetch the head block independently if one shared query can serve both.
+3. Cache immutable reads with infinite staleTime where safe.
+   Example: LP token0/token1 ordering should not be re-read every scan.
+4. Tune staleTime/refetchInterval for global pulse/LP/treasury reads:
+
+   * live enough to feel current
+   * not wasteful
+   * no focus refetch storms
+5. Preserve all return shapes and displayed values.
+6. No persistent localStorage needed unless trivial and safe; P3 is mainly query tuning/deduping.
+
+Tests:
+Add focused source/pure tests if practical:
+
+* immutable reads use infinite staleTime
+* shared chain-tip query key used consistently
+* no duplicated pulse-tip / chain-time-tip key remains if refactored
+
+Verification:
+
+* typecheck
+* P0/P1/P2 tests
+* pulse/LP/treasury/activity tests if present
+* cockpit/doctrine tests if indirectly affected
+* architect review
+
+Report:
+
+* files changed
+* duplicate reads removed
+* staleTime/refetchInterval policies changed
+* expected bandwidth improvement
+* tests passed/failed
+* deferred items
+
+Stop after P3.
+Do not start P4 without approval.
