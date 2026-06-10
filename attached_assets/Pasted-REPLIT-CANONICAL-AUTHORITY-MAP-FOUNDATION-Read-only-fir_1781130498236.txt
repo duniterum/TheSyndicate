@@ -1,0 +1,100 @@
+REPLIT — CANONICAL AUTHORITY MAP FOUNDATION
+
+Read-only first.
+
+No implementation yet.
+No refactor.
+No UI change.
+No docs rewrite yet.
+
+Goal:
+We want to create the foundation for a future Protocol Authority Map so The Syndicate stops drifting between chats, audits, code, UI, docs, FAQ, and whitepaper.
+
+Use the last 2–3 hours of audits plus the current codebase as source material.
+
+Do not invent new taxonomy.
+
+Please answer:
+
+1. What are the correct canonical buckets/layers for The Syndicate?
+
+Examples we discussed:
+
+* Core Doctrine
+* Identity / Seat layer
+* Economic layer
+* Tokenomics / Supply layer
+* Chronicle / Activity layer
+* Artifact / NFT layer
+* Rank / Progression layer
+* Patronage layer
+* Referral / Reward future layer
+* Burn future layer
+* Legal / Risk language
+* Docs / FAQ / Whitepaper sync
+
+But do not simply accept this list.
+Inspect the project and propose the cleanest number of buckets based on how the system is actually built.
+
+2. For each bucket, provide:
+
+* canonical name
+* definition
+* current status: LIVE / PARTIAL / PENDING / FUTURE / DEPRECATED
+* source of truth in code or contract
+* related pages/components
+* related docs if any
+* what must never be confused with it
+* common drift risk
+
+3. Identify which buckets already exist strongly and which are only conceptual.
+
+4. Identify where our terminology currently drifts:
+
+* Seat vs member
+* Era vs chapter
+* Rank vs membership tier
+* Patron vs rank
+* Artifact vs NFT
+* Chronicle vs activity feed
+* Referral vs reward
+* Burn vs tokenomics event
+* Vault vs treasury
+* Contribution vs investment
+
+5. Propose the ideal `/docs/canon/` structure.
+
+Example:
+
+* AUTHORITY_MAP.md
+* DOCTRINE.md
+* TOKENOMICS.md
+* RANKS.md
+* CHAPTERS.md
+* ARTIFACTS.md
+* CHRONICLE.md
+* ECONOMIC_MODEL.md
+* FUTURE_MODULES.md
+* LEGAL_LANGUAGE.md
+* GLOSSARY.md
+* DOC_SYNC_CHECKLIST.md
+
+But improve this based on the actual codebase.
+
+6. Create a “source of truth table” showing:
+
+* concept
+* contract/code source
+* frontend source
+* documentation source
+* status
+* confidence
+
+7. Do not update files yet.
+   First return the proposed canonical structure and explain what files you would create or update later.
+
+Important:
+The purpose is not to add features.
+The purpose is to make future docs, FAQ, whitepaper, site copy, and roadmap updates consistent, fast, and audit-safe.
+
+Return a table-based report.
