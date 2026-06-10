@@ -1,8 +1,16 @@
-import { useMemo } from "react";
-import { useAccount, useReadContracts, useReadContract } from "wagmi";
+import { useEffect, useMemo } from "react";
+import { useAccount, useChainId, useReadContracts, useReadContract } from "wagmi";
+import { useQueryClient } from "@tanstack/react-query";
 import { formatUnits } from "viem";
 import { CONTRACTS, USDC_DECIMALS, SYN_DECIMALS, LP_POOL } from "./syndicate-config";
 import { SALE_ABI, ERC20_ABI, PAIR_ABI } from "./sale-abi";
+import {
+  loadWalletReadsSnapshot,
+  readContractsDataToSlots,
+  saveWalletReadsSnapshot,
+  slotsToReadContractsData,
+  walletReadsCacheKey,
+} from "./wallet-reads-cache";
 
 const SALE = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
@@ -48,6 +56,8 @@ export function useSaleStats() {
 /** User-scoped reads: USDC balance, SYN balance, USDC allowance. */
 export function useUserBalances() {
   const { address } = useAccount();
+  const chainId = useChainId();
+  const queryClient = useQueryClient();
   const q = useReadContracts({
     allowFailure: true,
     contracts: address
@@ -59,6 +69,50 @@ export function useUserBalances() {
       : [],
     query: { enabled: Boolean(address), refetchInterval: 60_000 },
   });
+
+  // P2: persist the connected wallet's USDC + SYN balances (public on-chain
+  // facts) so a revisit renders them instantly, then refreshes in background.
+  // Seeds wagmi's own cache tagged with the snapshot's true age (→ STALE →
+  // background refetch; never shown as freshly LIVE). The USDC ALLOWANCE slot
+  // is intentionally NOT persisted — it gates approve/mint, so it stays
+  // live-only (restored as undefined = the safe "needs approval" default).
+  const cacheKey = useMemo(
+    () =>
+      address
+        ? walletReadsCacheKey({
+            scope: "erc20-balances",
+            chainId,
+            wallet: address,
+            slots: `${USDC.toLowerCase()},${SYN.toLowerCase()}#balanceOf`,
+          })
+        : null,
+    [address, chainId],
+  );
+
+  useEffect(() => {
+    if (!cacheKey) return;
+    const snap = loadWalletReadsSnapshot(cacheKey);
+    if (!snap) return;
+    if (queryClient.getQueryState(q.queryKey)?.data) return; // don't clobber live/seeded
+    queryClient.setQueryData(q.queryKey, slotsToReadContractsData(snap.values), {
+      updatedAt: snap.updatedAt,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cacheKey, queryClient]);
+
+  useEffect(() => {
+    if (!cacheKey || !address || !q.data) return;
+    const slots = readContractsDataToSlots(q.data); // [usdc, syn, allowance]
+    if (slots[0] === undefined && slots[1] === undefined) return;
+    // Persist balances only — drop the allowance slot (index 2).
+    saveWalletReadsSnapshot(cacheKey, {
+      updatedAt: q.dataUpdatedAt,
+      wallet: address,
+      values: [slots[0], slots[1], undefined],
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cacheKey, q.dataUpdatedAt]);
+
   const [usdcBal, synBal, allowance] = q.data ?? [];
   const ok = <T,>(r: { status: string; result?: T } | undefined) =>
     r && r.status === "success" ? r.result : undefined;

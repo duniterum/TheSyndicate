@@ -1,0 +1,80 @@
+P1 approved.
+
+Continue with Performance Block P2 only.
+
+P2 = wallet-specific cache.
+
+Goal:
+After holder identity appears instantly, wallet-specific data should also stop feeling like it starts from zero every visit.
+
+Scope:
+Performance only.
+
+Do not:
+
+* redesign UI
+* add widgets
+* touch doctrine
+* touch contracts
+* touch Archive/Home redesign
+* implement incremental event indexing
+* change event parsing
+* change displayed values except faster availability
+* do full-repo archaeology
+
+Target wallet-specific reads:
+
+* archive ownership / useArchiveBalances
+* SYN / USDC wallet balances / useUserBalances
+* buyer purchase totals if not already covered by holder index
+* any small wallet-specific read used directly on /my-syndicate
+
+Tasks:
+
+1. Audit the exact wallet-specific hooks used by /my-syndicate.
+2. Add safe local persistence where it helps:
+
+   * key by chainId + wallet + contract/address/version
+   * SSR-safe client-only restore
+   * corrupt cache ignored safely
+   * stale cached values refresh in background
+3. Do not persist sensitive/private data beyond public on-chain facts.
+4. Do not mark cached values as freshly LIVE if truth/freshness labels exist.
+5. Preserve all existing hook behavior and return shapes.
+6. Avoid over-engineering: small, targeted persistence only.
+
+Recommended order:
+
+* first archive balances for artifact badges/cards
+* then wallet SYN/USDC balances if safe
+* buyer totals only if not redundant with holder index
+
+Tests:
+Add focused tests if practical:
+
+* cache key includes wallet + chain + contract/version
+* corrupt cache ignored
+* bigint serialization safe
+* no SSR localStorage access
+* cached value preserves token IDs/order
+
+Verification:
+
+* typecheck
+* P0/P1 tests
+* cockpit tests
+* doctrine guard if scanned files touched
+* architect review
+
+Report:
+
+* files changed
+* which wallet data is persisted
+* cache key/version strategy
+* stale/corrupt behavior
+* expected UX improvement
+* tests passed/failed
+* deferred items
+
+Stop after P2.
+Do not start P3 without approval.
