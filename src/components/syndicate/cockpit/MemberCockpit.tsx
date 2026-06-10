@@ -32,6 +32,7 @@ import { ShareActions } from "@/components/syndicate/ShareActions";
 import { CockpitCollector } from "./CockpitCollector";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { CockpitMemory } from "./CockpitMemory";
+import { ProtocolHeartbeat } from "./ProtocolHeartbeat";
 import { CockpitProgression } from "./CockpitProgression";
 import { CockpitBadges } from "./CockpitBadges";
 import { WakeBehindYou } from "./WakeBehindYou";
@@ -136,6 +137,13 @@ export function MemberCockpit() {
           (first-visit safe), your wallet memory timeline, and wallet-scoped
           milestones. Real/cached deltas only — never fabricated. */}
       <CockpitMemory />
+
+      {/* Protocol heartbeat — the single most recent on-chain event narrated as
+          one calm line ("the protocol is alive right now"), with proof + an
+          explicit LIVE/PARTIAL/PENDING truth state. Sits directly above the
+          analytical pulse grid: heartbeat headline → the seven numbers behind
+          it. Never invents motion or claims "live now" without a real event. */}
+      <ProtocolHeartbeat />
 
       {/* Protocol-live snapshot — what the protocol is doing right now, read
           live from Avalanche. Sits between identity and holdings so the page
