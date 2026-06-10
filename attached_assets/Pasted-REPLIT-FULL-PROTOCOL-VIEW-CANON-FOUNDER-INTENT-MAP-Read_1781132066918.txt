@@ -1,0 +1,539 @@
+REPLIT — FULL PROTOCOL VIEW / CANON + FOUNDER INTENT MAP
+
+Read-only first.
+
+No implementation.
+No refactor.
+No UI changes.
+No contract changes.
+No docs rewrite yet.
+
+Goal:
+Give me the full protocol view in one report so future brainstorming, docs, FAQ, whitepaper, roadmap, and implementation do not drift.
+
+Use:
+
+* the current codebase
+* existing docs
+* last audits
+* DOCUMENTATION_AUTHORITY_MAP.md
+* UNIFIED_PROTOCOL_DOCTRINE_MAP.md
+* CANONICAL_REGISTRY.md
+* TERMINOLOGY_GLOSSARY.md
+* doctrine-guard.test.ts
+* the 12 canonical buckets you identified
+* the latest economic/revenue-per-member audit
+* the principle: “code outranks docs”
+
+Core North Star:
+The Syndicate is a transparent on-chain society where every member receives a seat, every action becomes history, every milestone seals a chapter, and the Chronicle records the protocol’s evolution for anyone to verify.
+
+Return one founder-grade table-based report.
+
+---
+
+## PART 1 — FULL PROTOCOL VIEW
+
+For every canonical bucket:
+
+1. Core Doctrine & Constitution
+2. Vocabulary, Legal & Risk Language
+3. Authority, Precedence & Doc-Sync
+4. Identity / Seat
+5. Chapter / Era
+6. Rank / Progression
+7. Tokenomics / Supply
+8. Economic / Routing & Revenue
+9. Artifact / NFT, including Patronage
+10. Activity & Chronicle
+11. Verification / Transparency
+12. Future Modules — Referral, Reward/Reputation, Burn, Governance
+
+Provide:
+
+* definition
+* founder intent
+* what problem it solves
+* current status: LIVE / PARTIAL / PENDING / FUTURE / DEPRECATED
+* source of truth in code
+* source of truth in docs
+* related pages/components
+* related contracts
+* related user action
+* economic relevance
+* narrative relevance
+* legal/risk sensitivity
+* what it must never become
+* current drift risk
+* missing decision if any
+
+---
+
+## PART 2 — SOURCE OF TRUTH TABLE
+
+Create one table:
+
+Concept | Code source | Contract source | Frontend source | Doc source | Status | Confidence | Drift risk
+
+Include at least:
+
+* SYN token
+* membership sale
+* 70/20/10 routing
+* total supply
+* circulating supply
+* burned supply
+* non-circulating wallets
+* member number
+* chapters
+* ranks
+* artifacts
+* First Signal
+* Patron Seal
+* LP
+* Vault
+* Treasury
+* Operations
+* activity
+* Chronicle
+* referral
+* burn
+* SeatRecord721
+* governance
+* legal language
+* banned words
+* docs authority map
+
+---
+
+## PART 3 — FOUNDER INTENT MAP
+
+For each major concept, explain why it exists.
+
+Use this format:
+
+Concept:
+Purpose:
+User psychology:
+Economic purpose:
+Narrative purpose:
+Legal boundary:
+Future evolution:
+Do not confuse with:
+
+Include:
+
+* Seat
+* Member number
+* Chapter
+* Rank
+* Artifact
+* Patron / Mecene
+* Chronicle
+* Activity
+* Vault
+* LP
+* Referral
+* Burn / Proof of Fire
+* Governance
+* SeatRecord721
+* Protocol Intelligence
+
+Important:
+Do not invent benefits.
+Do not invent revenue.
+Do not imply passive income, yield, ROI, dividends, or rights.
+
+---
+
+## PART 4 — ECONOMIC REALITY
+
+Report all current income streams.
+
+Separate:
+
+A) live and contract-backed
+B) live but hidden / poorly surfaced
+C) simulated / frontend-only
+D) coded but inactive
+E) future / not built
+
+Include:
+
+* SYN sale
+* NFT sale
+* LP fees
+* referral preview
+* future referral contract
+* future burn events
+* future artifacts
+* future SeatRecord721
+* future protocol intelligence/data surfaces
+
+For each:
+
+* price / percentage / split
+* source of truth
+* where shown
+* whether revenue is real
+* whether it routes to Vault, Liquidity, Operations, owner wallet, or another destination
+* current clarity score
+* what copy must avoid
+
+---
+
+## PART 5 — REVENUE-PER-MEMBER REALITY
+
+Answer:
+
+Why would someone spend more than $5 today?
+
+Audit:
+
+* $5 entry
+* $10 / $25 / $50 / $100 / $500 / $1,000+
+* cumulative purchases vs one-time purchase
+* rank calculation
+* whether $160 once equals $160 split into multiple buys
+* whether rank is based on cumulative USDC, cumulative SYN, or wallet balance
+* whether buying more creates recognition only or any real benefit
+* whether the site explains this clearly
+
+Important:
+Separate recognition from financial rights.
+
+---
+
+## PART 6 — PERSONAS
+
+Define the correct user personas without creating new taxonomies.
+
+At minimum:
+
+1. Player-member
+
+* wants to participate, rank up, collect artifacts, invite later
+
+2. Patron / Mecene
+
+* has money, less time, wants to support and be remembered
+
+3. Investor-observer
+
+* wants supply, contracts, Vault, LP, proof, risk clarity
+
+4. Skeptic / verifier
+
+* trusts nothing, checks everything
+
+For each:
+
+* what they need to see
+* what action they should take
+* what must not be promised
+* what current page best serves them
+* what is missing
+
+---
+
+## PART 7 — TERMINOLOGY COLLISION MAP
+
+List every terminology collision and give the canonical ruling.
+
+Include:
+
+* Seat vs Seat Record
+* Member vs Holder vs Collector vs Patron
+* Era vs Chapter
+* Rank vs tier
+* Patron rank vs Patron Seal
+* Council rank vs future Governance council
+* Artifact vs NFT vs Archive vs Relic
+* Activity vs Chronicle
+* Referral vs Reward
+* Burn vs tokenomics event
+* Vault wallet vs Vault Reserve vs Treasury Ledger vs Protocol Capital Architecture
+* Contribution vs investment
+* Genesis Signal vs Genesis artifact vs Genesis chapter
+
+For each:
+
+* correct term
+* banned or discouraged term
+* where it drifts today
+* how future docs should phrase it
+
+---
+
+## PART 8 — CHRONICLE / STORY ENGINE
+
+Audit how existing events can become narrative.
+
+For each event type:
+
+* new member
+* rank upgrade
+* chapter progress
+* chapter sealed
+* NFT minted
+* treasury inflow
+* LP event
+* supply event
+* future burn event
+* future referral milestone
+* future governance event
+
+Report:
+
+* data available?
+* on-chain?
+* derived?
+* simulated?
+* currently visible?
+* Chronicle-worthy?
+* should it appear in weekly/monthly summaries?
+* user CTA attached?
+
+Also assess future automated outputs:
+
+* Weekly Chronicle
+* Monthly Chronicle
+* blog post
+* X thread
+* email/newsletter
+* share card
+
+Do not implement. Only assess readiness.
+
+---
+
+## PART 9 — BURN READINESS
+
+We are not burning now.
+
+But prepare the future model.
+
+Assess:
+
+* burn address readiness
+* burned supply calculation
+* founder burn event
+* community burn event
+* automated burn possibility
+* Chronicle entry for burns
+* burn artifact possibility, e.g. Proof of Fire / Ash Seal
+* legal-safe wording
+* how to show “Burned: 0” today without misleading users
+
+Do not implement burn logic.
+
+---
+
+## PART 10 — FUTURE MODULE READINESS
+
+For each future module:
+
+* Referral / CommissionRouter
+* Reward / Reputation
+* Burn
+* SeatRecord721
+* Governance
+* AI layer
+* Marketplace
+* B2B protocol intelligence
+
+Report:
+
+* status
+* architecture readiness
+* existing stubs
+* required contracts
+* legal risk
+* user value
+* revenue potential
+* drift risk
+* recommended timing
+* must remain PENDING until what condition?
+
+---
+
+## PART 11 — DOCUMENTATION SYSTEM
+
+Propose the final docs/canon structure.
+
+Use the previous recommendation unless improved:
+
+docs/canon/
+00_AUTHORITY_MAP.md
+01_DOCTRINE.md
+02_GLOSSARY.md
+03_LEGAL_AND_RISK.md
+04_IDENTITY_SEAT.md
+05_CHAPTERS.md
+06_RANKS.md
+07_TOKENOMICS.md
+08_ECONOMIC_MODEL.md
+09_ARTIFACTS.md
+10_NARRATIVE.md
+11_VERIFICATION.md
+12_FUTURE_MODULES.md
+SOURCE_OF_TRUTH_TABLE.md
+FOUNDER_INTENT_MAP.md
+DOC_SYNC_CHECKLIST.md
+
+For each file:
+
+* purpose
+* what it should contain
+* what it should not contain
+* which existing doc it absorbs or points to
+* whether it is new, moved, or alias-only
+
+---
+
+## PART 12 — DOC / SITE / FAQ / WHITEPAPER SYNC PROCESS
+
+Design the future update process.
+
+When a concept changes, define the required order:
+
+1. code / contract truth
+2. source-of-truth table
+3. canon docs
+4. glossary
+5. FAQ
+6. whitepaper
+7. site copy
+8. doctrine guard / banned words
+9. discrepancy audit
+
+Also propose a checklist Replit can run later:
+
+* find stale values
+* find typo errors
+* find banned terms
+* find old rank names
+* find old chapter thresholds
+* find wrong NFT prices
+* find wrong contract addresses
+* find simulated data presented as live
+* find live data hidden too deep
+* find legal-risk wording
+
+---
+
+## PART 13 — FINAL PRIORITY ROADMAP
+
+Do not implement.
+
+Give a minimal-change roadmap:
+
+Phase 0 — consolidate canon
+Phase 1 — surface existing truth
+Phase 2 — improve revenue-per-member clarity
+Phase 3 — strengthen Chronicle/story engine
+Phase 4 — prepare referral/burn/future modules
+Phase 5 — only then new contracts
+
+For each phase:
+
+* goal
+* files/components affected later
+* risk
+* why now / why later
+
+---
+
+PART 14 — STEWARD'S PERSPECTIVE
+
+Step out of implementation mode.
+
+Assume you are now the long-term steward of The Syndicate codebase.
+
+You have:
+
+full access to the architecture
+all docs
+all contracts
+all audits
+all historical decisions
+all unfinished systems
+all drift risks
+
+You are no longer answering as a developer.
+
+You are answering as the future maintainer responsible for keeping this project coherent for the next 5 years.
+
+Please answer:
+
+What are we underestimating?
+What are we overcomplicating?
+What already exists that we keep trying to reinvent?
+Which future ideas repeatedly appear in audits but probably should not be built?
+Which future ideas repeatedly appear in audits and probably should be built eventually?
+Which current assumptions are wrong?
+Which concepts are strongest but underexposed?
+Which concepts look important but are actually low leverage?
+What would break first at:
+100 members
+1,000 members
+10,000 members
+100,000 members
+If you could add only ONE thing to the roadmap during the next 12 months, what would it be and why?
+If you could remove ONE thing from the roadmap permanently, what would it be and why?
+What documentation, architectural decision, constitutional ruling, or audit are we not paying enough attention to?
+What is the single biggest source of future drift risk?
+What is the single biggest source of future technical debt?
+What is the single biggest source of future legal risk?
+What is the single biggest source of future user confusion?
+What is the single biggest hidden opportunity already present in the system?
+If The Syndicate succeeds, what part of today's architecture will likely be remembered as the most important decision?
+If The Syndicate fails, what is the most likely reason?
+Give a brutally honest founder-grade assessment:
+What would you personally protect?
+What would you simplify?
+What would you postpone?
+What would you never build?
+What would you focus on next?
+
+Do not optimize for activity.
+
+Do not optimize for feature count.
+
+Do not optimize for coding effort.
+
+Optimize for:
+
+coherence
+longevity
+trust
+clarity
+scalability
+protocol meaning
+economic sustainability
+
+Return the answer as a final Steward Report.
+
+---
+
+## FINAL OUTPUT REQUIRED
+
+Return:
+
+1. Executive summary
+2. 12-bucket full protocol view
+3. source-of-truth table
+4. founder intent map
+5. terminology collision map
+6. economic reality table
+7. future module readiness table
+8. docs/canon proposal
+9. sync checklist
+10. highest-risk discrepancies
+11. top 10 immediate next actions
+
+Do not change files yet.
+
+This is the “full view” report we will use as the base for all future brainstorming, docs, FAQ, whitepaper, roadmap, and implementation.
+
+
