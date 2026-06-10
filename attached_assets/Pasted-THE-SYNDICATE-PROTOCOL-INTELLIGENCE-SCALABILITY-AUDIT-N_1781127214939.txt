@@ -1,0 +1,208 @@
+THE SYNDICATE — PROTOCOL INTELLIGENCE & SCALABILITY AUDIT
+
+No implementation.
+
+No code changes.
+
+No refactors.
+
+No new contracts.
+
+Goal:
+
+We want to evolve The Syndicate into a modular, scalable, transparent protocol that can grow for years without accumulating confusing systems, duplicate concepts, or technical debt.
+
+The recent audit revealed that many important systems already exist but are not sufficiently visible.
+
+Before adding new features, we need a clear picture of:
+
+1. What already exists
+2. What is partially implemented
+3. What can scale
+4. What future modules were already anticipated by the architecture
+5. What should be exposed before building new complexity
+
+---
+
+## FOUNDING PRINCIPLES
+
+The Syndicate should feel like:
+
+* a living protocol
+* a transparent economy
+* a real-life game
+* a long-term story
+
+Every important action should become:
+
+* visible
+* understandable
+* verifiable
+* historically recorded
+
+The objective is:
+
+"Trust nothing. Verify everything."
+
+The blockchain should continuously prove the protocol's evolution.
+
+---
+
+## PART 1 — PROTOCOL INTELLIGENCE INVENTORY
+
+Please list every existing live metric, data source, hook, contract read, derived KPI, activity feed, treasury metric, NFT metric, rank metric, chapter metric, and member metric currently available in the codebase.
+
+For each item classify:
+
+A = live and visible
+B = live but poorly surfaced
+C = implemented but unused
+D = not implemented
+
+Provide:
+
+* metric name
+* source
+* page(s) using it
+* whether it is on-chain verified
+* whether it is manually tagged
+* whether it is simulated
+
+---
+
+## PART 2 — SCALABILITY MAP
+
+Without proposing code changes yet:
+
+Identify which future systems were already anticipated by the architecture.
+
+Examples:
+
+* referrals
+* SeatRecord721
+* burn tracking
+* NFT progression
+* Chronicle evolution
+* governance
+* vault automation
+* protocol intelligence
+* achievements
+* activity scoring
+* member reputation
+
+For each system:
+
+* current readiness
+* dependencies
+* implementation difficulty
+* risk of architectural drift
+
+---
+
+## PART 3 — SURFACE AREA ANALYSIS
+
+Identify the most valuable data currently hidden from users.
+
+Examples:
+
+* circulating supply
+* allocation breakdown
+* treasury composition
+* LP ownership
+* SYN sold
+* chapter progress
+* artifact ownership
+* protocol milestones
+
+Which existing metrics would provide the highest increase in credibility if surfaced more prominently?
+
+Rank them.
+
+---
+
+## PART 4 — PROTOCOL STORY ENGINE
+
+Analyze whether current protocol events can already generate narrative.
+
+Examples:
+
+* new member joined
+* chapter milestone reached
+* NFT minted
+* LP created
+* treasury increased
+* rank upgraded
+
+Can these events become automatic Chronicle entries?
+
+Which events are already available through existing data sources?
+
+---
+
+## PART 5 — FUTURE TOKENOMICS READINESS
+
+No implementation.
+
+Only readiness assessment.
+
+Evaluate:
+
+A. Burn readiness
+
+* does architecture support future burn tracking?
+* recommended future burn data model
+* safest way to prepare without activating burns
+
+B. Referral readiness
+
+* current state
+* insertion points
+* scalability
+
+C. Reward readiness
+
+* current state
+* risks
+* legal sensitivity
+
+D. Achievement readiness
+
+* can activity-based achievements be added without creating a second progression system?
+
+---
+
+## PART 6 — SYSTEM COHESION TEST
+
+Evaluate whether the current protocol already supports the following model:
+
+Seat
+→ Era
+→ Rank
+→ Artifact
+→ Activity
+→ Chronicle
+→ Rewards
+
+If not:
+
+Identify exactly where the chain breaks.
+
+---
+
+## PART 7 — PRIORITY ORDER
+
+Do not propose new features.
+
+Instead rank:
+
+1. What should be surfaced immediately
+2. What should be clarified
+3. What should be consolidated
+4. What should be postponed
+5. What should never be added
+
+Goal:
+
+Make existing protocol intelligence impossible to miss before introducing additional complexity.
+
+Return the answer as a founder-grade architecture report.
