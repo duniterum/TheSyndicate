@@ -160,60 +160,224 @@ function VerifyLink() {
   );
 }
 
-// ── owned artifact as a MEMORY (not an inventory row) ───────────────────────
-// When held, the artifact reads as a kept moment — what answering it meant —
-// with the live balanceOf carried quietly underneath as proof, never as the
-// headline. When not held, it stays a soft, honest invitation.
+// ── owned artifact as a collectible MEMORY (not an inventory row) ────────────
+// Each artifact carries a distinct emblem + accent so the two read as different
+// collectibles at a glance (a radiating signal vs a sealed crest). When held,
+// the card LIGHTS: accent ring, soft glow, and a quiet ×N count chip on the
+// emblem, with the live balanceOf carried as proof — never as the headline.
+// When not held, it stays a dim, honest invitation. The memory cards carry NO
+// supply / minted / price (those live, truth-gated, in Collect Next below), so
+// no false scarcity is even possible here — only identity + ownership.
+
+type ArtifactMemoryConfig = {
+  tokenId: number;
+  name: string;
+  tag: string;
+  /** Honest collectible descriptor: uncapped = open, capped = limited. */
+  edition: string;
+  emblem: "signal" | "seal";
+  /** Theme accent var — distinct per artifact. */
+  accent: string;
+  ownedMeaning: string;
+  unownedMeaning: string;
+};
+
+const MEMORY_ARTIFACTS: ArtifactMemoryConfig[] = [
+  {
+    tokenId: 1,
+    name: "The First Signal",
+    tag: "Chapter I · Genesis Signal",
+    edition: "Open edition",
+    emblem: "signal",
+    accent: "var(--gold)",
+    ownedMeaning:
+      "You answered the Archive's first public signal — kept on-chain as proof you were early.",
+    unownedMeaning:
+      "The Archive's first public signal. Collect it to mark that you were here at the open.",
+  },
+  {
+    tokenId: 3,
+    name: "Patron Seal",
+    tag: "Cross-chapter · Patron",
+    edition: "Limited edition",
+    emblem: "seal",
+    accent: "var(--navy-soft)",
+    ownedMeaning:
+      "Your sealed mark of support for the Archive — no rank, no wealth-coding, no financial rights.",
+    unownedMeaning:
+      "An optional mark of support, one tier only — no rank, no wealth-coding, no financial rights.",
+  },
+];
+
+// Distinct sigil per artifact, tinted by accent and lit only when held.
+function ArtifactEmblem({
+  emblem,
+  accent,
+  owned,
+  count,
+}: {
+  emblem: "signal" | "seal";
+  accent: string;
+  owned: boolean;
+  count?: bigint;
+}) {
+  return (
+    <div
+      className="relative grid size-14 shrink-0 place-items-center rounded-xl border transition-colors"
+      style={{
+        color: accent,
+        borderColor: owned
+          ? `color-mix(in oklab, ${accent} 50%, transparent)`
+          : "var(--border)",
+        background: owned
+          ? `color-mix(in oklab, ${accent} 14%, transparent)`
+          : "color-mix(in oklab, var(--muted) 35%, transparent)",
+        boxShadow: owned
+          ? `0 0 18px -6px color-mix(in oklab, ${accent} 60%, transparent)`
+          : "none",
+      }}
+    >
+      <svg
+        width="30"
+        height="30"
+        viewBox="0 0 40 40"
+        fill="none"
+        aria-hidden
+        style={{ opacity: owned ? 1 : 0.45 }}
+      >
+        {emblem === "signal" ? (
+          <>
+            <circle cx="20" cy="20" r="2.6" fill="currentColor" />
+            <circle cx="20" cy="20" r="7.5" stroke="currentColor" strokeWidth="1.6" opacity="0.7" />
+            <circle cx="20" cy="20" r="12.5" stroke="currentColor" strokeWidth="1.3" opacity="0.45" />
+            <circle cx="20" cy="20" r="17.5" stroke="currentColor" strokeWidth="1.1" opacity="0.22" />
+          </>
+        ) : (
+          <>
+            <circle cx="20" cy="20" r="15" stroke="currentColor" strokeWidth="1.6" opacity="0.6" />
+            <circle
+              cx="20"
+              cy="20"
+              r="10.5"
+              stroke="currentColor"
+              strokeWidth="1.1"
+              opacity="0.4"
+              strokeDasharray="2 2.6"
+            />
+            <path d="M20 11.5 L22 18 L28.5 20 L22 22 L20 28.5 L18 22 L11.5 20 L18 18 Z" fill="currentColor" />
+          </>
+        )}
+      </svg>
+      {owned && count !== undefined && count > 0n && (
+        <span
+          className="mono absolute -bottom-1.5 -right-1.5 rounded-full border px-1.5 py-0.5 text-[9px] font-semibold tabular-nums"
+          style={{
+            color: accent,
+            background: "var(--card)",
+            borderColor: `color-mix(in oklab, ${accent} 55%, transparent)`,
+          }}
+        >
+          ×{count.toString()}
+        </span>
+      )}
+    </div>
+  );
+}
+
 function ArtifactMemory({
+  tokenId,
   name,
+  tag,
+  edition,
+  emblem,
+  accent,
   ownedMeaning,
   unownedMeaning,
   balance,
   error,
   loading,
-}: {
-  name: string;
-  ownedMeaning: string;
-  unownedMeaning: string;
+}: ArtifactMemoryConfig & {
   balance: bigint | undefined;
   error?: string;
   loading: boolean;
 }) {
   const owns = balance !== undefined && balance > 0n;
+  const notKept = balance !== undefined && balance === 0n;
+
   return (
-    <div className="surface elevated p-4 flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-sm font-semibold text-foreground truncate">{name}</span>
-        {error ? (
+    <div
+      className="surface elevated relative flex gap-3.5 overflow-hidden p-3.5"
+      style={
+        owns ? { borderColor: `color-mix(in oklab, ${accent} 38%, var(--border))` } : undefined
+      }
+    >
+      {owns && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-8 -top-10 size-28 rounded-full blur-3xl"
+          style={{ background: `color-mix(in oklab, ${accent} 16%, transparent)` }}
+        />
+      )}
+
+      <ArtifactEmblem emblem={emblem} accent={accent} owned={owns} count={balance} />
+
+      <div className="relative flex min-w-0 flex-1 flex-col">
+        <div className="flex items-center justify-between gap-2">
+          <span className="mono truncate text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+            ID {tokenId} · {tag}
+          </span>
+          {error ? (
+            <span
+              className="mono shrink-0 text-[9px] uppercase tracking-[0.14em] text-destructive"
+              title={error}
+            >
+              read error
+            </span>
+          ) : owns ? (
+            <span
+              className="mono shrink-0 text-[9px] uppercase tracking-[0.16em]"
+              style={{ color: accent }}
+            >
+              ● In your Archive
+            </span>
+          ) : notKept ? (
+            <span className="mono shrink-0 text-[9px] uppercase tracking-[0.14em] text-muted-foreground/70">
+              Not yet kept
+            </span>
+          ) : loading ? (
+            <span className="mono shrink-0 text-[9px] uppercase tracking-[0.14em] text-muted-foreground/70">
+              read pending
+            </span>
+          ) : (
+            <span className="mono shrink-0 text-[9px] uppercase tracking-[0.14em] text-muted-foreground/70">
+              —
+            </span>
+          )}
+        </div>
+
+        <div className="mt-0.5 flex items-center gap-2">
+          <span className="truncate text-[15px] font-semibold text-foreground">{name}</span>
           <span
-            className="mono text-[10px] uppercase tracking-[0.14em] text-destructive shrink-0"
-            title={error}
+            className="mono shrink-0 rounded border px-1.5 py-0.5 text-[8px] uppercase tracking-[0.16em]"
+            style={{
+              color: accent,
+              borderColor: `color-mix(in oklab, ${accent} 35%, transparent)`,
+            }}
           >
-            read error
+            {edition}
           </span>
-        ) : owns ? (
-          <Pill tone="success">In your Archive</Pill>
-        ) : balance !== undefined ? (
-          <Pill tone="muted">Not yet kept</Pill>
-        ) : loading ? (
-          <span className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70 shrink-0">
-            read pending
-          </span>
-        ) : (
-          <span className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70 shrink-0">
-            —
-          </span>
+        </div>
+
+        <p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">
+          {owns ? ownedMeaning : unownedMeaning}
+        </p>
+
+        {owns && (
+          <div className="mono mt-1.5 text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+            Kept on-chain · <span className="text-[var(--success)]">live balanceOf</span>
+          </div>
         )}
       </div>
-      <p className="text-[12px] text-muted-foreground leading-relaxed">
-        {owns ? ownedMeaning : unownedMeaning}
-      </p>
-      {owns && (
-        <div className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-          held ×{balance.toString()}
-          <span className="ml-1 text-[var(--success)]">live balanceOf</span>
-        </div>
-      )}
     </div>
   );
 }
@@ -529,22 +693,19 @@ export function CockpitCollector({ record }: { record?: HolderRecord }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <ArtifactMemory
-              name="The First Signal"
-              ownedMeaning="You answered the first public signal of the Archive — a memory of being early, kept permanently on-chain."
-              unownedMeaning="The first public signal of the Archive. Collect it to mark that you were here when it opened."
-              balance={firstSignalBal}
-              error={balances.balances[1]?.error ?? undefined}
-              loading={balances.isLoading}
-            />
-            <ArtifactMemory
-              name="Patron Seal"
-              ownedMeaning="You sealed your patronage of the Archive — a chosen mark of support you carry. No rank, no wealth-coding, no financial rights."
-              unownedMeaning="An optional mark of support for the Archive. One tier only — no rank, no wealth-coding, no financial rights."
-              balance={patronSealBal}
-              error={balances.balances[3]?.error ?? undefined}
-              loading={balances.isLoading}
-            />
+            {MEMORY_ARTIFACTS.map((m) => (
+              <ArtifactMemory
+                key={m.tokenId}
+                {...m}
+                balance={m.tokenId === 1 ? firstSignalBal : patronSealBal}
+                error={
+                  (m.tokenId === 1
+                    ? balances.balances[1]?.error
+                    : balances.balances[3]?.error) ?? undefined
+                }
+                loading={balances.isLoading}
+              />
+            ))}
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-[11px]">
