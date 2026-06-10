@@ -40,7 +40,6 @@ import { ConnectCTA } from "@/components/syndicate/ConnectCTA";
 import { ShareActions } from "@/components/syndicate/ShareActions";
 import { CockpitCollector } from "./CockpitCollector";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
-import { CockpitMemory } from "./CockpitMemory";
 import { ProtocolHeartbeat } from "./ProtocolHeartbeat";
 import { CockpitProgression } from "./CockpitProgression";
 import { CockpitBadges } from "./CockpitBadges";
@@ -57,6 +56,7 @@ import {
   explorerUrlForAddress,
   txExplorerUrl,
 } from "@/lib/syndicate-config";
+import { useProtocolPulse } from "@/lib/protocol-pulse";
 
 // ─── local formatters ──────────────────────────────────────────────────
 const fmtInt = (n: number | undefined) =>
@@ -97,9 +97,9 @@ export function MemberCockpit() {
   return (
     <Section id="my-seat" width="data" className="pt-5 md:pt-7 pb-8 md:pb-10">
       <CockpitEmbedProvider>
-        {/* ONE control surface. No overflow-hidden on this frame — the sticky
-            rails inside must be able to escape it; the decorative texture is
-            clipped locally instead. */}
+        {/* ONE control surface, read top-to-bottom as a narrative arc:
+            Identity → Place → Ownership → Momentum → Action. The deeper
+            Memory and Proof chapters continue just below, in the route. */}
         <div
           className="relative rounded-2xl border border-[var(--gold)]/25 bg-[var(--panel)]"
           style={{ boxShadow: "var(--shadow-glow-gold)" }}
@@ -112,7 +112,7 @@ export function MemberCockpit() {
             <div className="absolute inset-0 grid-bg opacity-40" />
           </div>
 
-          {/* ── IDENTITY BAND — the hero Seat object ──────────────────────── */}
+          {/* ── 1 · IDENTITY — who you are here ─────────────────────────── */}
           <div className="relative">
             <CockpitHeader
               ref={headerRef}
@@ -123,57 +123,93 @@ export function MemberCockpit() {
             />
           </div>
 
-          {/* ── FLIGHT DECK — left identity rail · center holdings · right pulse/actions ── */}
-          <div className="relative grid grid-cols-1 lg:grid-cols-[290px_minmax(0,1fr)_320px] items-start border-t border-border/50 lg:divide-x lg:divide-border/50">
-            {/* LEFT — identity rail (sticky on desktop) */}
-            <aside className="p-4 md:p-5 space-y-5 lg:sticky lg:top-24 lg:self-start">
+          {/* ── 2 · PLACE — where you stand in the order ────────────────── */}
+          <ArcBand
+            eyebrow="Where you stand"
+            hint="the seats on either side of yours · your place in the order"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
               <WakeBehindYou />
               <SeatsAroundYou />
-            </aside>
+            </div>
+          </ArcBand>
 
-            {/* CENTER — holdings, progression, collection, memory */}
-            <div className="p-4 md:p-6 space-y-6 min-w-0 border-t border-border/50 lg:border-t-0">
-              <div id="my-assets">
-                <CockpitPortfolio
-                  isConnected={isConnected}
-                  record={record}
-                  loading={idx.isLoading}
-                />
-              </div>
-
-              <CockpitProgression />
-
+          {/* ── 3 · OWNERSHIP — what you hold ───────────────────────────── */}
+          <ArcBand
+            id="my-assets"
+            eyebrow="What you hold"
+            hint="positions · artifacts · live vs pending"
+          >
+            <div className="space-y-6">
+              <CockpitPortfolio
+                isConnected={isConnected}
+                record={record}
+                loading={idx.isLoading}
+              />
               <div id="my-artifacts">
-                <div className="mb-3 flex flex-wrap items-center gap-2">
-                  <StatusPill status={isConnected ? "LIVE" : "PENDING"} />
-                  <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
-                    Holdings, Artifacts &amp; Collecting
-                  </h2>
-                  <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                    · what you own · what to collect next · live vs pending
-                  </span>
-                </div>
                 <CockpitCollector record={record} />
               </div>
-
-              <CockpitMemory />
             </div>
+          </ArcBand>
 
-            {/* RIGHT — protocol pulse + unified action dock (sticky on desktop) */}
-            <aside className="p-4 md:p-5 space-y-5 lg:sticky lg:top-24 lg:self-start border-t border-border/50 lg:border-t-0">
+          {/* ── 4 · MOMENTUM — one movement system ──────────────────────── */}
+          <ArcBand
+            id="momentum"
+            eyebrow="Momentum"
+            hint="your progression · what's sealing next · the protocol's live vitals"
+          >
+            <div className="space-y-6">
+              <CockpitProgression />
+              <CockpitSealingNext />
               <ProtocolHeartbeat />
-              <CockpitActionRail isConnected={isConnected} address={address} isMember={isMember} />
-            </aside>
-          </div>
+              <LivePulseStrip />
+            </div>
+          </ArcBand>
 
-          {/* ── PROTOCOL VITALS — the seven live numbers, full-width base ──── */}
-          <div className="relative border-t border-border/50 p-4 md:p-6">
-            <LivePulseStrip />
-          </div>
+          {/* ── 5 · ACTION — one dock, no CTA chaos ─────────────────────── */}
+          <ArcBand eyebrow="Your next move" hint="every action in one place">
+            <CockpitActionRail
+              isConnected={isConnected}
+              address={address}
+              isMember={isMember}
+            />
+          </ArcBand>
         </div>
-
       </CockpitEmbedProvider>
     </Section>
+  );
+}
+
+// ─── ArcBand — one chapter of the cockpit narrative ────────────────────
+// A bordered band inside the single control surface. Each band carries a
+// chapter eyebrow so the cockpit reads as Identity → Place → Ownership →
+// Momentum → Action rather than a stack of disconnected report cards.
+function ArcBand({
+  id,
+  eyebrow,
+  hint,
+  children,
+}: {
+  id?: string;
+  eyebrow: string;
+  hint?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section id={id} className="relative border-t border-border/50 p-4 md:p-6">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <span className="size-1.5 rounded-full bg-[var(--gold)]" aria-hidden />
+        <h2 className="mono text-[11px] uppercase tracking-[0.24em] text-[var(--gold)] m-0 font-normal">
+          {eyebrow}
+        </h2>
+        {hint && (
+          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            · {hint}
+          </span>
+        )}
+      </div>
+      {children}
+    </section>
   );
 }
 
@@ -311,15 +347,9 @@ function CockpitHeader({
                 </div>
               </div>
 
-              {/* Primary action cluster */}
-              <div className="md:ml-auto md:w-60 shrink-0 flex flex-col gap-3">
-                <Link
-                  to="/join"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold text-[oklch(0.22_0.025_260)] transition-transform hover:-translate-y-px"
-                  style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)" }}
-                >
-                  {record ? "Buy More SYN →" : "Join The Syndicate →"}
-                </Link>
+              {/* Recognition / status — identity context only. The single
+                  action dock lives at the foot of the cockpit (no CTA chaos). */}
+              <div className="md:ml-auto md:w-60 shrink-0">
                 {record ? (
                   <div className="rounded-lg border border-border/50 bg-card/40 px-3.5 py-3">
                     <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -368,6 +398,19 @@ function CockpitHeader({
                 sub={record ? `block ${record.firstPurchaseBlock.toString()}` : undefined}
               />
             </dl>
+
+            {/* Proof anchor — proof sits beside the values it backs. */}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Every figure above is a live on-chain read or labeled pending
+              </span>
+              <a
+                href="#proof"
+                className="mono text-[10px] uppercase tracking-[0.18em] text-[color:var(--verify)] hover:text-[var(--gold)] underline-offset-4 hover:underline"
+              >
+                Verify &amp; contracts ↓
+              </a>
+            </div>
           </div>
         )}
       </div>
@@ -645,6 +688,114 @@ function CockpitPortfolio({
             </Link>
           </p>
         )}
+      </GlassCard>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// CockpitSealingNext — the next real on-chain thresholds (chapter + artifact
+// seals). It lives inside the Momentum chapter so progression, what's-sealing-
+// next, the heartbeat, and the live pulse read as ONE movement system. Real
+// cohort seals only — no timers, no countdowns, no urgency.
+// ─────────────────────────────────────────────────────────────────────────
+type SealingRow = {
+  scope: "SOON" | "NEXT" | "FAR";
+  label: string;
+  remaining: string;
+  source: string;
+};
+
+function CockpitSealingNext() {
+  const pulse = useProtocolPulse();
+  const buyers = pulse.buyers;
+
+  // Real chapter thresholds — canonical (333 / 1,000 / 3,333 / 10,000 / Open Era).
+  const CHAPTER_TARGETS: Array<{ id: string; label: string; target: number }> = [
+    { id: "ch-333", label: "Chapter I — Genesis Signal sealed (#333)", target: 333 },
+    { id: "ch-1000", label: "Chapter II — First Thousand sealed (#1,000)", target: 1_000 },
+    { id: "ch-3333", label: "Chapter III — The Expansion sealed (#3,333)", target: 3_333 },
+    { id: "ch-10000", label: "Chapter IV — First Ten Thousand sealed (#10,000)", target: 10_000 },
+  ];
+
+  const rows: SealingRow[] = [];
+  if (buyers !== undefined) {
+    // Nearest unreached chapter is NEXT; the one after is FAR; the artifact
+    // tied to the closest seal is SOON.
+    const upcoming = CHAPTER_TARGETS.filter((c) => buyers < c.target);
+    if (upcoming[0]) {
+      rows.push({
+        scope: "SOON",
+        label: `Genesis Sealed Artifact unlocks at #${upcoming[0].target.toLocaleString("en-US")}`,
+        remaining: `${(upcoming[0].target - buyers).toLocaleString("en-US")} members to go`,
+        source: "Membership Sale · indexed",
+      });
+      rows.push({
+        scope: "NEXT",
+        label: upcoming[0].label,
+        remaining: `${(upcoming[0].target - buyers).toLocaleString("en-US")} members to go`,
+        source: "Membership Sale · indexed",
+      });
+    }
+    if (upcoming[1]) {
+      rows.push({
+        scope: "FAR",
+        label: upcoming[1].label,
+        remaining: `${(upcoming[1].target - buyers).toLocaleString("en-US")} members to go`,
+        source: "Membership Sale · indexed",
+      });
+    }
+  }
+
+  const status: "LIVE" | "PARTIAL" | "PENDING" = pulse.isLoading
+    ? "PARTIAL"
+    : rows.length
+      ? "LIVE"
+      : "PENDING";
+
+  return (
+    <div>
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <StatusPill status={status} />
+        <h3 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
+          What's sealing next
+        </h3>
+        <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          · real on-chain thresholds · no countdowns
+        </span>
+      </div>
+      <GlassCard className="p-4">
+        {rows.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Awaiting the next on-chain threshold to come into range.
+          </p>
+        ) : (
+          <ul className="divide-y divide-border/40">
+            {rows.map((r) => (
+              <li
+                key={`${r.scope}-${r.label}`}
+                className="flex flex-wrap items-center gap-2 py-2.5"
+              >
+                <Pill tone={r.scope === "SOON" ? "gold" : r.scope === "NEXT" ? "navy" : "muted"}>
+                  {r.scope}
+                </Pill>
+                <span className="text-sm text-foreground flex-1 min-w-0">{r.label}</span>
+                <span className="mono text-[11px] text-foreground tabular-nums">
+                  {r.remaining}
+                </span>
+                <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  {r.source}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="mt-3 pt-3 border-t border-border/40">
+          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Thresholds are real cohort seals — they fire when the on-chain member
+            count crosses the boundary. No timers. No urgency.
+          </span>
+        </div>
       </GlassCard>
     </div>
   );

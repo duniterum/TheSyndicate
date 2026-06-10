@@ -1,35 +1,38 @@
 ---
 name: my-syndicate doctrine test is route-source string-matching
-description: What src/lib/__tests__/my-syndicate-doctrine.test.ts scans and why moving a /my-syndicate surface between files can break it
+description: What my-syndicate-doctrine.test.ts scans (now the NARRATIVE ARC order) and the comment-strip gotcha that can inflate tag counts
 ---
 
-`src/lib/__tests__/my-syndicate-doctrine.test.ts` does NOT render anything — it
-`readFileSync`s source files and string-scans them. It now reads BOTH
-`src/routes/my-syndicate.tsx` AND
-`src/components/syndicate/cockpit/MemberCockpit.tsx`, because the route delegates
-its seat/assets/artifacts to `<MemberCockpit />`.
+`src/lib/__tests__/my-syndicate-doctrine.test.ts` does NOT render — it
+`readFileSync`s `src/routes/my-syndicate.tsx` AND
+`src/components/syndicate/cockpit/MemberCockpit.tsx` and string-scans them. It
+now pins the NARRATIVE ARC, not the old section stack.
 
 **What it locks (current):**
-- Route renders exactly one `<MemberCockpit />`, above every route-level eyebrow.
-- Route no longer inlines the retired v2 layout (`label="My Seat"`/`"My Assets"`,
-  `<SeatRecordPanel />`, `<MyArchivePreview />`) — those are asserted ABSENT.
-- Route-level eyebrows in order: Activity → What's Sealing Next → My Chronicle →
-  My Growth → My Horizon → Protocol Context.
-- MemberCockpit composes identity (`id="my-seat"` + `<CockpitHeader>`), wake
-  (`<WakeBehindYou/>`), progression, memory, collector. Proof = one
-  `<CockpitProof/>` in Protocol Context. My Growth stays PENDING (referral/rep
-  collapsed in `<details>`).
-- Banlist: financial words in route + gamification words (XP/score/leaderboard/
-  spend-ladder/next rank) in route AND MemberCockpit. Both scans strip comments
-  first so doctrine notes can name banned words.
+- Cockpit arc ORDER (indexOf-in-sequence, in MemberCockpit): `id="my-seat"` →
+  CockpitHeader → WakeBehindYou → SeatsAroundYou → CockpitPortfolio →
+  CockpitCollector → CockpitProgression → CockpitSealingNext → ProtocolHeartbeat
+  → LivePulseStrip → CockpitActionRail. (Identity→Place→Ownership→Momentum→Action.)
+- Route arc-tail ORDER: `id="memory"` → `id="proof"` → `id="parked"`, all below
+  the single `<MemberCockpit/>`.
+- Memory zone owns exactly one `<CockpitMemory/>` + one `<MyPurchaseRouting/>`
+  (between #memory and #proof). Proof = one `<CockpitProof/>` promoted ABOVE
+  #parked. Referral/Reputation parked inside a `<details>` in #parked, status
+  PENDING ("What's Building").
+- ONE action dock: CockpitActionRail once; the CockpitHeader function body must
+  NOT contain a gradient-gold CTA linking to Buy/Join.
+- Proof anchor: cockpit has `href="#proof"` + "live on-chain read" copy near identity.
+- Banlist (financial in route) + gamification (route AND cockpit). Retired v2
+  layout absent; no legacy Genesis #10/#100/#500; PageShell hideHeader + title.
 
-**Why this matters:** because it is source-string-matching across TWO files, the
-durable trap is that **moving a cockpit surface between `my-syndicate.tsx` and
-`MemberCockpit.tsx` (or renaming a component/eyebrow) can break the scan even
-when the rendered page is correct.** When that happens the fix is to update the
-scanned source set / token in the test, not to revert the move.
+**Comment-strip gotcha (cost a red):** the structural assertions count/scan
+COMMENT-STRIPPED source. Both ROUTE and COCKPIT are passed through `stripComments`
+at the TOP now, because a code comment mentioning a self-closing tag (e.g.
+`<MemberCockpit/>` in the file header) inflates the `.match(/<Tag\s*\/>/g)` count
+and breaks the "rendered once" checks. Any NEW structural assertion must scan
+stripped source; mentioning a tag in a comment is then safe.
 
-**History:** the ~5 long-standing failures (old flat-route `label="My Seat"` /
-`<SeatRecordPanel>` assertions) were the stale remnants of the pre-cockpit
-layout; they have been rewritten to the composition checks above. They are no
-longer "ignore me" failures — a failure here now means a real drift.
+**Durable trap:** still source-string-matching across TWO files — moving a
+surface between `my-syndicate.tsx` and `MemberCockpit.tsx`, renaming a component,
+or changing a section `id=`/eyebrow can break the scan even when the rendered
+page is correct. Fix the token in the test, not the move.

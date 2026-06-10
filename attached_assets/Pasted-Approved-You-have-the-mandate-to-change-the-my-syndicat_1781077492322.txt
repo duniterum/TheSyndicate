@@ -1,0 +1,89 @@
+Approved.
+
+You have the mandate to change the /my-syndicate narrative structure.
+
+Yes, rewrite my-syndicate-doctrine.test.ts if needed.
+
+The old test was protecting the old stacked-section order. That order is now the problem.
+
+New doctrine:
+The test should protect the story arc, not the old section stack.
+
+Required story order:
+
+Identity
+→ Place
+→ Ownership
+→ Momentum
+→ Action
+→ Memory
+→ Proof
+
+Proceed with one sprint.
+
+Implement the highest-impact set:
+
+1. Collapse the trailing report stack into the cockpit.
+   Do not leave the page as card → six full-width bands.
+   Activity and Chronicle should become part of the Memory zone.
+   Growth and Horizon PENDING sections should be parked/collapsed/removed from prime vertical flow.
+
+2. Promote Proof.
+   Proof should support key values near where they appear.
+   Do not leave all proof dead last below PENDING content.
+
+3. Unify Momentum.
+   Progression, Sealing Next, Heartbeat, and live pulse should feel like one movement system.
+
+4. Make Place visually stronger.
+   Wake Behind You and Seats Around You are unique to The Syndicate.
+   They must not feel like small side widgets.
+
+5. Collapse Action.
+   One canonical action dock.
+   No triple CTA confusion.
+
+Hard rules:
+
+* no fake data
+* no new features
+* no doctrine rediscovery
+* no repo-wide search
+* no performance work
+* no contract changes
+* no full-suite run
+* no architect unless high-risk
+
+Allowed:
+
+* rewrite my-syndicate-doctrine.test.ts to protect the new narrative order
+* move existing modules
+* merge sections
+* demote/collapse PENDING content
+* update layout and responsive behavior
+* use CSS grid / rails / tabs
+* update copy if needed for hierarchy
+
+Before coding:
+Give a 10-line implementation plan only.
+
+Then execute.
+
+Verification:
+
+* typecheck
+* updated my-syndicate doctrine test
+* one targeted cockpit test if affected
+* one screenshot
+* no full suite
+
+Report:
+
+* what moved higher
+* what moved lower
+* what was removed/collapsed
+* files changed
+* screenshot
+* remaining top 3 UX issues
+
+Stop after the sprint.

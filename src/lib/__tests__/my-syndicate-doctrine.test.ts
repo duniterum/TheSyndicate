@@ -1,22 +1,18 @@
-// Regression: /my-syndicate — Member Cockpit composition + section doctrine.
+// Regression: /my-syndicate — the Member Cockpit NARRATIVE ARC.
 //
-// Architecture (current): the route is a thin composition shell. Identity and
-// holdings are delegated to <MemberCockpit/>, which owns the cockpit surfaces
-// (identity hero, Wake Behind You, progression, memory, collector). The route
-// itself only declares the secondary domains below the cockpit:
+// The page is no longer a stack of report sections. It is read as ONE story:
 //
-//   <MemberCockpit/>          — Seat (identity) · Assets · Artifacts
-//   § Activity                — recent on-chain movement
-//   § What's Sealing Next     — real chapter / artifact thresholds
-//   § My Chronicle            — block-anchored timeline + routing receipt
-//   § My Growth               — referral · reputation (PENDING, collapsed)
-//   § My Horizon              — sealed-envelope future modules (PENDING)
-//   § Protocol Context        — proof panel + claim sources + links out
+//   <MemberCockpit/> owns the live control surface, composed top-to-bottom as
+//   an arc:  Identity → Place → Ownership → Momentum → Action.
 //
-// Identity is the only hero and it lives in the cockpit. The legacy v2 route
-// layout (label="My Seat" / "My Assets" eyebrows, <SeatRecordPanel/>,
-// <MyArchivePreview/>) has been retired into MemberCockpit — these are no
-// longer route-level assertions.
+//   The route continues the arc below the cockpit:
+//     § Memory  (#memory)  — the one history zone (spine + recent + chronicle)
+//     § Proof   (#proof)   — contracts / claim sources, promoted ABOVE pending
+//     § Building(#parked)  — Growth + Horizon, collapsed, PENDING (parked tail)
+//
+// This test protects the ARC ORDER, not the old §1–§8 section stack. Identity
+// is the only hero and it lives in the cockpit. Proof is promoted (it must sit
+// above the parked/pending tail). Action collapses to ONE dock in the cockpit.
 //
 // Language rules: no "raised / contribution / investor / investment / yield /
 // dividend / ROI / pooled / commission" and no fake gamification
@@ -27,108 +23,135 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ARCHIVE_ARTIFACTS } from "../archive-config";
 
-const ROUTE = readFileSync(
-  join(process.cwd(), "src/routes/my-syndicate.tsx"),
-  "utf8",
-);
-const COCKPIT = readFileSync(
-  join(process.cwd(), "src/components/syndicate/cockpit/MemberCockpit.tsx"),
-  "utf8",
-);
-
 // Strip block + line comments before scanning source so doctrine notes can
-// mention banned vocabulary by name without tripping a guard.
+// mention banned vocabulary (or JSX tags) by name without tripping a guard or
+// inflating a usage count. ALL structural scans below run on stripped source.
 const stripComments = (s: string) =>
   s
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/^\s*\/\/.*$/gm, "")
     .replace(/\s+\/\/.*$/gm, "");
 
-describe("/my-syndicate doctrine — cockpit delegation + section ordering", () => {
-  it("delegates the cockpit (identity/holdings) to <MemberCockpit/>, rendered first", () => {
+const ROUTE = stripComments(
+  readFileSync(join(process.cwd(), "src/routes/my-syndicate.tsx"), "utf8"),
+);
+const COCKPIT = stripComments(
+  readFileSync(
+    join(process.cwd(), "src/components/syndicate/cockpit/MemberCockpit.tsx"),
+    "utf8",
+  ),
+);
+
+// Assert a list of needles appears in source, each strictly after the previous.
+function expectInOrder(src: string, needles: string[]) {
+  let cursor = -1;
+  for (const n of needles) {
+    const at = src.indexOf(n, cursor + 1);
+    expect(at, `missing or out-of-order: ${n}`).toBeGreaterThan(cursor);
+    cursor = at;
+  }
+}
+
+describe("/my-syndicate doctrine — narrative arc", () => {
+  it("delegates the live control surface to <MemberCockpit/>, rendered once and first", () => {
     const matches = ROUTE.match(/<MemberCockpit\s*\/>/g) ?? [];
     expect(matches.length).toBe(1);
     const cockpitIdx = ROUTE.indexOf("<MemberCockpit");
-    const firstSectionIdx = ROUTE.indexOf('label="Activity"');
+    const memoryIdx = ROUTE.indexOf('id="memory"');
     expect(cockpitIdx).toBeGreaterThan(-1);
-    // The cockpit sits above every route-level section eyebrow.
-    expect(firstSectionIdx).toBeGreaterThan(cockpitIdx);
+    // The cockpit sits above the route-level arc tail.
+    expect(memoryIdx).toBeGreaterThan(cockpitIdx);
   });
 
-  it("no longer inlines the retired v2 seat/assets layout at the route level", () => {
-    // These moved into MemberCockpit; the route must not reintroduce them.
+  it("does not reintroduce the retired v2 seat/assets route layout", () => {
     expect(ROUTE).not.toMatch(/<SeatRecordPanel\s*\/>/);
     expect(ROUTE).not.toMatch(/<MyArchivePreview\s*\/>/);
     expect(ROUTE.indexOf('label="My Seat"')).toBe(-1);
     expect(ROUTE.indexOf('label="My Assets"')).toBe(-1);
   });
 
-  const ROUTE_SECTIONS = [
-    "Activity",
-    "What's Sealing Next",
-    "My Chronicle",
-    "My Growth",
-    "My Horizon",
-    "Protocol Context",
-  ];
-
-  it("declares the route-level section eyebrows in canonical order, below the cockpit", () => {
-    const cockpitIdx = ROUTE.indexOf("<MemberCockpit");
-    const positions = ROUTE_SECTIONS.map((label) =>
-      ROUTE.indexOf(`label="${label}"`),
-    );
-    for (const [i, p] of positions.entries()) {
-      expect(p, `missing eyebrow: ${ROUTE_SECTIONS[i]}`).toBeGreaterThan(-1);
-      expect(
-        p,
-        `eyebrow must sit below the cockpit: ${ROUTE_SECTIONS[i]}`,
-      ).toBeGreaterThan(cockpitIdx);
-    }
-    const sorted = [...positions].sort((a, b) => a - b);
-    expect(positions).toEqual(sorted);
+  it("composes the cockpit arc IN ORDER: Identity → Place → Ownership → Momentum → Action", () => {
+    expectInOrder(COCKPIT, [
+      'id="my-seat"', //         frame / Identity hero
+      "<CockpitHeader", //       1 · Identity
+      "<WakeBehindYou", //       2 · Place
+      "<SeatsAroundYou", //      2 · Place
+      "<CockpitPortfolio", //    3 · Ownership
+      "<CockpitCollector", //    3 · Ownership
+      "<CockpitProgression", //  4 · Momentum
+      "<CockpitSealingNext", //  4 · Momentum (moved in from the route)
+      "<ProtocolHeartbeat", //   4 · Momentum
+      "<LivePulseStrip", //      4 · Momentum
+      "<CockpitActionRail", //   5 · Action
+    ]);
   });
 
-  it("MemberCockpit composes the identity / wake / progression / memory / collector surfaces", () => {
-    expect(COCKPIT).toMatch(/id="my-seat"/); // identity hero section
-    expect(COCKPIT).toMatch(/<CockpitHeader\b/); // identity
-    expect(COCKPIT).toMatch(/<WakeBehindYou\s*\/>/); // wake
-    expect(COCKPIT).toMatch(/<CockpitProgression\s*\/>/); // progression
-    expect(COCKPIT).toMatch(/<CockpitMemory\s*\/>/); // memory
-    expect(COCKPIT).toMatch(/<CockpitCollector\b/); // collector
+  it("promotes proof beside the identity values it backs (anchor → #proof)", () => {
+    expect(COCKPIT).toMatch(/href="#proof"/);
+    expect(COCKPIT).toMatch(/live on-chain read/i);
   });
 
-  it("exposes the protocol proof surface via <CockpitProof/> inside § Protocol Context", () => {
+  it("collapses to ONE action dock — no duplicate gradient Join CTA in the identity header", () => {
+    // The single dock is CockpitActionRail (rendered once). The hero header no
+    // longer ships its own gradient Join/Buy button competing with the dock.
+    const railUses = COCKPIT.match(/<CockpitActionRail\b/g) ?? [];
+    expect(railUses.length).toBe(1);
+    // The CockpitHeader function body must not contain a gradient-gold CTA link.
+    const headerStart = COCKPIT.indexOf("function CockpitHeader");
+    const headerEnd = COCKPIT.indexOf("function HeroStat");
+    expect(headerStart).toBeGreaterThan(-1);
+    expect(headerEnd).toBeGreaterThan(headerStart);
+    const header = COCKPIT.slice(headerStart, headerEnd);
+    expect(/var\(--gradient-gold\)[\s\S]*Buy More SYN/.test(header)).toBe(false);
+    expect(/var\(--gradient-gold\)[\s\S]*Join The Syndicate/.test(header)).toBe(false);
+  });
+
+  it("continues the arc tail IN ORDER below the cockpit: Memory → Proof → Building", () => {
+    expectInOrder(ROUTE, [
+      "<MemberCockpit",
+      'id="memory"',
+      'id="proof"',
+      'id="parked"',
+    ]);
+  });
+
+  it("Memory is the ONE history zone: spine + chronicle routing receipt, between Memory and Proof", () => {
+    const memoryIdx = ROUTE.indexOf('id="memory"');
+    const proofIdx = ROUTE.indexOf('id="proof"');
+    // The cockpit memory spine renders once, inside the Memory zone.
+    const mem = ROUTE.match(/<CockpitMemory\s*\/>/g) ?? [];
+    expect(mem.length).toBe(1);
+    const memSpineIdx = ROUTE.indexOf("<CockpitMemory");
+    expect(memSpineIdx).toBeGreaterThan(memoryIdx);
+    expect(memSpineIdx).toBeLessThan(proofIdx);
+    // The routing receipt renders exactly once, also inside the Memory zone.
+    const routing = ROUTE.match(/<MyPurchaseRouting\s*\/>/g) ?? [];
+    expect(routing.length).toBe(1);
+    const routingIdx = ROUTE.indexOf("<MyPurchaseRouting");
+    expect(routingIdx).toBeGreaterThan(memoryIdx);
+    expect(routingIdx).toBeLessThan(proofIdx);
+  });
+
+  it("promotes <CockpitProof/> into § Proof, ABOVE the parked tail", () => {
     const matches = ROUTE.match(/<CockpitProof\s*\/>/g) ?? [];
     expect(matches.length).toBe(1);
+    const proofZoneIdx = ROUTE.indexOf('id="proof"');
     const proofIdx = ROUTE.indexOf("<CockpitProof");
-    const ctxIdx = ROUTE.indexOf('label="Protocol Context"');
-    expect(ctxIdx).toBeGreaterThan(-1);
-    expect(proofIdx).toBeGreaterThan(ctxIdx);
+    const parkedIdx = ROUTE.indexOf('id="parked"');
+    expect(proofIdx).toBeGreaterThan(proofZoneIdx);
+    expect(proofIdx).toBeLessThan(parkedIdx);
   });
 
-  it("MyPurchaseRouting renders exactly once, inside § My Chronicle", () => {
-    const matches = ROUTE.match(/<MyPurchaseRouting\s*\/>/g) ?? [];
-    expect(matches.length).toBe(1);
-    const idx = ROUTE.indexOf("<MyPurchaseRouting");
-    const chronicleIdx = ROUTE.indexOf('label="My Chronicle"');
-    const growthIdx = ROUTE.indexOf('label="My Growth"');
-    expect(idx).toBeGreaterThan(chronicleIdx);
-    expect(idx).toBeLessThan(growthIdx);
-  });
-
-  it("Referral and Reputation previews live inside § My Growth (collapsed, PENDING)", () => {
+  it("parks Referral + Reputation in § Building (collapsed <details>, PENDING)", () => {
+    const parkedIdx = ROUTE.indexOf('id="parked"');
     const refIdx = ROUTE.indexOf("<MyReferralCard");
     const repIdx = ROUTE.indexOf("<MyReputationConceptCard");
-    const growthIdx = ROUTE.indexOf('label="My Growth"');
-    const horizonIdx = ROUTE.indexOf('label="My Horizon"');
-    expect(refIdx).toBeGreaterThan(growthIdx);
-    expect(refIdx).toBeLessThan(horizonIdx);
-    expect(repIdx).toBeGreaterThan(growthIdx);
-    expect(repIdx).toBeLessThan(horizonIdx);
+    expect(refIdx).toBeGreaterThan(parkedIdx);
+    expect(repIdx).toBeGreaterThan(parkedIdx);
     // Must be inside a <details> for collapse.
     expect(ROUTE).toMatch(/<details[\s\S]*<MyReferralCard/);
-    // The growth domain stays PENDING until contracts ship.
-    expect(ROUTE).toMatch(/label="My Growth"[\s\S]*?status="PENDING"/);
+    // The building tail stays PENDING until contracts ship.
+    expect(ROUTE).toMatch(/label="What's Building"[\s\S]*?status="PENDING"/);
   });
 
   it("does not reintroduce legacy Genesis #10 / #100 / #500 doctrine", () => {

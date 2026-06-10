@@ -1,17 +1,16 @@
 // ─────────────────────────────────────────────────────────────────────────
-// /my-syndicate — Member Operating System (v2 blueprint)
+// /my-syndicate — Member Operating System (narrative arc)
 //
-// Doctrine: docs/MY_SYNDICATE_IMPLEMENTATION_BLUEPRINT.md (v2).
-// Order is locked. New modules dock into existing slots; no new sections.
+// The page is read as ONE story, not a stack of report sections:
 //
-//   § 1 My Seat            — Identity (hero, dominant)
-//   § 2 My Assets          — SYN · Archive1155 · SeatRecord721 PENDING
-//   § 3 Activity           — Recent wallet/protocol movement
-//   § 4 What's Sealing Next — Real chapter + artifact thresholds
-//   § 5 My Chronicle       — Full block-anchored timeline + routing receipt
-//   § 6 My Growth          — Referral · Reputation · Builder (collapsed)
-//   § 7 My Horizon         — Governance · Marketplace · AI · B2B (PENDING)
-//   § 8 Protocol Context   — Links out (never duplicated)
+//   Identity → Place → Ownership → Momentum → Action   (the cockpit)
+//   Memory → Proof                                      (the route tail)
+//   What's Building                                     (parked, PENDING)
+//
+// <MemberCockpit/> owns the live control surface (Identity → Action). The
+// route continues the arc below it: the Memory chapter (the one history zone),
+// the Proof chapter (contracts + claim sources, promoted ABOVE pending), and a
+// single collapsed "What's Building" tail for not-yet-shipped surfaces.
 //
 // Language rules: no "raised", no "contribution", no "investor", no
 // "investment", no "share", no "dividend", no "yield", no "passive income",
@@ -24,7 +23,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAccount } from "wagmi";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { MemberCockpit } from "@/components/syndicate/cockpit/MemberCockpit";
+import { CockpitMemory } from "@/components/syndicate/cockpit/CockpitMemory";
 import { CockpitProof } from "@/components/syndicate/cockpit/CockpitProof";
+import { CockpitEmbedProvider } from "@/components/syndicate/cockpit/cockpit-shell";
 import { MyPurchaseRouting } from "@/components/syndicate/MyPurchaseRouting";
 import {
   MyReferralCard,
@@ -32,13 +33,11 @@ import {
 } from "@/components/syndicate/MyReferralCard";
 import {
   GlassCard,
-  Pill,
   Section,
   StatusPill,
 } from "@/components/syndicate/Primitives";
 import { ConnectCTA } from "@/components/syndicate/ConnectCTA";
 import { useHolderIndex } from "@/lib/holder-index";
-import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { useProtocolEvents } from "@/lib/protocol-events";
 import { isValidTxHash } from "@/components/syndicate/TxProofDrawer";
 import { txExplorerUrl } from "@/lib/syndicate-config";
@@ -86,7 +85,7 @@ function SectionEyebrow({
     <div className="mb-3 flex flex-wrap items-center gap-2">
       <StatusPill status={status} />
       <h2
-        className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal"
+        className="mono text-[11px] uppercase tracking-[0.24em] text-[var(--gold)] m-0 font-normal"
         data-eyebrow={label}
       >
         {label}
@@ -100,8 +99,32 @@ function SectionEyebrow({
   );
 }
 
+function SubEyebrow({
+  label,
+  status,
+  hint,
+}: {
+  label: string;
+  status: "LIVE" | "PARTIAL" | "PENDING";
+  hint?: string;
+}) {
+  return (
+    <div className="mb-2 flex flex-wrap items-center gap-2">
+      <StatusPill status={status} />
+      <h3 className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground m-0 font-normal">
+        {label}
+      </h3>
+      {hint && (
+        <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80">
+          · {hint}
+        </span>
+      )}
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────
-// Page
+// Page — the cockpit, then the Memory and Proof chapters, then the parked tail.
 // ─────────────────────────────────────────────────────────────────────────
 function MySyndicatePage() {
   return (
@@ -112,23 +135,43 @@ function MySyndicatePage() {
       hideHeader
     >
       <MemberCockpit />
-      <ActivitySection />
-      <SealingNextSection />
-      <ChronicleSection />
-      <GrowthSection />
-      <HorizonSection />
-      <ProtocolContextSection />
+      <MemoryZone />
+      <ProofZone />
+      <BuildingZone />
     </PageShell>
   );
 }
 
-// ─── § 3 Activity ──────────────────────────────────────────────────────
-// Demoted to a compact "recent live movement" strip. Your block-anchored
-// HISTORY lives once, in the cockpit memory spine above (Since You Were Away →
-// Your history); this strip only surfaces the few most recent on-chain events
-// and hands off to the full ledger. Deliberately subordinate so the page no
-// longer stacks two parallel wallet-history reports.
-function ActivitySection() {
+// ─── 6 · MEMORY — your on-chain history, in one place ──────────────────
+// The arc's memory chapter. ONE history zone with an internal hierarchy:
+//   • the spine        — CockpitMemory (Since You Were Away → your history)
+//   • a recent pointer — the few latest live events, then hand off
+//   • the canon        — block-anchored chronicle + routing receipt
+// Never four parallel wallet-history reports — one zone, one read.
+function MemoryZone() {
+  return (
+    <Section id="memory" className="py-4">
+      <SectionEyebrow
+        label="Memory"
+        status="LIVE"
+        hint="your on-chain history, in one place"
+      />
+      <div className="space-y-4">
+        {/* The spine renders bare so it reads as part of this one zone. */}
+        <CockpitEmbedProvider>
+          <CockpitMemory />
+        </CockpitEmbedProvider>
+        <ActivityStrip />
+        <ChronicleBlock />
+      </div>
+    </Section>
+  );
+}
+
+// Recent live movement — deliberately compact and subordinate to the spine
+// above. Surfaces only the few most recent on-chain events, then hands off to
+// the full ledger; it is NOT a second wallet-history report.
+function ActivityStrip() {
   const { address, isConnected } = useAccount();
   const { events, isLoading, isError } = useProtocolEvents({ limit: 200 });
 
@@ -142,14 +185,13 @@ function ActivitySection() {
     : [];
   const recent = mine.slice(0, 3);
 
-  const status: "LIVE" | "PARTIAL" | "PENDING" =
-    !isConnected
-      ? "PENDING"
-      : isLoading || isError
-        ? "PARTIAL"
-        : mine.length > 0
-          ? "LIVE"
-          : "PENDING";
+  const status: "LIVE" | "PARTIAL" | "PENDING" = !isConnected
+    ? "PENDING"
+    : isLoading || isError
+      ? "PARTIAL"
+      : mine.length > 0
+        ? "LIVE"
+        : "PENDING";
 
   const KIND_LABEL: Record<string, string> = {
     purchase: "Purchase",
@@ -176,11 +218,11 @@ function ActivitySection() {
   );
 
   return (
-    <Section id="activity" className="py-4">
-      <SectionEyebrow
-        label="Activity"
+    <div>
+      <SubEyebrow
+        label="Recent movement"
         status={status}
-        hint="recent live on-chain movement · your full history lives in Since You Were Away above"
+        hint="latest live on-chain events · full history above"
       />
       <div className="surface elevated p-3">
         {!isConnected ? (
@@ -243,125 +285,30 @@ function ActivitySection() {
           </>
         )}
       </div>
-    </Section>
+    </div>
   );
 }
 
-// ─── § 4 What's Sealing Next ───────────────────────────────────────────
-type SealingRow = {
-  scope: "SOON" | "NEXT" | "FAR";
-  label: string;
-  remaining: string;
-  source: string;
-};
-
-function SealingNextSection() {
-  const pulse = useProtocolPulse();
-  const buyers = pulse.buyers;
-
-  // Real chapter thresholds — canonical (333 / 1,000 / 3,333 / 10,000 / Open Era).
-  const CHAPTER_TARGETS: Array<{ id: string; label: string; target: number }> = [
-    { id: "ch-333", label: "Chapter I — Genesis Signal sealed (#333)", target: 333 },
-    { id: "ch-1000", label: "Chapter II — First Thousand sealed (#1,000)", target: 1_000 },
-    { id: "ch-3333", label: "Chapter III — The Expansion sealed (#3,333)", target: 3_333 },
-    { id: "ch-10000", label: "Chapter IV — First Ten Thousand sealed (#10,000)", target: 10_000 },
-  ];
-
-  const reachedAll = buyers === undefined ? false : false;
-  void reachedAll;
-
-  const rows: SealingRow[] = [];
-  if (buyers !== undefined) {
-    // SOON · NEXT · FAR — nearest unreached chapter is NEXT; the one after is FAR.
-    const upcoming = CHAPTER_TARGETS.filter((c) => buyers < c.target);
-    // SOON — the artifact tied to the next chapter seal that is closest.
-    if (upcoming[0]) {
-      rows.push({
-        scope: "SOON",
-        label: `Genesis Sealed Artifact unlocks at #${upcoming[0].target.toLocaleString("en-US")}`,
-        remaining: `${(upcoming[0].target - buyers).toLocaleString("en-US")} members to go`,
-        source: "Membership Sale · indexed",
-      });
-    }
-    if (upcoming[0]) {
-      rows.push({
-        scope: "NEXT",
-        label: upcoming[0].label,
-        remaining: `${(upcoming[0].target - buyers).toLocaleString("en-US")} members to go`,
-        source: "Membership Sale · indexed",
-      });
-    }
-    if (upcoming[1]) {
-      rows.push({
-        scope: "FAR",
-        label: upcoming[1].label,
-        remaining: `${(upcoming[1].target - buyers).toLocaleString("en-US")} members to go`,
-        source: "Membership Sale · indexed",
-      });
-    }
-  }
-
-  const status: "LIVE" | "PARTIAL" | "PENDING" =
-    pulse.isLoading ? "PARTIAL" : rows.length ? "LIVE" : "PENDING";
-
-  return (
-    <Section id="sealing-next" className="py-4">
-      <SectionEyebrow
-        label="What's Sealing Next"
-        status={status}
-        hint="real on-chain thresholds · no countdowns"
-      />
-      <GlassCard className="p-4">
-        {rows.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Awaiting the next on-chain threshold to come into range.
-          </p>
-        ) : (
-          <ul className="divide-y divide-border/40">
-            {rows.map((r) => (
-              <li
-                key={`${r.scope}-${r.label}`}
-                className="flex flex-wrap items-center gap-2 py-2.5"
-              >
-                <Pill tone={r.scope === "SOON" ? "gold" : r.scope === "NEXT" ? "navy" : "muted"}>
-                  {r.scope}
-                </Pill>
-                <span className="text-sm text-foreground flex-1 min-w-0">{r.label}</span>
-                <span className="mono text-[11px] text-foreground tabular-nums">
-                  {r.remaining}
-                </span>
-                <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                  {r.source}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="mt-3 pt-3 border-t border-border/40">
-          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Thresholds are real cohort seals — they fire when the on-chain
-            member count crosses the boundary. No timers. No urgency.
-          </span>
-        </div>
-      </GlassCard>
-    </Section>
-  );
-}
-
-// ─── § 5 My Chronicle ──────────────────────────────────────────────────
-function ChronicleSection() {
+// Block-anchored chronicle + the contract-enforced routing receipt — the
+// immutable canon under the same Memory zone.
+function ChronicleBlock() {
   const { address, isConnected } = useAccount();
   const idx = useHolderIndex();
   const record = address ? idx.getByWallet(address) : undefined;
-  const status: "LIVE" | "PARTIAL" | "PENDING" =
-    !isConnected ? "PENDING" : idx.isLoading ? "PARTIAL" : record ? "LIVE" : "PENDING";
+  const status: "LIVE" | "PARTIAL" | "PENDING" = !isConnected
+    ? "PENDING"
+    : idx.isLoading
+      ? "PARTIAL"
+      : record
+        ? "LIVE"
+        : "PENDING";
 
   return (
-    <Section id="my-chronicle" className="py-4">
-      <SectionEyebrow
-        label="My Chronicle"
+    <div>
+      <SubEyebrow
+        label="Chronicle"
         status={status}
-        hint="full block-anchored timeline"
+        hint="full block-anchored timeline + routing receipt"
       />
 
       <GlassCard className="p-4 mb-3">
@@ -430,84 +377,18 @@ function ChronicleSection() {
 
       {/* Routing receipt — derived from indexed purchases, contract-enforced split. */}
       <MyPurchaseRouting />
-    </Section>
+    </div>
   );
 }
 
-// ─── § 6 My Growth (collapsed) ─────────────────────────────────────────
-function GrowthSection() {
+// ─── 7 · PROOF — contracts · claim sources · links out ─────────────────
+// Promoted above the parked tail: the proof a member needs is never buried
+// below not-yet-shipped surfaces.
+function ProofZone() {
   return (
-    <Section id="my-growth" className="py-4">
+    <Section id="proof" className="py-4">
       <SectionEyebrow
-        label="My Growth"
-        status="PENDING"
-        hint="referral · recognition · builder record · PENDING contracts"
-      />
-      <details className="group surface elevated">
-        <summary className="cursor-pointer list-none p-3 flex items-center justify-between gap-3">
-          <span className="mono text-[11px] uppercase tracking-[0.2em] text-foreground">
-            Growth surfaces · PENDING until contracts ship
-          </span>
-          <span className="mono text-[10px] text-muted-foreground group-open:hidden">
-            expand ↓
-          </span>
-          <span className="mono text-[10px] text-muted-foreground hidden group-open:inline">
-            collapse ↑
-          </span>
-        </summary>
-        <div className="px-3 pb-3 pt-2 grid grid-cols-1 lg:grid-cols-2 gap-3">
-          <MyReferralCard />
-          <MyReputationConceptCard />
-        </div>
-      </details>
-    </Section>
-  );
-}
-
-// ─── § 7 My Horizon ────────────────────────────────────────────────────
-function HorizonSection() {
-  const modules = [
-    { name: "Governance", note: "Member decisions" },
-    { name: "Marketplace", note: "Artifact secondary" },
-    { name: "AI Tools", note: "Member surfaces" },
-    { name: "B2B Routing", note: "Routed integrations" },
-    { name: "Builder Record", note: "Recognition layer" },
-  ];
-  return (
-    <Section id="my-horizon" className="py-4">
-      <SectionEyebrow
-        label="My Horizon"
-        status="PENDING"
-        hint="sealed-envelope rows · not active today"
-      />
-      <GlassCard className="p-3">
-        <ul className="grid grid-cols-2 md:grid-cols-5 gap-2">
-          {modules.map((m) => (
-            <li
-              key={m.name}
-              className="surface elevated p-2.5 flex flex-col gap-1"
-            >
-              <div className="flex items-center justify-between gap-1">
-                <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                  {m.name}
-                </span>
-                <StatusPill status="PENDING" withDot={false} />
-              </div>
-              <span className="text-xs text-foreground/80">{m.note}</span>
-            </li>
-          ))}
-        </ul>
-      </GlassCard>
-    </Section>
-  );
-}
-
-// ─── § 8 Protocol Context — proof panel + claim sources + links out ────
-function ProtocolContextSection() {
-  return (
-    <Section id="protocol-context" className="py-4">
-      <SectionEyebrow
-        label="Protocol Context"
+        label="Proof & Context"
         status="LIVE"
         hint="contracts · claim sources · links out"
       />
@@ -551,6 +432,65 @@ function ProtocolContextSection() {
       <p className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mt-4">
         {ARCHIVE_DISCLAIMER}
       </p>
+    </Section>
+  );
+}
+
+// ─── 8 · WHAT'S BUILDING — parked, PENDING ─────────────────────────────
+// Growth (referral · reputation · builder) and Horizon (governance ·
+// marketplace · AI · B2B) collapsed into ONE muted, PENDING tail. Nothing
+// here is active today; it never competes with the live cockpit above.
+const HORIZON_MODULES = [
+  { name: "Governance", note: "Member decisions" },
+  { name: "Marketplace", note: "Artifact secondary" },
+  { name: "AI Tools", note: "Member surfaces" },
+  { name: "B2B Routing", note: "Routed integrations" },
+  { name: "Builder Record", note: "Recognition layer" },
+];
+
+function BuildingZone() {
+  return (
+    <Section id="parked" className="py-4">
+      <SectionEyebrow
+        label="What's Building"
+        status="PENDING"
+        hint="not active today · sealed-envelope surfaces until contracts ship"
+      />
+      <details className="group surface elevated">
+        <summary className="cursor-pointer list-none p-3 flex items-center justify-between gap-3">
+          <span className="mono text-[11px] uppercase tracking-[0.2em] text-foreground">
+            Growth &amp; horizon surfaces · PENDING until contracts ship
+          </span>
+          <span className="mono text-[10px] text-muted-foreground group-open:hidden">
+            expand ↓
+          </span>
+          <span className="mono text-[10px] text-muted-foreground hidden group-open:inline">
+            collapse ↑
+          </span>
+        </summary>
+        <div className="px-3 pb-3 pt-2 space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <MyReferralCard />
+            <MyReputationConceptCard />
+          </div>
+          <ul className="grid grid-cols-2 md:grid-cols-5 gap-2">
+            {HORIZON_MODULES.map((m) => (
+              <li
+                key={m.name}
+                className="surface elevated p-2.5 flex flex-col gap-1"
+              >
+                <div className="flex items-center justify-between gap-1">
+                  <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {m.name}
+                  </span>
+                  <StatusPill status="PENDING" withDot={false} />
+                </div>
+                <span className="text-xs text-foreground/80">{m.note}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
     </Section>
   );
 }
