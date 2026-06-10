@@ -1,15 +1,24 @@
-// MemberCockpit — Phase 1 of the /my-syndicate "Member Cockpit" rebuild.
+// MemberCockpit — the /my-syndicate cockpit OS.
 //
 // A retention-grade home base that reads like a real crypto cockpit
-// (Zapper / Zerion / Phantom register) rather than a marketing scroll:
+// (Zapper / Zerion / Phantom register) rather than a marketing scroll. Instead
+// of stacking every surface as a full-width "report" band, the cockpit composes
+// them into ONE control surface:
 //
-//   • CockpitHeader   — premium profile header (avatar · member# · rank ·
-//                       chapter · SYN · joined date · next milestone)
-//   • CockpitActionRail — ONE unified action surface (removes CTA chaos):
-//                       one primary BUY + ordered secondaries
-//   • CockpitPortfolio — wallet / position view (SYN received, SYN held live,
-//                       USDC routed, purchases, rank progress)
-//   • Owned Artifacts  — real on-chain Archive1155 balances (MyArchivePreview)
+//   • Identity band   — the hero Seat object: crest · member# · chapter ·
+//                       wallet · badges · KPI ribbon · primary action.
+//   • Flight deck     — three zones under the hero:
+//       LEFT rail   (sticky) — Wake Behind You + Seats Around You (identity).
+//       CENTER             — holdings, progression, collection, memory.
+//       RIGHT rail  (sticky) — Protocol heartbeat + the unified action dock.
+//   • Protocol vitals — the seven live numbers, full-width at the base.
+//   • Mobile          — the global MobileJoinBar (mounted once in __root) is the
+//                       single fixed mobile action; the cockpit does not add a
+//                       second bottom bar (it would collide at the same slot).
+//
+// The embedded sub-surfaces (Wake / Seats / Progression / Memory / Heartbeat /
+// LivePulseStrip) render BARE inside the deck via CockpitEmbedProvider — no
+// Section band, no 96px padding — so the page reads as a cockpit, not a stack.
 //
 // Truth doctrine (unchanged): every value is an on-chain read or derived from
 // indexed purchase events, or it is clearly labeled. No fabricated balances,
@@ -17,7 +26,7 @@
 // the site doctrine: "USDC routed", "SYN received", "recognition", "where you
 // fit" — never "raised / yield / ROI / stake / earn".
 
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { useCockpitAccount, useCockpitHolderIndex, useCockpitUserBalances } from "@/lib/dev/cockpit-fixtures";
 import {
@@ -38,6 +47,7 @@ import { CockpitBadges } from "./CockpitBadges";
 import { WakeBehindYou } from "./WakeBehindYou";
 import { SeatsAroundYou } from "./SeatsAroundYou";
 import { WalletAvatar } from "./WalletAvatar";
+import { CockpitEmbedProvider } from "./cockpit-shell";
 import { type HolderRecord } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
 import { fmtSyn, fmtAddress } from "@/lib/sale-hooks";
@@ -75,107 +85,101 @@ function copy(text: string) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Entry — composes the four Phase 1 surfaces.
+// Entry — the cockpit OS frame + the three-zone flight deck.
 // ─────────────────────────────────────────────────────────────────────────
 export function MemberCockpit() {
   const { address, isConnected } = useCockpitAccount();
   const idx = useCockpitHolderIndex();
   const record = address ? idx.getByWallet(address) : undefined;
   const headerRef = useRef<HTMLDivElement | null>(null);
+  const isMember = Boolean(record);
 
   return (
-    <>
-      <Section id="my-seat" className="pt-6 md:pt-8 pb-4">
-        {/* ONE composed seat panel. Identity, the wake behind you, and the
-            action rail read as a single dominant object — "MY SEAT, everything
-            orbits it" — instead of separately bordered report cards stacked on
-            top of each other. Chapter / progression storytelling lives exactly
-            once, directly below, in <CockpitProgression/> — the panel no longer
-            repeats it. */}
+    <Section id="my-seat" width="data" className="pt-5 md:pt-7 pb-8 md:pb-10">
+      <CockpitEmbedProvider>
+        {/* ONE control surface. No overflow-hidden on this frame — the sticky
+            rails inside must be able to escape it; the decorative texture is
+            clipped locally instead. */}
         <div
-          className="relative overflow-hidden rounded-2xl border border-[var(--gold)]/30 bg-card/70"
+          className="relative rounded-2xl border border-[var(--gold)]/25 bg-[var(--panel)]"
           style={{ boxShadow: "var(--shadow-glow-gold)" }}
         >
-          <CockpitHeader
-            ref={headerRef}
-            address={address}
-            isConnected={isConnected}
-            record={record}
-            loading={idx.isLoading}
-          />
-        {/* Wake Behind You — the emotional gravity line. Sits directly under
-            the seat identity so "who you are" is immediately followed by "how
-            much of the story formed behind you". Real wake = indexed members −
-            your member number; visitors get the inverse invitation. */}
-          <div className="border-t border-border/40 px-5 sm:px-6 md:px-8 py-5">
-            <WakeBehindYou />
+          {/* control-surface texture */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
+          >
+            <div className="absolute inset-0 grid-bg opacity-40" />
           </div>
 
-          {/* Actions — one unified rail at the base of the panel. */}
-          <div className="border-t border-border/40 px-5 sm:px-6 md:px-8 py-5">
-            <CockpitActionRail isConnected={isConnected} address={address} isMember={Boolean(record)} />
+          {/* ── IDENTITY BAND — the hero Seat object ──────────────────────── */}
+          <div className="relative">
+            <CockpitHeader
+              ref={headerRef}
+              address={address}
+              isConnected={isConnected}
+              record={record}
+              loading={idx.isLoading}
+            />
+          </div>
+
+          {/* ── FLIGHT DECK — left identity rail · center holdings · right pulse/actions ── */}
+          <div className="relative grid grid-cols-1 lg:grid-cols-[290px_minmax(0,1fr)_320px] items-start border-t border-border/50 lg:divide-x lg:divide-border/50">
+            {/* LEFT — identity rail (sticky on desktop) */}
+            <aside className="p-4 md:p-5 space-y-5 lg:sticky lg:top-24 lg:self-start">
+              <WakeBehindYou />
+              <SeatsAroundYou />
+            </aside>
+
+            {/* CENTER — holdings, progression, collection, memory */}
+            <div className="p-4 md:p-6 space-y-6 min-w-0 border-t border-border/50 lg:border-t-0">
+              <div id="my-assets">
+                <CockpitPortfolio
+                  isConnected={isConnected}
+                  record={record}
+                  loading={idx.isLoading}
+                />
+              </div>
+
+              <CockpitProgression />
+
+              <div id="my-artifacts">
+                <div className="mb-3 flex flex-wrap items-center gap-2">
+                  <StatusPill status={isConnected ? "LIVE" : "PENDING"} />
+                  <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
+                    Holdings, Artifacts &amp; Collecting
+                  </h2>
+                  <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    · what you own · what to collect next · live vs pending
+                  </span>
+                </div>
+                <CockpitCollector record={record} />
+              </div>
+
+              <CockpitMemory />
+            </div>
+
+            {/* RIGHT — protocol pulse + unified action dock (sticky on desktop) */}
+            <aside className="p-4 md:p-5 space-y-5 lg:sticky lg:top-24 lg:self-start border-t border-border/50 lg:border-t-0">
+              <ProtocolHeartbeat />
+              <CockpitActionRail isConnected={isConnected} address={address} isMember={isMember} />
+            </aside>
+          </div>
+
+          {/* ── PROTOCOL VITALS — the seven live numbers, full-width base ──── */}
+          <div className="relative border-t border-border/50 p-4 md:p-6">
+            <LivePulseStrip />
           </div>
         </div>
-      </Section>
 
-      {/* Co-witnesses — the quiet social layer. Directly below the seat panel so
-          the page reads "who you are → who sits beside you → where you fit in
-          the story". Shows the real members on either side of your seat (order
-          of entry only — no amounts, no rank, no standing). Wake stays the
-          primary surface; this never becomes a leaderboard. */}
-      <SeatsAroundYou />
-
-      {/* Wave C4 — progression / story loop. Sits right under the seat so the
-          page reads "who you are → where you fit in the story → what changed
-          while you were away". Answers current chapter, progress to the next
-          chapter threshold (= next real member-number milestone), and why early
-          member numbers matter — story/identity only, never financial. */}
-      <CockpitProgression />
-
-      {/* Wave C2 — retention loop. Answers "what changed while I was away?"
-          immediately under the seat: protocol deltas since your last visit
-          (first-visit safe), your wallet memory timeline, and wallet-scoped
-          milestones. Real/cached deltas only — never fabricated. */}
-      <CockpitMemory />
-
-      {/* Protocol heartbeat — the single most recent on-chain event narrated as
-          one calm line ("the protocol is alive right now"), with proof + an
-          explicit LIVE/PARTIAL/PENDING truth state. Sits directly above the
-          analytical pulse grid: heartbeat headline → the seven numbers behind
-          it. Never invents motion or claims "live now" without a real event. */}
-      <ProtocolHeartbeat />
-
-      {/* Protocol-live snapshot — what the protocol is doing right now, read
-          live from Avalanche. Sits between identity and holdings so the page
-          reads: your seat → since you were away → the protocol's pulse → what you hold. */}
-      <LivePulseStrip />
-
-      <Section id="my-assets" className="py-4">
-        <CockpitPortfolio
-          isConnected={isConnected}
-          record={record}
-          loading={idx.isLoading}
-        />
-      </Section>
-
-      <Section id="my-artifacts" className="py-4">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <StatusPill status={isConnected ? "LIVE" : "PENDING"} />
-          <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
-            Holdings, Artifacts &amp; Collecting
-          </h2>
-          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            · what you own · what to collect next · live vs pending
-          </span>
-        </div>
-        <CockpitCollector record={record} />
-      </Section>
-    </>
+      </CockpitEmbedProvider>
+    </Section>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// CockpitHeader — premium profile header.
+// CockpitHeader — the hero Seat object: crest · member# · chapter · wallet ·
+// badges · KPI ribbon · primary action.
 // ─────────────────────────────────────────────────────────────────────────
 function CockpitHeader({
   ref,
@@ -211,186 +215,209 @@ function CockpitHeader({
 
   return (
     <>
-    <div
-      ref={ref}
-      className="relative overflow-hidden p-5 sm:p-6 md:p-8"
-      style={{ background: "var(--card)" }}
-    >
-      {/* decorative cockpit glow */}
       <div
-        aria-hidden
-        className="pointer-events-none absolute -top-28 -right-24 size-72 rounded-full opacity-20 blur-3xl"
-        style={{ background: "var(--gradient-gold)" }}
-      />
+        ref={ref}
+        className="relative overflow-hidden p-5 sm:p-6 md:p-8"
+      >
+        {/* decorative cockpit glow */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-28 -right-24 size-72 rounded-full opacity-20 blur-3xl"
+          style={{ background: "var(--gradient-gold)" }}
+        />
 
-      <div className="relative flex items-center justify-between gap-3 mb-5">
-        <div className="flex items-center gap-2">
-          <StatusPill status={status} />
-          <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Member Cockpit
-          </span>
+        <div className="relative flex items-center justify-between gap-3 mb-5">
+          <div className="flex items-center gap-2">
+            <StatusPill status={status} />
+            <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Member Cockpit
+            </span>
+          </div>
+          {isConnected && (
+            <Pill tone={record ? "success" : "muted"}>
+              {record ? "Member" : "Not yet a member"}
+            </Pill>
+          )}
         </div>
-        {isConnected && (
-          <Pill tone={record ? "success" : "muted"}>
-            {record ? "Member" : "Not yet a member"}
-          </Pill>
+
+        {/* DISCONNECTED — dormant shell */}
+        {!isConnected ? (
+          <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
+            <WalletAvatar address={null} size={72} />
+            <div className="flex-1 min-w-0">
+              <h1 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-foreground">
+                Your seat awaits
+              </h1>
+              <p className="mt-1.5 text-sm text-muted-foreground max-w-md">
+                Connect your wallet to load your member number, rank, SYN position,
+                and owned artifacts — every value a live on-chain read.
+              </p>
+              <div className="mt-4 max-w-md">
+                <ConnectCTA
+                  message="Connect wallet to activate your cockpit."
+                  hint="seat · assets · artifacts"
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="relative flex flex-col gap-6">
+            {/* Identity line — crest + member# + wallet + badges, primary action */}
+            <div className="flex flex-col md:flex-row md:items-start gap-5 md:gap-6">
+              <div className="flex items-start gap-4 md:gap-5 min-w-0">
+                <div
+                  className="shrink-0 rounded-2xl p-[2px]"
+                  style={{ background: "var(--gradient-gold)" }}
+                >
+                  <div className="rounded-[14px] overflow-hidden bg-background">
+                    <WalletAvatar address={address} size={84} />
+                  </div>
+                </div>
+                <div className="min-w-0">
+                  <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                    {record ? "Member" : "Preview"}
+                  </div>
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mt-0.5">
+                    <span className="font-serif text-5xl md:text-6xl leading-[0.9] text-gradient-gold tabular-nums">
+                      #{record ? record.memberNumber.toLocaleString("en-US") : idx.totals.nextMemberNumber.toLocaleString("en-US")}
+                    </span>
+                    {chapter && <Pill tone="gold">{chapter.shortLabel}</Pill>}
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {walletUrl ? (
+                      <a
+                        href={walletUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mono text-sm text-foreground hover:text-[var(--gold)] underline-offset-4 hover:underline"
+                      >
+                        {fmtAddress(address)} ↗
+                      </a>
+                    ) : (
+                      <span className="mono text-sm text-foreground">{fmtAddress(address)}</span>
+                    )}
+                    <button
+                      type="button"
+                      aria-label="Copy wallet address"
+                      onClick={() => address && copy(address)}
+                      className="mono text-[9px] uppercase tracking-[0.16em] rounded border border-border/60 px-1.5 py-0.5 text-muted-foreground hover:text-foreground hover:border-[var(--gold)]/60"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <div className="mt-2.5">
+                    <CockpitBadges record={record} nextMemberNumber={idx.totals.nextMemberNumber} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Primary action cluster */}
+              <div className="md:ml-auto md:w-60 shrink-0 flex flex-col gap-3">
+                <Link
+                  to="/join"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold text-[oklch(0.22_0.025_260)] transition-transform hover:-translate-y-px"
+                  style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)" }}
+                >
+                  {record ? "Buy More SYN →" : "Join The Syndicate →"}
+                </Link>
+                {record ? (
+                  <div className="rounded-lg border border-border/50 bg-card/40 px-3.5 py-3">
+                    <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                      Recognition
+                    </span>
+                    <div className="mono text-sm text-foreground mt-1">
+                      {record.currentRank?.name ?? "Citizen"}
+                    </div>
+                    <p className="mono text-[10px] text-muted-foreground mt-1 leading-relaxed">
+                      Derived from USDC routed. Recognition only — no payout, no rate change, no entitlement.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-border/50 bg-card/40 px-3.5 py-3">
+                    <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                      Status
+                    </span>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                      No Membership Sale purchases recorded for this wallet yet.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* KPI ribbon — hairline-separated identity facts */}
+            <dl
+              className="grid grid-cols-2 sm:grid-cols-4 gap-px rounded-xl overflow-hidden border border-border/50"
+              style={{ background: "var(--border)" }}
+            >
+              <HeroStat
+                label="SYN received"
+                value={record ? <AnimatedNumber value={Math.round(record.cumulativeSyn)} /> : "—"}
+              />
+              <HeroStat
+                label="USDC routed"
+                value={record ? fmtUsd(record.cumulativeUsdc) : "—"}
+              />
+              <HeroStat
+                label="Purchases"
+                value={record ? fmtInt(record.purchaseCount) : "—"}
+              />
+              <HeroStat
+                label="Joined"
+                value={record ? `≈ ${formatJoinedDate(joinedUnix)}` : "—"}
+                sub={record ? `block ${record.firstPurchaseBlock.toString()}` : undefined}
+              />
+            </dl>
+          </div>
         )}
       </div>
 
-      {/* DISCONNECTED — dormant shell */}
-      {!isConnected ? (
-        <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
-          <WalletAvatar address={null} size={72} />
-          <div className="flex-1 min-w-0">
-            <h1 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-foreground">
-              Your seat awaits
-            </h1>
-            <p className="mt-1.5 text-sm text-muted-foreground max-w-md">
-              Connect your wallet to load your member number, rank, SYN position,
-              and owned artifacts — every value a live on-chain read.
-            </p>
-            <div className="mt-4 max-w-md">
-              <ConnectCTA
-                message="Connect wallet to activate your cockpit."
-                hint="seat · assets · artifacts"
-              />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-6 lg:gap-8 items-start">
-          {/* Identity */}
-          <div className="flex items-center gap-4">
-            <WalletAvatar address={address} size={84} />
-            <div className="min-w-0">
-              <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {record ? "Member" : "Preview"}
-              </div>
-              <div className="font-serif text-4xl md:text-5xl leading-none text-gradient-gold">
-                #{record ? record.memberNumber.toLocaleString("en-US") : idx.totals.nextMemberNumber.toLocaleString("en-US")}
-              </div>
-              <CockpitBadges record={record} nextMemberNumber={idx.totals.nextMemberNumber} />
-            </div>
-          </div>
-
-          {/* Wallet + joined */}
-          <div className="min-w-0 lg:px-2">
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
-              <div className="min-w-0">
-                <dt className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Wallet</dt>
-                <dd className="mt-1 flex items-center gap-2">
-                  {walletUrl ? (
-                    <a
-                      href={walletUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mono text-sm text-foreground hover:text-[var(--gold)] underline-offset-4 hover:underline"
-                    >
-                      {fmtAddress(address)} ↗
-                    </a>
-                  ) : (
-                    <span className="mono text-sm text-foreground">{fmtAddress(address)}</span>
-                  )}
-                  <button
-                    type="button"
-                    aria-label="Copy wallet address"
-                    onClick={() => address && copy(address)}
-                    className="mono text-[9px] uppercase tracking-[0.16em] rounded border border-border/60 px-1.5 py-0.5 text-muted-foreground hover:text-foreground hover:border-[var(--gold)]/60"
-                  >
-                    Copy
-                  </button>
-                </dd>
-              </div>
-              <div className="min-w-0">
-                <dt className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Joined</dt>
-                <dd
-                  className="mt-1 mono text-sm text-foreground"
-                  title="Estimated from first purchase block at ~2s/block on Avalanche."
-                >
-                  {record ? (
-                    <>
-                      ≈ {formatJoinedDate(joinedUnix)}
-                      <span className="block mono text-[10px] text-muted-foreground tracking-normal">
-                        block {record.firstPurchaseBlock.toString()}
-                      </span>
-                    </>
-                  ) : (
-                    "—"
-                  )}
-                </dd>
-              </div>
-              <div className="min-w-0">
-                <dt className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">SYN received</dt>
-                <dd className="mt-1 mono text-lg font-semibold text-foreground tabular-nums">
-                  {record ? <AnimatedNumber value={Math.round(record.cumulativeSyn)} /> : "—"}
-                </dd>
-              </div>
-              <div className="min-w-0">
-                <dt className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">USDC routed</dt>
-                <dd className="mt-1 mono text-lg font-semibold text-foreground tabular-nums">
-                  {record ? fmtUsd(record.cumulativeUsdc) : "—"}
-                </dd>
-              </div>
-            </dl>
-          </div>
-
-          {/* Next milestone + primary action */}
-          <div className="lg:w-64 lg:border-l lg:border-border/40 lg:pl-6">
-            {record ? (
-              <div className="mb-4">
-                <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  Recognition
-                </span>
-                <div className="mono text-sm text-foreground mt-1">
-                  {record.currentRank?.name ?? "Citizen"}
-                </div>
-                <p className="mono text-[10px] text-muted-foreground mt-1 leading-relaxed">
-                  Derived from USDC routed. Recognition only — no payout, no rate change, no entitlement.
-                </p>
-              </div>
-            ) : (
-              <div className="mb-4">
-                <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  Status
-                </span>
-                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                  No Membership Sale purchases recorded for this wallet yet.
-                </p>
-              </div>
-            )}
-
-            <Link
-              to="/join"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-medium text-[oklch(0.22_0.025_260)] transition-transform hover:-translate-y-px"
-              style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)" }}
-            >
-              {record ? "Buy More SYN →" : "Join The Syndicate →"}
-            </Link>
-          </div>
+      {/* Member-only share — rendered OUTSIDE the captured card so the export
+          contains only the member card, not the share controls themselves. */}
+      {record && (
+        <div className="px-5 sm:px-6 md:px-8 pb-5">
+          <ShareActions
+            filename={`syndicate-member-${record.memberNumber}.png`}
+            shareText={shareText}
+            shareUrl="https://thesyndicate.money/my-syndicate"
+            nodeRef={ref}
+            hint="Share your seat"
+          />
         </div>
       )}
-
-    </div>
-
-    {/* Member-only share — rendered OUTSIDE the captured card so the export
-        contains only the member card, not the share controls themselves. */}
-    {record && (
-      <div className="px-5 sm:px-6 md:px-8 pb-5">
-        <ShareActions
-          filename={`syndicate-member-${record.memberNumber}.png`}
-          shareText={shareText}
-          shareUrl="https://thesyndicate.money/my-syndicate"
-          nodeRef={ref}
-          hint="Share your seat"
-        />
-      </div>
-    )}
     </>
   );
 }
 
+function HeroStat({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: ReactNode;
+  sub?: string;
+}) {
+  return (
+    <div className="bg-[var(--card)] px-3.5 py-3 min-w-0">
+      <dt className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        {label}
+      </dt>
+      <dd className="mt-1 mono text-base md:text-lg font-semibold text-foreground tabular-nums truncate">
+        {value}
+      </dd>
+      {sub && (
+        <dd className="mono text-[10px] text-muted-foreground tracking-normal truncate">
+          {sub}
+        </dd>
+      )}
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────
-// CockpitActionRail — ONE unified action surface (kills CTA chaos).
+// CockpitActionRail — ONE unified action dock (kills CTA chaos). Vertical so it
+// reads as a control panel in the right rail.
 // ─────────────────────────────────────────────────────────────────────────
 function CockpitActionRail({
   isConnected,
@@ -404,25 +431,25 @@ function CockpitActionRail({
   const walletUrl = address ? explorerUrlForAddress(address) : null;
 
   return (
-    <div>
-      <div className="flex items-center justify-between gap-3 mb-3">
-        <span className="mono text-[10px] uppercase tracking-[0.22em] text-[color:oklch(0.5_0.13_75)]">
-          Actions
+    <div className="rounded-xl border border-border/50 bg-card/40 p-4">
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <span className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
+          Action dock
         </span>
         <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
           one place · no chaos
         </span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+      <div className="space-y-2">
         {/* PRIMARY — the single dominant action */}
         <Link
           to="/join"
-          className="group rounded-md border border-[var(--gold)]/70 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20 px-3 py-3 text-left transition-colors"
+          className="group block rounded-md border border-[var(--gold)]/70 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20 px-3.5 py-3 text-left transition-colors"
         >
-          <div className="mono text-[11px] uppercase tracking-[0.18em] font-semibold text-foreground">
-            {isMember ? "Buy More SYN" : "Join The Syndicate"}
-            <span className="ml-1 text-muted-foreground group-hover:text-[var(--gold)]">→</span>
+          <div className="flex items-center justify-between gap-2 mono text-[11px] uppercase tracking-[0.18em] font-semibold text-foreground">
+            <span>{isMember ? "Buy More SYN" : "Join The Syndicate"}</span>
+            <span className="text-muted-foreground group-hover:text-[var(--gold)]">→</span>
           </div>
           <div className="mt-1 text-[11px] text-muted-foreground leading-snug">
             Membership Sale · USDC → SYN
@@ -455,11 +482,11 @@ function RailLink({ label, hint, href }: { label: string; hint: string; href: st
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group rounded-md border border-border/70 hover:border-[var(--gold)]/60 px-3 py-3 text-left transition-colors"
+      className="group block rounded-md border border-border/70 hover:border-[var(--gold)]/60 px-3.5 py-3 text-left transition-colors"
     >
-      <div className="mono text-[11px] uppercase tracking-[0.18em] font-semibold text-foreground">
-        {label}
-        <span className="ml-1 text-muted-foreground group-hover:text-[var(--gold)]">↗</span>
+      <div className="flex items-center justify-between gap-2 mono text-[11px] uppercase tracking-[0.18em] font-semibold text-foreground">
+        <span>{label}</span>
+        <span className="text-muted-foreground group-hover:text-[var(--gold)]">↗</span>
       </div>
       <div className="mt-1 text-[11px] text-muted-foreground leading-snug">{hint}</div>
     </a>
@@ -470,11 +497,11 @@ function RailInternal({ to, label, hint }: { to: string; label: string; hint: st
   return (
     <Link
       to={to}
-      className="group rounded-md border border-border/70 hover:border-[var(--gold)]/60 px-3 py-3 text-left transition-colors"
+      className="group block rounded-md border border-border/70 hover:border-[var(--gold)]/60 px-3.5 py-3 text-left transition-colors"
     >
-      <div className="mono text-[11px] uppercase tracking-[0.18em] font-semibold text-foreground">
-        {label}
-        <span className="ml-1 text-muted-foreground group-hover:text-[var(--gold)]">→</span>
+      <div className="flex items-center justify-between gap-2 mono text-[11px] uppercase tracking-[0.18em] font-semibold text-foreground">
+        <span>{label}</span>
+        <span className="text-muted-foreground group-hover:text-[var(--gold)]">→</span>
       </div>
       <div className="mt-1 text-[11px] text-muted-foreground leading-snug">{hint}</div>
     </Link>

@@ -20,7 +20,8 @@
 //   • Order of entry is identity/story only — earlier is earlier, never better.
 
 import type { ReactNode } from "react";
-import { Section, StatusPill } from "@/components/syndicate/Primitives";
+import { StatusPill } from "@/components/syndicate/Primitives";
+import { CockpitSection, useCockpitEmbed } from "./cockpit-shell";
 import { useCockpitAccount, useCockpitHolderIndex } from "@/lib/dev/cockpit-fixtures";
 
 const fmtInt = (n: number) =>
@@ -43,9 +44,15 @@ function Shell({
   status: "LIVE" | "PARTIAL" | "PENDING";
   children: ReactNode;
 }) {
+  const embedded = useCockpitEmbed();
   return (
-    <Section id="seats-around" className="py-4">
-      <div className="rounded-xl border border-border/50 bg-card/40 px-5 sm:px-6 md:px-8 py-5">
+    <CockpitSection id="seats-around" className={embedded ? "" : "py-4"}>
+      <div
+        className={cx(
+          "rounded-xl border border-border/50 bg-card/40",
+          embedded ? "p-4" : "px-5 sm:px-6 md:px-8 py-5",
+        )}
+      >
         <div className="flex flex-wrap items-center gap-2 mb-1">
           <StatusPill status={status} />
           <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
@@ -62,7 +69,7 @@ function Shell({
         </p>
         {children}
       </div>
-    </Section>
+    </CockpitSection>
   );
 }
 
@@ -123,6 +130,7 @@ function SeatChip({ slot }: { slot: Slot }) {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 export function SeatsAroundYou() {
+  const embedded = useCockpitEmbed();
   const { address, isConnected } = useCockpitAccount();
   const idx = useCockpitHolderIndex();
   const record = address ? idx.getByWallet(address) : undefined;
@@ -173,7 +181,12 @@ export function SeatsAroundYou() {
 
     return (
       <Shell status="LIVE">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div
+          className={cx(
+            "grid gap-2",
+            embedded ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3 gap-3",
+          )}
+        >
           {slots.map((slot, n) => (
             <SeatChip key={n} slot={slot} />
           ))}

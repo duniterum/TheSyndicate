@@ -18,7 +18,8 @@
 //     "raised / yield / ROI / earn / stake", and no fake social proof.
 
 import type { ReactNode } from "react";
-import { Section, StatusPill } from "@/components/syndicate/Primitives";
+import { StatusPill } from "@/components/syndicate/Primitives";
+import { CockpitSection, useCockpitEmbed } from "./cockpit-shell";
 import { useHolderIndex } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
 import { formatAgo } from "@/lib/protocol-pulse";
@@ -40,9 +41,15 @@ type Status = "LIVE" | "PARTIAL" | "PENDING";
 // Quiet bordered surface (NOT the gold-glow seat panel) — subordinate to the
 // hero, sibling in register to the co-witness band.
 function Shell({ status, children }: { status: Status; children: ReactNode }) {
+  const embedded = useCockpitEmbed();
   return (
-    <Section id="protocol-heartbeat" className="py-4">
-      <div className="rounded-xl border border-border/50 bg-card/40 px-5 sm:px-6 md:px-8 py-5">
+    <CockpitSection id="protocol-heartbeat" className={embedded ? "" : "py-4"}>
+      <div
+        className={cx(
+          "rounded-xl border border-border/50 bg-card/40",
+          embedded ? "p-4" : "px-5 sm:px-6 md:px-8 py-5",
+        )}
+      >
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <StatusPill status={status} />
           <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
@@ -54,7 +61,7 @@ function Shell({ status, children }: { status: Status; children: ReactNode }) {
         </div>
         {children}
       </div>
-    </Section>
+    </CockpitSection>
   );
 }
 

@@ -12,7 +12,8 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatAgo, useProtocolPulse } from "@/lib/protocol-pulse";
 import { WINDOW_24H, WINDOW_7D } from "@/lib/chain-time";
-import { Section, SectionHeader, StatusPill } from "./Primitives";
+import { SectionHeader, StatusPill } from "./Primitives";
+import { CockpitSection, useCockpitEmbed } from "./cockpit/cockpit-shell";
 import { DeltaBadge } from "./DeltaBadge";
 import { MetricVerificationDrawer } from "./MetricVerificationDrawer";
 import { TxProofPill } from "./TxProofDrawer";
@@ -37,6 +38,7 @@ type Cell = {
 };
 
 export function LivePulseStrip() {
+  const embedded = useCockpitEmbed();
   const p = useProtocolPulse();
   const qc = useQueryClient();
   const d24 = p.deltas?.last24h;
@@ -117,12 +119,23 @@ export function LivePulseStrip() {
   const openCell = cells.find((c) => c.metricKey === openKey);
 
   return (
-    <Section id="live-pulse">
-      <SectionHeader
-        eyebrow="Live Protocol Pulse"
-        title={<>What is happening <span className="text-gradient-gold">right now</span></>}
-        description="Seven numbers, all read live from Avalanche. Click any cell to see its hook, on-chain source, and verification links. Deltas show change in the last 24 hours and 7 days."
-      />
+    <CockpitSection id="live-pulse">
+      {embedded ? (
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
+            Protocol vitals
+          </h2>
+          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            · seven numbers, read live from Avalanche · click any to verify
+          </span>
+        </div>
+      ) : (
+        <SectionHeader
+          eyebrow="Live Protocol Pulse"
+          title={<>What is happening <span className="text-gradient-gold">right now</span></>}
+          description="Seven numbers, all read live from Avalanche. Click any cell to see its hook, on-chain source, and verification links. Deltas show change in the last 24 hours and 7 days."
+        />
+      )}
       <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
         <div className="flex items-center gap-2">
           <StatusPill status="LIVE" />
@@ -180,7 +193,7 @@ export function LivePulseStrip() {
         currentValue={openCell?.value}
         currentHint={openCell?.hint}
       />
-    </Section>
+    </CockpitSection>
   );
 }
 

@@ -27,10 +27,10 @@ import { useAccount } from "wagmi";
 import {
   GlassCard,
   Pill,
-  Section,
   StatusPill,
   ProgressBar,
 } from "@/components/syndicate/Primitives";
+import { CockpitSection, useCockpitEmbed } from "./cockpit-shell";
 import { useHolderIndex, type HolderRecord } from "@/lib/holder-index";
 import {
   CHAPTERS,
@@ -52,6 +52,7 @@ function nextChapterAfter(c: Chapter): Chapter | undefined {
 
 // ─────────────────────────────────────────────────────────────────────────
 export function CockpitProgression() {
+  const embedded = useCockpitEmbed();
   const { address, isConnected } = useAccount();
   const idx = useHolderIndex();
   const record = address ? idx.getByWallet(address) : undefined;
@@ -64,7 +65,7 @@ export function CockpitProgression() {
       : "PENDING";
 
   return (
-    <Section id="my-progression" className="py-4">
+    <CockpitSection id="my-progression" className={embedded ? "" : "py-4"}>
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <StatusPill status={status} />
         <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
@@ -84,7 +85,7 @@ export function CockpitProgression() {
         />
         <ProtocolProgressCard memberCount={members} hasData={idx.hasData} />
       </div>
-    </Section>
+    </CockpitSection>
   );
 }
 

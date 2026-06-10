@@ -29,7 +29,8 @@ import {
 import { isValidTxHash } from "@/components/syndicate/TxProofDrawer";
 import { SinceLastVisitStory } from "@/components/syndicate/SinceLastVisitStory";
 import { WhatChangedForYou } from "@/components/syndicate/WhatChangedForYou";
-import { GlassCard, Section, StatusPill } from "@/components/syndicate/Primitives";
+import { GlassCard, StatusPill } from "@/components/syndicate/Primitives";
+import { CockpitSection, useCockpitEmbed } from "./cockpit-shell";
 
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -46,9 +47,10 @@ const fmtInt = (n: number | undefined) =>
   n === undefined ? "—" : n.toLocaleString("en-US", { maximumFractionDigits: 0 });
 
 export function CockpitMemory() {
+  const embedded = useCockpitEmbed();
   return (
     <>
-      <Section id="since-away" className="py-4">
+      <CockpitSection id="since-away" className={embedded ? "" : "py-4"}>
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <StatusPill status="LIVE" />
           <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
@@ -62,7 +64,7 @@ export function CockpitMemory() {
           <SinceLastVisitStory />
           <PersonalMemoryTimeline />
         </div>
-      </Section>
+      </CockpitSection>
 
       {/* Wallet memory — renders nothing for disconnected visitors. */}
       <WhatChangedForYou />

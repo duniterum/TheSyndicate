@@ -19,7 +19,8 @@ import { useProtocolEvents } from "@/lib/protocol-events";
 import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { useArchiveBalances } from "@/lib/archive-balances-hook";
 import { derivePersonalMemory, type MemorySource } from "@/lib/protocol-memory";
-import { GlassCard, Section, SectionHeader } from "./Primitives";
+import { GlassCard, SectionHeader, StatusPill } from "./Primitives";
+import { CockpitSection, useCockpitEmbed } from "./cockpit/cockpit-shell";
 
 const SOURCE_STYLE: Record<MemorySource, string> = {
   LIVE: "text-emerald-700 dark:text-emerald-400 border-emerald-600/30",
@@ -45,6 +46,7 @@ export function WhatChangedForYou() {
   const pulse = useProtocolPulse();
   const { events } = useProtocolEvents({ limit: 200 });
   const balances = useArchiveBalances([1, 3]);
+  const embedded = useCockpitEmbed();
 
   const record = address ? idx.getByWallet(address) : undefined;
 
@@ -77,7 +79,7 @@ export function WhatChangedForYou() {
   // Connected but not yet a member: keep a tiny prompt instead of pretending.
   if (!memory.isMember) {
     return (
-      <Section id="what-changed-for-you">
+      <CockpitSection id="what-changed-for-you">
         <GlassCard className="p-5">
           <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] mb-1">
             Your protocol memory starts now
@@ -91,23 +93,35 @@ export function WhatChangedForYou() {
             </Link>
           </p>
         </GlassCard>
-      </Section>
+      </CockpitSection>
     );
   }
 
   return (
-    <Section id="what-changed-for-you">
-      <SectionHeader
-        eyebrow="What changed for you"
-        title={
-          <>
-            Your <span className="text-gradient-gold">protocol memory</span>
-          </>
-        }
-        description="Wallet-scoped facts derived from on-chain reads — never from local storage. Every row carries a source label."
-      />
+    <CockpitSection id="what-changed-for-you">
+      {embedded ? (
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <StatusPill status="LIVE" />
+          <h2 className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)] m-0 font-normal">
+            What changed for you
+          </h2>
+          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            · wallet-scoped facts · on-chain reads, never local storage
+          </span>
+        </div>
+      ) : (
+        <SectionHeader
+          eyebrow="What changed for you"
+          title={
+            <>
+              Your <span className="text-gradient-gold">protocol memory</span>
+            </>
+          }
+          description="Wallet-scoped facts derived from on-chain reads — never from local storage. Every row carries a source label."
+        />
+      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className={`grid grid-cols-1 ${embedded ? "" : "lg:grid-cols-3"} gap-4`}>
         {/* Facts */}
         <GlassCard className="p-5 lg:col-span-1">
           <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
@@ -217,6 +231,6 @@ export function WhatChangedForYou() {
         Source legend · LIVE = direct on-chain read · INDEXED = derived from indexed events ·
         LOCAL = read/unread hint only · PARTIAL = source delayed
       </p>
-    </Section>
+    </CockpitSection>
   );
 }
