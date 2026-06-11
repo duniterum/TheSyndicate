@@ -99,6 +99,12 @@ const BANNED: Array<{ name: string; re: RegExp; allowFiles?: Set<string> }> = [
   { name: "Rank wealth multiplier",        re: /scoreMultiplier/ },
   { name: "Compounder Score (retired)",    re: /[Cc]ompounder/ },
   { name: "Genesis Circle rank (renamed)", re: /Genesis Circle/ },
+  // ─── Retired rank vocabulary (renamed: Patron→Steward, Council Candidate→
+  //     Custodian, Council→Keystone). "Patron Seal"/"Patronage" and a future
+  //     "Governance Council" stay valid — only the rank forms below are banned.
+  { name: "Council Candidate rank (retired)", re: /Council Candidate/ },
+  { name: "Patron rank badge (retired)",      re: /\bPatron badge\b/ },
+  { name: "Council rank badge (retired)",     re: /\bCouncil badge\b/ },
   // ─── Phase 0D — protocol-money "raised" vocabulary (legal) ──────────────
   // SYN is not equity / yield / an offering. USDC is ROUTED, never "raised".
   // Money-context only: these never match the internal field `usdcRaised`,

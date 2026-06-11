@@ -1,0 +1,255 @@
+SPRINT A.7 — RANK NAMING LOCK + FINANCIAL TRACE GUARDRAILS
+
+This is an execution sprint with careful doctrine alignment.
+
+Goal:
+Apply the final rank rename decisions, reserve Patron for support, and clarify how money-related data may be used without turning The Syndicate into a simple wealth leaderboard.
+
+Founder correction:
+Money data is not shameful. It is part of the protocol truth.
+
+The Syndicate should show:
+
+* how much SYN a member bought
+* how much USDC was routed through their actions
+* how their purchases affected Vault / Liquidity / Operations
+* how they helped protocol growth
+* how their journey evolved over 1 month / 1 year / 10 years
+* what they can verify on-chain
+
+But money alone must not create the highest historical prestige.
+
+Money can create:
+
+* rank
+* financial trace
+* participation depth
+* member journey history
+* proof of support
+* protocol impact reporting
+
+Money must not automatically create:
+
+* Chronicle inclusion
+* historical-first status
+* top Signal tier
+* governance rights
+* yield / ROI language
+* guaranteed recognition
+
+---
+
+## TASK 1 — APPLY FINAL RANK RENAMES
+
+Rename:
+
+Patron → Steward
+Council Candidate → Custodian
+Council → Keystone
+
+Keep thresholds, prices, SYN amounts, logic, and economics unchanged.
+
+Update all rank registries, docs, tests, labs, previews, and copy.
+
+Patron must be reserved for:
+
+* Patron Seal
+* Patron Support
+* Patron Actions
+* Patron Recognition
+
+Council must be reserved for future governance only.
+
+---
+
+## TASK 2 — FIX STALE STORY/RANK COPY
+
+Remove or update stale language:
+
+* Observer → Operator → Allocator → Strategist
+* Allocator
+* rank-as-main-story copy
+* “climbed” wording where it makes rank the story
+
+Canonical journey:
+
+Observe
+→ Take a Seat
+→ Participate
+→ Leave a Trace
+→ Become Remembered
+
+Rank may remain as texture:
+
+* “advance”
+* “rank recognition”
+* “participation depth”
+
+But rank is not the story spine.
+
+---
+
+## TASK 3 — FINANCIAL TRACE DOCTRINE
+
+Add/align doctrine:
+
+Financial Trace = verifiable history of a member’s economic participation.
+
+It can include:
+
+* cumulative SYN purchased
+* cumulative USDC routed through sale
+* purchases over time
+* rank history
+* NFT mints
+* burn participation
+* referral-attributed volume later
+* protocol wallet impact
+* yearly member journey summary
+
+It is valuable because it is verifiable.
+
+It should help users see:
+
+* “I was here.”
+* “I participated.”
+* “I helped the protocol grow.”
+* “Here is my on-chain proof.”
+
+But it must be clearly separated from:
+
+Historical Prestige:
+
+* member number
+* firsts
+* Chronicle inclusion
+* Proof of Fire
+* chapter sealing
+* meaningful signals
+
+---
+
+## TASK 4 — SIGNAL GUARDRAIL REFINEMENT
+
+Do NOT ban money-derived data from the system.
+
+Instead enforce:
+
+Money-derived data may feed:
+
+* Rank
+* Financial Trace
+* Member Journey
+* Reports
+* Ledger
+* Activity
+* Participation-depth signals
+
+Money-derived data must NOT by itself:
+
+* raise an event above S2
+* create S3/S4/S5 historical signal
+* create Chronicle publication
+* create governance implication
+* create reward/ROI wording
+
+Example:
+A $10,000 purchase can be shown clearly.
+It can produce rank recognition and financial trace.
+But it should not outrank:
+
+* Member #7
+* Proof of Fire #001
+* first artifact mint
+* chapter sealed
+* Chronicle inclusion
+
+Size can be visible.
+Size can motivate.
+Size can tell a story.
+Size cannot be the only reason something becomes historical.
+
+---
+
+## TASK 5 — QUARANTINE MONEY-WEIGHTED SCORES SAFELY
+
+Review:
+
+* archiveWeight
+* referral preview scores
+* commissionPct
+* commissionUsdc
+* reputation / leaderboard preview logic
+
+Do not delete useful data.
+
+Classify them:
+
+A) valuable for labs / simulations
+B) useful for future Financial Trace
+C) unsafe for Signal Tier / Chronicle / Recognition if used directly
+D) must remain preview-only
+
+Add comments/tests/guards so future Signal Engine does not accidentally consume money-weighted scores as prestige.
+
+---
+
+## TASK 6 — MEMBER JOURNEY FUTURE READINESS
+
+Prepare doctrine only for future member journey views:
+
+Examples:
+
+* “Your first year in The Syndicate”
+* “Your on-chain journey”
+* “How your seat evolved”
+* “Your verified protocol trace”
+
+These should eventually show:
+
+* buys
+* mints
+* burns
+* rank changes
+* referrals later
+* protocol milestones during membership
+* Chronicle mentions if any
+
+No implementation unless trivial docs/comments.
+
+---
+
+## VERIFICATION
+
+Run:
+
+* tsc --noEmit
+* doctrine guard
+* vocabulary scripts
+* rank tests
+* recognition tests
+* signal/foundation tests if present
+* full suite if practical
+
+Confirm:
+
+* no Patron rank remains
+* no Council rank remains
+* Patron Seal references remain valid
+* Council governance references remain reserved
+* no stale rank names
+* money data remains allowed as Financial Trace
+* money alone cannot create top Signal prestige
+* no ROI/yield/dividend/passive-income language
+
+FINAL RESPONSE:
+Return concise summary:
+
+* files changed
+* rank rename results
+* Patron reservation
+* Council reservation
+* Financial Trace doctrine
+* money/signal guardrails
+* tests run
+* remaining blockers

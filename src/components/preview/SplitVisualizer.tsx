@@ -7,7 +7,7 @@ import { SimPill } from "./PreviewPrimitives";
 
 export function SplitVisualizer() {
   const [withRef, setWithRef] = useState(true);
-  const [tierIdx, setTierIdx] = useState(2); // Patron default
+  const [tierIdx, setTierIdx] = useState(2); // Connector default
   const tier = REFERRAL_TIERS[tierIdx] ?? tierForCount(0);
 
   const referrerPct = withRef ? referrerShareOfGross(tier) : 0;

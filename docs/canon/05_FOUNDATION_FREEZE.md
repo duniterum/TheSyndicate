@@ -321,14 +321,16 @@ reward/earn/commission/passive-income language until a contract exists;
 The collision rulings are binding in `03_GLOSSARY.md` (rulings #1–#2). This freeze
 records the **long-term recommendation**:
 
-| Collision | Recommended end-state | Recommendation | Status |
+| Collision | End-state | Resolution | Status |
 |---|---|---|---|
-| **Patron rank** ($500) vs **Patron Seal** (artifact) | "Patron" → the Seal | **Rename the rank** (candidates: *Benefactor*, *Steward*) | **OPEN founder decision** — renaming a live rank is a code/taxonomy change, deferred |
-| **Council rank** (≥$2,500) vs future **Governance Council** | "Council" → governance only | **Rename the rank** (candidates: *Circle*, *Inner Table*) | **OPEN founder decision** — deferred |
+| **Patron rank** ($500) vs **Patron Seal** (artifact) | "Patron" → support family (the Seal) | Rank renamed **Steward** | **RESOLVED** (Sprint A.7) — "Patron" reserved for Patron Seal / Support / Actions / Recognition |
+| **Council rank** (≥$2,500) vs future **Governance Council** | "Council" → governance only | Rank renamed **Keystone**; "Council Candidate" ($1,000) renamed **Custodian** | **RESOLVED** (Sprint A.7) — "Council" reserved for future governance |
 
-Until renamed, the disambiguation rule stands: never write bare "Patron"/"Council"
-where ambiguous (`04_DOC_SYNC_CHECKLIST.md`). Long-term clarity outranks short-term
-convenience — renaming is cheap now and compounding-expensive once public.
+The renames keep all thresholds, prices, SYN amounts, and economics unchanged —
+only the labels moved. Enforcement: `doctrine-guard.test.ts` bans the retired rank
+vocabulary ("Council Candidate", "Patron badge", "Council badge") from rendered
+source; "Patron Seal" and a future "Governance Council" remain valid. See
+`06_FINANCIAL_TRACE_AND_GUARDRAILS.md` §5.
 
 ---
 
@@ -341,8 +343,8 @@ The constitutional rulings each risk must obey.
 | 1 | Rank becoming prestige | Rank is Temporary texture; Permanent signals are the spine (§5). |
 | 2 | Money becoming prestige | Size never raises tier; money buys entry/depth, never primacy (§4). |
 | 3 | Story diverging from truth | STORY consumes MEMORY only; every beat maps to TRUTH (§2, §8). |
-| 4 | Patron ambiguity | "Patron" = the Seal; rank rename is the recommended fix (§12). |
-| 5 | Governance ambiguity | "Council" rank confers no governance; name reserved (§12). |
+| 4 | Patron ambiguity | RESOLVED — rank renamed **Steward**; "Patron" reserved for the Seal / support family (§12). |
+| 5 | Governance ambiguity | RESOLVED — rank renamed **Keystone** / **Custodian**; "Council" reserved for future governance (§12). |
 | 6 | Signal inflation | Tier threshold rises with scale; S0–S5 fixed; tiers are advisory (§3, §4). |
 | 7 | Chronicle inflation | Chronicle ≠ feed; human-approved; append-only; threshold rises with scale (§6). |
 | 8 | Duplicated metrics | One metrics registry in TRUTH; one shared `MEMBER_DEFINITION` (§1). |
@@ -365,7 +367,7 @@ The constitutional rulings each risk must obey.
 
 1. Approve the five-layer architecture + Adjacency Law as constitutional.
 2. Approve `Signal = Type × Tier` and the seven-type list.
-3. Rank renames (Patron, Council) — rename now vs disambiguate-forever? (recommend rename).
+3. ~~Rank renames (Patron, Council) — rename now vs disambiguate-forever?~~ **DONE (Sprint A.7):** Patron→Steward, Council Candidate→Custodian, Council→Keystone.
 4. Add `REJECTED` as a formal Chronicle state; confirm append-only PUBLISHED.
 5. Chronicle succession / multi-curator process.
 6. Recognition: enable the **alias** disclosure tier next, or stay anonymous-only?

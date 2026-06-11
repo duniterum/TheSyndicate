@@ -8,6 +8,21 @@
 export const PREVIEW_DISCLAIMER =
   "Simulated preview · Not live data · For UX testing only · No contract deployed yet";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// QUARANTINE: money-weighted score (see docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md)
+// builderScore / commissionPct / commissionUsdc / grossCommissionUsdc are
+// money-derived figures. Classification:
+//   A — labs/preview display only (current use here).
+//   B — MAY feed Financial Trace (economic-participation history) and rank
+//       recognition, where money is ONE input among several, never the sole one.
+//   C — MUST NOT, by itself, raise a Signal tier above S2, create an S3+ signal,
+//       create a Chronicle candidate, confer governance, or imply ROI/reward.
+//   D — preview/simulated only — never rendered as live or "earned".
+// The Signal Engine, Recognition, and Chronicle pipelines must never import this
+// module. Tier names here are referral-attribution labels, NOT ranks, and must
+// not reuse the reserved words "Patron" (support) or "Council" (governance).
+// ─────────────────────────────────────────────────────────────────────────────
+
 /** Public referral tier ladder — indicative only. Final tiers locked at contract deployment. */
 export type ReferralTier = {
   name: string;
@@ -19,9 +34,9 @@ export type ReferralTier = {
 export const REFERRAL_TIERS: ReferralTier[] = [
   { name: "Signal",     threshold: 0,   commissionPct: 30, retentionRequiredPct: 0 },
   { name: "Advocate",   threshold: 5,   commissionPct: 40, retentionRequiredPct: 60 },
-  { name: "Patron",     threshold: 20,  commissionPct: 55, retentionRequiredPct: 70 },
-  { name: "Architect",  threshold: 50,  commissionPct: 70, retentionRequiredPct: 75 },
-  { name: "Steward",    threshold: 100, commissionPct: 80, retentionRequiredPct: 80 },
+  { name: "Connector",  threshold: 20,  commissionPct: 55, retentionRequiredPct: 70 },
+  { name: "Catalyst",   threshold: 50,  commissionPct: 70, retentionRequiredPct: 75 },
+  { name: "Ambassador", threshold: 100, commissionPct: 80, retentionRequiredPct: 80 },
 ];
 
 /** 70/20/10 split. Referral comes only from the 10% Operations slice. */
@@ -104,12 +119,12 @@ export type SimReferralEvent = {
 };
 
 export const SIM_REFERRAL_EVENTS: SimReferralEvent[] = [
-  { id: "e1", referrer: "ember.eth",  buyerShort: "0x9f…42c1", usdc: 250, tier: "Patron",    commissionUsdc: 13.75, whenLabel: "~2h ago" },
+  { id: "e1", referrer: "ember.eth",  buyerShort: "0x9f…42c1", usdc: 250, tier: "Connector",  commissionUsdc: 13.75, whenLabel: "~2h ago" },
   { id: "e2", referrer: "north.eth",  buyerShort: "0x12…ab30", usdc: 100, tier: "Advocate",  commissionUsdc:  4.00, whenLabel: "~5h ago" },
   { id: "e3", referrer: "kepler.eth", buyerShort: "0x77…0d2e", usdc:  50, tier: "Advocate",  commissionUsdc:  2.00, whenLabel: "~9h ago" },
-  { id: "e4", referrer: "halo.eth",   buyerShort: "0x4b…3a99", usdc: 500, tier: "Patron",    commissionUsdc: 27.50, whenLabel: "~14h ago" },
+  { id: "e4", referrer: "halo.eth",   buyerShort: "0x4b…3a99", usdc: 500, tier: "Connector",  commissionUsdc: 27.50, whenLabel: "~14h ago" },
   { id: "e5", referrer: "atlas.eth",  buyerShort: "0xee…77c2", usdc:  25, tier: "Signal",    commissionUsdc:  0.75, whenLabel: "~1d ago" },
-  { id: "e6", referrer: "ember.eth",  buyerShort: "0x33…91ff", usdc:  75, tier: "Patron",    commissionUsdc:  4.13, whenLabel: "~1d ago" },
+  { id: "e6", referrer: "ember.eth",  buyerShort: "0x33…91ff", usdc:  75, tier: "Connector",  commissionUsdc:  4.13, whenLabel: "~1d ago" },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

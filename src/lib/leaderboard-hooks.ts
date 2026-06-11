@@ -2,6 +2,20 @@
 // Adds archive-weight ordering on top of HolderRecord. Identity,
 // cumulative footprint, and rank all flow from the holder index — this file
 // only adds the score reduction so the rest of the UI stays unchanged.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// QUARANTINE: money-weighted score (see docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md)
+// `archiveWeight` (computeScore = sqrt(usdc) × (1 + log2(1 + purchases))) is a
+// MONEY-DERIVED ordering. Classification:
+//   A — labs/leaderboard display only (current use).
+//   B — MAY feed Financial Trace (economic-participation history); rank stays
+//       recognition-only and adds no multiplier here.
+//   C — MUST NOT, by itself, raise a Signal tier above S2, create an S3+ signal,
+//       create a Chronicle candidate, confer governance, or imply ROI/reward.
+//   D — n/a (no commission here).
+// The Signal Engine, Recognition, and Chronicle pipelines must never import this
+// module or consume `archiveWeight` as prestige.
+// ─────────────────────────────────────────────────────────────────────────────
 
 import { useMemo } from "react";
 import { useHolderIndex, type HolderRecord } from "./holder-index";

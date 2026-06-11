@@ -161,9 +161,9 @@ export const RANKS_V2: RankTier[] = [
   { name: "Strategist",        usdc: 75,     syn: 7_500,     group: "Active Members",   badge: "Strategist badge",        benefits: ["Strategist badge", "Higher profile visibility", "Visible member profile"] },
   { name: "Vanguard",          usdc: 100,    syn: 10_000,    group: "Active Members",   badge: "Vanguard badge",          benefits: ["Vanguard badge", "Stronger archive recognition", "Public member number"] },
   { name: "Architect",         usdc: 250,    syn: 25_000,    group: "Deep Supporters",  badge: "Architect badge",         benefits: ["Architect badge", "Higher visibility", "Permanent archive recognition"] },
-  { name: "Patron",            usdc: 500,    syn: 50_000,    group: "Deep Supporters",  badge: "Patron badge",            benefits: ["Patron badge", "Recognition placement", "Permanent archive recognition"] },
-  { name: "Council Candidate", usdc: 1_000,  syn: 100_000,   group: "Deep Supporters",  badge: "Council Candidate badge", benefits: ["Council Candidate badge", "Public recognition", "Permanent archive recognition"] },
-  { name: "Council",           usdc: 2_500,  syn: 250_000,   group: "High-Conviction",  manual: true, badge: "Council badge",        benefits: ["Council badge", "Manual onboarding", "Permanent archive recognition"] },
+  { name: "Steward",           usdc: 500,    syn: 50_000,    group: "Deep Supporters",  badge: "Steward badge",           benefits: ["Steward badge", "Recognition placement", "Permanent archive recognition"] },
+  { name: "Custodian",         usdc: 1_000,  syn: 100_000,   group: "Deep Supporters",  badge: "Custodian badge",         benefits: ["Custodian badge", "Public recognition", "Permanent archive recognition"] },
+  { name: "Keystone",          usdc: 2_500,  syn: 250_000,   group: "High-Conviction",  manual: true, badge: "Keystone badge",       benefits: ["Keystone badge", "Manual onboarding", "Permanent archive recognition"] },
   { name: "Inner Circle",      usdc: 5_000,  syn: 500_000,   group: "High-Conviction",  manual: true, badge: "Inner Circle badge",   benefits: ["Inner Circle badge", "Permanent archive recognition", "Manual onboarding"] },
   { name: "Cornerstone",       usdc: 10_000, syn: 1_000_000, group: "High-Conviction",  manual: true, badge: "Cornerstone badge", benefits: ["Cornerstone badge", "Deepest archive recognition", "Manual review onboarding"] },
 ];
@@ -582,7 +582,7 @@ export const ALLOCATION_EXPECTED_SYN: Record<string, number> = {
 
 // ─── Homepage Rank Ladder (12 canonical tiers, $5 → $10,000) ───
 // Mirrors RANKS_V2 exactly. Single source of truth for ladder UI.
-export type HomeRank = { name: string; usdc: number; syn: number; group: "open" | "active" | "deep" | "council" };
+export type HomeRank = { name: string; usdc: number; syn: number; group: "open" | "active" | "deep" | "keystone" };
 export const HOME_RANK_LADDER: HomeRank[] = [
   { name: "Citizen",           usdc: 5,      syn: 500,       group: "open" },
   { name: "Scout",             usdc: 10,     syn: 1_000,     group: "open" },
@@ -591,11 +591,11 @@ export const HOME_RANK_LADDER: HomeRank[] = [
   { name: "Strategist",        usdc: 75,     syn: 7_500,     group: "active" },
   { name: "Vanguard",          usdc: 100,    syn: 10_000,    group: "active" },
   { name: "Architect",         usdc: 250,    syn: 25_000,    group: "deep" },
-  { name: "Patron",            usdc: 500,    syn: 50_000,    group: "deep" },
-  { name: "Council Candidate", usdc: 1_000,  syn: 100_000,   group: "deep" },
-  { name: "Council",           usdc: 2_500,  syn: 250_000,   group: "council" },
-  { name: "Inner Circle",      usdc: 5_000,  syn: 500_000,   group: "council" },
-  { name: "Cornerstone",       usdc: 10_000, syn: 1_000_000, group: "council" },
+  { name: "Steward",           usdc: 500,    syn: 50_000,    group: "deep" },
+  { name: "Custodian",         usdc: 1_000,  syn: 100_000,   group: "deep" },
+  { name: "Keystone",          usdc: 2_500,  syn: 250_000,   group: "keystone" },
+  { name: "Inner Circle",      usdc: 5_000,  syn: 500_000,   group: "keystone" },
+  { name: "Cornerstone",       usdc: 10_000, syn: 1_000_000, group: "keystone" },
 ];
 
 // ─── Membership Journey (7 steps) ───

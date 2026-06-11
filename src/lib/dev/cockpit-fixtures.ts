@@ -78,7 +78,7 @@ const PRESETS: Record<CockpitPreset, PresetConfig> = {
   member27: {
     memberNumber: 27,
     totalMembers: 312,
-    usdc: 500, // Patron
+    usdc: 500, // Steward
     syn: 50_000,
     synBalance: 50_000n * 10n ** 18n,
     usdcBalance: 1_180n * 10n ** 6n,

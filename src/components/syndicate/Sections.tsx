@@ -51,7 +51,7 @@ export function IdeaSection() {
       <SectionHeader
         eyebrow="01 — The Idea"
         title={<>Not another token. <span className="text-gradient-gold">A real-life compounding experiment.</span></>}
-        description="The Syndicate turns spectators into participants. Members join with USDC, receive utility tokens, unlock ranks, and follow a public Vault wallet verifiable onchain."
+        description="The Syndicate turns spectators into participants. Members join with USDC, receive utility tokens, earn rank recognition, and follow a public Vault wallet verifiable onchain."
       />
       <GlassCard className="p-8 md:p-12" glow="gold">
         <div className="mono text-[10px] uppercase tracking-[0.25em] text-[color:oklch(0.5_0.13_75)] mb-4">
@@ -1400,8 +1400,8 @@ export function WhyComeBackTomorrow() {
     { t: "Vault Growth",      d: "Watch The Vault balance sheet evolve daily.",       tone: "gold"  as const },
     { t: "New Members",       d: "Every founding member is publicly archived.",       tone: "navy"  as const },
     { t: "Genesis NFT Mints", d: "Scarcity drops as the 1,000 supply gets claimed.",  tone: "gold"  as const },
-    { t: "Rank Changes",      d: "Observer → Operator → Allocator → Strategist…",     tone: "navy"  as const },
-    { t: "Top 100 Movements", d: "Who entered, who climbed, who held longest.",        tone: "gold"  as const },
+    { t: "Rank Changes",      d: "Citizen → Operator → Vanguard → Architect…",        tone: "navy"  as const },
+    { t: "Member Movements",  d: "Who entered, who advanced, who held longest.",      tone: "gold"  as const },
     { t: "New Episodes",      d: "Every milestone becomes a published chapter.",      tone: "navy"  as const },
     { t: "New Votes",         d: "Proposals open, members vote, results published.",  tone: "gold"  as const },
     { t: "New Milestones",    d: "Vault targets unlock, supply unlocks, episodes ship.", tone: "navy" as const },

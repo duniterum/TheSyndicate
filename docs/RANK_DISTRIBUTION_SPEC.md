@@ -31,7 +31,7 @@ It IS:
 
 ### Distribution view
 
-- **One row per rank**, in order from Citizen → Genesis Circle.
+- **One row per rank**, in order from Citizen → Cornerstone.
 - For each rank: name, group (Open Entry / Active Members / Deep
   Supporters / High-Conviction), member count, and a horizontal bar
   showing share of total members.
@@ -101,7 +101,7 @@ of this page is that ranks are **structural**, not competitive.
 - "What does Builder mean?" — wallet pages already show the badge; this
   is the page that explains it.
 - The rarity of higher tiers is visible without being sold. A visitor
-  sees only N members in Council and understands why that matters,
+  sees only N members in Keystone and understands why that matters,
   without anyone telling them to "rank up".
 
 ## Connection points

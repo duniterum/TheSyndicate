@@ -51,8 +51,8 @@ depends on the one above it being correct.
 ## Collision-ruling enforcement (apply on every copy change)
 
 Before shipping copy, confirm it obeys the `03_GLOSSARY.md` rulings:
-- "Patron" is always qualified (Patron **rank** vs Patron **Seal**).
-- "Council" rank never implies governance.
+- "Patron" is reserved for the support family (Patron **Seal** / Support / Actions / Recognition) — no rank uses it (the $500 rank is **Steward**).
+- "Council" is reserved for future governance only — no rank uses it (ranks are **Custodian** $1,000 / **Keystone** $2,500).
 - "Vault" sub-terms are precise; the shared Vault Wallet / Vault Reserve address is disclosed.
 - "Member" vs "Holder" used per their definitions.
 - Public feed is called "Activity," never "Chronicle."

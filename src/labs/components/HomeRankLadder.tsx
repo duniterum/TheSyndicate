@@ -26,7 +26,7 @@ export function HomeRankLadder() {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
         {HOME_RANK_LADDER.map((r) => {
           const accent =
-            r.group === "council"
+            r.group === "keystone"
               ? "border-[var(--gold)]/50 bg-[var(--gold)]/5"
               : r.group === "deep"
               ? "border-[var(--navy)]/30 bg-[var(--navy)]/5"
@@ -55,7 +55,7 @@ export function HomeRankLadder() {
         })}
       </div>
       <p className="mt-4 text-xs text-muted-foreground">
-        Council tiers ($2,500+) include manual review. See full benefits on the <Link to="/ranks" className="underline underline-offset-2 hover:text-foreground">Ranks page</Link>.
+        Keystone tiers ($2,500+) include manual review. See full benefits on the <Link to="/ranks" className="underline underline-offset-2 hover:text-foreground">Ranks page</Link>.
       </p>
     </Section>
   );

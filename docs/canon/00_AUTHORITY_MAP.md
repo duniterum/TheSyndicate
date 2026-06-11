@@ -25,6 +25,7 @@ guard-enforced (see *Enforcement* below).
 | `docs/canon/03_GLOSSARY.md` | "What is the one approved word for this, and how are name-collisions resolved?" |
 | `docs/canon/04_DOC_SYNC_CHECKLIST.md` | "I changed something — what do I update, in what order?" |
 | `docs/canon/05_FOUNDATION_FREEZE.md` | "Which architectural layer does this feature belong to, and what rules freeze it against drift?" |
+| `docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md` | "How may money / economic data surface, and what stops it becoming prestige?" |
 
 ---
 
