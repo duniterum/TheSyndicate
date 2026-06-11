@@ -37,6 +37,14 @@ Chronicle, recognition) is *curated, scarce, and earned through participation
 over time*; the Financial Trace is *raw, complete, and money-derived*. They must
 never be conflated.
 
+> **Future-approved expansion (NOT yet the definition):** the founder has approved
+> widening the Trace to also derive from **token burns, NFT mints, referrals, and
+> wallet history** (see `08_PROTOCOL_OPERATING_PRINCIPLE.md`). That is *approved
+> direction*, not current truth: the table above (sale-derived, all-LIVE) remains
+> the binding definition until each new input is wired, and every added input enters
+> only at its own status (burn LIVE · mint PARTIAL · **referral FUTURE** ·
+> wallet-history LIVE-read). Derivation never upgrades an input's status.
+
 ---
 
 ## 2. The money → prestige guardrail

@@ -27,6 +27,7 @@ guard-enforced (see *Enforcement* below).
 | `docs/canon/05_FOUNDATION_FREEZE.md` | "Which architectural layer does this feature belong to, and what rules freeze it against drift?" |
 | `docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md` | "How may money / economic data surface, and what stops it becoming prestige?" |
 | `docs/canon/07_FOUNDER_PRINCIPLE.md` | "What direction has the founder approved but deliberately *not built yet*?" |
+| `docs/canon/08_PROTOCOL_OPERATING_PRINCIPLE.md` | "How should new capability be built — derive from existing truth, or invent new stores?" |
 
 ---
 
@@ -91,7 +92,10 @@ Full per-document classification lives in `docs/DOCUMENTATION_AUTHORITY_MAP.md`
 6. `docs/RANK_CONSTITUTIONAL_RULING.md` — rank doctrine.
 7. **This canon** (`docs/canon/`) — consolidated index, intent, source-of-truth, glossary, sync.
 8. `docs/canon/05_FOUNDATION_FREEZE.md` — the architecture constitution: the five-layer model (Truth→Events→Signals→Memory→Story), the Adjacency Law, and the signal/memory/story freezes that stop drift.
-9. `docs/DOCUMENTATION_AUTHORITY_MAP.md` — full precedence + vocabulary + per-doc classification.
+9. `docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md` — how economic data may surface; the money≠prestige guardrail.
+10. `docs/canon/07_FOUNDER_PRINCIPLE.md` — approved-but-unbuilt strategic direction (the intent register).
+11. `docs/canon/08_PROTOCOL_OPERATING_PRINCIPLE.md` — derive, don't invent: build new capability from existing truth, never new stores of duplicated truth.
+12. `docs/DOCUMENTATION_AUTHORITY_MAP.md` — full precedence + vocabulary + per-doc classification.
 
 ---
 

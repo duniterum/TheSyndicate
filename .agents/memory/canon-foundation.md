@@ -8,7 +8,9 @@ description: The Phase-0 consolidated canon layer — what it is, why it isn't g
 Phase 0 created a consolidated canon front door: `00_AUTHORITY_MAP`, `01_FOUNDER_INTENT_MAP`,
 `02_SOURCE_OF_TRUTH_TABLE`, `03_GLOSSARY`, `04_DOC_SYNC_CHECKLIST`. Later siblings added:
 `05_FOUNDATION_FREEZE` (five-layer architecture constitution), `06_FINANCIAL_TRACE_AND_GUARDRAILS`
-(money≠prestige), `07_FOUNDER_PRINCIPLE` (approved-but-NOT-implemented strategic direction).
+(money≠prestige), `07_FOUNDER_PRINCIPLE` (approved-but-NOT-implemented strategic direction),
+`08_PROTOCOL_OPERATING_PRINCIPLE` (derive-don't-invent: new insight over existing truth, never
+new databases of duplicated truth — the *why* behind 05's Adjacency Law + anti-drift #8/#9/#14).
 It consolidates (does NOT replace) `DOCUMENTATION_AUTHORITY_MAP.md`, `UNIFIED_PROTOCOL_DOCTRINE_MAP.md`,
 `TERMINOLOGY_GLOSSARY.md`, `CANONICAL_REGISTRY.md`.
 

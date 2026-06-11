@@ -12,6 +12,10 @@ exactly one layer, it is misplaced.
 > only the layer directly above it.* New economics, new modules, and new surfaces do
 > not get new architectures — they get a layer.
 
+The *principle* behind this freeze — **derive, don't invent: new insight over existing
+truth, never new databases of duplicated truth** — is stated in
+`08_PROTOCOL_OPERATING_PRINCIPLE.md`. This file is the mechanism; 08 is the why.
+
 This document is doctrine. It does **not** outrank code: the precedence law in
 `00_AUTHORITY_MAP.md` still holds — **on-chain truth → code registries → execution
 gates → canon → operational**. This freeze is authoritative-by-convention; it is not
