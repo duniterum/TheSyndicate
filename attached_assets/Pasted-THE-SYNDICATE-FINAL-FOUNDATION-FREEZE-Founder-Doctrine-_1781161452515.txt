@@ -1,0 +1,330 @@
+THE SYNDICATE — FINAL FOUNDATION FREEZE
+Founder Doctrine Freeze
+Truth → Events → Signals → Memory → Story
+
+Do not implement.
+
+Do not write code.
+
+Do not create files.
+
+Do not modify files.
+
+Do not update UI.
+
+Do not redesign.
+
+Do not refactor.
+
+This is a founder-level architecture review and doctrine freeze.
+
+Goal
+
+We have spent months building:
+
+Canon
+Metrics Registry
+Protocol Event Pipeline
+Known Address Registry
+Activity
+Chronicle
+Recognition Candidates
+Report Registry
+Ledger
+Proof of Fire
+Burn tracking
+Internal Labs
+Public Surfaces
+
+The architecture is now large enough that future drift becomes the primary risk.
+
+Before implementing:
+
+Signal Layer
+Recognition Layer
+Referral Layer
+Reporting Layer
+Patron evolution
+SeatRecord721
+Governance
+Marketplace
+AI systems
+
+we want to freeze the protocol's final conceptual architecture.
+
+PART 1 — ARCHITECTURE VALIDATION
+
+Evaluate whether the following stack should become canonical:
+
+TRUTH
+↓
+EVENTS
+↓
+SIGNALS
+↓
+MEMORY
+↓
+STORY
+
+For each layer:
+
+Explain:
+
+purpose
+responsibilities
+boundaries
+inputs
+outputs
+what belongs there
+what does NOT belong there
+
+Identify overlaps and drift risks.
+
+PART 2 — SIGNAL MODEL REVIEW
+
+We currently believe:
+
+Signals are the missing scaling layer.
+
+Not every event matters equally.
+
+A signal answers:
+
+Why should anybody care?
+
+Review whether Signals should become a canonical protocol concept.
+
+Evaluate:
+Signal Type
+
+Examples:
+
+Timing
+Conviction
+Support
+Growth
+Participation
+Memory
+Historic
+Building
+Signal Tier
+
+Examples:
+
+S0
+S1
+S2
+S3
+S4
+S5
+
+Determine whether:
+
+Signal Type
++
+Signal Tier
+
+is superior to:
+
+Signal Tier only
+
+for long-term scalability.
+
+Especially considering:
+
+1 million members
+billions of events
+future reports
+future recognition
+future referrals
+future Chronicle growth
+PART 3 — SCARCITY OF PRESTIGE
+
+Analyze this doctrine:
+
+Prestige must remain scarce.
+
+Examples:
+
+Bad:
+
+Everyone receives the same recognition.
+
+Good:
+
+Recognition is earned.
+
+Bad:
+
+Money automatically creates prestige.
+
+Good:
+
+Actions create prestige.
+
+Review and improve this principle.
+
+PART 4 — CHRONICLE CONSTITUTION
+
+Review:
+
+Activity = everything.
+
+Chronicle = selected memory.
+
+Proposed doctrine:
+
+Automation proposes.
+
+Humans approve.
+
+Chronicle never becomes an automatic feed.
+
+Evaluate:
+
+strengths
+weaknesses
+scaling limits
+alternative approaches
+
+Determine whether this should become constitutional.
+
+PART 5 — RECOGNITION CONSTITUTION
+
+Review:
+
+Recognition is:
+
+action-based
+signal-based
+
+Recognition is NOT:
+
+KYC
+identity verification
+governance
+financial rights
+yield
+
+Determine:
+
+What recognition fundamentally means in The Syndicate.
+
+PART 6 — PATRON & COUNCIL COLLISIONS
+
+Review:
+
+Patron Rank
+vs
+Patron Seal
+
+Council Rank
+vs
+Future Governance Council
+
+Give a final recommendation:
+
+A) Rename now
+
+B) Keep forever
+
+C) Disambiguate
+
+Include long-term consequences.
+
+PART 7 — REFERRAL PHILOSOPHY
+
+Review:
+
+Most projects:
+
+Referral = commission
+
+Potential Syndicate model:
+
+Referral = growth attribution first
+
+Reward = secondary
+
+Example:
+
+"Member #27 brought Member #456 into The Syndicate."
+
+Evaluate whether this should become the canonical philosophy.
+
+PART 8 — THE STORY LAYER
+
+This is the most important section.
+
+Evaluate:
+
+What story people are actually joining.
+
+Not:
+
+token
+NFT
+dashboard
+
+But:
+
+What emotional journey exists today?
+
+Current hypothesis:
+
+Most people watch from the outside.
+
+Members take a seat.
+
+Rise through the ranks.
+
+Support the protocol.
+
+Leave a trace.
+
+Become part of the Chronicle.
+
+Determine whether this is truly the protocol's narrative.
+
+PART 9 — FINAL FOUNDER RULINGS
+
+Return:
+
+Architecture
+
+What becomes canonical.
+
+Signals
+
+What becomes canonical.
+
+Memory
+
+What becomes canonical.
+
+Recognition
+
+What becomes canonical.
+
+Story
+
+What becomes canonical.
+
+Things to rename.
+Things to freeze forever.
+Things still unresolved.
+Biggest future drift risks.
+Recommended next execution sprint.
+IMPORTANT
+
+Do not implement.
+
+Do not modify code.
+
+Do not modify docs.
+
+Do not create docs.
+
+This is the final founder doctrine review before the next implementation phase.
+
+Return only the founder report.
