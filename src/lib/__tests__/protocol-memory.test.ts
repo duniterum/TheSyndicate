@@ -103,8 +103,13 @@ describe("protocol-memory · UI truth guards", () => {
     expect(src.includes("LOCAL")).toBe(true);
   });
 
-  it("/my-syndicate mounts WhatChangedForYou", () => {
-    const src = readFileSync(join(root, "src/routes/my-syndicate.tsx"), "utf8");
+  it("/my-syndicate surfaces WhatChangedForYou (mounted via CockpitMemory)", () => {
+    // WhatChangedForYou moved into the cockpit Memory spine; /my-syndicate
+    // mounts <CockpitMemory/>, which renders it.
+    const src = readFileSync(
+      join(root, "src/components/syndicate/cockpit/CockpitMemory.tsx"),
+      "utf8",
+    );
     expect(src.includes("WhatChangedForYou")).toBe(true);
   });
 

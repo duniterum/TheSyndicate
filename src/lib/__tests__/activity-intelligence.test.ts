@@ -110,10 +110,10 @@ describe("Milestones section is mounted on /activity", () => {
     expect(src.includes("SinceYourLastVisit")).toBe(true);
   });
 
-  it("my-syndicate route mounts SinceYourLastVisit", () => {
-    const src = readFileSync(join(process.cwd(), "src/routes/my-syndicate.tsx"), "utf8");
-    expect(src.includes("SinceYourLastVisit")).toBe(true);
-  });
+  // NOTE: removed the stale "/my-syndicate mounts SinceYourLastVisit" check.
+  // The standalone component is no longer on /my-syndicate — its role was
+  // absorbed into CockpitMemory's "Since You Were Away" spine. The component is
+  // still live on Home and /activity (covered above).
 });
 
 // Sanity: make sure we didn't break the activity directory tree

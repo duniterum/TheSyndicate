@@ -11,9 +11,8 @@
 //   • Notification bell exposes per-category unread counts using the
 //     canonical CATEGORY_ORDER and ProtocolEventKind taxonomy.
 //   • Memory facts keep proof-link affordances (verifyHref).
-//   • /my-syndicate renders modules in the canonical MY PROTOCOL POSITION
-//     order: Story So Far → Since Last Visit → What Changed For You →
-//     Your Seat → Your Artifacts → Your Next Action.
+//   • /my-syndicate is the Member Cockpit narrative arc — its order is pinned
+//     by my-syndicate-doctrine.test.ts, not here.
 
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
@@ -25,11 +24,13 @@ const read = (p: string) => readFileSync(join(root, p), "utf8");
 describe("Protocol Awareness · Story So Far", () => {
   const src = read("src/components/syndicate/ProtocolStorySoFar.tsx");
 
-  it("mounts on Home, /activity, and /my-syndicate", () => {
+  it("mounts on Home and /activity", () => {
+    // /my-syndicate intentionally does NOT mount the protocol-wide Story So Far:
+    // it was restructured into the Member Cockpit narrative arc (Identity →
+    // Place → Ownership → Momentum → Action), pinned by my-syndicate-doctrine.
     for (const route of [
       "src/routes/index.tsx",
       "src/routes/activity.tsx",
-      "src/routes/my-syndicate.tsx",
     ]) {
       expect(read(route).includes("<ProtocolStorySoFar")).toBe(true);
     }
@@ -118,20 +119,8 @@ describe("Protocol Awareness · Memory facts keep proof affordances", () => {
   });
 });
 
-describe("Protocol Awareness · /my-syndicate canonical order", () => {
-  const src = read("src/routes/my-syndicate.tsx");
-
-  it("orders modules: Story So Far → Since Last Visit → What Changed For You → Next Action → Cockpit", () => {
-    const idx = (needle: string) => src.indexOf(needle);
-    const story = idx("<ProtocolStorySoFar");
-    const since = idx("<SinceYourLastVisit");
-    const changed = idx("<WhatChangedForYou");
-    const next = idx("<YourNextAction");
-    const cockpit = idx("<MemberWalletDashboard");
-    expect(story).toBeGreaterThan(-1);
-    expect(since).toBeGreaterThan(story);
-    expect(changed).toBeGreaterThan(since);
-    expect(next).toBeGreaterThan(changed);
-    expect(cockpit).toBeGreaterThan(next);
-  });
-});
+// NOTE: the legacy "/my-syndicate canonical order" check (Story So Far → Since
+// Last Visit → What Changed For You → Next Action → MemberWalletDashboard) was
+// removed — that section stack no longer exists. /my-syndicate is now the Member
+// Cockpit narrative arc (MemberCockpit → Memory → Proof → Building), whose order
+// is pinned comprehensively by my-syndicate-doctrine.test.ts.

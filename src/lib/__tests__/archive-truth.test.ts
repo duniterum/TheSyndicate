@@ -123,7 +123,9 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
   });
 
   it("/nft page mounts PatronSealReadiness and gallery does not duplicate ID 3 card", () => {
-    const page = read("src/routes/nft.tsx");
+    // /nft is code-split: the route file only exports Route; the page body
+    // (including <PatronSealReadiness/>) lives in NftPage.
+    const page = read("src/components/syndicate/NftPage.tsx");
     expect(page).toContain("PatronSealReadiness");
     const gallery = read("src/components/syndicate/ArchiveGalleryPreview.tsx");
     // The 'Next public NFT' sub-section that previously duplicated ID 3 must be gone.

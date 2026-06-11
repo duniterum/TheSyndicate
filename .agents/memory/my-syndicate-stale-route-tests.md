@@ -1,29 +1,55 @@
 ---
-name: my-syndicate stale route tests
-description: Pre-existing /my-syndicate test failures that assert the route mounts modules it no longer has — not caused by cockpit work.
+name: my-syndicate moved-surface test breakage
+description: When a surface moves OUT of src/routes/my-syndicate.tsx into the cockpit, route-file-reading guard tests break even though the page is correct. Retarget at the new home; don't re-add to the route.
 ---
 
-There are pre-existing FAILING tests for `/my-syndicate` that assert the **route**
-(`src/routes/my-syndicate.tsx`) mounts a set of "protocol memory / awareness"
-modules that the route no longer contains after it was slimmed to delegate
-identity/holdings to `<MemberCockpit/>`:
+# /my-syndicate route-mount guard tests break when surfaces move into the cockpit
 
-- `activity-intelligence.test.ts` — "my-syndicate route mounts SinceYourLastVisit"
-- `protocol-awareness.test.ts` — Story So Far mount + canonical order
-  (Story So Far → Since Last Visit → What Changed For You → Next Action → Cockpit)
-- `protocol-memory.test.ts` — "/my-syndicate mounts WhatChangedForYou"
-- `verify-href-coverage.test.ts` — MemoryFact derivation (rank/contribution verifyHref)
+`/my-syndicate` was refactored from a §1–§8 module stack into a **Member Cockpit
+narrative arc**: `<MemberCockpit/>` → Memory zone → Proof zone → Building tail.
+Several guard tests still `readFileSync("src/routes/my-syndicate.tsx")` and grep
+for old surfaces, so they fail even though the surface is still on the page —
+it just **moved into a child component**, not deleted.
 
-**Why:** the route was refactored to a thin composition shell that renders only
-`<MemberCockpit/>` + the secondary route-level sections (Activity, What's Sealing
-Next, My Chronicle, My Growth, My Horizon, Protocol Context). The older module
-suite (ProtocolStorySoFar, SinceYourLastVisit, WhatChangedForYou, YourNextAction)
-was dropped from the route but these guard tests were never updated.
+**Key insight (the trap):** these are NOT "removed module" failures. The
+components are alive; they relocated. Map the surface to its NEW home before you
+delete or re-add anything:
 
-**How to apply:** if you edit the cockpit (`MemberCockpit.tsx`, `WakeBehindYou.tsx`,
-etc.) and the suite shows ~5 failures, check whether they read `src/routes/my-syndicate.tsx`
-or those dropped components — none of them read the cockpit files. Confirm with
-`git diff --stat -- src/routes/my-syndicate.tsx` (route should be untouched). These
-are NOT your regression. The canonical, cockpit-relevant guards are
-`my-syndicate-doctrine`, `cockpit-progression-gating`, `cockpit-proof-gating`,
-`cockpit-collector-gating`, `doctrine-guard` — those must stay green.
+- `WhatChangedForYou` → rendered inside `cockpit/CockpitMemory.tsx` (the route
+  mounts `<CockpitMemory/>` in the Memory zone). Test the child, not the route.
+- standalone `SinceYourLastVisit` → its role on my-syndicate was absorbed into
+  CockpitMemory's "Since You Were Away" spine. The standalone component is still
+  LIVE on Home + `/activity` (keep those assertions).
+- `ProtocolStorySoFar` → protocol-wide; mounted `<ProtocolStorySoFar/>` on
+  index.tsx + activity.tsx, intentionally NOT on my-syndicate.
+- `MemberWalletDashboard` → replaced by `<MemberCockpit/>`; now referenced only
+  by its own file (dead-component candidate).
+- `/nft` is code-split: `src/routes/nft.tsx` only exports `Route`; the page body
+  (incl. `<PatronSealReadiness/>`) lives in `components/syndicate/NftPage.tsx`.
+  Route-file greps for page content will miss it — read NftPage.tsx.
+
+**Member-fact id gotcha:** the wallet-contribution MemoryFact in
+`protocol-memory.ts` is emitted with **id `"usdc-paid"`** ("USDC routed by your
+wallet"), NOT `"contribution"`. It carries the wallet-explorer verifyHref. A test
+finding `f.id === "contribution"` silently gets `undefined` and fails.
+
+**The arc order is pinned ELSEWHERE — don't re-create it.** The new
+cockpit→Memory→Proof→Building order (and the internal cockpit
+Identity→Place→Ownership→Momentum→Action order, CockpitMemory/CockpitProof
+placement, parked-tail gating) is comprehensively asserted by
+`my-syndicate-doctrine.test.ts`. The old "canonical order" describe in
+`protocol-awareness.test.ts` was REMOVED as duplicative + stale.
+
+**Status:** the 6 Phase-0B failures are RESOLVED (4 retargeted at new homes, 2
+obsolete `it`s removed). Suite: 557 pass / 0 fail; doctrine-guard 137/137.
+
+**Remaining test-debt (deferred, NOT in 0C scope):** `YourNextAction` is not
+mounted on any live route (survives only in `labs/MemberCockpitCandidate.tsx`)
+yet `proof-drawer-and-timeline.test.ts` + `protocol-awareness.test.ts` still
+assert its internals; `MemberWalletDashboard` is a dead-component candidate.
+Decide remount-vs-retire in a later phase, then update those guards.
+
+**How to apply:** if the suite shows route-file failures after cockpit work,
+confirm `git diff --stat -- src/routes/my-syndicate.tsx` (route untouched) and
+retarget the test at the surface's new component home — never re-add the surface
+to the route to satisfy a stale grep.

@@ -58,9 +58,11 @@ describe("verifyHref coverage · MemoryFact derivation", () => {
       } as any,
     });
     const rank = m.facts.find((f) => f.id === "rank");
-    const contrib = m.facts.find((f) => f.id === "contribution");
+    // The wallet-contribution fact is emitted with id "usdc-paid"
+    // ("USDC routed by your wallet"); it carries the wallet-explorer verifyHref.
+    const contrib = m.facts.find((f) => f.id === "usdc-paid");
     expect(rank?.verifyHref, "rank fact MUST link to wallet explorer").toBeTruthy();
-    expect(contrib?.verifyHref, "contribution fact MUST link to wallet explorer").toBeTruthy();
+    expect(contrib?.verifyHref, "contribution (usdc-paid) fact MUST link to wallet explorer").toBeTruthy();
   });
 
   it("NFT facts (First Signal / Patron Seal) carry an Archive contract verifyHref", () => {
