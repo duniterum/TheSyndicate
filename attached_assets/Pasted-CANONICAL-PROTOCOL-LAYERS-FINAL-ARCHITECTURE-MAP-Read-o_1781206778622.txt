@@ -1,0 +1,308 @@
+CANONICAL PROTOCOL LAYERS — FINAL ARCHITECTURE MAP
+
+Read-only.
+
+No implementation.
+No code changes.
+No UI changes.
+No docs changes.
+No canon changes.
+
+Goal:
+
+Define the final canonical layer architecture of The Syndicate so we stop mixing concepts, duplicating systems, forgetting layers, or touching the wrong layer during future development.
+
+This is not a page audit.
+
+This is not an implementation plan.
+
+This is a definitive architecture classification exercise.
+
+Important context:
+
+The Syndicate is not only a membership sale and not only a dashboard.
+
+It is a layered on-chain protocol with:
+
+* user wallets
+* founder wallet actions
+* protocol wallets
+* payment flows
+* SYN token flows
+* Vault / Liquidity / Operations flows
+* NFT / Artifact flows
+* member identity
+* Financial Trace
+* Activity
+* Signals
+* Chronicle
+* Story
+* Anticipation
+* Recognition
+* Diffusion
+* Growth / Referral
+* Intelligence
+* future Governance / Ecosystem layers
+
+Your task:
+
+Create the final canonical layer model.
+
+Do not assume previous layer names were correct.
+
+Challenge them if needed.
+
+For each concept below, decide whether it is:
+
+* a layer
+* a sublayer
+* a module
+* a feature
+* a data source
+* a public surface
+* a future system
+
+Concepts to classify:
+
+Wallet
+User wallet
+Founder wallet
+Protocol wallets
+Vault wallet
+Liquidity wallet
+Operations wallet
+Payment
+Membership Sale
+SYN token
+USDC routing
+Assets
+Vault assets
+LP assets
+NFTs
+Archive1155
+First Signal
+Patron Seal
+SeatRecord721
+Member #
+Seat
+Rank
+Chapter
+Financial Trace
+Activity
+Founder actions
+System wallet actions
+Signals
+Memory
+Chronicle
+Story
+Milestones
+Artifacts
+Anticipation
+Recognition
+Share cards
+OG cards
+Public wallet pages
+Referral
+Reports
+AI
+Governance
+Marketplace
+Ecosystem
+
+Critical questions:
+
+1. Wallet classification
+
+Do not treat “wallet” as one concept.
+
+Separate:
+
+* wallet as identity
+* wallet as custody
+* wallet as payment source
+* wallet as protocol treasury actor
+* wallet as founder actor
+* wallet as artifact holder
+
+For each wallet type, define its layer and responsibility.
+
+2. Money / Asset Layer
+
+Determine whether The Syndicate needs a distinct Money / Asset / Treasury layer.
+
+Classify:
+
+* SYN
+* USDC
+* Vault
+* Liquidity
+* Operations
+* LP position
+* future programmatic Vault
+* protocol-owned assets
+* member-held SYN
+* member-held NFTs
+
+Define what belongs to Economics, what belongs to Treasury, what belongs to Participation, and what belongs to Identity.
+
+3. NFT / Artifact Layer
+
+Determine whether NFTs are their own layer or part of Memory / Archive / Identity.
+
+Separate:
+
+* Archive1155 collectibles
+* First Signal
+* Patron Seal
+* future SeatRecord721
+* future chapter artifacts
+* future milestone artifacts
+
+Clarify:
+
+* what is identity
+* what is artifact
+* what is memory
+* what is support
+* what is collectible
+* what is future
+
+4. Chronicle vs Activity
+
+Define the relationship between:
+
+* Activity
+* Signal
+* Memory
+* Chronicle
+* Story
+
+Founder question:
+
+Should every founder wallet action and every protocol/system wallet action appear in Chronicle?
+
+Evaluate carefully.
+
+Suggested principle to test:
+
+Activity records everything.
+Signals detect what matters.
+Chronicle preserves meaningful protocol moments.
+Story explains those moments.
+Not every Activity event becomes Chronicle.
+But every Chronicle entry must derive from Activity / Signal / verified protocol fact.
+
+Classify founder wallet actions:
+
+* token deployment
+* contract deployment
+* initial liquidity
+* burns
+* Vault movements
+* Operations movements
+* LP changes
+* Archive mints
+* manual founder actions
+
+Which should appear only in Activity?
+Which should become Signals?
+Which should become Chronicle entries?
+Which should become Story moments?
+
+5. Canonical layer hierarchy
+
+Produce the definitive hierarchy in this format:
+
+Layer
+→ Sublayer
+→ Module
+→ Public Surface
+→ Data Source
+
+Example:
+
+Economic Layer
+→ Treasury Sublayer
+→ Vault Wallet
+→ Vault Page / Transparency Page
+→ On-chain wallet balance
+
+Do this for all major systems.
+
+6. No-mixing rules
+
+Create anti-drift rules.
+
+Examples:
+
+* Activity is not Chronicle.
+* Wallet is not always Identity.
+* NFT is not always Seat.
+* Rank is recognition, not governance.
+* Treasury visibility is not financial return.
+* Referral is growth, not money promise.
+* Founder action is not automatically Story.
+* Every Chronicle entry must be backed by Activity / Signal / verified fact.
+* Every share object must link back to verifiable data.
+
+7. Touch boundaries
+
+For future development, define which files/surfaces belong to which layers so we do not accidentally modify the wrong system.
+
+Example:
+
+If we change Share Cards, which layers are touched?
+If we change Vault, which layers are touched?
+If we change MemberCard, which layers are touched?
+If we change Chronicle, which layers are touched?
+If we change NFTs, which layers are touched?
+
+8. Minimum engine mapping
+
+Map the current minimum engine:
+
+Visitor → Join → Member → Trace → Share → New Visitor
+
+to the canonical layers.
+
+9. Full vision mapping
+
+Map the founder vision:
+
+Visitor → Member → Trace → Signal → Memory → Chronicle → Story → Recognition → Anticipation → Share → Referral → New Member
+
+to the canonical layers.
+
+10. Final answer
+
+Return:
+
+A) Final canonical protocol layer model.
+
+B) Wallet role taxonomy.
+
+C) Money / Asset / Treasury layer decision.
+
+D) NFT / Artifact / Seat layer decision.
+
+E) Chronicle vs Activity rules.
+
+F) Founder/system wallet action classification.
+
+G) Anti-drift rules.
+
+H) Exact layer maturity order.
+
+Important:
+
+Do not implement.
+
+Do not suggest UI changes.
+
+Do not suggest new features.
+
+Do not reopen contracts.
+
+Do not touch Vault, NFTs, Chronicle, Signals, or Referral.
+
+This is only the final architecture map so future implementation does not mix layers or forget systems.
