@@ -22,6 +22,7 @@ import { useSynBurnEvents } from "./syn-burn-events";
 import { CONTRACTS, rankForUsdc, txExplorerUrl, SYN_BURN_ADDRESS } from "./syndicate-config";
 import { isValidTxHash } from "@/components/syndicate/TxProofDrawer";
 import { labelForAddress } from "./known-addresses";
+import { classifyFounderAction, type FounderActionCategory } from "./founder-actions";
 import {
   CATEGORY_FOR_KIND,
   EVENT_METRIC_EFFECTS,
@@ -77,6 +78,8 @@ export type CanonicalProtocolEvent = ProtocolEvent & {
   metricEffects: readonly string[];
   chronicleEligible: boolean;
   recommendedSurfaces: readonly string[];
+  /** Founder-action classification when the sender is the founder wallet; else undefined. */
+  founderAction?: FounderActionCategory;
 };
 
 /** Optional context a normalizer passes so enrichEvent can fill from/to/amount precisely. */
@@ -120,6 +123,7 @@ export function enrichEvent(base: ProtocolEvent, ctx: EnrichContext = {}): Canon
     metricEffects: EVENT_METRIC_EFFECTS[base.kind],
     chronicleEligible: chronicleEligibleForKind(base.kind),
     recommendedSurfaces: RECOMMENDED_SURFACES_FOR_CATEGORY[category],
+    founderAction: classifyFounderAction({ from, to: ctx.to, kind: base.kind }),
   };
 }
 

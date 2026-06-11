@@ -1,0 +1,359 @@
+SPRINT 2 — PROTOCOL MEMORY, RECOGNITION & REPORTING FOUNDATION
+
+Use `docs/canon/`, `src/lib/protocol-metrics-registry.ts`, and the new Protocol Event Pipeline as source of truth.
+
+This is an execution sprint.
+
+No redesign.
+No new smart contracts.
+No referral contract.
+No burn automation.
+No governance.
+No AI.
+No marketplace.
+No new tokenomics.
+
+Goal:
+Now that the Metrics Registry and Protocol Event Pipeline exist, connect the next layer:
+
+Protocol Event
+→ Activity
+→ Chronicle Candidate
+→ Recognition Candidate
+→ Protocol Ledger
+→ Future Reports
+
+This sprint should make the protocol remember important actions without turning every event into Chronicle.
+
+---
+
+## PART 1 — CHRONICLE CANDIDATE RULES
+
+Create or consolidate a Chronicle Candidate layer.
+
+Not every Activity event becomes Chronicle.
+
+Define rules for which events are Chronicle-worthy.
+
+Examples:
+
+Always Chronicle-worthy:
+
+* first member
+* chapter sealed
+* Proof of Fire #001
+* major founder action
+* first artifact mint
+* first LP event
+* major protocol milestone
+
+Sometimes Chronicle-worthy:
+
+* large SYN purchase
+* Patron Seal mint
+* member reaches high rank
+* founder funds Operations
+* major Operations spend
+* future important referral milestone
+
+Usually Activity-only:
+
+* normal buys
+* normal transfers
+* normal small mints
+* ordinary LP swaps
+
+Each candidate should include:
+
+* event id
+* reason it qualifies
+* suggested Chronicle title
+* suggested Chronicle copy
+* source event
+* verification link
+* status: CANDIDATE / APPROVED / REJECTED / PUBLISHED
+* legal-safe wording
+
+Do not auto-publish to Chronicle unless existing architecture already supports that safely.
+
+---
+
+## PART 2 — RECOGNITION CANDIDATE LAYER
+
+Create a recognition-candidate concept, but do not create paid products yet.
+
+Recognition means:
+A member did something visible, meaningful, or supportive.
+
+Examples:
+
+* Patron Seal holder
+* Proof of Fire participant
+* early chapter member
+* member who brought a future member
+* member who funded or supported a protocol milestone
+* member who reached a major rank
+* member tied to a historical artifact
+
+Important:
+Do not call this “verified identity.”
+No KYC.
+No real-world verification.
+
+Use safer wording:
+
+* Recognition
+* Public alias
+* Member display name
+* Chosen visibility
+* Chronicle mention
+* Artifact-backed recognition
+
+The system should allow:
+
+* anonymous display: Member #217
+* alias display: user-chosen name later
+* public display: optional, non-KYC, self-declared
+
+Do not implement paid alias/profile yet unless already trivial.
+Prepare the architecture/rules only.
+
+---
+
+## PART 3 — PROTOCOL LEDGER FOUNDATION
+
+Separate Chronicle from Ledger.
+
+Chronicle = meaning/story.
+Ledger = factual accounting/history.
+
+Create or consolidate a Protocol Ledger concept for:
+
+* Vault inflows
+* Liquidity inflows
+* Operations inflows
+* founder-funded Operations
+* Operations outgoing spends
+* burn events
+* NFT mint proceeds destination
+* LP-related flows
+* manually labeled outgoing transactions where needed
+
+Ledger entries should include:
+
+* tx hash
+* from / to / known labels
+* token
+* amount
+* category
+* purpose if manually tagged
+* verification link
+* isManualTag
+* legal-safe note
+
+Do not fabricate purposes.
+If unknown, show unknown.
+
+---
+
+## PART 4 — FOUNDER ACTION EVENTS
+
+Founder actions should be first-class protocol events.
+
+Support classification for:
+
+* Founder Burn
+* Founder funded Operations
+* Founder funded Vault
+* Founder funded Liquidity
+* Founder allocation movement
+
+Known founder wallet already exists in config.
+
+If founder sends funds to Operations, it should become:
+Activity + Ledger entry
+Maybe Chronicle candidate if meaningful.
+
+Example:
+“Founder funded Operations with 1,000 USDC.”
+Category: Founder Support / Operations Funding.
+No ROI language.
+
+---
+
+## PART 5 — PROOF OF FIRE COMPLETION
+
+Ensure burn events are fully integrated.
+
+Requirements:
+
+* burned supply = SYN.balanceOf(dead address)
+* supports multiple burn events
+* Proof of Fire #001, #002, etc.
+* Activity shows burn events
+* Ledger shows burn events
+* Chronicle candidate generated for #001 and other significant burns
+* no hardcoded one-off card only
+
+Use:
+
+* Proof of Fire = event family
+* Ash Seal = future artifact concept only, do not implement
+* Burn Address = standard dead address
+
+No price impact wording.
+No buyback wording.
+
+---
+
+## PART 6 — FUTURE REFERRAL EVENT MODEL
+
+Do not implement referral contract.
+
+But reserve the event model.
+
+Referral should be attribution first, payout later.
+
+Future event idea:
+“Member #27 brought Member #456 into The Syndicate.”
+
+This event should eventually capture:
+
+* referrer member
+* new member
+* sale amount
+* USDC routed
+* SYN sold
+* reward status: PENDING until contract exists
+
+It should feel like:
+
+* member helped grow the fraternity
+* member served self-interest and protocol interest
+* event is verifiable when contract exists
+
+Do not imply live commission now.
+
+---
+
+## PART 7 — REPORTING FOUNDATION
+
+Prepare a reporting structure, no public report page yet unless trivial.
+
+Future report cadence:
+
+* Weekly Chronicle
+* Monthly Protocol Report
+* Quarterly Protocol Report
+* Half-Year Protocol Report
+* Annual State of The Syndicate
+
+Each report should eventually derive from:
+
+* metric registry
+* event pipeline
+* ledger entries
+* Chronicle candidates
+* approved Chronicle entries
+
+For now, create the architecture or internal/labs view only if useful:
+`/labs/protocol-memory`
+or extend `/labs/protocol-events`.
+
+Do not create marketing pages yet.
+
+---
+
+## PART 8 — LANGUAGE RULES
+
+Approved direction:
+
+“Most people watch from the outside.
+Members take a seat, rise through the ranks, and leave a trace in the Chronicle.”
+
+Use concepts:
+
+* Enter
+* Take your seat
+* Rise
+* Seal
+* Verify
+* Leave a trace
+* Be remembered
+* Protocol memory
+* Public record
+* Recognition
+
+Avoid:
+
+* contribution if it creates legal ambiguity
+* investment
+* ROI
+* yield
+* dividends
+* passive income
+* guaranteed returns
+* fundraising
+* raised
+* verified identity
+* KYC-like wording
+
+---
+
+## PART 9 — INTERNAL WORKBENCH
+
+If useful, add or extend a labs page to show:
+
+* event types
+* Chronicle candidates
+* recognition candidates
+* ledger entries
+* report candidates
+* metric effects
+* source events
+* verification links
+
+This is internal/QA/design only.
+Not public marketing.
+
+Purpose:
+Before public design, we must see what the protocol knows and what it remembers.
+
+---
+
+## VERIFICATION
+
+Run:
+
+* tsc --noEmit
+* doctrine guard
+* event tests
+* metric registry tests
+* Chronicle-related tests
+* full suite if practical
+
+Confirm:
+
+* no banned vocabulary
+* no simulated event shown as live
+* Chronicle is not auto-publishing everything
+* Ledger does not invent purposes
+* burn events are correctly recognized
+* future referral is clearly PENDING only
+
+---
+
+## FINAL RESPONSE
+
+Return concise summary only:
+
+* files changed
+* Chronicle candidate logic
+* recognition candidate logic
+* Ledger foundation
+* Founder action handling
+* Proof of Fire integration
+* future referral namespace
+* labs/internal surfaces
+* tests run
+* remaining risks

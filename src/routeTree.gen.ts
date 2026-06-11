@@ -41,6 +41,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LabsIndexRouteImport } from './routes/labs.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
+import { Route as LabsProtocolMemoryRouteImport } from './routes/labs.protocol-memory'
 import { Route as LabsProtocolIntelligenceRouteImport } from './routes/labs.protocol-intelligence'
 import { Route as LabsProtocolEventsRouteImport } from './routes/labs.protocol-events'
 import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
@@ -217,6 +218,11 @@ const MilestoneIdRoute = MilestoneIdRouteImport.update({
   path: '/milestone/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabsProtocolMemoryRoute = LabsProtocolMemoryRouteImport.update({
+  id: '/protocol-memory',
+  path: '/protocol-memory',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsProtocolIntelligenceRoute =
   LabsProtocolIntelligenceRouteImport.update({
     id: '/protocol-intelligence',
@@ -334,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
+  '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs/': typeof LabsIndexRoute
@@ -382,6 +389,7 @@ export interface FileRoutesByTo {
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
+  '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs': typeof LabsIndexRoute
@@ -432,6 +440,7 @@ export interface FileRoutesById {
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
+  '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs/': typeof LabsIndexRoute
@@ -483,6 +492,7 @@ export interface FileRouteTypes {
     | '/labs/invariants'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
+    | '/labs/protocol-memory'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs/'
@@ -531,6 +541,7 @@ export interface FileRouteTypes {
     | '/labs/invariants'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
+    | '/labs/protocol-memory'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs'
@@ -580,6 +591,7 @@ export interface FileRouteTypes {
     | '/labs/invariants'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
+    | '/labs/protocol-memory'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs/'
@@ -859,6 +871,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MilestoneIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/labs/protocol-memory': {
+      id: '/labs/protocol-memory'
+      path: '/protocol-memory'
+      fullPath: '/labs/protocol-memory'
+      preLoaderRoute: typeof LabsProtocolMemoryRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/protocol-intelligence': {
       id: '/labs/protocol-intelligence'
       path: '/protocol-intelligence'
@@ -986,6 +1005,7 @@ interface LabsRouteChildren {
   LabsInvariantsRoute: typeof LabsInvariantsRoute
   LabsProtocolEventsRoute: typeof LabsProtocolEventsRoute
   LabsProtocolIntelligenceRoute: typeof LabsProtocolIntelligenceRoute
+  LabsProtocolMemoryRoute: typeof LabsProtocolMemoryRoute
   LabsIndexRoute: typeof LabsIndexRoute
 }
 
@@ -996,6 +1016,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsInvariantsRoute: LabsInvariantsRoute,
   LabsProtocolEventsRoute: LabsProtocolEventsRoute,
   LabsProtocolIntelligenceRoute: LabsProtocolIntelligenceRoute,
+  LabsProtocolMemoryRoute: LabsProtocolMemoryRoute,
   LabsIndexRoute: LabsIndexRoute,
 }
 
