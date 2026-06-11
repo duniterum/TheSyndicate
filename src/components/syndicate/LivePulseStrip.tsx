@@ -187,7 +187,7 @@ export function LivePulseStrip() {
         </div>
       )}
 
-      {/* Supply & burn truth — fixed supply, circulating, burned 0 (gated off the cockpit embed). */}
+      {/* Supply & burn truth — fixed supply, circulating, burned = balanceOf(dead) (gated off the cockpit embed). */}
       {!embedded && <SupplyTruthLine className="mt-3" />}
 
       <MetricVerificationDrawer

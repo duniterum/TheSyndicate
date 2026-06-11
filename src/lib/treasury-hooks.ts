@@ -13,6 +13,7 @@ import {
   USDC_DECIMALS,
   SYN_DECIMALS,
   ALLOCATION_WALLETS,
+  SYN_BURN_ADDRESS,
 } from "./syndicate-config";
 import { ERC20_ABI } from "./sale-abi";
 import { useLpStats } from "./sale-hooks";
@@ -91,24 +92,30 @@ export function useWalletAssets(wallet: string) {
 export const SYN_INITIAL_SUPPLY = 1_000_000_000;
 
 /**
- * SYN total supply read (live), plus `burned`.
- * SYN is ERC20-Burnable, so burn() lowers totalSupply; `burned` is the gap
- * between the genesis mint and the live totalSupply. No burn mechanism is
- * active today, so it reads 0 — every claim still maps to one on-chain read.
+ * SYN supply reads (live):
+ *  - `totalSupply` — fixed 1,000,000,000 (the token has no mint function).
+ *  - `burned` — SYN permanently sent to the standard dead address, read as
+ *    `balanceOf(SYN_BURN_ADDRESS)`. These tokens are out of circulation for
+ *    good. A burn here is a TRANSFER to the dead address, so it does NOT lower
+ *    totalSupply — `burned` is the dead-address balance, never
+ *    (initialSupply − totalSupply). There is no automated burn; any burn is a
+ *    manual, verifiable transfer. Every value still maps to one on-chain read.
  */
 export function useSynSupply() {
   const q = useReadContracts({
     allowFailure: true,
     contracts: [
       { address: CONTRACTS.SYN_CONTRACT_ADDRESS as `0x${string}`, abi: [...ERC20_ABI, { type: "function", name: "totalSupply", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] }] as const, functionName: "totalSupply" },
+      { address: CONTRACTS.SYN_CONTRACT_ADDRESS as `0x${string}`, abi: ERC20_ABI, functionName: "balanceOf" as const, args: [SYN_BURN_ADDRESS as `0x${string}`] },
     ],
     query: { refetchInterval: 120_000, staleTime: 60_000 },
   });
-  const r = q.data?.[0];
-  const raw = r && r.status === "success" ? (r.result as unknown as bigint) : undefined;
-  const totalSupply = raw !== undefined ? Number(formatUnits(raw, SYN_DECIMALS)) : undefined;
-  const burned =
-    totalSupply !== undefined ? Math.max(SYN_INITIAL_SUPPLY - totalSupply, 0) : undefined;
+  const tsR = q.data?.[0];
+  const burnR = q.data?.[1];
+  const tsRaw = tsR && tsR.status === "success" ? (tsR.result as unknown as bigint) : undefined;
+  const burnRaw = burnR && burnR.status === "success" ? (burnR.result as unknown as bigint) : undefined;
+  const totalSupply = tsRaw !== undefined ? Number(formatUnits(tsRaw, SYN_DECIMALS)) : undefined;
+  const burned = burnRaw !== undefined ? Number(formatUnits(burnRaw, SYN_DECIMALS)) : undefined;
   return {
     isLoading: q.isLoading,
     totalSupply,
@@ -119,9 +126,12 @@ export function useSynSupply() {
 
 /**
  * Circulating supply estimate:
- *   totalSupply - (Vault + Founder + Liquidity + Partnerships + Contributors + Future Ecosystem + Membership-undistributed)
+ *   totalSupply - (Vault + Founder + Liquidity + Partnerships + Contributors
+ *                  + Future Ecosystem + Membership-undistributed) - burned
  * "Undistributed" = SYN still sitting in the Membership Distribution wallet,
- * which has not yet entered circulation via Sale or grants.
+ * which has not yet entered circulation via Sale or grants. "burned" = SYN
+ * permanently sent to the standard dead address (see useSynSupply) — no longer
+ * in public hands, so it is excluded from circulating.
  */
 export function useCirculatingSupply() {
   const supply = useSynSupply();
@@ -149,13 +159,14 @@ export function useCirculatingSupply() {
     return sum + Number(formatUnits(raw, SYN_DECIMALS));
   }, 0);
   const circulating =
-    supply.totalSupply !== undefined && q.data !== undefined
-      ? Math.max(supply.totalSupply - reserved, 0)
+    supply.totalSupply !== undefined && q.data !== undefined && supply.burned !== undefined
+      ? Math.max(supply.totalSupply - reserved - supply.burned, 0)
       : undefined;
   return {
     isLoading: supply.isLoading || q.isLoading,
     totalSupply: supply.totalSupply,
-    nonCirculating: q.data !== undefined ? reserved : undefined,
+    nonCirculating:
+      q.data !== undefined && supply.burned !== undefined ? reserved + supply.burned : undefined,
     circulating,
   };
 }

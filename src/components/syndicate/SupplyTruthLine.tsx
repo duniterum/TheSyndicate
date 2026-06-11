@@ -1,5 +1,5 @@
 // Supply & burn truth — one compact line a crypto-native reads in seconds.
-// Total (fixed) · Circulating · Burned (0 — no burn mechanism active).
+// Total (fixed) · Circulating · Burned (SYN at the standard dead address).
 // Every segment is LIVE, read from the SYN contract, and opens the same
 // MetricVerificationDrawer used by the heartbeat. No invented numbers.
 
@@ -35,7 +35,7 @@ export function SupplyTruthLine({ className = "" }: { className?: string }) {
       metricKey: "synBurned",
       label: "Burned",
       value: fmtSyn(supply.burned),
-      hint: "No burn mechanism active",
+      hint: "Held at the standard dead address",
     },
   ];
 
@@ -77,7 +77,7 @@ export function SupplyTruthLine({ className = "" }: { className?: string }) {
         </div>
       </div>
       <p className="mt-1.5 text-[10px] text-muted-foreground leading-snug">
-        Fixed 1,000,000,000 SYN · no mint function · burn not active. Click any number to verify on-chain.
+        Fixed 1,000,000,000 SYN · no mint function · burned SYN is permanently sent to the standard dead address (no automation). Click any number to verify on-chain.
       </p>
 
       <MetricVerificationDrawer

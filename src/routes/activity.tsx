@@ -18,6 +18,7 @@ import { ActivityMilestones } from "@/components/syndicate/ActivityMilestones";
 import { SinceYourLastVisit } from "@/components/syndicate/SinceYourLastVisit";
 import { ProtocolStorySoFar } from "@/components/syndicate/ProtocolStorySoFar";
 import { ActivityHeartbeat } from "@/components/syndicate/ActivityHeartbeat";
+import { ProofOfFireCard } from "@/components/syndicate/ProofOfFireCard";
 import { StoryTimeline } from "@/components/syndicate/StoryTimeline";
 
 import { useProtocolEvents } from "@/lib/protocol-events";
@@ -57,6 +58,9 @@ function ActivityPage() {
 
       {/* Protocol Heartbeat — single latest verified event with why-it-matters + proof */}
       <ActivityHeartbeat />
+
+      {/* Proof of Fire #001 — recognition of the first verified SYN burn */}
+      <ProofOfFireCard />
 
       {/* Feed health banner — one-glance LIVE / INDEXED / PARTIAL / FAIL state */}
       <Section id="activity-health">

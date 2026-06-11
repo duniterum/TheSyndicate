@@ -19,13 +19,17 @@ description: Hard economic facts from syndicate-config.ts + holder-index.ts that
   on-chain address** `0x205DdC8921A4C60106930eE35e1F395c8D13f464`
   (`CONTRACTS.VAULT_WALLET` === `TREASURY_WALLET_ADDRESS`). Glossary treats them
   as distinct *concepts* but they are one wallet — a real transparency/drift trap.
-- **No burn mechanism exists.** No burn address constant; SYN spec has
-  `futureMint:false`, no burn fn. The only on-chain "Burn" is the Trader Joe LP
-  `Burn` event = **liquidity removal**, NOT token burn. Burned supply = 0, not
-  tracked. "Future Ecosystem … may be partially burned by vote" is the only
-  burn intent. Show "Burned: 0" as a static fact, never a live metric.
+- **No AUTOMATED burn mechanism, but a real burn HAS happened.** SYN spec has
+  `futureMint:false` and no contract burn fn — burns are TRANSFERS to the
+  standard dead address `SYN_BURN_ADDRESS = 0x…dEaD` (constant in
+  syndicate-config). Proof of Fire #001 = a manual Founder Burn of 1,000 SYN →
+  dead (tx 0x2db1…2d47, block 87,703,847). `burned` is a LIVE metric =
+  `balanceOf(0x…dEaD)` — NOT 1B−totalSupply (transfer-burns keep totalSupply
+  fixed at 1B). The Trader Joe LP `Burn` event is **liquidity removal**, a
+  different thing. See supply-burn-visibility.
 - **Circulating supply IS computed** (`treasury-hooks.ts useCirculatingSupply`:
-  circulating = total − reserved wallets; `nonCirculating = reserved`).
+  circulating = total − reserved wallets − burned; `nonCirculating = reserved +
+  burned`).
 - **Mock/stale constants (never surface as live):** `VAULT_ASSETS`,
   `VAULT_INFLOWS` (all status PENDING, fabricated balances), `GENESIS_NFT_PRICE`
   = "$1 – $10" (WRONG — First Signal mints at 0.50 USDC), `VAULT_STARTING_VALUE`,

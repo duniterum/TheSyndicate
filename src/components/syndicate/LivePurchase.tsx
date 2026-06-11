@@ -653,7 +653,7 @@ export function ContractAddresses() {
         ))}
       </dl>
       <p className="mt-3 text-[11px] text-muted-foreground leading-snug">
-        Fixed supply: 1,000,000,000 SYN · no mint function · burn not active.
+        Fixed supply: 1,000,000,000 SYN · no mint function · 1,000 SYN permanently sent to the dead address.
       </p>
     </div>
   );

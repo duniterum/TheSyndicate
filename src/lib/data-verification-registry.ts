@@ -164,7 +164,7 @@ export const METRIC_REGISTRY: Record<string, MetricVerification> = {
     key: "synSupply",
     label: "Total Supply",
     description:
-      "Total SYN in existence. The full 1,000,000,000 SYN was minted once at genesis; the contract has no mint function, so this number can never go up — only down, if SYN is ever burned.",
+      "Total SYN in existence. The full 1,000,000,000 SYN was minted once at genesis; the contract has no mint function, so this number can never go up. Burns in The Syndicate are transfers to the standard dead address — they remove SYN from circulation without lowering totalSupply, so this stays fixed at 1,000,000,000.",
     hook: "useSynSupply → ERC20 totalSupply()",
     source: "Avalanche C-Chain RPC. Reads totalSupply() on the SYN ERC20 contract.",
     refresh: "Every 120 seconds; cached for 60 seconds.",
@@ -178,10 +178,10 @@ export const METRIC_REGISTRY: Record<string, MetricVerification> = {
     key: "circulating",
     label: "Circulating",
     description:
-      "Total supply minus the SYN still held in the seven protocol allocation wallets (Vault, Founder, Liquidity, Partnerships, Contributors, Future Ecosystem, and undistributed Membership). This is the SYN actually in public hands.",
-    hook: "useCirculatingSupply → totalSupply() − Σ allocation balanceOf()",
+      "Total supply minus the SYN still held in the seven protocol allocation wallets (Vault, Founder, Liquidity, Partnerships, Contributors, Future Ecosystem, and undistributed Membership) and minus SYN burned to the standard dead address. This is the SYN actually in public hands.",
+    hook: "useCirculatingSupply → totalSupply() − Σ allocation balanceOf() − burned",
     source:
-      "Avalanche C-Chain RPC. totalSupply() minus the live balanceOf() of each allocation wallet.",
+      "Avalanche C-Chain RPC. totalSupply() minus the live balanceOf() of each allocation wallet and minus the dead-address balance (burned).",
     refresh: "Every 120 seconds; cached for 60 seconds.",
     status: "LIVE",
     links: dropNull([
@@ -192,12 +192,12 @@ export const METRIC_REGISTRY: Record<string, MetricVerification> = {
     key: "synBurned",
     label: "Burned",
     description:
-      "SYN permanently removed from supply, computed as 1,000,000,000 (genesis mint) − live totalSupply(). SYN is ERC20-Burnable at the contract level, but the protocol runs no burn — so this is 0. Unused allocations may be burned by a future governance vote; until then it stays 0.",
-    hook: "useSynSupply → 1,000,000,000 − totalSupply()",
-    source: "Avalanche C-Chain RPC. Derived from totalSupply() on the SYN ERC20 contract.",
+      "SYN permanently removed from circulation by sending it to the standard dead address (0x…dEaD), read live as the balanceOf() of that address. One verified burn has occurred — Proof of Fire #001, a 1,000 SYN Founder Burn. A burn here is a transfer, so totalSupply is unchanged; there is no automated burn — any future burn would be a manual, verifiable transfer.",
+    hook: "useSynSupply → balanceOf(0x…dEaD)",
+    source: "Avalanche C-Chain RPC. Reads balanceOf() of the standard dead address on the SYN ERC20 contract.",
     refresh: "Every 120 seconds; cached for 60 seconds.",
     status: "LIVE",
-    emptyState: "Reads 0 while no burn has occurred — the honest current state.",
+    emptyState: "Reads the live dead-address balance; 0 only if nothing has ever been burned.",
     links: dropNull([
       explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
       { label: "Avascan token", href: SYN_EXPLORERS.avascan },

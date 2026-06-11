@@ -1,0 +1,116 @@
+PHASE 1B — BURN RECOGNITION CORRECTION / PROOF OF FIRE #001
+
+This is an execution pass.
+
+Context:
+A real founder burn already happened on Avalanche C-Chain.
+
+Transaction:
+https://snowtrace.io/tx/0x2db110b1406bdee0bb98a0ad9a8c941052fbe02049d99b30a3b09934d6a12d47
+
+Burn address:
+0x000000000000000000000000000000000000dEaD
+
+Important correction:
+Do not calculate burned supply as fixedSupply - totalSupply.
+
+That returns 0 because this was a transfer burn to the standard dead address, not a contract-level burn reducing totalSupply.
+
+Canonical burned supply must be:
+SYN.balanceOf(0x000000000000000000000000000000000000dEaD)
+
+Goal:
+Recognize the existing founder burn as a verified supply event and surface it correctly.
+
+Tasks:
+
+1. Add canonical burn address constant:
+
+* 0x000000000000000000000000000000000000dEaD
+* label: Proof of Fire / Burn Address
+
+2. Update burned supply logic:
+
+* read SYN.balanceOf(BURN_ADDRESS)
+* expected current value: 1,000 SYN
+* keep totalSupply unchanged at 1,000,000,000 SYN
+* circulating supply should subtract burned balance if the current circulating formula does not already do so
+
+3. Update SupplyTruthLine:
+
+* Burned must show 1,000 SYN after the live read
+* copy should say:
+  “Burned supply = SYN held by the standard dead address”
+* avoid saying burn mechanism is active if no automation exists
+
+4. Classify the first burn event:
+
+* sender = Founder wallet
+* receiver = burn address
+* token = SYN
+* amount = 1,000 SYN
+* label = Proof of Fire #001
+* category = Founder Burn
+* tx = 0x2db110b1406bdee0bb98a0ad9a8c941052fbe02049d99b30a3b09934d6a12d47
+
+5. Surface in Activity / protocol events if safely possible:
+
+* “Proof of Fire #001 — Founder Burn”
+* “1,000 SYN sent to the standard burn address”
+* include verify link
+* no price claims
+
+6. Update registry / canon docs if required:
+
+* Burn status is no longer “0”
+* Burn automation remains FUTURE / NOT ACTIVE
+* Burned supply is LIVE as a read from the dead address
+* Proof of Fire #001 is a real historical event
+
+7. Legal-safe wording:
+   Allowed:
+
+* verified supply reduction
+* standard burn address
+* Proof of Fire
+* Founder Burn
+* permanently sent to dead address
+
+Forbidden:
+
+* price impact
+* pump
+* ROI
+* yield
+* burn rewards
+* guaranteed scarcity value
+
+Rules:
+
+* No burn automation.
+* No new smart contract.
+* No referral.
+* No governance.
+* No economics change.
+* No new taxonomy.
+* Do not call this a buyback.
+* Do not imply financial return.
+
+Verification:
+
+* tsc --noEmit
+* doctrine guard
+* relevant tests
+* confirm SupplyTruthLine shows Burned = 1,000 SYN after live read
+* confirm totalSupply remains 1,000,000,000 SYN
+* confirm circulating supply is adjusted correctly if burned balance should be excluded
+
+Final response:
+Give concise summary:
+
+* files changed
+* burned supply formula corrected
+* Proof of Fire #001 classification
+* where it appears
+* tests run
+* remaining risks

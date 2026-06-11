@@ -26,13 +26,16 @@ belong on the homepage.
 | `lastBuy`     | Last Buy        | `useLivePurchaseEvents` (via `useProtocolPulse`)  | `TokensPurchased(buyer, usdcIn, synOut)` event scan                                              | LIVE   | 60s     |
 | `nextMember`  | Next Member     | derived (`members + 1`)                           | n/a — pure derivation of the Members count                                                       | LIVE   | 60s     |
 | `synSupply`   | Total Supply    | `useSynSupply`                                    | SYN ERC20 `totalSupply()` — fixed 1,000,000,000, no mint function                                | LIVE   | 120s    |
-| `circulating` | Circulating     | `useCirculatingSupply`                            | `totalSupply()` − Σ allocation-wallet `balanceOf()` (SYN in public hands)                        | LIVE   | 120s    |
-| `synBurned`   | Burned          | `useSynSupply` (1,000,000,000 − `totalSupply()`)  | Derived from SYN ERC20 `totalSupply()`; reads 0 — no burn mechanism active                       | LIVE   | 120s    |
+| `circulating` | Circulating     | `useCirculatingSupply`                            | `totalSupply()` − Σ allocation-wallet `balanceOf()` − burned (SYN in public hands)               | LIVE   | 120s    |
+| `synBurned`   | Burned          | `useSynSupply` (`balanceOf(0x…dEaD)`)             | SYN ERC20 `balanceOf()` of the standard dead address — currently 1,000 SYN (Proof of Fire #001)  | LIVE   | 120s    |
 
 > `synSupply` / `circulating` / `synBurned` surface in the **SupplyTruthLine**
 > (homepage pulse strip + `/tokenomics`). They are LIVE reads off the SYN
-> contract; `synBurned` stays `0` until SYN is ever burned — the protocol runs
-> no burn today.
+> contract. `synBurned` reads `balanceOf(0x…dEaD)` — SYN permanently sent to the
+> standard dead address. One verified burn exists: **Proof of Fire #001**, a
+> 1,000 SYN Founder Burn (`tx 0x2db1…2d47`). Burns are manual transfers with no
+> automation, so `totalSupply` stays fixed at 1,000,000,000 and `circulating`
+> excludes the burned balance.
 
 ### Status definitions
 

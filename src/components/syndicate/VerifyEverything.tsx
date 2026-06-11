@@ -8,6 +8,8 @@ import {
   ALLOCATION_WALLETS,
   explorerUrlForAddress,
   explorerUrlFor,
+  txExplorerUrl,
+  PROOF_OF_FIRE_001,
 } from "@/lib/syndicate-config";
 import { routescanContractCodeUrl } from "@/lib/chain-registry";
 import { useSaleStats, useLpStats, fmtUsdc, fmtSyn } from "@/lib/sale-hooks";
@@ -72,18 +74,19 @@ function useCategories(): Category[] {
       },
       {
         id: "supply-burned",
-        claim: "Burned supply equals 0 — no burn mechanism is active.",
-        source: "1,000,000,000 (genesis mint) − ERC20 totalSupply()",
-        explorerLabel: "Avascan",
-        explorerHref: SYN_EXPLORERS.avascan,
-        // Burn is structural truth: no burn mechanism is active, so this claim is
-        // always LIVE (reads 0). Never PENDING — that would imply a missing primitive.
+        claim: "1,000 SYN has been permanently sent to the standard dead address — a verified supply reduction.",
+        source: "ERC20 balanceOf(0x…dEaD) on the SYN contract — the standard burn address",
+        explorerLabel: "Burn tx",
+        explorerHref: txExplorerUrl(PROOF_OF_FIRE_001.txHash),
+        // Burn here is a verifiable TRANSFER to the dead address, not a
+        // contract-level supply change — always LIVE (reads the dead-address
+        // balance). Never PENDING: the burn address always resolves.
         status: "LIVE",
         liveValue:
           supply.burned !== undefined
             ? `${supply.burned.toLocaleString("en-US")} SYN burned`
             : undefined,
-        note: "SYN is ERC20-Burnable, but the protocol runs no burn. Unused allocations may be burned by a future governance vote.",
+        note: "Proof of Fire #001 — a Founder Burn of 1,000 SYN to the standard dead address. There is no automated burn; any burn is a manual, verifiable transfer.",
       },
       {
         id: "supply-source",

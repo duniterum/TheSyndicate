@@ -308,6 +308,28 @@ export const ALLOCATION_WALLETS: Record<string, string> = {
   "Future Ecosystem":                       "0x2530393881820AFe789f1c5D83817B70e46d2963",
 };
 
+// Standard "dead" address. SYN permanently sent here is removed from
+// circulation — it cannot be recovered. The protocol runs NO automated burn:
+// any burn is a manual, verifiable transfer to this address. Recognition only,
+// never a buyback or a promise of price/scarcity value.
+export const SYN_BURN_ADDRESS = "0x000000000000000000000000000000000000dEaD" as const;
+export const SYN_BURN_ADDRESS_LABEL = "Proof of Fire / Burn Address";
+
+// Proof of Fire #001 — the first verified SYN burn. A manual Founder Burn:
+// 1,000 SYN sent from the Founder allocation wallet to the standard dead
+// address. Verified on-chain (block 87,703,847). This is a recognition record,
+// not a financial instrument — no price impact, ROI, yield, or scarcity claim.
+export const PROOF_OF_FIRE_001 = {
+  id: "001",
+  label: "Proof of Fire #001",
+  category: "Founder Burn",
+  amountSyn: 1_000,
+  from: ALLOCATION_WALLETS["Founder"],
+  to: SYN_BURN_ADDRESS,
+  txHash: "0x2db110b1406bdee0bb98a0ad9a8c941052fbe02049d99b30a3b09934d6a12d47",
+  blockNumber: 87_703_847n,
+} as const;
+
 // Multi-explorer links for the live SYN token on Avalanche C-Chain.
 export const SYN_EXPLORERS = {
   avascan:   "https://avascan.info/blockchain/c/token/0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
