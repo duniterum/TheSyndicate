@@ -1,0 +1,378 @@
+SPRINT A.10 — REVENUE, ENTRY PATHS & MEMBER TRACE MODEL
+
+Read-only product/economic architecture sprint.
+
+No code.
+No UI changes.
+No canon edits.
+No contracts.
+No implementation.
+
+Goal:
+Reconnect all frozen doctrine back to the original question:
+
+How does The Syndicate make money beyond a one-time $5 lifetime entry?
+
+Use:
+
+* Canon 00–08
+* Financial Trace doctrine
+* Signal doctrine
+* Seat / Member Number audit
+* Membership Sale contract reality
+* Archive1155 reality
+* Patron Seal reality
+* Proof of Fire
+* Future referral namespace
+* Member Journey / Trace ideas
+
+Context:
+The current system has:
+
+* $5 minimum entry
+* same Membership Sale contract
+* SYN returned to buyer
+* 70% Vault / 20% Liquidity / 10% Operations
+* ranks based on cumulative sale participation
+* NFTs / artifacts
+* future referral
+* future alias / recognition
+* future reports / intelligence
+
+The problem:
+A one-time $5 entry is good for accessibility but cannot be the whole business model.
+
+We need a clear, scalable model where members can:
+
+* test with a small amount
+* return multiple times
+* enter stronger
+* support more
+* build Financial Trace
+* grow protocol money
+* gain visible proof of participation
+
+without creating:
+
+* fake memberships
+* Bronze/Silver/Gold confusion
+* yield promises
+* ROI language
+* governance promises
+* pay-to-Chronicle
+* pay-to-Historic
+
+---
+
+## PART 1 — CURRENT ECONOMIC REALITY
+
+Map all current live revenue streams:
+
+* SYN Membership Sale
+* Archive1155 First Signal
+* Patron Seal
+* LP fees if visible or not
+* any existing preview/referral monetization
+* any inactive/future modules
+
+For each:
+
+* source of truth
+* contract or frontend-only
+* price
+* route of funds
+* current public visibility
+* clarity problems
+* revenue-per-member potential
+
+---
+
+## PART 2 — ENTRY MODEL
+
+Analyze the correct public model.
+
+Candidate doctrine:
+
+One lifetime entry.
+Many protocol moments.
+
+$5 opens the door.
+Every return leaves a deeper trace.
+
+Evaluate whether this is better than:
+
+* multiple memberships
+* Bronze/Silver/Gold memberships
+* subscription
+* annual membership
+* VIP tiers
+
+Explain why.
+
+---
+
+## PART 3 — SMALL TEST PURCHASES
+
+Analyze psychological entry amounts:
+
+* $0.99
+* $1
+* $2
+* $5
+
+Questions:
+
+* Does the current contract allow less than $5?
+* If not, should we avoid contract changes for now?
+* Can $5 be framed as the test entry?
+* Could future micro-support exist through NFT/artifact/support actions instead?
+* What are gas/UX/legal implications?
+
+Return recommendation.
+
+---
+
+## PART 4 — HIGHER ENTRY / COMMITMENT PATHS
+
+Analyze suggested amounts using the same Sale contract:
+
+* $5
+* $25
+* $100
+* $500
+* $1,000
+* $2,500
+* $10,000
+* Custom
+
+These are NOT separate memberships.
+
+They are:
+
+* entry amount presets
+* commitment paths
+* support depth
+* Financial Trace builders
+* protocol backing
+
+Evaluate best names.
+
+Avoid confusion with rank names if needed.
+
+Possible language:
+
+* Take a Seat
+* Enter Stronger
+* Back the Vault
+* Strengthen the Protocol
+* Keystone Support
+* Custom Support
+
+Return the best structure.
+
+---
+
+## PART 5 — REPEAT PURCHASE LOOP
+
+Analyze the loop:
+
+A member joins once.
+Then returns later to buy more SYN through the Sale contract.
+
+Each return creates:
+
+* more SYN
+* more USDC routed
+* more Financial Trace
+* more Activity
+* more protocol growth
+* more visible participation depth
+* more Member Journey history
+
+Question:
+How should this be framed?
+
+Candidate:
+Take your seat once.
+Strengthen your trace whenever you believe.
+
+Return recommendation.
+
+---
+
+## PART 6 — MONEY AS SOCIAL PROOF
+
+The founder ruling:
+Money is not suspicious.
+Money is a core truth of the protocol.
+
+Economic activity creates confidence.
+
+Analyze how the site should show:
+
+* large purchases
+* repeat purchases
+* protocol money routed
+* Vault growth
+* Liquidity growth
+* Operations support
+* founder support actions
+* supporter actions
+
+without becoming:
+
+* top-spender leaderboard
+* pay-to-prestige
+* investment pitch
+
+Return doctrine and recommended surfaces.
+
+---
+
+## PART 7 — MEMBER TRACE MODEL
+
+Define the member-facing trace system.
+
+Possible traces:
+
+* Financial Trace
+* Protocol Trace
+* Memory Trace
+* Support Trace
+* Growth Trace
+
+For each:
+
+* what data it contains
+* whether LIVE / PARTIAL / FUTURE
+* whether it is public or private
+* whether it is shareable
+* whether it feeds Recognition
+* whether it feeds Reports
+* whether it should ever feed Chronicle
+
+Return one clean model.
+
+---
+
+## PART 8 — ALIAS / PUBLIC DISPLAY
+
+Analyze optional public display.
+
+A member may want to show:
+
+“Member #27”
+or
+“TheWolf”
+or
+“Kemal”
+
+Questions:
+
+* Should alias be paid?
+* Should alias be free but optional?
+* Should premium display/profile be future paid support?
+* How to avoid fake KYC language?
+* How to avoid pay-to-appear?
+* How to make support visible without cheapening Chronicle?
+
+Return recommendation.
+
+---
+
+## PART 9 — SUPPORT / PATRONAGE PRODUCTS
+
+Analyze future revenue streams that fit doctrine:
+
+* Patron Seal
+* support artifacts
+* alias/profile display
+* share cards
+* member journey export
+* yearly recap
+* supporter wall
+* chapter backer recognition
+* Proof of Fire-related artifact
+* reports/intelligence
+* referral attribution
+
+Classify:
+
+* can implement now
+* requires contract
+* requires Signal Engine
+* requires alias system
+* should stay future
+
+---
+
+## PART 10 — WHY WOULD SOMEONE SPEND MORE?
+
+Answer directly.
+
+Why would someone voluntarily spend:
+
+$25
+$100
+$500
+$2,500
+$10,000+
+
+inside The Syndicate?
+
+Possible reasons:
+
+* receives SYN
+* visible support
+* stronger Financial Trace
+* protocol grows
+* rank recognition
+* proof of belief
+* future influence possibility without promise
+* belonging
+* identity
+* public proof
+* long-term legacy
+
+Return the strongest honest explanation.
+
+---
+
+## PART 11 — WHAT TO BUILD NEXT
+
+After the analysis, recommend the next execution order.
+
+Possible order:
+
+1. revenue/path clarity copy
+2. Join page preset amounts
+3. Financial Trace explanations
+4. Signal Engine
+5. Member Trace / Journey
+6. alias later
+7. referral later
+8. reports later
+
+Decide what comes first.
+
+---
+
+## FINAL RESPONSE
+
+Return only:
+
+1. Current revenue reality.
+2. Recommended entry model.
+3. Micro-entry recommendation.
+4. Higher commitment path model.
+5. Repeat purchase loop.
+6. Money-as-social-proof doctrine.
+7. Member Trace model.
+8. Alias/display recommendation.
+9. Support/patronage revenue map.
+10. Why members spend more than $5.
+11. Recommended next sprint order.
+12. Founder decisions required.
+
+No implementation.
+No files changed.
