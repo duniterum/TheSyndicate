@@ -43,6 +43,10 @@ live First Signal — label the pending item "Seat Record", not "NFT".
 ## Rank tier names + framing (see rank-constitutional-ruling.md)
 Rank ladder renames: `$100` tier **Vanguard** (was "Founder"), `$10,000` tier **Cornerstone** (was "Genesis Circle"). Rank copy is recognition-only — never "$X to next rank"/"Rank unlocked"/spend-ladder. "Founder #"/founderNumber is identity, not a rank.
 
+## Money vocabulary — USDC is ROUTED, never "raised" (legal, guard-enforced)
+SYN is not equity/yield/an offering, so user-facing money copy says **"routed"** / **"sale volume"**, never **"raised"**. Milestone labels = "First $N in sale volume"; flow copy = "USDC routed onchain".
+**Why:** "raised" reads like a securities offering / fundraise. **Enforced:** doctrine-guard.test.ts BANNED has money-context regexes (`USDC raised`, `$N raised`, `raised onchain`, `funds|capital|money|amount|total|proceeds|dollars|sum + raised`). They are *space-scoped* so identifiers (`usdcRaised`, ABI `totalUsdcRaised()`) and ban-doc comments are intentionally exempt — keep those, only fix prose. labs/ isn't guard-scanned but keep it consistent by hand.
+
 ## on-chain spelling
 Body prose canonical = **"on-chain"** (dominant). "onchain"/"Onchain" prose split (~80 instances)
 was left as a flagged follow-up — a blanket `\bonchain` sweep risks hitting URL fragments /

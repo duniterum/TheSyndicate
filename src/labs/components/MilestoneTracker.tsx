@@ -153,7 +153,7 @@ export function MilestoneTracker() {
     },
     {
       id: "raise-100",
-      label: "First $100 raised",
+      label: "First $100 routed",
       definition: "First $100 of membership USDC routed: $70 → Vault, $20 → Liquidity, $10 → Operations.",
       trigger: "totalUsdcRaised on the Sale contract crosses $100.",
       verification: { label: "Sale contract", href: SALE_TX_HREF },
@@ -164,7 +164,7 @@ export function MilestoneTracker() {
     },
     {
       id: "raise-1k",
-      label: "First $1,000 raised",
+      label: "First $1,000 routed",
       definition: "Cumulative routing crosses $1,000 — Vault now holds $700+ from membership alone.",
       trigger: "totalUsdcRaised crosses $1,000.",
       verification: { label: "Vault wallet", href: VAULT_HREF },
@@ -175,7 +175,7 @@ export function MilestoneTracker() {
     },
     {
       id: "raise-10k",
-      label: "First $10,000 raised",
+      label: "First $10,000 routed",
       definition: "Vault holds $7,000+ in public stablecoin reserves from membership routing.",
       trigger: "totalUsdcRaised crosses $10,000.",
       verification: { label: "Vault wallet", href: VAULT_HREF },

@@ -70,7 +70,7 @@ export const METRIC_REGISTRY: Record<string, MetricVerification> = {
       "Cumulative USDC received by the Membership Sale contract since deployment — every buy() call adds to this total.",
     hook: "useSaleStats (via useProtocolPulse)",
     source:
-      "Avalanche C-Chain RPC. Reads totalRaised() on the SyndicateMembershipSale contract.",
+      "Avalanche C-Chain RPC. Reads totalUsdcRaised() on the SyndicateMembershipSale contract.",
     refresh: "Every 60 seconds.",
     status: "LIVE",
     links: dropNull([
@@ -117,7 +117,7 @@ export const METRIC_REGISTRY: Record<string, MetricVerification> = {
     key: "synSold",
     label: "SYN Sold",
     description:
-      "Cumulative SYN tokens distributed by the Membership Sale contract — equals USDC raised ÷ 0.01.",
+      "Cumulative SYN tokens distributed by the Membership Sale contract — equals USDC routed ÷ 0.01.",
     hook: "useSaleStats (via useProtocolPulse)",
     source:
       "Avalanche C-Chain RPC. Reads totalSold() on the SyndicateMembershipSale contract.",

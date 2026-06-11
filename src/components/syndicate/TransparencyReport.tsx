@@ -56,7 +56,7 @@ function RevenueHistoryCard() {
     <Section id="revenue-history">
       <SectionHeader
         eyebrow="Revenue History"
-        title={<>Every dollar <span className="text-gradient-gold">raised onchain</span></>}
+        title={<>Every dollar <span className="text-gradient-gold">routed onchain</span></>}
         description="Aggregated from the full TokensPurchased event stream on the Membership Sale contract."
       />
       <GlassCard className="p-5">

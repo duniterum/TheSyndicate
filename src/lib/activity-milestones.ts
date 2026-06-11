@@ -27,9 +27,9 @@ export const PROTOCOL_MILESTONES: Milestone[] = [
   { id: "first-buyer",       kind: "members",    target: 1,      label: "First member joined",                 description: "The protocol's first seat was sealed on Avalanche." },
   { id: "first-signal-mint", kind: "first-mint", target: 1,      label: "First Signal minted",                 description: "Archive1155 ID 1 — public mint open at 0.50 USDC." },
   { id: "patron-seal-mint",  kind: "first-mint", target: 1,      label: "First Patron Seal minted",            description: "Archive1155 ID 3 — patron mint open at 5.00 USDC." },
-  { id: "raise-100",         kind: "usdc",       target: 100,    label: "$100 raised",                         description: "First $100 of USDC routed through the Membership Sale." },
-  { id: "raise-1k",          kind: "usdc",       target: 1_000,  label: "$1,000 raised",                       description: "First $1K through the sale." },
-  { id: "raise-10k",         kind: "usdc",       target: 10_000, label: "$10,000 raised",                      description: "Crossing $10K of cumulative USDC." },
+  { id: "raise-100",         kind: "usdc",       target: 100,    label: "$100 routed",                         description: "First $100 of USDC routed through the Membership Sale." },
+  { id: "raise-1k",          kind: "usdc",       target: 1_000,  label: "$1,000 routed",                       description: "First $1K through the sale." },
+  { id: "raise-10k",         kind: "usdc",       target: 10_000, label: "$10,000 routed",                      description: "Crossing $10K of cumulative USDC." },
   { id: "members-100",       kind: "members",    target: 100,    label: "100 seats sealed",                    description: "100 unique buyers in the public registry." },
   { id: "members-333",       kind: "members",    target: 333,    label: "Genesis Signal sealed (#1 – #333)",   description: "Closes the Genesis Signal cohort." },
   { id: "members-1000",      kind: "members",    target: 1_000,  label: "First Thousand sealed (#334 – #1,000)", description: "Closes the First Thousand cohort." },
@@ -98,4 +98,49 @@ export function splitReached(statuses: MilestoneStatus[]): {
     .filter((s) => !s.reached)
     .sort((a, b) => (b.progress - a.progress));
   return { completed, upcoming };
+}
+
+// ─── Presentation truth for milestone status ─────────────────────────────
+//
+// A binary "first-mint" milestone either fired on-chain (SEALED) or it has
+// not. There is no meaningful "0 of 1" progress, so it must NEVER render as
+// "IN PROGRESS" with a fake progress bar. Its honest unreached state is
+// "AWAITING FIRST MINT" (the mint window is open per the milestone copy),
+// which is distinct from PENDING (live data unavailable). This helper
+// centralises that branching so every surface (timeline, milestones list,
+// approaching tile) speaks the same vocabulary.
+
+export function isBinaryMilestone(m: Milestone): boolean {
+  return m.kind === "first-mint";
+}
+
+export type MilestonePresentationState =
+  | "SEALED"
+  | "IN_PROGRESS"
+  | "AWAITING_FIRST_MINT"
+  | "PENDING";
+
+export type MilestonePresentation = {
+  state: MilestonePresentationState;
+  /** Pill / status text. */
+  label: string;
+  /** Whether a numeric "current / target" + progress bar is meaningful. */
+  showProgress: boolean;
+};
+
+export function milestonePresentation(s: MilestoneStatus): MilestonePresentation {
+  if (s.reached) {
+    return { state: "SEALED", label: "SEALED", showProgress: false };
+  }
+  if (isBinaryMilestone(s.milestone)) {
+    return {
+      state: "AWAITING_FIRST_MINT",
+      label: "AWAITING FIRST MINT",
+      showProgress: false,
+    };
+  }
+  if (s.current !== undefined) {
+    return { state: "IN_PROGRESS", label: "IN PROGRESS", showProgress: true };
+  }
+  return { state: "PENDING", label: "PENDING", showProgress: false };
 }

@@ -13,9 +13,9 @@ import { formatRelative } from "@/lib/chain-time";
 
 const milestoneTargets = [
   { id: "first-buyer",     label: "First buyer",                          kind: "members", target: 1 },
-  { id: "raise-100",       label: "First $100 raised",                    kind: "usdc",    target: 100 },
-  { id: "raise-1k",        label: "First $1,000 raised",                  kind: "usdc",    target: 1_000 },
-  { id: "raise-10k",       label: "First $10,000 raised",                 kind: "usdc",    target: 10_000 },
+  { id: "raise-100",       label: "First $100 routed",                    kind: "usdc",    target: 100 },
+  { id: "raise-1k",        label: "First $1,000 routed",                  kind: "usdc",    target: 1_000 },
+  { id: "raise-10k",       label: "First $10,000 routed",                 kind: "usdc",    target: 10_000 },
   { id: "members-333",     label: "Genesis Signal sealed (#1 – #333)",    kind: "members", target: 333 },
   { id: "members-1000",    label: "First Thousand sealed (#334 – #1,000)",kind: "members", target: 1_000 },
   { id: "members-3333",    label: "The Expansion sealed (#1,001 – #3,333)",kind:"members", target: 3_333 },
@@ -74,7 +74,7 @@ export function SinceYourLastVisit() {
   if (dMembers && dMembers > 0) items.push({ label: "New members", value: `+${dMembers}` });
   if (dPurchases && dPurchases > 0) items.push({ label: "Purchases", value: `+${dPurchases}` });
   if (dUsdc && dUsdc > 0)
-    items.push({ label: "USDC raised", value: `+$${dUsdc.toLocaleString("en-US", { maximumFractionDigits: 0 })}` });
+    items.push({ label: "USDC routed", value: `+$${dUsdc.toLocaleString("en-US", { maximumFractionDigits: 0 })}` });
   if (dVault && dVault > 0)
     items.push({ label: "Vault grew", value: `+$${dVault.toLocaleString("en-US", { maximumFractionDigits: 0 })}` });
 

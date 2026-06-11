@@ -1,9 +1,10 @@
 // Read-only Contract Integration Status widget for the deployed
 // SyndicateArchive1155 contract on Avalanche C-Chain.
 //
-// Doctrine: contract is DEPLOYED, validation IN PROGRESS, no public drop
-// activated. Reads are real and live where they succeed — values that fail
-// or are unavailable show honest labels. No mint/approve/quantity/price UI.
+// Doctrine: contract is DEPLOYED; ID 1 (First Signal) and ID 3 (Patron
+// Seal) public mints are ACTIVE; ID 2 is reserved/disabled. Reads are real
+// and live where they succeed — values that fail or are unavailable show
+// honest labels. No mint/approve/quantity/price UI.
 //
 // See docs/DEPLOYMENT_STATE_V1.md and docs/CONTRACT_INTEGRATION_STATUS.md.
 import { GlassCard, Pill } from "@/components/syndicate/Primitives";
@@ -78,9 +79,22 @@ export function ArchiveContractStatus() {
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <StatusPill tone="live">DEPLOYED</StatusPill>
         <StatusPill tone="live">PUBLIC DROPS · {s.publicDropsActivated}</StatusPill>
-        <StatusPill tone="live">ID 1 · ACTIVE · MINT OPEN</StatusPill>
-        <StatusPill tone="reserved">ID 2 · RESERVED · DISABLED</StatusPill>
-        <StatusPill tone="validation">ID 3 · CONFIGURED · NOT ACTIVE</StatusPill>
+        {s.artifacts.map((a) => {
+          const id = a.id;
+          const active = a.active as boolean;
+          const reserved = a.configured === "RESERVED_DISABLED";
+          const tone: Tone = reserved ? "reserved" : active ? "live" : "validation";
+          const label = reserved
+            ? `ID ${id} · RESERVED · DISABLED`
+            : active
+              ? `ID ${id} · ACTIVE · MINT OPEN`
+              : `ID ${id} · CONFIGURED · NOT ACTIVE`;
+          return (
+            <StatusPill key={id} tone={tone}>
+              {label}
+            </StatusPill>
+          );
+        })}
         <StatusPill tone={readStatusTone}>{readStatusLabel}</StatusPill>
         <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           Archive Contract · Avalanche · {s.deployedAt}
@@ -91,11 +105,11 @@ export function ArchiveContractStatus() {
         Archive Contract — Deployed on Avalanche · First public mint OPEN
       </h3>
       <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-        Read-only contract state. The First Signal (ID 1) public mint is
-        open at 0.50 USDC on Avalanche (wallet limit 5). All other IDs
-        remain inactive. Values below come from live on-chain reads; if a
-        read fails it is labeled honestly and never replaced with fake or
-        zero values.
+        Read-only contract state. The First Signal (ID 1) and Patron Seal
+        (ID 3) public mints are open on Avalanche (0.50 and 5.00 USDC,
+        wallet limit 5 each). ID 2 is reserved and disabled. Values below
+        come from live on-chain reads; if a read fails it is labeled
+        honestly and never replaced with fake or zero values.
       </p>
 
       {/* Address + explorer links */}

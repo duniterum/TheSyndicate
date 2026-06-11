@@ -76,7 +76,7 @@ export function MarketDashboard() {
       status: "live",
     },
     {
-      label: "USDC Raised",
+      label: "USDC Routed",
       value: usdcRaised !== undefined ? `$${fmtN(usdcRaised, 2)}` : (loading ? dash : "—"),
       hint: "Sale totalUsdcRaised()",
       href: explorerUrlFor("MEMBERSHIP_SALE_CONTRACT_ADDRESS"),

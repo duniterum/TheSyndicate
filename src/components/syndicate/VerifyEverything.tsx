@@ -89,7 +89,7 @@ function useCategories(): Category[] {
     rows: [
       {
         id: "rev-total",
-        claim: "Total USDC raised by the Membership Sale is publicly readable.",
+        claim: "Total USDC routed by the Membership Sale is publicly readable.",
         source: "totalUsdcRaised() on Membership Sale",
         explorerLabel: "Sale contract",
         explorerHref: explorerUrlFor("MEMBERSHIP_SALE_CONTRACT_ADDRESS"),

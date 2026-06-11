@@ -54,7 +54,7 @@ export function RoutingFlow() {
         description="The Membership Sale contract routes every payment on-chain. No multisig, no manual transfer — the split is enforced in code."
       />
 
-      {/* Total raised + atomic split bar */}
+      {/* Total routed + atomic split bar */}
       <div className="surface elevated p-4 mb-4">
         <div className="flex flex-wrap items-baseline justify-between gap-3 mb-3">
           <div>

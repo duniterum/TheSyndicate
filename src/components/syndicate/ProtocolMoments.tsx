@@ -1,5 +1,5 @@
 // Protocol Moments — compact "I was there" rail.
-// Pure derivation from live totals (members + USDC raised). Each moment is either
+// Pure derivation from live totals (members + USDC routed). Each moment is either
 // REACHED (with the threshold crossed) or NEXT (the one coming up). No fake data,
 // no fabricated timestamps — we only label state, never invent it.
 

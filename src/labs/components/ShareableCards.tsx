@@ -376,8 +376,8 @@ export function ProtocolSnapshots() {
     {
       kind: "revenue",
       eyebrow: "Membership revenue",
-      title: "USDC raised onchain",
-      primaryLabel: "Total raised",
+      title: "USDC routed onchain",
+      primaryLabel: "Total routed",
       primaryValue:
         sale.totalUsdcRaised !== undefined ? `$${fmtUsdc(sale.totalUsdcRaised)}` : "PENDING",
       primarySub:
@@ -564,7 +564,7 @@ function buildSnapshotShareText(
   const tail = "Every wallet, route and balance is publicly verifiable on Avalanche.";
   switch (kind) {
     case "revenue":
-      return `The Syndicate · Membership revenue (${status}): ${primary} USDC raised onchain · ${secondary} buyers. ${tail}`;
+      return `The Syndicate · Membership revenue (${status}): ${primary} USDC routed onchain · ${secondary} buyers. ${tail}`;
     case "assets":
       return `The Syndicate · Protocol assets (${status}): ${primary} sitting in the public Vault wallet — 70% of every membership USDC routes here atomically. ${tail}`;
     case "liquidity":

@@ -25,6 +25,7 @@ import { useProtocolTruth } from "@/lib/protocol-truth";
 import {
   PROTOCOL_MILESTONES,
   evaluateMilestones,
+  milestonePresentation,
   type MilestoneStatus,
 } from "@/lib/activity-milestones";
 import { txExplorerUrl, ARCHIVE_NFT_EXPLORERS } from "@/lib/syndicate-config";
@@ -116,6 +117,7 @@ export function StoryTimeline() {
         <ol className="divide-y divide-border/40">
           {rows.map(({ status: s, proofKind, proofValue, proofHref, proofLabel }, i) => {
             const m = s.milestone;
+            const pres = milestonePresentation(s);
             return (
               <li
                 key={m.id}
@@ -129,13 +131,23 @@ export function StoryTimeline() {
                     <span className="text-sm md:text-base font-medium text-foreground truncate">
                       {s.reached ? "✓ " : ""}{m.label}
                     </span>
-                    <Pill tone={s.reached ? "success" : s.current !== undefined ? "warning" : "muted"}>
-                      {s.reached ? "SEALED" : s.current !== undefined ? "IN PROGRESS" : "PENDING"}
+                    <Pill
+                      tone={
+                        pres.state === "SEALED"
+                          ? "success"
+                          : pres.state === "IN_PROGRESS"
+                            ? "warning"
+                            : pres.state === "AWAITING_FIRST_MINT"
+                              ? "navy"
+                              : "muted"
+                      }
+                    >
+                      {pres.label}
                     </Pill>
                   </div>
                   <div className="mt-0.5 text-xs text-muted-foreground truncate">
                     {m.description}
-                    {!s.reached && s.remaining !== undefined && (
+                    {!s.reached && pres.showProgress && s.remaining !== undefined && (
                       <> · {s.remaining.toLocaleString("en-US")} to seal</>
                     )}
                   </div>

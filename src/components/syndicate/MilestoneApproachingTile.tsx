@@ -1,7 +1,7 @@
 // "Milestone Approaching" tile.
 //
 // Derives the single closest canonical milestone the protocol is approaching
-// from already-LIVE inputs (members + USDC raised + first-mint flags) via
+// from already-LIVE inputs (members + USDC routed + first-mint flags) via
 // evaluateMilestones() + splitReached(). No countdowns, no projected dates,
 // no invented thresholds — pure distance to a real on-chain threshold.
 //
@@ -16,6 +16,7 @@ import { useProtocolEvents } from "@/lib/protocol-events";
 import {
   evaluateMilestones,
   splitReached,
+  isBinaryMilestone,
   type MilestoneStatus,
 } from "@/lib/activity-milestones";
 import { GlassCard, Section, StatusPill } from "./Primitives";
@@ -26,8 +27,12 @@ const fmtInt = (n: number | undefined) =>
   n === undefined ? "—" : n.toLocaleString("en-US", { maximumFractionDigits: 0 });
 
 function pickApproaching(upcoming: MilestoneStatus[]): MilestoneStatus | undefined {
-  // Closest = highest progress, ignoring ones whose `current` is unknown.
-  return upcoming.filter((s) => s.current !== undefined)[0];
+  // Closest = highest progress, ignoring binary first-mint milestones
+  // (distance to a one-shot mint event is meaningless) and ones whose
+  // `current` is unknown.
+  return upcoming.filter(
+    (s) => !isBinaryMilestone(s.milestone) && s.current !== undefined,
+  )[0];
 }
 
 export function MilestoneApproachingTile() {

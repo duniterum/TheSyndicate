@@ -21,7 +21,7 @@ const AVA_BLOCK_SECONDS = 2; // Avalanche C-Chain ≈ 2s/block
 
 export type ProtocolPulse = {
   isLoading: boolean;
-  // raised + distribution
+  // routed + distribution
   usdcRaised: number | undefined;
   synSold: number | undefined;
   buyers: number | undefined;

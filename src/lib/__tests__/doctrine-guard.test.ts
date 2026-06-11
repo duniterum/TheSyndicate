@@ -99,6 +99,15 @@ const BANNED: Array<{ name: string; re: RegExp; allowFiles?: Set<string> }> = [
   { name: "Rank wealth multiplier",        re: /scoreMultiplier/ },
   { name: "Compounder Score (retired)",    re: /[Cc]ompounder/ },
   { name: "Genesis Circle rank (renamed)", re: /Genesis Circle/ },
+  // ─── Phase 0D — protocol-money "raised" vocabulary (legal) ──────────────
+  // SYN is not equity / yield / an offering. USDC is ROUTED, never "raised".
+  // Money-context only: these never match the internal field `usdcRaised`,
+  // the ABI fn `totalUsdcRaised()` (no space before "raised"), or the
+  // comments that document this very ban (e.g. 'no "raised"').
+  { name: "money 'USDC raised' (use 'USDC routed')",  re: /USDC raised/i },
+  { name: "'$N raised' (use '$N routed')",            re: /\$[\d,]+\s+raised\b/i },
+  { name: "'raised onchain' (use 'routed onchain')",  re: /raised\s+on-?chain/i },
+  { name: "money word + 'raised' (use 'routed')",     re: /\b(?:funds|capital|money|amount|total|proceeds|dollars?|sum)\s+raised\b/i },
 ];
 
 function walk(dir: string, out: string[] = []): string[] {

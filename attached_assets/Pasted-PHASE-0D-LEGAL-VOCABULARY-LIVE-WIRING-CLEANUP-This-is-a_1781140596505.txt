@@ -1,0 +1,137 @@
+PHASE 0D — LEGAL VOCABULARY + LIVE WIRING CLEANUP
+
+This is an execution pass.
+
+Use `docs/canon/` as source of truth.
+
+Goal:
+Remove legally risky wording and fix live-data/status inconsistencies before Phase 1.
+
+Current visible issues:
+
+* “USDC raised” appears in the UI.
+* Milestone rows use “$100 raised”, “$1,000 raised”, “$10,000 raised”.
+* Some live statuses appear incorrect / stale:
+
+  * first member joined is sealed, but other completed actions may still show IN PROGRESS.
+  * live artifact states and attribution/verification should match actual on-chain/project state.
+* “Indexer behind by X blocks · recommendations paused” appears prominently and may confuse users if recommendations are not needed for the viewed section.
+
+Scope:
+
+1. Remove “raised” vocabulary everywhere.
+   Search the full codebase and docs for:
+
+* raised
+* USDC raised
+* funds raised
+* amount raised
+* fundraising
+* raise/raising where used in protocol-money context
+
+Replace with canon-safe wording depending on context:
+
+Preferred:
+
+* USDC routed
+* routed through sale
+* sale volume
+* protocol flow
+* sale processed
+* milestone reached
+* vault routed
+* membership sale volume
+
+Examples:
+
+* “USDC raised” → “USDC routed”
+* “$100 raised” → “$100 routed”
+* “First $100 of USDC routed through the Membership Sale”
+* “$1,000 raised” → “$1,000 routed”
+* “$10,000 raised” → “$10,000 routed”
+
+Do not use:
+
+* raised
+* fundraising
+* investment
+* ROI
+* yield
+* dividend
+* passive income
+* profit promise
+
+2. Update legal vocabulary guard if appropriate.
+   If “raised” is not currently banned, add a safe rule or test coverage so it cannot return in protocol-money contexts.
+   Do this carefully:
+
+* do not ban “raise” globally if it breaks harmless phrases like “raise an error”
+* prefer route/copy-level checks or money-context checks if available.
+
+3. Fix visible protocol milestone/status wiring.
+   Audit the milestone component(s) shown in the screenshots:
+
+* First member joined
+* First Signal minted
+* First Patron Seal minted
+* $100 / $1,000 / $10,000 sale milestones
+* artifact readiness/status grid
+
+For each row:
+
+* verify whether status is computed from live data, config, or static placeholder
+* if live data exists, wire it correctly
+* if live data does not exist, label it honestly as PENDING / LOCKED / SEALED BY EVENT / PARTIAL
+* do not show completed live events as IN PROGRESS
+* do not show simulated attribution as live
+
+4. Fix artifact status truth.
+   The artifact grid must reflect actual Archive1155 state:
+
+* First Signal mint (ID 1) = LIVE if mint open
+* Patron Seal mint (ID 3) = LIVE if mint open
+* future artifacts = SEALED BY EVENT / LOCKED / PENDING as appropriate
+* no generic “NFT pending” if Archive1155 is deployed and IDs 1 and 3 are live
+
+5. Investigate “Indexer behind by X blocks · recommendations paused”.
+   Find:
+
+* what component renders it
+* why it appears
+* whether it is accurate
+* whether it is relevant to the current surface
+* whether the wording is too alarming
+
+If accurate, keep but improve wording and placement.
+If stale or unrelated, fix or hide where inappropriate.
+
+6. Verification.
+   Run:
+
+* full text grep for “raised” and related unsafe phrases
+* doctrine guard
+* `tsc --noEmit`
+* relevant tests
+* full test suite if practical
+
+Rules:
+
+* No new features.
+* No new economics.
+* No referral.
+* No burn.
+* No governance.
+* No redesign.
+* No taxonomy changes.
+* Fix wording and truth wiring only.
+
+Final response:
+Give concise summary:
+
+* files changed
+* banned/replaced vocabulary
+* milestone/status fixes
+* artifact status fixes
+* indexer banner decision
+* tests run
+* remaining issues

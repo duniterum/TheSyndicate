@@ -609,7 +609,7 @@ export function SaleStatsPanel() {
       <div className="grid grid-cols-2 gap-2">
         <Stat label="Available SYN" value={fmtSyn(s.availableSyn)} />
         <Stat label="Total SYN sold" value={fmtSyn(s.totalSynSold)} />
-        <Stat label="Total USDC raised" value={`$${fmtUsdc(s.totalUsdcRaised)}`} />
+        <Stat label="Total USDC routed" value={`$${fmtUsdc(s.totalUsdcRaised)}`} />
         <Stat label="Total buyers" value={s.totalBuyers !== undefined ? s.totalBuyers.toString() : "—"} />
         <Stat label="Purchase count" value={s.purchaseCount !== undefined ? s.purchaseCount.toString() : "—"} />
         <Stat label="Paused?" value={s.paused === undefined ? "—" : s.paused ? "Yes" : "No"} />

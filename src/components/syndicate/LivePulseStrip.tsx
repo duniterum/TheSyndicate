@@ -1,5 +1,5 @@
 // Homepage Live Pulse — one row that proves the protocol is alive right now.
-// Members · USDC raised · Vault · LP TVL · SYN sold · Last buy · Next member #.
+// Members · USDC routed · Vault · LP TVL · SYN sold · Last buy · Next member #.
 // Every cell links to its verification source. No invented numbers.
 //
 // Wave 3A: every event-derived cell now carries 24h / 7d delta badges.
@@ -71,8 +71,8 @@ export function LivePulseStrip() {
       label: "USDC Routed",
       value: fmtUsd(p.usdcRaised, 2),
       hint: "Sale contract",
-      delta24h: { value: d24?.usdcRaised, unit: "USDC raised", format: fmtPlusUsd, available: Boolean(d24) },
-      delta7d: { value: d7?.usdcRaised, unit: "USDC raised", format: fmtPlusUsd, available: Boolean(d7) },
+      delta24h: { value: d24?.usdcRaised, unit: "USDC routed", format: fmtPlusUsd, available: Boolean(d24) },
+      delta7d: { value: d7?.usdcRaised, unit: "USDC routed", format: fmtPlusUsd, available: Boolean(d7) },
     },
     {
       metricKey: "vaultRouted",

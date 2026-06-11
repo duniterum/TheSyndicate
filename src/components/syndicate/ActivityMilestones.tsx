@@ -9,6 +9,7 @@ import { useProtocolEvents } from "@/lib/protocol-events";
 import {
   evaluateMilestones,
   splitReached,
+  milestonePresentation,
   type MilestoneStatus,
 } from "@/lib/activity-milestones";
 import { GlassCard, Section, SectionHeader, StatusPill } from "./Primitives";
@@ -100,7 +101,9 @@ export function ActivityMilestones() {
 }
 
 function MilestoneRow({ s, state }: { s: MilestoneStatus; state: "done" | "next" }) {
+  const pres = milestonePresentation(s);
   const pct = Math.round(s.progress * 100);
+  const showBar = state === "next" && pres.showProgress;
   return (
     <li className="py-3 first:pt-0 last:pb-0">
       <div className="flex items-center justify-between gap-3 mb-1.5">
@@ -117,14 +120,18 @@ function MilestoneRow({ s, state }: { s: MilestoneStatus; state: "done" | "next"
             <span className="mono text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold)]">
               Sealed
             </span>
-          ) : (
+          ) : pres.showProgress ? (
             <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground tabular-nums">
               {fmtN(s.current)} / {fmtN(s.milestone.target)}
+            </span>
+          ) : (
+            <span className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--navy-soft)]">
+              {pres.label}
             </span>
           )}
         </div>
       </div>
-      {state === "next" && (
+      {showBar && (
         <div className="h-1 rounded-full bg-border/40 overflow-hidden" aria-hidden="true">
           <div
             className="h-full"
