@@ -192,7 +192,7 @@ A single scalar cannot power recognition labels or report sections at scale; two
 | **Growth** | who you brought | referral (FUTURE) | `Growth builder` |
 | **Participation** | what you do | purchases, mints, rank | (depth, aggregate) |
 | **Structural** | protocol thresholds | chapter, milestones | (protocol-subject) |
-| **Historic** | named in memory | Chronicle | `Historic member` |
+| **Historic** | named in memory | Chronicle-linked originating **EVENT** *(not by reading Chronicle itself — §2.1)* | `Historic member` |
 
 *"Memory" is a layer, not a type. "Building" folds into Growth/Participation.*
 
