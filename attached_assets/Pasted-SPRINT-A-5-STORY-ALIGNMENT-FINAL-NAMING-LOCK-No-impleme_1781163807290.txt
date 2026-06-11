@@ -1,0 +1,291 @@
+SPRINT A.5 — STORY ALIGNMENT & FINAL NAMING LOCK
+
+No implementation.
+
+No code.
+
+No contracts.
+
+No UI work.
+
+No redesign.
+
+No Signal Engine yet.
+
+No public changes.
+
+Goal:
+
+The architecture is now frozen in:
+
+TRUTH → EVENTS → SIGNALS → MEMORY → STORY
+
+Before Sprint B begins, we want to ensure all unresolved founder decisions are fully aligned with the Story Doctrine.
+
+This is the final naming and narrative alignment pass.
+
+After this sprint:
+
+* naming freezes
+* story freezes
+* prestige model freezes
+
+Then implementation begins.
+
+---
+
+## CONTEXT
+
+Architecture is frozen.
+
+The protocol narrative currently trends toward:
+
+Most people watch from the outside.
+
+Members take a seat.
+
+Participate.
+
+Leave a trace.
+
+Become remembered.
+
+The protocol is:
+
+A verifiable on-chain membership society where participation, support, timing, and conviction become part of a permanent public memory.
+
+Review this narrative and all unresolved decisions through that lens.
+
+---
+
+## PART 1 — RANK REVIEW
+
+Current rank ladder exists.
+
+Review every rank name.
+
+Questions:
+
+1. Does each rank fit the Story Doctrine?
+2. Does each rank feel timeless?
+3. Does each rank create future collisions?
+4. Does each rank create governance expectations?
+5. Does each rank create legal misunderstandings?
+
+Special focus:
+
+Patron Rank
+
+Council Rank
+
+Provide:
+
+* keep
+* rename
+* reason
+
+If rename is recommended:
+
+give the best candidates.
+
+Goal:
+
+One coherent hierarchy that can survive 10+ years.
+
+---
+
+## PART 2 — PATRON CONSTITUTION
+
+Review:
+
+Patron Seal
+
+Patron Actions
+
+Patron Support
+
+Patron Recognition
+
+Question:
+
+Should "Patron" be permanently reserved for support-related concepts?
+
+Evaluate:
+
+Advantages
+
+Risks
+
+Story consistency
+
+Long-term scalability
+
+Recommendation:
+
+KEEP RESERVED
+
+or
+
+ALLOW SHARED USAGE
+
+with reasoning.
+
+---
+
+## PART 3 — PRESTIGE HIERARCHY
+
+Review the current doctrine:
+
+Prestige should not primarily come from money.
+
+Current hypothesis:
+
+1. Member Number
+2. Historical Firsts
+3. Chronicle Inclusion
+4. Proof of Fire
+5. Chapter Sealing
+6. Patron Actions
+7. Rank
+
+Evaluate whether this ordering is correct.
+
+Improve it if necessary.
+
+Goal:
+
+Determine what should truly matter in The Syndicate.
+
+---
+
+## PART 4 — PERMANENT VS TEMPORARY
+
+Review:
+
+Permanent prestige
+
+Examples:
+
+* Member Number
+* Historical Firsts
+* Chronicle
+* Proof of Fire
+
+Temporary prestige
+
+Examples:
+
+* Rank
+* Holdings
+* LP position
+* Current participation
+
+Questions:
+
+Is this split correct?
+
+What belongs in each category?
+
+Does any current protocol element sit in the wrong category?
+
+---
+
+## PART 5 — THE MEMBER JOURNEY
+
+Review the complete user journey.
+
+Current candidate:
+
+Observe
+→ Enter
+→ Take a Seat
+→ Participate
+→ Rise
+→ Leave a Trace
+→ Become Remembered
+
+Evaluate:
+
+* clarity
+* emotional strength
+* scalability
+* compatibility with future systems
+
+Improve if necessary.
+
+Goal:
+
+One canonical journey.
+
+---
+
+## PART 6 — STORY CONSISTENCY TEST
+
+For each current concept:
+
+* Seat
+* Member Number
+* Rank
+* Chapter
+* Artifact
+* Patron Seal
+* Proof of Fire
+* Referral
+* Chronicle
+* Recognition
+* Reports
+
+Answer:
+
+What role does this play in the story?
+
+If a concept cannot be explained in one sentence:
+
+it may not be properly aligned.
+
+---
+
+## PART 7 — REPORTS & MEMORY
+
+Review:
+
+Weekly Chronicle
+
+Monthly Report
+
+Quarterly Report
+
+Annual State of The Syndicate
+
+Determine whether Half-Year Reports should be removed.
+
+Goal:
+
+A clean memory cadence.
+
+No duplication.
+
+---
+
+## PART 8 — FINAL FOUNDER LOCK
+
+Return only:
+
+1. Final rank recommendations.
+2. Patron recommendation.
+3. Prestige hierarchy.
+4. Permanent vs Temporary table.
+5. Canonical member journey.
+6. Story role of every major protocol concept.
+7. Report cadence recommendation.
+8. Remaining founder decisions.
+
+Do not implement.
+
+Do not update code.
+
+Do not update canon.
+
+Do not change files.
+
+This is the final narrative alignment pass before Sprint B — Signal Engine.
