@@ -1,0 +1,435 @@
+SPRINT A.8 — PROTOCOL VALUE, MEMORY & RECOGNITION MAP
+
+Status:
+FOUNDATION SPRINT
+
+No code.
+No UI.
+No contracts.
+No routes.
+No implementation.
+
+Output only:
+Founder Report.
+
+Use:
+
+* Canon (00–08)
+* Foundation Freeze
+* Financial Trace doctrine
+* Chronicle doctrine
+* Recognition doctrine
+* Member Trace parking lot
+* Existing event pipeline
+* Existing metrics registry
+* Existing memory architecture
+
+Read everything.
+
+This sprint exists because we have discussed:
+
+* burns
+* referrals
+* attribution
+* aliases
+* recognition
+* support actions
+* patron actions
+* chapter participation
+* chapter sealing
+* proof of fire
+* historical firsts
+* member journeys
+* yearly recaps
+* financial traces
+* protocol traces
+* memory traces
+* reports
+
+for many hours.
+
+Before building more systems we need a single unified map.
+
+---
+
+## PRIMARY QUESTION
+
+What types of value can a member create inside The Syndicate?
+
+Do not think in features.
+
+Do not think in pages.
+
+Do not think in components.
+
+Think in protocol value creation.
+
+---
+
+## PART 1 — VALUE TAXONOMY
+
+Identify every distinct value category.
+
+Possible examples:
+
+Financial Value
+Growth Value
+Support Value
+Conviction Value
+Historical Value
+Structural Value
+Participation Value
+Memory Value
+Social Value
+
+Do not assume these are correct.
+
+Rebuild from first principles.
+
+Return the final taxonomy.
+
+For each category explain:
+
+* why it exists
+* how it is created
+* why it matters
+* how it differs from the others
+
+---
+
+## PART 2 — VALUE LIFECYCLE
+
+For every value category classify:
+
+Temporary
+Persistent
+Permanent
+
+Examples:
+
+Current LP position
+= Temporary
+
+Member Number
+= Permanent
+
+Proof of Fire
+= Permanent
+
+Current Rank
+= Persistent
+
+Build the complete matrix.
+
+---
+
+## PART 3 — PRESTIGE HIERARCHY
+
+Re-evaluate the current hierarchy.
+
+Current thinking:
+
+Member Number
+Historical Firsts
+Chronicle Inclusion
+Proof of Fire
+Patron Actions
+Chapter Standing
+Rank
+
+Challenge it.
+
+Pressure test it.
+
+Return:
+
+* final hierarchy
+* justification
+* contradictions
+* future risks
+
+---
+
+## PART 4 — MEMORY DESTINATIONS
+
+For every value category determine:
+
+Should it feed:
+
+Activity
+Chronicle
+Recognition
+Reports
+Financial Trace
+Protocol Trace
+Member Journey
+
+or not?
+
+Build a complete matrix.
+
+Goal:
+
+One source of truth.
+
+No duplication.
+
+No parallel systems.
+
+---
+
+## PART 5 — MEMBER JOURNEY SYSTEM
+
+Using the entire doctrine:
+
+Design the future "Your Journey Through The Syndicate" model.
+
+Not UI.
+
+Not pages.
+
+Data model only.
+
+What should a member eventually see after:
+
+30 days
+1 year
+5 years
+10 years
+
+Examples:
+
+* purchases
+* burns
+* chapter history
+* referrals
+* support actions
+* milestones witnessed
+* protocol growth experienced
+* historical moments participated in
+
+Determine:
+
+What deserves permanent memory.
+
+What should fade.
+
+What should be summarized.
+
+---
+
+## PART 6 — RECOGNITION SYSTEM
+
+Deeply analyze Recognition.
+
+Questions:
+
+What is Recognition actually measuring?
+
+Participation?
+Support?
+Contribution?
+Presence?
+Influence?
+History?
+
+Should Recognition be:
+
+single score
+multi-axis
+badges
+labels
+milestones
+none
+
+Do not implement.
+
+Return doctrine.
+
+---
+
+## PART 7 — ALIAS & IDENTITY
+
+Analyze:
+
+Anonymous Member #
+Alias
+Pseudonym
+Named Patron
+Public Supporter
+Verified Identity
+
+Without KYC assumptions.
+
+Questions:
+
+What should be possible?
+
+What should remain private?
+
+What should become permanent?
+
+How does this fit:
+
+Recognition
+Chronicle
+Member Journey
+Support
+
+Return recommendation.
+
+---
+
+## PART 8 — REFERRAL & ATTRIBUTION
+
+Ignore commissions.
+
+Ignore payouts.
+
+Think memory.
+
+Think history.
+
+Examples:
+
+Member #27 introduced Member #845.
+
+Member #27 introduced 250 members.
+
+Member #27 helped seal Chapter III.
+
+Member #27 created a growth branch that generated 12,000 members.
+
+Questions:
+
+What deserves permanent memory?
+
+What deserves Recognition?
+
+What deserves Chronicle?
+
+What is only temporary?
+
+Return doctrine.
+
+---
+
+## PART 9 — SCALING TEST
+
+Pressure test against:
+
+1,000,000 members
+
+100,000,000 events
+
+1,000,000,000 events
+
+Ask:
+
+What breaks?
+
+What becomes noise?
+
+What remains meaningful?
+
+What survives 10 years?
+
+What deserves permanent storage?
+
+What deserves summarization?
+
+What deserves aggregation?
+
+Return scaling recommendations.
+
+---
+
+## PART 10 — FINAL MAP
+
+Produce one final diagram:
+
+TRUTH
+→ EVENTS
+→ SIGNALS
+→ MEMORY
+→ STORY
+
+and place:
+
+Financial Trace
+Protocol Trace
+Recognition
+Chronicle
+Reports
+Referrals
+Aliases
+Proof of Fire
+Historical Firsts
+Patron Actions
+Member Journey
+
+in their exact constitutional positions.
+
+No ambiguity.
+
+No overlaps.
+
+No parallel architectures.
+
+---
+
+## IMPORTANT
+
+Do not propose implementation.
+
+Do not write code.
+
+Do not modify canon.
+
+Do not create files.
+
+Do not create routes.
+
+Do not create scores.
+
+Do not create databases.
+
+This is a founder-level architecture exercise.
+
+The objective is:
+
+If The Syndicate reaches 1,000,000 members and exists for 20 years,
+
+the protocol still knows:
+
+* what mattered
+* who mattered
+* why it mattered
+* what should be remembered
+* what should fade
+
+without rebuilding the architecture later.
+
+---
+
+## FINAL RESPONSE
+
+Return only:
+
+1. Value Taxonomy
+2. Value Lifecycle
+3. Prestige Hierarchy
+4. Memory Destination Matrix
+5. Member Journey Doctrine
+6. Recognition Doctrine
+7. Alias Doctrine
+8. Referral Memory Doctrine
+9. Scaling Analysis
+10. Final Constitutional Map
+
+and identify:
+
+* contradictions
+* drift risks
+* missing systems
+* founder decisions still required
