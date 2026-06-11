@@ -1,0 +1,261 @@
+FOUNDER DECISION LOCK — THE EMOTIONAL ENGINE OF THE SYNDICATE
+
+No implementation.
+
+No code.
+
+No redesign.
+
+No new contracts.
+
+No UI changes.
+
+This is a doctrine and product-thinking pass.
+
+Goal:
+
+The technical foundation is becoming stable:
+
+* Canon
+* Metrics Registry
+* Event Pipeline
+* Protocol Memory
+* Chronicle Candidates
+* Recognition Candidates
+* Ledger
+* Reporting Foundation
+
+Before additional implementation, we need to understand the emotional engine that drives long-term participation.
+
+This is not a legal or financial analysis.
+
+This is a product, community, collector, and behavioral analysis.
+
+---
+
+## PART 1 — WHAT PEOPLE ACTUALLY BUY
+
+Analyze The Syndicate through multiple lenses:
+
+* collector
+* gamer
+* crypto-native
+* long-term holder
+* community builder
+* early adopter
+* status seeker
+* supporter
+* lurker / observer
+
+For each lens:
+
+What are they really buying?
+
+Examples:
+
+Not:
+
+* token
+* NFT
+
+But possibly:
+
+* status
+* belonging
+* recognition
+* achievement
+* participation
+* historical significance
+* identity
+* visibility
+* legacy
+
+---
+
+## PART 2 — PROGRESSION MODEL
+
+Evaluate whether the current progression already exists implicitly.
+
+Current known elements:
+
+* Seat
+* Member Number
+* Rank
+* Chapter
+* Artifact
+* Activity
+* Chronicle
+* Proof of Fire
+* Patron Seal
+* Protocol Milestones
+
+Map them into a progression system.
+
+Example:
+
+Observe
+→ Join
+→ Participate
+→ Progress
+→ Leave a Trace
+→ Become Remembered
+
+Do not invent new systems.
+
+Determine whether the current architecture already supports this.
+
+---
+
+## PART 3 — RECOGNITION VS STATUS
+
+Clarify:
+
+What is status?
+
+What is recognition?
+
+What is memory?
+
+What is legacy?
+
+How should they interact?
+
+Current concern:
+
+We do not want:
+
+* pay-to-win
+* pay-to-appear
+* fake prestige
+
+But we do want:
+
+* meaningful recognition
+* earned recognition
+* historically relevant actions
+* visible protocol participation
+
+Determine how the current architecture naturally supports this.
+
+---
+
+## PART 4 — WHAT MAKES MEMBERS RETURN?
+
+Ignore financial returns.
+
+Analyze:
+
+Why would someone return weekly?
+
+Why would someone return monthly?
+
+Why would someone stay for years?
+
+Consider:
+
+* chapter progression
+* milestones
+* protocol memory
+* collecting
+* rank progression
+* proof of participation
+* historical events
+* future reports
+* Chronicle
+
+Identify the strongest existing loops.
+
+---
+
+## PART 5 — REPORT CADENCE
+
+We previously discussed:
+
+* Daily Chronicle
+* Weekly Chronicle
+* Monthly Report
+* Quarterly Report
+* Half-Year Report
+* Annual State of The Syndicate
+
+Analyze:
+
+Which cadence serves which purpose?
+
+Example:
+
+Daily:
+raw protocol heartbeat?
+
+Weekly:
+important events?
+
+Monthly:
+protocol progress?
+
+Quarterly:
+higher-level summary?
+
+Annual:
+historical record?
+
+Recommend a final structure.
+
+---
+
+## PART 6 — COMPARATIVE ANALYSIS
+
+Without changing The Syndicate's identity:
+
+Compare the emotional mechanics found in:
+
+* collector communities
+* gaming progression systems
+* achievement systems
+* club memberships
+* elite loyalty programs
+* long-term crypto communities
+
+Do not copy them.
+
+Identify the underlying principles.
+
+---
+
+## PART 7 — FOUNDER RISKS
+
+Identify:
+
+What parts of The Syndicate risk becoming:
+
+* too complex
+* too confusing
+* duplicated
+* competing systems
+* prestige inflation
+* meaningless achievements
+
+Point out where simplification is needed.
+
+---
+
+## PART 8 — FINAL MODEL
+
+Produce a concise founder recommendation:
+
+1. What people are really joining.
+2. What progression exists today.
+3. What should be remembered.
+4. What should be recognized.
+5. What should remain Activity-only.
+6. Recommended report cadence.
+7. Biggest risks.
+8. Biggest opportunities.
+
+No implementation.
+
+No code changes.
+
+No file changes.
+
+This is a doctrine and product-thinking report only.
