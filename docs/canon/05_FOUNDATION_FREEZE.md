@@ -178,6 +178,12 @@ route to Chronicle, person-subject signals route to Recognition. The codebase al
 encodes the subject axis as `chronicleEligibleForKind` — the Signal layer adds Tier
 and Type on top. It is **additive, not a rewrite.**
 
+> **Future source taxonomy (approved direction):** the founder-approved grouping of these
+> inputs into **Financial / Protocol / Memory Trace** for the future Signal Engine is
+> recorded in `07_FOUNDER_PRINCIPLE.md` (FS-1) — including an open Adjacency-Law question
+> for the two Memory-derived sources (Chronicle appearance, recognition milestone), which
+> would otherwise require SIGNALS to read MEMORY.
+
 ---
 
 ## 4. Signal scarcity law (frozen)
