@@ -71,6 +71,21 @@ function useCategories(): Category[] {
         note: "Check 'totalSupply' on the read tab.",
       },
       {
+        id: "supply-burned",
+        claim: "Burned supply equals 0 — no burn mechanism is active.",
+        source: "1,000,000,000 (genesis mint) − ERC20 totalSupply()",
+        explorerLabel: "Avascan",
+        explorerHref: SYN_EXPLORERS.avascan,
+        // Burn is structural truth: no burn mechanism is active, so this claim is
+        // always LIVE (reads 0). Never PENDING — that would imply a missing primitive.
+        status: "LIVE",
+        liveValue:
+          supply.burned !== undefined
+            ? `${supply.burned.toLocaleString("en-US")} SYN burned`
+            : undefined,
+        note: "SYN is ERC20-Burnable, but the protocol runs no burn. Unused allocations may be burned by a future governance vote.",
+      },
+      {
         id: "supply-source",
         claim: "SYN source code is verified and matches the deployed bytecode.",
         source: "Sourcify verified record",

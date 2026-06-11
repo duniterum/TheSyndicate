@@ -87,7 +87,15 @@ export function useWalletAssets(wallet: string) {
   };
 }
 
-/** SYN total supply read (live). */
+/** The full SYN supply was minted once at genesis. There is no mint function. */
+export const SYN_INITIAL_SUPPLY = 1_000_000_000;
+
+/**
+ * SYN total supply read (live), plus `burned`.
+ * SYN is ERC20-Burnable, so burn() lowers totalSupply; `burned` is the gap
+ * between the genesis mint and the live totalSupply. No burn mechanism is
+ * active today, so it reads 0 — every claim still maps to one on-chain read.
+ */
 export function useSynSupply() {
   const q = useReadContracts({
     allowFailure: true,
@@ -98,9 +106,14 @@ export function useSynSupply() {
   });
   const r = q.data?.[0];
   const raw = r && r.status === "success" ? (r.result as unknown as bigint) : undefined;
+  const totalSupply = raw !== undefined ? Number(formatUnits(raw, SYN_DECIMALS)) : undefined;
+  const burned =
+    totalSupply !== undefined ? Math.max(SYN_INITIAL_SUPPLY - totalSupply, 0) : undefined;
   return {
     isLoading: q.isLoading,
-    totalSupply: raw !== undefined ? Number(formatUnits(raw, SYN_DECIMALS)) : undefined,
+    totalSupply,
+    initialSupply: SYN_INITIAL_SUPPLY,
+    burned,
   };
 }
 

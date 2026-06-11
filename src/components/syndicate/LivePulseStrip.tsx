@@ -16,6 +16,7 @@ import { SectionHeader, StatusPill } from "./Primitives";
 import { CockpitSection, useCockpitEmbed } from "./cockpit/cockpit-shell";
 import { DeltaBadge } from "./DeltaBadge";
 import { MetricVerificationDrawer } from "./MetricVerificationDrawer";
+import { SupplyTruthLine } from "./SupplyTruthLine";
 import { TxProofPill } from "./TxProofDrawer";
 import { SourceTag } from "./SourceTag";
 import { getMetricVerification } from "@/lib/data-verification-registry";
@@ -186,6 +187,8 @@ export function LivePulseStrip() {
         </div>
       )}
 
+      {/* Supply & burn truth — fixed supply, circulating, burned 0 (gated off the cockpit embed). */}
+      {!embedded && <SupplyTruthLine className="mt-3" />}
 
       <MetricVerificationDrawer
         metricKey={openKey}

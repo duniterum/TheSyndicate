@@ -13,7 +13,7 @@
 // If you add or change an entry here, update that doc in the same PR.
 // ────────────────────────────────────────────────────────────────────────────
 
-import { CONTRACTS, LP_POOL, explorerUrlForAddress, MEMBER_DEFINITION } from "./syndicate-config";
+import { CONTRACTS, LP_POOL, SYN_EXPLORERS, explorerUrlForAddress, MEMBER_DEFINITION } from "./syndicate-config";
 
 export type VerificationStatus = "LIVE" | "PARTIAL" | "PENDING";
 
@@ -158,6 +158,49 @@ export const METRIC_REGISTRY: Record<string, MetricVerification> = {
     links: dropNull([
       explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
       explorer(CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, "Sale contract"),
+    ]),
+  },
+  synSupply: {
+    key: "synSupply",
+    label: "Total Supply",
+    description:
+      "Total SYN in existence. The full 1,000,000,000 SYN was minted once at genesis; the contract has no mint function, so this number can never go up — only down, if SYN is ever burned.",
+    hook: "useSynSupply → ERC20 totalSupply()",
+    source: "Avalanche C-Chain RPC. Reads totalSupply() on the SYN ERC20 contract.",
+    refresh: "Every 120 seconds; cached for 60 seconds.",
+    status: "LIVE",
+    links: dropNull([
+      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
+      { label: "Avascan token", href: SYN_EXPLORERS.avascan },
+    ]),
+  },
+  circulating: {
+    key: "circulating",
+    label: "Circulating",
+    description:
+      "Total supply minus the SYN still held in the seven protocol allocation wallets (Vault, Founder, Liquidity, Partnerships, Contributors, Future Ecosystem, and undistributed Membership). This is the SYN actually in public hands.",
+    hook: "useCirculatingSupply → totalSupply() − Σ allocation balanceOf()",
+    source:
+      "Avalanche C-Chain RPC. totalSupply() minus the live balanceOf() of each allocation wallet.",
+    refresh: "Every 120 seconds; cached for 60 seconds.",
+    status: "LIVE",
+    links: dropNull([
+      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
+    ]),
+  },
+  synBurned: {
+    key: "synBurned",
+    label: "Burned",
+    description:
+      "SYN permanently removed from supply, computed as 1,000,000,000 (genesis mint) − live totalSupply(). SYN is ERC20-Burnable at the contract level, but the protocol runs no burn — so this is 0. Unused allocations may be burned by a future governance vote; until then it stays 0.",
+    hook: "useSynSupply → 1,000,000,000 − totalSupply()",
+    source: "Avalanche C-Chain RPC. Derived from totalSupply() on the SYN ERC20 contract.",
+    refresh: "Every 120 seconds; cached for 60 seconds.",
+    status: "LIVE",
+    emptyState: "Reads 0 while no burn has occurred — the honest current state.",
+    links: dropNull([
+      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
+      { label: "Avascan token", href: SYN_EXPLORERS.avascan },
     ]),
   },
 };

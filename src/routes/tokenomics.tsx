@@ -6,6 +6,7 @@ import { SaleStatsPanel } from "@/components/syndicate/LivePurchase";
 import { LpStatusCard } from "@/components/syndicate/LpStatus";
 import { RoutingFlow } from "@/components/syndicate/RoutingFlow";
 import { TokenomicsDonut } from "@/components/syndicate/TokenomicsDonut";
+import { SupplyTruthLine } from "@/components/syndicate/SupplyTruthLine";
 import { RiskDisclaimer } from "@/components/syndicate/RiskDisclaimer";
 import { ContractLink, Section, SectionHeader, GlassCard } from "@/components/syndicate/Primitives";
 import {
@@ -40,6 +41,9 @@ function TokenomicsPage() {
 
   return (
     <PageShell eyebrow="Tokenomics" title="1,000,000,000 SYN · seven public allocations" description="Fixed supply, no admin, no mint. Initial mint confirmed onchain.">
+      <Section id="supply-truth">
+        <SupplyTruthLine />
+      </Section>
       <TokenomicsDonut />
       <Allocation />
 

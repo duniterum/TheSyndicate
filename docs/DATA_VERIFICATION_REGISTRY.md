@@ -25,6 +25,14 @@ belong on the homepage.
 | `synSold`     | SYN Sold        | `useSaleStats` (via `useProtocolPulse`)           | `SyndicateMembershipSale.totalSold()`                                                            | LIVE   | 60s     |
 | `lastBuy`     | Last Buy        | `useLivePurchaseEvents` (via `useProtocolPulse`)  | `TokensPurchased(buyer, usdcIn, synOut)` event scan                                              | LIVE   | 60s     |
 | `nextMember`  | Next Member     | derived (`members + 1`)                           | n/a — pure derivation of the Members count                                                       | LIVE   | 60s     |
+| `synSupply`   | Total Supply    | `useSynSupply`                                    | SYN ERC20 `totalSupply()` — fixed 1,000,000,000, no mint function                                | LIVE   | 120s    |
+| `circulating` | Circulating     | `useCirculatingSupply`                            | `totalSupply()` − Σ allocation-wallet `balanceOf()` (SYN in public hands)                        | LIVE   | 120s    |
+| `synBurned`   | Burned          | `useSynSupply` (1,000,000,000 − `totalSupply()`)  | Derived from SYN ERC20 `totalSupply()`; reads 0 — no burn mechanism active                       | LIVE   | 120s    |
+
+> `synSupply` / `circulating` / `synBurned` surface in the **SupplyTruthLine**
+> (homepage pulse strip + `/tokenomics`). They are LIVE reads off the SYN
+> contract; `synBurned` stays `0` until SYN is ever burned — the protocol runs
+> no burn today.
 
 ### Status definitions
 

@@ -652,6 +652,9 @@ export function ContractAddresses() {
           </div>
         ))}
       </dl>
+      <p className="mt-3 text-[11px] text-muted-foreground leading-snug">
+        Fixed supply: 1,000,000,000 SYN · no mint function · burn not active.
+      </p>
     </div>
   );
 }
