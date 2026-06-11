@@ -1,0 +1,120 @@
+FULL FOUNDER ACTIVATION REVIEW
+
+Read the entire project, current implementation, doctrine, contracts, routes, Holder Index, Archive1155, Membership Sale, Chronicle, ranks, transparency systems, registries, deferred ledger, and all currently implemented protocol surfaces.
+
+Do NOT perform another generic audit.
+
+Assume architecture is frozen unless a critical issue exists.
+
+Your task is now to switch from Architect Mode to Founder / Product / Growth / Behavioral Psychology / Collector / Conversion / Retention / Storytelling Mode.
+
+Use the following lenses simultaneously:
+
+* Founder
+* CEO
+* CTO
+* Product Lead
+* Growth Lead
+* Conversion Specialist
+* Behavioral Economist
+* Game Designer
+* Collector Psychology Expert
+* Storytelling Architect
+* Community Builder
+* Information Architect
+* Luxury Brand Strategist
+
+Goal:
+
+Determine the shortest realistic path from the current protocol state to:
+
+* 100 members
+* 1,000 members
+* strong retention
+* repeat purchases
+* protocol trust
+* sustainable revenue
+
+while preserving all existing doctrine.
+
+Do NOT propose new architecture for the sake of architecture.
+
+Do NOT propose new contracts unless absolutely necessary.
+
+Do NOT redesign already-finished systems.
+
+Instead:
+
+1. Identify the 10 highest-leverage improvements that can be implemented using the existing foundation.
+
+2. Rank them by:
+
+   * impact
+   * implementation effort
+   * revenue impact
+   * retention impact
+   * trust impact
+   * virality impact
+
+3. Identify which ideas are:
+
+   * must build now
+   * build later
+   * probably never build
+
+4. Analyze whether the protocol currently lacks:
+
+   * Conversion Layer
+   * Economic Visibility Layer
+   * Broadcast / Diffusion Layer
+   * Protocol Intelligence Layer
+   * Signal Layer
+
+5. For each missing layer:
+
+   * explain why it matters
+   * estimate impact
+   * propose the smallest implementation capable of validating the idea
+
+6. Review all unfinished systems:
+
+   * Signals
+   * Recognition
+   * Member Journey
+   * Chronicle
+   * Referral
+   * SeatRecord721
+   * Reports
+   * Governance
+   * Marketplace
+   * AI
+
+For each:
+
+* Is it strategically important?
+* Is it premature?
+* What dependency must exist before building it?
+
+7. Identify any major founder blind spots.
+
+8. Identify anything we are overbuilding.
+
+9. Identify anything we are underbuilding.
+
+10. Produce a final roadmap:
+
+NEXT 30 DAYS
+NEXT 90 DAYS
+NEXT 12 MONTHS
+
+with exact implementation order.
+
+Output only reality.
+
+Challenge assumptions.
+
+Do not protect previous decisions if they are wrong.
+
+The objective is not elegance.
+
+The objective is members, revenue, retention, trust, and long-term protocol value.
