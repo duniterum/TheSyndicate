@@ -1,0 +1,139 @@
+ACTIVATION SPRINT — NO RE-AUDIT, NO ARCHITECTURE EXPANSION
+
+Read the current project state, but do NOT perform another full audit.
+
+Use the latest Founder Activation Review as the strategic source of truth.
+
+The protocol architecture is frozen.
+
+Do NOT build or redesign:
+
+* Signal Engine
+* Recognition
+* Referral
+* SeatRecord721
+* Governance
+* Marketplace
+* AI
+* Reports
+* Chronicle Phase 2
+
+Focus ONLY on the next activation layer:
+
+1. Conversion Layer
+2. Economic Visibility Layer
+3. Broadcast / Diffusion Layer
+
+Goal:
+
+Turn the current live protocol from “a sale contract with pages” into a real funnel that can convert, retain, and spread.
+
+Senior lenses to apply:
+
+* Founder
+* Product Lead
+* Growth Lead
+* Conversion Specialist
+* UX Lead
+* Behavioral Economist
+* Collector Psychology Expert
+* Story Architect
+* Community Builder
+* Information Architect
+* Token Economist
+* Legal-risk-aware protocol designer
+
+Hard constraints:
+
+* No new smart contracts.
+* No new doctrine.
+* No broad redesign.
+* No full-codebase rewrite.
+* No speculative future modules.
+* No mock data presented as live.
+* No ROI, yield, dividend, governance-rights, or investment-promise language.
+* Rank remains recognition only.
+* Member = wallet that purchased through the Sale.
+* SYN = token.
+* Seat = membership record.
+* Seat Record = future optional certificate, not now.
+
+Your task:
+
+Produce a precise implementation plan for the next sprint only.
+
+Scope:
+
+A) Conversion Layer
+
+Implement or specify:
+
+* Join entry presets: $25, $100, $500, $1,000, $2,500, $10,000.
+* Presets must be action-named, not rank-named.
+* Keep $5 as the open door, but do not anchor the whole UX around $5.
+* Add clear copy explaining:
+  “one lifetime entry, many moments”
+  “every return deepens your trace”
+  “90% becomes protocol capital: 70% Vault, 20% Liquidity”
+  “10% supports Operations”
+* Add repeat-purchase CTA on /my-syndicate.
+* Add post-purchase identity moment:
+  “You are Member #N”
+  “Your seat is now part of the protocol record”
+  “Share your seat”
+
+B) Economic Visibility Layer
+
+Implement or specify:
+
+* De-mock /vault as much as possible.
+* Show only live/derived/on-chain data or clearly labeled pending/preview data.
+* Surface the 3 protocol wallets:
+  Vault
+  Liquidity
+  Operations
+* Explain the 70 / 20 / 10 routing in simple terms.
+* Show how a member purchase strengthens the protocol.
+* Add a “Protocol Capital” explanation block.
+* Avoid any language that implies return, yield, dividends, or rights.
+
+C) Broadcast / Diffusion Layer
+
+Implement or specify:
+
+* Member share cards.
+* Seat share card.
+* Financial Trace share card.
+* Milestone share card.
+* Protocol growth share card.
+* Share CTA after purchase and inside /my-syndicate.
+* Use existing data only:
+  Member #
+  rank
+  cumulative SYN
+  cumulative USDC
+  purchase count
+  join transaction
+  chapter
+  protocol totals
+* Cards should feel collectible, premium, verifiable, and simple.
+* Every share object must link back to the protocol and include verification logic where available.
+
+Output format:
+
+1. Exact files/components/routes likely affected.
+2. Exact implementation order.
+3. What to change.
+4. What not to touch.
+5. Copy blocks to add or replace.
+6. Data sources for each new UI element.
+7. Risk checks.
+8. Final QA checklist.
+
+Important:
+
+Do not implement yet unless explicitly asked.
+
+First return the plan only.
+
+The plan must be small enough to execute without another expensive full-project audit.
