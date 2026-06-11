@@ -11,7 +11,8 @@ export type ActivityFilterKey =
   | "archive"
   | "nft"
   | "liquidity"
-  | "vault";
+  | "vault"
+  | "burn";
 
 export type ActivityFilterGroup = {
   key: ActivityFilterKey;
@@ -57,6 +58,12 @@ export const ACTIVITY_FILTER_GROUPS: ActivityFilterGroup[] = [
     description: "Treasury USDC flows in and out of the Vault wallet.",
     kinds: ["vault-in", "vault-out"],
   },
+  {
+    key: "burn",
+    label: "Proof of Fire",
+    description: "Verified SYN burns — supply permanently removed via the dead address.",
+    kinds: ["burn-founder", "burn-community"],
+  },
 ];
 
 export function getActivityFilterGroup(key: ActivityFilterKey): ActivityFilterGroup {
@@ -80,6 +87,7 @@ export type ActivitySummary = {
   nft: number;
   liquidity: number;
   vault: number;
+  burn: number;
   usdcSettledTotal: number;
   lastEventBlock?: bigint;
   lastEventTxHash?: string;
@@ -91,6 +99,7 @@ export function summarizeActivity(events: ProtocolEvent[]): ActivitySummary {
   let nft = 0;
   let liquidity = 0;
   let vault = 0;
+  let burn = 0;
   let usdcSettledTotal = 0;
   for (const e of events) {
     if (e.kind === "purchase" || e.kind === "rank-reached") membership++;
@@ -107,6 +116,7 @@ export function summarizeActivity(events: ProtocolEvent[]): ActivitySummary {
       e.kind === "lp-remove"
     ) liquidity++;
     if (e.kind === "vault-in" || e.kind === "vault-out") vault++;
+    if (e.kind === "burn-founder" || e.kind === "burn-community") burn++;
     if (typeof e.amountUsd === "number") usdcSettledTotal += e.amountUsd;
   }
   const first = events[0];
@@ -117,6 +127,7 @@ export function summarizeActivity(events: ProtocolEvent[]): ActivitySummary {
     nft,
     liquidity,
     vault,
+    burn,
     usdcSettledTotal,
     lastEventBlock: first?.blockNumber,
     lastEventTxHash: first?.txHash,

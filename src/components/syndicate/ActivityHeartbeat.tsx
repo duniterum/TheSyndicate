@@ -46,6 +46,10 @@ const WHY_IT_MATTERS: Record<ProtocolEvent["kind"], string> = {
     "Archive ID 3 (Patron Seal) was minted — the optional patron artifact for early members at 5.00 USDC.",
   "nft-mint-other":
     "An Archive1155 artifact was minted on the deployed NFT contract.",
+  "burn-founder":
+    "SYN was permanently removed from supply by the Founder wallet — a verified burn (Proof of Fire) sent to the dead address. The protocol runs no automated burn.",
+  "burn-community":
+    "SYN was permanently removed from supply by a member — a verified burn (Proof of Fire) sent to the dead address.",
 };
 
 export function ActivityHeartbeat() {

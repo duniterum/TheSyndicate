@@ -1,0 +1,338 @@
+PHASE 1D — CANONICAL PROTOCOL EVENT PIPELINE
+
+Use `docs/canon/` and `src/lib/protocol-metrics-registry.ts` as source of truth.
+
+This is an architecture + wiring pass.
+
+No redesign.
+No new economics.
+No referral contract.
+No burn automation.
+No governance.
+No marketplace.
+No AI.
+
+Goal:
+Create or consolidate one canonical Protocol Event Pipeline so every important on-chain or protocol-recognized event is classified once, then reused everywhere.
+
+Core rule:
+
+raw event
+→ normalized protocol event
+→ metric effects
+→ Activity
+→ Chronicle candidate
+→ reports
+→ dashboards
+→ future modules
+
+The Protocol Metrics Registry solved metric drift.
+This phase solves event drift.
+
+---
+
+## EVENT TYPES TO MAP
+
+Inspect current code and map/support:
+
+1. Membership Sale
+
+* TokensPurchased
+* member joined
+* rank progression
+* USDC routed 70/20/10
+* SYN sold
+* next member
+* chapter progress
+
+2. SYN Transfers
+
+* normal transfer
+* founder transfer
+* allocation movement
+* transfer to burn address
+
+3. Burn / Proof of Fire
+
+* SYN sent to `0x000000000000000000000000000000000000dEaD`
+* Founder Burn if sender is known founder wallet
+* Community Burn otherwise
+* support multiple events: #001, #002, etc.
+* burned supply must read from dead-address balance, not totalSupply delta
+
+4. Archive / NFT Events
+
+* TransferSingle
+* First Signal mint
+* Patron Seal mint
+* future artifact mints
+* collector activity
+
+5. LP Events
+
+* swaps
+* LP buys / sells if classified
+* add liquidity
+* remove liquidity
+* LP TVL / reserves impact
+
+6. Protocol Wallet Events
+
+* Vault inflow
+* Liquidity wallet inflow
+* Operations inflow
+* Founder-funded Operations
+* Operations outgoing spend
+* manually labeled spend tags where needed
+
+7. Future Event Namespaces
+   Reserve clean namespaces only, no implementation:
+
+* referral attribution
+* referral reward payout
+* SeatRecord721
+* governance
+* burn governance
+* protocol intelligence / B2B
+* marketplace
+
+---
+
+## NORMALIZED EVENT SHAPE
+
+Create or consolidate one ProtocolEvent type with:
+
+* id
+* type
+* category
+* title
+* subtitle
+* amount
+* token
+* from
+* fromLabel
+* to
+* toLabel
+* txHash
+* blockNumber
+* timestamp if available
+* sourceContract
+* verificationLink
+* status: LIVE / PARTIAL / PENDING
+* isOnChainVerified
+* isManualTag
+* metricEffects
+* chronicleEligible
+* recommendedSurfaces
+
+---
+
+## KNOWN ADDRESS REGISTRY
+
+Create or consolidate one known-address label system.
+
+Include:
+
+* Founder wallet
+* Vault wallet
+* Liquidity wallet
+* Operations wallet
+* Membership Sale contract
+* SYN contract
+* Archive1155 contract
+* Trader Joe LP pair
+* Burn address / Proof of Fire:
+  `0x000000000000000000000000000000000000dEaD`
+
+This registry should label event rows consistently.
+
+---
+
+## METRIC EFFECTS
+
+Each event should declare which metrics it affects.
+
+Examples:
+
+Membership purchase affects:
+
+* members
+* SYN sold
+* USDC routed
+* Vault wallet
+* Liquidity wallet
+* Operations wallet
+* rank
+* chapter progress
+
+Burn affects:
+
+* burned supply
+* effective supply
+* circulating supply
+* burn event count
+* latest burn
+
+NFT mint affects:
+
+* artifact mints
+* First Signal mints
+* Patron Seal mints
+* collector activity
+
+LP event affects:
+
+* LP TVL
+* pool reserves
+* price reference
+* liquidity activity
+
+Protocol wallet flow affects:
+
+* Vault wallet
+* Liquidity wallet
+* Operations wallet
+* protocol wallets total
+
+Future referral attribution affects:
+
+* referred members
+* attributed sale volume
+* member growth source
+* future reward eligibility only when contract exists
+
+---
+
+## REFERRAL VISION, BUT DO NOT IMPLEMENT CONTRACT
+
+Referral should be modeled as attribution first, payout later.
+
+Future event example:
+
+“Member #27 brought Member #456 into The Syndicate.”
+
+If the referred member buys through the sale:
+
+* record who brought whom
+* record buyer/member number
+* record USDC routed
+* record SYN sold
+* mark reward status as PENDING unless future contract exists
+
+This should feel like:
+
+* service to the Syndicate
+* verified growth contribution
+* member recognition
+* future reward infrastructure
+
+But it must NOT imply live commissions until the contract exists.
+
+Forbidden:
+
+* “earn now”
+* passive income
+* ROI
+* yield
+* guaranteed reward
+
+---
+
+## BURN REQUIRED FIX
+
+The founder already performed burn transfers to the standard dead address.
+
+Ensure:
+
+* Burned Supply = SYN.balanceOf(dead address)
+* burn event count supports multiple burn transfers
+* Proof of Fire #001, #002, etc. are event-derived
+* Activity can show Burn events
+* Chronicle can treat burn events as candidates
+* no one-off hardcoded burn card only
+
+Use wording:
+
+* verified supply reduction
+* standard dead address
+* Proof of Fire
+* Founder Burn
+* Community Burn
+
+Do not use:
+
+* buyback
+* price impact
+* pump
+* ROI
+* yield
+
+---
+
+## SURFACES
+
+After classification, events should be reusable by:
+
+* Activity feed
+* Activity filters/categories
+* Chronicle candidate system
+* Protocol Intelligence Bar
+* metric registry effects
+* tokenomics
+* transparency
+* /labs/protocol-intelligence
+* future /labs/protocol-events
+* future weekly/monthly/quarterly/half-year/annual reports
+
+If useful, create an internal route:
+
+`/labs/protocol-events`
+
+This route is not marketing.
+It is a QA/design workbench showing:
+
+* every event type
+* raw source
+* normalized event
+* metric effects
+* Chronicle eligibility
+* verification link
+* recommended surfaces
+
+---
+
+## VERIFICATION
+
+Run:
+
+* tsc --noEmit
+* doctrine guard
+* event/activity tests
+* relevant metric registry tests
+* full test suite if practical
+
+Confirm:
+
+* burn events are normalized
+* burned supply uses dead-address balance
+* activity can receive burn events
+* referral namespace exists only as future/PENDING
+* known address labels work
+* no banned vocabulary appears
+* no simulated event appears as live
+
+---
+
+## OUTPUT
+
+Return concise summary only:
+
+* files changed
+* event pipeline structure
+* normalized event types
+* known address registry
+* burn integration result
+* future referral namespace result
+* surfaces connected
+* tests run
+* remaining risks

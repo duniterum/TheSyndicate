@@ -21,6 +21,8 @@ const KINDS: ProtocolEventKind[] = [
   "nft-mint-first-signal",
   "nft-mint-patron-seal",
   "nft-mint-other",
+  "burn-founder",
+  "burn-community",
 ];
 
 function ev(kind: ProtocolEventKind, n: number): ProtocolEvent {

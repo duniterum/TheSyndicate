@@ -18,6 +18,8 @@ const ALL_KINDS: ProtocolEventKind[] = [
   "lp-remove",
   "vault-in",
   "vault-out",
+  "burn-founder",
+  "burn-community",
 ];
 
 function fake(kind: ProtocolEventKind, n: number): ProtocolEvent {

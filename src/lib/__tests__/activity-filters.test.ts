@@ -46,6 +46,7 @@ describe("activity-filters", () => {
       "nft",
       "liquidity",
       "vault",
+      "burn",
     ]);
   });
 

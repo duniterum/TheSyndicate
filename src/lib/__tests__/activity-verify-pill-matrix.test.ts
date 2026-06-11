@@ -21,6 +21,8 @@ const KINDS: ProtocolEventKind[] = [
   "lp-remove",
   "vault-in",
   "vault-out",
+  "burn-founder",
+  "burn-community",
 ];
 
 const validHash = `0x${"a".repeat(64)}`;
@@ -92,6 +94,8 @@ describe("activity verify pill — per-kind tx URL × banner state matrix", () =
           "lp-remove",
           "vault-in",
           "vault-out",
+          "burn-founder",
+          "burn-community",
         ],
         "sampleUrlHasHash": true,
         "states": {

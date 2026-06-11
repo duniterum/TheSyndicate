@@ -42,6 +42,7 @@ import { Route as LabsIndexRouteImport } from './routes/labs.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
 import { Route as LabsProtocolIntelligenceRouteImport } from './routes/labs.protocol-intelligence'
+import { Route as LabsProtocolEventsRouteImport } from './routes/labs.protocol-events'
 import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
 import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museum'
 import { Route as LabsDesignArchiveRouteImport } from './routes/labs.design-archive'
@@ -222,6 +223,11 @@ const LabsProtocolIntelligenceRoute =
     path: '/protocol-intelligence',
     getParentRoute: () => LabsRoute,
   } as any)
+const LabsProtocolEventsRoute = LabsProtocolEventsRouteImport.update({
+  id: '/protocol-events',
+  path: '/protocol-events',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsInvariantsRoute = LabsInvariantsRouteImport.update({
   id: '/invariants',
   path: '/invariants',
@@ -326,6 +332,7 @@ export interface FileRoutesByFullPath {
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -373,6 +380,7 @@ export interface FileRoutesByTo {
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -422,6 +430,7 @@ export interface FileRoutesById {
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -472,6 +481,7 @@ export interface FileRouteTypes {
     | '/labs/design-archive'
     | '/labs/design-museum'
     | '/labs/invariants'
+    | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -519,6 +529,7 @@ export interface FileRouteTypes {
     | '/labs/design-archive'
     | '/labs/design-museum'
     | '/labs/invariants'
+    | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -567,6 +578,7 @@ export interface FileRouteTypes {
     | '/labs/design-archive'
     | '/labs/design-museum'
     | '/labs/invariants'
+    | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -854,6 +866,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsProtocolIntelligenceRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/protocol-events': {
+      id: '/labs/protocol-events'
+      path: '/protocol-events'
+      fullPath: '/labs/protocol-events'
+      preLoaderRoute: typeof LabsProtocolEventsRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/invariants': {
       id: '/labs/invariants'
       path: '/invariants'
@@ -965,6 +984,7 @@ interface LabsRouteChildren {
   LabsDesignArchiveRoute: typeof LabsDesignArchiveRoute
   LabsDesignMuseumRoute: typeof LabsDesignMuseumRoute
   LabsInvariantsRoute: typeof LabsInvariantsRoute
+  LabsProtocolEventsRoute: typeof LabsProtocolEventsRoute
   LabsProtocolIntelligenceRoute: typeof LabsProtocolIntelligenceRoute
   LabsIndexRoute: typeof LabsIndexRoute
 }
@@ -974,6 +994,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsDesignArchiveRoute: LabsDesignArchiveRoute,
   LabsDesignMuseumRoute: LabsDesignMuseumRoute,
   LabsInvariantsRoute: LabsInvariantsRoute,
+  LabsProtocolEventsRoute: LabsProtocolEventsRoute,
   LabsProtocolIntelligenceRoute: LabsProtocolIntelligenceRoute,
   LabsIndexRoute: LabsIndexRoute,
 }

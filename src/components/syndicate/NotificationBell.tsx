@@ -35,6 +35,8 @@ const CATEGORY: Record<ProtocolEvent["kind"], string> = {
   "nft-mint-first-signal": "NFT",
   "nft-mint-patron-seal": "NFT",
   "nft-mint-other": "NFT",
+  "burn-founder": "MILESTONE",
+  "burn-community": "MILESTONE",
 };
 
 const CATEGORY_ORDER = ["MEMBERS", "MILESTONE", "NFT", "TREASURY", "LIQUIDITY"] as const;
