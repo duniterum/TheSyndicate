@@ -10,7 +10,7 @@ export function HomeArchiveTeaser() {
       <SectionHeader
         eyebrow="NFT Archive"
         title={<>Your seat is live. <span className="text-gradient-gold">Your Artifact is next.</span></>}
-        description="Membership and routing are already verifiable on Avalanche. The NFT Archive is the pending collectible layer that will later record seats, chapters and milestones as NFT Artifacts."
+        description="Membership and routing are already verifiable on Avalanche. The NFT Archive is deployed and live — The First Signal (ID 1) and Patron Seal (ID 3) are open public mints today, while future Artifacts stay sealed until their on-chain event fires."
       />
       <GlassCard className="p-5 md:p-6">
         <div className="flex flex-col gap-2 mb-4">
@@ -30,7 +30,7 @@ export function HomeArchiveTeaser() {
           </div>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          The First Signal (ID 1) is an open public Artifact mint — open on Avalanche at 0.50 USDC, wallet limit 5. Other Artifacts are protocol-memory surfaces sealed by event.
+          The First Signal (ID 1) is an open public Artifact mint — open on Avalanche at 0.50 USDC, wallet limit 5. The Patron Seal (ID 3) is open too; the remaining Artifacts are protocol-memory surfaces sealed by event.
         </p>
         <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border/40 pt-4">
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-foreground">

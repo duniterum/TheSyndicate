@@ -21,6 +21,11 @@ const EXCLUDE_DIRS = new Set([
 const EXCLUDE_FILES = new Set([
   // self-references / canonical legal-denial files (allow-listed)
   "src/lib/chronicle-entries.ts",
+  // canonical banlist definitions — these files DEFINE the banned words they
+  // list (FORBIDDEN_LANGUAGE / REFERRAL_FORBIDDEN forbiddenVocab), not public
+  // copy; the literal arrays outrun / underscore-defeat the 3-line denial window.
+  "src/lib/protocol-language.ts",
+  "src/lib/protocol-event-registry.ts",
   "src/lib/execution-gates.ts",
   "src/lib/archive-config.ts",
   "src/lib/data-verification-registry.ts",

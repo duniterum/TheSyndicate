@@ -111,7 +111,7 @@ function ActivityPage() {
         <SectionHeader
           eyebrow="Latest Protocol Events"
           title={<>Every <span className="text-gradient-gold">on-chain movement</span>, newest first</>}
-          description="Click any chip to scope the feed. Every row links to the originating transaction on Avascan with a Verify chip — even when the feed is sourced from direct RPC fallback."
+          description="This is Activity — the raw, verified on-chain stream: every protocol movement, as it happens, nothing filtered or editorialized. (The Chronicle is the curated memory layer derived from these events.) Click any chip to scope the feed. Every row links to the originating transaction on Avascan with a Verify chip — even when the feed is sourced from direct RPC fallback."
         />
         <div className="mb-4">
           <ActivityFilterChips value={filter} onChange={setFilter} counts={counts} />

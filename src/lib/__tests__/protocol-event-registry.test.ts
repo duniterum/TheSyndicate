@@ -13,6 +13,7 @@ import {
   type ProtocolEventCategory,
 } from "../protocol-event-registry";
 import { METRIC_IDS } from "../protocol-metrics-registry";
+import { findForbiddenLanguage } from "../protocol-language";
 
 const ALL_KINDS = Object.keys(CATEGORY_FOR_KIND) as ProtocolEventKind[];
 
@@ -63,6 +64,19 @@ describe("protocol-event-registry", () => {
     for (const ns of referral) {
       expect(ns.forbiddenVocab).toBeTruthy();
       expect(ns.forbiddenVocab).toContain("yield");
+    }
+  });
+
+  it("uses no forbidden vocabulary in any future-namespace public copy", () => {
+    // protocol-event-registry.ts is allow-listed in check-ownership-wording
+    // because its forbiddenVocab arrays are banlist DEFINITIONS. This restores
+    // vocabulary coverage over the human-facing label/description strings the
+    // exclusion would otherwise leave unscanned.
+    for (const ns of FUTURE_EVENT_NAMESPACES) {
+      for (const [field, text] of [["label", ns.label], ["description", ns.description]] as const) {
+        const hits = findForbiddenLanguage(text);
+        expect(hits, `forbidden wording in ${ns.id} ${field}: ${hits.join(", ")}`).toEqual([]);
+      }
     }
   });
 });

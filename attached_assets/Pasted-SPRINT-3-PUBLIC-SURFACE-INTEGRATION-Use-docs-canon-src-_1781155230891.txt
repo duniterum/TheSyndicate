@@ -1,0 +1,283 @@
+SPRINT 3 — PUBLIC SURFACE INTEGRATION
+
+Use `docs/canon/`, `src/lib/protocol-metrics-registry.ts`, the Protocol Event Pipeline, and the Protocol Memory foundation as source of truth.
+
+This is an execution sprint.
+
+No redesign.
+No new contracts.
+No referral contract.
+No burn automation.
+No governance.
+No marketplace.
+No AI.
+No new tokenomics.
+
+Goal:
+Move the useful parts of the new internal architecture into the right public surfaces so visitors can understand the protocol quickly, without duplicating logic or creating new taxonomy.
+
+Core principle:
+Internal systems already exist. Now public pages should consume them.
+
+---
+
+## PUBLIC USER PROMISE
+
+The site should communicate:
+
+“Most people watch from the outside.
+Members take a seat, rise through the ranks, and leave a trace in the Chronicle.”
+
+But keep wording legally safe and canon-aligned.
+
+---
+
+## SCOPE
+
+Audit and minimally update these public routes:
+
+1. Home
+2. Join
+3. Tokenomics
+4. Transparency
+5. Activity
+6. Archive / NFT
+7. My Syndicate
+
+No large redesign. Only content/block placement and wiring.
+
+---
+
+## WHAT TO SURFACE
+
+Use existing canonical blocks and registries where possible.
+
+Priority blocks:
+
+1. Protocol Intelligence
+
+* reference price
+* reference market cap
+* FDV
+* genesis/total supply
+* circulating supply
+* burned supply
+* protocol wallets
+* LP TVL
+* SYN sold
+* USDC routed
+* members
+* chapter progress
+
+2. Proof of Fire
+
+* burned supply
+* burn event count
+* latest burn
+* Founder Burn / Community Burn classification
+* verify link
+* no price claims
+
+3. Latest meaningful events
+   Use the Protocol Event Pipeline.
+   Show:
+
+* member joined
+* burn event
+* artifact mint
+* LP event
+* treasury/protocol wallet event
+* chapter milestone
+
+4. Chronicle candidates
+   Do not auto-publish Chronicle.
+   But public surfaces may tease:
+
+* “Chronicle candidate”
+* “Meaningful protocol event”
+  only if the wording is already canon-safe.
+
+5. Rank explanation
+   Make clear:
+
+* rank is recognition only
+* cumulative sale participation determines rank
+* no yield, no rights, no governance, no returns
+
+6. Artifact status
+   Show:
+
+* First Signal = live
+* Patron Seal = live
+* future artifacts = locked / pending / event-sealed
+  No generic “NFT pending” if Archive1155 is live.
+
+7. Routing truth
+   Show:
+
+* 70% Vault
+* 20% Liquidity
+* 10% Operations
+* USDC routed, never raised
+
+8. Activity vs Chronicle distinction
+   Make clear:
+
+* Activity = raw verified stream
+* Chronicle = curated protocol memory
+
+---
+
+## ROUTE-SPECIFIC INTENT
+
+Home:
+A newcomer should understand the system in under 30 seconds.
+Keep it simple:
+
+* identity sentence
+* Protocol Intelligence Bar
+* latest meaningful event
+* join CTA
+
+Join:
+A buyer should understand:
+
+* $5 minimum seat
+* more purchase = higher rank recognition only
+* 70/20/10 routing
+* no recurring membership
+* no financial rights
+
+Tokenomics:
+A crypto-native should understand:
+
+* genesis supply
+* contract total supply
+* burned supply
+* effective supply
+* circulating supply
+* allocation wallets
+* reference market cap / FDV definitions
+
+Transparency:
+A skeptic should understand:
+
+* where money routes
+* wallet labels
+* protocol wallet balances
+* verification links
+* ledger/Activity distinction
+
+Activity:
+A returning member should see:
+
+* event categories
+* burn events
+* latest meaningful events
+* filters/categories from the event pipeline
+* raw events vs Chronicle candidates
+
+Archive / NFT:
+A collector should understand:
+
+* First Signal and Patron Seal are live
+* artifacts are memory, not rights
+* future artifacts are event-sealed
+* Patron Seal is recognition/support, not yield
+
+My Syndicate:
+A connected member should see:
+
+* seat
+* rank
+* chapter
+* artifacts
+* personal activity if available
+* what changed since last visit
+* no fake benefits
+
+---
+
+## LEGAL / VOCABULARY RULES
+
+Allowed:
+
+* routed
+* verified
+* reference
+* recognition
+* seat
+* rank
+* artifact
+* protocol memory
+* Activity
+* Chronicle
+* Proof of Fire
+* public record
+* leave a trace
+
+Avoid / forbidden:
+
+* raised
+* fundraising
+* investment
+* ROI
+* yield
+* dividend
+* passive income
+* guaranteed returns
+* financial freedom
+* verified identity
+* KYC-like wording
+* buyback
+* price impact promise
+
+---
+
+## IMPLEMENTATION RULES
+
+* Reuse metric registry labels.
+* Reuse event pipeline.
+* Reuse known-address registry.
+* Reuse memory/recognition/reporting foundation.
+* Do not hardcode duplicate metric labels.
+* Do not create one-off event cards when event pipeline can supply them.
+* Do not expose simulated or PENDING modules as live.
+* If a block is not ready for public use, keep it in labs and report why.
+
+---
+
+## VERIFICATION
+
+Run:
+
+* tsc --noEmit
+* doctrine guard
+* vocabulary scripts
+* relevant route tests
+* activity/event tests
+* metric registry tests
+* full suite if practical
+
+Also verify:
+
+* no “raised” wording
+* burn values correct
+* no fake economics
+* no simulated events shown live
+* public pages render cleanly
+* no console errors related to new work
+
+---
+
+## FINAL RESPONSE
+
+Return concise summary only:
+
+* public routes touched
+* blocks promoted from labs/internal to public
+* metrics/events reused
+* wording changes
+* tests run
+* remaining public-surface gaps
+* what should wait for redesign

@@ -602,7 +602,7 @@ export const HOME_RANK_LADDER: HomeRank[] = [
 export type JourneyStep = { key: string; label: string; status: "live" | "next" | "pending"; detail: string };
 export const JOURNEY_STEPS: JourneyStep[] = [
   { key: "buy",       label: "Buy SYN",         status: "live",    detail: "USDC → SYN at $0.01, on Avalanche." },
-  { key: "rank",      label: "Reflect Rank",    status: "live",    detail: "Your contribution maps to a public rank — recognition only." },
+  { key: "rank",      label: "Reflect Rank",    status: "live",    detail: "Your purchases map to a public rank — recognition only." },
   { key: "registry",  label: "Join Registry",   status: "live",    detail: "Wallet recorded onchain in the sale contract." },
   { key: "archive",   label: "Access Archive",  status: "next",    detail: "Member archive + episode access (rolling)." },
   { key: "participate", label: "Participate",   status: "next",    detail: "Verified activity and contributor paths." },
