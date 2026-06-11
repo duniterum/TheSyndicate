@@ -1,0 +1,373 @@
+SPRINT A.9 — WHAT MAKES A SEAT MATTER?
+
+Status:
+Founder Architecture Sprint
+
+No code.
+No implementation.
+No canon edits.
+No files.
+No UI.
+
+Output:
+Founder Report only.
+
+Use:
+
+* Canon 00–08
+* A.8 Founder Report
+* Prestige hierarchy
+* Financial Trace doctrine
+* Chronicle doctrine
+* Recognition doctrine
+* Member Journey doctrine
+* Co-Witness concept
+* Proof of Fire concept
+* Growth / Referral doctrine
+* All constitutional rulings
+
+This is the final doctrine sprint before Sprint B.
+
+The objective is not to design features.
+
+The objective is to answer:
+
+"What makes a seat matter after 10 years?"
+
+---
+
+## PART 1 — THE SEAT TEST
+
+Imagine:
+
+Member #27
+
+joins today.
+
+Fast forward:
+
+10 years.
+
+Question:
+
+Why should that seat matter?
+
+List every possible reason.
+
+Examples:
+
+* arrived early
+* stayed
+* helped growth
+* supported
+* burned
+* witnessed history
+* entered Chronicle
+* reached milestones
+* created structural impact
+
+Do not assume these are correct.
+
+Rebuild from first principles.
+
+Return:
+
+* all reasons a seat can matter
+* ranking
+* justification
+
+---
+
+## PART 2 — ENDURANCE
+
+Analyze deeply.
+
+We repeatedly discovered:
+
+* early believers
+* people who stayed
+* people who returned
+* long-term members
+* chapter witnesses
+* multi-year participants
+
+Questions:
+
+Is Endurance:
+
+* value category?
+* signal type?
+* recognition axis?
+* prestige layer?
+* derived metric?
+
+Or something else?
+
+Could it be gamed?
+
+Can it be bought?
+
+Can it be transferred?
+
+What becomes:
+
+Temporary
+Persistent
+Permanent
+
+Return recommendation.
+
+---
+
+## PART 3 — CO-WITNESS
+
+Analyze from first principles.
+
+Current intuition:
+
+A seat accumulates protocol history it witnessed.
+
+Examples:
+
+* Member #100 joined
+* First burn
+* First Patron Seal
+* Chapter I sealed
+* Chapter II sealed
+* First 1,000 members
+* First Vault milestone
+
+Questions:
+
+What exactly is witnessing?
+
+Does it create value?
+
+Should witness history be visible?
+
+Should witness history become prestige?
+
+Can it scale?
+
+Can it be gamed?
+
+Return doctrine.
+
+---
+
+## PART 4 — PRESTIGE FINALIZATION
+
+Pressure test:
+
+Member Number
+Historical Firsts
+Co-Witness History
+Proof of Fire
+Chronicle
+Recognition
+Support
+Growth
+Rank
+
+Resolve:
+
+Which are:
+
+Foundational
+Prestigious
+Decorative
+
+Which survive:
+
+10 years
+20 years
+100 years
+
+Which become noise?
+
+Return the final prestige hierarchy.
+
+---
+
+## PART 5 — MEMORY VS HISTORY
+
+Separate clearly:
+
+Activity
+Memory
+History
+
+Question:
+
+What deserves:
+
+* temporary memory
+* long-term memory
+* permanent history
+
+Examples:
+
+large purchase
+burn
+referral
+chapter seal
+rank change
+support action
+artifact mint
+
+Return a doctrine matrix.
+
+---
+
+## PART 6 — THE FRATERNITY TEST
+
+Ignore religion.
+
+Ignore politics.
+
+Ignore cult-like behavior.
+
+Analyze successful long-lived systems:
+
+* clubs
+* guilds
+* fraternities
+* associations
+* orders
+* veteran groups
+* collector societies
+
+Question:
+
+Why do members remain proud decades later?
+
+What is remembered?
+
+What is forgotten?
+
+What creates belonging?
+
+What creates identity?
+
+What creates legacy?
+
+Map findings to The Syndicate.
+
+---
+
+## PART 7 — THE IMMORTALITY TEST
+
+Imagine:
+
+1,000,000 members
+
+20 years
+
+billions of events
+
+Question:
+
+What deserves to survive forever?
+
+What deserves summarization?
+
+What deserves aggregation?
+
+What deserves deletion from prominence?
+
+Return doctrine.
+
+---
+
+## PART 8 — THE MEMBER LEGACY MODEL
+
+Design the conceptual model.
+
+Not UI.
+
+Not implementation.
+
+Answer:
+
+If a member dies in 30 years and somebody looks at his seat history:
+
+What should they see?
+
+What should matter?
+
+What should not matter anymore?
+
+What is the protocol equivalent of a life story?
+
+Return recommendation.
+
+---
+
+## PART 9 — FINAL CONSTITUTIONAL RECOMMENDATION
+
+Answer only:
+
+What makes a seat matter?
+
+Give the final constitutional answer.
+
+Not marketing.
+
+Not UX.
+
+Not features.
+
+The answer must remain true with:
+
+10 members
+1,000 members
+1,000,000 members
+
+and still be true after 20 years.
+
+---
+
+## IMPORTANT
+
+Do not implement.
+
+Do not write code.
+
+Do not modify canon.
+
+Do not create files.
+
+Do not create routes.
+
+Do not design UI.
+
+Do not discuss technical implementation.
+
+This is the final identity / memory / prestige architecture pass before Signal Engine construction.
+
+---
+
+## FINAL RESPONSE
+
+Return:
+
+1. Seat Value Model
+2. Endurance Doctrine
+3. Co-Witness Doctrine
+4. Final Prestige Hierarchy
+5. Memory vs History Matrix
+6. Fraternity Analysis
+7. Immortality Analysis
+8. Member Legacy Model
+9. Final Constitutional Answer
+
+And identify:
+
+* contradictions
+* drift risks
+* missing concepts
+* founder decisions still required
+
+Most importantly:
+
+"What makes a seat matter?"
