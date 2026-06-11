@@ -1,0 +1,473 @@
+FOUNDER FULL PROTOCOL VIEW — REALITY, ROADMAP & ANTI-DRIFT RESET
+
+Read-only.
+
+No code.
+No implementation.
+No canon changes.
+No docs changes.
+No memory updates.
+No UI changes.
+
+Goal:
+
+I am about to open a new chat and continue development.
+
+Before that, I need one complete Full Protocol View from the codebase itself so we do not lose context, overwrite decisions, duplicate systems, or drift.
+
+You have access to:
+
+* the full codebase
+* canon docs
+* architecture docs
+* tests
+* route structure
+* metrics registry
+* event pipeline
+* memory/recognition/reporting foundations
+* current public surfaces
+* labs/internal surfaces
+* deferred ledgers
+* future modules
+* recent founder rulings
+
+I want your honest maintainer-level reality report.
+
+Do not guess.
+Do not repeat founder dreams as if implemented.
+Separate what is LIVE, PARTIAL, PENDING, FUTURE, MOCK, LABS, DEFERRED.
+
+---
+
+## PART 1 — WHAT IS THE SYNDICATE TODAY?
+
+Explain the whole project in one page:
+
+* What is the product?
+* What is the protocol?
+* What is the story?
+* What is the economic engine?
+* What is the member journey?
+* What is actually live?
+* What is aspirational?
+* What is the shortest truthful explanation for a new senior team member?
+
+---
+
+## PART 2 — FULL IMPLEMENTATION MAP
+
+List every major system and status:
+
+* SYN token
+* Membership Sale
+* 70 / 20 / 10 routing
+* Vault
+* Liquidity
+* Operations
+* Holder Index
+* Member Number
+* Rank system
+* Activity
+* Chronicle
+* Archive1155
+* First Signal
+* Patron Seal
+* Proof of Fire
+* burn tracking
+* Financial Trace
+* Recognition
+* Signal Engine
+* Protocol Events
+* Metrics Registry
+* Data Verification Registry
+* Member Journey
+* Co-Witness
+* Reports
+* Referral
+* SeatRecord721
+* Governance
+* AI
+* Marketplace
+* Alias / public display
+* Labs pages
+* Mock / demo modules
+
+For each:
+
+* status
+* source of truth
+* public visibility
+* contract dependency
+* code files
+* risks
+* next action
+
+---
+
+## PART 3 — CURRENT ECONOMIC REALITY
+
+Explain how The Syndicate makes money today.
+
+Include:
+
+* $5 minimum entry
+* SYN price
+* repeat purchases
+* cumulative buyer totals
+* 70 / 20 / 10 routing
+* Operations income
+* Vault growth
+* Liquidity growth
+* First Signal price
+* Patron Seal price
+* LP fees status
+* referral status
+* future revenue streams
+
+Answer directly:
+
+Can a one-time $5 membership fund the protocol?
+
+If not, what must the revenue model actually be?
+
+---
+
+## PART 4 — ENTRY / MEMBERSHIP / TRACE MODEL
+
+Audit the current implementation and doctrine around:
+
+* membership
+* member number
+* holder
+* seat
+* SYN
+* SeatRecord721
+* repeat purchases
+* rank
+* Financial Trace
+
+Tell us the safest final model.
+
+Current proposed direction:
+
+One lifetime entry.
+Many protocol moments.
+
+$5 opens the door.
+Every return leaves a deeper trace.
+
+Evaluate this against the codebase.
+
+Should this become the public revenue narrative?
+
+---
+
+## PART 5 — REVENUE-PER-MEMBER OPPORTUNITIES
+
+List all realistic ways to increase revenue per member without breaking doctrine:
+
+* higher entry presets
+* repeat purchases
+* support artifacts
+* Patron Seal
+* First Signal
+* Proof of Fire related artifacts
+* alias / public display
+* share cards
+* member journey export
+* yearly recap
+* supporter wall
+* reports / intelligence
+* referral attribution
+* future premium surfaces
+
+For each:
+
+* can implement now?
+* needs contract?
+* needs Signal Engine?
+* needs Recognition?
+* needs alias?
+* legal risk
+* expected value
+* priority
+
+---
+
+## PART 6 — WHY WOULD SOMEONE SPEND MORE THAN $5?
+
+Answer from product, growth, crypto-native, investor, collector, gamer, community, and legal lenses.
+
+Explain why someone would spend:
+
+* $25
+* $100
+* $500
+* $1,000
+* $2,500
+* $10,000+
+
+without promising ROI, yield, dividends, governance, or guaranteed influence.
+
+Include:
+
+* SYN received
+* rank recognition
+* Financial Trace
+* visible support
+* protocol growth
+* Vault / Liquidity / Operations impact
+* social proof
+* future member journey
+* long-term legacy
+* public proof
+
+Also tell us what the site currently fails to explain.
+
+---
+
+## PART 7 — CURRENT JOIN / SALE UX AUDIT
+
+Audit:
+
+* Home
+* Join / LivePurchase
+* Ranks
+* Tokenomics
+* Transparency
+* My Syndicate
+* Activity
+* FAQ
+* Archive / NFT
+
+Find where the site:
+
+* over-emphasizes $5
+* under-explains higher participation
+* hides Financial Trace
+* hides protocol money growth
+* confuses Patron Seal $5 vs Membership $5
+* fails to show repeat purchase logic
+* fails to show why a member should return
+* fails to show why the protocol is alive
+
+Return exact strings/surfaces if possible.
+
+---
+
+## PART 8 — WHAT IS OVERBUILT?
+
+Be brutally honest.
+
+What have we over-designed?
+
+What is too abstract?
+
+What is too early?
+
+What should stop expanding?
+
+What is not yet worth implementation cost?
+
+What should stay in labs?
+
+---
+
+## PART 9 — WHAT IS UNDERBUILT?
+
+Be brutally honest.
+
+What is still weak but high leverage?
+
+Examples:
+
+* revenue narrative
+* join presets
+* Financial Trace visibility
+* repeat purchase loop
+* member journey
+* protocol money visibility
+* social proof
+* supporter recognition
+* alias
+* referral
+* reports
+
+Rank these by impact.
+
+---
+
+## PART 10 — UNFINISHED WORK / DEFERRED WORK MAP
+
+Search and consolidate all unfinished work from:
+
+* docs/DEFERRED_WORK_LEDGER.md
+* docs/canon/07_FOUNDER_PRINCIPLE.md
+* docs/canon/08_PROTOCOL_OPERATING_PRINCIPLE.md
+* Future modules
+* TODOs
+* PENDING flags
+* labs pages
+* preview modules
+* mock modules
+* failing/skipped tests if any
+* doctrine open questions
+* founder decisions still required
+
+Return one unified list:
+
+A) must do before public push
+B) must do before redesign
+C) must do before Signal Engine
+D) must do before Referral
+E) must do before Reports
+F) long-term only
+G) should delete / retire
+
+Do not let unfinished ideas stay scattered.
+
+---
+
+## PART 11 — WHAT ARE WE NOT SEEING?
+
+From your maintainer perspective:
+
+* What are we blind to?
+* What opportunities are we underestimating?
+* What opportunities are we overestimating?
+* What looks obvious in the codebase but we keep missing?
+* What patterns are emerging that we have not named?
+* What future system will become unexpectedly important?
+* What future system will matter less than we think?
+
+If you had to bet on the 3 features that would create the most:
+
+* memberships
+* repeat participation
+* revenue
+* retention
+* trust
+
+which 3 would they be and why?
+
+Challenge founder assumptions if necessary.
+
+Do not optimize for agreement.
+
+Optimize for truth.
+
+---
+
+## PART 12 — IF YOU COULD ONLY BUILD 5 THINGS
+
+Imagine development stopped tomorrow.
+
+You may only ship 5 major things during the next 12 months.
+
+Everything else is cancelled.
+
+Which 5 do you choose?
+
+For each:
+
+* why
+* expected outcome
+* measurable impact
+* dependency
+* risk
+
+Also say which currently discussed systems would NOT make the cut.
+
+---
+
+## PART 13 — TOP RISKS
+
+Rank the top 15 risks:
+
+* product risk
+* revenue risk
+* legal risk
+* architecture risk
+* doctrine drift risk
+* story risk
+* UX risk
+* conversion risk
+* overbuilding risk
+* founder-focus risk
+* technical debt risk
+
+For each:
+
+* why it matters
+* how to reduce it
+
+---
+
+## PART 14 — NEXT SPRINT ORDER
+
+Give the exact recommended sprint order from today.
+
+Optimize for:
+
+1. clarity
+2. revenue
+3. trust
+4. conversion
+5. retention
+6. scalable architecture
+
+Not technical purity.
+
+Suggested areas to rank:
+
+* Revenue Narrative
+* Join Presets
+* Financial Trace
+* Signal Engine
+* Member Journey
+* Recognition
+* Referral
+* Reports
+* Alias
+* Design redesign
+* public launch push
+
+Return the order and explain why.
+
+---
+
+## PART 15 — HANDOFF FOR NEXT CHAT
+
+Create a concise handoff summary I can paste into a new ChatGPT chat.
+
+It must include:
+
+* current project truth
+* current live modules
+* current economic model
+* current open decisions
+* next sprint order
+* what not to reopen
+* what not to forget
+
+This should be short enough to paste, but complete enough to prevent drift.
+
+---
+
+## FINAL QUESTION
+
+Answer directly:
+
+What is the shortest path from today’s platform to:
+
+* 1,000 members
+* meaningful revenue
+* strong retention
+* credible public trust
+
+without rebuilding the protocol again?
+
+No implementation.
+No code.
+No files.
+Only the full reality report.
