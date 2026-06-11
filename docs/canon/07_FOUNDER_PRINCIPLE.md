@@ -122,10 +122,14 @@ of truth.* This is exactly `05` §2 (the Adjacency Law — SIGNALS consume EVENT
 (a Signal is a classified event annotated with Tier × Type). The engine **derives**
 interpretation from facts that already exist; it invents no new store (`08`).
 
-**Guardrails (carried from `05` §3–§4, unchanged):** monetary size never raises a tier; a
-Signal grants nothing (no reward, right, identity, or yield); the three Traces are *source
-groupings*, not new architectures — they fold into the frozen seven Signal Types, never
-beside them.
+**Guardrails (carried from `05` §3–§4):** *person-subject* monetary size never raises a tier into
+permanent prestige — the precise scope is `05` §4.5: *protocol-subject* economic milestones (Vault /
+Liquidity / USDC-routed / SYN-sold thresholds, chapter sealed) **may** be S3+, while person-subject
+money alone stays Financial Trace / Participation Depth and may carry a magnitude marker (outside the
+Signal layer). A Signal grants nothing (no reward, right, identity, or yield); the three Traces are
+*source groupings*, not new architectures — they fold into the frozen seven Signal Types, never
+beside them. Repeated buying / continued participation is **Participation Depth, not Conviction**
+(`05` §4.5 Rule D); Conviction stays reserved for irreversible actions (Proof of Fire / burns).
 
 **Resolved — founder ruling (`05` §2.1).** The Memory-Trace adjacency question is
 **closed: no carve-out. SIGNALS read EVENTS only and must never read MEMORY.** Chronicle

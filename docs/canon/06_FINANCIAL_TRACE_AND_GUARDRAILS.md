@@ -51,7 +51,8 @@ never be conflated.
 
 Money is a legitimate **input** to some surfaces and a forbidden **cause** of
 others. This is the operational form of `05_FOUNDATION_FREEZE.md` §3–§4 (the
-Signal types/tiers and the **scarcity law: monetary size never raises a tier**).
+Signal types/tiers and the **scarcity law: person-subject monetary size never raises a tier
+into permanent prestige** — §4.5; *protocol-subject* economic milestones may be S3+).
 
 ### Money MAY feed (as one input among others)
 - **Rank** — recognition derived from cumulative USDC. Mutable, secondary,
@@ -60,16 +61,34 @@ Signal types/tiers and the **scarcity law: monetary size never raises a tier**).
 - **Member Journey** — the personal participation timeline (§4).
 - **Reports / Ledger / Activity** — transparent, complete, public records.
 
-### Money MUST NOT, by itself
-- Raise a **Signal tier above S2**, or create an **S3+ signal**.
+### Person-subject money MUST NOT, by itself
+*("By itself" = monetary magnitude with no non-money fact attached. The **subject** decides
+standing — see `05_FOUNDATION_FREEZE.md` §4.5.)*
+- Raise a **person-subject Signal tier above S2**, or create an **S3+ person-subject signal**.
 - Create a **Chronicle candidate** (Chronicle excludes person/purchase/rank
-  kinds by construction — keep it that way).
+  kinds by construction — keep it that way; **no buyer attribution** even when a person's purchase
+  happens to trigger a protocol-subject milestone).
 - Confer or imply **governance**, a vote, or a right.
 - Imply **ROI, yield, dividend, profit, returns, or reward** (banned vocabulary,
   `03_GLOSSARY.md`).
 
 > Rule of thumb: money can describe *how much someone participated*; it can never
 > by itself decide *how much someone matters*.
+
+### Protocol-subject economic milestones MAY be S3+
+Money is one of the core truths of The Syndicate — economic activity is proof the machine is alive,
+shown proudly, truthfully, verifiably. A milestone whose **subject is the protocol** (Vault /
+Liquidity / USDC-routed / SYN-sold threshold crossed, chapter sealed, a major economic level
+crossed) is a *structural* fact about the protocol, not a person, and **may** be an S3+ Signal
+candidate, a Chronicle candidate, and a Report highlight. *Guardrails:* thresholds must be
+**pre-declared** (no retroactive invention, `08`); **no buyer attribution** in Chronicle wording; no
+price / ROI / yield claims. Full ruling: `05_FOUNDATION_FREEZE.md` §4.5 (Rules A–E).
+
+### Magnitude marker (surfacing, not prestige)
+Large person-subject economic events may carry a **magnitude marker** (e.g. *largest purchase 24h /
+this week*, *major-purchase event*) — **temporary visibility only.** It is **not** a Signal Tier,
+does **not** live in `signal-registry.ts`, must **not** feed Chronicle automatically or Recognition
+permanently, and must **never** become a top-spender leaderboard (`05` §4.5 Rule C).
 
 ---
 

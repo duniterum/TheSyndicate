@@ -76,7 +76,7 @@ Every concept in the protocol belongs to exactly one of these layers.
 | **Purpose** | Prioritization + meaning. Answers **"why should anyone care?"** Not every event matters equally. |
 | **Inputs** | EVENTS. |
 | **Outputs** | A `Signal = Type × Tier` annotation per event (advisory; grants nothing). |
-| **Responsibilities** | Assign tier (S0–S5) and type; enforce the scarcity law (size never raises tier). |
+| **Responsibilities** | Assign tier (S0–S5) and type; enforce the scarcity law (person-subject size never raises tier into permanent prestige — §4.5; protocol-subject milestones may be S3+). |
 | **Belongs** | Tiering, typing, scarcity rules. |
 | **Does NOT belong** | Human curation (MEMORY), money facts (Ledger, in MEMORY), rewards, rights, identity. |
 | **Codebase examples** | **None yet (FUTURE).** Precursors: `chronicleEligibleForKind` (subject gate), `EVENT_METRIC_EFFECTS` (metric axis). Proposed home: a pure-data `signal-registry.ts` leaf beside the event registry. |
@@ -217,11 +217,54 @@ and Type on top. It is **additive, not a rewrite.**
 
 1. **Earned, not issued.** Equal recognition for all = no recognition.
 2. **Actions, time, and history create prestige.** Money creates *participation depth*, never historic standing.
-3. **Monetary size never raises a Signal tier.** A large purchase is S1 activity (at most S2 "depth") — *never* S3+. Only ordinal/temporal/structural facts (first-ever, milestone number, chapter sealed, burn) earn S3+. **This is the rule that keeps "no pay-to-appear" true.**
+3. **Person-subject money never raises a Signal tier into permanent prestige.** *"Money never raises a tier"* means precisely: **person-subject money alone must not create permanent Historic prestige or automatic Chronicle publication.** A person's large purchase is S1 activity (at most S2 "depth") — it feeds Financial Trace / Participation Depth / Recognition *texture* and may carry a magnitude marker (§4.5 Rule C) — but money alone *never* makes that person S3+, Historic, or Chronicle-published. A person reaches S3+ only via *non-monetary* facts (first-ever, milestone number, sealing seat, sacrifice/burn). **This is the rule that keeps "no pay-to-appear" true.** It does **not** mean economic milestones are unimportant — *protocol-subject* economic milestones may be S3+ (see §4.5 Rule A).
 4. **Self-preserving scarcity.** Recognition becomes *harder* to earn as the protocol grows: the S3+ threshold rises with membership, so prestige stays scarce automatically.
 
 **The unbuyability ladder (frozen ordering, most → least unbuyable):**
 `Member Number (immutable)` › `Being First (time-locked)` › `Chronicle inclusion (curated)` › `Proof of Fire (sacrifice)` › `Recognition labels (earned)` › **`Rank (purchasable → least prestigious axis)`**.
+
+### 4.5 Economic significance — founder ruling (money is truth; subject decides standing)
+
+> **Money is not suspicious — it is one of the core truths of The Syndicate.** Without it
+> there are no members, no Vault, no Liquidity, no Operations, no growth. Economic activity is
+> proof the machine is alive, and the protocol shows it **proudly, truthfully, and verifiably.**
+> What money alone must **not** do is *automatically* create permanent Historic status or
+> Chronicle publication. **Economic significance is real; the SUBJECT decides standing.**
+
+**Rule A — Protocol-subject economic milestones MAY be S3+.** Milestones whose subject is the
+*protocol* — Vault threshold crossed, Liquidity threshold crossed, USDC-routed milestone, SYN-sold
+milestone, chapter sealed, a major economic level crossed — are *structural* facts about the
+protocol, not a person. They may become Signal candidates, Chronicle candidates, and Report
+highlights. *Guardrails:* thresholds must be **pre-declared** (no retroactive threshold invention);
+**no buyer attribution** in Chronicle wording; no price / ROI / yield claims.
+
+**Rule B — Person-subject money is visible and important, but not automatically immortal.** A
+person's economic activity may create Financial Trace, Participation Depth, rank recognition,
+Activity rows, Report context, Member-Journey history, a magnitude marker, and support /
+participation context. It must **not** *automatically* create Historic status, Chronicle
+publication, permanent prestige, governance implication, or reward / ROI language. A large purchase
+is meaningful, can motivate others, can signal confidence, and should be visible — but it is **not
+automatically immortal.** It rises above S2 only when combined with a *non-money* fact.
+
+**Rule C — Magnitude marker (approved).** A way to surface large economic events — *largest purchase
+24h / this week*, *major-purchase event*, *high-participation event* — **without** turning them into
+permanent prestige. The marker **is not a Signal Tier**, **does not live in `signal-registry.ts`**,
+must **not** feed Chronicle automatically, must **not** feed Recognition permanently, and must
+**never** become a top-spender leaderboard. It is **temporary visibility** — Activity / Report
+context only.
+
+**Rule D — Repeated commitment = Participation Depth, not Conviction.** Repeated buying or continued
+participation over time is recorded as **Participation Depth.** **Conviction** stays reserved for
+irreversible / high-commitment actions (Proof of Fire, burns, future irreversible support). Avoid
+investment-performance language ("held through drawdown", "bought the dip", "survived the crash",
+"adverse window").
+
+**Rule E — Signal Engine impact (Sprint B).** Sprint B must not suppress economic significance,
+**and** `signal-registry.ts` must stay money-safe: **never** add `amountUsd`, `usdcAmount`,
+`synAmount`, `walletBalance`, `archiveWeight`, `builderScore`, `commissionUsd`, or `commissionPct`
+to `StructuralFacts`. Protocol thresholds enter as **pre-declared structural facts**; person-subject
+money remains Financial Trace / Participation Depth; the magnitude marker stays **outside**
+Signal-Tier logic.
 
 ---
 

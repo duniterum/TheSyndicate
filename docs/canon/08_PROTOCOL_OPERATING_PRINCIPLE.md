@@ -76,6 +76,12 @@ Before building any new system, ask — in this order:
 If a proposed system can exist only by duplicating an upstream truth into a new
 database, it is misplaced: re-home it as a derivation, or it does not get built.
 
+**Thresholds & milestones must be *pre-declared*, never invented retroactively.** A protocol-subject
+milestone Signal (`05_FOUNDATION_FREEZE.md` §4.5 Rule A — Vault / Liquidity / USDC-routed / SYN-sold
+thresholds, chapter sealed) may derive only from a threshold fixed *before* it is crossed.
+Retro-fitting a "milestone" to a notable purchase is inventing truth to manufacture significance —
+exactly what this principle forbids.
+
 ---
 
 ## Relationship to the canon

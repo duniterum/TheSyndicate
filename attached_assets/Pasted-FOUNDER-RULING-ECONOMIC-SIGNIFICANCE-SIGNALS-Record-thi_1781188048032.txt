@@ -1,0 +1,221 @@
+FOUNDER RULING — ECONOMIC SIGNIFICANCE & SIGNALS
+
+Record this ruling in canon.
+
+No Signal Engine implementation yet unless explicitly requested after this.
+
+Goal:
+Clarify the doctrine before Sprint B so the Signal Engine does not underestimate money while also avoiding wealth-leaderboard drift.
+
+---
+
+## FOUNDER RULING
+
+Money is not suspicious.
+
+Money is one of the core truths of The Syndicate.
+
+Without money:
+
+* no members
+* no Vault
+* no Liquidity
+* no Operations
+* no protocol growth
+
+Economic activity is proof that the machine is alive.
+
+The protocol should show economic activity proudly, truthfully, and verifiably.
+
+However:
+
+Money alone must not automatically create permanent Historic status or Chronicle publication.
+
+---
+
+## CORE DISTINCTION
+
+Economic significance is real.
+
+But the SUBJECT decides standing.
+
+Protocol-subject economic milestones may become high-tier Signals.
+
+Person-subject money alone remains Financial Trace / Participation Depth / Visibility unless combined with non-money facts.
+
+---
+
+## RULE A — PROTOCOL-SUBJECT ECONOMIC MILESTONES
+
+Protocol-subject economic milestones may become S3+.
+
+Examples:
+
+* Vault threshold crossed
+* Liquidity threshold crossed
+* USDC routed milestone
+* SYN sold milestone
+* chapter sealed
+* protocol crossed a major economic level
+
+These are about the protocol, not a person.
+
+They may become:
+
+* Signal candidates
+* Chronicle candidates
+* Report highlights
+
+Guardrails:
+
+* thresholds must be pre-declared
+* no retroactive threshold invention
+* no buyer attribution in Chronicle wording
+* no price/ROI/yield claims
+
+---
+
+## RULE B — PERSON-SUBJECT MONEY
+
+Person-subject economic activity may be visible and important.
+
+It may create:
+
+* Financial Trace
+* Participation Depth
+* rank recognition
+* Activity rows
+* Report context
+* Member Journey history
+* magnitude marker
+* support/participation context
+
+But money alone must not automatically create:
+
+* Historic status
+* Chronicle publication
+* permanent prestige
+* governance implication
+* reward/ROI language
+
+A large purchase is meaningful.
+It can motivate others.
+It can signal confidence.
+It should be visible.
+
+But it is not automatically immortal.
+
+---
+
+## RULE C — MAGNITUDE MARKER
+
+Approve a magnitude marker concept.
+
+Purpose:
+Surface large economic events without turning them into permanent prestige.
+
+Examples:
+
+* largest purchase in 24h
+* largest purchase this week
+* major purchase event
+* high participation event
+
+Rules:
+
+* magnitude marker is not a Signal Tier
+* it does not live in signal-registry.ts
+* it must not feed Chronicle automatically
+* it must not feed Recognition permanently
+* it must not become a top-spender leaderboard
+* it is temporary visibility / Activity / Report context
+
+---
+
+## RULE D — REPEATED COMMITMENT
+
+Repeated buying or continued participation over time may be recorded as Participation Depth.
+
+It should NOT be called Conviction.
+
+Conviction remains reserved for irreversible or high-commitment actions such as:
+
+* Proof of Fire
+* burn events
+* future irreversible support actions
+
+Avoid investment-performance language such as:
+
+* held through drawdown
+* bought the dip
+* survived market crash
+* adverse window
+
+---
+
+## RULE E — SIGNAL ENGINE IMPACT
+
+Sprint B should not suppress economic significance.
+
+But signal-registry.ts must remain money-safe.
+
+Do not add amountUsd, usdcAmount, synAmount, walletBalance, archiveWeight, builderScore, commissionUsd, commissionPct to StructuralFacts.
+
+Instead:
+
+* protocol thresholds enter as pre-declared structural facts
+* person-subject money remains Financial Trace / Participation Depth
+* magnitude marker stays outside Signal Tier logic
+
+---
+
+## CANON UPDATES REQUIRED
+
+Update the relevant canon sections:
+
+* 05_FOUNDATION_FREEZE §4.3
+* 06_FINANCIAL_TRACE_AND_GUARDRAILS §2
+* 07/FS-1 if needed
+* 08 if needed
+
+Clarify that:
+
+"money never raises tier"
+
+means:
+
+"person-subject money alone must not create permanent Historic prestige or automatic Chronicle publication."
+
+It does not mean economic milestones are unimportant.
+
+---
+
+## DO NOT
+
+Do not implement Signal Engine yet.
+
+Do not create public UI.
+
+Do not create leaderboard.
+
+Do not create top-spender board.
+
+Do not create Chronicle automation.
+
+Do not create new contracts.
+
+Do not add referral.
+
+Do not create reward wording.
+
+---
+
+## FINAL RESPONSE
+
+Return concise summary:
+
+* files changed
+* ruling recorded
+* canon sections updated
+* impact on Sprint B
+* remaining blockers
