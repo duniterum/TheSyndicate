@@ -1,0 +1,443 @@
+FOUNDER DECISION LOCK — SIGNAL LAYER, CHRONICLE SCALE & MEMORY PRIORITIZATION
+
+No implementation.
+No code.
+No refactor.
+No redesign.
+No public UI changes.
+No contracts.
+
+Goal:
+Before building more Chronicle / Recognition / Reporting logic, define the scalable memory model for The Syndicate.
+
+Context:
+The protocol now has:
+
+* Canon
+* Metrics Registry
+* Protocol Event Pipeline
+* Known Address Registry
+* Activity
+* Chronicle candidates
+* Recognition candidates
+* Ledger
+* Report registry
+* Internal labs workbenches
+
+But if The Syndicate grows to:
+
+* 1,000,000 members
+* 1,000,000,000 transactions
+
+we cannot manually inspect raw events.
+
+Therefore the system needs a scalable middle layer:
+
+Activity
+→ Signal classification
+→ Signal priority
+→ Chronicle candidates
+→ Human-approved Chronicle
+→ Reports
+
+Core principle:
+Activity is automatic.
+Signals are automatic.
+Chronicle candidates are automatically shortlisted.
+Chronicle publication remains curated.
+
+---
+
+## PART 1 — CURRENT REALITY CHECK
+
+Inspect the current code and report what already exists for:
+
+* Activity
+* ProtocolEvent kinds
+* event categories
+* metricEffects
+* chronicleEligible
+* recognition candidates
+* ledger entries
+* report candidates
+* known address labels
+* Proof of Fire events
+* future referral namespace
+
+Separate:
+
+A) already implemented
+B) partially implemented
+C) labs/internal only
+D) doctrine only
+E) not implemented
+
+Do not change files.
+
+---
+
+## PART 2 — DEFINE SIGNALS
+
+Define “Signal” for The Syndicate.
+
+Proposed definition:
+
+A Signal is a classified protocol event that indicates timing, conviction, support, growth, memory, or structural significance.
+
+Examples:
+
+* Member Number signals timing.
+* Rank signals depth of participation.
+* Patron Seal signals support.
+* Proof of Fire signals conviction.
+* Referral attribution signals growth work.
+* Chapter sealing signals protocol progress.
+* Chronicle inclusion signals historical importance.
+
+Clarify:
+
+* Signal is not a new token.
+* Signal is not a reward.
+* Signal is not KYC.
+* Signal is not financial rights.
+* Signal is not governance.
+* Signal is a prioritization and meaning layer.
+
+---
+
+## PART 3 — SIGNAL TIERS
+
+Propose a scalable signal-tier model.
+
+Example:
+
+S0 — Noise / raw activity
+
+* normal transfers
+* normal swaps
+* minor wallet movements
+
+S1 — Standard protocol activity
+
+* normal purchase
+* normal NFT mint
+* normal LP activity
+
+S2 — Recognized action
+
+* rank milestone
+* Patron Seal mint
+* Proof of Fire participation
+* meaningful artifact mint
+
+S3 — Protocol milestone
+
+* member #100
+* member #333
+* first Patron Seal
+* first burn
+* first LP event
+* significant Vault / LP / Operations threshold
+
+S4 — Historical event
+
+* chapter sealed
+* Proof of Fire #001
+* major founder action
+* major external recognition
+* major liquidity milestone
+
+S5 — Constitutional event
+
+* contract migration
+* governance activation
+* SeatRecord721 deployment
+* core doctrine change
+* major protocol upgrade
+
+Do not blindly accept this list.
+Improve it based on the existing event pipeline.
+
+---
+
+## PART 4 — EVENT → SIGNAL MAP
+
+Create a table:
+
+Event type
+→ Activity?
+→ Signal tier?
+→ Recognition candidate?
+→ Chronicle candidate?
+→ Ledger?
+→ Report candidate?
+→ Human approval required?
+→ Notes
+
+Include:
+
+* normal purchase
+* large purchase
+* member #100
+* member #333
+* member #1,000
+* member #3,333
+* member #10,000
+* rank milestone
+* Patron Seal mint
+* First Signal mint
+* normal NFT mint
+* Proof of Fire #001
+* later burns
+* founder-funded Operations
+* Operations outgoing spend
+* LP add
+* LP remove
+* LP swap
+* future referral attribution
+* future referral reward
+* future SeatRecord721
+* future governance event
+* future marketplace event
+* future protocol intelligence / B2B event
+
+---
+
+## PART 5 — CHRONICLE SCALE RULE
+
+Define the scalable Chronicle rule:
+
+At small scale:
+
+* founder/operator can manually review candidates.
+
+At medium scale:
+
+* only S3+ signals enter weekly review.
+
+At large scale:
+
+* only S4+ signals enter Chronicle review.
+* S2/S3 appear in reports and recognition surfaces.
+* S0/S1 stay Activity-only.
+
+Chronicle should never become a raw feed.
+
+Chronicle publication remains:
+
+* CANDIDATE
+* APPROVED
+* PUBLISHED
+* REJECTED
+
+No auto-publication without approval.
+
+---
+
+## PART 6 — RECOGNITION SCALE RULE
+
+Recognition should be action-based, not identity-based.
+
+Default display:
+
+* Member #N
+
+Future optional displays:
+
+* alias
+* public self-declared name
+* image/avatar
+
+Important:
+No KYC.
+No “verified identity.”
+No promise of truth about real-world identity.
+
+Recognition should answer:
+“What meaningful signals has this member emitted?”
+
+Examples:
+
+* Early
+* Patron Seal holder
+* Proof of Fire participant
+* Chapter sealer
+* Growth builder
+* Historic member
+* Founder-era participant
+
+Do not implement paid identity/profile now.
+Only define the scalable recognition model.
+
+---
+
+## PART 7 — REFERRAL AS SIGNAL
+
+Referral is future only.
+
+Define it as:
+
+Growth attribution first.
+Reward payout later.
+
+Future example:
+
+“Member #27 brought Member #456 into The Syndicate.”
+
+Signal logic:
+
+* normal referral = S1/S2
+* 10 successful referrals = recognition candidate
+* referral that brings milestone member #333/#1,000 = Chronicle candidate
+* referral reward status remains PENDING until contract exists
+
+No live commission language.
+No “earn now.”
+No passive income.
+No guaranteed reward.
+
+---
+
+## PART 8 — PATRON / COUNCIL COLLISION
+
+Evaluate the signal model against current naming collisions:
+
+* Patron rank vs Patron Seal
+* Council rank vs future governance council
+
+Recommend whether:
+A) rename ranks now
+B) keep names but always disambiguate
+C) postpone
+
+Prioritize long-term clarity over short-term convenience.
+
+---
+
+## PART 9 — REPORT CADENCE WITH SIGNALS
+
+Re-evaluate report cadence using signal tiers.
+
+Candidate structure:
+
+Daily:
+
+* Activity feed only, no report
+
+Weekly Chronicle:
+
+* S3+ reviewed, S4/S5 prioritized
+
+Monthly Protocol Report:
+
+* S2+ summaries
+* metrics
+* ledger
+* recognition highlights
+
+Quarterly Protocol Report:
+
+* S3+ milestones
+* chapter progress
+* strategic narrative
+
+Annual State of The Syndicate:
+
+* S4/S5 historical record
+* full protocol memory
+
+Half-Year:
+
+* decide whether to keep or drop
+
+Do not implement reports.
+Only recommend doctrine.
+
+---
+
+## PART 10 — FOUNDER / OPERATOR WORKFLOW
+
+Design the future curation workflow.
+
+Example:
+
+1. raw events indexed
+2. events classified
+3. signals tiered
+4. candidates generated
+5. operator reviews weekly
+6. Chronicle entries approved/rejected
+7. monthly/quarterly reports generated from approved + summarized events
+
+Define:
+
+* who must approve Chronicle
+* what can be automated
+* what must remain human-curated
+* how to avoid manual overload at scale
+
+---
+
+## PART 11 — LEGAL / VOCABULARY RULES
+
+Maintain safe vocabulary.
+
+Use:
+
+* signal
+* recognition
+* trace
+* memory
+* public record
+* verified event
+* routed
+* protocol milestone
+* Chronicle candidate
+
+Avoid:
+
+* investment
+* ROI
+* yield
+* dividend
+* passive income
+* guaranteed return
+* fundraising
+* raised
+* verified identity
+* KYC
+* buyback
+* price impact promise
+* financial freedom
+
+Also evaluate whether these should become machine-enforced:
+
+* bare “reward”
+* bare “contribution”
+* buyback
+* financial freedom
+
+---
+
+## PART 12 — FINAL FOUNDER DECISION REPORT
+
+Return only a concise founder report:
+
+1. What already exists
+2. Proposed Signal definition
+3. Proposed Signal tiers
+4. Event → Signal map
+5. Chronicle scaling rule
+6. Recognition scaling rule
+7. Referral-as-signal rule
+8. Patron/Council collision recommendation
+9. Report cadence recommendation
+10. Founder/operator workflow
+11. Open founder decisions
+12. Recommended next execution sprint
+
+No implementation.
+No files changed.
+No code changed.
+
+This is the final decision-lock pass before implementing Signal logic.
