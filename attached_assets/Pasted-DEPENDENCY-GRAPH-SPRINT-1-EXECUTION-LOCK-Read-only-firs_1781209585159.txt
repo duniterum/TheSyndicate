@@ -1,0 +1,251 @@
+DEPENDENCY GRAPH + SPRINT 1 EXECUTION LOCK
+
+Read-only first.
+
+Do NOT implement immediately.
+
+We have now frozen:
+
+* Constitution
+* Canonical Layer Architecture
+* Canonical Object Model
+* Engine Model
+* Flywheel Model
+
+Do not reopen them.
+
+Do not challenge them.
+
+Do not perform another protocol-wide audit.
+
+Your task is now to transition from architecture mode into execution mode.
+
+PART 1 — DEPENDENCY GRAPH
+
+Create the definitive dependency graph.
+
+For every layer:
+
+* dependencies
+* blockers
+* prerequisites
+* downstream consumers
+
+For every object:
+
+* source objects
+* derived objects
+* dependent systems
+
+For every future system:
+
+* minimum requirements
+* hard blockers
+* optional prerequisites
+
+Examples:
+
+Signal
+requires:
+
+* Event
+
+Memory
+requires:
+
+* Signal
+
+Chronicle
+requires:
+
+* Memory
+
+Recognition
+requires:
+
+* Memory
+
+Diffusion
+requires:
+
+* Identity
+* Economic
+
+Referral
+requires:
+
+* Diffusion
+
+SeatRecord721
+requires:
+
+* Identity maturity
+* Artifact maturity
+
+Return:
+
+1. Layer dependency graph.
+2. Object dependency graph.
+3. Engine dependency graph.
+4. Flywheel dependency graph.
+5. Build-order dependency graph.
+6. Systems buildable now.
+7. Systems blocked now.
+8. Critical dependency mistakes.
+
+This dependency graph becomes the execution guardrail.
+
+PART 2 — SPRINT 1 VALIDATION
+
+Validate the proposed Sprint 1.
+
+Goal:
+
+Close the minimum self-reinforcing loop:
+
+Member
+→ Share
+→ Visitor
+→ Member
+
+while creating a lightweight:
+
+Member
+→ Anticipation
+→ Return
+
+loop.
+
+Review the proposed Sprint 1 and answer:
+
+A)
+
+Is it the correct first sprint?
+
+If not:
+
+Explain why.
+
+B)
+
+Does it violate any:
+
+* Constitution rule
+* Layer boundary
+* Object ownership rule
+* Flywheel rule
+* Engine dependency
+
+C)
+
+Which parts already exist and should be reused?
+
+D)
+
+Which parts are actually new work?
+
+E)
+
+What is the smallest implementation capable of proving the loop works?
+
+PART 3 — EXACT SPRINT 1 SCOPE
+
+If Sprint 1 is validated:
+
+Return the exact implementation scope.
+
+No more.
+
+No less.
+
+For every task provide:
+
+* component
+* route
+* object touched
+* layer touched
+* dependency
+* risk
+* QA requirement
+
+Specifically evaluate:
+
+1. MemberCard merge
+2. Share card promotion
+3. ShareActions reuse
+4. OG route reuse
+5. Post-purchase identity moment
+6. Attribution-only ?ref
+7. Public wallet verification flow
+8. Anticipation consolidation
+
+PART 4 — REUSE-FIRST CHECK
+
+For every Sprint 1 task:
+
+Classify as:
+
+REUSE
+MERGE
+PROMOTE
+DELETE
+NEW
+
+The objective is:
+
+Maximum reuse.
+Minimum new code.
+
+PART 5 — NO-TOUCH LIST
+
+Explicitly list everything that must remain frozen.
+
+Evaluate:
+
+* Vault
+* Treasury architecture
+* Chronicle expansion
+* Signals engine
+* Recognition engine
+* SeatRecord721
+* Governance
+* Marketplace
+* AI
+* Referral contract
+* New contracts
+* Full redesign
+
+PART 6 — GO / NO-GO
+
+Final answer:
+
+GO
+or
+NO-GO
+
+If GO:
+
+Return:
+
+* exact Sprint 1 scope
+* estimated complexity
+* implementation order
+* QA order
+
+If NO-GO:
+
+Explain the blocker.
+
+Important:
+
+This is the final validation before implementation.
+
+Do not reopen architecture.
+
+Do not create new concepts.
+
+Do not create new layers.
+
+Do not create new objects.
+
+The objective is to begin execution while preserving the frozen protocol model.
