@@ -3,6 +3,7 @@ import { Header } from "@/components/syndicate/Header";
 import { DemoBanner } from "@/components/syndicate/DemoBanner";
 import { Footer } from "@/components/syndicate/Sections";
 import { IdentityRibbon } from "@/components/syndicate/IdentityRibbon";
+import { ProtocolIntelligenceBar } from "@/components/syndicate/ProtocolIntelligenceBar";
 import { BrandMark } from "@/components/syndicate/Logo";
 
 export function PageShell({
@@ -31,6 +32,7 @@ export function PageShell({
     >
       <DemoBanner />
       <Header />
+      <ProtocolIntelligenceBar />
       <IdentityRibbon />
       <main>
         {!hideHeader && (
