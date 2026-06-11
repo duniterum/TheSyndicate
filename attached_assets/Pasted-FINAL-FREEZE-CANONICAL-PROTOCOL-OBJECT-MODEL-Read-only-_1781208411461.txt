@@ -1,0 +1,213 @@
+FINAL FREEZE — CANONICAL PROTOCOL OBJECT MODEL
+
+Read-only.
+
+No implementation.
+No code changes.
+No UI changes.
+No docs changes.
+No canon changes.
+No architecture changes.
+
+Context:
+
+The canonical layer architecture is now accepted.
+
+Layer 0 = Constitution / Governance plane
+Layer 1 = Truth
+Layer 2 = Identity · Economic · Artifact
+Layer 3 = Activity → Signals → Memory → Story
+Layer 4 = Anticipation · Diffusion · Intelligence
+Layer 5 = Future systems
+
+Do NOT reopen the layer architecture.
+
+Your task now is to define the canonical object model of The Syndicate.
+
+The goal is to stop future drift by defining what each protocol object IS, what it is NOT, what owns it, what derives it, and how it relates to other objects.
+
+Think as:
+
+* Founder
+* CTO
+* Senior Systems Architect
+* Protocol Designer
+* Information Architect
+* Product Architect
+* Token Economist
+* Legal-risk-aware crypto builder
+* Story Architect
+* Behavioral / Collector Psychology expert
+
+Define every core object:
+
+* Wallet
+* User Wallet
+* Founder Wallet
+* Protocol Wallet
+* Vault Wallet
+* Liquidity Wallet
+* Operations Wallet
+* Member
+* Seat
+* Member Number
+* Rank
+* Chapter
+* Purchase
+* Payment
+* SYN
+* USDC
+* Financial Trace
+* Event
+* Activity Entry
+* Founder Action
+* System Wallet Action
+* Signal
+* Memory
+* Chronicle Entry
+* Story Beat
+* Milestone
+* Recognition
+* Anticipation Item
+* Share Object
+* Referral / Attribution
+* Artifact
+* Archive1155 Item
+* First Signal Artifact
+* Patron Seal
+* Future SeatRecord721
+* Treasury Object
+* Vault Object
+* LP Object
+* Report / Intelligence Object
+
+For each object, return:
+
+1. Definition
+   What is it exactly?
+
+2. Home layer
+   Which canonical layer owns it?
+
+3. Source of truth
+   On-chain read, derived index, config, canon, user action, or future system.
+
+4. Inputs
+   What creates or updates it?
+
+5. Outputs
+   What does it produce?
+
+6. Relationships
+   What other objects it connects to.
+
+7. Lifecycle
+   How it is born, updated, archived, or retired.
+
+8. Public surfaces
+   Where users see it today or should see it later.
+
+9. Forbidden meanings
+   What it must never imply.
+
+10. Drift risks
+    How future development could misuse or confuse it.
+
+Critical questions to resolve:
+
+A) Member vs Wallet vs Seat
+Clarify the exact relationship between:
+
+* wallet
+* member
+* seat
+* member number
+* rank
+* chapter
+* future SeatRecord721
+
+B) Money vs Recognition
+Clarify the relationship between:
+
+* purchase
+* SYN
+* USDC
+* Financial Trace
+* rank
+* recognition
+
+Money may create trace and recognition, but must never imply ROI, yield, equity, governance, or rights.
+
+C) Activity vs Chronicle
+Clarify the exact difference between:
+
+* raw Activity
+* Founder Action
+* System Wallet Action
+* Signal
+* Memory
+* Chronicle Entry
+* Story Beat
+
+Every Chronicle Entry must derive from verified Activity / Signal / fact.
+
+Not every Activity becomes Chronicle.
+
+D) Artifact vs Memory vs Seat
+Clarify:
+
+* Archive1155
+* First Signal
+* Patron Seal
+* future SeatRecord721
+* chapter artifacts
+* milestone artifacts
+
+NFTs are artifacts, not automatically seats.
+
+SeatRecord721 is the only future object that may bridge Identity and Artifact.
+
+E) Diffusion / Share / Referral
+Clarify:
+
+* Share Object
+* OG Card
+* Public Wallet Page
+* Milestone Page
+* Referral attribution
+
+Sharing must prove a fact.
+
+Referral starts as attribution only, not reward.
+
+F) Treasury / Money Objects
+Clarify:
+
+* Vault
+* Liquidity
+* Operations
+* LP
+* protocol-owned assets
+* member-held assets
+
+Treasury visibility is transparency, not financial return.
+
+Final outputs required:
+
+1. Canonical object table.
+2. Object relationship map.
+3. Dangerous terminology collisions.
+4. Object ownership rules.
+5. Anti-drift rules.
+6. Minimum Engine object set.
+7. Full Founder Vision object set.
+8. Exact objects required for the next implementation sprint.
+9. Objects explicitly NOT required now.
+
+Do not suggest new features.
+
+Do not produce a roadmap.
+
+Do not implement.
+
+This is the final object model freeze so future implementation can proceed without redefining Member, Seat, Wallet, Artifact, Signal, Chronicle, Recognition, Treasury, or Referral again.
