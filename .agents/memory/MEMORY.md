@@ -1,3 +1,4 @@
+- [Foundation freeze](foundation-freeze.md) — 5-layer TRUTH→EVENTS→SIGNALS→MEMORY→STORY + Adjacency Law frozen in docs/canon/05; Signal=Type×Tier; size never raises tier.
 - [Tailwind v4 arbitrary colors](tailwind-v4-arbitrary-colors.md) — color-mix arbitrary values compile; `/opacity` on arbitrary var() colors is unreliable — use color-mix or inline style.
 - [Mockup preview false-blank](mockup-preview-screenshot-blank.md) — pure-white external_url screenshot of a /__mockup/ preview is a capture timing/cache race, not a bug; bust with `?cb=`, trust the live canvas iframe.
 - [Obsidian Cockpit theme doctrine](obsidian-cockpit-doctrine.md) — accent is cyan in DARK (default) only; light theme intentionally stays gold/ivory. Serif (Fraunces) only inside `.editorial-serif`.

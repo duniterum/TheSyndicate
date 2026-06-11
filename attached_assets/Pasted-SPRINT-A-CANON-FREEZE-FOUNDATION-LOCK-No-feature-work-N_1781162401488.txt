@@ -1,0 +1,406 @@
+SPRINT A — CANON FREEZE
+
+FOUNDATION LOCK
+
+No feature work.
+
+No redesign.
+
+No refactor.
+
+No contract work.
+
+No new modules.
+
+No new economics.
+
+No public UI changes.
+
+No implementation beyond canon/documentation updates if required.
+
+Goal:
+
+Freeze the doctrine of The Syndicate so future work cannot drift.
+
+This sprint exists because the protocol has reached sufficient complexity that the primary risk is no longer missing features.
+
+The primary risk is:
+
+DRIFT.
+
+Future systems must plug into the same architecture.
+
+Nothing should create parallel architectures.
+
+---
+
+## MISSION
+
+Review:
+
+* docs/canon/
+* protocol metrics registry
+* protocol event pipeline
+* protocol memory foundation
+* chronicle foundation
+* recognition foundation
+* report registry
+* known address registry
+* current public surfaces
+* current labs surfaces
+
+Then produce and/or update the minimum canon necessary to freeze the protocol architecture.
+
+---
+
+## FOUNDATION MODEL
+
+Evaluate and canonize:
+
+TRUTH
+↓
+EVENTS
+↓
+SIGNALS
+↓
+MEMORY
+↓
+STORY
+
+For each layer define:
+
+Purpose
+
+Inputs
+
+Outputs
+
+Responsibilities
+
+What belongs
+
+What does NOT belong
+
+Examples from the current codebase
+
+Drift risks
+
+The objective is that every future feature can be placed in exactly one layer.
+
+---
+
+## ADJACENCY LAW
+
+Propose or canonize:
+
+Each layer may only consume the layer directly above it.
+
+Example:
+
+EVENTS consume TRUTH.
+
+SIGNALS consume EVENTS.
+
+MEMORY consumes SIGNALS + EVENTS.
+
+STORY consumes MEMORY.
+
+No layer should skip a layer.
+
+If a feature requires skipping layers:
+
+it is likely misplaced.
+
+Evaluate whether this should become constitutional.
+
+---
+
+## SIGNAL DOCTRINE
+
+Evaluate and freeze:
+
+Signal = Type × Tier
+
+Signals are not:
+
+* rewards
+* governance
+* identity
+* yield
+* rights
+
+Signals answer:
+
+"Why should anyone care?"
+
+Review current proposal and improve it.
+
+Signal Types currently discussed:
+
+* Timing
+* Conviction
+* Support
+* Growth
+* Participation
+* Structural
+* Historic
+
+Recommend final list.
+
+---
+
+## SIGNAL SCARCITY LAW
+
+Review and freeze:
+
+Prestige must remain scarce.
+
+Money buys entry.
+
+Money does not automatically buy prestige.
+
+Actions create prestige.
+
+Time creates prestige.
+
+History creates prestige.
+
+Recognition should become harder to earn as the protocol grows.
+
+Review and improve this doctrine.
+
+---
+
+## PERMANENT VS TEMPORARY
+
+Evaluate whether Signals should be divided into:
+
+Permanent
+
+Examples:
+
+* Member Number
+* Chronicle inclusion
+* Historical Firsts
+* Proof of Fire
+
+Temporary
+
+Examples:
+
+* Rank
+* Current holdings
+* Current chapter progress
+* Current LP participation
+
+Recommend final ruling.
+
+---
+
+## CHRONICLE CONSTITUTION
+
+Review and freeze:
+
+Activity = what happened.
+
+Chronicle = what mattered.
+
+Chronicle is not a feed.
+
+Chronicle remains curated.
+
+Automation discovers.
+
+Humans narrate.
+
+Evaluate:
+
+* strengths
+* weaknesses
+* scaling implications
+* founder risks
+
+Recommend final doctrine.
+
+---
+
+## RECOGNITION CONSTITUTION
+
+Review and freeze:
+
+Recognition is action-based.
+
+Recognition is signal-based.
+
+Recognition is not identity.
+
+Recognition is not KYC.
+
+Recognition is not governance.
+
+Recognition is not financial rights.
+
+Recognition answers:
+
+"What meaningful traces has this member left?"
+
+Recommend final wording.
+
+---
+
+## STORY CONSTITUTION
+
+Review and freeze the protocol narrative.
+
+Current candidate:
+
+Most people watch from the outside.
+
+Members take a seat.
+
+Participate.
+
+Leave a trace.
+
+Become remembered.
+
+Evaluate whether this is the true narrative of the protocol.
+
+If not, improve it.
+
+The story must be compatible with:
+
+* crypto-native users
+* collectors
+* long-term members
+* supporters
+* future growth systems
+
+without introducing legal risk.
+
+---
+
+## NAMING COLLISIONS
+
+Review:
+
+Patron Rank
+vs
+Patron Seal
+
+Council Rank
+vs
+Future Governance Council
+
+Recommend final ruling.
+
+If rename is recommended:
+
+provide candidate names.
+
+Long-term clarity is more important than short-term convenience.
+
+---
+
+## REFERRAL PHILOSOPHY
+
+Review:
+
+Referral = growth attribution first.
+
+Reward = secondary.
+
+Future example:
+
+"Member #27 brought Member #456 into The Syndicate."
+
+Evaluate and freeze.
+
+No implementation.
+
+---
+
+## MEMORY SYSTEM
+
+Freeze:
+
+Activity
+
+Chronicle
+
+Recognition
+
+Ledger
+
+Reports
+
+Clarify the purpose of each.
+
+Ensure they are complementary and not competing systems.
+
+---
+
+## REPORT CADENCE
+
+Review:
+
+Daily
+
+Weekly Chronicle
+
+Monthly Report
+
+Quarterly Report
+
+Half-Year Report
+
+Annual State of The Syndicate
+
+Recommend final structure.
+
+Do not implement.
+
+---
+
+## ANTI-DRIFT CHECK
+
+Identify:
+
+Top 20 future drift risks.
+
+Examples:
+
+* rank becoming prestige
+* money becoming prestige
+* story diverging from truth
+* patron ambiguity
+* governance ambiguity
+* signal inflation
+* chronicle inflation
+* duplicated metrics
+* duplicated event logic
+
+Recommend constitutional rulings.
+
+---
+
+## FINAL OUTPUT
+
+Return:
+
+1. Canonical architecture.
+2. Canonical signal doctrine.
+3. Canonical memory doctrine.
+4. Canonical story doctrine.
+5. Naming decisions.
+6. Open founder decisions.
+7. Top drift risks.
+8. Recommended next sprint.
+
+No code.
+
+No feature work.
+
+No implementation.
+
+This sprint exists to ensure that everything built over the next years still feels like one protocol.

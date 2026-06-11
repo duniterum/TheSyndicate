@@ -24,6 +24,7 @@ guard-enforced (see *Enforcement* below).
 | `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` | "For concept X, what is the contract / code / doc source and its status?" |
 | `docs/canon/03_GLOSSARY.md` | "What is the one approved word for this, and how are name-collisions resolved?" |
 | `docs/canon/04_DOC_SYNC_CHECKLIST.md` | "I changed something — what do I update, in what order?" |
+| `docs/canon/05_FOUNDATION_FREEZE.md` | "Which architectural layer does this feature belong to, and what rules freeze it against drift?" |
 
 ---
 
@@ -83,7 +84,8 @@ Full per-document classification lives in `docs/DOCUMENTATION_AUTHORITY_MAP.md`
 5. `docs/SCARCITY_STATUS_PERMANENCE_AUDIT.md` — identity / the seat.
 6. `docs/RANK_CONSTITUTIONAL_RULING.md` — rank doctrine.
 7. **This canon** (`docs/canon/`) — consolidated index, intent, source-of-truth, glossary, sync.
-8. `docs/DOCUMENTATION_AUTHORITY_MAP.md` — full precedence + vocabulary + per-doc classification.
+8. `docs/canon/05_FOUNDATION_FREEZE.md` — the architecture constitution: the five-layer model (Truth→Events→Signals→Memory→Story), the Adjacency Law, and the signal/memory/story freezes that stop drift.
+9. `docs/DOCUMENTATION_AUTHORITY_MAP.md` — full precedence + vocabulary + per-doc classification.
 
 ---
 
