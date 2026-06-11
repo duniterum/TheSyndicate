@@ -27,6 +27,7 @@ import {
   USDC_DECIMALS,
   SYN_DECIMALS,
   USDC_ROUTING,
+  MEMBER_DEFINITION,
   explorerUrlFor,
   explorerUrlForAddress,
 } from "./syndicate-config";
@@ -237,8 +238,8 @@ export function useProtocolTruth(): ProtocolTruth {
       label: "Members",
       value: members,
       status: statusFromValue(members),
-      source: "Avalanche C-Chain RPC · TokensPurchased events on the Membership Sale contract.",
-      formula: "count(distinct buyer) over all TokensPurchased events",
+      source: MEMBER_DEFINITION.source,
+      formula: MEMBER_DEFINITION.formula,
       verifyHref: explSale,
       hook: "useHolderIndex",
     }),

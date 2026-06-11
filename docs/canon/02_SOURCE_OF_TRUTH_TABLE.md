@@ -34,7 +34,7 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | Operations Wallet (10%) | `CONTRACTS.OPERATIONS_WALLET` | Operations EOA | glossary | LIVE | High | Low |
 | Activity | `protocol-events.ts` | reads chain | `STORY_ENGINE_*` | LIVE | High | Low |
 | Chronicle | `chronicle-entries.ts`, `validateChronicleEntry` | — | `PROTOCOL_CHRONICLE_*` | PARTIAL (curated) | Low | High (vs Activity) |
-| Members metric | `protocol-truth.ts` **and** `data-verification-registry.ts` | sale events | `DATA_VERIFICATION_REGISTRY.md` | PARTIAL | **Low** | **High** (two definitions — see below) |
+| Members metric | `MEMBER_DEFINITION` (`syndicate-config.ts`) — read by both `protocol-truth.ts` & `data-verification-registry.ts` | sale events | `DATA_VERIFICATION_REGISTRY.md` | PARTIAL (until first buy) | High | Low — unified to one shared definition 2026-06-11 |
 | Referral | `preview/referral.ts` (labs stub) | none | `REVENUE_ATTRIBUTION_LAYER.md` | PENDING | Low | High |
 | Reward / Reputation | `quest-hooks.ts` (labs) | none | `REPUTATION_FORMULA_DOCTRINE.md` | FUTURE | Low | High |
 | Burn | *(none)* | none | — | FUTURE | High (none) | High |
@@ -42,7 +42,7 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | Governance | *(none)* | none | `UNIFIED_PROTOCOL_DOCTRINE_MAP.md` | FUTURE | Low | Med |
 | Legal language | `LEGAL_DISCLAIMER`, `live-content-rules.json` | — | `TERMINOLOGY_GLOSSARY.md` | LIVE | High | Med |
 | Banned vocabulary | `doctrine-guard.test.ts` `DOC_BANNED` / `BANNED` | — | glossary | LIVE | Med | Med (guard decoupled) |
-| Mock treasury data | `VAULT_ASSETS`, `VAULT_INFLOWS`, `GENESIS_NFT_PRICE` | — | — | **MOCK** | High (fabricated) | **High** (renders as real numbers) |
+| Mock treasury data | `VAULT_ASSETS` / `VAULT_INFLOWS` / `VAULT_HISTORY` / `useLiveData` | — | — | **MOCK (quarantined)** | High (fabricated) | Low — gated behind off-by-default, labeled "Future Vault preview" on `/vault`; dead fake constants (`GENESIS_NFT_PRICE`, `VAULT_STARTING_VALUE`, `NEXT_MILESTONE_VALUE`) removed 2026-06-11 |
 
 ---
 
@@ -64,13 +64,17 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 
 ---
 
-## Two open source-of-truth discrepancies (must be resolved in code)
+## Source-of-truth discrepancies
 
-1. **"Members" has two definitions.** `protocol-truth.ts` and
-   `data-verification-registry.ts` disagree (sale-buyer count vs SYN-Transfer-recipient
-   count). Canonical ruling (see `03_GLOSSARY.md`): **Member = sale buyer**. The two
-   registries must import one shared definition. *Code task — not done in this pass.*
-2. **Vault Wallet and Vault Reserve share one address.** They are *conceptually*
-   distinct (70% USDC operating wallet vs 25% SYN long-term reserve) but resolve to
-   `0x205DdC…464` on-chain. This must be disclosed wherever either is shown, never
-   presented as two separate balances.
+1. **"Members" definition — RESOLVED (2026-06-11).** Both `protocol-truth.ts` and
+   `data-verification-registry.ts` now read one shared constant,
+   `MEMBER_DEFINITION` in `syndicate-config.ts`. Canonical ruling (see
+   `03_GLOSSARY.md`): **Member = sale buyer** (distinct `TokensPurchased` buyers,
+   de-duplicated via the holder index). The verification registry previously
+   *described* the number as "SYN Transfer-event recipients / non-zero balance
+   holders" — that text was wrong (it described a Holder) and has been corrected;
+   the runtime value was already the buyer count, so no displayed number changed.
+2. **Vault Wallet and Vault Reserve share one address — OPEN (disclosure rule).**
+   They are *conceptually* distinct (70% USDC operating wallet vs 25% SYN long-term
+   reserve) but resolve to `0x205DdC…464` on-chain. This must be disclosed wherever
+   either is shown, never presented as two separate balances.

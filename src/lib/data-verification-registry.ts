@@ -13,7 +13,7 @@
 // If you add or change an entry here, update that doc in the same PR.
 // ────────────────────────────────────────────────────────────────────────────
 
-import { CONTRACTS, LP_POOL, explorerUrlForAddress } from "./syndicate-config";
+import { CONTRACTS, LP_POOL, explorerUrlForAddress, MEMBER_DEFINITION } from "./syndicate-config";
 
 export type VerificationStatus = "LIVE" | "PARTIAL" | "PENDING";
 
@@ -51,18 +51,16 @@ const dropNull = (xs: Array<VerificationLink | null>): VerificationLink[] =>
 export const METRIC_REGISTRY: Record<string, MetricVerification> = {
   members: {
     key: "members",
-    label: "Members",
-    description:
-      "Unique wallet count from the on-chain holder index — every address that holds a non-zero SYN balance after the first TokensPurchased event.",
+    label: MEMBER_DEFINITION.label,
+    description: MEMBER_DEFINITION.description,
     hook: "useHolderIndex (via useProtocolPulse)",
-    source:
-      "Avalanche C-Chain RPC. Scans Transfer events from the SYN ERC20 contract and de-duplicates recipients.",
+    source: MEMBER_DEFINITION.source,
     refresh: "Every 60 seconds; cached for 30 seconds.",
     status: "LIVE",
     emptyState: "Shows 0 until the first TokensPurchased event is mined.",
     links: dropNull([
-      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
       explorer(CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, "Membership Sale contract"),
+      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
     ]),
   },
   usdcRaised: {
@@ -149,7 +147,7 @@ export const METRIC_REGISTRY: Record<string, MetricVerification> = {
     key: "nextMember",
     label: "Next Member",
     description:
-      "Founder archive number that will be assigned to the next unique wallet to buy SYN. Derived: holder count + 1.",
+      "Founder archive number that will be assigned to the next unique wallet to buy SYN. Derived: members count + 1.",
     hook: "useHolderIndex (via useProtocolPulse)",
     source:
       "Derived deterministically from the Members count above. Not a separate on-chain read.",

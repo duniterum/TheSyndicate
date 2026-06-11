@@ -17,24 +17,26 @@ The app has TWO canonical metric layers that both claim authority:
 They overlap on members, usdcRaised, synSold, lpTvl, lastBuy, nextMember,
 vault balances.
 
-**The drift (real, already present):** the `members` metric is defined
-DIFFERENTLY in each:
-- `protocol-truth.ts`: "count(distinct buyer) over all TokensPurchased events"
-  (i.e. **members** = bought via the Sale).
-- `data-verification-registry.ts`: "every address that holds a non-zero SYN
-  balance … scans Transfer events from the SYN ERC20 and de-duplicates
-  recipients" (i.e. **holders**, which includes people who only received a
-  transfer).
+**The `members` drift — RESOLVED.** Both registries now read ONE shared
+constant, `MEMBER_DEFINITION` in `src/lib/syndicate-config.ts` (leaf module — do
+NOT move it into protocol-truth.ts, which pulls React/wagmi hooks and would drag
+them into the pure-data verification registry / risk a cycle). Canonical meaning:
+**Member = distinct TokensPurchased buyer**, de-duplicated via the holder index.
+IMPORTANT: the *runtime value* was already the buyer-count on both surfaces (the
+holder index is built from PurchaseEvent[] = TokensPurchased); only the
+verification registry's *prose* was wrong — it said "non-zero SYN balance /
+Transfer-event recipients" (a Holder). So correcting it changed no displayed
+number, only the description a verifier would follow.
 
-This violates the Member≠Holder doctrine (see syndicate-copy-canon): a holder is
-not a member. The two registries can show different member counts and different
-verification stories for the same pill.
+This had violated the Member≠Holder doctrine (see syndicate-copy-canon) at the
+description level: a holder is not a member.
 
 **Why it matters:** the founder's explicit fear is "duplicate systems / drifting
 concepts." This is a live example. Surfacing more metrics (e.g. circulating
 supply) by adding to only one registry deepens the split.
 
-**How to apply:** before surfacing or adding any protocol metric, pick ONE
-registry as authoritative and make the other reference it (or generate one from
-the other). Reconcile the `members` definition to the Sale-based
-(TokensPurchased distinct buyer) meaning so Member≠Holder holds everywhere.
+**How to apply:** the OTHER overlapping metrics (usdcRaised, synSold, lpTvl,
+lastBuy, vault balances) are still defined independently in each registry. Before
+surfacing or adding any protocol metric, follow the `members` template: define it
+ONCE in a leaf module and have BOTH registries read it, so Member≠Holder (and
+every other definition) holds everywhere. Don't add a metric to only one side.

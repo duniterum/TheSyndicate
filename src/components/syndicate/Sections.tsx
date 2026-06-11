@@ -1225,6 +1225,8 @@ export function GenesisSupplyControls() {
 }
 
 /* ─────────────────────── 24. Vault Growth Chart ─────────────────────── */
+// DEMO-ONLY: fabricated illustrative time-series. Rendered ONLY inside the
+// off-by-default, labeled "Future Vault preview" on /vault — never as live data.
 const VAULT_HISTORY: Array<{ day: string; value: number }> = [
   { day: "Day 1", value: 100 },
   { day: "Day 2", value: 120 },

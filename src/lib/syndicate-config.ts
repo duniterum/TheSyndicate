@@ -30,16 +30,32 @@ export const SYNDICATE_CONFIG = {
 
   // Economic placeholders (V1 = USDC only)
   PAYMENT_TOKEN: "USDC",
-  GENESIS_NFT_PRICE: "$1 – $10",
-  VAULT_STARTING_VALUE: 100,
-  NEXT_MILESTONE_VALUE: 1000,
   CURRENT_EPISODE: "001",
 } as const;
 
 // Helper to build "Verify onchain" links — points at SYN on Avascan by default.
 export const verifyOnchain = (_kind: string) => SYNDICATE_CONFIG.EXPLORER_LINK;
 
-// ─── Vault Balance Sheet (V1 mock data — replace with onchain reads later) ───
+// ─── Canonical "Member" definition (single source of truth) ───────────
+// Member = a wallet that has PURCHASED through the Membership Sale, counted
+// from TokensPurchased events and de-duplicated by buyer — distinct from a
+// "Holder" (any wallet holding SYN, e.g. via transfer/DEX). Both
+// protocol-truth.ts and data-verification-registry.ts read these strings, so
+// the public definition can never drift between surfaces.
+export const MEMBER_DEFINITION = {
+  label: "Members",
+  description:
+    "Distinct wallets that have purchased through the Membership Sale — counted from TokensPurchased events, de-duplicated by buyer. A member is not the same as a token holder.",
+  source:
+    "Avalanche C-Chain RPC · TokensPurchased(buyer, usdcIn, synOut) events on the Membership Sale contract, de-duplicated by buyer (via the holder index).",
+  formula: "count(distinct buyer) over all TokensPurchased events",
+} as const;
+
+// ─── Vault Balance Sheet (DEMO-ONLY mock data — NOT on-chain) ─────────
+// WARNING: these arrays are fabricated illustrative values. They must ONLY be
+// rendered inside the off-by-default, clearly-labeled "Future Vault preview"
+// on /vault — never surfaced as live protocol data. Replace with on-chain
+// reads before any un-gated use.
 export type VaultAsset = {
   symbol: "USDC" | "ETH" | "WBTC" | "AVAX" | "SOL" | "SYN";
   balance: number;
