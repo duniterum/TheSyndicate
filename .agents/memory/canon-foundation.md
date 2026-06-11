@@ -6,9 +6,18 @@ description: The Phase-0 consolidated canon layer — what it is, why it isn't g
 # Canon foundation — `docs/canon/`
 
 Phase 0 created a consolidated canon front door: `00_AUTHORITY_MAP`, `01_FOUNDER_INTENT_MAP`,
-`02_SOURCE_OF_TRUTH_TABLE`, `03_GLOSSARY`, `04_DOC_SYNC_CHECKLIST`. It consolidates (does NOT
-replace) `DOCUMENTATION_AUTHORITY_MAP.md`, `UNIFIED_PROTOCOL_DOCTRINE_MAP.md`,
+`02_SOURCE_OF_TRUTH_TABLE`, `03_GLOSSARY`, `04_DOC_SYNC_CHECKLIST`. Later siblings added:
+`05_FOUNDATION_FREEZE` (five-layer architecture constitution), `06_FINANCIAL_TRACE_AND_GUARDRAILS`
+(money≠prestige), `07_FOUNDER_PRINCIPLE` (approved-but-NOT-implemented strategic direction).
+It consolidates (does NOT replace) `DOCUMENTATION_AUTHORITY_MAP.md`, `UNIFIED_PROTOCOL_DOCTRINE_MAP.md`,
 `TERMINOLOGY_GLOSSARY.md`, `CANONICAL_REGISTRY.md`.
+
+**Two deferral registers — do NOT merge or duplicate across them:** strategic founder-approved
+direction that has no code/contract/UI yet → `docs/canon/07_FOUNDER_PRINCIPLE.md` (intent register,
+keyed to the Truth→Events→Signals→Memory→Story chain); tactical engineering deferrals (known surface,
+concrete fix) → `docs/DEFERRED_WORK_LEDGER.md`. An idea graduates 07→ledger when it becomes a real
+surface-level task. When the founder approves an unbuilt direction, route it to 07 — never spawn a
+new "future ideas" file (that IS the parallel-architecture failure 07 exists to prevent).
 
 **Authoritative-by-convention, NOT machine-enforced yet.**
 **Why:** the doctrine guard's `CANONICAL_DOCS`/`DOC_BANNED` are hardcoded and scan only their
@@ -25,6 +34,6 @@ data-verification-registry drift; Activity (raw, public) ≠ Chronicle (curated,
 Referral (attribution) ≠ Reward (payout), both PENDING; NFT (public) / Artifact (secondary) /
 Relic (deep-lore only, banned in live UI).
 
-**How to apply:** treat canon as the doctrine front door. Renaming the Patron/Council ranks,
-unifying the members definition in code, and registering canon in the guard are OPEN founder
-decisions / code follow-ups — do not execute under a docs-only constraint.
+**How to apply:** treat canon as the doctrine front door. The Patron/Council rank renames are now
+DONE (see rank-constitutional-ruling.md). Still OPEN code follow-ups: unifying the
+members definition in code, and registering the canon files in the doctrine guard (07 included).

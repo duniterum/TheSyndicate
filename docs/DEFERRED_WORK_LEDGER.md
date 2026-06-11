@@ -4,6 +4,14 @@ Status: **OPERATIONAL**. Single place to log work that is intentionally
 deferred. Stops good ideas from being lost and stops them from creeping
 into the current release.
 
+> **Scope:** this ledger is for *tactical* engineering deferrals — a known
+> surface and a concrete fix. Founder-level *strategic direction* that is
+> approved but not yet designed lives in `docs/canon/07_FOUNDER_PRINCIPLE.md`.
+> Keep the two separate; do not duplicate an item across both. A few existing
+> rows below are strategic-altitude (e.g. "Referral / invite / reward system",
+> "SeatRecord721 Solidity", "Chronicle Phase 2") and are **grandfathered** here;
+> record new strategic direction in 07 instead.
+
 Every entry MUST carry: item · source · severity · why deferred · when to
 revisit · prerequisite · owner/surface.
 

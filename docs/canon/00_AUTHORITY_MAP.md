@@ -26,6 +26,7 @@ guard-enforced (see *Enforcement* below).
 | `docs/canon/04_DOC_SYNC_CHECKLIST.md` | "I changed something — what do I update, in what order?" |
 | `docs/canon/05_FOUNDATION_FREEZE.md` | "Which architectural layer does this feature belong to, and what rules freeze it against drift?" |
 | `docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md` | "How may money / economic data surface, and what stops it becoming prestige?" |
+| `docs/canon/07_FOUNDER_PRINCIPLE.md` | "What direction has the founder approved but deliberately *not built yet*?" |
 
 ---
 
@@ -59,6 +60,10 @@ mental index for the whole system.
 | 10 | Activity & Chronicle | Activity LIVE; Chronicle PARTIAL/curated | `protocol-events.ts`, `chronicle-entries.ts` |
 | 11 | Verification / Transparency | LIVE (metric definition PARTIAL) | `protocol-truth.ts`, `data-verification-registry.ts` |
 | 12 | Future Modules (Referral · Reward · Burn · Governance · SeatRecord721) | PENDING / FUTURE | none deployed |
+
+> **Intent vs. catalog:** this table is the *catalog* of future modules and their
+> status. The founder's *approved-but-unbuilt direction* and the reasoning behind
+> it live in `07_FOUNDER_PRINCIPLE.md`.
 
 ---
 
