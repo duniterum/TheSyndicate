@@ -43,3 +43,4 @@
 - [Route codegen + vitest OOM](tanstack-route-codegen-and-vitest-oom.md) — new /routes file fails tsc until routeTree.gen.ts regenerates (restart dev workflow); full vitest OOMs → run per-batch in separate vitest processes.
 - [Economic significance ruling](economic-significance-ruling.md) — subject decides standing: protocol milestones MAY be S3+; person-money ≤S2, never auto-Historic; rule is person-scoped (05 §4.5).
 - [Signal↔Memory adjacency ruling](signal-source-taxonomy.md) — founder ruling: SIGNALS read EVENTS only, never MEMORY (no carve-out); re-express MEMORY facts as EVENTS, never MEMORY→SIGNAL.
+- [Engine completeness vs pipeline](engine-completion-vs-pipeline.md) — canon 5-layer model is a refinement pipeline w/ no feedback edge; LIVE truth/events/identity/economics but SIGNALS=FUTURE, DIFFUSION loop unassembled, recognition/chronicle candidates PENDING in hidden labs; audit the LOOP not the page list.
