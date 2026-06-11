@@ -1,0 +1,213 @@
+FOUNDER DECISION LOCK — MEMORY, RECOGNITION, PATRON, BURN & FUTURE REFERRAL
+
+This is not an implementation sprint.
+
+Do not code.
+Do not refactor.
+Do not redesign.
+Do not create contracts.
+Do not modify public UI.
+
+Goal:
+Before executing Chronicle / Recognition / Reporting work, consolidate the founder decisions from the last sessions into one doctrine proposal and identify what is already supported by the code.
+
+Use:
+
+* docs/canon/
+* Protocol Metrics Registry
+* Protocol Event Pipeline
+* Protocol Memory foundation
+* /labs/protocol-events
+* /labs/protocol-memory
+* existing Chronicle docs
+* existing Patron / Artifact / Rank docs
+* existing Referral / Future Modules docs
+
+Core principle:
+Activity = what happened.
+Chronicle = what mattered.
+Recognition = who left a meaningful trace.
+Reports = periodic protocol memory.
+Ledger = factual money / token movement.
+
+---
+
+## PART 1 — CURRENT REALITY CHECK
+
+Report what already exists for:
+
+* Activity
+* Chronicle candidates
+* Recognition candidates
+* Ledger
+* Report registry
+* Proof of Fire
+* Patron Seal
+* Rank
+* Future referral namespace
+* known address labels
+* metrics registry
+
+Separate:
+A) implemented
+B) partially implemented
+C) labs/internal only
+D) doctrine only
+E) not implemented
+
+---
+
+## PART 2 — FOUNDER DECISION PROPOSAL
+
+Convert these founder directions into clean doctrine proposals:
+
+1. Chronicle
+   Not every event becomes Chronicle.
+   Chronicle is curated memory.
+
+2. Recognition
+   Recognition is not KYC.
+   Recognition is not verified real-world identity.
+   Recognition can be anonymous, alias-based, or self-declared later.
+
+3. Patron
+   Patron Seal = artifact-backed support / recognition.
+   Patron rank, if kept, must always be disambiguated.
+   Never use bare “Patron” when ambiguous.
+
+4. Proof of Fire
+   Proof of Fire = SYN sent to the standard dead address.
+   Founder Burn / Community Burn are classifications.
+   Ash Seal = future artifact concept only.
+
+5. Referral
+   Referral is future attribution first, payout later.
+   Example future memory:
+   “Member #27 brought Member #456 into The Syndicate.”
+   No live commission language until contract exists.
+
+6. Reports
+   Weekly Chronicle, Monthly Report, Quarterly Report, Half-Year Report, Annual State of The Syndicate are future outputs derived from events + metrics + ledger.
+
+---
+
+## PART 3 — WHAT DESERVES MEMORY
+
+Create a proposed rule table:
+
+Event type | Activity | Chronicle candidate | Recognition candidate | Ledger | Report candidate | Notes
+
+Include:
+
+* normal purchase
+* first purchase
+* member #100 / #333 / #1,000 / #3,333 / #10,000
+* rank milestone
+* Patron Seal mint
+* First Signal mint
+* Proof of Fire #001
+* later burn events
+* founder-funded Operations
+* Operations outgoing spend
+* LP event
+* NFT mint
+* future referral
+* future SeatRecord721 event
+* future governance event
+
+Do not auto-publish anything.
+Only propose rules.
+
+---
+
+## PART 4 — LANGUAGE SYSTEM
+
+Propose safe wording.
+
+Preferred emotional line:
+“Most people watch from the outside.
+Members take a seat, rise through the ranks, and leave a trace in the Chronicle.”
+
+Use:
+
+* enter
+* take your seat
+* rise
+* seal
+* verify
+* leave a trace
+* be remembered
+* protocol memory
+* recognition
+* public record
+
+Avoid:
+
+* contribution, unless absolutely necessary
+* investment
+* ROI
+* yield
+* dividend
+* passive income
+* fundraising
+* raised
+* verified identity
+* KYC-like wording
+* buyback
+* price impact promise
+
+---
+
+## PART 5 — DRIFT RISK CHECK
+
+Identify conflicts with current canon/code:
+
+* Patron rank vs Patron Seal
+* Council rank vs future governance council
+* Activity vs Chronicle
+* Recognition vs rank
+* Recognition vs identity
+* Ledger vs Chronicle
+* Burn vs LP burn/remove liquidity
+* referral attribution vs reward payout
+
+For each:
+
+* current source
+* risk
+* recommended ruling
+* whether founder decision is needed
+
+---
+
+## PART 6 — IMPLEMENTATION READINESS
+
+Do not implement.
+
+Tell us what the next execution sprint should be after founder approval:
+
+Option A: update canon/docs only
+Option B: update candidate logic
+Option C: update labs workbench
+Option D: promote some surfaces publicly
+Option E: postpone
+
+Rank them.
+
+---
+
+## FINAL OUTPUT
+
+Return a concise founder decision report:
+
+1. what is already built
+2. proposed doctrine decisions
+3. memory rule table
+4. language rules
+5. drift risks
+6. open founder decisions
+7. recommended next execution sprint
+
+No code changes.
+No files changed.
+This is a decision-lock pass before implementation.

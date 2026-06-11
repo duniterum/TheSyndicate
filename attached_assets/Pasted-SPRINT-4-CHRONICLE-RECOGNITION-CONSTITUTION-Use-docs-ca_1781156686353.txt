@@ -1,0 +1,284 @@
+SPRINT 4 — CHRONICLE & RECOGNITION CONSTITUTION
+
+Use `docs/canon/`, the Protocol Metrics Registry, the Protocol Event Pipeline, and the Protocol Memory foundation as source of truth.
+
+This is an execution sprint.
+
+No redesign.
+No new contracts.
+No referral contract.
+No burn automation.
+No governance.
+No AI.
+No marketplace.
+No new tokenomics.
+
+Goal:
+Now that the protocol can see events and derive candidates, define the constitutional rules for what deserves memory and recognition.
+
+Core distinction:
+Activity = everything verified.
+Chronicle = what mattered.
+Recognition = who left a meaningful trace.
+
+---
+
+## PART 1 — CHRONICLE CONSTITUTION
+
+Create or consolidate a doctrine file defining:
+
+What qualifies for Chronicle?
+
+Rules:
+
+Always Chronicle-worthy:
+
+* protocol launch / first member
+* chapter sealed
+* Proof of Fire #001
+* first artifact mint
+* first Patron Seal
+* first LP event
+* major protocol milestone
+* founder action with protocol significance
+* future member-number milestones: #100, #333, #1,000, #3,333, #10,000
+
+Sometimes Chronicle-worthy:
+
+* major purchase / rank milestone
+* Patron Seal mint
+* important burn after #001
+* founder-funded Operations
+* major Operations spend
+* future referral milestone
+* unusual protocol event
+* external recognition / press / listing
+
+Usually Activity-only:
+
+* normal purchase
+* normal transfer
+* normal small NFT mint
+* normal LP swap
+* normal wallet balance update
+
+Chronicle entry must include:
+
+* title
+* why it mattered
+* source event(s)
+* verification link
+* legal-safe wording
+* status: CANDIDATE / APPROVED / PUBLISHED / REJECTED
+* whether automatic or operator-curated
+
+Do not auto-publish everything.
+
+---
+
+## PART 2 — RECOGNITION CONSTITUTION
+
+Define Recognition without creating a new rank system.
+
+Recognition means:
+A member did something visible, meaningful, supportive, or historically relevant.
+
+Recognition must not mean:
+
+* KYC
+* verified real-world identity
+* financial rights
+* governance rights
+* yield
+* ROI
+* guaranteed benefit
+
+Supported display modes:
+
+* anonymous: Member #217
+* alias: user-chosen handle, later
+* public name: self-declared only, non-KYC, later
+
+Recognition candidates may come from:
+
+* rank milestone
+* Patron Seal
+* Proof of Fire participation
+* artifact mint
+* important referral attribution later
+* founder support action
+* chapter participation
+* report mention
+* Chronicle mention
+
+Do not implement paid alias/profile now unless already trivial.
+Only define the rules and update existing candidate logic/docs if needed.
+
+---
+
+## PART 3 — CHRONICLE VS ACTIVITY VS REPORTS
+
+Define the difference clearly:
+
+Activity:
+raw verified stream.
+
+Chronicle:
+curated protocol memory.
+
+Reports:
+periodic summaries derived from metrics + events + ledger.
+
+Future report cadence:
+
+* Weekly Chronicle
+* Monthly Protocol Report
+* Quarterly Protocol Report
+* Half-Year Protocol Report
+* Annual State of The Syndicate
+
+Do not build public reports now.
+Just ensure the doctrine and candidate logic are ready.
+
+---
+
+## PART 4 — EVENT → MEMORY RULES
+
+Update the candidate logic if needed so events can be classified as:
+
+* Activity-only
+* Chronicle candidate
+* Recognition candidate
+* Ledger entry
+* Report candidate
+
+Do not duplicate event logic.
+Use the existing Protocol Event Pipeline.
+
+---
+
+## PART 5 — REFERRAL AS FUTURE MEMORY EVENT
+
+Do not implement referral.
+
+But define future memory framing:
+
+Referral is not just commission.
+Referral is attribution of growth.
+
+Future example:
+“Member #27 brought Member #456 into The Syndicate.”
+
+This may become:
+
+* Activity event always
+* Recognition candidate depending on impact
+* Chronicle candidate only when historically significant
+* reward status PENDING until contract exists
+
+No live reward language.
+
+---
+
+## PART 6 — PATRON / MECENE FRAMING
+
+Clarify Patron carefully.
+
+Patron Seal is live artifact.
+Patron rank may exist separately.
+Do not create confusion.
+
+Rules:
+
+* Patron Seal = artifact-backed support/recognition.
+* Patron rank = rank ladder term if still present.
+* Never use bare “Patron” if ambiguous.
+* Patron does not imply rights, payout, governance, or yield.
+
+If copy/doc updates are needed, make them.
+
+---
+
+## PART 7 — PROOF OF FIRE FRAMING
+
+Define Proof of Fire:
+
+* event family for SYN sent to the standard dead address
+* Founder Burn / Community Burn classification
+* verified supply reduction
+* Chronicle-worthy for #001 and major future burns
+* Ash Seal remains future artifact concept only
+
+No price claim.
+No buyback language.
+No automation implication.
+
+---
+
+## PART 8 — DOCS / CANON UPDATE
+
+Update or create the minimum required canon/doc files.
+
+Likely candidates:
+
+* docs/canon/10_NARRATIVE.md
+* docs/canon/12_FUTURE_MODULES.md
+* docs/canon/01_FOUNDER_INTENT_MAP.md
+* docs/canon/03_GLOSSARY.md
+* existing Chronicle docs if already canonical
+
+Do not create duplicate doctrine files if one already exists.
+Point to existing docs where appropriate.
+
+---
+
+## PART 9 — INTERNAL WORKBENCH
+
+If useful, update `/labs/protocol-memory` to show:
+
+* Activity-only
+* Chronicle candidate
+* Recognition candidate
+* Ledger entry
+* Report candidate
+* reason for candidate status
+* whether operator approval is required
+
+No public redesign.
+
+---
+
+## VERIFICATION
+
+Run:
+
+* tsc --noEmit
+* doctrine guard
+* vocabulary scripts
+* Chronicle tests
+* event/memory tests
+* full suite if practical
+
+Confirm:
+
+* no banned words
+* no “verified identity”
+* no ROI/yield/dividend/return language
+* no simulated candidate shown as published
+* Chronicle remains curated, not automatic
+
+---
+
+## FINAL RESPONSE
+
+Return concise summary only:
+
+* files changed
+* Chronicle constitution decisions
+* Recognition constitution decisions
+* event-to-memory rules
+* Patron clarification
+* Proof of Fire clarification
+* labs updates
+* tests run
+* remaining open founder decisions
