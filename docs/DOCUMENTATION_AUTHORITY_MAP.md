@@ -1,5 +1,10 @@
 # Documentation Authority Map
 
+> **Consolidated (2026-06-11):** a navigable canon front door now exists at
+> `docs/canon/00_AUTHORITY_MAP.md`. **This file remains binding and
+> guard-enforced** as the detailed, per-document classification and the
+> superseded-doctrine table. Start at the canon; come here for the full lists.
+
 Status: **binding**. This is the single source of truth for how to read every
 markdown file in `docs/`. The protocol has gone through several audit waves;
 earlier waves used vocabulary and cohort names that have since been superseded.

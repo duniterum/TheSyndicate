@@ -1,5 +1,9 @@
 # THE SYNDICATE — TERMINOLOGY GLOSSARY
 
+> **Consolidated (2026-06-11):** the canonical glossary plus the terminology
+> collision rulings now live at `docs/canon/03_GLOSSARY.md`. **This file remains
+> guard-enforced** — keep the two in sync (see `docs/canon/04_DOC_SYNC_CHECKLIST.md`).
+
 Single source of truth for every word used in the UI, docs, FAQ, and marketing.
 If a term is not in this glossary, do not invent a new one — extend this file first.
 

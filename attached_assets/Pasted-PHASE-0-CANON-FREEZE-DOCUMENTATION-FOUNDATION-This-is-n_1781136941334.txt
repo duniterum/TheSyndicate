@@ -1,0 +1,135 @@
+PHASE 0 — CANON FREEZE & DOCUMENTATION FOUNDATION
+
+This is no longer an audit.
+
+We have enough audits.
+
+Execute the consolidation work.
+
+Goal:
+
+Create the foundation that will allow future development, documentation, FAQ updates, whitepaper updates, roadmap updates, and feature work without terminology drift or architectural confusion.
+
+Use:
+
+* existing codebase
+* existing documentation
+* Documentation Authority Map audit
+* Economic Reality audit
+* Revenue-per-Member audit
+* Steward report
+* Canonical bucket report
+* Source-of-truth findings
+* doctrine guard
+* current contracts
+
+Principle:
+
+Code and deployed contracts remain the ultimate source of truth.
+
+The purpose of this phase is to consolidate and synchronize.
+
+---
+
+## OBJECTIVES
+
+1. Create the canonical documentation foundation.
+
+Create and populate:
+
+docs/canon/
+
+including at minimum:
+
+00_AUTHORITY_MAP.md
+01_FOUNDER_INTENT_MAP.md
+02_SOURCE_OF_TRUTH_TABLE.md
+03_GLOSSARY.md
+04_DOC_SYNC_CHECKLIST.md
+
+Use the structures identified in previous audits.
+
+2. Resolve known terminology collisions.
+
+At minimum review and resolve:
+
+* Patron Rank vs Patron Seal
+* Council Rank vs future Governance Council
+* Vault vs Treasury terminology
+* Member vs Holder
+* Activity vs Chronicle
+* Referral vs Reward terminology
+* Artifact vs NFT terminology
+
+Apply the canonical ruling everywhere appropriate.
+
+3. Create the source-of-truth system.
+
+For every major concept identify:
+
+* contract source
+* code source
+* documentation source
+* status
+* confidence
+
+4. Create the founder intent map.
+
+For every major concept explain:
+
+* why it exists
+* what problem it solves
+* what it should never become
+
+5. Create the documentation synchronization checklist.
+
+Define the future update flow:
+
+Contract / Code
+→ Canon
+→ Glossary
+→ FAQ
+→ Whitepaper
+→ Site Copy
+→ Doctrine Guard
+
+---
+
+## IMPORTANT
+
+Do not create new features.
+
+Do not redesign pages.
+
+Do not implement referral.
+
+Do not implement burn.
+
+Do not implement governance.
+
+Do not change economics.
+
+Do not create new taxonomy.
+
+Consolidate existing reality.
+
+Use your judgment to create the minimum number of files required for long-term maintainability.
+
+---
+
+## OUTPUT
+
+Perform the work.
+
+At the end provide only a concise summary:
+
+* files created
+* files modified
+* terminology decisions made
+* collisions resolved
+* major discrepancies found
+* remaining open founder decisions
+
+No giant audit report.
+
+Do the consolidation work first, then summarize.
