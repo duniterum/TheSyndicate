@@ -1,0 +1,258 @@
+SELF-REINFORCING PROTOCOL ENGINE SPEC — READ-ONLY
+
+Read-only.
+
+No implementation.
+No code changes.
+No UI changes.
+No docs changes.
+No canon changes.
+
+We are not auditing pages anymore.
+
+We are not asking for another general roadmap.
+
+We are designing the missing protocol engine.
+
+Context:
+
+The latest Protocol Engine Completion Audit concluded that The Syndicate has a strong truth pipeline, but not yet a complete engine. TRUTH, EVENTS, IDENTITY, and ECONOMICS are live, but the loop from participation → meaning → recognition → sharing → new participation is not closed.
+
+Your task:
+
+Design the self-reinforcing protocol engine that connects the existing layers into one living system.
+
+Think as:
+
+* Founder
+* CTO
+* Product Lead
+* Growth Lead
+* Behavioral Economist
+* Collector Psychology Expert
+* Game Designer
+* Story Architect
+* Community Builder
+* Protocol Designer
+* Systems Thinker
+* Legal-risk-aware crypto builder
+
+Do not optimize for more features.
+
+Optimize for a working engine.
+
+Answer these questions:
+
+1. CORE ENGINE LOOP
+
+Define the exact loop:
+
+Visitor → Member → Trace → Signal → Memory → Story → Recognition → Share → New Visitor → New Member
+
+For each step:
+
+* what triggers it
+* what data powers it
+* what existing code/module supports it
+* what is missing
+* what must not be invented
+* what must stay verifiable
+
+2. CURRENT ENGINE STATE
+
+For each engine layer, classify:
+
+* LIVE
+* PARTIAL
+* PENDING
+* FUTURE
+
+Layers to evaluate:
+
+* Truth
+* Events
+* Identity
+* Economics
+* Memory
+* Story
+* Diffusion
+* Signals
+* Recognition
+* Anticipation
+* Growth / Referral
+* Intelligence / Reports
+* Ecosystem
+
+If another layer exists, identify it.
+
+3. MINIMUM ENGINE
+
+Define the minimum version of the engine that must exist before public growth.
+
+This must be small, realistic, and reuse existing assets.
+
+Do not include anything that is not necessary.
+
+4. SCALE ENGINE
+
+Define what must exist later before 1,000+ members.
+
+Focus on what breaks if we scale without it.
+
+5. ANTICIPATION LAYER
+
+Explicitly evaluate whether Anticipation should be its own layer.
+
+Founder context:
+
+The Syndicate is not meant to be a static dashboard.
+
+It should feel like an evolving series:
+
+* next chapter
+* next milestone
+* next member threshold
+* next artifact
+* next protocol moment
+* next recognition unlock
+
+Answer:
+
+* Is Anticipation separate from Story?
+* What data should power it?
+* What existing pages/components already support it?
+* What is missing?
+* How can it be built without fake promises?
+
+6. DIFFUSION LOOP
+
+Design the verifiable sharing loop.
+
+Use existing assets if possible:
+
+* wallet OG routes
+* milestone OG routes
+* ShareActions
+* public wallet pages
+* public milestone pages
+* MemberCard
+* ShareableCards
+* HomeShareCTA
+
+Define:
+
+* what should be shared
+* when it should be shared
+* where it links back
+* what is verified
+* what is not allowed to be claimed
+
+7. SIGNALS
+
+Design the minimal Signal Engine.
+
+Do not overbuild it.
+
+Signals must derive only from Events.
+
+Define:
+
+* signal types
+* signal tiers
+* what qualifies as a signal
+* what must never qualify as a signal
+* how money is treated safely
+* how Signals feed Memory, Story, Recognition, and Anticipation
+
+8. RECOGNITION
+
+Design the minimal Recognition system.
+
+It must not be pure spend ranking.
+
+It must not imply governance, ROI, yield, rights, or future profit.
+
+Define:
+
+* what can be recognized
+* what should not be recognized
+* how early members can be recognized
+* how repeat participation can be recognized
+* how sharing / witnessing / protocol moments can be recognized
+* what recognition should unlock emotionally, not financially
+
+9. GROWTH / REFERRAL
+
+Evaluate Referral as a Growth Layer, not just a feature.
+
+Answer:
+
+* Is referral needed before Diffusion works?
+* Should referral start off-chain?
+* What is the safest attribution-only version?
+* What should be forbidden until later?
+* What depends on Signals or Recognition?
+
+10. ENGINE PRIORITY ORDER
+
+Give the exact order to complete the engine.
+
+Not by page.
+
+Not by component.
+
+By layer.
+
+For each step:
+
+* why now
+* what existing assets to reuse
+* what new work is required
+* expected impact
+* risk
+* what must not be touched
+
+11. STOP LIST
+
+List what should NOT be built now, even if attractive.
+
+Evaluate:
+
+* Governance
+* Marketplace
+* AI
+* Reports
+* SeatRecord721
+* Referral contract
+* Chronicle Phase 2
+* full redesign
+* new vault architecture
+* new contracts
+
+12. FINAL OUTPUT
+
+Return:
+
+A) The complete engine map.
+
+B) The minimum engine needed before public push.
+
+C) The 3 highest-leverage engine gaps.
+
+D) The exact next sprint if we choose to implement.
+
+E) The anti-drift rules to prevent us from going in circles again.
+
+Important:
+
+This is a SPEC.
+
+Do not implement.
+
+Do not audit the whole codebase again.
+
+Use the existing Protocol Engine Completion Audit as context.
+
+Your answer must be decisive.
+
+The goal is to stop the loop of audit after audit and define the actual engine we are building.
