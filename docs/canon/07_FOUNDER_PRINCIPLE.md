@@ -91,7 +91,7 @@ door** for it. Keep them one system, never parallel ones:
 
 | # | Idea | Why proposed (intent) | Layer | Must never become | Prerequisite |
 |---|---|---|---|---|---|
-| **FS-1** | **Future Signal Engine — source taxonomy** (evaluate signals grouped as Financial / Protocol / Memory Trace — detail below) | Let the protocol grow *more interpretive without new truth*: Signals answer "why does this matter?" over facts that already exist, feeding richer recognition / curation / reports | **SIGNALS** (interpretation over EVENTS; `05` §3) | a reward / score / leaderboard; a new store of truth; a layer that *replaces* the event it reads | `05`'s SIGNALS leaf built first (`signalType()` / `signalTier()`); **+ resolve the Memory-Trace adjacency question (FS-1 below)** |
+| **FS-1** | **Future Signal Engine — source taxonomy** (evaluate signals grouped as Financial / Protocol / Memory Trace — detail below) | Let the protocol grow *more interpretive without new truth*: Signals answer "why does this matter?" over facts that already exist, feeding richer recognition / curation / reports | **SIGNALS** (interpretation over EVENTS; `05` §3) | a reward / score / leaderboard; a new store of truth; a layer that *replaces* the event it reads | `05`'s SIGNALS leaf built first (`signalType()` / `signalTier()`); **+ any Memory-derived fact re-expressed as an EVENT first (founder ruling — `05` §2.1; FS-1 below)** |
 
 ---
 
@@ -104,7 +104,7 @@ three groupings of *existing* protocol facts:
 |---|---|---|---|
 | **Financial Trace** *(economic-participation facts; cf. the Financial Trace record of `06` / `08` — see note)* | purchases · burns · support actions · artifact mints | Participation · Conviction (burn) · Support | EVENTS |
 | **Protocol Trace** | referrals · chapter participation · milestone participation · protocol-growth participation | Growth (referral — FUTURE) · Structural | EVENTS |
-| **Memory Trace** | Chronicle appearances · historical firsts · Proof of Fire · recognition milestones | Historic · Timing · Conviction | EVENTS for firsts + Proof of Fire; **MEMORY for Chronicle appearance / recognition milestone — see open question** |
+| **Memory Trace** | Chronicle appearances · historical firsts · Proof of Fire · recognition milestones | Historic · Timing · Conviction | **EVENTS only.** Firsts + Proof of Fire are events; Chronicle appearance / recognition milestone must be **re-expressed as EVENTS first** (founder ruling — `05` §2.1). SIGNALS never read MEMORY. |
 
 **On the word "Trace".** These three Traces are *signal-source groupings* — how the future
 engine **reads** facts for meaning — not the same object as the **Financial Trace data
@@ -127,14 +127,11 @@ Signal grants nothing (no reward, right, identity, or yield); the three Traces a
 groupings*, not new architectures — they fold into the frozen seven Signal Types, never
 beside them.
 
-**Open question — Memory-Trace adjacency (founder decision required).** Two Memory-Trace
-sources — **Chronicle appearance** and **recognition milestone** — live in the MEMORY
-layer, which sits *downstream* of SIGNALS in `05`'s chain
-(TRUTH → EVENTS → SIGNALS → MEMORY → STORY). Evaluating them as signal inputs would have
-SIGNALS read MEMORY, which the Adjacency Law does **not** currently sanction (its one
-carve-out is MEMORY ingesting EVENTS, not the reverse). Before FS-1 is built, choose one:
-(a) compute these at the MEMORY layer as Recognition, not as Signals; (b) re-express the
-underlying fact as an EVENT the Signal layer can read; or (c) ratify a new, explicit
-Adjacency carve-out in `05`. **Do not silently let SIGNALS read MEMORY.** *(The same
-tension already exists in `05` §3.2's "Historic" type, which is sourced from Chronicle —
-resolve both together.)*
+**Resolved — founder ruling (`05` §2.1).** The Memory-Trace adjacency question is
+**closed: no carve-out. SIGNALS read EVENTS only and must never read MEMORY.** Chronicle
+appearance and recognition milestone are **MEMORY outputs, not Signal inputs** — decision
+**(b)**: if a future Signal needs such a fact, *re-express its underlying source as an
+EVENT* and derive the Signal from that EVENT. Correct flow **EVENT → SIGNAL →
+RECOGNITION / CHRONICLE**; forbidden flow **MEMORY → SIGNAL** (it would make the
+architecture circular). The same resolution applies to `05` §3.2's **Historic** type: it
+derives from the originating EVENT, never by reading Chronicle.

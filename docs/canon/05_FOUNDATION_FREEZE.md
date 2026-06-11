@@ -127,6 +127,31 @@ never narrate. **If a feature needs to reach past these bounds, it is misplaced*
 re-home it before building. This is the single most important anti-drift rule in the
 protocol; it is the test every future module must pass first.
 
+### 2.1 Founder ruling — SIGNALS must not read MEMORY (no carve-out)
+
+> **Ruling (constitutional, founder).** There is **no** Adjacency carve-out for SIGNALS
+> reading MEMORY — now or later. **SIGNALS read EVENTS only.** Chronicle appearances and
+> Recognition milestones are **MEMORY outputs, not Signal inputs.**
+
+If a future Signal needs a fact that today exists only in MEMORY, **re-express its
+underlying source as an EVENT** and derive the Signal from that EVENT. The flow is
+one-directional:
+
+```
+correct:    EVENT → SIGNAL → RECOGNITION / CHRONICLE
+forbidden:  MEMORY → SIGNAL
+```
+
+**Reason:** letting SIGNALS read MEMORY creates a *circular* architecture
+(SIGNALS → MEMORY → SIGNALS) and weakens the entire anti-drift model. The frozen chain
+stays clean: **TRUTH → EVENTS → SIGNALS → MEMORY → STORY.**
+
+This ruling closes the FS-1 open question in `07_FOUNDER_PRINCIPLE.md` (decision **(b)**)
+and resolves the same tension in §3.2's **Historic** type: a Historic *signal* must derive
+from the originating EVENT (e.g., the event a Chronicle entry records), never by reading
+the Chronicle store. The only sanctioned cross-layer carve-out remains the existing one
+above (MEMORY ingesting EVENTS directly for raw Activity).
+
 ---
 
 ## 3. Signal doctrine (frozen)
@@ -180,9 +205,9 @@ and Type on top. It is **additive, not a rewrite.**
 
 > **Future source taxonomy (approved direction):** the founder-approved grouping of these
 > inputs into **Financial / Protocol / Memory Trace** for the future Signal Engine is
-> recorded in `07_FOUNDER_PRINCIPLE.md` (FS-1) — including an open Adjacency-Law question
-> for the two Memory-derived sources (Chronicle appearance, recognition milestone), which
-> would otherwise require SIGNALS to read MEMORY.
+> recorded in `07_FOUNDER_PRINCIPLE.md` (FS-1). The Adjacency-Law question it raised — may
+> SIGNALS read the two Memory-derived sources (Chronicle appearance, recognition milestone)?
+> — is **resolved by the §2.1 founder ruling: no. Re-express them as EVENTS first.**
 
 ---
 
