@@ -41,6 +41,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LabsIndexRouteImport } from './routes/labs.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
+import { Route as LabsProtocolIntelligenceRouteImport } from './routes/labs.protocol-intelligence'
 import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
 import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museum'
 import { Route as LabsDesignArchiveRouteImport } from './routes/labs.design-archive'
@@ -215,6 +216,12 @@ const MilestoneIdRoute = MilestoneIdRouteImport.update({
   path: '/milestone/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabsProtocolIntelligenceRoute =
+  LabsProtocolIntelligenceRouteImport.update({
+    id: '/protocol-intelligence',
+    path: '/protocol-intelligence',
+    getParentRoute: () => LabsRoute,
+  } as any)
 const LabsInvariantsRoute = LabsInvariantsRouteImport.update({
   id: '/invariants',
   path: '/invariants',
@@ -319,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs/': typeof LabsIndexRoute
@@ -365,6 +373,7 @@ export interface FileRoutesByTo {
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs': typeof LabsIndexRoute
@@ -413,6 +422,7 @@ export interface FileRoutesById {
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs/': typeof LabsIndexRoute
@@ -462,6 +472,7 @@ export interface FileRouteTypes {
     | '/labs/design-archive'
     | '/labs/design-museum'
     | '/labs/invariants'
+    | '/labs/protocol-intelligence'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs/'
@@ -508,6 +519,7 @@ export interface FileRouteTypes {
     | '/labs/design-archive'
     | '/labs/design-museum'
     | '/labs/invariants'
+    | '/labs/protocol-intelligence'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs'
@@ -555,6 +567,7 @@ export interface FileRouteTypes {
     | '/labs/design-archive'
     | '/labs/design-museum'
     | '/labs/invariants'
+    | '/labs/protocol-intelligence'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs/'
@@ -834,6 +847,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MilestoneIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/labs/protocol-intelligence': {
+      id: '/labs/protocol-intelligence'
+      path: '/protocol-intelligence'
+      fullPath: '/labs/protocol-intelligence'
+      preLoaderRoute: typeof LabsProtocolIntelligenceRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/invariants': {
       id: '/labs/invariants'
       path: '/invariants'
@@ -945,6 +965,7 @@ interface LabsRouteChildren {
   LabsDesignArchiveRoute: typeof LabsDesignArchiveRoute
   LabsDesignMuseumRoute: typeof LabsDesignMuseumRoute
   LabsInvariantsRoute: typeof LabsInvariantsRoute
+  LabsProtocolIntelligenceRoute: typeof LabsProtocolIntelligenceRoute
   LabsIndexRoute: typeof LabsIndexRoute
 }
 
@@ -953,6 +974,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsDesignArchiveRoute: LabsDesignArchiveRoute,
   LabsDesignMuseumRoute: LabsDesignMuseumRoute,
   LabsInvariantsRoute: LabsInvariantsRoute,
+  LabsProtocolIntelligenceRoute: LabsProtocolIntelligenceRoute,
   LabsIndexRoute: LabsIndexRoute,
 }
 
