@@ -1,0 +1,214 @@
+FINAL TARGETED AUDIT — SYN, MEMBER NUMBER, SEAT RECORD & IDENTITY CLARITY
+
+Read-only audit.
+
+No code.
+No docs.
+No canon edits.
+No UI changes.
+No implementation.
+
+Goal:
+Before Sprint B starts, resolve possible confusion between:
+
+* SYN token
+* membership
+* member number
+* seat
+* SeatRecord721
+* Archive1155 artifacts
+* Chronicle
+* Recognition
+* Co-Witness history
+* Member Journey
+
+Concern:
+Using “seat” for both SYN membership and future SeatRecord721 may confuse users and developers.
+
+We need to know exactly how the current code, docs, canon, UI, and mental model use these words today.
+
+---
+
+## TASK 1 — CURRENT REALITY MAP
+
+Search the full repo for:
+
+* seat
+* member
+* member number
+* SYN
+* membership
+* SeatRecord721
+* Seat Record
+* Archive
+* Artifact
+* identity
+* recognition
+* co-witness
+* witness
+* holder
+
+Return:
+
+A) current meanings
+B) where each appears
+C) whether each is public, canon, labs, docs, or future-only
+D) whether the usage is consistent or conflicting
+
+---
+
+## TASK 2 — CONFUSION ANALYSIS
+
+Identify every possible confusion:
+
+Examples:
+
+* Is SYN the seat?
+* Is membership the seat?
+* Is Member Number the seat?
+* Is SeatRecord721 the seat?
+* Does the seat transfer if SYN transfers?
+* Does history transfer if SYN transfers?
+* Is Archive1155 a seat record?
+* Are artifacts identity records?
+* Is Chronicle identity?
+* Is Recognition identity?
+* Is co-witness history attached to token, wallet, member number, or future SeatRecord721?
+
+Do not solve yet.
+Map the confusion.
+
+---
+
+## TASK 3 — CURRENT CODE TRUTH
+
+Answer using current implementation only:
+
+1. What currently defines a member?
+2. What currently defines member number?
+3. Is membership transferable today?
+4. Does the system currently track historical identity separately from SYN holdings?
+5. Does SeatRecord721 exist today?
+6. Does any soulbound/non-transferable identity record exist today?
+7. What happens if a member transfers SYN today?
+8. What does the UI imply?
+
+Separate:
+
+* implemented truth
+* doctrine
+* future intention
+
+---
+
+## TASK 4 — BEST TERMINOLOGY OPTIONS
+
+Propose the cleanest terminology for long-term scalability.
+
+Evaluate options:
+
+Option A:
+SYN = membership token
+Member Number = join order
+Seat Record = future identity record
+
+Option B:
+SYN = seat
+Seat Record = historical seat certificate
+
+Option C:
+SYN = participation token
+Member Number = member identity
+Seat Record = future soulbound identity
+
+Option D:
+your own better recommendation
+
+For each option:
+
+* user clarity
+* developer clarity
+* legal risk
+* story strength
+* future scalability
+* compatibility with existing code/canon
+
+---
+
+## TASK 5 — TRANSFERABILITY DOCTRINE
+
+Analyze:
+
+If SYN transfers, what transfers?
+
+Possible layers:
+
+* token balance
+* current membership access
+* rank
+* member number
+* financial trace
+* co-witness history
+* recognition
+* Chronicle mentions
+* future SeatRecord721
+
+Recommend what should transfer and what should not.
+
+Do not implement.
+
+---
+
+## TASK 6 — FUTURE SEATRECORD721 POSITIONING
+
+Clarify the future role of SeatRecord721.
+
+Questions:
+
+* Is it soulbound?
+* Is it optional?
+* Is it minted at first purchase?
+* Is it manually claimed later?
+* Does it lock member number?
+* Does it store identity?
+* Does it store co-witness history?
+* Does it merely point to derived history?
+* Is it public?
+* Is it transferable?
+
+Do not design contract details.
+Only clarify product/doctrine role.
+
+---
+
+## TASK 7 — IMPACT ON SPRINT B
+
+Tell us whether Sprint B Signal Engine can start before this is fully solved.
+
+If yes:
+
+* what assumptions should Sprint B use?
+* what must remain abstract?
+* what must not be hardcoded?
+
+If no:
+
+* what blocker must be solved first?
+
+---
+
+## FINAL RESPONSE
+
+Return only:
+
+1. Current reality map.
+2. Confusion risks.
+3. Current implementation truth.
+4. Recommended terminology.
+5. Transferability doctrine recommendation.
+6. SeatRecord721 positioning.
+7. Sprint B readiness.
+8. Any founder decisions required.
+
+No implementation.
+No files changed.
