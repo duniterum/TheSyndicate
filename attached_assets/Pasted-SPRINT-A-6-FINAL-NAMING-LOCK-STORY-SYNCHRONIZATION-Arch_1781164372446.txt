@@ -1,0 +1,264 @@
+SPRINT A.6 — FINAL NAMING LOCK & STORY SYNCHRONIZATION
+
+Architecture is frozen.
+
+No new philosophy.
+
+No new systems.
+
+No new layers.
+
+No Signal Engine yet.
+
+No redesign.
+
+No contract work.
+
+No economics work.
+
+Goal:
+
+Apply the founder-approved naming and story alignment decisions so Sprint B (Signal Engine) can be built on stable foundations.
+
+This sprint is intentionally small.
+
+We are not creating new concepts.
+
+We are harmonizing existing concepts with the frozen doctrine.
+
+---
+
+## FOUNDER DECISIONS APPROVED
+
+1. Patron is reserved.
+
+Patron becomes the permanent root word for:
+
+* Patron Seal
+* Patron Actions
+* Patron Support
+* Patron Recognition
+
+Patron must no longer exist as a spend-rank.
+
+---
+
+2. Council governance collision must be removed.
+
+Current:
+
+* Council Candidate
+* Council
+
+Create governance expectations.
+
+This must be resolved now while the protocol is still young.
+
+---
+
+3. Canonical Member Journey
+
+Freeze:
+
+Observe
+→ Take a Seat
+→ Participate
+→ Leave a Trace
+→ Become Remembered
+
+This becomes the canonical story spine.
+
+Important:
+
+"Rise through the ranks" may still exist in marketing copy.
+
+It is NOT the doctrine.
+
+Rank is not the story.
+
+Rank is texture.
+
+---
+
+4. Prestige hierarchy
+
+Freeze:
+
+1. Member Number
+2. Historical Firsts
+3. Chronicle Inclusion
+4. Proof of Fire
+5. Patron Actions / Support
+6. Chapter Standing
+7. Rank
+
+Money must never become the primary prestige mechanism.
+
+---
+
+5. Reports
+
+Freeze:
+
+* Weekly Chronicle
+* Monthly Report
+* Quarterly Report
+* Annual State of The Syndicate
+
+Half-Year Report removed.
+
+---
+
+## TASK 1 — RANK RENAMES
+
+Review all references.
+
+Current:
+
+Citizen
+Scout
+Operator
+Builder
+Strategist
+Vanguard
+Architect
+Patron
+Council Candidate
+Council
+Inner Circle
+Cornerstone
+
+Founder-approved target:
+
+Citizen
+Scout
+Operator
+Builder
+Strategist
+Vanguard
+Architect
+Steward
+Custodian
+Pillar
+Inner Circle
+Cornerstone
+
+Review the entire codebase, canon, docs, labs, previews, copy, comments, references, tests, registries, mappings and future references.
+
+Report:
+
+* where changes are required
+* impact scope
+* migration risk
+* user-facing impact
+
+Do not execute blindly.
+
+First confirm there are no hidden collisions.
+
+---
+
+## TASK 2 — STORY SYNCHRONIZATION
+
+Review all public-facing story language.
+
+Identify language that still implies:
+
+* rank is the story
+* money is the story
+* spend is the story
+
+Verify alignment with:
+
+Observe
+→ Take a Seat
+→ Participate
+→ Leave a Trace
+→ Become Remembered
+
+Return only findings.
+
+No copy rewrite yet.
+
+---
+
+## TASK 3 — PATRON FAMILY REVIEW
+
+Review all current uses of:
+
+Patron
+Patron Seal
+Patron Support
+Patron references
+
+Confirm whether reserving Patron exclusively for support-related concepts creates any hidden conflicts.
+
+Return findings.
+
+---
+
+## TASK 4 — PRESTIGE CONSISTENCY REVIEW
+
+Audit all current prestige surfaces.
+
+Examples:
+
+* Member Number
+* Rank
+* Chronicle
+* Proof of Fire
+* Artifacts
+* Patron Seal
+* Chapter references
+* Recognition candidates
+* Leaderboards
+* Labs
+
+Identify where current implementation contradicts:
+
+Prestige comes from meaningful signals and memory.
+
+Not simply from money spent.
+
+Return findings only.
+
+---
+
+## TASK 5 — SPRINT B READINESS
+
+Confirm whether the protocol is ready for:
+
+Signal Engine
+
+or whether any naming/story blockers remain.
+
+If blockers remain:
+
+list them.
+
+If no blockers remain:
+
+explicitly state:
+
+"Ready for Sprint B."
+
+---
+
+## OUTPUT
+
+Return:
+
+1. Rank rename impact report.
+2. Story synchronization findings.
+3. Patron family findings.
+4. Prestige consistency findings.
+5. Remaining blockers.
+6. Sprint B readiness assessment.
+
+No implementation yet.
+
+No code changes yet.
+
+No file changes yet.
+
+This is the final validation pass before Signal Engine execution.
