@@ -7,6 +7,10 @@ import { useState } from "react";
 import { StatusPill } from "./Primitives";
 import { MetricVerificationDrawer } from "./MetricVerificationDrawer";
 import { useSynSupply, useCirculatingSupply } from "@/lib/treasury-hooks";
+import { metricLabel } from "@/lib/protocol-metrics-registry";
+
+/** Canonical compact label for a supply segment — resolves legacy verify keys. */
+const segLabel = (k: string) => metricLabel(k, true) ?? k;
 
 const fmtSyn = (n?: number) =>
   n === undefined ? "—" : `${Math.round(n).toLocaleString("en-US")} SYN`;
@@ -21,19 +25,19 @@ export function SupplyTruthLine({ className = "" }: { className?: string }) {
   const segs: Seg[] = [
     {
       metricKey: "synSupply",
-      label: "Total",
+      label: segLabel("synSupply"),
       value: fmtSyn(supply.totalSupply),
       hint: "Fixed · no mint function",
     },
     {
       metricKey: "circulating",
-      label: "Circulating",
+      label: segLabel("circulating"),
       value: fmtSyn(circ.circulating),
       hint: "In public hands",
     },
     {
       metricKey: "synBurned",
-      label: "Burned",
+      label: segLabel("synBurned"),
       value: fmtSyn(supply.burned),
       hint: "Held at the standard dead address",
     },

@@ -1,19 +1,23 @@
 // ────────────────────────────────────────────────────────────────────────────
-// DATA VERIFICATION REGISTRY — single source of truth for every metric
-// exposed in the heartbeat strip and hero.
+// DATA VERIFICATION REGISTRY — the "verify it yourself" drawer view over the
+// canonical Protocol Metrics Registry.
 //
-// Each entry answers four questions a sceptical visitor would ask:
-//   1. What hook reads this number?
-//   2. Where does the data actually come from (RPC / contract / address)?
-//   3. What is its current trust status (LIVE / PARTIAL / PENDING)?
-//   4. Where can I verify it myself, end-to-end?
+// This file no longer RE-STATES metric metadata. It is a thin projection of
+// `protocol-metrics-registry.ts` into the drawer shape the heartbeat strip and
+// hero already consume. One metric is defined once (in the canonical registry)
+// and surfaced here — label, description, source, links, refresh, and status
+// can never drift from the value layer (`protocol-truth.ts`) again.
 //
-// The mirror narrative document lives at:
-//   docs/DATA_VERIFICATION_REGISTRY.md
-// If you add or change an entry here, update that doc in the same PR.
+// The public surface is unchanged on purpose:
+//   • METRIC_REGISTRY keeps its legacy keys (members, usdcRaised, vaultRouted,
+//     lpTvl, synSold, lastBuy, nextMember, synSupply, circulating, synBurned)
+//     so `?verify=<key>` deep-links keep resolving.
+//   • getMetricVerification() additionally resolves ANY alias of a surfaced
+//     metric (e.g. ?verify=lpTvlUsd, ?verify=vaultUsdc) via the canonical
+//     alias index.
 // ────────────────────────────────────────────────────────────────────────────
 
-import { CONTRACTS, LP_POOL, SYN_EXPLORERS, explorerUrlForAddress, MEMBER_DEFINITION } from "./syndicate-config";
+import { getMetric } from "./protocol-metrics-registry";
 
 export type VerificationStatus = "LIVE" | "PARTIAL" | "PENDING";
 
@@ -40,171 +44,62 @@ export type MetricVerification = {
   emptyState?: string;
 };
 
-const explorer = (addr: string, label: string): VerificationLink | null => {
-  const href = explorerUrlForAddress(addr);
-  return href ? { label, href } : null;
-};
+// Legacy drawer keys, in display order. Each is an id or alias in the canonical
+// Protocol Metrics Registry, so it resolves directly via getMetric().
+const VERIFY_KEYS = [
+  "members",
+  "usdcRaised",
+  "vaultRouted",
+  "lpTvl",
+  "synSold",
+  "lastBuy",
+  "nextMember",
+  "synSupply",
+  "circulating",
+  "synBurned",
+] as const;
 
-const dropNull = (xs: Array<VerificationLink | null>): VerificationLink[] =>
-  xs.filter((x): x is VerificationLink => x !== null);
+/** Project a canonical metric (resolved from a legacy verify key) into the drawer shape. */
+function fromMetric(verifyKey: string): MetricVerification {
+  const metric = getMetric(verifyKey);
+  if (!metric) {
+    throw new Error(
+      `[data-verification-registry] no canonical metric resolves verify key "${verifyKey}"`,
+    );
+  }
+  return {
+    key: verifyKey,
+    label: metric.shortLabel ?? metric.label,
+    description: metric.description,
+    hook: metric.hook,
+    source: metric.source,
+    refresh: metric.verification.refresh,
+    status: metric.status,
+    links: metric.verification.links,
+    ...(metric.emptyState ? { emptyState: metric.emptyState } : {}),
+  };
+}
 
-export const METRIC_REGISTRY: Record<string, MetricVerification> = {
-  members: {
-    key: "members",
-    label: MEMBER_DEFINITION.label,
-    description: MEMBER_DEFINITION.description,
-    hook: "useHolderIndex (via useProtocolPulse)",
-    source: MEMBER_DEFINITION.source,
-    refresh: "Every 60 seconds; cached for 30 seconds.",
-    status: "LIVE",
-    emptyState: "Shows 0 until the first TokensPurchased event is mined.",
-    links: dropNull([
-      explorer(CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, "Membership Sale contract"),
-      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
-    ]),
-  },
-  usdcRaised: {
-    key: "usdcRaised",
-    label: "USDC Routed",
-    description:
-      "Cumulative USDC received by the Membership Sale contract since deployment — every buy() call adds to this total.",
-    hook: "useSaleStats (via useProtocolPulse)",
-    source:
-      "Avalanche C-Chain RPC. Reads totalUsdcRaised() on the SyndicateMembershipSale contract.",
-    refresh: "Every 60 seconds.",
-    status: "LIVE",
-    links: dropNull([
-      explorer(CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, "Sale contract"),
-      explorer(CONTRACTS.USDC_CONTRACT_ADDRESS, "USDC contract"),
-    ]),
-  },
-  vaultRouted: {
-    key: "vaultRouted",
-    label: "Vault Routed",
-    description:
-      "Live USDC balance sitting in the Vault Wallet. Every buy() routes 70% of the purchase atomically to this address.",
-    hook: "useReadContracts → USDC.balanceOf(VAULT_WALLET)",
-    source: "Avalanche C-Chain RPC. ERC20 balanceOf on the USDC contract.",
-    refresh: "Every 60 seconds.",
-    status: "LIVE",
-    emptyState:
-      "Reflects current balance, not lifetime inflow — outflows from the Vault Wallet (e.g. allocation to the programmatic Vault contract once deployed) will reduce this figure.",
-    links: dropNull([
-      explorer(CONTRACTS.VAULT_WALLET, "Vault Wallet"),
-      explorer(CONTRACTS.USDC_CONTRACT_ADDRESS, "USDC contract"),
-    ]),
-  },
-  lpTvl: {
-    key: "lpTvl",
-    label: "LP TVL",
-    description:
-      "Total value locked in the SYN/USDC Trader Joe pair — computed as (USDC reserve × 2) when SYN price is anchored from USDC reserve ÷ SYN reserve.",
-    hook: "useLpStats (via useProtocolPulse)",
-    source:
-      "Avalanche C-Chain RPC. Calls getReserves() on the Trader Joe v1 SYN/USDC pair contract.",
-    refresh: "Every 60 seconds.",
-    status: "LIVE",
-    links: dropNull([
-      explorer(LP_POOL.pairAddress, "LP pair contract"),
-      { label: "Trader Joe pool", href: LP_POOL.traderJoeUrl },
-      {
-        label: "DexScreener",
-        href: `https://dexscreener.com/avalanche/${LP_POOL.pairAddress}`,
-      },
-    ]),
-  },
-  synSold: {
-    key: "synSold",
-    label: "SYN Sold",
-    description:
-      "Cumulative SYN tokens distributed by the Membership Sale contract — equals USDC routed ÷ 0.01.",
-    hook: "useSaleStats (via useProtocolPulse)",
-    source:
-      "Avalanche C-Chain RPC. Reads totalSold() on the SyndicateMembershipSale contract.",
-    refresh: "Every 60 seconds.",
-    status: "LIVE",
-    links: dropNull([
-      explorer(CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, "Sale contract"),
-      explorer(CONTRACTS.MEMBERSHIP_SYN_WALLET, "Membership SYN wallet"),
-    ]),
-  },
-  lastBuy: {
-    key: "lastBuy",
-    label: "Last Buy",
-    description:
-      "Time elapsed since the most recent TokensPurchased event emitted by the Membership Sale contract.",
-    hook: "useLivePurchaseEvents (via useProtocolPulse)",
-    source:
-      "Avalanche C-Chain RPC. Scans recent blocks for TokensPurchased(buyer, usdcIn, synOut) events.",
-    refresh: "Every 60 seconds.",
-    status: "LIVE",
-    emptyState: 'Renders "Awaiting first buy" if no event has been mined yet.',
-    links: dropNull([
-      explorer(CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, "Sale contract"),
-    ]),
-  },
-  nextMember: {
-    key: "nextMember",
-    label: "Next Member",
-    description:
-      "Founder archive number that will be assigned to the next unique wallet to buy SYN. Derived: members count + 1.",
-    hook: "useHolderIndex (via useProtocolPulse)",
-    source:
-      "Derived deterministically from the Members count above. Not a separate on-chain read.",
-    refresh: "Updates whenever the holder index refreshes (every 60s).",
-    status: "LIVE",
-    emptyState:
-      'Shows "#1" before any wallet has bought; updates as soon as the first TokensPurchased event is indexed.',
-    links: dropNull([
-      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
-      explorer(CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, "Sale contract"),
-    ]),
-  },
-  synSupply: {
-    key: "synSupply",
-    label: "Total Supply",
-    description:
-      "Total SYN in existence. The full 1,000,000,000 SYN was minted once at genesis; the contract has no mint function, so this number can never go up. Burns in The Syndicate are transfers to the standard dead address — they remove SYN from circulation without lowering totalSupply, so this stays fixed at 1,000,000,000.",
-    hook: "useSynSupply → ERC20 totalSupply()",
-    source: "Avalanche C-Chain RPC. Reads totalSupply() on the SYN ERC20 contract.",
-    refresh: "Every 120 seconds; cached for 60 seconds.",
-    status: "LIVE",
-    links: dropNull([
-      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
-      { label: "Avascan token", href: SYN_EXPLORERS.avascan },
-    ]),
-  },
-  circulating: {
-    key: "circulating",
-    label: "Circulating",
-    description:
-      "Total supply minus the SYN still held in the seven protocol allocation wallets (Vault, Founder, Liquidity, Partnerships, Contributors, Future Ecosystem, and undistributed Membership) and minus SYN burned to the standard dead address. This is the SYN actually in public hands.",
-    hook: "useCirculatingSupply → totalSupply() − Σ allocation balanceOf() − burned",
-    source:
-      "Avalanche C-Chain RPC. totalSupply() minus the live balanceOf() of each allocation wallet and minus the dead-address balance (burned).",
-    refresh: "Every 120 seconds; cached for 60 seconds.",
-    status: "LIVE",
-    links: dropNull([
-      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
-    ]),
-  },
-  synBurned: {
-    key: "synBurned",
-    label: "Burned",
-    description:
-      "SYN permanently removed from circulation by sending it to the standard dead address (0x…dEaD), read live as the balanceOf() of that address. One verified burn has occurred — Proof of Fire #001, a 1,000 SYN Founder Burn. A burn here is a transfer, so totalSupply is unchanged; there is no automated burn — any future burn would be a manual, verifiable transfer.",
-    hook: "useSynSupply → balanceOf(0x…dEaD)",
-    source: "Avalanche C-Chain RPC. Reads balanceOf() of the standard dead address on the SYN ERC20 contract.",
-    refresh: "Every 120 seconds; cached for 60 seconds.",
-    status: "LIVE",
-    emptyState: "Reads the live dead-address balance; 0 only if nothing has ever been burned.",
-    links: dropNull([
-      explorer(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract"),
-      { label: "Avascan token", href: SYN_EXPLORERS.avascan },
-    ]),
-  },
-};
+export const METRIC_REGISTRY: Record<string, MetricVerification> = Object.fromEntries(
+  VERIFY_KEYS.map((key) => [key, fromMetric(key)]),
+);
 
+/**
+ * Resolve a verification entry by its legacy key OR by any alias of the same
+ * canonical metric. Exact legacy keys are returned directly; everything else
+ * is resolved through the canonical registry's alias index so a surfaced
+ * metric can be deep-linked under any of its names.
+ */
 export function getMetricVerification(key: string): MetricVerification | undefined {
-  return METRIC_REGISTRY[key];
+  const exact = METRIC_REGISTRY[key];
+  if (exact) return exact;
+
+  const metric = getMetric(key);
+  if (!metric) return undefined;
+
+  for (const verifyKey of VERIFY_KEYS) {
+    const surfaced = getMetric(verifyKey);
+    if (surfaced && surfaced.id === metric.id) return METRIC_REGISTRY[verifyKey];
+  }
+  return undefined;
 }

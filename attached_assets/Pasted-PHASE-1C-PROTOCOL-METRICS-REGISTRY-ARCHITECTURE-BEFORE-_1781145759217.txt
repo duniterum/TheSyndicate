@@ -1,0 +1,305 @@
+PHASE 1C — PROTOCOL METRICS REGISTRY (ARCHITECTURE BEFORE DESIGN)
+
+Use docs/canon/ as source of truth.
+
+This is not a redesign pass.
+
+This is not a feature pass.
+
+This is not a new protocol-economics pass.
+
+Goal:
+
+Convert the current Protocol Intelligence implementation into a canonical Protocol Metrics Registry so every metric exists once, has one source of truth, and can be reused everywhere without future drift.
+
+Context:
+
+We now have:
+
+* Authority Map
+* Founder Intent Map
+* Source-of-Truth Table
+* Glossary
+* Doc Sync Checklist
+* Clean doctrine guard
+* Clean tests
+* Protocol Intelligence Bar
+* SupplyTruthLine
+* Burn recognition foundation
+* Proof of Fire #001
+* Multiple protocol surfaces showing metrics
+
+The architecture is now at risk of metric duplication.
+
+We must fix that before adding more protocol intelligence.
+
+---
+
+## OBJECTIVE
+
+Create a canonical Protocol Metrics Registry.
+
+The purpose is:
+
+* one metric
+* one definition
+* one formula
+* one verification path
+* many surfaces
+
+No metric should need to be rediscovered later.
+
+---
+
+## METRIC MODEL
+
+Every metric should be represented as a reusable protocol primitive.
+
+For each metric define:
+
+* id
+* label
+* category
+* type:
+
+  * RAW
+  * DERIVED
+  * AGGREGATE
+* status:
+
+  * LIVE
+  * PARTIAL
+  * PENDING
+* unit
+* source
+* formula
+* verification source
+* legal sensitivity
+* display priority
+* recommended surfaces
+* dependencies
+
+---
+
+## PROPOSED CATEGORIES
+
+Supply
+
+* total supply
+* circulating supply
+* burned supply
+* non-circulating supply
+
+Market Reference
+
+* reference price
+* reference market cap
+* FDV
+
+Membership
+
+* members
+* next member
+* rank distribution
+* chapter progress
+
+Sale
+
+* SYN sold
+* USDC routed
+* last purchase
+
+Protocol Wallets
+
+* vault wallet
+* liquidity wallet
+* operations wallet
+* protocol wallets total
+
+Liquidity
+
+* LP TVL
+* SYN reserve
+* USDC reserve
+* LP supply
+* pool ratio
+
+Artifacts
+
+* First Signal minted
+* Patron Seal minted
+* artifact totals
+
+Burn
+
+* Proof of Fire count
+* burned supply
+* latest burn
+
+Activity
+
+* latest verified activity
+* latest Chronicle candidate
+
+---
+
+## IMPORTANT
+
+Do not blindly accept this category list.
+
+Inspect the current implementation and improve it.
+
+The final registry should reflect the actual protocol architecture.
+
+---
+
+## ARCHITECTURE REQUIREMENTS
+
+Metrics must become reusable building blocks.
+
+The registry should support future use in:
+
+* Protocol Intelligence Bar
+* Homepage
+* Transparency
+* Tokenomics
+* Activity
+* Chronicle
+* Weekly reports
+* Monthly reports
+* Quarterly reports
+* Half-year reports
+* Annual reports
+* Future API
+* Future B2B dashboards
+
+Without redefining metrics.
+
+---
+
+## DERIVED METRICS
+
+Clearly distinguish:
+
+RAW
+
+Example:
+Members
+Burned Supply
+LP TVL
+
+DERIVED
+
+Example:
+Reference Market Cap
+FDV
+Chapter Completion %
+
+AGGREGATE
+
+Example:
+Protocol Wallets Total
+Total Protocol Assets
+
+No metric should hide whether it is raw, derived, or aggregate.
+
+---
+
+## VERIFICATION
+
+Every metric must answer:
+
+1. What is it?
+2. Where does it come from?
+3. How is it calculated?
+4. Can it be verified?
+5. What are its dependencies?
+6. Can it create legal confusion?
+
+---
+
+## LEGAL REVIEW
+
+Verify metrics do not imply:
+
+* ROI
+* yield
+* dividends
+* returns
+* profit expectation
+
+Continue enforcing:
+
+* routed
+* verified
+* reference
+* protocol wallet
+* public
+* on-chain
+
+---
+
+## CANON INTEGRATION
+
+Update:
+
+* Source-of-Truth table if needed
+* Founder Intent Map if needed
+* Glossary if needed
+
+Only if registry creation exposes genuine inconsistencies.
+
+Do not create taxonomy drift.
+
+---
+
+## PHASE 1D PREPARATION
+
+At the end:
+
+Provide recommendations for:
+
+* metric grouping
+* hierarchy
+* information density
+* future redesign
+
+BUT DO NOT REDESIGN YET.
+
+The purpose is to prepare the future redesign.
+
+---
+
+## DO NOT
+
+* redesign the site
+* move major sections
+* add new protocol mechanics
+* add referral
+* add burn automation
+* add governance
+* add marketplace
+* add AI
+
+Architecture only.
+
+---
+
+## OUTPUT
+
+Perform the work.
+
+Then return only:
+
+* files created
+* files modified
+* registry structure
+* number of metrics registered
+* duplicate metrics eliminated
+* inconsistencies found
+* recommendations for Phase 1D
+* remaining open architectural risks
+
+Do not return another giant audit.
+
+Build the registry first.

@@ -24,6 +24,7 @@ import { StatusPill, type CanonicalStatus } from "./Primitives";
 import { useProtocolTruth } from "@/lib/protocol-truth";
 import { useSynSupply, useCirculatingSupply } from "@/lib/treasury-hooks";
 import { ACCESS_RATE_USDC_PER_SYN, PROOF_OF_FIRE_001 } from "@/lib/syndicate-config";
+import { requireMetric } from "@/lib/protocol-metrics-registry";
 
 // ─── Formatters ────────────────────────────────────────────────────────────
 
@@ -45,6 +46,12 @@ const fmtCount = (n?: number) =>
   n === undefined ? "—" : n.toLocaleString("en-US", { maximumFractionDigits: 0 });
 
 const REFERENCE_PRICE = ACCESS_RATE_USDC_PER_SYN; // fixed access rate: 1 SYN = $0.01
+
+/** Canonical compact label for a metric — single source for every bar cell. */
+const barLabel = (id: string) => {
+  const def = requireMetric(id);
+  return def.shortLabel ?? def.label;
+};
 
 type Cell = {
   key: string;
@@ -96,31 +103,31 @@ export function ProtocolIntelligenceBar({ className = "" }: { className?: string
   const lead: Cell[] = [
     {
       key: "price",
-      label: "SYN Reference Price",
+      label: barLabel("referencePrice"),
       value: `$${REFERENCE_PRICE.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`,
       title: "Fixed access rate · 1 SYN = $0.01 USDC (protocol-set rate, not a market price)",
     },
     {
       key: "refMktCap",
-      label: "Reference Market Cap",
+      label: barLabel("referenceMarketCap"),
       value: fmtUsdCompact(refMktCap),
       title: `Reference price × circulating supply = ${fmtUsdExact(refMktCap)}`,
     },
     {
       key: "fdv",
-      label: "FDV",
+      label: barLabel("fdv"),
       value: fmtUsdCompact(fdv),
       title: `Reference price × total supply = ${fmtUsdExact(fdv)}`,
     },
     {
       key: "totalSupply",
-      label: "Total Supply",
+      label: barLabel("totalSupply"),
       value: fmtSynCompact(totalSupply),
       title: totalSupply !== undefined ? `${fmtSynExact(totalSupply)} · fixed, no mint function` : undefined,
     },
     {
       key: "circulating",
-      label: "Circulating Supply",
+      label: barLabel("circulatingSupply"),
       value: fmtSynCompact(circulating),
       title: circulating !== undefined ? `${fmtSynExact(circulating)} · in public hands` : undefined,
     },
@@ -129,55 +136,55 @@ export function ProtocolIntelligenceBar({ className = "" }: { className?: string
   const tail: Cell[] = [
     {
       key: "protocolWallets",
-      label: "Protocol Wallets",
+      label: barLabel("protocolWalletsTotal"),
       value: fmtUsdCompact(protocolWallets),
       title: `Vault + Liquidity + Operations (USDC) = ${fmtUsdExact(protocolWallets)}`,
     },
     {
       key: "vault",
-      label: "Vault Wallet",
+      label: barLabel("vaultWalletUsdc"),
       value: fmtUsdCompact(vault),
       title: `Vault routing wallet · USDC = ${fmtUsdExact(vault)}`,
     },
     {
       key: "liquidity",
-      label: "Liquidity Wallet",
+      label: barLabel("liquidityWalletUsdc"),
       value: fmtUsdCompact(liquidity),
       title: `Liquidity routing wallet · USDC = ${fmtUsdExact(liquidity)}`,
     },
     {
       key: "operations",
-      label: "Operations Wallet",
+      label: barLabel("operationsWalletUsdc"),
       value: fmtUsdCompact(operations),
       title: `Operations routing wallet · USDC = ${fmtUsdExact(operations)}`,
     },
     {
       key: "lpTvl",
-      label: "LP TVL",
+      label: barLabel("lpTvl"),
       value: fmtUsdCompact(t.lpTvlUsd.value),
       title: `SYN/USDC pool total value locked = ${fmtUsdExact(t.lpTvlUsd.value)}`,
     },
     {
       key: "synSold",
-      label: "SYN Sold",
+      label: barLabel("synSold"),
       value: fmtSynCompact(t.synSold.value),
       title: t.synSold.value !== undefined ? `${fmtSynExact(t.synSold.value)} distributed by the sale contract` : undefined,
     },
     {
       key: "usdcRouted",
-      label: "USDC Routed",
+      label: barLabel("usdcRouted"),
       value: fmtUsdCompact(t.usdcRaised.value),
       title: `Cumulative USDC routed through the sale = ${fmtUsdExact(t.usdcRaised.value)}`,
     },
     {
       key: "members",
-      label: "Members",
+      label: barLabel("members"),
       value: fmtCount(t.members.value),
       title: "Unique buyers recorded on-chain",
     },
     {
       key: "chapter",
-      label: "Chapter Progress",
+      label: barLabel("chapterProgress"),
       value: cp ? `${cp.label} · ${fmtCount(cp.taken)}/${fmtCount(cp.capacity)}` : "—",
       title: cp ? `${cp.progressPct}% filled · ${fmtCount(cp.remaining)} seats remain` : undefined,
     },
@@ -245,7 +252,7 @@ function BurnedCell({ value }: { value: string }) {
       className="group flex shrink-0 flex-col justify-center gap-0.5 border-l border-border/40 px-4 transition-colors"
     >
       <span className="mono inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap">
-        Burned Supply
+        {requireMetric("burnedSupply").label}
         <span
           className="inline-flex items-center gap-0.5 rounded-[2px] px-1 py-px text-[8px] font-semibold tracking-[0.12em]"
           style={{

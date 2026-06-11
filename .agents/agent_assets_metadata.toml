@@ -42,3 +42,9 @@ id = "4EEfAUblCQMctrgu3hXdy"
 uri = "file://docs/audits/FULL_PROTOCOL_VIEW_CANON_FOUNDER_INTENT_MAP.md"
 type = "text"
 title = "The Syndicate — Full Protocol View, Canon & Founder Intent Map"
+
+[[outputs]]
+id = "PQqNkx3mH_SkxrXsXPK1k"
+uri = "file://docs/PROTOCOL_METRICS_REGISTRY_REPORT.md"
+type = "text"
+title = "Protocol Metrics Registry — Phase 1C Report"

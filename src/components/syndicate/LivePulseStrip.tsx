@@ -20,6 +20,10 @@ import { SupplyTruthLine } from "./SupplyTruthLine";
 import { TxProofPill } from "./TxProofDrawer";
 import { SourceTag } from "./SourceTag";
 import { getMetricVerification } from "@/lib/data-verification-registry";
+import { metricLabel } from "@/lib/protocol-metrics-registry";
+
+/** Canonical compact label for a pulse cell — resolves legacy verify keys. */
+const pulseLabel = (k: string) => metricLabel(k, true) ?? k;
 
 const fmtUsd = (n?: number, d = 2) =>
   n === undefined ? "—" : `$${n.toLocaleString("en-US", { maximumFractionDigits: d })}`;
@@ -61,7 +65,7 @@ export function LivePulseStrip() {
   const cells: Cell[] = [
     {
       metricKey: "members",
-      label: "Members",
+      label: pulseLabel("members"),
       value: fmtN(memberCount),
       hint: "Unique buyers",
       delta24h: { value: d24?.newMembers, unit: "members", available: Boolean(d24) },
@@ -69,7 +73,7 @@ export function LivePulseStrip() {
     },
     {
       metricKey: "usdcRaised",
-      label: "USDC Routed",
+      label: pulseLabel("usdcRaised"),
       value: fmtUsd(p.usdcRaised, 2),
       hint: "Sale contract",
       delta24h: { value: d24?.usdcRaised, unit: "USDC routed", format: fmtPlusUsd, available: Boolean(d24) },
@@ -77,7 +81,7 @@ export function LivePulseStrip() {
     },
     {
       metricKey: "vaultRouted",
-      label: "Vault Routed",
+      label: pulseLabel("vaultRouted"),
       value: fmtUsd(p.vaultUsdc, 2),
       hint: "Live USDC at Vault",
       emphasize: true,
@@ -86,7 +90,7 @@ export function LivePulseStrip() {
     },
     {
       metricKey: "lpTvl",
-      label: "LP TVL",
+      label: pulseLabel("lpTvl"),
       value: fmtUsd(p.lpTvlUsd, 2),
       hint: "Trader Joe pool",
       delta24h: { value: undefined, unit: "LP TVL", available: false },
@@ -94,7 +98,7 @@ export function LivePulseStrip() {
     },
     {
       metricKey: "synSold",
-      label: "SYN Sold",
+      label: pulseLabel("synSold"),
       value: fmtN(p.synSold),
       hint: "From Membership Sale",
       delta24h: { value: d24?.synSold, unit: "SYN sold", available: Boolean(d24) },
@@ -102,7 +106,7 @@ export function LivePulseStrip() {
     },
     {
       metricKey: "lastBuy",
-      label: "Last Buy",
+      label: pulseLabel("lastBuy"),
       value: formatAgo(p.lastBuyAgoSeconds),
       hint: p.lastBuyBuyer ? `${fmtUsd(p.lastBuyUsdc)} purchase` : "Awaiting first buy",
       delta24h: { value: d24?.purchases, unit: "purchases", available: Boolean(d24) },
@@ -110,7 +114,7 @@ export function LivePulseStrip() {
     },
     {
       metricKey: "nextMember",
-      label: "Next Member",
+      label: pulseLabel("nextMember"),
       value: p.nextMemberNumber !== undefined ? `#${p.nextMemberNumber}` : "—",
       hint: "Founder archive ID",
       emphasize: true,

@@ -19,7 +19,7 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | 70/20/10 routing | `USDC_ROUTING`, `vaultFlow()` | sale contract | `REVENUE_ATTRIBUTION_LAYER.md` | LIVE | High | Med (applied beyond sale) |
 | Total supply | `TOKEN_SPEC.totalSupply` | SYN ERC-20 | glossary | LIVE | High | Low |
 | Circulating supply | `treasury-hooks.ts` `useCirculatingSupply` | derived (total − reserved) | `TREASURY_LEDGER_DOCTRINE.md` | PARTIAL | Med | Med (estimate) |
-| Burned supply | *(none)* | *(none)* | — | FUTURE | High (= 0) | **High** (implying burns) |
+| Burned supply | `protocol-metrics-registry.ts` `burnedSupply`, `treasury-hooks.ts` `useSynSupply` | SYN ERC-20 `balanceOf(0x…dEaD)` | glossary | LIVE | High (Proof of Fire #001 · 1,000 SYN) | Med (one verified Founder Burn; no automated burn — a burn is a transfer, totalSupply unchanged) |
 | Allocation wallets | `ALLOCATION_WALLETS`, `nonCirculating` | 7 wallets | `DATA_SOURCE_MAP.md` | LIVE | High | Low |
 | Member number | `holder-index.ts` | derived from sale events | `HOLDER_INDEX_ARCHITECTURE.md` | LIVE | High | Low |
 | Chapters | `chapters.ts` | derived | authority map | LIVE | High | Low |
@@ -37,7 +37,7 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | Members metric | `MEMBER_DEFINITION` (`syndicate-config.ts`) — read by both `protocol-truth.ts` & `data-verification-registry.ts` | sale events | `DATA_VERIFICATION_REGISTRY.md` | PARTIAL (until first buy) | High | Low — unified to one shared definition 2026-06-11 |
 | Referral | `preview/referral.ts` (labs stub) | none | `REVENUE_ATTRIBUTION_LAYER.md` | PENDING | Low | High |
 | Reward / Reputation | `quest-hooks.ts` (labs) | none | `REPUTATION_FORMULA_DOCTRINE.md` | FUTURE | Low | High |
-| Burn | *(none)* | none | — | FUTURE | High (none) | High |
+| Burn mechanism (automated) | *(none)* | none | — | FUTURE | High (none) | Med (the one-time Founder Burn is real and surfaces as *Burned supply* above; no recurring/automated burn mechanism) |
 | SeatRecord721 | `contract-registry.ts` (null) | none | `SEAT_RECORD_ARCHITECTURE_DECISION.md` | PENDING | High | Low (correctly null) |
 | Governance | *(none)* | none | `UNIFIED_PROTOCOL_DOCTRINE_MAP.md` | FUTURE | Low | Med |
 | Legal language | `LEGAL_DISCLAIMER`, `live-content-rules.json` | — | `TERMINOLOGY_GLOSSARY.md` | LIVE | High | Med |

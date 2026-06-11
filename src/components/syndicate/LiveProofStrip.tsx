@@ -4,6 +4,7 @@
 // Wave 2 of the recalibration (Museum + Tactyc + Kuldmuna anchors).
 
 import { useProtocolTruth, statusPillClasses, type TruthStatus } from "@/lib/protocol-truth";
+import { metricLabel } from "@/lib/protocol-metrics-registry";
 
 type Card = {
   label: string;
@@ -57,7 +58,7 @@ export function LiveProofStrip() {
       href: t.vaultUsdc.verifyHref,
     },
     {
-      label: "SYN Distributed",
+      label: metricLabel("synSold", true) ?? "SYN Sold",
       value: fmtInt(t.synSold.value),
       status: t.synSold.status,
       href: t.synSold.verifyHref,

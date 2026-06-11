@@ -22,15 +22,11 @@
 
 import { formatUnits } from "viem";
 import {
-  CONTRACTS,
-  LP_POOL,
   USDC_DECIMALS,
   SYN_DECIMALS,
   USDC_ROUTING,
-  MEMBER_DEFINITION,
-  explorerUrlFor,
-  explorerUrlForAddress,
 } from "./syndicate-config";
+import { requireMetric } from "./protocol-metrics-registry";
 import { useSaleStats, useLpStats } from "./sale-hooks";
 import { useHolderIndex } from "./holder-index";
 import { useProtocolPulse } from "./protocol-pulse";
@@ -76,9 +72,11 @@ export function statusPillClasses(s: TruthStatus): { border: string; dot: string
 // ─── Fact shape ────────────────────────────────────────────────────────────
 
 export type Fact<T> = {
-  /** Canonical key — stable across the entire app. */
+  /** Canonical key — stable across the entire app (the legacy property name). */
   key: string;
-  /** Display label (used in pills / drawers / cards). */
+  /** Canonical metric id in the Protocol Metrics Registry this fact binds. */
+  metricId: string;
+  /** Display label (used in pills / drawers / cards). Sourced from the registry. */
   label: string;
   /** Resolved value (undefined while loading or when source unavailable). */
   value: T | undefined;
@@ -94,7 +92,44 @@ export type Fact<T> = {
   hook: string;
 };
 
-const fact = <T>(f: Fact<T>): Fact<T> => f;
+const statusFromValue = (v: unknown): TruthStatus => (v === undefined ? "PENDING" : "LIVE");
+
+/** PENDING < PARTIAL < LIVE. Used to clamp a value-derived status to the
+ *  registry's documented ceiling so a fact can downgrade but never silently
+ *  upgrade past what the canonical registry says it is. */
+const STATUS_RANK: Record<TruthStatus, number> = { PENDING: 0, PARTIAL: 1, LIVE: 2 };
+const clampStatus = (derived: TruthStatus, ceiling: TruthStatus): TruthStatus =>
+  STATUS_RANK[derived] <= STATUS_RANK[ceiling] ? derived : ceiling;
+
+/**
+ * Bind a live value to its canonical metric definition. `key` is the legacy
+ * property name — also a registry alias — so every consumer keeps reading
+ * `t.<prop>` unchanged. Metadata (label, source, formula, verifyHref, hook)
+ * is pulled from the canonical Protocol Metrics Registry so it can never drift
+ * from the verification drawer or any other surface.
+ *
+ * `opts.status` overrides the value-derived status (for registry/array facts);
+ * `opts.verifyHref` overrides the registry's primary link (for dynamic tx
+ * hrefs). An `undefined` verifyHref falls back to the registry default.
+ */
+function bind<T>(
+  key: string,
+  value: T | undefined,
+  opts?: { status?: TruthStatus; verifyHref?: string | null },
+): Fact<T> {
+  const def = requireMetric(key);
+  return {
+    key,
+    metricId: def.id,
+    label: def.label,
+    value,
+    status: opts?.status ?? clampStatus(statusFromValue(value), def.status),
+    source: def.source,
+    formula: def.formula,
+    verifyHref: opts?.verifyHref !== undefined ? opts.verifyHref : def.verification.primaryHref,
+    hook: def.hook,
+  };
+}
 
 // ─── The truth registry ───────────────────────────────────────────────────
 
@@ -193,19 +228,6 @@ function deriveChapterProgress(members: number | undefined): ChapterProgress | u
 }
 
 
-const VAULT_ADDR = CONTRACTS.VAULT_WALLET;
-const LIQ_ADDR   = CONTRACTS.LIQUIDITY_WALLET;
-const OPS_ADDR   = CONTRACTS.OPERATIONS_WALLET;
-const SALE_ADDR  = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
-const PAIR_ADDR  = LP_POOL.pairAddress;
-
-const explSale  = explorerUrlFor("MEMBERSHIP_SALE_CONTRACT_ADDRESS");
-const explSyn   = explorerUrlFor("SYN_CONTRACT_ADDRESS");
-const explVault = explorerUrlForAddress(VAULT_ADDR);
-const explLiq   = explorerUrlForAddress(LIQ_ADDR);
-const explOps   = explorerUrlForAddress(OPS_ADDR);
-const explPair  = explorerUrlForAddress(PAIR_ADDR);
-
 const lastTx = TAGGED_TRANSACTIONS[TAGGED_TRANSACTIONS.length - 1];
 
 /**
@@ -230,186 +252,39 @@ export function useProtocolTruth(): ProtocolTruth {
   const classifiedBuckets = classifiedUsdcByTag();
   const classifiedUsdcOut = classifiedBuckets.reduce((s, b) => s + b.amount, 0);
 
-  const statusFromValue = (v: unknown): TruthStatus => (v === undefined ? "PENDING" : "LIVE");
-
   return {
-    members: fact({
-      key: "members",
-      label: "Members",
-      value: members,
-      status: statusFromValue(members),
-      source: MEMBER_DEFINITION.source,
-      formula: MEMBER_DEFINITION.formula,
-      verifyHref: explSale,
-      hook: "useHolderIndex",
-    }),
-    usdcRaised: fact({
-      key: "usdcRaised",
-      label: "USDC Routed",
-      value: usdcRaised,
-      status: statusFromValue(usdcRaised),
-      source: "Avalanche C-Chain RPC · SyndicateMembershipSale.totalUsdcRaised().",
-      formula: "sum(usdcIn) for every executed buy() call",
-      verifyHref: explSale,
-      hook: "useSaleStats",
-    }),
-    synSold: fact({
-      key: "synSold",
-      label: "SYN Distributed",
-      value: synSold,
-      status: statusFromValue(synSold),
-      source: "Avalanche C-Chain RPC · SyndicateMembershipSale.totalSynSold().",
-      formula: "usdcRaised / 0.01 USDC per SYN (fixed rate)",
-      verifyHref: explSale,
-      hook: "useSaleStats",
-    }),
-    purchaseCount: fact({
-      key: "purchaseCount",
-      label: "Purchases",
-      value: purchaseCount,
-      status: statusFromValue(purchaseCount),
-      source: "Avalanche C-Chain RPC · SyndicateMembershipSale.purchaseCount().",
-      formula: "count of executed buy() calls since deployment",
-      verifyHref: explSale,
-      hook: "useSaleStats",
-    }),
-    nextMemberNumber: fact({
-      key: "nextMemberNumber",
-      label: "Next Member #",
-      value: nextMemberNumber,
-      status: statusFromValue(nextMemberNumber),
-      source: "Derived from members.",
-      formula: "members + 1",
-      verifyHref: explSale,
-      hook: "useHolderIndex",
-    }),
-    chapterProgress: fact({
-      key: "chapterProgress",
-      label: "Chapter Progress",
-      value: deriveChapterProgress(members),
-      status: members === undefined ? "PENDING" : "LIVE",
-      source: "Derived from members against the canonical CHAPTERS table (src/lib/protocol-truth.ts).",
-      formula: "first chapter where members < capacity; remaining = capacity − members",
-      verifyHref: explSale,
-      hook: "useHolderIndex",
+    members: bind("members", members),
+    usdcRaised: bind("usdcRaised", usdcRaised),
+    synSold: bind("synSold", synSold),
+    purchaseCount: bind("purchaseCount", purchaseCount),
+    nextMemberNumber: bind("nextMemberNumber", nextMemberNumber),
+    chapterProgress: bind("chapterProgress", deriveChapterProgress(members)),
+
+    vaultUsdc: bind("vaultUsdc", pulse.vaultUsdc),
+    liquidityUsdc: bind("liquidityUsdc", pulse.liquidityUsdc),
+    operationsUsdc: bind("operationsUsdc", pulse.operationsUsdc),
+
+    lpTvlUsd: bind("lpTvlUsd", lp.tvlUsd),
+    synPriceUsd: bind("synPriceUsd", lp.synPriceUsd),
+
+    lastBuyAgoSeconds: bind("lastBuyAgoSeconds", pulse.lastBuyAgoSeconds),
+    lastBuyBuyer: bind("lastBuyBuyer", pulse.lastBuyBuyer, {
+      // Dynamic per-tx href when the latest buy's tx hash is known; otherwise
+      // the registry default (Membership Sale contract) applies.
+      verifyHref: pulse.lastBuyTxHash ? txExplorerUrl(pulse.lastBuyTxHash) : undefined,
     }),
 
-
-
-    vaultUsdc: fact({
-      key: "vaultUsdc",
-      label: "Vault Wallet · USDC",
-      value: pulse.vaultUsdc,
-      status: statusFromValue(pulse.vaultUsdc),
-      source: `Avalanche C-Chain RPC · USDC.balanceOf(${VAULT_ADDR}).`,
-      formula: "current ERC20 balance of the Vault routing wallet",
-      verifyHref: explVault,
-      hook: "useProtocolPulse",
-    }),
-    liquidityUsdc: fact({
-      key: "liquidityUsdc",
-      label: "Liquidity Wallet · USDC",
-      value: pulse.liquidityUsdc,
-      status: statusFromValue(pulse.liquidityUsdc),
-      source: `Avalanche C-Chain RPC · USDC.balanceOf(${LIQ_ADDR}).`,
-      formula: "current ERC20 balance of the Liquidity routing wallet",
-      verifyHref: explLiq,
-      hook: "useProtocolPulse",
-    }),
-    operationsUsdc: fact({
-      key: "operationsUsdc",
-      label: "Operations Wallet · USDC",
-      value: pulse.operationsUsdc,
-      status: statusFromValue(pulse.operationsUsdc),
-      source: `Avalanche C-Chain RPC · USDC.balanceOf(${OPS_ADDR}).`,
-      formula: "current ERC20 balance of the Operations routing wallet",
-      verifyHref: explOps,
-      hook: "useProtocolPulse",
-    }),
-
-    lpTvlUsd: fact({
-      key: "lpTvlUsd",
-      label: "LP TVL",
-      value: lp.tvlUsd,
-      status: statusFromValue(lp.tvlUsd),
-      source: `Avalanche C-Chain RPC · Trader Joe v1 pair (${PAIR_ADDR}) getReserves().`,
-      formula: "usdcReserve × 2 (symmetric pair valuation)",
-      verifyHref: explPair,
-      hook: "useLpStats",
-    }),
-    synPriceUsd: fact({
-      key: "synPriceUsd",
-      label: "SYN Spot",
-      value: lp.synPriceUsd,
-      status: statusFromValue(lp.synPriceUsd),
-      source: `Avalanche C-Chain RPC · Trader Joe v1 pair (${PAIR_ADDR}) getReserves().`,
-      formula: "usdcReserve / synReserve",
-      verifyHref: explPair,
-      hook: "useLpStats",
-    }),
-
-    lastBuyAgoSeconds: fact({
-      key: "lastBuyAgoSeconds",
-      label: "Last Buy",
-      value: pulse.lastBuyAgoSeconds,
-      status: statusFromValue(pulse.lastBuyAgoSeconds),
-      source: "Avalanche C-Chain RPC · TokensPurchased events.",
-      formula: "(currentBlock − lastBuyBlock) × 2s (Avalanche block time)",
-      verifyHref: explSale,
-      hook: "useProtocolPulse",
-    }),
-    lastBuyBuyer: fact({
-      key: "lastBuyBuyer",
-      label: "Last Buyer",
-      value: pulse.lastBuyBuyer,
-      status: statusFromValue(pulse.lastBuyBuyer),
-      source: "Avalanche C-Chain RPC · most recent TokensPurchased event.",
-      formula: "argmax(blockNumber) over TokensPurchased.buyer",
-      verifyHref: pulse.lastBuyTxHash ? txExplorerUrl(pulse.lastBuyTxHash) : explSale,
-      hook: "useProtocolPulse",
-    }),
-
-    transactions: fact({
-      key: "transactions",
-      label: "Classified Transactions",
-      value: TAGGED_TRANSACTIONS,
+    transactions: bind("transactions", TAGGED_TRANSACTIONS, {
       status: TAGGED_TRANSACTIONS.length > 0 ? "LIVE" : "PENDING",
-      source: "src/lib/transaction-tags.ts · canonical registry; every entry links to its on-chain tx.",
-      formula: "manual append-only registry, each entry verified on Avascan",
       verifyHref: lastTx ? txExplorerUrl(lastTx.txHash) : null,
-      hook: "TAGGED_TRANSACTIONS",
     }),
-    classifiedUsdcOut: fact({
-      key: "classifiedUsdcOut",
-      label: "Classified Spend",
-      value: classifiedUsdcOut,
+    classifiedUsdcOut: bind("classifiedUsdcOut", classifiedUsdcOut, {
       status: classifiedBuckets.length > 0 ? "LIVE" : "PENDING",
-      source: "Derived from TAGGED_TRANSACTIONS (USDC tagged outflows).",
-      formula: "sum(amount) where asset = USDC",
       verifyHref: lastTx ? txExplorerUrl(lastTx.txHash) : null,
-      hook: "classifiedUsdcByTag",
     }),
 
-    membershipAllocationSyn: fact({
-      key: "membershipAllocationSyn",
-      label: "Membership Allocation",
-      value: 350_000_000,
-      status: "LIVE",
-      source: "src/lib/syndicate-config.ts · TOKENOMICS_ALLOCATION (Membership Distribution slice).",
-      formula: "constant — 35% of fixed supply",
-      verifyHref: explSyn,
-      hook: "TOKENOMICS_ALLOCATION",
-    }),
-    totalSupplySyn: fact({
-      key: "totalSupplySyn",
-      label: "Total SYN Supply",
-      value: 1_000_000_000,
-      status: "LIVE",
-      source: "Avalanche C-Chain · SYN ERC20 totalSupply (fixed at deploy).",
-      formula: "constant — token is fixed supply, no mint",
-      verifyHref: explSyn,
-      hook: "TOKEN_SPEC",
-    }),
+    membershipAllocationSyn: bind("membershipAllocationSyn", 350_000_000),
+    totalSupplySyn: bind("totalSupplySyn", 1_000_000_000),
 
     routingSplit: USDC_ROUTING,
 
