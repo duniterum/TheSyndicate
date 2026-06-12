@@ -1,0 +1,294 @@
+SPRINT 9 IMPLEMENTATION — INSTITUTIONAL REGISTER SEEDING + GENESIS EVENT CLASSIFICATION
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Public Institutional Register
+→ Reliability Layer
+
+Core objective:
+
+Populate the Institutional Register with real, verified, historically accurate protocol memory, and fix the GENESIS_EVENT vocabulary/classification issue now so protocol-birth facts are handled correctly.
+
+This sprint does NOT:
+
+* generate Story
+* build Recognition
+* create fictional entries
+* create marketing entries
+* create manual placeholder entries
+* create governance systems
+* create member-memory systems
+* rewrite the architecture
+
+This sprint should remain small, precise, and additive.
+
+1. INSTITUTIONAL MEMORY INVENTORY
+
+Identify all currently verifiable protocol-history events.
+
+Evaluate at minimum:
+
+* SYN token deployment
+* initial token distribution
+* Membership Sale deployment
+* Archive1155 deployment
+* First member
+* First liquidity
+* First burn / Proof of Fire
+* First artifact
+* First milestone
+* First campaign funding if verifiable
+* Existing locked Chronicle records
+* Existing institutional records already known to the codebase
+
+For each item, return:
+
+* event name
+* event class
+* source
+* tx hash / block if available
+* verification status
+* coverage status
+* whether it can enter the register now
+* whether it must be held
+* whether it must be excluded
+
+2. GENESIS_EVENT CLASSIFICATION
+
+Do not treat the word “genesis” as automatically unsafe.
+
+Clarify the distinction:
+
+GENESIS_EVENT = institutional protocol-birth fact.
+
+Examples:
+
+* token deployment
+* initial supply creation
+* initial distribution
+* first protocol contracts
+* protocol launch state
+
+Story/marketing genesis language remains restricted.
+
+Implement or adjust the safest classification so:
+
+* GENESIS_EVENT can exist as an institutional category where verified.
+* “genesis” is not used as hype copy.
+* historic / first-ever claims still require verification or coverage.
+* copy guards still prevent unsafe marketing language.
+
+Do not weaken safety.
+
+Instead, distinguish:
+
+* institutional genesis fact
+* story/marketing genesis claim
+* unverified historic claim
+
+3. PIPELINE FIRST
+
+Use the existing chain wherever possible:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+
+Do not bypass the architecture unless a foundational event predates or sits outside the current event scanner.
+
+If an exception is required:
+
+* document why
+* preserve lineage
+* mark source as verified fact / locked fact / coverage-limited
+* do not invent data
+
+4. FOUNDATIONAL EVENT SEEDING
+
+Seed only verified institutional facts.
+
+Potential seed classes:
+
+* GENESIS_EVENT
+* TOKEN_DEPLOYMENT
+* CONTRACT_DEPLOYMENT
+* INITIAL_DISTRIBUTION
+* FIRST_LIQUIDITY
+* FIRST_MEMBER
+* FIRST_BURN
+* FIRST_ARTIFACT
+* FIRST_MILESTONE
+* TREASURY_ACTION
+* OPERATIONS_ACTION
+* PROTOCOL_ASSET_ACTION
+
+Do not create an entry if the fact is not verifiable.
+
+Held is better than invented.
+
+5. FOUNDER / PROTOCOL STEWARD CONTEXT
+
+Founder is not outside the system.
+
+Founder can be:
+
+* founder
+* member
+* protocol steward
+* liquidity actor
+* funder
+* artifact holder
+* future governance participant
+
+But the register must remain protocol-centric.
+
+Allowed framing:
+
+* protocol deployment
+* protocol initial distribution
+* protocol seeded liquidity
+* protocol executed supply burn
+* protocol wallet funded operations
+* protocol treasury action
+
+Avoid:
+
+* founder achievement
+* founder glory
+* founder made history
+* founder reward
+* founder leaderboard
+
+Founder/protocol-steward actions enter the register only when they are institutional protocol facts.
+
+6. QUALITY / HARMONIZATION CHECK
+
+Because you have the full codebase and may see data or existing systems we forgot, include a short maintainer-suggestion section:
+
+* one institutional event class we forgot
+* one existing data source we should use
+* one edge case we should guard
+* one small improvement that fits this sprint without expanding scope
+
+Do not turn this into a broad audit.
+
+Do not invent new architecture.
+
+Use your maintainer perspective to harmonize this with the existing system.
+
+7. INSTITUTIONAL REGISTER QUALITY CHECK
+
+After seeding, verify:
+
+* no duplicate entries
+* chronological order is coherent
+* no unsafe “first” claim without verification
+* no story/marketing language
+* no member-living entry slipped into the institutional register
+* lineage is preserved
+* public register view handles the seeded entries correctly
+* reliability status remains honest
+
+8. COPY RULES
+
+Allowed:
+
+* institutional protocol-birth fact
+* protocol deployment
+* verified initial state
+* source transaction
+* contract deployment
+* initial distribution
+* protocol record
+* verified institutional memory
+
+Avoid:
+
+* legendary
+* heroic
+* founder achievement
+* guaranteed
+* profit
+* return
+* governance right
+* investor reward
+* financial promise
+* hype-style genesis copy
+
+9. TESTS REQUIRED
+
+Add tests proving:
+
+* GENESIS_EVENT is allowed only as verified institutional fact.
+* unsafe genesis/historic marketing copy is still blocked.
+* institutional genesis entries require verification / locked source / coverage.
+* unverified first-ever claims are held or excluded.
+* seeded entries preserve lineage.
+* seeded entries do not bypass the architecture silently.
+* member-living entries cannot enter Institutional Register.
+* public register renders seeded entries safely.
+* ownership / forbidden-language guard remains clean.
+
+10. QA REQUIRED
+
+Run:
+
+* typecheck
+* institutional register tests
+* institutional register public tests
+* promotion tests
+* memory / signal tests if touched
+* ownership / forbidden-language guard
+* route render test
+* SSR/hydration check
+
+Do not fight the known production build OOM unless explicitly in scope.
+
+11. RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. Entries seeded.
+3. GENESIS_EVENT decision.
+4. Sources used.
+5. Entries held or excluded.
+6. Coverage limitations.
+7. Founder/protocol-steward handling.
+8. Maintainer suggestions.
+9. Register quality check.
+10. What was intentionally not touched.
+11. Tests added.
+12. QA results.
+13. Remaining risks.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint is not Chronicle Phase 2.
+
+This sprint only does:
+
+Verified institutional history
+→ Institutional Register seeding
+
+plus:
+
+GENESIS_EVENT classification
+→ safe institutional vocabulary

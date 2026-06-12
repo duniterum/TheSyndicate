@@ -22,6 +22,13 @@
 // re-derived. The legal edge is:
 //   … → CHRONICLE PROMOTION DECISION → INSTITUTIONAL REGISTER ENTRY.
 //
+// ── LAWFUL PARALLEL SOURCE (Sprint 9, spec §3) ──
+// This vocabulary (entry type + findHistoricClaims guard) is ALSO reused by a
+// documented genesis-seed leaf (institutional-register-genesis.ts) that builds
+// verified/locked protocol-birth entries which PREDATE the event scanner, from
+// on-chain-truth config constants. That leaf and this one share no pipeline edge;
+// the seeded entries are merged with the deriver's output at the public view.
+//
 // ── MONEY / IDENTITY GUARDRAIL (docs/canon/05 §4.5) ──
 // An InstitutionalRegisterEntry carries NO monetary magnitude. Its title/summary
 // are generated from the decision's structural register/category/rule bucket —
@@ -118,8 +125,12 @@ export type InstitutionalEventClass = {
   /**
    * "live"     — derivable from a detectable event today.
    * "reserved" — declared but not detectable yet; reserved safely, never faked.
+   * "seeded"   — a foundational fact that PREDATES the event scanner and is
+   *              curated as a verified/locked genesis entry (institutional-
+   *              register-genesis.ts), then merged into the public view. Never
+   *              invented: each seeded class is backed by a real contract / tx.
    */
-  availability: "live" | "reserved";
+  availability: "live" | "reserved" | "seeded";
   /** Person-free, money-free description of the class. */
   description: string;
 };
@@ -131,10 +142,11 @@ export type InstitutionalEventClass = {
  * a reserved class only becomes live when a real, detectable event backs it.
  */
 export const INSTITUTIONAL_EVENT_CLASSES: ReadonlyArray<InstitutionalEventClass> = [
-  { class: "genesis", availability: "reserved", description: "The protocol's origin coordinate. Reserved as an explicit locked fact; chapter coordinates are recorded live." },
-  { class: "token deployment", availability: "reserved", description: "The SYN token contract deployment. Reserved — not surfaced as a detectable protocol event yet." },
-  { class: "sale deployment", availability: "reserved", description: "The membership-sale contract deployment. Reserved — not surfaced as a detectable protocol event yet." },
-  { class: "first liquidity", availability: "reserved", description: "The first establishment of the SYN/USDC pair. Recorded live as a liquidity event; the 'first' claim is coverage-gated." },
+  { class: "genesis", availability: "seeded", description: "The protocol's origin coordinate (token / contract / initial-state birth facts). Seeded as verified/locked genesis entries that predate the event scanner; chapter coordinates are recorded live." },
+  { class: "token deployment", availability: "seeded", description: "The SYN token contract deployment. Seeded as a verified genesis fact (anchored to the live token contract); predates the event scanner." },
+  { class: "initial distribution", availability: "seeded", description: "The initial supply creation and allocation across the published distribution. Seeded as a verified genesis fact (anchored to the token contract and allocation wallets)." },
+  { class: "sale deployment", availability: "seeded", description: "The membership-sale contract deployment. Seeded as a locked genesis fact (pinned to its creation transaction and deployment block); predates the event scanner." },
+  { class: "first liquidity", availability: "seeded", description: "The first establishment of the SYN/USDC pair. Seeded as a locked genesis fact pinned to the pool creation transaction; predates the event scanner." },
   { class: "liquidity event", availability: "live", description: "A change to the protocol liquidity position (seeding live; removals held for human framing)." },
   { class: "burn / Proof of Fire", availability: "live", description: "A protocol-initiated supply reduction, framed protocol-centrically; held for human framing." },
   { class: "first artifact", availability: "reserved", description: "The first artifact to enter the archive. Recorded live as an artifact issuance; the 'first' claim is coverage-gated." },

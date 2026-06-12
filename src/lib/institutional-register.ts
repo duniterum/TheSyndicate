@@ -19,6 +19,14 @@
 // promotion registry) and the protocol-language guard, being the Chronicle's own
 // downstream.
 //
+// ── LAWFUL PARALLEL SOURCE (Sprint 9, spec §3 exception) ──
+// THIS deriver remains promotion-only. A SEPARATE, documented leaf
+// (institutional-register-genesis.ts) seeds verified/locked protocol-birth facts
+// that PREDATE the event scanner directly from on-chain-truth config constants.
+// Those seeds are MERGED with this deriver's output at the public view (deduped
+// by transaction hash, locked seed wins) — they never flow through, and never
+// alter, this file. See that leaf's header for the §3 documentation.
+//
 // ── REGISTER RULES (spec §2, §4) ──
 //   • Only protocol-institutional decisions create entries. A member-living
 //     decision is EXCLUDED entirely (the member register is reserved for DAO

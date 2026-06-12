@@ -249,3 +249,49 @@ describe("Institutional register — Adjacency Law (PROMOTION → REGISTER only)
     });
   }
 });
+
+// CONFIG → GENESIS SEED → INSTITUTIONAL REGISTER ENTRY (Sprint 9, spec §3). The
+// genesis-seed leaf is a LAWFUL parallel source for foundational protocol-birth
+// facts that PREDATE the event scanner. It builds entries DIRECTLY from on-chain-
+// truth config constants and reuses the register's own vocabulary — but it does
+// NOT read promotion decisions, so it must NEVER import the Chronicle-promotion,
+// Chronicle-review, Memory, Signal, or raw event layers. (It is intentionally NOT
+// in REGISTER_MODULES: it does not derive from the promotion registry.)
+const GENESIS_SEED_MODULES = ["institutional-register-genesis.ts"];
+
+describe("Institutional register GENESIS SEED — Adjacency Law (CONFIG → SEED only)", () => {
+  for (const mod of GENESIS_SEED_MODULES) {
+    const src = read(mod);
+    const importLines = src
+      .split(/\r?\n/)
+      .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+    const imports = importLines.join("\n");
+
+    it(`${mod} does not import the raw event layer (protocol-events)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Signal layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Memory layer`, () => {
+      expect(/from\s+["'][^"']*\/memory-candidates["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle-review layer`, () => {
+      expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle-promotion layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/chronicle-promotion["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*chronicle-promotion-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} builds from the Institutional Register vocabulary (imports the registry leaf)`, () => {
+      expect(/from\s+["'][^"']*institutional-register-registry["']/.test(imports)).toBe(true);
+    });
+  }
+});

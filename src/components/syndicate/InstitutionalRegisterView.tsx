@@ -27,8 +27,10 @@ import { deriveMemoryCandidates } from "@/lib/memory-candidates";
 import { deriveChronicleReviewCandidates } from "@/lib/chronicle-review-candidates";
 import { deriveChroniclePromotionDecisions } from "@/lib/chronicle-promotion";
 import { deriveInstitutionalRegister } from "@/lib/institutional-register";
+import { deriveGenesisRegisterEntries } from "@/lib/institutional-register-genesis";
 import {
   selectPublicInstitutionalEntries,
+  mergeInstitutionalEntries,
   deriveRegisterStatus,
   isLineageComplete,
   type RegisterDataStatus,
@@ -41,9 +43,12 @@ import {
 } from "@/lib/institutional-register-registry";
 import { txExplorerUrl } from "@/lib/syndicate-config";
 
-// The public view reads a bounded, newest-first event window. It NEVER asserts
-// proven deployment/genesis coverage (that is a future, separately-derived fact),
-// so coverage stays conservative here and no historic "first" claim can surface.
+// The public view reads a bounded, newest-first LIVE event window AND merges a
+// curated set of verified/locked protocol-birth GENESIS SEEDS that predate the
+// scanner (institutional-register-genesis.ts). It still NEVER asserts proven
+// deployment coverage for the LIVE window, so an unverified historic "first" can
+// never surface from derivation; the only "genesis/first" wording comes from
+// seeds whose source is independently verified or transaction-locked.
 const EVENT_WINDOW_LIMIT = 200;
 
 // Tone per data-status for the compact status strip (presentation only).
@@ -322,14 +327,20 @@ const PIPELINE_STAGES = [
 export function InstitutionalRegisterView() {
   const { events, sources } = useProtocolEvents({ limit: EVENT_WINDOW_LIMIT });
 
+  // Curated, verified protocol-birth seeds that predate the event scanner
+  // (spec §3). Pure + deterministic, so this is computed once.
+  const genesisEntries = useMemo(() => deriveGenesisRegisterEntries(), []);
+
   const entries = useMemo(() => {
     const signals = deriveSignals(events, { windowCoversDeployment: false });
     const memory = deriveMemoryCandidates(signals);
     const review = deriveChronicleReviewCandidates(memory);
     const decisions = deriveChroniclePromotionDecisions(review);
     const register = deriveInstitutionalRegister(decisions);
-    return selectPublicInstitutionalEntries(register);
-  }, [events]);
+    return selectPublicInstitutionalEntries(
+      mergeInstitutionalEntries(genesisEntries, register),
+    );
+  }, [events, genesisEntries]);
 
   // Reliability status (Sprint 8). Coverage stays conservative (the public view
   // never proves genesis coverage); the window is "truncated" when it hits the
@@ -446,7 +457,7 @@ export function InstitutionalRegisterView() {
         <SectionHeader
           eyebrow="Scope"
           title="What the register records"
-          description="The protocol-level event classes the register supports today (live) or reserves for the future (reserved). A reserved class is declared so the vocabulary stays stable — no fact is invented for it."
+          description="The protocol-level event classes the register supports today (live), seeds from verified protocol-birth facts that predate the scanner (seeded), or reserves for the future (reserved). A reserved class is declared so the vocabulary stays stable — no fact is invented for it."
         />
         <GlassCard className="p-5">
           <ul className="grid gap-3 sm:grid-cols-2">
@@ -458,7 +469,9 @@ export function InstitutionalRegisterView() {
                     className={`mono rounded border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.14em] ${
                       c.availability === "live"
                         ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                        : "border-border bg-muted/40 text-muted-foreground"
+                        : c.availability === "seeded"
+                          ? "border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-400"
+                          : "border-border bg-muted/40 text-muted-foreground"
                     }`}
                   >
                     {c.availability}

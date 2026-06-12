@@ -52,6 +52,35 @@ export function selectPublicInstitutionalEntries(
 }
 
 /**
+ * Merge curated GENESIS SEED entries (Sprint 9, spec §3) with the live-derived
+ * register entries into ONE oldest → newest list, ready for public selection.
+ *
+ * Seeds are foundational protocol-birth facts that PREDATE the event scanner, so
+ * they sort BEFORE any derived entry (they are the oldest history). When a locked
+ * seed and a derived entry describe the SAME on-chain transaction, the LOCKED
+ * SEED WINS — its hand-verified, person-free copy supersedes a re-derived one, so
+ * a fact never appears twice. Dedup keys on the lowercased source tx hash; seeds
+ * and derived entries without a tx hash are always kept (nothing to collide on).
+ *
+ * Pure and deterministic: it returns a fresh array and mutates neither input.
+ */
+export function mergeInstitutionalEntries(
+  seed: readonly InstitutionalRegisterEntry[],
+  derived: readonly InstitutionalRegisterEntry[],
+): InstitutionalRegisterEntry[] {
+  const seededTxHashes = new Set(
+    seed
+      .map((e) => e.sourceTxHash)
+      .filter((h): h is string => typeof h === "string" && h.length > 0)
+      .map((h) => h.toLowerCase()),
+  );
+  const dedupedDerived = derived.filter(
+    (e) => !(e.sourceTxHash && seededTxHashes.has(e.sourceTxHash.toLowerCase())),
+  );
+  return [...seed, ...dedupedDerived];
+}
+
+/**
  * Sober-language banlist for the PUBLIC view (spec §5). The institutional voice
  * stays neutral: no legend/hero framing, no person heroising, no profit / return
  * / yield / guarantee, no governance-right / investor-reward / financial-promise
