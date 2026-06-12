@@ -74,6 +74,7 @@ function LabsIndex() {
           <Link to="/labs/protocol-memory" className="underline hover:no-underline">→ Protocol memory &amp; recognition (foundation workbench)</Link>
           <Link to="/labs/signals" className="underline hover:no-underline">→ Signals engine (event → signal workbench)</Link>
           <Link to="/labs/memory-candidates" className="underline hover:no-underline">→ Memory candidates (signal → memory workbench)</Link>
+          <Link to="/labs/chronicle-candidates" className="underline hover:no-underline">→ Chronicle candidates (memory → chronicle workbench)</Link>
           <Link to="/labs/design-museum" className="underline hover:no-underline">→ Visual design museum</Link>
           <Link to="/labs/component-index" className="underline hover:no-underline">→ Technical component index</Link>
           <Link to="/labs/design-archive" className="underline hover:no-underline">→ Design archive (docs)</Link>

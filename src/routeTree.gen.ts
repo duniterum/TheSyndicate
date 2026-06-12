@@ -50,6 +50,7 @@ import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
 import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museum'
 import { Route as LabsDesignArchiveRouteImport } from './routes/labs.design-archive'
 import { Route as LabsComponentIndexRouteImport } from './routes/labs.component-index'
+import { Route as LabsChronicleCandidatesRouteImport } from './routes/labs.chronicle-candidates'
 import { Route as ChaptersSlugRouteImport } from './routes/chapters.$slug'
 import { Route as ApiChatRouteImport } from './routes/api.chat'
 import { Route as XTxHashRouteImport } from './routes/x.tx.$hash'
@@ -266,6 +267,11 @@ const LabsComponentIndexRoute = LabsComponentIndexRouteImport.update({
   path: '/component-index',
   getParentRoute: () => LabsRoute,
 } as any)
+const LabsChronicleCandidatesRoute = LabsChronicleCandidatesRouteImport.update({
+  id: '/chronicle-candidates',
+  path: '/chronicle-candidates',
+  getParentRoute: () => LabsRoute,
+} as any)
 const ChaptersSlugRoute = ChaptersSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -346,6 +352,7 @@ export interface FileRoutesByFullPath {
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
+  '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -397,6 +404,7 @@ export interface FileRoutesByTo {
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
+  '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -450,6 +458,7 @@ export interface FileRoutesById {
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
+  '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -504,6 +513,7 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/api/chat'
     | '/chapters/$slug'
+    | '/labs/chronicle-candidates'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -555,6 +565,7 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/api/chat'
     | '/chapters/$slug'
+    | '/labs/chronicle-candidates'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -607,6 +618,7 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/api/chat'
     | '/chapters/$slug'
+    | '/labs/chronicle-candidates'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -958,6 +970,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsComponentIndexRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/chronicle-candidates': {
+      id: '/labs/chronicle-candidates'
+      path: '/chronicle-candidates'
+      fullPath: '/labs/chronicle-candidates'
+      preLoaderRoute: typeof LabsChronicleCandidatesRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/chapters/$slug': {
       id: '/chapters/$slug'
       path: '/$slug'
@@ -1037,6 +1056,7 @@ const ChaptersRouteWithChildren = ChaptersRoute._addFileChildren(
 )
 
 interface LabsRouteChildren {
+  LabsChronicleCandidatesRoute: typeof LabsChronicleCandidatesRoute
   LabsComponentIndexRoute: typeof LabsComponentIndexRoute
   LabsDesignArchiveRoute: typeof LabsDesignArchiveRoute
   LabsDesignMuseumRoute: typeof LabsDesignMuseumRoute
@@ -1050,6 +1070,7 @@ interface LabsRouteChildren {
 }
 
 const LabsRouteChildren: LabsRouteChildren = {
+  LabsChronicleCandidatesRoute: LabsChronicleCandidatesRoute,
   LabsComponentIndexRoute: LabsComponentIndexRoute,
   LabsDesignArchiveRoute: LabsDesignArchiveRoute,
   LabsDesignMuseumRoute: LabsDesignMuseumRoute,

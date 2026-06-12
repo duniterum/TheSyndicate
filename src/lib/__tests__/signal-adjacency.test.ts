@@ -29,6 +29,8 @@ const FORBIDDEN_IMPORTS = [
   "preview/referral",
   "memory-candidates",
   "memory-candidate-registry",
+  "chronicle-review-candidates",
+  "chronicle-review-candidate-registry",
 ];
 
 describe("Signals — Adjacency Law (EVENT → SIGNAL only)", () => {
@@ -84,6 +86,51 @@ describe("Memory candidates — Adjacency Law (SIGNAL → MEMORY only)", () => {
       for (const l of chronicleLines) {
         expect(/import\s+type\b/.test(l), l).toBe(true);
       }
+    });
+
+    it(`${mod} does not import the DOWNSTREAM Chronicle Candidate layer`, () => {
+      // SIGNAL → MEMORY → CHRONICLE: a memory module reaching forward into the
+      // chronicle-review layer would invert the edge.
+      expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+    });
+  }
+});
+
+// MEMORY → CHRONICLE only. The Chronicle Candidate layer reads MEMORY CANDIDATES;
+// it must NEVER reach back into the Signal layer (signal-registry / protocol-
+// signals) or the raw event layer (protocol-events) — lineage to the Signal →
+// Event → Tx/Block is carried THROUGH the MemoryCandidate. It MAY import
+// chronicle-entries VALUES (the banned-term/forbidden-subject vocabulary) since
+// it is the Chronicle's own downstream, unlike the upstream memory layer.
+const CHRONICLE_REVIEW_MODULES = [
+  "chronicle-review-candidate-registry.ts",
+  "chronicle-review-candidates.ts",
+];
+
+describe("Chronicle candidates — Adjacency Law (MEMORY → CHRONICLE only)", () => {
+  for (const mod of CHRONICLE_REVIEW_MODULES) {
+    const src = read(mod);
+    const importLines = src
+      .split(/\r?\n/)
+      .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+    const imports = importLines.join("\n");
+
+    it(`${mod} does not import the raw event layer (protocol-events)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Signal deriver (protocol-signals)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Signal registry directly (value OR type)`, () => {
+      // The lineage tier is re-exported through memory-candidate-registry; the
+      // chronicle layer must read it from there, never reach into the Signal leaf.
+      expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} imports the Memory Candidate layer it derives from`, () => {
+      expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(true);
     });
   }
 });

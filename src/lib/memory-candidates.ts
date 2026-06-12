@@ -288,6 +288,7 @@ export function deriveMemoryCandidates(
       register,
       category,
       subject: s.subject,
+      tier: s.tier,
       sourceSignalId: s.id,
       sourceEventId: s.sourceEventId,
       ...(s.sourceTxHash ? { sourceTxHash: s.sourceTxHash } : {}),

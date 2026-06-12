@@ -87,6 +87,15 @@ describe("deriveMemoryCandidates — creation rule (tiers)", () => {
     expect(c.register).toBe("member-living");
     expect(c.category).toBe("membership");
     expect(c.verification).toBe("verified");
+    // tier is carried through as lineage for the downstream Chronicle layer.
+    expect(c.tier).toBe("S1");
+  });
+
+  it("carries the source Signal's tier through as lineage", () => {
+    const s = sig({ id: "tcarry", type: "MILESTONE", tier: "S4", subject: "milestone", createdFrom: "rank-reached" });
+    const [c] = deriveMemoryCandidates([s]);
+    expect(c.tier).toBe("S4");
+    expect(c.sourceSignalId).toBe("tcarry");
   });
 
   it("S2 with a PERSON subject → member-living (rank-reached)", () => {

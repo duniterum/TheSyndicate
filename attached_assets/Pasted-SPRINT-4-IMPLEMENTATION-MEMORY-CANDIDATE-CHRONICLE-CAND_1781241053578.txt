@@ -1,0 +1,328 @@
+SPRINT 4 IMPLEMENTATION — MEMORY CANDIDATE → CHRONICLE CANDIDATE
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed sprints:
+
+* Sprint 1: Diffusion + Anticipation
+* Sprint 2: Event → Signal
+* Sprint 3: Signal → Memory Candidate
+
+Accepted frozen foundations:
+
+* Constitution / Layer 0
+* Canonical Layer Architecture
+* Canonical Object Model
+* Dependency Graph
+* Engine / Flywheel Model
+
+Do not reopen them.
+
+Core objective:
+
+Build the minimal Chronicle Candidate layer:
+
+Memory Candidate → Chronicle Candidate
+
+This sprint does NOT publish automatic Chronicle entries.
+
+This sprint does NOT rewrite existing Chronicle entries.
+
+This sprint does NOT generate Story.
+
+This sprint does NOT build Recognition.
+
+It only creates a safe review-ready layer that answers:
+
+“Which Memory Candidates are eligible to become permanent Chronicle entries later?”
+
+Hard rules:
+
+* Chronicle Candidates read Memory Candidates only.
+* Chronicle Candidates do NOT read raw Events directly.
+* Chronicle Candidates do NOT read Signals directly except through Memory Candidate lineage.
+* Chronicle Candidates must preserve full verification lineage:
+  Chronicle Candidate → Memory Candidate → Signal → Event → Tx / Block / Source Fact.
+* No invented facts.
+* No automatic public Chronicle publication.
+* No founder glorification.
+* No money-as-prestige.
+* No ROI / yield / dividend / governance / rights / payout language.
+* No new contract.
+* No public marketing UI.
+
+1. CHRONICLE CANDIDATE OBJECT
+
+Create or formalize a ChronicleCandidate object.
+
+It should include:
+
+* id
+* register
+* category
+* subject
+* sourceMemoryCandidateId
+* sourceSignalId
+* sourceEventId
+* sourceTxHash if available
+* sourceBlock if available
+* proposedTitle
+* proposedSummary
+* proposedStoryAngle
+* significanceReason
+* verificationStatus
+* reviewStatus
+* recommendedAction
+* createdFrom
+
+2. REGISTERS
+
+Preserve the two-register model:
+
+A) Protocol / Institutional Register
+
+For protocol-level history:
+
+* genesis events
+* first liquidity
+* first burn
+* first artifact
+* first milestone
+* significant treasury movement
+* significant operations movement
+* significant liquidity event
+* future protocol asset acquisition
+* future external revenue event
+* meaningful founder/system action
+
+B) Member / Living Register
+
+For member-level history:
+
+* first member
+* milestone member
+* repeat participation
+* continuity
+* milestone witness
+* artifact participation
+* future recognition-worthy member moments
+
+3. CHRONICLE ELIGIBILITY RULES
+
+Define deterministic eligibility.
+
+Suggested starting rules:
+
+* S0 → never Chronicle Candidate.
+* S1 → only if category is explicitly first/new/continuity and passes coverage.
+* S2 → Member / Living Candidate, review required.
+* S3 → Protocol / Institutional Candidate, review required.
+* S4 → high-priority Chronicle Candidate.
+* S5 → historic Chronicle Candidate.
+
+Do not auto-publish any tier.
+
+Every candidate is review-first.
+
+4. REVIEW STATUS
+
+Add review workflow fields:
+
+* needs-review
+* approved
+* rejected
+* hold-coverage
+* hold-context
+
+Default should be:
+
+* needs-review for normal valid candidates
+* hold-coverage when scan coverage is not sufficient
+* hold-context when the event is valid but meaning requires human explanation
+
+Do not auto-approve except maybe locked genesis entries if already verified and existing.
+
+5. FOUNDER / SYSTEM WALLET RULE
+
+Founder and system wallet actions are important but must be disciplined.
+
+Principle:
+
+Founder is an actor inside the protocol, not outside it.
+
+Founder may be:
+
+* founder
+* user
+* member
+* funder
+* liquidity actor
+* artifact holder
+* future governance participant
+
+Classify by:
+
+* actor role
+* wallet role
+* action type
+* protocol significance
+* verification source
+
+not by founder label alone.
+
+Rules:
+
+* Routine founder/system actions remain Activity / Memory only.
+* Significant institutional actions become Chronicle Candidates.
+* Founder/system actions must never become Chronicle only because the founder did them.
+* Founder/system actions may become Chronicle when they materially affect the protocol.
+
+Examples eligible:
+
+* founder seeded initial liquidity
+* founder performed Proof of Fire burn
+* founder funded first operations campaign
+* Operations wallet spent for first campaign
+* Liquidity wallet executed major LP action
+* Vault wallet crossed major threshold
+* Treasury acquired external asset / token / company stake
+* protocol received first external revenue
+* major protocol-owned asset movement
+
+Examples not eligible:
+
+* routine wallet rebalancing
+* dust transfers
+* internal admin movements
+* allocation shuffling
+* repeated small top-ups without protocol significance
+
+6. CHRONICLE ENTRY COMPATIBILITY
+
+Do not modify existing locked Chronicle entries except adding optional compatibility metadata if safe.
+
+Existing Chronicle remains manually curated.
+
+Chronicle Candidate must be designed so that later a human or future system can promote it into Chronicle Entry.
+
+No automatic promotion in this sprint.
+
+7. INSPECTION SURFACE
+
+Add inspection only.
+
+Acceptable:
+
+* hidden /labs/chronicle-candidates route
+* test output
+* internal registry
+
+Do not promote public UI.
+
+The inspection view should show:
+
+* candidate title
+* register
+* category
+* source signal
+* source memory candidate
+* review status
+* verification lineage
+* reason
+
+8. COVERAGE GUARDRAIL
+
+Do not assert:
+
+* first ever
+* genesis
+* first liquidity
+* first artifact
+* first burn
+* first campaign
+* first treasury deployment
+
+unless coverage is sufficient or the fact is explicitly locked/verified.
+
+If coverage is insufficient:
+
+* mark hold-coverage
+* do not propose historic language
+
+9. MAINTAINER SUGGESTION SECTION
+
+Because you see the codebase and event system directly, include a short section in your final report:
+
+* one event class we forgot
+* one Chronicle edge case we should guard
+* one future-proof improvement that fits this layer without expanding scope
+
+Do not turn this into a broad audit.
+
+Keep it narrow and implementation-relevant.
+
+10. TESTS REQUIRED
+
+Add tests proving:
+
+* Memory Candidates produce expected Chronicle Candidates.
+* S0 never becomes Chronicle Candidate.
+* S1 only becomes Chronicle Candidate under explicit safe rules.
+* S2 member candidates become Member / Living review candidates.
+* S3+ protocol candidates become Protocol / Institutional review candidates.
+* Founder/system actions are not eligible only because of actor identity.
+* Significant founder/system actions can be eligible when protocol-impactful.
+* Coverage-limited first claims become hold-coverage.
+* Every Chronicle Candidate references a Memory Candidate.
+* Full lineage is preserved:
+  Chronicle Candidate → Memory Candidate → Signal → Event.
+* No banned language appears.
+
+11. QA REQUIRED
+
+Run:
+
+* typecheck
+* chronicle candidate tests
+* memory candidate tests
+* signal tests
+* doctrine tests
+* ownership / forbidden-language guard
+* existing Chronicle classification tests
+
+Do not fight the known production build OOM unless build configuration is explicitly part of this sprint.
+
+12. RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. ChronicleCandidate object shape.
+3. Registers implemented.
+4. Categories implemented.
+5. Eligibility rules.
+6. Review statuses.
+7. Founder/system wallet handling.
+8. Coverage guardrail.
+9. Labs/inspection surface.
+10. Maintainer suggestion.
+11. What was intentionally not touched.
+12. Tests added.
+13. QA results.
+14. Remaining risks.
+
+Important:
+
+This sprint is not automatic Chronicle publishing.
+
+This sprint is not Recognition.
+
+This sprint is not Story generation.
+
+This sprint only builds:
+
+Memory Candidate → Chronicle Candidate
+
+Nothing more.

@@ -36,8 +36,10 @@ import type { ChronicleRegister } from "./chronicle-entries";
 import type { ProtocolEventKind } from "./protocol-event-registry";
 import {
   isPersonSubject,
+  tierRank,
   type Signal,
   type SignalSubject,
+  type SignalTier,
 } from "./signal-registry";
 
 /**
@@ -112,6 +114,12 @@ export type MemoryCandidate = {
   register: MemoryRegister;
   category: MemoryCategory;
   subject: SignalSubject;
+  /**
+   * The source Signal's significance tier, carried through as lineage (like
+   * sourceEventId/sourceTxHash). The downstream Chronicle Candidate layer reads
+   * this — never the Signal — so its tier-based eligibility stays adjacency-legal.
+   */
+  tier: SignalTier;
   /** The Signal.id this candidate derives from (always present). */
   sourceSignalId: string;
   /** The source CanonicalProtocolEvent.id, carried through the Signal. */
@@ -240,4 +248,11 @@ export function validateMemoryClassification(c: {
 }
 
 /** Re-export for the deriver/tests so they don't reach into signal-registry for it. */
-export type { Signal, SignalSubject };
+export type { Signal, SignalSubject, SignalTier };
+/**
+ * Re-export the canonical tier rank (value) so the DOWNSTREAM Chronicle
+ * Candidate layer can rank a candidate's lineage tier WITHOUT importing the
+ * Signal layer directly (it reads Memory Candidates only — adjacency stays
+ * clean: SIGNAL → MEMORY → CHRONICLE).
+ */
+export { tierRank };

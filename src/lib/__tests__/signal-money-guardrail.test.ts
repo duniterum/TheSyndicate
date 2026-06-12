@@ -40,6 +40,8 @@ const PRESTIGE_MODULES = [
   "protocol-signals.ts",
   "memory-candidate-registry.ts",
   "memory-candidates.ts",
+  "chronicle-review-candidate-registry.ts",
+  "chronicle-review-candidates.ts",
 ];
 
 // Per-actor MONETARY MAGNITUDE field names that must never appear in the Signal
@@ -93,6 +95,21 @@ describe("Signal registry — money-safe StructuralFacts (canon §4.5 Rule E)", 
 // for magnitude identifiers too.
 describe("Memory candidate layer — money-safe (canon §4.5 Rule E)", () => {
   for (const mod of ["memory-candidate-registry.ts", "memory-candidates.ts"]) {
+    const src = read(mod);
+    for (const token of RULE_E_MAGNITUDE_TOKENS) {
+      it(`${mod} never names the magnitude field "${token}"`, () => {
+        expect(src.includes(token)).toBe(false);
+      });
+    }
+  }
+});
+
+// The Chronicle Candidate layer reads ONLY a MemoryCandidate's structural fields
+// (tier/category/register/lineage) — never any amount. Like the memory layer,
+// both modules are checked for magnitude identifiers: eligibility must be tier-
+// driven, never money-driven.
+describe("Chronicle candidate layer — money-safe (canon §4.5 Rule E)", () => {
+  for (const mod of ["chronicle-review-candidate-registry.ts", "chronicle-review-candidates.ts"]) {
     const src = read(mod);
     for (const token of RULE_E_MAGNITUDE_TOKENS) {
       it(`${mod} never names the magnitude field "${token}"`, () => {
