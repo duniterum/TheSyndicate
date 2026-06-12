@@ -49,9 +49,9 @@ const LANE_COLOR: Record<string, string> = {
 };
 
 const NODE_POS: Record<string, { wrap: string; line: [number, number] }> = {
-  VAULT_WALLET: { wrap: "left-[25%] top-[26%]", line: [132, 116] },
-  LIQUIDITY_WALLET: { wrap: "left-[75%] top-[26%]", line: [268, 116] },
-  OPERATIONS_WALLET: { wrap: "left-[25%] top-[77%]", line: [126, 286] },
+  VAULT_WALLET: { wrap: "left-[20%] top-[24%]", line: [109, 121] },
+  LIQUIDITY_WALLET: { wrap: "left-[80%] top-[24%]", line: [291, 121] },
+  OPERATIONS_WALLET: { wrap: "left-[20%] top-[79%]", line: [114, 283] },
 };
 
 const CTA_PRIMARY =
@@ -265,7 +265,7 @@ function HeroLeft() {
           style={{
             background: GOLD_GRAD,
             color: "#15110A",
-            boxShadow: "0 18px 44px -20px color-mix(in oklab, #E3A92B 80%, transparent)",
+            boxShadow: "0 10px 26px -22px color-mix(in oklab, #E3A92B 48%, transparent)",
           }}
         >
           <CrownIcon />
@@ -331,7 +331,7 @@ function HeroEngine({
   const operationsLane = lanes.find((l) => l.key === "OPERATIONS_WALLET");
 
   return (
-    <div className="relative mx-auto w-full max-w-[640px] py-2 lg:self-center">
+    <div className="relative mx-auto w-full max-w-[640px] py-2 lg:self-start">
       <div
         aria-hidden
         className="absolute inset-[-8%] rounded-full blur-3xl"
@@ -352,26 +352,26 @@ function HeroEngine({
       <div className="relative hidden aspect-square w-full sm:block">
         <RadialStage lanes={lanes} chainLive={chainLive} />
 
-        <div className="pointer-events-none absolute left-1/2 top-[1.5%] z-20 -translate-x-1/2">
+        <div className="pointer-events-none absolute left-1/2 top-[1.5%] z-20 w-[24%] -translate-x-1/2">
           <img
             src="/hero/throne.png"
             alt=""
             aria-hidden
             draggable={false}
-            className="h-auto w-[104px] select-none lg:w-[96px] xl:w-[110px] 2xl:w-[120px]"
+            className="h-auto w-full select-none"
             style={{
               filter: "drop-shadow(0 12px 22px color-mix(in oklab, #E3A92B 38%, transparent))",
             }}
           />
         </div>
 
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 text-center">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 pt-[6%] text-center">
           <div className="mono text-[11px] uppercase tracking-[0.28em]" style={{ color: "var(--success)" }}>
             Live capital flow
           </div>
 
           <div
-            className="mt-2 mono tabular-nums font-semibold leading-none text-[clamp(3rem,2.2rem+1.6vw,4.75rem)]"
+            className="mt-2 mono tabular-nums font-semibold leading-none text-[clamp(3rem,0.7rem+3.9vw,5.5rem)]"
             style={{
               color: "var(--success)",
               textShadow: "0 0 40px color-mix(in oklab, var(--success) 34%, transparent)",

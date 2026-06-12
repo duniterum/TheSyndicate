@@ -1,0 +1,172 @@
+What I would tell Replit
+
+Do not resize anything first.
+
+Do not redesign anything.
+
+Do not add cards.
+
+Do not add data.
+
+Only rebalance composition.
+
+Current layout
+┌────────────┬───────────────┬──────────────┐
+│            │               │ OVERVIEW     │
+│ HEADLINE   │               │              │
+│            │               │              │
+│            │               │              │
+│            │ THRONE        │              │
+│            │ $25           │              │
+│ CTA        │               │              │
+└────────────┴───────────────┴──────────────┘
+Desired layout
+┌────────────┬───────────────┬──────────────┐
+│            │ THRONE        │ OVERVIEW     │
+│ HEADLINE   │               │              │
+│            │ $25           │              │
+│            │               │              │
+│            │               │              │
+│ CTA        │               │ ACTIVITY     │
+└────────────┴───────────────┴──────────────┘
+
+The throne engine should sit approximately on the same horizontal axis as the top of the Protocol Overview card.
+
+Not in the middle of the page.
+
+Not near the CTA row.
+
+Higher.
+
+The exact visual rule
+
+If we draw a line:
+
+Headline
+           Throne
+                     Protocol Overview
+
+all three should start almost at the same vertical height.
+
+Currently:
+
+Headline
+
+                     Overview
+
+
+           Throne
+
+which creates the imbalance.
+
+Second issue
+
+The throne itself should be bigger.
+
+Current:
+
+Seat #3 available
+
+(throne)
+
+$25
+
+Desired:
+
+Seat #3 available
+
+        👑
+
+$25
+
+The throne is the identity anchor.
+
+It should be the first thing people notice after reading the headline.
+
+I would increase throne size roughly 20–30%.
+
+Third issue
+
+The green capital number should dominate even more.
+
+Current:
+
+$25
+
+Desired:
+
+$25
+
+(about 25–35% larger)
+
+The protocol engine exists to explain capital flow.
+
+The throne explains identity.
+
+The number explains the protocol.
+
+Those are the two heroes.
+
+Fourth issue
+
+Move the orbit labels outward.
+
+Current:
+
+70% Vault
+20% Liquidity
+
+are visually competing with the center.
+
+Push them further toward the outer ring.
+
+Let the throne + $25 breathe.
+
+Fifth issue
+
+The background is finally helping.
+
+Do not increase mountain visibility.
+
+Do not add more mountains.
+
+Do not add buildings.
+
+Do not add castles.
+
+The background is now doing its job:
+
+10% mountain
+90% protocol
+
+which is correct.
+
+Sixth issue
+
+The CTA row is now too strong visually.
+
+The yellow button is grabbing almost as much attention as the throne.
+
+I would slightly reduce the visual weight of:
+
+JOIN THE PROTOCOL
+
+because:
+
+Headline
+↓
+Throne
+↓
+$25
+↓
+CTA
+
+is the desired attention order.
+
+Not:
+
+Headline
+↓
+CTA
+↓
+Throne
