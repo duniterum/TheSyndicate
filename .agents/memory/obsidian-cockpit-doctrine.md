@@ -21,6 +21,18 @@ Rules:
 - **CTA hierarchy:** primary = solid cyan + black text, mono uppercase; secondary =
   outline; tertiary = muted ghost. Live via `CTAButton` variants gold/navy/ghost.
 
+**ProtocolHero is a deliberate EXCEPTION (premium-hero mandate):** the hero pins an
+explicit GOLD base (`GOLD = "#E3A92B"` + GOLD_SOFT/LINE/GRAD/GLOW consts) in BOTH
+themes, because `var(--gold)` collapses to cyan in `.dark` and the supplied reference
+mockups are gold in light AND dark. So in the hero: **gold = brand/identity accents,
+green (`var(--success)`) = live money ONLY, cyan (`var(--verify)`) = the verify action
+ONLY, Avalanche red = the chain pill ONLY.** Do NOT "fix" the hero's hardcoded gold
+back to `var(--gold)`/cyan — that is intentional, not drift. (Open question never
+escalated: whether to extend gold to the whole dark theme globally — that would be a
+site-wide change needing user sign-off, NOT a hero edit.) Every hero figure traces to a
+real hook (useProtocolTruth/Pulse/ChainTip/QuoteSyn); the "Live on-chain reads" microline
+is gated on `chainLive` (no invented "operational" claims).
+
 **Why:** keeps the whole site reading as ONE product and prevents drift back to soft
 "museum" styling or generic crypto templates.
 
