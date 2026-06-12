@@ -1,0 +1,187 @@
+MASTER COMPLETION PASS — MAP, BATCH, EXECUTE SAFE REMAINING WORK
+
+Proceed carefully.
+
+Do NOT restart architecture from zero.
+
+Do NOT run repeated broad audits.
+
+Use all existing doctrine, code, guards, reports, memory notes, and the Protocol Knowledge Map.
+
+Current confirmed backbone:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Public Institutional Register
+→ Reliability Layer
+→ Protocol Knowledge Map
+→ Knowledge Graph
+→ Chronicle Admission Candidate
+→ Chronicle Entry
+→ Chronology
+→ Verified Timestamp
+→ Protocol Lineage Visibility
+
+Core objective:
+
+Finish the remaining safe work in coherent batches.
+
+Not one tiny sprint at a time.
+
+Not endless audits.
+
+Use your codebase knowledge to:
+
+1. identify what is unfinished,
+2. group it into batches,
+3. implement every dependency-valid safe batch,
+4. stop only when a batch is blocked by doctrine, contracts, governance, or real uncertainty.
+
+BIG UNFINISHED AREAS TO INCLUDE
+
+You must cover:
+
+* Public Chronicle integration
+* Activity lineage indicators
+* NFT / Artifact memory integration
+* Economic / Treasury visibility
+* Protocol-steward / founder-action visibility
+* Story / Chapter presentation
+* Recognition preparation
+* Referral / Growth expansion
+* SeatRecord721 / DAO future layer
+* AI / reports / marketplace future layer
+* Design / IA harmonization
+* Dead component cleanup
+* Build / QA / infrastructure hardening
+
+Do not ignore any of these.
+
+SECTION A — REMAINING WORK MAP
+
+Return a table:
+
+Area
+Status: DONE / PARTIAL / TODO / BLOCKED / FUTURE
+Current source of truth
+What exists
+What is missing
+Dependency
+Can implement now?
+Recommended action
+Can batch with
+
+SECTION B — EXECUTION BATCHES
+
+Group all remaining work into practical batches.
+
+Suggested structure:
+
+Batch 1 — Public Chronicle Integration + Activity Lineage
+Batch 2 — NFT / Artifact Memory Integration
+Batch 3 — Economic / Treasury / Steward Visibility
+Batch 4 — Story / Chapter Presentation
+Batch 5 — Recognition Preparation
+Batch 6 — Referral / Growth Expansion
+Batch 7 — SeatRecord721 / DAO Future Layer
+Batch 8 — Design / IA / Dead Component Cleanup
+Batch 9 — Build / QA / Infra Hardening
+
+You may reorder if the codebase proves better.
+
+For each batch:
+
+* goal
+* dependencies
+* files/systems likely touched
+* what can be implemented now
+* what must remain future
+* risk
+* QA required
+
+SECTION C — EXECUTE SAFE BATCHES NOW
+
+After mapping, proceed to implementation.
+
+Implement all batches that are:
+
+* dependency-valid,
+* additive,
+* doctrine-safe,
+* no new contracts,
+* no fake governance,
+* no fake member-memory,
+* no yield / ROI / rights language,
+* no public Recognition scoring,
+* no Story generation before Chronicle is safe.
+
+If a batch is too large, split it and implement the first safe sub-batch.
+
+Do NOT ask for permission after every tiny step.
+
+Do NOT create new architecture unless required.
+
+Do NOT duplicate existing systems.
+
+Use existing:
+
+* Protocol Knowledge Map
+* Chronicle Admission
+* Chronicle Entry
+* Chronology
+* Timestamp
+* Lineage
+* Institutional Register
+* Archive / NFT systems
+* Holder Index
+* Activity
+* Treasury / asset reads
+* existing guards and tests
+
+SECTION D — HARD NO-TOUCH RULES
+
+Unless explicitly required and justified:
+
+* no new contracts
+* no SeatRecord721 implementation
+* no DAO implementation
+* no member-living register activation
+* no Recognition public scoring
+* no referral reward contract
+* no AI generation
+* no marketplace
+* no rewriting locked Chronicle entries
+* no duplicating Activity
+* no fake Story
+* no founder glorification
+* no investment / profit / rights language
+
+SECTION E — FINAL REPORT
+
+When finished, return:
+
+1. Remaining Work Map.
+2. Batches created.
+3. Batches implemented.
+4. Batches deferred and why.
+5. Files changed.
+6. User-visible changes.
+7. Internal/labs changes.
+8. What was intentionally not touched.
+9. QA results.
+10. Remaining risks.
+11. Exact next handoff prompt if more work remains.
+
+Goal:
+
+Stop the expensive loop.
+
+Use the system already built.
+
+Finish every safe remaining task in the right order.
+
+If something is blocked, document the blocker clearly and move to the next safe batch.

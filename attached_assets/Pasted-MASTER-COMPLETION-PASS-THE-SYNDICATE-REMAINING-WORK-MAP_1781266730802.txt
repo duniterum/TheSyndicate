@@ -1,0 +1,354 @@
+MASTER COMPLETION PASS — THE SYNDICATE REMAINING WORK MAP + BATCH EXECUTION PLAN
+
+Read carefully before acting.
+
+Do NOT run a broad audit from zero.
+
+We have already built a lot of doctrine, maps, guards, registries, labs routes, and pipeline layers.
+
+Your job is now to use the existing system to determine what remains unfinished, batch it intelligently, and execute only what is dependency-valid.
+
+Current completed backbone:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Public Institutional Register
+→ Reliability Layer
+→ Protocol Knowledge Map
+→ Knowledge Graph
+→ Chronicle Admission Candidate
+→ Chronicle Entry
+→ Chronology
+→ Verified Timestamp
+→ Protocol Lineage Visibility
+
+Use existing files, reports, guards, memory notes, doctrine docs, knowledge map, and codebase reality.
+
+Do not recreate architecture.
+
+Do not restart system-wide audits.
+
+Do not invent new layers unless the codebase proves one is missing.
+
+Core objective:
+
+Create a final Remaining Work Map and then propose / execute the next batches in the correct order.
+
+We want to know:
+
+1. What is finished.
+2. What is partially finished.
+3. What is not finished.
+4. What is blocked.
+5. What is deferred by doctrine.
+6. What can be implemented now.
+7. What should not be touched yet.
+8. What should be batched together to reduce cost and avoid repeated audits.
+
+IMPORTANT CONTEXT
+
+The Syndicate is not just a dashboard.
+
+It is:
+
+* transparent protocol
+* membership system
+* economic engine
+* identity layer
+* artifact / NFT layer
+* institutional memory system
+* public trust layer
+* future DAO-like system
+* future recognition / member-memory system
+* future story / episode / anticipation engine
+
+Do not optimize only for one page.
+
+Think in terms of the full protocol.
+
+AREAS TO CHECK
+
+Please classify all remaining work under these buckets:
+
+A) Public Chronicle / Story path
+
+* Controlled Public Chronicle Integration
+* Chronicle publishing gate
+* deduplication against locked manual Chronicle entries
+* timeline/date integration
+* Story bridge
+* chapter / episode presentation
+* TV-series feeling
+* founder/steward/protocol action visibility
+* activity-to-memory lineage display
+
+B) Activity / Lineage path
+
+* /activity raw stream remains distinct
+* activity rows could show lineage metadata if safe
+* events that became Signal / Register / Chronicle candidate
+* do not turn /activity into story
+* no duplicate activity feed
+
+C) Institutional Register / Knowledge path
+
+* public register completeness
+* register seeded facts
+* genesis event vocabulary
+* knowledge graph public route
+* all public cross-links
+* remaining public/internal gaps
+* docs/guard alignment
+
+D) NFT / Artifact path
+
+* Archive1155
+* First Signal
+* Patron Seal
+* future chapter artifacts
+* artifact memory
+* NFT mints
+* artifact → institutional memory / Chronicle eligibility
+* artifact public page / gallery / archive experience
+* distinction between Artifact and SeatRecord721
+
+E) Membership / Identity path
+
+* Holder Index
+* Member #
+* Seat
+* Rank
+* Chapter
+* My Syndicate cockpit
+* post-purchase identity
+* share card
+* repeat-purchase CTA
+* member trace
+* member-living remains reserved until ratification
+
+F) Economics / Money / Treasury path
+
+* SYN
+* Membership Sale
+* 70 / 20 / 10 routing
+* Vault / Liquidity / Operations
+* LP actions
+* protocol assets
+* treasury movements
+* future asset acquisitions
+* founder/protocol-steward funding
+* operations spend
+* no yield / ROI / rights language
+
+G) Diffusion / Growth path
+
+* share cards
+* public wallet pages
+* public milestone pages
+* OG routes
+* attribution-only ?ref
+* referral preview
+* future referral rewards blocked
+* growth loop readiness
+
+H) Recognition path
+
+* current partial recognition
+* rank vs recognition distinction
+* memory prerequisites
+* member register / DAO ratification dependency
+* what can be safely prepared now
+* what must wait
+
+I) Governance / DAO / SeatRecord path
+
+* SeatRecord721 reserved
+* member register reserved
+* governance reserved
+* DAO transition rules
+* founder as protocol steward + member + future governance participant
+* no fake governance
+
+J) Design / UX / IA path
+
+* public route discoverability
+* mobile consistency
+* cross-link consistency
+* footer / registry / transparency / chronicle links
+* no main-nav overload
+* page harmonization issues
+* duplicated components
+* dead components still unresolved
+
+K) Build / QA / Infrastructure path
+
+* production build OOM ceiling
+* dev-only wallet-resync invalid hook noise
+* doctrine guard coverage
+* ownership-wording guard
+* route render checks
+* docs canonical scan set
+* memory notes
+* remaining guard gaps
+
+OUTPUT 1 — REMAINING WORK MAP
+
+Return a table:
+
+Area
+Status: DONE / PARTIAL / TODO / BLOCKED / FUTURE
+Current source of truth
+What exists
+What is missing
+Dependency
+Recommended action
+Priority
+Can be batched with
+
+OUTPUT 2 — UNFINISHED / LEFT-BEHIND LIST
+
+Give a clean list of everything still unfinished.
+
+Include at minimum:
+
+* Controlled Public Chronicle Integration
+* Chronicle publishing gate
+* Story Layer
+* Activity lineage indicators
+* NFT / Artifact memory integration
+* Public artifact / archive experience
+* Recognition Layer
+* Member-living register
+* Referral rewards / commission
+* Treasury / asset narrative visibility
+* founder/steward protocol actions
+* SeatRecord721
+* Governance / DAO
+* AI / reports / marketplace
+* build OOM / infra hardening
+* design/page harmonization
+* dead component cleanup if still pending
+
+Add anything else you see from the codebase.
+
+OUTPUT 3 — BATCHED EXECUTION PLAN
+
+Do NOT propose 30 tiny sprints.
+
+Group work into intelligent batches.
+
+Example batch structure:
+
+Batch 1 — Public Chronicle Integration + dedup + Activity lineage bridge
+Batch 2 — Artifact / NFT memory integration
+Batch 3 — Economic / Treasury visibility and protocol-steward action visibility
+Batch 4 — Story / Chapter presentation layer
+Batch 5 — Recognition preparation
+Batch 6 — Referral / Growth expansion
+Batch 7 — Member Register / SeatRecord721 / DAO future layer
+Batch 8 — Build / QA / cleanup hardening
+
+You may change this order if the codebase proves a better order.
+
+For each batch:
+
+* goal
+* why now
+* files / systems likely touched
+* dependencies
+* no-touch constraints
+* test requirements
+* expected user-visible result
+* risk
+* whether it should be split further
+
+OUTPUT 4 — NEXT BATCH EXECUTION DECISION
+
+After the map, choose the next best batch to implement.
+
+Do not pick based on excitement.
+
+Pick based on dependency validity and user value.
+
+Likely candidates:
+
+* Controlled Public Chronicle Integration
+* Activity lineage indicators
+* Artifact / NFT memory bridge
+
+But challenge this if the codebase shows a better next move.
+
+Before implementing, answer:
+
+1. What is the next batch?
+2. Why this batch?
+3. What does it complete?
+4. What must not be touched?
+5. What will be the return report format?
+
+OUTPUT 5 — EXECUTION MODE
+
+If the next batch is small and safe, proceed to implementation.
+
+If it is large, split it into sub-batches and implement only the first safe sub-batch.
+
+Do not ask for another broad audit.
+
+Do not re-open architecture.
+
+Do not rebuild existing systems.
+
+Use:
+
+* Protocol Knowledge Map
+* docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md
+* Institutional Register pipeline
+* Chronicle admission / entry / chronology / lineage layers
+* existing doctrine guards
+* ownership wording guard
+* labs routes
+* existing reports and memory notes
+
+HARD NO-TOUCH LIST UNLESS EXPLICITLY REQUIRED
+
+* no new contracts
+* no SeatRecord721 implementation yet
+* no Governance / DAO implementation yet
+* no Recognition public scoring yet
+* no member-living register until ratified
+* no referral rewards contract
+* no Story generation before Chronicle integration is safe
+* no AI summaries
+* no yield / ROI / dividend / rights language
+* no founder glorification
+* no duplicated Activity feed
+* no rewriting locked Chronicle entries
+
+FINAL REPORT FORMAT
+
+Return:
+
+1. Remaining Work Map.
+2. Left-behind / unfinished list.
+3. Batch execution plan.
+4. Recommended next batch.
+5. What you implemented now, if anything.
+6. Files changed.
+7. What was intentionally not touched.
+8. QA results.
+9. Remaining risks.
+10. Suggested next handoff prompt if another batch is needed.
+
+Goal:
+
+Stop the expensive loop.
+
+Use the machinery already built.
+
+Finish remaining work in coherent batches.
+
+Keep The Syndicate aligned as one protocol, not scattered pages.

@@ -14,6 +14,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { Section } from "@/components/syndicate/Primitives";
 import { CHRONICLE_ENTRIES } from "@/lib/chronicle-entries";
+import { deriveGenesisRegisterEntries } from "@/lib/institutional-register-genesis";
+import { buildPublicChronicleView } from "@/lib/chronicle-public-integration";
 import { useProtocolTruth } from "@/lib/protocol-truth";
 
 export const Route = createFileRoute("/chronicle")({
@@ -45,6 +47,13 @@ function ChroniclePage() {
   // Defensive: ordering is enforced by tests; sort here too so a misordered
   // registry can never silently render newest-first.
   const entries = [...CHRONICLE_ENTRIES].sort((a, b) => a.order - b.order);
+
+  // Controlled Public Chronicle Integration — attach a restrained institutional
+  // backing line to each locked entry that an ACTIVE genesis register entry
+  // verifies. Pure projection: it adds no entries, re-lists nothing, and never
+  // publishes a draft. Non-overlapping register facts live on /institutional-register.
+  const registerEntries = deriveGenesisRegisterEntries();
+  const items = buildPublicChronicleView(entries, registerEntries);
 
   return (
     <PageShell
@@ -94,7 +103,7 @@ function ChroniclePage() {
           aria-label="Chronicle entries, oldest first"
           data-chronicle-order="oldest-first"
         >
-          {entries.map((e) => (
+          {items.map(({ entry: e, backing }) => (
             <li
               key={e.id}
               id={e.id}
@@ -125,6 +134,37 @@ function ChroniclePage() {
                   </li>
                 ))}
               </ul>
+              {backing && (
+                <div
+                  data-chronicle-backing={backing.registerEntryId}
+                  className="mt-4 border-t border-border/60 pt-3"
+                >
+                  <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {backing.label}
+                  </div>
+                  <p className="mt-1 text-sm text-foreground/75 leading-relaxed">
+                    {backing.note}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                    {backing.sourceTxHref && (
+                      <a
+                        href={backing.sourceTxHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline"
+                      >
+                        {backing.sourceTxLabel}
+                      </a>
+                    )}
+                    <Link
+                      to="/institutional-register"
+                      className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+                    >
+                      {backing.lineageLabel}
+                    </Link>
+                  </div>
+                </div>
+              )}
             </li>
           ))}
         </ol>

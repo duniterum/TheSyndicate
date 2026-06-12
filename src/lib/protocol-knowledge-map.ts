@@ -422,7 +422,7 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     permanence: "append-only-curated",
     coverageModel: "config-pinned",
     promotionPath: "Terminal — durable institutional store; no onward promotion.",
-    publicSurfaces: ["/institutional-register"],
+    publicSurfaces: ["/institutional-register", "/chronicle"],
     internalSurfaces: [
       "/labs/institutional-register",
       "/labs/chronicle-admission",
