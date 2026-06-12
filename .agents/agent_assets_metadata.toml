@@ -66,3 +66,9 @@ id = "Grm0FVW9zL48WVYplOgsI"
 uri = "file://docs/MASTER_COMPLETION_PASS_REMAINING_WORK_MAP.md"
 type = "text"
 title = "Master Completion Pass — Remaining Work Map + Batch 1a Execution Report"
+
+[[outputs]]
+id = "izM4l7HWEd-_tjU5Fal8q"
+uri = "file://docs/audits/PROTOCOL_CONSOLIDATION_PASS_FINAL_SYSTEM_COHERENCE_REPORT.md"
+type = "text"
+title = "Final System Coherence Report — The Syndicate"
