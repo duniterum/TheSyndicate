@@ -1,0 +1,245 @@
+SPRINT 3 IMPLEMENTATION — SIGNAL → MEMORY CANDIDATES
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted frozen foundations:
+
+* Constitution / Layer 0
+* Canonical Layer Architecture
+* Canonical Object Model
+* Dependency Graph
+* Engine / Flywheel Model
+* Sprint 1 Diffusion + Anticipation
+* Sprint 2 Minimal Signals Engine
+
+Sprint 2 is accepted. Do not reopen it unless a real bug appears.
+
+Core objective:
+
+Build the minimal Memory Candidate layer:
+
+Signal → Memory Candidate
+
+This sprint does NOT publish automatic Chronicle entries.
+
+This sprint does NOT build Recognition.
+
+This sprint does NOT generate Story.
+
+It only creates the safe intermediate layer that decides:
+
+“What is worth remembering?”
+
+Hard rules:
+
+* Memory Candidates read Signals only.
+* Memory Candidates may reference source Events through the Signal.
+* Memory Candidates must never read raw Events directly unless via Signal.sourceEvent.
+* Memory Candidates do not invent facts.
+* Every Memory Candidate must cite its Signal.
+* Every Memory Candidate must preserve verification lineage:
+  Signal → Event → Tx / Block / Source Fact.
+* No new contracts.
+* No public marketing UI.
+* No ROI / yield / dividend / governance / rights language.
+* No founder glorification.
+* No money-as-prestige.
+
+1. MEMORY CANDIDATE OBJECT
+
+Create or formalize a MemoryCandidate object.
+
+It should include:
+
+* id
+* register
+* category
+* subject
+* sourceSignalId
+* sourceEventId
+* sourceTxHash if available
+* sourceBlock if available
+* title
+* summary
+* reason
+* verification status
+* recommendedAction
+* createdFrom
+
+2. REGISTERS
+
+Implement two memory registers:
+
+A) Protocol / Institutional Register
+
+For protocol-level moments:
+
+* genesis events
+* protocol milestones
+* treasury threshold crossings
+* burn events
+* first liquidity
+* first artifact
+* significant system wallet actions
+* meaningful founder/system actions
+
+B) Member / Living Register
+
+For member-level moments:
+
+* new member
+* early member
+* repeat participation
+* milestone witness
+* artifact participation
+* continuity signals
+
+3. CATEGORIES
+
+Use safe categories such as:
+
+* genesis
+* membership
+* treasury
+* operations
+* liquidity
+* burn
+* artifact
+* milestone
+* chapter
+* founder-action
+* system-wallet-action
+* continuity
+
+Do not create noisy categories.
+
+4. SIGNAL → MEMORY RULES
+
+Define deterministic rules:
+
+* S0 routine → usually no Memory Candidate.
+* S1 notable → optional candidate only if category is important.
+* S2 personally significant → Member / Living candidate.
+* S3 protocol significant → Protocol / Institutional candidate.
+* S4 rare → Protocol / Institutional candidate.
+* S5 historic → Protocol / Institutional candidate.
+
+Rules must be deterministic and testable.
+
+5. FOUNDER / SYSTEM WALLET RULE
+
+Founder and system wallet actions must be handled carefully.
+
+Every detected action may appear in Activity.
+
+But Memory Candidate creation requires significance.
+
+Examples:
+
+* routine transfer → no Memory Candidate.
+* first operations funding → Protocol Candidate.
+* first campaign spend → Protocol Candidate.
+* major Vault threshold → Protocol Candidate.
+* first LP action → Protocol Candidate.
+* founder burn → Protocol Candidate.
+* treasury asset acquisition → future Protocol Candidate.
+
+Do not glorify the founder.
+
+The protocol is the subject unless the action is purely personal.
+
+6. CHRONICLE COMPATIBILITY
+
+Do not auto-write Chronicle entries yet.
+
+Only prepare compatibility:
+
+* MemoryCandidate may later become ChronicleEntry.
+* Existing manual Chronicle remains unchanged.
+* Existing locked entries remain locked.
+* Chronicle two-register model must stay:
+
+  * protocol-institutional
+  * member-living
+
+7. INSPECTION SURFACE
+
+Provide inspection only.
+
+Acceptable:
+
+* hidden /labs/memory-candidates route
+* test output
+* internal registry
+
+Do not promote public UI.
+
+8. COVERAGE GUARDRAIL
+
+Sprint 2 recorded that windowCoversDeployment is caller-asserted.
+
+For this sprint:
+
+* do not trust “first-ever” / genesis / cumulative claims unless scan coverage is known.
+* if coverage is unknown, mark candidate as coverage-limited or pending.
+* never assert “first ever” from a windowed scan.
+
+9. TESTS REQUIRED
+
+Add tests proving:
+
+* Signals produce expected Memory Candidates.
+* S0 routine signals do not create candidates.
+* S2 member signals create Member / Living candidates.
+* S3+ protocol signals create Protocol / Institutional candidates.
+* Founder/system actions do not become memory only because the actor is founder/system.
+* Coverage-limited scans cannot assert genesis/first-ever memory.
+* Every candidate references a Signal.
+* Every candidate preserves verification lineage.
+* No banned language appears.
+
+10. QA REQUIRED
+
+Run:
+
+* typecheck
+* memory candidate tests
+* signal tests
+* doctrine tests
+* ownership / forbidden-language guard
+* Chronicle classification tests
+
+Do not fight the known production build OOM unless build configuration is explicitly part of this sprint.
+
+11. RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. MemoryCandidate object shape.
+3. Registers implemented.
+4. Categories implemented.
+5. Signal → Memory rules.
+6. Founder/system wallet handling.
+7. Coverage guardrail.
+8. Labs/inspection surface.
+9. What was intentionally not touched.
+10. Tests added.
+11. QA results.
+12. Remaining risks.
+
+Important:
+
+This sprint is not Chronicle automation.
+
+This sprint is not Recognition.
+
+This sprint is not Story generation.
+
+This sprint only builds:
+
+Signal → Memory Candidate
+
+Nothing more.

@@ -30,13 +30,16 @@ const MONEY_SCORE_TOKENS = [
 ];
 
 // Modules that derive prestige (recognition candidacy, chronicle eligibility,
-// and — added Sprint 2 — the Signals Engine). A Signal must never consume a
-// money-weighted score as prestige.
+// the Sprint 2 Signals Engine, and — added Sprint 3 — the Memory Candidate
+// layer). A Signal or candidate must never consume a money-weighted score as
+// prestige.
 const PRESTIGE_MODULES = [
   "recognition-candidates.ts",
   "chronicle-candidates.ts",
   "signal-registry.ts",
   "protocol-signals.ts",
+  "memory-candidate-registry.ts",
+  "memory-candidates.ts",
 ];
 
 // Per-actor MONETARY MAGNITUDE field names that must never appear in the Signal
@@ -82,5 +85,19 @@ describe("Signal registry — money-safe StructuralFacts (canon §4.5 Rule E)", 
     it(`signal-registry.ts never names the magnitude field "${token}"`, () => {
       expect(src.includes(token)).toBe(false);
     });
+  }
+});
+
+// The Memory Candidate layer reads ONLY a Signal's structural facts — never a
+// raw amount — so, UNLIKE the signal deriver, both memory modules are checked
+// for magnitude identifiers too.
+describe("Memory candidate layer — money-safe (canon §4.5 Rule E)", () => {
+  for (const mod of ["memory-candidate-registry.ts", "memory-candidates.ts"]) {
+    const src = read(mod);
+    for (const token of RULE_E_MAGNITUDE_TOKENS) {
+      it(`${mod} never names the magnitude field "${token}"`, () => {
+        expect(src.includes(token)).toBe(false);
+      });
+    }
   }
 });
