@@ -1,0 +1,97 @@
+FINAL HERO IMPLEMENTATION — DO THE PREMIUM HERO NOW
+
+Do not do another audit.
+
+Do not add more purpose bands.
+
+Do not only “harmonize.”
+
+Do not defer the hero again.
+
+The previous passes are accepted:
+
+* homepage is structured as a 5-act journey
+* page-purpose bands are added
+* DERIVED status exists
+* Contract Registry rename is done
+* tests pass
+
+Now implement the actual premium hero visual system.
+
+Core task:
+
+Replace the current homepage hero presentation with a premium, full-screen, crypto-native protocol hero inspired by the supplied images.
+
+Use the images as direction, not exact copy.
+
+Hero must feel like:
+
+BlackRock × Arkham × Apple × Avalanche × Swiss private-bank discipline.
+
+Required hero elements:
+
+* strong headline about ownership / seat / protocol
+* live Avalanche C-Chain status
+* Connect Wallet CTA
+* Join CTA
+* Verify live flows CTA
+* central live capital-flow engine
+* large green “USDC Routed” amount
+* Seat # next / next member anticipation
+* $5 / $10 / $25 / $50 / $75 entry preview
+* estimated SYN received
+* 70% Vault / 20% Liquidity / 10% Operations routing preview
+* latest activity
+* chapter progress
+* Chronicle / Archive memory state
+* protocol overview / SYN market context
+* mobile version that remains beautiful and simple
+
+Use real existing hooks and values only.
+
+If unavailable, show DERIVED / PARTIAL / PENDING.
+
+No fake values.
+
+No new protocol logic.
+
+No new contracts.
+
+No Story generation.
+
+No Recognition.
+
+No governance.
+
+Do not re-add removed duplicate homepage sections.
+
+This is visual implementation, not architecture.
+
+Also preserve:
+
+* dark mode
+* light mode
+* existing sale logic
+* existing tests
+* existing 5-act homepage structure below the hero
+
+After implementation, report:
+
+1. Hero files changed.
+2. Components reused.
+3. Components created.
+4. Live data used.
+5. Derived / pending data used.
+6. Desktop screenshot confirmation.
+7. Mobile screenshot confirmation.
+8. Dark/light confirmation.
+9. What was intentionally not touched.
+10. QA results.
+
+Important:
+
+Do not answer with “queued as follow-up.”
+
+This prompt is the follow-up.
+
+Implement the premium hero now.

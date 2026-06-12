@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
-import { EditorialHero } from "@/components/syndicate/EditorialHero";
+import { ProtocolHero } from "@/components/syndicate/ProtocolHero";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { HomeActivityTape } from "@/components/syndicate/HomeActivityTape";
 import { Flywheel } from "@/components/syndicate/Flywheel";
@@ -75,7 +75,7 @@ function Index() {
     <PageShell title="" hideHeader>
       {/* ── ACT 01 · WHAT IS THIS? ──────────────────────────────────────────
           A living protocol on Avalanche. SYN is the seat. */}
-      <EditorialHero />
+      <ProtocolHero />
       <ActMarker
         n="01"
         kicker="What this is"
