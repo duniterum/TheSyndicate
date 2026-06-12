@@ -80,6 +80,17 @@ export type CanonicalProtocolEvent = ProtocolEvent & {
   recommendedSurfaces: readonly string[];
   /** Founder-action classification when the sender is the founder wallet; else undefined. */
   founderAction?: FounderActionCategory;
+  /**
+   * Structured seat ordinal for a `new-member` event (e.g. 100). Money-safe
+   * count, supplied by the normalizer — never parsed from the title. Lets the
+   * Signals Engine recognise member-count milestones structurally.
+   */
+  memberOrdinal?: number;
+  /**
+   * Proof of Fire index (1-based) for a burn event, present ONLY when the burn
+   * scan is gapless. Money-safe count consumed by the Signals Engine.
+   */
+  proofOfFireIndex?: number;
 };
 
 /** Optional context a normalizer passes so enrichEvent can fill from/to/amount precisely. */
@@ -92,6 +103,10 @@ export type EnrichContext = {
   isManualTag?: boolean;
   timestamp?: number;
   status?: EventStatus;
+  /** Structured seat ordinal for a new-member event (money-safe count). */
+  memberOrdinal?: number;
+  /** Proof of Fire index (1-based) for a burn event (money-safe count). */
+  proofOfFireIndex?: number;
 };
 
 /**
@@ -124,6 +139,8 @@ export function enrichEvent(base: ProtocolEvent, ctx: EnrichContext = {}): Canon
     chronicleEligible: chronicleEligibleForKind(base.kind),
     recommendedSurfaces: RECOMMENDED_SURFACES_FOR_CATEGORY[category],
     founderAction: classifyFounderAction({ from, to: ctx.to, kind: base.kind }),
+    memberOrdinal: ctx.memberOrdinal,
+    proofOfFireIndex: ctx.proofOfFireIndex,
   };
 }
 
@@ -213,7 +230,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
               actor: p.buyer,
               badge: "info",
             },
-            { from: p.buyer, to: SALE, sourceContract: SALE },
+            { from: p.buyer, to: SALE, sourceContract: SALE, memberOrdinal: memberNo },
           ),
         );
       }
@@ -369,6 +386,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
             token: "SYN",
             sourceContract: SYN,
             status,
+            proofOfFireIndex: pof,
           },
         ),
       );

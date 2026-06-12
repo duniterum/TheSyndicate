@@ -72,6 +72,7 @@ function LabsIndex() {
           <Link to="/labs/protocol-intelligence" className="underline hover:no-underline">→ Protocol intelligence (metric workbench)</Link>
           <Link to="/labs/protocol-events" className="underline hover:no-underline">→ Protocol event pipeline (event workbench)</Link>
           <Link to="/labs/protocol-memory" className="underline hover:no-underline">→ Protocol memory &amp; recognition (foundation workbench)</Link>
+          <Link to="/labs/signals" className="underline hover:no-underline">→ Signals engine (event → signal workbench)</Link>
           <Link to="/labs/design-museum" className="underline hover:no-underline">→ Visual design museum</Link>
           <Link to="/labs/component-index" className="underline hover:no-underline">→ Technical component index</Link>
           <Link to="/labs/design-archive" className="underline hover:no-underline">→ Design archive (docs)</Link>

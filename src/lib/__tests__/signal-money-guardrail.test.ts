@@ -29,8 +29,32 @@ const MONEY_SCORE_TOKENS = [
   "computeScore",
 ];
 
-// Modules that derive prestige (recognition candidacy, chronicle eligibility).
-const PRESTIGE_MODULES = ["recognition-candidates.ts", "chronicle-candidates.ts"];
+// Modules that derive prestige (recognition candidacy, chronicle eligibility,
+// and — added Sprint 2 — the Signals Engine). A Signal must never consume a
+// money-weighted score as prestige.
+const PRESTIGE_MODULES = [
+  "recognition-candidates.ts",
+  "chronicle-candidates.ts",
+  "signal-registry.ts",
+  "protocol-signals.ts",
+];
+
+// Per-actor MONETARY MAGNITUDE field names that must never appear in the Signal
+// VOCABULARY leaf (signal-registry.ts → StructuralFacts). Counts/ordinals/ids
+// are fine; an amount, balance, weighted score, or commission is not. (The
+// deriver protocol-signals.ts MAY read a raw amountUsd per canon §4.5 Rule A to
+// detect a pre-declared threshold crossing, so it is intentionally NOT checked
+// here — see signal-engine.test.ts for the amount-invariance proof.)
+const RULE_E_MAGNITUDE_TOKENS = [
+  "amountUsd",
+  "usdcAmount",
+  "synAmount",
+  "walletBalance",
+  "archiveWeight",
+  "builderScore",
+  "commissionUsd",
+  "commissionPct",
+];
 
 describe("Signal/money guardrail — money-weighted scores stay quarantined", () => {
   for (const mod of PRESTIGE_MODULES) {
@@ -50,4 +74,13 @@ describe("Signal/money guardrail — money-weighted scores stay quarantined", ()
     expect(read("leaderboard-hooks.ts")).toContain("QUARANTINE: money-weighted score");
     expect(read("preview/referral.ts")).toContain("QUARANTINE: money-weighted score");
   });
+});
+
+describe("Signal registry — money-safe StructuralFacts (canon §4.5 Rule E)", () => {
+  const src = read("signal-registry.ts");
+  for (const token of RULE_E_MAGNITUDE_TOKENS) {
+    it(`signal-registry.ts never names the magnitude field "${token}"`, () => {
+      expect(src.includes(token)).toBe(false);
+    });
+  }
 });

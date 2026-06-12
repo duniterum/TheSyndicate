@@ -1,0 +1,259 @@
+SPRINT 2 IMPLEMENTATION — MINIMAL SIGNALS ENGINE
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted frozen foundations:
+
+* Constitution / Layer 0
+* Canonical Layer Architecture
+* Canonical Object Model
+* Dependency Graph
+* Engine/Flywheel Model
+* Sprint 1 Diffusion + Anticipation implementation
+
+Sprint 1 is accepted. Do not reopen it unless a real bug appears.
+
+Core objective:
+
+Build the minimal Signals Engine:
+
+Event → Signal
+
+This is the keystone required before:
+
+* Memory auto-curation
+* Chronicle automation
+* Recognition
+* Reports
+* Scale to 1,000+ members
+
+Hard rules:
+
+* Signals read Events only.
+* Signals do NOT read Memory.
+* Signals do NOT read Chronicle.
+* Signals do NOT read Recognition.
+* Signals do NOT invent facts.
+* Signals must cite source event(s).
+* No ML.
+* No scoring database.
+* No new contract.
+* No new UI unless needed for safe verification.
+* Do not change Sprint 1 Diffusion / Attribution.
+* Do not change Vault.
+* Do not change rank logic.
+* Do not change Chronicle content except adding Signal metadata support if required.
+
+Implement the smallest pure derivation layer possible.
+
+1. SIGNAL OBJECT
+
+Create or formalize the Signal object.
+
+A Signal must include:
+
+* id
+* type
+* tier
+* subject
+* sourceEventId
+* sourceTxHash if available
+* sourceBlock if available
+* reason
+* createdFrom
+* verification status
+
+Signal = Type × Tier.
+
+2. SIGNAL TYPES
+
+Use only the frozen/approved signal categories.
+
+Start with the minimal subset:
+
+* MEMBERSHIP
+* ECONOMIC
+* MILESTONE
+* BURN
+* CHAPTER
+* CONTINUITY
+* ARTIFACT
+
+Do not invent new types.
+
+3. SIGNAL TIERS
+
+Implement minimal tiers:
+
+* S0 routine
+* S1 notable
+* S2 personally significant
+* S3 protocol significant
+* S4 rare
+* S5 historic
+
+Tier rules must be deterministic.
+
+No subjective scoring.
+
+4. MONEY GUARDRAIL
+
+Money must be handled safely.
+
+Rules:
+
+* Money may create an ECONOMIC Signal.
+* Money may contribute to Financial Trace.
+* Money may affect Rank as existing recognition-only logic.
+* Money must never imply ROI, yield, equity, governance, rights, profit, or payout.
+* A person-subject money event must not become historic only because of size.
+* Protocol-subject economic milestones may be higher tier if threshold-based and verified.
+
+5. SUBJECT MODEL
+
+Signals must distinguish subjects:
+
+* protocol
+* member
+* wallet
+* treasury
+* artifact
+* milestone
+* chapter
+
+Subject determines meaning.
+
+Founder/system wallet actions must not become Chronicle automatically.
+
+They may become Signals only if rules classify them as meaningful institutional events.
+
+6. EVENT TO SIGNAL RULES
+
+Implement deterministic rules for:
+
+A) Membership
+
+* new member joined
+* first member
+* member threshold crossed
+
+B) Economic
+
+* purchase
+* routing event
+* Vault / Liquidity / Operations meaningful movement
+* protocol treasury threshold crossed
+
+C) Burn
+
+* Proof of Fire / burn event
+
+D) Milestone
+
+* member threshold
+* protocol threshold
+* chapter threshold
+
+E) Chapter
+
+* chapter opened
+* chapter sealed
+
+F) Continuity
+
+* repeat purchase / repeat participation
+
+G) Artifact
+
+* artifact minted
+* first artifact minted
+* Patron Seal minted
+* First Signal Artifact minted
+
+7. OUTPUT ONLY FIRST
+
+Do not yet build full Memory auto-curation.
+
+First implementation must output Signals and make them inspectable.
+
+Acceptable surfaces:
+
+* hidden/dev/labs inspection page
+* test output
+* console-safe debugging
+* existing internal registry
+
+Do not create a big public UI.
+
+8. CHRONICLE INTEGRATION — LIMITED
+
+Do not automate Chronicle yet.
+
+Only prepare compatibility:
+
+* Chronicle entries may later reference Signal IDs.
+* Existing manual Chronicle entries remain unchanged.
+* Preserve the two-register model:
+
+  * protocol-institutional
+  * member-living
+
+Do not expand Chronicle Phase 2.
+
+9. TESTS REQUIRED
+
+Add tests proving:
+
+* Events produce expected Signals.
+* Routine events stay S0/S1.
+* Genesis/protocol firsts can become high-tier.
+* Person money events do not become historic purely by amount.
+* Signals read Events only.
+* Memory/Chronicle/Recognition are not inputs.
+* Every Signal has a source event or verified source fact.
+* No ROI/yield/rights language appears.
+
+10. QA REQUIRED
+
+Run:
+
+* typecheck
+* signal tests
+* doctrine tests
+* ownership / forbidden-language guard
+* existing Chronicle classification tests
+* my-syndicate tests if touched
+
+Do not fight the known production build OOM unless build configuration is part of this sprint. Record it as known environment caveat.
+
+11. RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. Signal object shape.
+3. Signal types implemented.
+4. Tier rules implemented.
+5. Event → Signal rules.
+6. Money guardrails.
+7. Founder/system wallet classification behavior.
+8. What was intentionally not touched.
+9. Tests added.
+10. QA results.
+11. Remaining risks.
+
+Important:
+
+This sprint is not about Recognition.
+
+This sprint is not about Chronicle automation.
+
+This sprint is not about Story generation.
+
+This sprint only builds:
+
+Event → Signal
+
+Nothing more.

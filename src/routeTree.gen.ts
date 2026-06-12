@@ -41,6 +41,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LabsIndexRouteImport } from './routes/labs.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
+import { Route as LabsSignalsRouteImport } from './routes/labs.signals'
 import { Route as LabsProtocolMemoryRouteImport } from './routes/labs.protocol-memory'
 import { Route as LabsProtocolIntelligenceRouteImport } from './routes/labs.protocol-intelligence'
 import { Route as LabsProtocolEventsRouteImport } from './routes/labs.protocol-events'
@@ -218,6 +219,11 @@ const MilestoneIdRoute = MilestoneIdRouteImport.update({
   path: '/milestone/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabsSignalsRoute = LabsSignalsRouteImport.update({
+  id: '/signals',
+  path: '/signals',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsProtocolMemoryRoute = LabsProtocolMemoryRouteImport.update({
   id: '/protocol-memory',
   path: '/protocol-memory',
@@ -341,6 +347,7 @@ export interface FileRoutesByFullPath {
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
+  '/labs/signals': typeof LabsSignalsRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs/': typeof LabsIndexRoute
@@ -390,6 +397,7 @@ export interface FileRoutesByTo {
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
+  '/labs/signals': typeof LabsSignalsRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs': typeof LabsIndexRoute
@@ -441,6 +449,7 @@ export interface FileRoutesById {
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
+  '/labs/signals': typeof LabsSignalsRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs/': typeof LabsIndexRoute
@@ -493,6 +502,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/labs/protocol-memory'
+    | '/labs/signals'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs/'
@@ -542,6 +552,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/labs/protocol-memory'
+    | '/labs/signals'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs'
@@ -592,6 +603,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/labs/protocol-memory'
+    | '/labs/signals'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs/'
@@ -871,6 +883,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MilestoneIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/labs/signals': {
+      id: '/labs/signals'
+      path: '/signals'
+      fullPath: '/labs/signals'
+      preLoaderRoute: typeof LabsSignalsRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/protocol-memory': {
       id: '/labs/protocol-memory'
       path: '/protocol-memory'
@@ -1006,6 +1025,7 @@ interface LabsRouteChildren {
   LabsProtocolEventsRoute: typeof LabsProtocolEventsRoute
   LabsProtocolIntelligenceRoute: typeof LabsProtocolIntelligenceRoute
   LabsProtocolMemoryRoute: typeof LabsProtocolMemoryRoute
+  LabsSignalsRoute: typeof LabsSignalsRoute
   LabsIndexRoute: typeof LabsIndexRoute
 }
 
@@ -1017,6 +1037,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsProtocolEventsRoute: LabsProtocolEventsRoute,
   LabsProtocolIntelligenceRoute: LabsProtocolIntelligenceRoute,
   LabsProtocolMemoryRoute: LabsProtocolMemoryRoute,
+  LabsSignalsRoute: LabsSignalsRoute,
   LabsIndexRoute: LabsIndexRoute,
 }
 
