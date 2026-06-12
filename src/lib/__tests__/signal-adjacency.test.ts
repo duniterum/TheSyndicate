@@ -33,6 +33,8 @@ const FORBIDDEN_IMPORTS = [
   "chronicle-review-candidate-registry",
   "chronicle-promotion",
   "chronicle-promotion-registry",
+  "institutional-register",
+  "institutional-register-registry",
 ];
 
 describe("Signals — Adjacency Law (EVENT → SIGNAL only)", () => {
@@ -188,6 +190,62 @@ describe("Chronicle promotion — Adjacency Law (CHRONICLE → PROMOTION only)",
 
     it(`${mod} imports the Chronicle Review Candidate registry it derives from`, () => {
       expect(/from\s+["'][^"']*chronicle-review-candidate-registry["']/.test(imports)).toBe(true);
+    });
+
+    it(`${mod} does not forward-import the DOWNSTREAM Institutional Register layer`, () => {
+      // PROMOTION → INSTITUTIONAL REGISTER: a promotion module reaching forward
+      // into the register layer would invert the edge.
+      expect(/from\s+["'][^"']*institutional-register/.test(imports)).toBe(false);
+    });
+  }
+});
+
+// PROMOTION → INSTITUTIONAL REGISTER only. The Institutional Register layer reads
+// CHRONICLE PROMOTION DECISIONS; it must NEVER reach back into the Chronicle-review
+// layer (chronicle-review-candidate-registry / chronicle-review-candidates), the
+// Memory layer, the Signal layer, or the raw event layer — lineage to
+// Promotion → Chronicle → Memory → Signal → Event → Tx/Block is carried THROUGH the
+// ChroniclePromotionDecision. It MAY import the promotion registry leaf (types +
+// BASELINE_REVIEWER + validateRationaleVocabulary) and the protocol-language guard,
+// being the Chronicle's own downstream. It must read the promotion REGISTRY leaf,
+// never the promotion DERIVER (chronicle-promotion).
+const REGISTER_MODULES = [
+  "institutional-register-registry.ts",
+  "institutional-register.ts",
+];
+
+describe("Institutional register — Adjacency Law (PROMOTION → REGISTER only)", () => {
+  for (const mod of REGISTER_MODULES) {
+    const src = read(mod);
+    const importLines = src
+      .split(/\r?\n/)
+      .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+    const imports = importLines.join("\n");
+
+    it(`${mod} does not import the raw event layer (protocol-events)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Signal layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Memory layer`, () => {
+      expect(/from\s+["'][^"']*\/memory-candidates["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not reach past its neighbour into the Chronicle-review layer`, () => {
+      expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle Promotion DERIVER (reads the registry leaf)`, () => {
+      expect(/from\s+["'][^"']*\/chronicle-promotion["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} imports the Chronicle Promotion registry it derives from`, () => {
+      expect(/from\s+["'][^"']*chronicle-promotion-registry["']/.test(imports)).toBe(true);
     });
   }
 });

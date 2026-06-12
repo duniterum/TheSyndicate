@@ -1,0 +1,296 @@
+SPRINT 6 IMPLEMENTATION — INSTITUTIONAL REGISTER
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Chronicle Promotion Decision
+
+Sprint 6 builds the next dependency-valid layer:
+
+Chronicle Promotion Decision
+→ Institutional Register Entry
+
+Core objective:
+
+Create the durable protocol memory store for approved institutional promotion decisions.
+
+This sprint does NOT:
+
+* auto-publish to public Chronicle
+* build Member Recognition
+* build Story generation
+* build DAO/member register
+* build Governance
+* rewrite existing Chronicle
+* create new contracts
+
+It only defines and implements the Institutional Register as the lawful receiving store for approved protocol-institutional decisions.
+
+1. INSTITUTIONAL REGISTER ENTRY OBJECT
+
+Create InstitutionalRegisterEntry.
+
+Fields should include:
+
+* id
+* sourcePromotionDecisionId
+* sourceChronicleReviewCandidateId
+* sourceMemoryCandidateId
+* sourceSignalId
+* sourceEventId
+* sourceTxHash if available
+* sourceBlock if available
+* register = protocol-institutional
+* category
+* title
+* summary
+* rationale
+* verificationStatus
+* entryStatus
+* createdFrom
+* createdAt / derivedAt if applicable
+* lineage
+
+Every entry must preserve full lineage:
+
+Institutional Register Entry
+→ Promotion Decision
+→ Chronicle Review Candidate
+→ Memory Candidate
+→ Signal
+→ Event
+→ Tx / Block / verified fact
+
+2. ENTRY STATUS
+
+Use strict statuses:
+
+* draft
+* active
+* held
+* rejected
+
+Rules:
+
+* approved promotion decision → draft or active depending on implementation safety.
+* hold-context / hold-coverage → held.
+* rejected → rejected or no entry, depending on cleanest architecture.
+
+Do not silently drop held decisions.
+
+3. APPROVED DOES NOT MEAN PUBLIC
+
+Important:
+
+Institutional Register Entry is not public publishing.
+
+It is durable protocol memory.
+
+Public Chronicle / Story surfaces come later.
+
+Do not expose this as a marketing page.
+
+Inspection surface only is acceptable.
+
+4. REGISTER RULES
+
+Only protocol-institutional promotion paths may create Institutional Register entries.
+
+Member-living / member-memory paths remain reserved for DAO ratification.
+
+If a member-living promotion decision appears:
+
+* hold it
+* reject it
+* or exclude it according to the safest existing rule
+
+but do not write it into Institutional Register.
+
+5. FOUNDER / SYSTEM WALLET HANDLING
+
+Founder is not outside the protocol.
+
+Founder can be:
+
+* founder
+* member
+* protocol steward
+* funder
+* liquidity actor
+* artifact holder
+* future governance participant
+
+But the Institutional Register must stay protocol-centric.
+
+Allowed institutional framing:
+
+* protocol seeded liquidity
+* protocol performed Proof of Fire
+* protocol funded first campaign
+* protocol treasury acquired asset
+* protocol operations executed campaign
+* protocol wallet crossed threshold
+
+Avoid founder hero framing.
+
+Do not write:
+
+* founder did something amazing
+* founder achievement
+* founder leaderboard
+* founder recognition
+
+Founder/system wallet actions enter the Institutional Register only when they materially affect the protocol.
+
+6. INSTITUTIONAL EVENT CLASSES
+
+Support or reserve categories for:
+
+* genesis
+* token deployment
+* sale deployment
+* first liquidity
+* liquidity event
+* burn / Proof of Fire
+* first artifact
+* milestone
+* chapter
+* treasury movement
+* treasury acquisition
+* treasury revenue
+* operations spend
+* campaign funding
+* protocol-owned asset movement
+* external protocol revenue
+* system-wallet action
+* founder/protocol-steward action
+
+Do not invent live facts that are not detectable yet.
+
+If a class is future-only, reserve it safely.
+
+7. HUMAN / GOVERNANCE PROMOTION PRINCIPLE
+
+Promotion must remain a human/governance act.
+
+Do not auto-promote into public Chronicle.
+
+For now:
+
+* derive register entries only from approved decisions
+* keep non-approved decisions visible in inspection
+* do not mutate existing Chronicle entries
+
+8. INSPECTION SURFACE
+
+Add inspection only.
+
+Acceptable:
+
+* hidden /labs/institutional-register route
+* internal registry table
+* test output
+
+Inspection should show:
+
+* entry title
+* category
+* entry status
+* promotion decision
+* review candidate
+* memory candidate
+* signal
+* event
+* tx/block
+* verification status
+
+No public UI.
+
+9. COVERAGE / VERIFICATION GUARDRAIL
+
+Do not assert:
+
+* first ever
+* genesis
+* first liquidity
+* first treasury action
+* first campaign
+* first acquisition
+* first revenue
+
+unless coverage is sufficient or the fact is explicitly locked/verified.
+
+If coverage is insufficient:
+
+* entryStatus = held
+* reason = hold-coverage
+* no historic wording
+
+10. TESTS REQUIRED
+
+Add tests proving:
+
+* approved protocol-institutional decisions create register entries.
+* hold-context decisions create held entries or are retained safely.
+* hold-coverage decisions never become active.
+* rejected decisions do not become active entries.
+* member-living decisions do not enter Institutional Register.
+* founder/system actions are framed protocol-centrically.
+* full lineage is preserved.
+* no banned language appears.
+* no public publishing occurs.
+* no Chronicle entries are mutated.
+
+11. QA REQUIRED
+
+Run:
+
+* typecheck
+* institutional register tests
+* chronicle promotion tests
+* chronicle review tests
+* memory candidate tests
+* signal tests
+* doctrine tests
+* ownership / forbidden-language guard
+
+Do not fight the known production build OOM unless explicitly in scope.
+
+12. RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. InstitutionalRegisterEntry shape.
+3. Entry statuses.
+4. Register creation rules.
+5. Founder/system wallet handling.
+6. Future institutional event classes reserved.
+7. Coverage/verification guardrail.
+8. Labs/inspection surface.
+9. What was intentionally not touched.
+10. Tests added.
+11. QA results.
+12. Remaining risks.
+
+Important:
+
+This sprint is not Chronicle Publishing.
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint creates the durable protocol memory store:
+
+Chronicle Promotion Decision
+→ Institutional Register Entry
+
+Nothing more.

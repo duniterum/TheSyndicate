@@ -44,6 +44,8 @@ const PRESTIGE_MODULES = [
   "chronicle-review-candidates.ts",
   "chronicle-promotion-registry.ts",
   "chronicle-promotion.ts",
+  "institutional-register-registry.ts",
+  "institutional-register.ts",
 ];
 
 // Per-actor MONETARY MAGNITUDE field names that must never appear in the Signal
@@ -128,6 +130,22 @@ describe("Chronicle candidate layer — money-safe (canon §4.5 Rule E)", () => 
 // the actor's identity.
 describe("Chronicle promotion layer — money-safe (canon §4.5 Rule E)", () => {
   for (const mod of ["chronicle-promotion-registry.ts", "chronicle-promotion.ts"]) {
+    const src = read(mod);
+    for (const token of RULE_E_MAGNITUDE_TOKENS) {
+      it(`${mod} never names the magnitude field "${token}"`, () => {
+        expect(src.includes(token)).toBe(false);
+      });
+    }
+  }
+});
+
+// The Institutional Register layer reads ONLY a ChroniclePromotionDecision's
+// structural fields (register/category/rule bucket/lineage) — never any amount.
+// Both modules are checked for magnitude identifiers: a durable entry must be
+// derived from structure, never from how much money moved, and its generated
+// copy must carry no monetary magnitude.
+describe("Institutional register layer — money-safe (canon §4.5 Rule E)", () => {
+  for (const mod of ["institutional-register-registry.ts", "institutional-register.ts"]) {
     const src = read(mod);
     for (const token of RULE_E_MAGNITUDE_TOKENS) {
       it(`${mod} never names the magnitude field "${token}"`, () => {
