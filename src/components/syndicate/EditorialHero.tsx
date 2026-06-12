@@ -60,10 +60,10 @@ export function EditorialHero() {
             </p>
 
             <p className="mt-6 max-w-xl text-base md:text-lg text-foreground/80 leading-relaxed">
-              A transparent on-chain protocol on Avalanche. Early members take{" "}
-              <span className="font-medium text-foreground">permanent seats</span>.
-              Every USDC routes publicly to Vault, Liquidity, and Operations.
-              The archive deepens with every chapter.
+              A living protocol on Avalanche C-Chain. You join by buying SYN — your{" "}
+              <span className="font-medium text-foreground">permanent on-chain seat</span>.
+              Every USDC routes publicly: 70% Vault, 20% Liquidity, 10% Operations.
+              Each member becomes part of the archive — and every number is verifiable by anyone.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3">

@@ -3,26 +3,17 @@ import { PageShell } from "@/components/syndicate/PageShell";
 import { EditorialHero } from "@/components/syndicate/EditorialHero";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { HomeActivityTape } from "@/components/syndicate/HomeActivityTape";
-import { LiveProofStrip } from "@/components/syndicate/LiveProofStrip";
 import { Flywheel } from "@/components/syndicate/Flywheel";
-import { SinceYourLastVisit } from "@/components/syndicate/SinceYourLastVisit";
-import { StorySoFar } from "@/components/syndicate/StorySoFar";
 import { ProtocolStorySoFar } from "@/components/syndicate/ProtocolStorySoFar";
 import { MilestoneApproachingTile } from "@/components/syndicate/MilestoneApproachingTile";
 import { StoryTimeline } from "@/components/syndicate/StoryTimeline";
-
-import { ProtocolMoments } from "@/components/syndicate/ProtocolMoments";
 import { IdentityZone } from "@/components/syndicate/IdentityZone";
 import { WhyJoinSimple } from "@/components/syndicate/WhyJoinSimple";
 import { HowToJoinSteps } from "@/components/syndicate/HowToJoinSteps";
 import { WhatChangesAfterJoining } from "@/components/syndicate/WhatChangesAfterJoining";
 import { HomeTransparencySnapshot } from "@/components/syndicate/HomeTransparencySnapshot";
-import { HomeArchiveTeaser } from "@/components/syndicate/HomeArchiveTeaser";
-import { LpStatusCard } from "@/components/syndicate/LpStatus";
 import { RiskDisclaimer } from "@/components/syndicate/RiskDisclaimer";
 import { Section, SectionHeader, CTAButton } from "@/components/syndicate/Primitives";
-
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -70,92 +61,117 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// The homepage is ONE journey told in five acts. Every surface below is an
+// EXISTING protocol system, reordered so a first-time visitor moves through:
+//   01 What is this · 02 Why join · 03 Why now · 04 What happens after · 05 Verify
+// Consolidation pass: no new data, no new cards. Duplicated story/proof surfaces
+// (StorySoFar, ProtocolMoments, LiveProofStrip, HomeArchiveTeaser, the LP card,
+// and the second SinceYourLastVisit — already mounted inside IdentityZone) were
+// removed from the homepage to keep the line of meaning unbroken.
+// ─────────────────────────────────────────────────────────────────────────────
 function Index() {
   return (
     <PageShell title="" hideHeader>
-      {/* ZONE 1 — EDITORIAL HERO */}
+      {/* ── ACT 01 · WHAT IS THIS? ──────────────────────────────────────────
+          A living protocol on Avalanche. SYN is the seat. */}
       <EditorialHero />
-
-      {/* ZONE 1.4 — GLOBAL "STORY SO FAR" SNAPSHOT (one truth across all surfaces) */}
+      <ActMarker
+        n="01"
+        kicker="What this is"
+        title="A living protocol on Avalanche — not a promise. Here is its state, right now."
+      />
       <ProtocolStorySoFar />
 
-      {/* ZONE 1.45 — MILESTONE APPROACHING (closest canonical threshold, no countdowns) */}
+      {/* ── ACT 02 · WHY JOIN? ──────────────────────────────────────────────
+          A permanent on-chain seat, and the identity it carries. */}
+      <ActMarker
+        n="02"
+        kicker="Why join"
+        title="A seat is a permanent, numbered place in the archive. It cannot be reassigned — by anyone, ever."
+      />
+      <WhyJoinSimple />
+      <IdentityZone />
+
+      {/* ── ACT 03 · WHY NOW? ───────────────────────────────────────────────
+          Current chapter, seats, nearest milestone, live movement. */}
+      <ActMarker
+        n="03"
+        kicker="Why now"
+        title="The chapter is open and the next seat is waiting. The earliest members are sealed in first."
+      />
       <MilestoneApproachingTile />
-
-      {/* ZONE 1.5 — LIVE PROTOCOL PULSE (7 verifiable tiles, above the fold) */}
       <LivePulseStrip />
+      <HomeActivityTape />
 
+      {/* ── ACT 04 · WHAT HAPPENS AFTER YOU JOIN? ───────────────────────────
+          USDC → Sale → SYN → 70/20/10 → Chronicle → Archive → identity. */}
+      <ActMarker
+        n="04"
+        kicker="What happens next"
+        title="Your USDC routes on-chain, your SYN arrives, and the archive records the moment."
+      />
+      <HowToJoinSteps />
+      <WhatChangesAfterJoining />
+      <Flywheel />
 
-      {/* ZONE 1.6 — COMPRESSED CTA: one primary, one secondary, one tertiary */}
-      <Section id="home-pulse-cta">
+      {/* ── ACT 05 · HOW TO VERIFY? ─────────────────────────────────────────
+          Memory, proof, and the routes that let you check every claim. */}
+      <ActMarker
+        n="05"
+        kicker="How to verify"
+        title="Don't trust — verify. Every public claim maps to an on-chain read."
+      />
+      <StoryTimeline />
+      <HomeTransparencySnapshot />
+
+      {/* Final CTA — one clear call to action, with the verification paths beside it. */}
+      <Section id="home-join-cta">
+        <SectionHeader
+          eyebrow="Take your seat"
+          title={<>Buy SYN. <span className="text-gradient-gold">Verify on-chain.</span></>}
+          description="Open the live Membership Sale on Avalanche. Same rate for everyone: every USDC routes 70% Vault, 20% Liquidity, 10% Operations."
+        />
         <div className="flex flex-wrap items-center gap-3">
           <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>
-          <CTAButton variant="ghost" href="/nft">Mint The First Signal</CTAButton>
+          <CTAButton variant="ghost" href="/transparency">Open transparency</CTAButton>
+          <CTAButton variant="ghost" href="/activity">See live activity</CTAButton>
+          <a
+            href="/archive"
+            className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline text-muted-foreground hover:text-foreground self-center"
+          >
+            Explore the archive →
+          </a>
           <a
             href="/registry"
-            className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline text-muted-foreground hover:text-foreground"
+            className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline text-muted-foreground hover:text-foreground self-center"
           >
             Verify every contract →
           </a>
         </div>
       </Section>
 
-      {/* ZONE 1.7 — LIVE ACTIVITY TAPE (newest on-chain events) */}
-      <HomeActivityTape />
-
-      {/* ZONE 1.8 — auditor-grade live proof strip (kept as supporting context) */}
-      <LiveProofStrip />
-
-      {/* ZONE 2 — LOOP C (returning visitors only). Chapter-close progress is
-          already carried above by MilestoneApproachingTile (closest threshold)
-          and by NextMemberHero in the hero — HomeNextMilestone was a duplicate. */}
-      <SinceYourLastVisit />
-
-      {/* ZONE 2.5 — FLYWHEEL (full product, not only the seat) */}
-      <Flywheel />
-
-      {/* ZONE 4 — IDENTITY (who you become — lifted above the deep narrative) */}
-      <IdentityZone />
-
-      {/* ZONE 5 — CONVERSION (why/how/what — lifted above deep story for action clarity) */}
-      <WhyJoinSimple />
-      <HowToJoinSteps />
-      <WhatChangesAfterJoining />
-
-      {/* ZONE 3 — STORY (narrative + Loop D supporting — now below conversion) */}
-      <StorySoFar />
-      <StoryTimeline />
-      <ProtocolMoments />
-
-      {/* ZONE 3.5 — ARCHIVE TEASER (compact, optional memory layer) */}
-      <HomeArchiveTeaser />
-
-      {/* ZONE 6 — PROOF (snapshot only; deep proof lives on dedicated routes) */}
-      <HomeTransparencySnapshot />
-      <Section id="home-lp">
-        <SectionHeader
-          eyebrow="Liquidity Pool"
-          title={<>Live <span className="text-gradient-gold">SYN/USDC pool</span> on Trader Joe</>}
-          description="Reserves and price read directly from the AMM pair contract on Avalanche."
-        />
-        <LpStatusCard />
-      </Section>
-
-      {/* Final CTA */}
-      <Section id="home-join-cta">
-        <SectionHeader
-          eyebrow="Join"
-          title={<>Buy SYN. <span className="text-gradient-gold">Verify on-chain.</span></>}
-          description="Open the live Membership Sale on Avalanche. Same rate for everyone: every USDC routes 70% Vault, 20% Liquidity, 10% Operations."
-        />
-        <div className="flex flex-wrap gap-3">
-          <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>
-          <CTAButton variant="ghost" href="/transparency">Open transparency</CTAButton>
-          <CTAButton variant="ghost" href="/registry">See full registry</CTAButton>
-        </div>
-      </Section>
-
       <RiskDisclaimer />
     </PageShell>
+  );
+}
+
+// Minimal narrative scaffolding — orients the visitor without adding protocol
+// data or cards. One labeled rule per act so the five-part journey is legible.
+function ActMarker({ n, kicker, title }: { n: string; kicker: string; title: string }) {
+  return (
+    <div className="mx-auto max-w-7xl px-5 md:px-8 pt-12 md:pt-16">
+      <div className="flex flex-col gap-2 border-t border-border/60 pt-5 sm:flex-row sm:items-baseline sm:gap-4">
+        <div className="flex items-baseline gap-3 shrink-0">
+          <span className="mono text-xs tracking-[0.26em] text-[var(--gold)]">{n}</span>
+          <span className="mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+            {kicker}
+          </span>
+        </div>
+        <p className="max-w-2xl text-sm md:text-[15px] leading-relaxed text-foreground/75 sm:ml-auto sm:text-right">
+          {title}
+        </p>
+      </div>
+    </div>
   );
 }

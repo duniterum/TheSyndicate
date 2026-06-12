@@ -284,14 +284,16 @@ export function Pill({
 /**
  * Canonical status vocabulary — the ONLY allowed values site-wide.
  *   LIVE    · backed by an onchain read or deployed contract
+ *   DERIVED · computed deterministically from on-chain reads (e.g. market cap from price × supply)
  *   PARTIAL · live data, partial coverage (e.g. counted onchain, leaderboard pending)
  *   PENDING · contract / module not yet deployed
  *   DEMO    · illustrative preview, behind a clearly labeled demo surface
  */
-export type CanonicalStatus = "LIVE" | "PARTIAL" | "PENDING" | "DEMO";
+export type CanonicalStatus = "LIVE" | "DERIVED" | "PARTIAL" | "PENDING" | "DEMO";
 
 const STATUS_TONE: Record<CanonicalStatus, "success" | "warning" | "muted" | "navy"> = {
   LIVE: "success",
+  DERIVED: "navy",
   PARTIAL: "warning",
   PENDING: "muted",
   DEMO: "navy",
@@ -299,6 +301,7 @@ const STATUS_TONE: Record<CanonicalStatus, "success" | "warning" | "muted" | "na
 
 const STATUS_HINT: Record<CanonicalStatus, string> = {
   LIVE: "Backed by an onchain read or deployed contract.",
+  DERIVED: "Computed deterministically from on-chain reads.",
   PARTIAL: "Live data, partial coverage today.",
   PENDING: "Contract or module not yet deployed.",
   DEMO: "Illustrative preview, not live data.",

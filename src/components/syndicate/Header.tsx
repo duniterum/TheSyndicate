@@ -27,7 +27,7 @@ const GROUPS: Group[] = [
       { label: "Token", to: "/token", hint: "SYN contract & spec" },
       { label: "Tokenomics", to: "/tokenomics", hint: "Allocation & supply" },
       { label: "Liquidity", to: "/liquidity", hint: "SYN/USDC pool" },
-      { label: "Registry", to: "/registry", hint: "Public addresses" },
+      { label: "Contract Registry", to: "/registry", hint: "Every contract & wallet address" },
       { label: "Members", to: "/members", hint: "Who is joining" },
       { label: "Founders", to: "/founders", hint: "Who was here first" },
       { label: "Chapters", to: "/chapters", hint: "How the protocol formed" },
