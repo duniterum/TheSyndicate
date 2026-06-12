@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Logo } from "./Logo";
-import { HeaderWalletChip } from "./HeaderWalletChip";
+import { HeaderWalletChip, AvalancheNetworkPill } from "./HeaderWalletChip";
 import { NotificationBell } from "./NotificationBell";
 import { ThemeToggle } from "./ThemeToggle";
 import { track } from "@/lib/analytics";
@@ -43,7 +43,7 @@ const GROUPS: Group[] = [
 
 // Shared nav-link chrome: mono, uppercase, muted → cyan active.
 const NAV_BASE =
-  "mono whitespace-nowrap px-2.5 py-2 text-[11px] uppercase tracking-[0.13em] text-muted-foreground hover:text-foreground transition-colors";
+  "mono whitespace-nowrap px-2 py-2 text-[11px] uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors";
 const NAV_ACTIVE = "text-[color:var(--accent)]";
 
 export function Header() {
@@ -67,8 +67,9 @@ export function Header() {
         {/* Logo — gold brand lockup (reference header) */}
         <Logo size="sm" tone="gold" withProtocolLabel withChapter onClick={() => setMobileOpen(false)} />
 
-        {/* Desktop grouped nav */}
-        <nav className="hidden lg:flex items-center gap-0.5 relative">
+        {/* Desktop grouped nav — full inline nav only at xl+, where it fits beside
+            the action cluster; below xl it collapses into the drawer (hamburger). */}
+        <nav className="hidden xl:flex items-center gap-0.5 relative">
           {PRIMARY.map((it) => (
             <Link
               key={it.to}
@@ -93,7 +94,7 @@ export function Header() {
               onMouseLeave={() => setOpenGroup(null)}
             >
               <button
-                className="mono inline-flex items-center gap-1 px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
+                className="mono inline-flex items-center gap-1 px-2 py-2 text-[11px] uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors"
                 onClick={() => setOpenGroup(openGroup === g.label ? null : g.label)}
                 aria-expanded={openGroup === g.label}
               >
@@ -114,9 +115,6 @@ export function Header() {
                         {it.hint && <div className="mono mt-0.5 text-[10px] uppercase tracking-[0.1em] text-muted-foreground">{it.hint}</div>}
                       </Link>
                     ))}
-                    <div className="mt-1 border-t border-border/60 pt-1.5">
-                      <ThemeToggle variant="pill" className="w-full justify-start" />
-                    </div>
                   </div>
                 </div>
               )}
@@ -124,9 +122,11 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Action cluster — Bell, Avalanche C-Chain wallet/network pill, Join (gold). Mirrors reference header. */}
-        <div className="flex items-center gap-2">
+        {/* Action cluster — Bell · Avalanche C-Chain pill · theme toggle · Connect Wallet · Join (gold). */}
+        <div className="flex items-center gap-1.5">
           <NotificationBell className="hidden sm:inline-flex" />
+          <AvalancheNetworkPill />
+          <ThemeToggle variant="icon" className="hidden md:inline-flex" />
           <HeaderWalletChip />
           <Link
             to="/join"
@@ -141,7 +141,7 @@ export function Header() {
             Join
           </Link>
           <button
-            className="lg:hidden inline-flex items-center justify-center size-9 rounded-[3px] border border-border text-foreground hover:border-[color:var(--accent)] transition-colors"
+            className="xl:hidden inline-flex items-center justify-center size-9 rounded-[3px] border border-border text-foreground hover:border-[color:var(--accent)] transition-colors"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
             aria-expanded={mobileOpen}
@@ -153,7 +153,7 @@ export function Header() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="lg:hidden absolute left-0 right-0 top-16 max-h-[calc(100dvh-4rem)] overflow-y-auto bg-card border-b border-border shadow-xl">
+        <div className="xl:hidden absolute left-0 right-0 top-16 max-h-[calc(100dvh-4rem)] overflow-y-auto bg-card border-b border-border shadow-xl">
           <div className="mx-auto max-w-7xl px-5 py-6 space-y-6">
             <Link
               to="/join"

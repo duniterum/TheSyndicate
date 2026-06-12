@@ -68,7 +68,7 @@ export function ThemeToggle({ variant = "icon", className = "" }: { variant?: Va
       aria-label={label}
       title={label}
       className={
-        "inline-flex items-center justify-center size-9 rounded-md border border-border text-foreground hover:border-[color:var(--gold)]/60 hover:text-[color:var(--gold)] transition-colors " +
+        "inline-flex items-center justify-center size-9 rounded-md border border-border text-foreground hover:border-[#E3A92B] hover:text-[#E3A92B] transition-colors " +
         className
       }
     >

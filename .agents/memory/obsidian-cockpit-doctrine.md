@@ -43,22 +43,45 @@ NOT revert the Header Join to `var(--accent)` thinking the dark-mode cyan is the
 is intentional. The seam rule still holds for everything else (chrome/links/secondary
 stay cyan in dark).
 
-**Header lockup now matches the user reference image (header-match pass).** Logo uses
-`tone="gold" withProtocolLabel` (gold "S" plate + "The Syndicate"/"PROTOCOL" sub-line) —
-the 2nd sanctioned gold extension. `Logo.tsx` defaults stay cyan (`tone="accent"`), so
-Footer/PageShell/Sections are UNAFFECTED — gold is opt-in per call site only.
-Right cluster = **Bell + Avalanche C-Chain pill + gold Join** ONLY. There is NO standalone
-"Connect Wallet" button and NO desktop theme-toggle icon anymore — both were removed to
-match the reference. **Wallet connect is folded INTO the Avalanche pill** (HeaderWalletChip
-disconnected-desktop state): the pill (red AvalancheMark `#E84142` + "Avalanche C-Chain" +
-liveness dot) IS the connect affordance — clicking it connects; mobile drawer keeps an
-explicit "Connect Wallet" button. **Desktop theme toggle relocated into the More dropdown**
-(mobile drawer still has it) — do NOT re-add a toggle to the top-bar thinking it's missing.
+**Header lockup (header+hero alignment pass — supersedes the earlier "folded" pass).**
+Logo uses `tone="gold" withProtocolLabel` (gold "S" plate + "The Syndicate"/"PROTOCOL"
+sub-line) — a sanctioned gold extension. `Logo.tsx` defaults stay cyan (`tone="accent"`),
+so Footer/PageShell/Sections are UNAFFECTED — gold is opt-in per call site only.
+Right cluster order (LOAD-BEARING) = **Bell · AvalancheNetworkPill · ThemeToggle (visible
+icon) · Connect Wallet (separate outline button) · Join (gold)**. This REVERSES the prior
+pass: the Avalanche pill is now a STANDALONE, non-interactive network indicator
+(`AvalancheNetworkPill`, exported from HeaderWalletChip) = red AvalancheMark `#E84142` +
+"Avalanche" word + liveness dot; it is NOT the connect affordance. Connect is again a
+SEPARATE outline button (label compacts "Connect Wallet"→"Connect" below 2xl). The desktop
+theme toggle is BACK in the cluster as a visible `variant="icon"` (md+), removed from the
+More dropdown. Do NOT re-fold connect into the pill or re-hide the toggle — that was the
+old reference and is intentionally undone.
 Dot color = `var(--success)` green (live, shown even for visitors) / amber `#F59E0B` = wrong
-network or connecting; on wrong chain the connected pill label switches to "Wrong network"
-(amber text) — keep that visible truth signal, don't collapse it back to a static "Avalanche".
-Verify is NOT a right-cluster button — it lives in PRIMARY nav (its `verify_click` analytics
-is fired via a per-link onClick guarded on `to === "/transparency"`).
+network or connecting; on wrong chain the pill label switches to "Wrong network" (amber
+text) — keep that visible truth signal. Verify is NOT a right-cluster button — it lives in
+PRIMARY nav (`verify_click` analytics via a per-link onClick guarded on `to === "/transparency"`).
+
+**Header is width-bound — treat 1280 as the ceiling.** At 1280 the row is essentially FULL
+(~13px slack: logo + inline nav (~573px, mono text that does NOT shrink) + cluster). So the
+full inline `<nav>` is `xl:flex` ONLY; below xl (1024–1279) it collapses to the hamburger
+drawer (the drawer already holds every PRIMARY + group item — nothing is lost). The chapter
+chip ("CH #001") and the pill's "C-Chain" sublabel are gated `hidden 2xl:inline` to reclaim
+width; the tightened nav padding (`px-2`) + cluster `gap-1.5` are load-bearing for the 1280
+fit. The CONNECTED wallet chip is also width-budgeted: it shows a compact identity (dot +
+`…{last4}`, no caret) below 2xl and the full `fmtAddress` + chevron only at 2xl+, mirroring
+the disconnected "Connect"→"Connect Wallet" compaction — the full `0x1234…5678` (~127px) is
+~50px wider than "Connect" and would overflow the ~13px-slack row at 1280 if shown verbatim.
+**Adding any nav item OR cluster element requires removing one (or raising a breakpoint)
+— do not assume there is free space at 1280.** The heavy `ProtocolIntelligenceBar` is hidden
+on the HOMEPAGE only (PageShell `hideIntelligenceBar` prop set by `routes/index.tsx`) because
+the hero carries its own "PROTOCOL OVERVIEW"; it still renders on every other page.
+
+**Header cluster gold hovers/focus pinned to explicit `#E3A92B`, NOT `var(--gold)`.** The
+Connect button, the ThemeToggle icon variant, and the connected-state wallet chip trigger use
+`hover:*-[#E3A92B]` / `focus-visible:ring-[#E3A92B]` because `var(--gold)` collapses to CYAN
+in `.dark` (same reason the hero/Join pin gold). Dropdown-internal and mobile-drawer
+`var(--gold)` (wallet menu links, ThemeToggle `pill` variant) are revealed-on-interaction and
+left as-is — only the always-visible cluster controls must pin the explicit hex.
 
 **Why:** keeps the whole site reading as ONE product and prevents drift back to soft
 "museum" styling or generic crypto templates; and keeps the single most important

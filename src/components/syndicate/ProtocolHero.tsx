@@ -365,9 +365,9 @@ function HeroEngine({
 
         <div className="absolute left-1/2 top-[16%] z-20 -translate-x-1/2">
           <div
-            className="relative flex size-[112px] items-center justify-center"
+            className="relative flex size-[96px] items-center justify-center"
             style={{
-              filter: "drop-shadow(0 12px 28px color-mix(in oklab, #E3A92B 42%, transparent))",
+              filter: "drop-shadow(0 10px 24px color-mix(in oklab, #E3A92B 38%, transparent))",
             }}
           >
             <ThroneIcon />

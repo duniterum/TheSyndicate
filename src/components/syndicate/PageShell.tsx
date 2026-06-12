@@ -12,6 +12,7 @@ export function PageShell({
   description,
   children,
   hideHeader = false,
+  hideIntelligenceBar = false,
   serif = false,
 }: {
   eyebrow?: string;
@@ -21,6 +22,10 @@ export function PageShell({
   /** When true, suppress the default editorial header (used by routes that
    *  own their own full-bleed hero, e.g. /nft Chapter I hero). */
   hideHeader?: boolean;
+  /** When true, suppress the global Protocol Intelligence ticker. The homepage
+   *  sets this because its hero already renders the full protocol overview —
+   *  the ticker would duplicate those metrics directly above the hero. */
+  hideIntelligenceBar?: boolean;
   /** When true, scope this page into editorial serif (Fraunces). Reserved for
    *  the Chronicle and whitepaper — serif is retired everywhere else. */
   serif?: boolean;
@@ -32,7 +37,7 @@ export function PageShell({
     >
       <DemoBanner />
       <Header />
-      <ProtocolIntelligenceBar />
+      {!hideIntelligenceBar && <ProtocolIntelligenceBar />}
       <IdentityRibbon />
       <main>
         {!hideHeader && (

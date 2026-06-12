@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { Link } from "@tanstack/react-router";
+import { ChevronDown } from "lucide-react";
 import {
   useAccount,
   useChainId,
@@ -19,6 +20,48 @@ function AvalancheMark({ size = 16 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 24 24" fill={AVALANCHE_RED} aria-hidden>
       <path d="M12 2 2 21h20L12 2Zm0 6.2 3.1 5.8h-2.2l-1.7-3.2-2.4 4.6h7.9l1.1 2.1H6.2L12 8.2Z" />
     </svg>
+  );
+}
+
+/**
+ * Avalanche C-Chain network indicator — a standalone, non-interactive pill that
+ * lives in the header beside (and separate from) the Connect Wallet affordance.
+ * Green dot = chain live; amber = connected wallet on the wrong network.
+ * Avalanche red is confined to the AvalancheMark per the semantic-color doctrine.
+ */
+export function AvalancheNetworkPill({ className = "" }: { className?: string }) {
+  const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const wrongChain = isConnected && chainId !== AVALANCHE_CHAIN_ID;
+  const label = wrongChain ? "Wrong network" : "Avalanche";
+  return (
+    <div
+      role="status"
+      aria-label={`Network: ${label} · Avalanche C-Chain`}
+      title={
+        wrongChain
+          ? "Connected wallet is on the wrong network — switch to Avalanche C-Chain"
+          : "Live on Avalanche C-Chain (43114)"
+      }
+      className={`hidden md:inline-flex items-center gap-2 rounded-md border border-border px-2.5 py-1.5 ${className}`}
+    >
+      <AvalancheMark />
+      <span
+        className={`mono whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] leading-none ${
+          wrongChain ? "text-amber-600 dark:text-amber-400" : "text-foreground"
+        }`}
+      >
+        {label}
+      </span>
+      <span className="mono hidden 2xl:inline whitespace-nowrap text-[10px] uppercase tracking-[0.16em] leading-none text-muted-foreground">
+        C-Chain
+      </span>
+      <span
+        className="size-1.5 rounded-full"
+        style={{ background: wrongChain ? "#F59E0B" : "var(--success)" }}
+        aria-hidden
+      />
+    </div>
   );
 }
 
@@ -136,22 +179,18 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
       <button
         onClick={() => c && connect({ connector: c })}
         disabled={connectPending || !c}
-        aria-label="Connect wallet · live on Avalanche C-Chain"
+        aria-label="Connect wallet"
         title={connectPending ? "Connecting…" : "Connect wallet"}
-        className="hidden md:inline-flex items-center gap-2 rounded-md border border-border px-2.5 py-1.5 hover:border-[color:var(--gold)]/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60"
+        className="hidden md:inline-flex mono whitespace-nowrap items-center gap-1.5 rounded-md border border-border px-2.5 py-2 text-[11px] uppercase tracking-[0.12em] text-foreground hover:border-[#E3A92B] hover:text-[#E3A92B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A92B] focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60"
       >
-        <AvalancheMark />
-        <span className="mono whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] leading-none text-foreground">
-          Avalanche
-        </span>
-        <span className="mono hidden lg:inline whitespace-nowrap text-[10px] uppercase tracking-[0.16em] leading-none text-muted-foreground">
-          C-Chain
-        </span>
-        <span
-          className="size-1.5 rounded-full"
-          style={{ background: connectPending ? "#F59E0B" : "var(--success)" }}
-          aria-hidden="true"
-        />
+        {connectPending ? (
+          "Connecting…"
+        ) : (
+          <>
+            <span className="2xl:hidden">Connect</span>
+            <span className="hidden 2xl:inline">Connect Wallet</span>
+          </>
+        )}
       </button>
     );
   }
@@ -233,9 +272,22 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Wallet menu — connected as ${address}, network ${networkLabel}`}
-        className="hidden md:inline-flex items-center gap-2 rounded-md border border-border px-2.5 py-1.5 hover:border-[var(--gold)]/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="hidden md:inline-flex items-center gap-2 rounded-md border border-border px-2.5 py-1.5 hover:border-[#E3A92B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A92B] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        {chipInner}
+        <span
+          className="size-1.5 rounded-full"
+          style={{ background: wrongChain ? "#F59E0B" : "var(--success)" }}
+          aria-hidden
+        />
+        {/* Compact identity below 2xl keeps the connected chip within the header
+            width budget (the row is full at 1280); full address + menu caret at 2xl+. */}
+        <span className="mono text-[11px] leading-none text-foreground 2xl:hidden">
+          {address ? `…${address.slice(-4)}` : ""}
+        </span>
+        <span className="mono text-[11px] leading-none text-foreground hidden 2xl:inline">
+          {fmtAddress(address)}
+        </span>
+        <ChevronDown className="size-3 opacity-60 hidden 2xl:inline" aria-hidden />
       </button>
       {open && (
         <div className="absolute right-0 top-full pt-2 w-64 z-50">

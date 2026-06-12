@@ -105,7 +105,7 @@ export function Logo({
       <BrandMark size={size} tone={tone} />
       {showWordmark && <Wordmark withLabel={withProtocolLabel} />}
       {withChapter && (
-        <span className="mono ml-1 hidden md:inline rounded-[3px] border border-border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span className="mono ml-1 hidden 2xl:inline rounded-[3px] border border-border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
           CH #{SYNDICATE_CONFIG.CURRENT_EPISODE}
         </span>
       )}

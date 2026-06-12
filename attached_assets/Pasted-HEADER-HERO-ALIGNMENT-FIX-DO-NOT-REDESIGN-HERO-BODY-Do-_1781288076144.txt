@@ -1,0 +1,153 @@
+HEADER + HERO ALIGNMENT FIX — DO NOT REDESIGN HERO BODY
+
+Do not redesign the hero body again.
+
+The new hero body is directionally good.
+
+The problem now is that the old header / top ticker / nav bars still look like the previous system and visually clash with the new premium hero.
+
+Implement only header/top-bar alignment and small hero polish.
+
+Reference direction:
+
+Use the latest supplied image where:
+
+* top-left logo has a crown / seat / protocol identity feeling
+* header is premium black/gold
+* Avalanche pill is clean
+* theme toggle is clearly visible
+* Connect Wallet is in the header
+* Join remains the strongest gold CTA
+* hero body has the throne/seat concept
+* burned SYN has a passive flame proof marker
+* no extra CTA on burned token
+
+1. HEADER STRUCTURE
+
+Update the global header / homepage header composition to match the new hero:
+
+Left:
+
+* Syndicate logo mark with gold/crown/seat identity if feasible
+* “The Syndicate”
+* small “Protocol”
+* CH #001 pill
+
+Middle:
+
+* Activity
+* Vault
+* NFT / Archive
+* Verify
+* Members
+* Token (SYN)
+* More
+
+Right:
+
+* notification bell if already existing
+* Avalanche C-Chain pill
+* theme toggle icon
+* Connect Wallet button
+* Join button
+
+Important:
+
+* Connect Wallet must move to header.
+* Join stays strongest gold CTA.
+* Theme toggle must be visible and not hidden by the new header.
+* Avalanche red only inside Avalanche logo/pill.
+
+2. TOP PROTOCOL BARS
+
+The current old stacked ticker bars are visually too heavy and clash with the new hero.
+
+Keep their information only if necessary, but redesign them to match the premium hero language.
+
+Options:
+
+A) integrate the top ticker into one slim premium protocol strip,
+B) reduce it to one line,
+C) hide duplicated values already visible in the hero,
+D) keep only “SYN + Membership Sale live on Avalanche” and “Your seat / archive” if useful.
+
+Do not duplicate the full hero metrics above the hero.
+
+The hero already shows protocol overview.
+
+3. HERO SMALL POLISH ONLY
+
+Do not rewrite the hero body.
+
+Only polish:
+
+* throne/crown icon if it looks too flat or too big
+* ensure seat/throne means “your seat”
+* make the chair feel like a premium protocol seat, not a cartoon throne
+* if using a crown on the Join CTA, keep it subtle
+* burned SYN flame should be passive proof, no button, no link
+* keep large green routed amount dominant
+
+4. COLOR DISCIPLINE
+
+Use the same semantic colors in dark and light:
+
+* Gold = seat / identity / archive / memory
+* Green = live money / routed capital
+* Cyan = verification / proof
+* Orange flame = burns / Proof of Fire
+* Avalanche red = Avalanche only
+
+Do not let dark mode turn gold into cyan inside the hero/header.
+
+If theme tokens remap gold to cyan, pin hero/header gold explicitly like the hero file already does.
+
+5. DO NOT TOUCH
+
+Do not change:
+
+* sale logic
+* hooks
+* holder index
+* Chronicle
+* Activity derivation
+* Institutional Register
+* Archive contracts
+* routing logic
+* tests unrelated to header/hero
+* homepage acts below hero
+
+6. QA
+
+Run:
+
+* typecheck
+* homepage/header relevant tests
+* full vitest in safe batches if needed
+* ownership wording guard
+* visitor vocabulary guard
+* route render
+* desktop screenshot
+
+7. RETURN FORMAT
+
+Report:
+
+1. Header files changed.
+2. Top protocol bar files changed.
+3. Hero polish changes.
+4. Whether Connect Wallet is now in header.
+5. Whether theme toggle is visible.
+6. Whether Join remains primary.
+7. What duplicated top-bar values were removed or reduced.
+8. QA results.
+9. Screenshot confirmation.
+
+Important:
+
+Do not treat this as a new design sprint.
+
+This is a visual alignment fix:
+
+old header/top bars
+→ aligned with new premium hero.
