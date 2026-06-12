@@ -40,6 +40,7 @@ const GOLD_FAINT = "color-mix(in oklab, #E3A92B 8%, transparent)";
 const FLAME = "#FF7A18";
 const FLAME_SOFT = "color-mix(in oklab, #FF7A18 13%, transparent)";
 const AVALANCHE_RED = "#E84142";
+const GREEN_DEEP = "color-mix(in oklab, var(--success) 78%, #052e1a)";
 
 const LANE_COLOR: Record<string, string> = {
   gold: GOLD,
@@ -333,10 +334,9 @@ function HeroEngine({
     <div className="relative mx-auto w-full max-w-[640px] py-2 lg:self-center">
       <div
         aria-hidden
-        className="absolute inset-[-5%] rounded-full blur-3xl"
+        className="absolute inset-[-8%] rounded-full blur-3xl"
         style={{
-          background:
-            "radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--success) 16%, transparent), transparent 52%)",
+          background: `radial-gradient(circle at 50% 50%, color-mix(in oklab, ${GREEN_DEEP} 20%, transparent), transparent 56%)`,
         }}
       />
 
@@ -358,7 +358,7 @@ function HeroEngine({
             alt=""
             aria-hidden
             draggable={false}
-            className="h-auto w-[80px] select-none lg:w-[72px] xl:w-[84px] 2xl:w-[92px]"
+            className="h-auto w-[104px] select-none lg:w-[96px] xl:w-[110px] 2xl:w-[120px]"
             style={{
               filter: "drop-shadow(0 12px 22px color-mix(in oklab, #E3A92B 38%, transparent))",
             }}
@@ -838,7 +838,7 @@ function RadialStage({
     <svg viewBox="0 0 400 400" className="absolute inset-0 size-full" aria-hidden>
       <defs>
         <radialGradient id="heroHub" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="color-mix(in oklab, var(--success) 16%, transparent)" />
+          <stop offset="0%" stopColor={`color-mix(in oklab, ${GREEN_DEEP} 22%, transparent)`} />
           <stop offset="52%" stopColor="color-mix(in oklab, #E3A92B 7%, transparent)" />
           <stop offset="100%" stopColor="transparent" />
         </radialGradient>
@@ -849,8 +849,8 @@ function RadialStage({
         <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="90s" repeatCount="indefinite" />
       </circle>
       <circle cx="200" cy="200" r="132" fill="none" strokeWidth="1" style={{ stroke: "color-mix(in oklab, #E3A92B 28%, transparent)" }} />
-      <circle cx="200" cy="200" r="96" fill="url(#heroHub)" />
-      <circle cx="200" cy="200" r="96" fill="none" strokeWidth="1.2" style={{ stroke: "color-mix(in oklab, var(--success) 46%, transparent)" }} />
+      <circle cx="200" cy="200" r="114" fill="url(#heroHub)" />
+      <circle cx="200" cy="200" r="114" fill="none" strokeWidth="1.4" style={{ stroke: `color-mix(in oklab, ${GREEN_DEEP} 58%, transparent)` }} />
 
       {chainLive &&
         [0, 1, 2, 3, 4, 5].map((i) => (
