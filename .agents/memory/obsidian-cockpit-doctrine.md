@@ -27,9 +27,10 @@ themes, because `var(--gold)` collapses to cyan in `.dark` and the supplied refe
 mockups are gold in light AND dark. So in the hero: **gold = brand/identity accents,
 green (`var(--success)`) = live money ONLY, cyan (`var(--verify)`) = the verify action
 ONLY, Avalanche red = the chain pill ONLY.** Do NOT "fix" the hero's hardcoded gold
-back to `var(--gold)`/cyan — that is intentional, not drift. (Open question never
-escalated: whether to extend gold to the whole dark theme globally — that would be a
-site-wide change needing user sign-off, NOT a hero edit.) Every hero figure traces to a
+back to `var(--gold)`/cyan — that is intentional, not drift. **Decided by founder:** keep
+the rest of the dark theme cyan/cockpit and let the gold hero be the standout centerpiece
+— the gold/cyan seam below the hero is accepted, do NOT extend gold site-wide. Every hero
+figure traces to a
 real hook (useProtocolTruth/Pulse/ChainTip/QuoteSyn); the "Live on-chain reads" microline
 is gated on `chainLive` (no invented "operational" claims).
 
