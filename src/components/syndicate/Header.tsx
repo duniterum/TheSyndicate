@@ -46,7 +46,7 @@ const NAV_BASE =
   "mono whitespace-nowrap px-2 py-2 text-[11px] uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors";
 const NAV_ACTIVE = "text-[color:var(--accent)]";
 
-export function Header() {
+export function Header({ wide = false }: { wide?: boolean } = {}) {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -63,7 +63,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/85 border-b border-border">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 md:px-8 h-16">
+      <div className={`mx-auto flex ${wide ? "max-w-[1480px]" : "max-w-7xl"} items-center justify-between gap-3 px-5 md:px-8 h-16`}>
         {/* Logo — gold brand lockup (reference header) */}
         <Logo size="sm" tone="gold" withProtocolLabel withChapter onClick={() => setMobileOpen(false)} />
 

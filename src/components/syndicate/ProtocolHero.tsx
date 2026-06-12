@@ -154,8 +154,8 @@ export function ProtocolHero() {
     >
       <HeroAtmosphere />
 
-      <div className="relative mx-auto max-w-[1540px] px-5 md:px-8">
-        <div className="grid min-h-[calc(100svh-64px)] grid-cols-1 items-center gap-8 py-6 lg:grid-cols-[0.78fr_1.26fr_0.82fr] xl:gap-10">
+      <div className="relative mx-auto max-w-[1480px] px-5 md:px-8">
+        <div className="grid min-h-[calc(100svh-64px)] grid-cols-1 items-start gap-6 py-6 lg:grid-cols-[1.15fr_1.9fr_0.95fr] xl:gap-8">
           <HeroLeft />
 
           <HeroEngine
@@ -330,7 +330,7 @@ function HeroEngine({
   const operationsLane = lanes.find((l) => l.key === "OPERATIONS_WALLET");
 
   return (
-    <div className="relative mx-auto w-full max-w-[580px] py-2">
+    <div className="relative mx-auto w-full max-w-[640px] py-2 lg:self-center">
       <div
         aria-hidden
         className="absolute inset-[-5%] rounded-full blur-3xl"
