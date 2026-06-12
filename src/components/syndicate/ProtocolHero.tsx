@@ -1,6 +1,7 @@
 // ─── Protocol Hero ────────────────────────────────────────────────────────
 // Full-screen, crypto-native protocol hero. Aesthetic: institutional asset
-// manager × on-chain intelligence × Swiss private-bank restraint.
+// manager × on-chain intelligence × Swiss private-bank restraint, anchored by
+// a central radial capital-routing engine.
 //
 // HARD RULES honoured here:
 //   • Every number is a REAL read from an existing canonical hook
@@ -9,13 +10,15 @@
 //     its real status pill (LIVE / DERIVED / PARTIAL / PENDING).
 //   • No new protocol logic, contracts, Story, Recognition, or governance.
 //   • Copy is ownership/identity-first — never financial-return language.
+//   • Colour discipline: green is reserved for live money; Avalanche red lives
+//     only in the Avalanche pill; everything else is black / ivory / gold.
 //
 // The five-act homepage journey continues BELOW this hero unchanged.
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { formatUnits, parseUnits } from "viem";
-import { useProtocolTruth, fmtUsd, fmtCount, type TruthStatus } from "@/lib/protocol-truth";
+import { useProtocolTruth, fmtUsd, fmtCount } from "@/lib/protocol-truth";
 import { useProtocolPulse, formatAgo } from "@/lib/protocol-pulse";
 import { useChainTip } from "@/lib/chain-time";
 import { useQuoteSyn } from "@/lib/sale-hooks";
@@ -38,11 +41,24 @@ const HERO_PRESETS = PURCHASE_PRESETS_USDC.slice(0, 5); // 5 · 10 · 25 · 50 �
 
 // Distinct lane hues that read in both light + dark themes. Vault stays on the
 // themed brand accent (gold in light / cyan in dark); the other two lanes use
-// fixed hues so the three routing lanes never collapse into one colour.
+// fixed hues so the three routing lanes never collapse into one colour. Never
+// green — green is reserved for live money.
 const LANE_COLOR: Record<string, string> = {
   gold: "var(--gold)",
   navy: "oklch(0.66 0.13 235)",
   amber: "oklch(0.78 0.13 72)",
+};
+
+// Avalanche brand red — used ONLY inside the Avalanche pill.
+const AVALANCHE_RED = "#E84142";
+
+// Radial placement for each routing lane around the engine core. `wrap` is the
+// overlay position (percent of the square stage); `line` is the SVG endpoint
+// the flowing capital dot travels to from the centre (viewBox 0 0 400 400).
+const NODE_POS: Record<string, { wrap: string; line: [number, number] }> = {
+  VAULT_WALLET: { wrap: "left-[83%] top-[70%]", line: [324, 282] },
+  LIQUIDITY_WALLET: { wrap: "left-1/2 top-[92%]", line: [200, 356] },
+  OPERATIONS_WALLET: { wrap: "left-[17%] top-[70%]", line: [76, 282] },
 };
 
 const CTA_BASE =
@@ -76,6 +92,8 @@ export function ProtocolHero() {
 
   const lanes = USDC_ROUTING.map((r) => ({
     ...r,
+    color: LANE_COLOR[r.tone] ?? "var(--gold)",
+    pos: NODE_POS[r.key] ?? NODE_POS.VAULT_WALLET,
     fact:
       r.key === "VAULT_WALLET"
         ? t.vaultUsdc
@@ -83,6 +101,9 @@ export function ProtocolHero() {
         ? t.liquidityUsdc
         : t.operationsUsdc,
   }));
+
+  const routedValue = t.usdcRaised.value;
+  const routedFresh = Boolean(pulse.lastBuyTxHash);
 
   function openWallet() {
     if (typeof document === "undefined") return;
@@ -92,23 +113,24 @@ export function ProtocolHero() {
   }
 
   return (
-    <section
-      id="top"
-      className="relative overflow-hidden"
-      style={{ background: "var(--background)" }}
-    >
-      {/* Ambient field — paper grain + two soft anchors. Pure decoration. */}
-      <div aria-hidden className="absolute inset-0 grid-bg opacity-[0.18]" />
+    <section id="top" className="relative overflow-hidden" style={{ background: "var(--background)" }}>
+      {/* ── Ambient field — layered vault atmosphere. Pure decoration. ───── */}
+      <div aria-hidden className="absolute inset-0 grid-bg opacity-[0.16]" />
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 -left-32 size-[520px] rounded-full opacity-[0.10] blur-3xl"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 80% at 78% 18%, color-mix(in oklab, var(--gold) 14%, transparent), transparent 60%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-48 -left-40 size-[560px] rounded-full opacity-[0.10] blur-3xl"
         style={{ background: "var(--gradient-gold)" }}
       />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-48 -right-40 size-[560px] rounded-full opacity-[0.12] blur-3xl"
-        style={{ background: "radial-gradient(circle, var(--success), transparent 70%)" }}
-      />
+      {/* Swiss mountain / vault silhouette — twin layered ridgelines. */}
+      <MountainAtmosphere />
 
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         {/* ── STATUS RIBBON ──────────────────────────────────────────────── */}
@@ -126,20 +148,30 @@ export function ProtocolHero() {
             </span>
           </div>
 
-          {/* Live Avalanche status */}
-          <div className="flex items-center gap-2">
-            <span
-              className={`size-1.5 rounded-full ${chainLive ? "bg-[var(--success)] pulse-dot" : "bg-amber-500"}`}
-            />
-            <span className="mono text-[10px] uppercase tracking-[0.2em] text-foreground/80">
+          {/* Avalanche pill — the only place Avalanche red appears. */}
+          <div
+            className="flex items-center gap-2 rounded-full border px-3 py-1"
+            style={{
+              borderColor: `color-mix(in oklab, ${AVALANCHE_RED} 38%, transparent)`,
+              background: `color-mix(in oklab, ${AVALANCHE_RED} 9%, transparent)`,
+            }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden style={{ fill: AVALANCHE_RED }}>
+              <path d="M12 2 2 21h20L12 2Zm0 6.2 3.1 5.8h-2.2l-1.7-3.2-2.4 4.6h7.9l1.1 2.1H6.2L12 8.2Z" />
+            </svg>
+            <span className="mono text-[10px] uppercase tracking-[0.2em] text-foreground/85">
               Avalanche C-Chain · {AVALANCHE_CHAIN_ID}
             </span>
-            <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground tabular-nums">
-              {chainLive ? `block #${blockNo!.toString()}` : "syncing…"}
+            <span
+              className={`size-1.5 rounded-full ${chainLive ? "pulse-dot" : ""}`}
+              style={{ background: chainLive ? AVALANCHE_RED : "var(--muted-foreground)" }}
+            />
+            <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground tabular-nums">
+              {chainLive ? `#${blockNo!.toString()}` : "syncing…"}
             </span>
           </div>
 
-          {/* SYN market context — access rate + reference FDV (both DERIVED from constants) + LP TVL (live) */}
+          {/* SYN market context — access rate + reference FDV (DERIVED) + LP TVL */}
           <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-1.5">
             <Ctx label="Access" value={ACCESS_RATE_LABEL.replace(" USDC", "")} status="DERIVED" />
             <Ctx label="Ref. FDV" value={refFdv !== undefined ? fmtUsd(refFdv, 0) : "—"} status="DERIVED" />
@@ -147,33 +179,36 @@ export function ProtocolHero() {
           </div>
         </div>
 
-        {/* ── MAIN — headline + capital-flow engine ──────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 pt-10 md:pt-16 pb-12">
-          {/* LEFT — ownership headline, seat, CTAs, entry preview */}
-          <div className="max-w-2xl">
-            <div className="mono text-[11px] uppercase tracking-[0.26em] text-[var(--accent)] border-l-2 pl-3 mb-6" style={{ borderColor: "var(--accent)" }}>
+        {/* ── MAIN — headline (left) + radial engine (right) ─────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1.02fr_0.98fr] lg:grid-rows-[auto_auto] items-center gap-x-12 gap-y-9 pt-8 md:pt-11 pb-12">
+          {/* BLOCK 1 — eyebrow, headline, subhead, seat anticipation */}
+          <div className="lg:col-start-1 lg:row-start-1 max-w-2xl">
+            <div
+              className="mono text-[11px] uppercase tracking-[0.26em] text-[var(--accent)] border-l-2 pl-3 mb-6"
+              style={{ borderColor: "var(--accent)" }}
+            >
               The Syndicate · Live on Avalanche
             </div>
 
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-[4.1rem] font-normal tracking-tight leading-[1.04] text-foreground">
+            <h1 className="font-serif font-normal tracking-tight leading-[1.04] text-foreground text-[clamp(2.25rem,1.4rem+2.4vw,3.5rem)]">
               A permanent seat,
               <br />
               <span style={{ color: "var(--gold)" }}>sealed on-chain.</span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-base md:text-lg text-foreground/80 leading-relaxed">
+            <p className="mt-5 max-w-xl text-base md:text-lg text-foreground/80 leading-relaxed">
               SYN is your seat — a numbered, verifiable place in the archive that cannot be
               reassigned by anyone, ever. Every USDC routes publicly: 70% Vault, 20% Liquidity,
               10% Operations. The product is identity and belonging.
             </p>
 
-            {/* Next seat — the ownership hook */}
-            <div className="mt-7 flex items-center gap-4 rounded-lg border border-border/60 bg-card/50 px-4 py-3 w-fit">
+            {/* Seat anticipation — the ownership hook */}
+            <div className="mt-7 inline-flex items-center gap-5 rounded-xl border border-border/60 bg-card/50 px-5 py-3.5">
               <div className="flex flex-col">
                 <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   Your seat would be
                 </span>
-                <span className="amount-xl mono tabular-nums leading-none mt-0.5" style={{ color: "var(--gold)" }}>
+                <span className="amount-xl mono tabular-nums leading-none mt-1" style={{ color: "var(--gold)" }}>
                   {t.nextMemberNumber.value !== undefined ? `#${fmtCount(t.nextMemberNumber.value)}` : "—"}
                 </span>
               </div>
@@ -182,14 +217,156 @@ export function ProtocolHero() {
                 <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   Members sealed
                 </span>
-                <span className="amount-xl mono tabular-nums leading-none mt-0.5 text-foreground">
+                <span className="amount-xl mono tabular-nums leading-none mt-1 text-foreground">
                   {fmtCount(t.members.value)}
                 </span>
               </div>
             </div>
+          </div>
 
-            {/* CTAs — Join / Connect / Verify */}
-            <div className="mt-8 flex flex-col sm:flex-row flex-wrap gap-3">
+          {/* BLOCK 2 — the radial capital-flow engine (spans both left rows) */}
+          <div className="lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-center w-full">
+            <div className="relative mx-auto w-full max-w-[480px]">
+              {/* vault glow behind the engine */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -z-10 blur-3xl opacity-60"
+                style={{
+                  background:
+                    "radial-gradient(circle at 50% 46%, color-mix(in oklab, var(--success) 22%, transparent), transparent 62%)",
+                }}
+              />
+              <div className="relative glass-card elevated p-5 md:p-6">
+                {/* header */}
+                <div className="flex items-center justify-between">
+                  <span className="mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                    Live Capital Flow
+                  </span>
+                  <StatusPill status={t.usdcRaised.status} />
+                </div>
+
+                {/* ── Desktop / tablet: radial orbital stage ─────────────── */}
+                <div className="relative mt-3 hidden aspect-square w-full sm:block">
+                  <RadialStage lanes={lanes} />
+
+                  {/* Core — dominant green routed amount */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+                    <div
+                      className="mono tabular-nums font-semibold leading-none text-[clamp(2.5rem,1.4rem+3vw,3.5rem)]"
+                      style={{ color: "var(--success)" }}
+                    >
+                      {routedValue !== undefined ? (
+                        <AnimatedNumber
+                          value={routedValue}
+                          prefix="$"
+                          format={(n) => n.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                        />
+                      ) : (
+                        "—"
+                      )}
+                    </div>
+                    <div className="mt-2 mono text-[10px] uppercase tracking-[0.26em] text-muted-foreground">
+                      USDC Routed
+                    </div>
+                    <div className="mt-3 mono text-[10px] uppercase tracking-[0.14em] text-[var(--accent)]">
+                      ${amount} → {fmtCount(Math.round(synEstimate))} SYN → 70 / 20 / 10
+                    </div>
+                  </div>
+
+                  {/* Seat anticipation node — top */}
+                  <EngineNode wrap="left-1/2 top-[7%]" align="center">
+                    <span className="mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Seat next
+                    </span>
+                    <span className="mono text-sm font-semibold tabular-nums" style={{ color: "var(--gold)" }}>
+                      {t.nextMemberNumber.value !== undefined ? `#${fmtCount(t.nextMemberNumber.value)}` : "—"}
+                    </span>
+                  </EngineNode>
+
+                  {/* Routing lane nodes — orbiting the core */}
+                  {lanes.map((lane) => (
+                    <EngineNode
+                      key={lane.key}
+                      wrap={lane.pos.wrap}
+                      align={lane.key === "OPERATIONS_WALLET" ? "end" : lane.key === "VAULT_WALLET" ? "start" : "center"}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span aria-hidden className="size-1.5 rounded-full" style={{ background: lane.color }} />
+                        <span className="mono text-[9px] uppercase tracking-[0.14em] text-foreground/85">
+                          {lane.label.replace(" Wallet", "")}
+                        </span>
+                        <span className="mono text-[10px] font-semibold tabular-nums" style={{ color: lane.color }}>
+                          {lane.pct}%
+                        </span>
+                      </div>
+                      <span className="mono text-[11px] tabular-nums text-foreground/90">
+                        {fmtUsd(lane.fact.value, 2)}
+                      </span>
+                    </EngineNode>
+                  ))}
+                </div>
+
+                {/* ── Mobile: compact capital-flow panel ─────────────────── */}
+                <div className="mt-3 text-center sm:hidden">
+                  <div
+                    className="mono tabular-nums font-semibold leading-none text-[clamp(2.75rem,1.5rem+9vw,3.75rem)]"
+                    style={{ color: "var(--success)" }}
+                  >
+                    {routedValue !== undefined ? (
+                      <AnimatedNumber
+                        value={routedValue}
+                        prefix="$"
+                        format={(n) => n.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                      />
+                    ) : (
+                      "—"
+                    )}
+                  </div>
+                  <div className="mt-1.5 mono text-[10px] uppercase tracking-[0.26em] text-muted-foreground">
+                    USDC Routed
+                  </div>
+                  <div className="mt-2 mono text-[10px] uppercase tracking-[0.14em] text-[var(--accent)]">
+                    ${amount} → {fmtCount(Math.round(synEstimate))} SYN → 70 / 20 / 10
+                  </div>
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+                    {lanes.map((lane) => (
+                      <div key={lane.key} className="rounded-lg border border-border/50 bg-card/40 px-2 py-2.5">
+                        <div className="flex items-center justify-center gap-1">
+                          <span aria-hidden className="size-1.5 rounded-full" style={{ background: lane.color }} />
+                          <span className="mono text-[12px] font-semibold tabular-nums" style={{ color: lane.color }}>
+                            {lane.pct}%
+                          </span>
+                        </div>
+                        <div className="mt-1 mono text-[8px] uppercase tracking-[0.1em] text-muted-foreground">
+                          {lane.label.replace(" Wallet", "")}
+                        </div>
+                        <div className="mt-0.5 mono text-[10px] tabular-nums text-foreground/85">
+                          {fmtUsd(lane.fact.value, 2)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* footer — provenance + proof, never noisy */}
+                <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/50 pt-3 flex-wrap">
+                  <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                    Cumulative · {fmtCount(t.purchaseCount.value)} purchases
+                    {routedFresh && ` · ${formatAgo(pulse.lastBuyAgoSeconds)}`}
+                  </span>
+                  {t.usdcRaised.verifyHref && (
+                    <ProofButton href={t.usdcRaised.verifyHref} ariaLabel="Verify USDC routed on-chain">
+                      Verify ↗
+                    </ProofButton>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* BLOCK 3 — CTAs + entry preview (under the headline on desktop) */}
+          <div className="lg:col-start-1 lg:row-start-2 max-w-2xl">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Link
                 to="/join"
                 onClick={() => track("claim_seat_click", { surface: "protocol_hero" })}
@@ -219,7 +396,7 @@ export function ProtocolHero() {
             </div>
 
             {/* Entry preview — $5/$10/$25/$50/$75 → estimated SYN + 70/20/10 */}
-            <div className="mt-8 surface p-5">
+            <div className="mt-7 surface p-5">
               <div className="flex items-center justify-between mb-3">
                 <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   Preview your entry
@@ -261,178 +438,182 @@ export function ProtocolHero() {
               <div className="mt-3 pt-3 border-t border-border/50 flex flex-wrap gap-x-4 gap-y-1">
                 {USDC_ROUTING.map((r) => (
                   <span key={r.key} className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                    <span className="text-foreground/85">{fmtUsd((amount * r.pct) / 100, 2)}</span> {r.label.replace(" Wallet", "")}
+                    <span className="text-foreground/85">{fmtUsd((amount * r.pct) / 100, 2)}</span>{" "}
+                    {r.label.replace(" Wallet", "")}
                   </span>
                 ))}
               </div>
             </div>
           </div>
-
-          {/* RIGHT — the capital-flow engine */}
-          <div className="surface elevated p-6 md:p-7 self-start">
-            <div className="flex items-center justify-between">
-              <span className="mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                USDC Routed
-              </span>
-              <StatusPill status={t.usdcRaised.status} />
-            </div>
-
-            <div className="mt-2 amount-hero mono tabular-nums leading-none" style={{ color: "var(--success)" }}>
-              {t.usdcRaised.value !== undefined ? (
-                <AnimatedNumber
-                  value={t.usdcRaised.value}
-                  prefix="$"
-                  format={(n) => n.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-                />
-              ) : (
-                "—"
-              )}
-            </div>
-            <div className="mt-2 flex items-center gap-3 flex-wrap">
-              <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                Cumulative · {fmtCount(t.purchaseCount.value)} purchases
-              </span>
-              {t.usdcRaised.verifyHref && (
-                <ProofButton href={t.usdcRaised.verifyHref} ariaLabel="Verify USDC routed on-chain">
-                  Verify ↗
-                </ProofButton>
-              )}
-            </div>
-
-            {/* Flow node → 3 lanes */}
-            <div className="mt-6 flex items-center gap-2">
-              <span className="mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-                Every USDC routes on-chain
-              </span>
-              <span className="flex-1 h-px bg-border/60" />
-              <span className="mono text-[9px] uppercase tracking-[0.2em] text-[var(--accent)]">70 / 20 / 10</span>
-            </div>
-
-            <div className="mt-4 space-y-3">
-              {lanes.map((lane) => {
-                const color = LANE_COLOR[lane.tone] ?? "var(--gold)";
-                return (
-                  <div key={lane.key} className="rounded-lg border border-border/50 bg-card/40 p-3.5">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <span aria-hidden className="size-2 rounded-full shrink-0 pulse-dot" style={{ background: color }} />
-                        <span className="mono text-[12px] uppercase tracking-[0.14em] text-foreground truncate">
-                          {lane.label}
-                        </span>
-                      </div>
-                      <span className="mono text-base font-semibold tabular-nums shrink-0" style={{ color }}>
-                        {lane.pct}%
-                      </span>
-                    </div>
-                    <div className="mt-2.5 h-1.5 w-full rounded-full bg-border/40 overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${lane.pct}%`, background: color }} />
-                    </div>
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                        Held now
-                      </span>
-                      <span className="mono text-[11px] tabular-nums text-foreground/85">
-                        {fmtUsd(lane.fact.value, 2)}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
         </div>
 
-        {/* ── BOTTOM RAIL — chapter · activity · memory ──────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-14 md:pb-20">
-          {/* Chapter progress */}
-          <div className="surface p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Current chapter
-              </span>
-              <StatusPill status={t.chapterProgress.status} />
+        {/* ── BOTTOM RAIL — chapter · activity · memory (one console) ─────── */}
+        <div className="surface overflow-hidden mb-14 md:mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/60">
+            {/* Chapter progress */}
+            <div className="p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  Current chapter
+                </span>
+                <StatusPill status={t.chapterProgress.status} />
+              </div>
+              {chapter ? (
+                <>
+                  <div className="font-serif text-xl text-foreground leading-none">{chapter.label}</div>
+                  <div className="mt-3">
+                    <ProgressBar value={chapter.progressPct} max={100} tone="gold" />
+                  </div>
+                  <div className="mt-2 mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    {fmtCount(chapter.taken)} of {fmtCount(chapter.capacity)} · {fmtCount(chapter.remaining)} seats until it seals
+                  </div>
+                </>
+              ) : (
+                <div className="amount-lg mono text-foreground/40">—</div>
+              )}
             </div>
-            {chapter ? (
-              <>
-                <div className="font-serif text-xl text-foreground leading-none">{chapter.label}</div>
-                <div className="mt-3">
-                  <ProgressBar value={chapter.progressPct} max={100} tone="gold" />
-                </div>
-                <div className="mt-2 mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  {fmtCount(chapter.taken)} of {fmtCount(chapter.capacity)} · {fmtCount(chapter.remaining)} seats until it seals
-                </div>
-              </>
-            ) : (
-              <div className="amount-lg mono text-foreground/40">—</div>
-            )}
-          </div>
 
-          {/* Latest activity */}
-          <div className="surface p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Latest activity
-              </span>
-              <StatusPill status={pulse.lastBuyTxHash ? "LIVE" : "PENDING"} />
+            {/* Latest activity */}
+            <div className="p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  Latest activity
+                </span>
+                <StatusPill status={pulse.lastBuyTxHash ? "LIVE" : "PENDING"} />
+              </div>
+              {pulse.lastBuyBuyer ? (
+                <>
+                  <div className="flex items-baseline gap-2">
+                    <span className="amount-lg mono tabular-nums text-foreground">{fmtUsd(pulse.lastBuyUsdc, 2)}</span>
+                    <span className="mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                      seat taken
+                    </span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2 flex-wrap">
+                    <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                      {formatAgo(pulse.lastBuyAgoSeconds)}
+                    </span>
+                    {pulse.lastBuyTxHash && (
+                      <ProofButton href={txExplorerUrl(pulse.lastBuyTxHash)} ariaLabel="Verify latest purchase on-chain">
+                        Tx ↗
+                      </ProofButton>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="mono text-sm text-muted-foreground">Awaiting the first purchase</div>
+              )}
             </div>
-            {pulse.lastBuyBuyer ? (
-              <>
-                <div className="flex items-baseline gap-2">
-                  <span className="amount-lg mono tabular-nums text-foreground">
-                    {fmtUsd(pulse.lastBuyUsdc, 2)}
-                  </span>
-                  <span className="mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    seat taken
-                  </span>
-                </div>
-                <div className="mt-2 flex items-center gap-2 flex-wrap">
-                  <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                    {formatAgo(pulse.lastBuyAgoSeconds)}
-                  </span>
-                  {pulse.lastBuyTxHash && (
-                    <ProofButton href={txExplorerUrl(pulse.lastBuyTxHash)} ariaLabel="Verify latest purchase on-chain">
-                      Tx ↗
-                    </ProofButton>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="mono text-sm text-muted-foreground">Awaiting the first purchase</div>
-            )}
-          </div>
 
-          {/* Memory state — archive + activity record */}
-          <div className="surface p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Protocol memory
-              </span>
-              <StatusPill status={t.members.status} />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="amount-lg mono tabular-nums text-foreground">{fmtCount(t.members.value)}</span>
-              <span className="mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                seats in the archive
-              </span>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
-              <Link
-                to="/archive"
-                className="mono text-[10px] uppercase tracking-[0.18em] underline-offset-4 hover:underline text-[var(--verify)] hover:text-[var(--gold)]"
-              >
-                Open the archive →
-              </Link>
-              <Link
-                to="/activity"
-                className="mono text-[10px] uppercase tracking-[0.18em] underline-offset-4 hover:underline text-[var(--verify)] hover:text-[var(--gold)]"
-              >
-                See live activity →
-              </Link>
+            {/* Memory state — archive + activity record */}
+            <div className="p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  Protocol memory
+                </span>
+                <StatusPill status={t.members.status} />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="amount-lg mono tabular-nums text-foreground">{fmtCount(t.members.value)}</span>
+                <span className="mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                  seats in the archive
+                </span>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
+                <Link
+                  to="/archive"
+                  className="mono text-[10px] uppercase tracking-[0.18em] underline-offset-4 hover:underline text-[var(--verify)] hover:text-[var(--gold)]"
+                >
+                  Open the archive →
+                </Link>
+                <Link
+                  to="/activity"
+                  className="mono text-[10px] uppercase tracking-[0.18em] underline-offset-4 hover:underline text-[var(--verify)] hover:text-[var(--gold)]"
+                >
+                  See live activity →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/** The radial SVG stage: concentric rings, a slow orbit, connector spokes and
+ *  capital dots that flow from the core out to each routing lane. Decoration
+ *  only — every figure lives in the HTML overlay nodes. */
+function RadialStage({
+  lanes,
+}: {
+  lanes: { key: string; color: string; pos: { wrap: string; line: [number, number] } }[];
+}) {
+  return (
+    <svg viewBox="0 0 400 400" className="absolute inset-0 size-full" aria-hidden>
+      {/* outer ring */}
+      <circle cx="200" cy="200" r="196" fill="none" strokeWidth="1" style={{ stroke: "color-mix(in oklab, var(--border) 80%, transparent)" }} />
+      {/* slow rotating dashed orbit */}
+      <circle cx="200" cy="200" r="152" fill="none" strokeWidth="1" strokeDasharray="2 11" style={{ stroke: "color-mix(in oklab, var(--accent) 40%, transparent)" }}>
+        <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="64s" repeatCount="indefinite" />
+      </circle>
+      {/* inner hub ring framing the green core */}
+      <circle cx="200" cy="200" r="78" fill="none" strokeWidth="1.5" style={{ stroke: "color-mix(in oklab, var(--success) 45%, transparent)" }} />
+      <circle cx="200" cy="200" r="78" fill="color-mix(in oklab, var(--success) 6%, transparent)" />
+
+      {/* spokes + flowing capital dots, one per lane */}
+      {lanes.map((lane, i) => {
+        const [x, y] = lane.pos.line;
+        const path = `M200,200 L${x},${y}`;
+        return (
+          <g key={lane.key}>
+            <line x1="200" y1="200" x2={x} y2={y} strokeWidth="1" style={{ stroke: "color-mix(in oklab, var(--border) 90%, transparent)" }} />
+            <circle r="3.2" style={{ fill: lane.color }}>
+              <animateMotion dur="2.8s" begin={`${i * 0.9}s`} repeatCount="indefinite" path={path} keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.8;1" dur="2.8s" begin={`${i * 0.9}s`} repeatCount="indefinite" />
+            </circle>
+            {/* lane terminal node */}
+            <circle cx={x} cy={y} r="4" style={{ fill: lane.color }} />
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/** Absolutely-positioned label node around the engine core. */
+function EngineNode({
+  wrap,
+  align,
+  children,
+}: {
+  wrap: string;
+  align: "start" | "center" | "end";
+  children: ReactNode;
+}) {
+  const items = align === "start" ? "items-start" : align === "end" ? "items-end" : "items-center";
+  return (
+    <div className={`absolute ${wrap} -translate-x-1/2 -translate-y-1/2 flex flex-col ${items} gap-0.5 whitespace-nowrap`}>
+      {children}
+    </div>
+  );
+}
+
+/** Twin layered mountain ridgelines — Swiss private-bank / vault atmosphere. */
+function MountainAtmosphere() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[44%] overflow-hidden">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="absolute inset-0 size-full">
+        <path
+          d="M0,320 L0,232 L160,176 L320,224 L480,128 L640,200 L800,96 L960,184 L1120,120 L1280,196 L1440,144 L1440,320 Z"
+          style={{ fill: "color-mix(in oklab, var(--foreground) 4%, transparent)" }}
+        />
+        <path
+          d="M0,320 L0,276 L180,236 L360,272 L540,200 L720,256 L900,184 L1080,248 L1260,208 L1440,256 L1440,320 Z"
+          style={{ fill: "color-mix(in oklab, var(--foreground) 6%, transparent)" }}
+        />
+      </svg>
+    </div>
   );
 }
 

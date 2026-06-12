@@ -1,0 +1,101 @@
+PREMIUM HERO VISUAL FIDELITY PASS
+
+Do not change protocol logic.
+
+Do not change data hooks.
+
+Do not restructure the homepage again.
+
+Do not add more metrics.
+
+Do not create new sections.
+
+The new ProtocolHero is live, but the visual result still does not match the premium reference direction strongly enough.
+
+This is now a visual fidelity pass only.
+
+Goal:
+
+Make the live homepage hero feel much closer to the supplied reference images:
+
+* premium crypto-native
+* cinematic
+* institutional
+* Swiss private-bank discipline
+* large central protocol engine
+* stronger spatial hierarchy
+* more premium depth
+* less flat card grid
+* more polished above-the-fold composition
+
+Keep all current live/derived/pending data exactly as wired.
+
+Improve:
+
+1. Central protocol engine visual
+
+   * make the 70 / 20 / 10 flow feel like a capital-routing engine
+   * stronger center focus
+   * large green USDC routed amount
+   * better circular / radial / orbital / flow composition if feasible
+   * avoid gimmicky dollar logos
+
+2. Visual depth
+
+   * better layered background
+   * subtle Swiss mountain / vault atmosphere if feasible
+   * premium gradients
+   * glass / metal / gold accents
+   * refined shadows
+   * fewer flat equal cards
+
+3. Hierarchy
+
+   * headline and CTAs must dominate
+   * routed amount must dominate the engine
+   * seat / chapter / next member anticipation must be clearly visible
+   * verification must be present but not noisy
+
+4. Premium styling
+
+   * black / ivory / gold base
+   * green only for live money
+   * Avalanche red only in Avalanche pill
+   * dark and light mode both polished
+
+5. Mobile
+
+   * preserve the same premium feeling
+   * do not collapse into a boring list of cards
+   * above fold must show headline, Join, Verify, seat next, routed amount, 70/20/10 preview
+
+Hard constraints:
+
+* no fake values
+* no new protocol systems
+* no new routing logic
+* no new hooks unless purely visual helper is needed
+* no Story / Recognition / Governance
+* no investment / profit / yield / rights language
+* keep existing tests green
+* keep existing 5-act homepage below hero intact
+
+After implementation, report:
+
+1. Files changed.
+2. Visual changes made.
+3. How the result is closer to the reference images.
+4. Desktop render confirmation.
+5. Mobile render confirmation.
+6. Dark/light confirmation.
+7. What was intentionally not touched.
+8. QA results.
+9. Remaining visual risks.
+
+Important:
+
+This is not a product redesign.
+
+This is not another architecture pass.
+
+This is a premium visual fidelity pass for the hero only.
