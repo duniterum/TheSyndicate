@@ -10,6 +10,7 @@
 
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
+import { PagePurpose } from "@/components/syndicate/PagePurpose";
 import { InstitutionalRegisterView } from "@/components/syndicate/InstitutionalRegisterView";
 import { Pill, Section } from "@/components/syndicate/Primitives";
 
@@ -48,6 +49,14 @@ function InstitutionalRegisterRoute() {
       title="Protocol Institutional Register"
       description="A read-only record of verified protocol memory. Each entry is derived from an on-chain protocol event and traces back to it. This is the protocol's durable institutional record — not Story, not Recognition, not governance, and not a claim of return or investment value."
     >
+      <PagePurpose
+        statement="The Institutional Register is the protocol's durable memory record — verified facts derived from on-chain events, each tracing back to its anchor."
+        distinctions={[
+          { label: "Contract Registry", to: "/registry" },
+          { label: "Chronicle", to: "/chronicle" },
+        ]}
+      />
+
       <InstitutionalRegisterView />
 
       <Section id="more">
@@ -63,7 +72,7 @@ function InstitutionalRegisterRoute() {
             to="/registry"
             className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline"
           >
-            Registry →
+            Contract Registry →
           </Link>
           <Link
             to="/chronicle"

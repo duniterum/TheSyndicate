@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageShell } from "@/components/syndicate/PageShell";
+import { PagePurpose } from "@/components/syndicate/PagePurpose";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import { ActivityFeedTabs } from "@/components/syndicate/LiveActivityFeed";
 import { GlassCard, Section, SectionHeader, StatusPill, ProofButton } from "@/components/syndicate/Primitives";
@@ -53,6 +54,11 @@ function ActivityPage() {
       title="The protocol heartbeat"
       description="Membership purchases, new-member archive entries, LP swaps, liquidity changes, and Vault USDC flows — merged into one chronological feed. Every row is verifiable on Avascan."
     >
+      <PagePurpose
+        statement="Activity is the raw, verified on-chain stream — every protocol movement as it happens, newest first, nothing filtered."
+        distinctions={[{ label: "Chronicle", to: "/chronicle" }]}
+      />
+
       {/* Global "Story So Far" snapshot — same truth used on Home + /my-syndicate */}
       <ProtocolStorySoFar />
 

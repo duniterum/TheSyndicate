@@ -12,6 +12,7 @@
 
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
+import { PagePurpose } from "@/components/syndicate/PagePurpose";
 import { Section } from "@/components/syndicate/Primitives";
 import { CHRONICLE_ENTRIES } from "@/lib/chronicle-entries";
 import { deriveGenesisRegisterEntries } from "@/lib/institutional-register-genesis";
@@ -62,6 +63,14 @@ function ChroniclePage() {
       title="The protocol's own record"
       description="Written in the protocol's voice, oldest first. Entries appear only when their on-chain anchor already exists. Nothing here is editorial."
     >
+      <PagePurpose
+        statement="The Chronicle is the protocol's curated memory — verified events narrated in the protocol's own voice, oldest first."
+        distinctions={[
+          { label: "Activity", to: "/activity" },
+          { label: "Institutional Register", to: "/institutional-register" },
+        ]}
+      />
+
       {/* ── Current chapter block ─────────────────────────────────────── */}
       <Section id="current-chapter" width="narrow">
         <div className="border border-border rounded-lg p-5 md:p-6 bg-card">

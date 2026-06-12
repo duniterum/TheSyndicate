@@ -1,0 +1,248 @@
+SPRINT — PREMIUM HERO + VISUAL HARMONIZATION PASS
+
+Proceed with implementation.
+
+Do NOT run a broad audit.
+
+Do NOT restructure the homepage narrative again.
+
+Do NOT create new protocol systems.
+
+The previous pass is accepted:
+
+* homepage is now a 5-act journey
+* duplicate homepage sections were removed
+* DERIVED was added to canonical StatusPill
+* Registry was renamed Contract Registry
+* operator surfaces are separated
+* full tests passed
+
+Now implement the visual layer that was still deferred.
+
+Core objective:
+
+Make the public experience visually match the quality of the protocol.
+
+The current architecture and narrative are correct.
+
+Now the site must feel like:
+
+BlackRock × Arkham × Apple × Avalanche × Swiss private-bank discipline.
+
+Not generic fintech.
+
+Not cartoon.
+
+Not dashboard clutter.
+
+Not more metrics.
+
+1. HERO VISUAL REDESIGN
+
+Use the provided hero images as direction, not as exact screenshots.
+
+Implement a premium full-width hero system that communicates:
+
+* live Avalanche protocol
+* SYN is the seat
+* artifacts are the memory
+* capital routes 70 / 20 / 10
+* seat number / next member anticipation
+* chapter progress
+* latest activity
+* verification layer
+* connect wallet / join flow
+
+Hero must include:
+
+* strong headline
+* clear Connect Wallet
+* clear Join CTA
+* Verify live flows CTA
+* central live capital-flow engine
+* large green USDC routed amount
+* $5 / $10 / $25 / $50 / $75 entry preview
+* estimated SYN received
+* 70% Vault
+* 20% Liquidity
+* 10% Operations
+* Avalanche C-Chain status pill
+* protocol overview / market context
+* latest activity
+* chapter / archive / Chronicle state
+
+Use only existing live/derived/pending data.
+
+If a value is unavailable, mark it DERIVED / PARTIAL / PENDING.
+
+No fake values.
+
+2. VISUAL LANGUAGE
+
+Use:
+
+* institutional black / gold / ivory
+* green for live routed money
+* gold for seat / memory / archive / identity
+* Avalanche red only for Avalanche branding
+* Swiss mountain / vault atmosphere if feasible
+* refined card borders and shadows
+* clean responsive grid
+* premium typography rhythm
+
+Preserve dark and light mode.
+
+Do not break existing theme logic.
+
+3. INFORMATION HIERARCHY
+
+The hero should answer in 5 seconds:
+
+* what this is
+* why join
+* why now
+* what happens to capital
+* how to verify
+
+Do not add extra sections.
+
+Do not re-add removed duplicate sections.
+
+Make the hero do more work visually.
+
+4. MOBILE HERO
+
+Mobile above-the-fold must show:
+
+* headline
+* live protocol status
+* seat availability
+* Connect Wallet
+* Join CTA
+* capital routing preview
+* live routed amount
+
+The mobile layout must not become a tiny dashboard.
+
+It should feel like a premium protocol app.
+
+5. ROUTE-WIDE VISUAL HARMONIZATION
+
+After the hero, apply a restrained visual polish pass to major public routes:
+
+* Chronicle
+* Activity
+* Vault
+* Liquidity
+* NFT / Archive
+* Contract Registry
+* Institutional Register
+* Knowledge Map
+* My Syndicate
+* Token
+
+Focus only on:
+
+* consistent page headers
+* consistent purpose line
+* consistent card rhythm
+* consistent CTA treatment
+* consistent status pill usage
+* consistent spacing
+* dark/light parity
+
+Do not rewrite content deeply.
+
+Do not change protocol logic.
+
+6. PER-PAGE PURPOSE STATEMENTS
+
+Add or refine one-line page purpose statements where missing.
+
+Examples:
+
+* Activity: “Raw on-chain protocol movement.”
+* Chronicle: “Curated protocol memory.”
+* Institutional Register: “Verified institutional records.”
+* Contract Registry: “Every contract and wallet address.”
+* Knowledge Map: “Where every protocol fact lives.”
+* Archive: “Collectible protocol artifacts.”
+
+Keep these short and sober.
+
+7. CONVERSION / TRUST LINKS
+
+Ensure high-value links are visible but not noisy:
+
+* Join
+* Verify
+* Activity
+* Vault
+* Archive
+* Chronicle
+* Contract Registry
+
+Do not overload main nav.
+
+8. HARD RULES
+
+Do not touch:
+
+* contracts
+* sale logic
+* routing logic
+* Chronicle locked entries
+* Activity derivation
+* Institutional Register derivation
+* Archive1155 logic
+* Holder Index
+* My Syndicate data logic
+* Recognition
+* Governance / DAO
+* Referral rewards
+* Story generation
+
+No yield / ROI / dividend / rights language.
+
+No founder glorification.
+
+No fake data.
+
+9. TESTS / QA
+
+Run:
+
+* typecheck
+* full vitest in safe batches if needed
+* ownership / forbidden-language guard
+* route render checks
+* homepage desktop screenshot
+* homepage mobile screenshot
+* dark mode check
+* light mode check
+
+10. RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. Hero components changed or created.
+3. Existing components reused.
+4. Live values used.
+5. Derived / pending values used.
+6. Mobile behavior.
+7. Dark/light behavior.
+8. Route-wide harmonization changes.
+9. Per-page purpose statements added.
+10. What was intentionally not touched.
+11. QA results.
+12. Screenshots or render confirmation.
+13. Remaining design risks.
+
+Important:
+
+The protocol architecture is built.
+
+The homepage journey is structured.
+
+Now make it visually premium, coherent, and conversion-ready.

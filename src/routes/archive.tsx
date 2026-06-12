@@ -18,6 +18,7 @@
 import type { ReactNode } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
+import { PagePurpose } from "@/components/syndicate/PagePurpose";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import {
   GlassCard,
@@ -225,10 +226,13 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
         </>
       )}
 
-
-
-
-
+      <PagePurpose
+        statement="The Archive is the protocol's collectible layer — on-chain Artifacts that record seats, chapters, and milestones as the protocol writes its own story."
+        distinctions={[
+          { label: "Activity", to: "/activity" },
+          { label: "Institutional Register", to: "/institutional-register" },
+        ]}
+      />
 
       {/* ─── 2. How it works (3 steps) ──────────────────────────────── */}
       <Section id="how-it-works">

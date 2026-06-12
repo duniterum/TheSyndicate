@@ -13,6 +13,7 @@
 
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
+import { PagePurpose } from "@/components/syndicate/PagePurpose";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import {
   GlassCard,
@@ -159,6 +160,11 @@ function KnowledgeMapRoute() {
       title="Where every fact lives"
       description="A readable map of where each kind of protocol knowledge lives in The Syndicate, what each system owns, and how a fact moves from a live on-chain projection into durable memory. This page describes structure — not live values."
     >
+      <PagePurpose
+        statement="The Knowledge Map shows where each kind of protocol knowledge lives and how a fact moves from live projection into durable memory — structure, not live values."
+        distinctions={[{ label: "Institutional Register", to: "/institutional-register" }]}
+      />
+
       {/* The model + the three rules + the user-education copy. */}
       <Section id="how-knowledge-moves" width="editorial">
         <SectionHeader
