@@ -1,0 +1,156 @@
+SPRINT 5 IMPLEMENTATION — CHRONICLE PROMOTION RULES
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+
+Do not reopen previous sprints.
+
+Goal:
+
+Define how Chronicle Review Candidates become Chronicle Entries.
+
+This sprint does NOT:
+
+* publish Story
+* build Recognition
+* build Governance
+* build AI
+* redesign Chronicle
+
+It only builds the promotion layer.
+
+Core question:
+
+"What deserves permanent protocol memory?"
+
+1. PROMOTION OBJECT
+
+Create ChroniclePromotionDecision.
+
+Fields:
+
+* candidateId
+* decision
+* reviewer
+* rationale
+* timestamp
+* promotionPath
+
+Values:
+
+* approved
+* rejected
+* hold-context
+* hold-coverage
+
+2. PROMOTION RULES
+
+Define deterministic baseline rules.
+
+Examples:
+
+Historic protocol events:
+
+* likely approve
+
+Coverage uncertainty:
+
+* hold-coverage
+
+Meaning unclear:
+
+* hold-context
+
+Routine events:
+
+* reject
+
+3. INSTITUTIONAL MEMORY RULES
+
+Explicitly define:
+
+Which protocol actions deserve permanent memory?
+
+Evaluate:
+
+* liquidity seeding
+* treasury deployment
+* treasury acquisition
+* treasury revenue
+* operations spending
+* founder funding
+* founder burn
+* protocol milestone
+* chapter completion
+
+Return clear promotion guidance.
+
+4. MEMBER MEMORY RULES
+
+Evaluate:
+
+* first member
+* milestone member
+* continuity
+* artifact participation
+* repeat participation
+
+Return clear promotion guidance.
+
+5. REVIEW WORKBENCH
+
+Inspection only.
+
+Hidden labs route.
+
+Show:
+
+Candidate
+→ Decision
+→ Reason
+→ Lineage
+
+No public publishing.
+
+6. MAINTAINER SECTION
+
+Provide:
+
+* one protocol-memory edge case
+* one founder-transparency edge case
+* one DAO-transition edge case
+
+7. RETURN FORMAT
+
+After implementation:
+
+* files changed
+* promotion rules
+* institutional memory guidance
+* member memory guidance
+* founder/system handling
+* DAO-transition notes
+* tests
+* QA
+* remaining risks
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint defines the constitution of memory.
+
+Only:
+
+Chronicle Review Candidate
+→ Chronicle Promotion Decision

@@ -50,6 +50,7 @@ import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
 import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museum'
 import { Route as LabsDesignArchiveRouteImport } from './routes/labs.design-archive'
 import { Route as LabsComponentIndexRouteImport } from './routes/labs.component-index'
+import { Route as LabsChroniclePromotionRouteImport } from './routes/labs.chronicle-promotion'
 import { Route as LabsChronicleCandidatesRouteImport } from './routes/labs.chronicle-candidates'
 import { Route as ChaptersSlugRouteImport } from './routes/chapters.$slug'
 import { Route as ApiChatRouteImport } from './routes/api.chat'
@@ -267,6 +268,11 @@ const LabsComponentIndexRoute = LabsComponentIndexRouteImport.update({
   path: '/component-index',
   getParentRoute: () => LabsRoute,
 } as any)
+const LabsChroniclePromotionRoute = LabsChroniclePromotionRouteImport.update({
+  id: '/chronicle-promotion',
+  path: '/chronicle-promotion',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsChronicleCandidatesRoute = LabsChronicleCandidatesRouteImport.update({
   id: '/chronicle-candidates',
   path: '/chronicle-candidates',
@@ -353,6 +359,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
+  '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -405,6 +412,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
+  '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -459,6 +467,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/chapters/$slug': typeof ChaptersSlugRoute
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
+  '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -514,6 +523,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/chapters/$slug'
     | '/labs/chronicle-candidates'
+    | '/labs/chronicle-promotion'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -566,6 +576,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/chapters/$slug'
     | '/labs/chronicle-candidates'
+    | '/labs/chronicle-promotion'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -619,6 +630,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/chapters/$slug'
     | '/labs/chronicle-candidates'
+    | '/labs/chronicle-promotion'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -970,6 +982,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsComponentIndexRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/chronicle-promotion': {
+      id: '/labs/chronicle-promotion'
+      path: '/chronicle-promotion'
+      fullPath: '/labs/chronicle-promotion'
+      preLoaderRoute: typeof LabsChroniclePromotionRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/chronicle-candidates': {
       id: '/labs/chronicle-candidates'
       path: '/chronicle-candidates'
@@ -1057,6 +1076,7 @@ const ChaptersRouteWithChildren = ChaptersRoute._addFileChildren(
 
 interface LabsRouteChildren {
   LabsChronicleCandidatesRoute: typeof LabsChronicleCandidatesRoute
+  LabsChroniclePromotionRoute: typeof LabsChroniclePromotionRoute
   LabsComponentIndexRoute: typeof LabsComponentIndexRoute
   LabsDesignArchiveRoute: typeof LabsDesignArchiveRoute
   LabsDesignMuseumRoute: typeof LabsDesignMuseumRoute
@@ -1071,6 +1091,7 @@ interface LabsRouteChildren {
 
 const LabsRouteChildren: LabsRouteChildren = {
   LabsChronicleCandidatesRoute: LabsChronicleCandidatesRoute,
+  LabsChroniclePromotionRoute: LabsChroniclePromotionRoute,
   LabsComponentIndexRoute: LabsComponentIndexRoute,
   LabsDesignArchiveRoute: LabsDesignArchiveRoute,
   LabsDesignMuseumRoute: LabsDesignMuseumRoute,
