@@ -27,6 +27,7 @@ import { Route as MySyndicateRouteImport } from './routes/my-syndicate'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as LiquidityRouteImport } from './routes/liquidity'
 import { Route as LabsRouteImport } from './routes/labs'
+import { Route as KnowledgeMapRouteImport } from './routes/knowledge-map'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as InstitutionalRegisterRouteImport } from './routes/institutional-register'
 import { Route as FoundersRouteImport } from './routes/founders'
@@ -153,6 +154,11 @@ const LiquidityRoute = LiquidityRouteImport.update({
 const LabsRoute = LabsRouteImport.update({
   id: '/labs',
   path: '/labs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeMapRoute = KnowledgeMapRouteImport.update({
+  id: '/knowledge-map',
+  path: '/knowledge-map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JoinRoute = JoinRouteImport.update({
@@ -358,6 +364,7 @@ export interface FileRoutesByFullPath {
   '/founders': typeof FoundersRoute
   '/institutional-register': typeof InstitutionalRegisterRoute
   '/join': typeof JoinRoute
+  '/knowledge-map': typeof KnowledgeMapRoute
   '/labs': typeof LabsRouteWithChildren
   '/liquidity': typeof LiquidityRoute
   '/members': typeof MembersRoute
@@ -415,6 +422,7 @@ export interface FileRoutesByTo {
   '/founders': typeof FoundersRoute
   '/institutional-register': typeof InstitutionalRegisterRoute
   '/join': typeof JoinRoute
+  '/knowledge-map': typeof KnowledgeMapRoute
   '/liquidity': typeof LiquidityRoute
   '/members': typeof MembersRoute
   '/my-syndicate': typeof MySyndicateRoute
@@ -472,6 +480,7 @@ export interface FileRoutesById {
   '/founders': typeof FoundersRoute
   '/institutional-register': typeof InstitutionalRegisterRoute
   '/join': typeof JoinRoute
+  '/knowledge-map': typeof KnowledgeMapRoute
   '/labs': typeof LabsRouteWithChildren
   '/liquidity': typeof LiquidityRoute
   '/members': typeof MembersRoute
@@ -531,6 +540,7 @@ export interface FileRouteTypes {
     | '/founders'
     | '/institutional-register'
     | '/join'
+    | '/knowledge-map'
     | '/labs'
     | '/liquidity'
     | '/members'
@@ -588,6 +598,7 @@ export interface FileRouteTypes {
     | '/founders'
     | '/institutional-register'
     | '/join'
+    | '/knowledge-map'
     | '/liquidity'
     | '/members'
     | '/my-syndicate'
@@ -644,6 +655,7 @@ export interface FileRouteTypes {
     | '/founders'
     | '/institutional-register'
     | '/join'
+    | '/knowledge-map'
     | '/labs'
     | '/liquidity'
     | '/members'
@@ -702,6 +714,7 @@ export interface RootRouteChildren {
   FoundersRoute: typeof FoundersRoute
   InstitutionalRegisterRoute: typeof InstitutionalRegisterRoute
   JoinRoute: typeof JoinRoute
+  KnowledgeMapRoute: typeof KnowledgeMapRoute
   LabsRoute: typeof LabsRouteWithChildren
   LiquidityRoute: typeof LiquidityRoute
   MembersRoute: typeof MembersRoute
@@ -857,6 +870,13 @@ declare module '@tanstack/react-router' {
       path: '/labs'
       fullPath: '/labs'
       preLoaderRoute: typeof LabsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge-map': {
+      id: '/knowledge-map'
+      path: '/knowledge-map'
+      fullPath: '/knowledge-map'
+      preLoaderRoute: typeof KnowledgeMapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/join': {
@@ -1196,6 +1216,7 @@ const rootRouteChildren: RootRouteChildren = {
   FoundersRoute: FoundersRoute,
   InstitutionalRegisterRoute: InstitutionalRegisterRoute,
   JoinRoute: JoinRoute,
+  KnowledgeMapRoute: KnowledgeMapRoute,
   LabsRoute: LabsRouteWithChildren,
   LiquidityRoute: LiquidityRoute,
   MembersRoute: MembersRoute,

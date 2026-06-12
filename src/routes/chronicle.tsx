@@ -167,6 +167,12 @@ function ChroniclePage() {
           >
             Institutional register ↗
           </Link>
+          <Link
+            to="/knowledge-map"
+            className="text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+          >
+            Knowledge map ↗
+          </Link>
         </div>
         <p className="mt-4 text-xs text-muted-foreground/80 leading-relaxed">
           This page is the protocol's own record of what has happened.

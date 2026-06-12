@@ -1,6 +1,6 @@
 ---
 name: Protocol Knowledge Map (inspection layer)
-description: The code-primary layer registry, the Protocol-Knowledge-vs-Register distinction, and the rules that keep the map honest.
+description: The code-primary layer registry, the Protocol-Knowledge-vs-Register distinction, the public /knowledge-map map, and the rules that keep the map honest.
 ---
 
 # Protocol Knowledge Map
@@ -41,7 +41,31 @@ and let the genesis seed promote it identity-free. **Promoted, not copied.**
 - **Seat-Record** (`seat-record`) — reserved: future SeatRecord721, no contract.
 - LP fee accrual is deliberately a reserved NOTE under Liquidity, not its own layer.
 
+## Public map surface (/knowledge-map)
+There are now TWO surfaces over the same registry: internal `/labs/knowledge-map`
+(inspection) and PUBLIC `/knowledge-map` (a restrained-canonical, indexable map reached by
+cross-links from Registry/Transparency/Chronicle/Institutional-Register — never main nav).
+- The public route renders **publicSurfaces only**; it must NEVER read `internalSurfaces`
+  (a layer's `/labs/*` homes stay internal). A guard test scans the route source for the
+  string `internalSurfaces` and asserts 0.
+- It renders **structure, not live values** — no live numbers, reserved layers map to PENDING.
+- The 3 buckets are a **derived** view, not a new stored field: `knowledgeKindOf(layer)` =
+  `reserved` if status/permanence reserved → `durable-overlay` if permanence
+  `append-only-curated` → else `live-projection`. Today: 15 live / 2 durable
+  (chronicle + institutional-register) / 1 reserved (seat-record).
+- **Recognition (status=partial) lands in live-projection, not reserved** — its derivation IS
+  live; only the alias/public tiers are reserved. The sprint spec's example list put it under
+  Reserved; code outranks spec prose, so follow the registry. Don't "fix" this.
+- `ANTI_FRAGMENTATION_RULES` (the 3 rules as data) is the **single renderable source**;
+  surfaces render from it. Doc 09 + the registry header comment are prose copies — code wins,
+  and the doc↔data alignment cross-check still pins them.
+- Exposing `homeFiles` (repo-relative `src/lib/*` paths) + canon doc paths on a public page is
+  intentional ("don't trust, verify"); they carry no secrets/addresses.
+
 ## How to apply / gotchas
+- **A new public indexable route needs a sitemap entry** (`src/routes/sitemap[.]xml.ts`
+  ENTRIES) or it is silently omitted from `/sitemap.xml` — easy to forget; the route renders
+  fine without it. `/knowledge-map` is registered at priority 0.5, monthly.
 - Add or relabel a layer **in the registry only**; the doc and route project from it.
 - The guard catches **dead paths + structural drift** (missing files, unresolved surfaces,
   reserved layers exposed) — it does NOT catch a stale human-asserted status. That is why

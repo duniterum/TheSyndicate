@@ -1,0 +1,222 @@
+SPRINT 11 IMPLEMENTATION — PROTOCOL KNOWLEDGE GRAPH VISUALIZATION
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed work:
+
+* Sprint 1: Diffusion + Anticipation
+* Sprint 2: Signals
+* Sprint 3: Memory Candidates
+* Sprint 4: Chronicle Review Candidates
+* Sprint 5: Promotion Decisions
+* Sprint 6: Institutional Register
+* Sprint 7: Public Institutional Register View
+* Sprint 8: Register Reliability
+* Sprint 9: Institutional Register Seeding + GENESIS_EVENT classification
+* Sprint 10: Protocol Knowledge Map
+* Sprint 10.1: Knowledge Map guardrail tightening
+
+Core objective:
+
+Create a safe visualization of the Protocol Knowledge Map so users and maintainers understand where facts live, what each system owns, and how knowledge moves through The Syndicate.
+
+This sprint does NOT:
+
+* build Story
+* build Recognition
+* build Member Register
+* build Chronicle Phase 2
+* create new contracts
+* change derivation rules
+* duplicate data
+* create new architecture
+
+It only turns the existing Protocol Knowledge Map into a readable graph / map.
+
+1. SURFACE DECISION
+
+Decide the safest surface:
+
+Preferred:
+
+* public restrained route: `/knowledge-map`
+* or internal/labs route only if public is not safe yet.
+
+If public, keep it restrained and educational.
+
+Do not add to main nav unless absolutely necessary.
+
+Cross-link only from:
+
+* Registry
+* Institutional Register
+* Transparency
+* maybe Chronicle if safe
+
+2. GRAPH / MAP CONTENT
+
+Render the existing knowledge homes from `protocol-knowledge-map.ts`.
+
+Show:
+
+* cluster
+* layer / home
+* purpose
+* source of truth
+* permanence
+* coverage model
+* promotion path
+* public surfaces
+* status
+* status note
+* identity posture
+
+Do not invent new nodes.
+
+Do not rename layers.
+
+Do not add new architecture.
+
+3. VISUAL STRUCTURE
+
+Represent the map as:
+
+Protocol Knowledge
+→ Live projections
+→ Durable overlays
+→ Reserved systems
+
+Show the distinction clearly:
+
+A) Live Protocol Knowledge
+
+Examples:
+
+* Holder Index
+* Archive
+* Activity
+* Rank
+* Treasury / Asset reads
+* Chapters
+* Milestones
+
+B) Durable Memory
+
+Examples:
+
+* Institutional Register
+* Chronicle candidates
+* Promotion decisions
+
+C) Reserved / Future
+
+Examples:
+
+* Member Register
+* Recognition
+* SeatRecord721
+* Governance
+* AI
+* Marketplace
+
+4. ANTI-FRAGMENTATION RULES
+
+Display the 3 rules from the registry/doc:
+
+* one canonical home per fact
+* Register stores assertion + anchor, not live values
+* facts enter Register only by promotion or seed
+
+These must remain aligned with doc 09 and the registry.
+
+Do not duplicate prose if a helper can read from the registry.
+
+5. USER EDUCATION COPY
+
+Explain simply:
+
+“The protocol may know a fact in one system before that fact belongs in the Institutional Register.”
+
+Examples:
+
+* Member numbers live in Holder Index.
+* NFTs live in Archive.
+* Treasury values live in asset / treasury reads.
+* Institutional memory lives in Institutional Register.
+
+Keep copy sober.
+
+Avoid:
+
+* hype
+* founder glorification
+* investment language
+* governance promises
+* Story-style mythology
+
+6. OPTIONAL MAINTAINER INTELLIGENCE
+
+Because you see the codebase directly, include a short maintainer section in your return:
+
+* one knowledge home that should stay internal
+* one knowledge home that deserves public surfacing later
+* one risk of duplication still present
+* one small improvement that fits this sprint without expanding scope
+
+Do not turn this into an audit.
+
+7. TESTS REQUIRED
+
+Add tests proving:
+
+* every graph node comes from the registry
+* every public surface referenced exists
+* reserved systems are clearly labeled
+* anti-fragmentation rules render correctly
+* no banned language appears
+* no Story/Recognition/Member Register behavior is introduced
+
+8. QA REQUIRED
+
+Run:
+
+* typecheck
+* knowledge-map tests
+* doctrine guard
+* ownership / forbidden-language guard
+* route render test
+* SSR/hydration check
+
+Do not fight the known production build OOM unless explicitly in scope.
+
+9. RETURN FORMAT
+
+After implementation, report:
+
+1. Route chosen.
+2. Files changed.
+3. Whether public or internal.
+4. Graph structure.
+5. Knowledge homes shown.
+6. Anti-fragmentation rules rendered.
+7. Cross-links added.
+8. What was intentionally not touched.
+9. Maintainer intelligence.
+10. Tests added.
+11. QA results.
+12. Remaining risks.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint is not Chronicle Phase 2.
+
+This sprint only visualizes:
+
+Protocol Knowledge Map
+→ readable graph / map

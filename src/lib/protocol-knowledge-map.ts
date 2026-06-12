@@ -623,3 +623,82 @@ export function layersByCluster(cluster: LayerCluster): ProtocolLayer[] {
 
 /** All layer ids, in registry order. The doctrine doc must name every one. */
 export const PROTOCOL_LAYER_IDS: string[] = PROTOCOL_LAYERS.map((l) => l.id);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// KNOWLEDGE KINDS — a derived 3-way grouping over EXISTING fields (no new data).
+// The public knowledge-map graph reads the homes in three honest buckets. The
+// bucket is computed from a layer's permanence/status; nothing new is stored.
+//   • live-projection — recomputed every load from on-chain truth (a projection).
+//   • durable-overlay — written once and curated (Chronicle, Institutional
+//                       Register): records an assertion + anchor, never a live value.
+//   • reserved        — named and reserved, not yet built; carries no live data.
+// ─────────────────────────────────────────────────────────────────────────────
+export type KnowledgeKind = "live-projection" | "durable-overlay" | "reserved";
+
+export const KNOWLEDGE_KIND_ORDER: KnowledgeKind[] = [
+  "live-projection",
+  "durable-overlay",
+  "reserved",
+];
+
+export const KNOWLEDGE_KIND_LABELS: Record<KnowledgeKind, { title: string; blurb: string }> = {
+  "live-projection": {
+    title: "Live Protocol Knowledge",
+    blurb:
+      "Read live from on-chain truth on every load — a projection of what the chain already knows, never a separately asserted institutional record.",
+  },
+  "durable-overlay": {
+    title: "Durable Memory",
+    blurb:
+      "Written once and curated. Records an assertion and its on-chain anchor — never a live value, and only ever by promotion or seed.",
+  },
+  reserved: {
+    title: "Reserved / Future",
+    blurb:
+      "Named and reserved in code, not yet built. No live data — listed so the map stays honest about what does not exist yet.",
+  },
+};
+
+/** Derive a layer's knowledge kind from its existing permanence/status (no new data). */
+export function knowledgeKindOf(layer: ProtocolLayer): KnowledgeKind {
+  if (layer.status === "reserved" || layer.permanence === "reserved") return "reserved";
+  if (layer.permanence === "append-only-curated") return "durable-overlay";
+  return "live-projection";
+}
+
+export function layersByKnowledgeKind(kind: KnowledgeKind): ProtocolLayer[] {
+  return PROTOCOL_LAYERS.filter((l) => knowledgeKindOf(l) === kind);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ANTI-FRAGMENTATION RULES — the three rules formalized in the header comment above
+// and in docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md, exposed as DATA so any surface
+// renders them FROM here instead of duplicating the prose. The knowledge-map test
+// keeps each statement aligned with doc 09.
+// ─────────────────────────────────────────────────────────────────────────────
+export interface AntiFragmentationRule {
+  n: number;
+  title: string;
+  statement: string;
+}
+
+export const ANTI_FRAGMENTATION_RULES: AntiFragmentationRule[] = [
+  {
+    n: 1,
+    title: "One canonical home per fact",
+    statement:
+      "Each fact has exactly one source-of-truth layer. Every other layer references it; nothing keeps a second copy.",
+  },
+  {
+    n: 2,
+    title: "Knowledge is a projection; the Register is an overlay",
+    statement:
+      "The Institutional Register records an assertion + anchor, never a live value (never the live LP balance, current member count, or rank).",
+  },
+  {
+    n: 3,
+    title: "Promotion or seed, otherwise held",
+    statement:
+      "A fact enters durable memory only by promotion (lineage-covered) or by seed (a discrete config anchor). Otherwise it is held, and remains fully available in its Protocol-Knowledge home.",
+  },
+];

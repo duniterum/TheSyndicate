@@ -265,6 +265,7 @@ function RegistryPage() {
           <Pill tone="muted">Cross-references</Pill>
           <Link to="/transparency" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Transparency Center →</Link>
           <Link to="/institutional-register" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Institutional Register →</Link>
+          <Link to="/knowledge-map" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Knowledge Map →</Link>
           <Link to="/tokenomics" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Tokenomics →</Link>
           <Link to="/liquidity" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Liquidity →</Link>
           <Link to="/whitepaper" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Whitepaper →</Link>

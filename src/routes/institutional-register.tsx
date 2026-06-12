@@ -8,9 +8,10 @@
 // it publishes nothing. Indexable and canonical, but kept restrained: reached via
 // cross-links from the Registry and Chronicle, never the main navigation.
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { InstitutionalRegisterView } from "@/components/syndicate/InstitutionalRegisterView";
+import { Pill, Section } from "@/components/syndicate/Primitives";
 
 export const Route = createFileRoute("/institutional-register")({
   head: () => ({
@@ -48,6 +49,30 @@ function InstitutionalRegisterRoute() {
       description="A read-only record of verified protocol memory. Each entry is derived from an on-chain protocol event and traces back to it. This is the protocol's durable institutional record — not Story, not Recognition, not governance, and not a claim of return or investment value."
     >
       <InstitutionalRegisterView />
+
+      <Section id="more">
+        <div className="flex flex-wrap items-center gap-3">
+          <Pill tone="muted">Cross-references</Pill>
+          <Link
+            to="/knowledge-map"
+            className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline"
+          >
+            Knowledge Map →
+          </Link>
+          <Link
+            to="/registry"
+            className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline"
+          >
+            Registry →
+          </Link>
+          <Link
+            to="/chronicle"
+            className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline"
+          >
+            Chronicle →
+          </Link>
+        </div>
+      </Section>
     </PageShell>
   );
 }

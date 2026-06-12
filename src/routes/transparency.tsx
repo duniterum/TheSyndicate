@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import { TransparencyCenter } from "@/components/syndicate/TransparencyCenter";
@@ -96,6 +96,17 @@ export const Route = createFileRoute("/transparency")({
           <p className="text-xs text-muted-foreground">
             Founder-managed until DAO activation. Nothing hidden happened.
           </p>
+        </div>
+      </Section>
+
+      <Section id="knowledge-map-xref">
+        <div className="surface elevated p-5 text-sm text-muted-foreground leading-relaxed">
+          Want to see where each of these facts actually lives? The{" "}
+          <Link to="/knowledge-map" className="text-foreground underline-offset-4 hover:underline">
+            Protocol Knowledge Map
+          </Link>{" "}
+          shows every knowledge home — live on-chain projections, durable institutional memory,
+          and reserved future systems. Structure, not live values.
         </div>
       </Section>
 
