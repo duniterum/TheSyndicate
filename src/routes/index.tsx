@@ -5,7 +5,6 @@ import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { HomeActivityTape } from "@/components/syndicate/HomeActivityTape";
 import { LiveProofStrip } from "@/components/syndicate/LiveProofStrip";
 import { Flywheel } from "@/components/syndicate/Flywheel";
-import { HomeNextMilestone } from "@/components/syndicate/HomeNextMilestone";
 import { SinceYourLastVisit } from "@/components/syndicate/SinceYourLastVisit";
 import { StorySoFar } from "@/components/syndicate/StorySoFar";
 import { ProtocolStorySoFar } from "@/components/syndicate/ProtocolStorySoFar";
@@ -107,8 +106,9 @@ function Index() {
       {/* ZONE 1.8 — auditor-grade live proof strip (kept as supporting context) */}
       <LiveProofStrip />
 
-      {/* ZONE 2 — LOOP B (Remaining to chapter close) + LOOP C (returning visitors only) */}
-      <HomeNextMilestone />
+      {/* ZONE 2 — LOOP C (returning visitors only). Chapter-close progress is
+          already carried above by MilestoneApproachingTile (closest threshold)
+          and by NextMemberHero in the hero — HomeNextMilestone was a duplicate. */}
       <SinceYourLastVisit />
 
       {/* ZONE 2.5 — FLYWHEEL (full product, not only the seat) */}

@@ -9,11 +9,15 @@
 // Identity layer only — no fake data, no enrichment, no governance, no NFT
 // eligibility surfaced yet (Wave 2+).
 
+import { useRef } from "react";
 import { useAccount } from "wagmi";
 import { useHolderIndex, type HolderChapter } from "@/lib/holder-index";
 import { explorerUrlForAddress, txExplorerUrl } from "@/lib/syndicate-config";
 import { fmtAddress } from "@/lib/sale-hooks";
+import { CANONICAL_ORIGIN } from "@/lib/canonical-origin";
+import { buildReferralShareUrl } from "@/lib/referral-attribution";
 import { GlassCard, StatusPill } from "./Primitives";
+import { ShareActions } from "./ShareActions";
 
 const fmtUsd = (n: number, d = 2) =>
   `$${n.toLocaleString("en-US", { maximumFractionDigits: d })}`;
@@ -31,6 +35,7 @@ export function MemberCard() {
   const { address } = useAccount();
   const idx = useHolderIndex();
   const record = idx.getByWallet(address);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   // Preview mode — wallet not yet a member.
   if (!record) {
@@ -71,8 +76,15 @@ export function MemberCard() {
   // Member mode — real card from canonical record.
   const walletUrl = explorerUrlForAddress(record.wallet);
   const firstTxUrl = txExplorerUrl(record.firstPurchaseTx);
+  const identitySentence = `Member #${record.founderNumber} of The Syndicate · ${CHAPTER_LABEL[record.chapter]} · Rank ${record.currentRank?.name ?? "—"} · ${fmtUsd(record.cumulativeUsdc)} routed on-chain.`;
+  const shareUrl = buildReferralShareUrl(
+    `${CANONICAL_ORIGIN}/wallet/${record.wallet}`,
+    record.founderNumber,
+  );
 
   return (
+    <div>
+      <div ref={cardRef}>
     <GlassCard className="p-5">
       <div className="flex items-center gap-2 mb-3">
         <StatusPill status="LIVE" />
@@ -145,5 +157,15 @@ export function MemberCard() {
         </div>
       </dl>
     </GlassCard>
+      </div>
+      <ShareActions
+        filename={`syndicate-member-${record.founderNumber}.png`}
+        shareText={identitySentence}
+        shareUrl={shareUrl}
+        nodeRef={cardRef}
+        hint="Share your seat"
+        className="mt-3"
+      />
+    </div>
   );
 }

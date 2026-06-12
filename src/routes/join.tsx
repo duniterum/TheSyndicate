@@ -8,6 +8,7 @@ import { MemberCard } from "@/components/syndicate/MemberCard";
 import { SeatRecordPanel } from "@/components/syndicate/SeatRecordPanel";
 import { Section, SectionHeader } from "@/components/syndicate/Primitives";
 import { SplitVisualizer } from "@/components/preview/SplitVisualizer";
+import { ReferralAttributionNote } from "@/components/syndicate/ReferralAttributionNote";
 
 export const Route = createFileRoute("/join")({
   head: () => ({
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/join")({
       description="Membership Sale contract live on Avalanche C-Chain. Fixed access rate: 1 SYN = $0.01 USDC. Minimum 5 USDC."
     >
       <JoinStepsPlaque />
+      <ReferralAttributionNote className="mt-2" />
       <Section id="member-card">
         <SectionHeader
           eyebrow="Member identity"

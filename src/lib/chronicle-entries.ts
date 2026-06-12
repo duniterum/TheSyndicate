@@ -26,6 +26,43 @@ import {
 /** Subject categories allowed by clause 6 (protocol-centric). */
 export type ChronicleSubject = "chapter" | "archive";
 
+/**
+ * Two-register classification for Chronicle-class facts.
+ *
+ *   • protocol-institutional — facts about protocol primitives (chapters,
+ *     archive, treasury, liquidity, supply/burn, and *institutional* founder /
+ *     system-wallet actions). This is the ONLY register the locked day-one
+ *     Chronicle uses today.
+ *   • member-living — the living, member-witnessed register (a member's own
+ *     timeline). It is MODELLED here but intentionally carries no entries yet;
+ *     content is not expanded until the member-side rules are ratified.
+ *
+ * The register a fact belongs to is DERIVED from its category, so the two can
+ * never silently disagree (see validateChronicleClassification).
+ */
+export type ChronicleRegister = "protocol-institutional" | "member-living";
+
+/**
+ * Fine-grained category. Drives the register and the founder/system
+ * "institutional significance" rule. NOTE: "founder-action" and
+ * "system-wallet-action" name a protocol-LEVEL act (e.g. a verified burn from a
+ * protocol wallet) — NOT person glorification. By rule those two are Activity
+ * by default and only reach the Chronicle when materially institutional
+ * (see requiresInstitutionalSignificance).
+ */
+export type ChronicleCategory =
+  | "protocol"
+  | "genesis"
+  | "treasury"
+  | "operations"
+  | "liquidity"
+  | "artifact"
+  | "milestone"
+  | "burn"
+  | "founder-action"
+  | "system-wallet-action"
+  | "member";
+
 export type ChronicleAnchor = {
   /** Short human label for the anchor link, e.g. "Membership Sale contract ↗" */
   label: string;
@@ -38,6 +75,10 @@ export type ChronicleEntry = {
   id: string;
   /** Subject category — must be one of ChronicleSubject (protocol primitives). */
   subject: ChronicleSubject;
+  /** Two-register classification — kept consistent with `category`. */
+  register: ChronicleRegister;
+  /** Fine-grained category — drives register + founder/system significance rule. */
+  category: ChronicleCategory;
   /**
    * Ordering key. ENTRIES ARE READ OLDEST → NEWEST.
    * Lower number = earlier. Equal numbers retain declaration order.
@@ -77,6 +118,8 @@ export const CHRONICLE_ENTRIES: ReadonlyArray<ChronicleEntry> = [
   {
     id: "chapter-i-opened",
     subject: "chapter",
+    register: "protocol-institutional",
+    category: "genesis",
     order: 1,
     title: "Chapter I opened.",
     body:
@@ -99,6 +142,8 @@ export const CHRONICLE_ENTRIES: ReadonlyArray<ChronicleEntry> = [
   {
     id: "first-artifact-mintable",
     subject: "archive",
+    register: "protocol-institutional",
+    category: "artifact",
     order: 2,
     title: "The first artifact became mintable — First Signal.",
     body:
@@ -116,6 +161,8 @@ export const CHRONICLE_ENTRIES: ReadonlyArray<ChronicleEntry> = [
   {
     id: "second-artifact-mintable",
     subject: "archive",
+    register: "protocol-institutional",
+    category: "artifact",
     order: 3,
     title: "A second artifact joined the archive — Patron Seal.",
     body:
@@ -228,6 +275,70 @@ export function validateChronicleOrdering(
         `entry "${entries[i].id}" (order ${entries[i].order}) is not strictly after "${entries[i - 1].id}" (order ${entries[i - 1].order}) — Chronicle reads oldest → newest`,
       );
     }
+  }
+  return errs;
+}
+
+// ─── Two-register classification model + guardrails ────────────────────────
+
+/** Category → register. Single source so register & category never disagree. */
+const CATEGORY_REGISTER: Record<ChronicleCategory, ChronicleRegister> = {
+  protocol: "protocol-institutional",
+  genesis: "protocol-institutional",
+  treasury: "protocol-institutional",
+  operations: "protocol-institutional",
+  liquidity: "protocol-institutional",
+  artifact: "protocol-institutional",
+  milestone: "protocol-institutional",
+  burn: "protocol-institutional",
+  "founder-action": "protocol-institutional",
+  "system-wallet-action": "protocol-institutional",
+  member: "member-living",
+};
+
+/** The register a category belongs to. */
+export function registerForCategory(c: ChronicleCategory): ChronicleRegister {
+  return CATEGORY_REGISTER[c];
+}
+
+/**
+ * Categories whose events are ACTIVITY by default and only become Chronicle
+ * entries when materially institutional. A founder or system-wallet action is
+ * not chronicle-worthy merely because of who acted or how much money moved — it
+ * must change protocol state in a way future readers must know.
+ */
+const INSTITUTIONAL_ONLY_CATEGORIES: ReadonlySet<ChronicleCategory> = new Set([
+  "founder-action",
+  "system-wallet-action",
+]);
+
+export function requiresInstitutionalSignificance(c: ChronicleCategory): boolean {
+  return INSTITUTIONAL_ONLY_CATEGORIES.has(c);
+}
+
+/**
+ * Guardrail: an entry's declared register must match the register its category
+ * implies, and a protocol-institutional entry must keep a protocol-primitive
+ * subject. Returns violations (empty = passes). This does NOT replace the
+ * six-part gate (validateChronicleEntry); it is an additional classification
+ * check the doctrine tests run alongside it.
+ */
+export function validateChronicleClassification(e: ChronicleEntry): string[] {
+  const errs: string[] = [];
+  const implied = registerForCategory(e.category);
+  if (implied !== e.register) {
+    errs.push(
+      `[${e.id}] category "${e.category}" implies register "${implied}", but entry declares "${e.register}"`,
+    );
+  }
+  if (
+    e.register === "protocol-institutional" &&
+    e.subject !== "chapter" &&
+    e.subject !== "archive"
+  ) {
+    errs.push(
+      `[${e.id}] protocol-institutional entry must carry a protocol-primitive subject (chapter | archive)`,
+    );
   }
   return errs;
 }

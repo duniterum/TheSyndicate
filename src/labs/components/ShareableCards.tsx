@@ -16,6 +16,7 @@ import {
   fmtAddress,
 } from "@/lib/sale-hooks";
 import { useTreasuryAssets, useSynSupply } from "@/lib/treasury-hooks";
+import { useHolderIndex } from "@/lib/holder-index";
 import { formatUnits } from "viem";
 
 /**
@@ -205,14 +206,21 @@ export function MemberCard() {
   const verification: "VERIFIED" | "PENDING" =
     isConnected && synAmount > 0 ? "VERIFIED" : "PENDING";
 
-  // Member number is unknown without an indexer — be honest and label PENDING.
-  const memberNumber =
-    isConnected && synAmount > 0 ? `#${address?.slice(-4).toUpperCase()}` : "PENDING";
-
-  const joinDate =
-    isConnected && synAmount > 0
-      ? new Date().toISOString().slice(0, 10)
-      : "—";
+  // Member number comes ONLY from the canonical holder index — never fabricated
+  // from the wallet address. Real "#N" once indexed, "Indexing…" while the index
+  // is still loading for a connected wallet, else PENDING.
+  const idx = useHolderIndex();
+  const record = idx.getByWallet(address);
+  const memberNumber = record
+    ? `#${record.founderNumber}`
+    : isConnected && idx.isLoading
+      ? "Indexing…"
+      : "PENDING";
+  const memberSub = record
+    ? "Seat recorded on-chain"
+    : isConnected
+      ? "Not yet a member"
+      : "Not yet joined";
 
   const snapshotSupply =
     supply.totalSupply !== undefined
@@ -251,7 +259,7 @@ export function MemberCard() {
                 <BigStat
                   label="Member #"
                   value={memberNumber}
-                  sub={joinDate !== "—" ? `Joined ${joinDate}` : "Not yet joined"}
+                  sub={memberSub}
                 />
               </div>
 

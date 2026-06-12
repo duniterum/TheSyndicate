@@ -1,0 +1,295 @@
+SPRINT 1 IMPLEMENTATION — CLOSE DIFFUSION + ANTICIPATION + PROTOCOL MEMORY CLASSIFICATION
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted frozen foundations:
+
+* Constitution / Layer 0
+* Canonical Layer Architecture
+* Canonical Object Model
+* Dependency Graph
+* Engine/Flywheel Model
+
+Do NOT reopen them.
+
+Core objective:
+
+Close the first self-reinforcing loop:
+
+Member → Share → Visitor → Member
+
+and add the thin return loop:
+
+Member → Anticipation → Return
+
+Also include one important classification correction:
+
+Activity must remain the full factual record, but Chronicle/Memory must support two registers:
+
+1. Protocol / Institutional Memory
+2. Member / Living Memory
+
+Do not expand Chronicle content yet unless safe. First implement the classification model and guardrails.
+
+SPRINT 1 SCOPE
+
+A) DIFFUSION LOOP
+
+Implement exactly:
+
+1. Merge MemberCard logic
+
+* Use the canonical production MemberCard as source.
+* Use real holder-index / useHolderIndex data.
+* Remove or replace any fake member number logic such as wallet-last4.
+* Member # must always be real or pending/indexing.
+* No fake identity data.
+
+2. Promote share surface
+
+Reuse:
+
+* ShareActions
+* existing OG routes
+* existing /wallet/$address page
+* existing /milestone/$id page
+* existing PNG export logic if available
+
+Do not create a second share/broadcast system.
+
+3. Post-purchase identity moment
+
+Extend the existing purchase success receipt:
+
+* “You are Member #N”
+* “Your seat is now part of the protocol record”
+* “Share your seat”
+
+Handle indexer lag:
+
+* show “Indexing your seat…” until real founderNumber/memberNumber resolves.
+* never fabricate a number.
+
+4. Share link verification
+
+Every share card must link back to a verifiable page:
+
+* /wallet/$address
+* /milestone/$id
+* /x/tx/$hash where appropriate
+
+Every share object must prove what it claims.
+
+5. Attribution-only ref
+
+Add safe off-chain attribution only:
+
+* ?ref=<memberNumber>
+* store/read locally if needed
+* show “brought by Member #N” only if verified/resolved
+* no reward
+* no commission
+* no contract
+* no payout language
+
+B) ANTICIPATION LOOP
+
+Implement the thin deterministic Anticipation layer.
+
+Goal:
+
+Member → What’s Next → Return
+
+Use only Truth + locked config.
+
+Do not use Signals.
+
+Do not invent dates.
+
+Do not promise future events.
+
+Allowed:
+
+* next member threshold
+* next chapter threshold
+* next milestone
+* next artifact only if already configured / locked / pending with clear label
+
+Rules:
+
+* show “X of Y” only when Y is locked.
+* no countdowns to undecided events.
+* no “coming soon” unless already implemented as PENDING.
+* no speculative promises.
+
+Consolidate existing anticipation surfaces if duplicated, but do not redesign.
+
+C) PROTOCOL MEMORY / CHRONICLE CLASSIFICATION
+
+Add or formalize the classification model, but do not overbuild.
+
+Important ruling:
+
+Activity records everything.
+
+Chronicle is not a transaction log.
+
+Chronicle is protocol memory.
+
+It has two registers:
+
+1. Protocol / Institutional Register
+
+For meaningful protocol-level events:
+
+* token deployment
+* sale deployment
+* first liquidity
+* first member
+* first burn
+* first artifact
+* first milestone
+* first external campaign spend
+* first treasury deployment
+* major Vault movement
+* major Operations spend
+* major LP change
+* future protocol-owned asset acquisition
+
+2. Member / Living Register
+
+For meaningful member-level events:
+
+* new member
+* early member milestone
+* member reaches recognition milestone
+* member witnesses milestone
+* repeat participation
+* artifact participation
+* future recognition events
+
+Classification rule:
+
+Activity → Signal → Memory → Chronicle → Story
+
+For now, because Signals are not implemented, do not fake Signals.
+
+Instead:
+
+* keep current Chronicle entries as manually curated verified facts.
+* add clear type/category fields if needed:
+
+  * protocol
+  * member
+  * genesis
+  * treasury
+  * operations
+  * liquidity
+  * artifact
+  * milestone
+  * burn
+  * founder-action
+  * system-wallet-action
+
+Founder/system wallet rule:
+
+Every founder or system wallet action appears in Activity if detected.
+
+But not every action becomes Chronicle.
+
+Founder/system actions become Chronicle only if they are meaningful institutional events.
+
+Examples:
+
+* founder sends routine funds → Activity only.
+* founder funds Operations for first campaign → Protocol Memory candidate.
+* Operations wallet spends for first campaign → Protocol Chronicle candidate.
+* Treasury invests into asset/company/token → Protocol Chronicle candidate.
+* Vault movement crossing major threshold → Protocol Chronicle candidate.
+
+Do not glorify founder actions.
+
+Do not make founder wallet the story.
+
+The protocol is the story.
+
+Founder/system actions are institutional facts when they materially affect the protocol.
+
+D) NO-TOUCH LIST
+
+Do not implement:
+
+* Signal Engine
+* Recognition Engine
+* Referral rewards
+* Referral contract
+* SeatRecord721
+* Governance
+* Marketplace
+* AI
+* Reports
+* Chronicle Phase 2 auto-curation
+* new Vault architecture
+* new contracts
+* full redesign
+
+Do not change:
+
+* 70 / 20 / 10 routing
+* rank logic
+* membership logic
+* tokenomics
+* treasury wallet roles
+* Archive1155 contract logic
+
+E) QA REQUIREMENTS
+
+Run:
+
+* typecheck
+* build
+* ownership / forbidden language guard
+* doctrine tests
+* my-syndicate tests if touched
+* share card export test
+* OG route check
+* connected wallet state
+* disconnected wallet state
+* indexer lag state
+* unknown wallet state
+* ?ref attribution state
+* mobile state
+
+F) RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. What was reused.
+3. What was merged.
+4. What was promoted.
+5. What was newly added.
+6. How attribution works.
+7. How Anticipation works.
+8. How Protocol / Member Chronicle classification is represented.
+9. What was intentionally not touched.
+10. QA results.
+11. Remaining risks.
+
+Important:
+
+This sprint is not about adding more architecture.
+
+It is about closing the first loop while preserving the frozen architecture.
+
+Build only what is necessary to make:
+
+Member → Share → Visitor → Member
+
+and
+
+Member → Anticipation → Return
+
+work safely.

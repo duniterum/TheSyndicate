@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CHAIN_TIP_QUERY_KEY } from "@/lib/chain-time";
 import {
@@ -42,6 +42,10 @@ import { assertFreshWallet, walletFreshnessMessage } from "@/lib/wallet-freshnes
 import { recordTx } from "@/lib/tx-history";
 import { useMintHashPersistence } from "@/lib/mint-persistence";
 import { classifyTxError } from "@/lib/tx-errors";
+import { useHolderIndex } from "@/lib/holder-index";
+import { CANONICAL_ORIGIN } from "@/lib/canonical-origin";
+import { buildReferralShareUrl } from "@/lib/referral-attribution";
+import { ShareActions } from "./ShareActions";
 
 const SALE = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
@@ -574,6 +578,17 @@ function SuccessReceipt({
   rank?: string;
   onReset: () => void;
 }) {
+  const { address } = useAccount();
+  const idx = useHolderIndex();
+  const record = address ? idx.getByWallet(address) : undefined;
+  const seatRef = useRef<HTMLDivElement>(null);
+  const shareUrl = record
+    ? buildReferralShareUrl(`${CANONICAL_ORIGIN}/wallet/${record.wallet}`, record.founderNumber)
+    : "";
+  const shareText = record
+    ? `I just took my seat — Member #${record.founderNumber} of The Syndicate. My membership is permanently recorded on-chain.`
+    : "";
+
   return (
     <div className="mt-4 rounded-lg border border-emerald-500/40 bg-emerald-500/5 p-4">
       <div className="flex items-center justify-between mb-2">
@@ -584,6 +599,39 @@ function SuccessReceipt({
           New purchase
         </button>
       </div>
+
+      {/* Identity moment — your seat is now part of the protocol record. Member
+          number is resolved live from the holder index; while the fresh purchase
+          is still being indexed we show "Indexing…" and NEVER fabricate it. */}
+      <div
+        ref={seatRef}
+        className="mb-3 rounded-md border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-3 text-center"
+      >
+        <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          Your seat is now part of the protocol record
+        </div>
+        {record ? (
+          <div className="mt-1 text-2xl font-semibold text-gradient-gold">
+            You are Member #{record.founderNumber}
+          </div>
+        ) : (
+          <div className="mt-1 text-lg font-semibold text-muted-foreground animate-pulse">
+            Indexing your seat…
+          </div>
+        )}
+      </div>
+
+      {record && (
+        <ShareActions
+          filename={`syndicate-member-${record.founderNumber}.png`}
+          shareText={shareText}
+          shareUrl={shareUrl}
+          nodeRef={seatRef}
+          hint="Share your seat"
+          className="mb-3"
+        />
+      )}
+
       <dl className="space-y-1 text-xs">
         <Row label="USDC paid" value={fmtUsd(usdc)} />
         <Row label="SYN received" value={`${synOut.toLocaleString("en-US")} SYN`} accent />

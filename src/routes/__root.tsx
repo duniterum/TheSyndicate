@@ -16,6 +16,7 @@ import { PurchaseEventsHydrator } from "../components/syndicate/PurchaseEventsHy
 import { WalletAccountSynchronizer } from "../components/syndicate/WalletAccountSynchronizer";
 import { WalletDebugPanel } from "../components/syndicate/WalletDebugPanel";
 import { MobileJoinBar } from "../components/syndicate/MobileJoinBar";
+import { ReferralCapture } from "../components/syndicate/ReferralCapture";
 import { StaleBuildBanner } from "../components/syndicate/StaleBuildBanner";
 import { ThemeProvider, THEME_BOOT_SCRIPT } from "../lib/theme";
 import { DEV_HYDRATION_RECOVERY_SCRIPT } from "../lib/dev-recovery";
@@ -179,6 +180,7 @@ function RootComponent() {
         <Web3Provider>
           <PurchaseEventsHydrator />
           <WalletAccountSynchronizer />
+          <ReferralCapture />
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
           <MobileJoinBar />

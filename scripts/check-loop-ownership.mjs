@@ -28,9 +28,9 @@ const FORBIDDEN_ON_HOMEPAGE = [
 
 /** Required canonical loop owners on the homepage. */
 const REQUIRED_ON_HOMEPAGE = [
-  "Hero",                // Loop A canonical
-  "HomeNextMilestone",   // Loop B canonical
-  "SinceYourLastVisit",  // Loop C canonical
+  "Hero",                     // Loop A canonical
+  "MilestoneApproachingTile", // Loop B canonical (NextMemberHero also carries anticipation)
+  "SinceYourLastVisit",       // Loop C canonical
   "ProtocolMoments",     // Loop D supporting
 ];
 
