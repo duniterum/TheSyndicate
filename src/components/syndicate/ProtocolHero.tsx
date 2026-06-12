@@ -25,6 +25,7 @@ import {
   ProofButton,
   type CanonicalStatus,
 } from "./Primitives";
+import { AvalancheMark } from "./HeaderWalletChip";
 import { track } from "@/lib/analytics";
 
 const HERO_PRESETS = PURCHASE_PRESETS_USDC.slice(0, 5);
@@ -299,7 +300,7 @@ function HeroLeft() {
       </div>
 
       <div className="mt-10 grid max-w-lg grid-cols-2 gap-x-4 gap-y-4 border-t border-border/60 pt-6 sm:grid-cols-4">
-        <ProofMini icon={<AvalancheIcon />} title="Live on Avalanche" text="C-Chain" red />
+        <ProofMini icon={<AvalancheMark size={20} />} title="Live on Avalanche" text="C-Chain" red />
         <ProofMini icon={<ShieldIcon />} title="All routes verified" text="On-chain" />
         <ProofMini icon={<CubeIcon />} title="Artifacts" text="On-chain" />
         <ProofMini icon={<EyeIcon />} title="Transparent" text="Permanent" />
@@ -351,27 +352,29 @@ function HeroEngine({
         }}
       />
 
+      <div className="relative z-20 mb-4 hidden text-center sm:block">
+        <div className="mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+          You are visitor
+        </div>
+        <div className="mono mt-1 text-base font-semibold tracking-[0.04em]" style={{ color: GOLD }}>
+          Seat {seatLabel} available
+        </div>
+      </div>
+
       <div className="relative hidden aspect-square w-full sm:block">
         <RadialStage lanes={lanes} chainLive={chainLive} />
 
-        <div className="absolute left-1/2 top-[4%] z-20 -translate-x-1/2 text-center">
-          <div className="mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-            You are visitor
-          </div>
-          <div className="mono mt-1 text-base font-semibold tracking-[0.04em]" style={{ color: GOLD }}>
-            Seat {seatLabel} available
-          </div>
-        </div>
-
-        <div className="absolute left-1/2 top-[16%] z-20 -translate-x-1/2">
-          <div
-            className="relative flex size-[96px] items-center justify-center"
+        <div className="pointer-events-none absolute left-1/2 top-[1.5%] z-20 -translate-x-1/2">
+          <img
+            src="/hero/throne.png"
+            alt=""
+            aria-hidden
+            draggable={false}
+            className="h-auto w-[80px] select-none lg:w-[72px] xl:w-[84px] 2xl:w-[92px]"
             style={{
-              filter: "drop-shadow(0 10px 24px color-mix(in oklab, #E3A92B 38%, transparent))",
+              filter: "drop-shadow(0 12px 22px color-mix(in oklab, #E3A92B 38%, transparent))",
             }}
-          >
-            <ThroneIcon />
-          </div>
+          />
         </div>
 
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 text-center">
@@ -380,7 +383,7 @@ function HeroEngine({
           </div>
 
           <div
-            className="mt-2 mono tabular-nums font-semibold leading-none text-[clamp(4.9rem,3.35rem+4.3vw,7.25rem)]"
+            className="mt-2 mono tabular-nums font-semibold leading-none text-[clamp(3rem,2.2rem+1.6vw,4.75rem)]"
             style={{
               color: "var(--success)",
               textShadow: "0 0 40px color-mix(in oklab, var(--success) 34%, transparent)",
@@ -472,8 +475,17 @@ function HeroEngine({
         <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           Seat {seatLabel} available
         </div>
-        <div className="mx-auto mt-4 flex size-20 items-center justify-center">
-          <ThroneIcon />
+        <div className="mx-auto mt-4 flex items-center justify-center">
+          <img
+            src="/hero/throne.png"
+            alt=""
+            aria-hidden
+            draggable={false}
+            className="h-auto w-[100px] select-none"
+            style={{
+              filter: "drop-shadow(0 12px 22px color-mix(in oklab, #E3A92B 42%, transparent))",
+            }}
+          />
         </div>
         <div className="mt-5 mono text-[11px] uppercase tracking-[0.25em]" style={{ color: "var(--success)" }}>
           Live capital flow
@@ -926,33 +938,32 @@ function NodeLabel({ title, value, color }: { title: string; value: string; colo
 function HeroAtmosphere() {
   return (
     <>
-      <div aria-hidden className="absolute inset-0 grid-bg opacity-[0.1]" />
+      {/* Photographic misty-mountain backdrop (golden dawn) — dark theme only,
+          where it reads as designed; light theme keeps the clean ivory field. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 hidden bg-cover bg-center bg-no-repeat opacity-[0.55] dark:block"
+        style={{ backgroundImage: "url(/hero/mountain-bg.jpg)" }}
+      />
+      {/* Readability scrim — darkens top/bottom and the left text column while
+          letting the golden horizon glow through behind the radial engine. */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(80% 70% at 52% 42%, color-mix(in oklab, #E3A92B 14%, transparent), transparent 62%), radial-gradient(65% 55% at 5% 55%, color-mix(in oklab, #E3A92B 18%, transparent), transparent 62%), linear-gradient(180deg, color-mix(in oklab, var(--background) 70%, transparent), var(--background))",
+            "linear-gradient(180deg, color-mix(in oklab, var(--background) 74%, transparent) 0%, color-mix(in oklab, var(--background) 30%, transparent) 42%, color-mix(in oklab, var(--background) 86%, transparent) 100%), linear-gradient(90deg, color-mix(in oklab, var(--background) 82%, transparent) 0%, color-mix(in oklab, var(--background) 22%, transparent) 44%, transparent 66%, color-mix(in oklab, var(--background) 28%, transparent) 100%)",
         }}
       />
-      <div aria-hidden className="absolute inset-x-0 bottom-0 h-[70%] overflow-hidden opacity-90">
-        <svg viewBox="0 0 1440 520" preserveAspectRatio="none" className="absolute inset-0 size-full">
-          <path
-            d="M0,520 L0,360 L140,330 L260,210 L360,320 L520,150 L650,330 L790,110 L930,290 L1080,170 L1230,315 L1440,210 L1440,520 Z"
-            style={{ fill: "color-mix(in oklab, var(--foreground) 8%, transparent)" }}
-          />
-          <path
-            d="M0,520 L0,430 L160,375 L300,455 L480,260 L650,430 L840,245 L1010,420 L1180,310 L1440,410 L1440,520 Z"
-            style={{ fill: "color-mix(in oklab, var(--foreground) 12%, transparent)" }}
-          />
-          <path
-            d="M80 405 L220 300 L340 390 M500 250 L650 360 M820 220 L1010 380 M1110 310 L1250 390"
-            fill="none"
-            strokeWidth="1.1"
-            style={{ stroke: "color-mix(in oklab, #E3A92B 36%, transparent)" }}
-          />
-        </svg>
-      </div>
+      <div aria-hidden className="absolute inset-0 grid-bg opacity-[0.07]" />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(72% 62% at 52% 40%, color-mix(in oklab, #E3A92B 12%, transparent), transparent 64%), radial-gradient(60% 52% at 6% 55%, color-mix(in oklab, #E3A92B 14%, transparent), transparent 62%)",
+        }}
+      />
     </>
   );
 }
@@ -1078,27 +1089,6 @@ function CrownIcon() {
   );
 }
 
-function ThroneIcon() {
-  return (
-    <svg width="112" height="112" viewBox="0 0 112 112" fill="none" aria-hidden>
-      <defs>
-        <linearGradient id="throneGold" x1="18" y1="8" x2="94" y2="103">
-          <stop stopColor="#F8D967" />
-          <stop offset="0.45" stopColor="#E3A92B" />
-          <stop offset="1" stopColor="#8B5412" />
-        </linearGradient>
-      </defs>
-      <path d="M28 42c0-20 12-30 28-30s28 10 28 30v42H28V42Z" fill="url(#throneGold)" stroke="#F6D466" strokeWidth="2" />
-      <path d="M36 45c0-14 8-22 20-22s20 8 20 22v31H36V45Z" fill="color-mix(in oklab, var(--background) 82%, black)" stroke="#2B2112" strokeWidth="2" />
-      <path d="M21 88h70v9H21z" fill="url(#throneGold)" stroke="#F6D466" strokeWidth="2" />
-      <path d="M30 97v10M82 97v10M25 37v48M87 37v48" stroke="#E3A92B" strokeWidth="5" strokeLinecap="round" />
-      <circle cx="25" cy="34" r="6" fill="url(#throneGold)" stroke="#F6D466" strokeWidth="2" />
-      <circle cx="87" cy="34" r="6" fill="url(#throneGold)" stroke="#F6D466" strokeWidth="2" />
-      <path d="M42 14 48 4l8 10 8-10 6 10" stroke="#F6D466" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 function FlameIcon() {
   return (
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -1106,14 +1096,6 @@ function FlameIcon() {
         d="M13.5 2.5c.6 4.2-3.8 5.7-3.8 9 0 1.3.7 2.3 1.8 2.9-.2-2.2 1.8-3.3 2.2-5.4 2.7 2.1 4.3 4.6 4.3 7.1 0 3.3-2.7 5.9-6 5.9s-6-2.6-6-5.9c0-4.6 4.1-6.1 4.1-10.8 1.6.7 2.6 1.8 3.4 3.2.6-1.7.7-3.5 0-6Z"
         fill={FLAME}
       />
-    </svg>
-  );
-}
-
-function AvalancheIcon() {
-  return (
-    <svg width="23" height="23" viewBox="0 0 24 24" fill={AVALANCHE_RED} aria-hidden>
-      <path d="M12 2 2 21h20L12 2Zm0 6.2 3.1 5.8h-2.2l-1.7-3.2-2.4 4.6h7.9l1.1 2.1H6.2L12 8.2Z" />
     </svg>
   );
 }

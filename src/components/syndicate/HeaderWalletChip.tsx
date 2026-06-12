@@ -11,14 +11,30 @@ import {
 import { AVALANCHE_CHAIN_ID } from "@/lib/syndicate-config";
 import { fmtAddress } from "@/lib/sale-hooks";
 
-// Avalanche red — reserved for the chain pill ONLY (semantic-color doctrine).
+// Avalanche red — reserved for the official Avalanche mark ONLY (semantic-color doctrine).
 const AVALANCHE_RED = "#E84142";
 
-/** Avalanche triangle mark — same path as the hero proof badge. */
-function AvalancheMark({ size = 16 }: { size?: number }) {
+/**
+ * Official Avalanche (AVAX) logo — the white mark cut out of the brand-red circle.
+ * The single canonical Avalanche mark (also reused by the hero proof badge).
+ */
+export function AvalancheMark({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill={AVALANCHE_RED} aria-hidden>
-      <path d="M12 2 2 21h20L12 2Zm0 6.2 3.1 5.8h-2.2l-1.7-3.2-2.4 4.6h7.9l1.1 2.1H6.2L12 8.2Z" />
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 1503 1504"
+      fill="none"
+      aria-hidden
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect x="287" y="258" width="928" height="844" fill="#fff" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M1502.5 752C1502.5 1167.07 1166.07 1503.5 751 1503.5C335.933 1503.5 -0.5 1167.07 -0.5 752C-0.5 336.933 335.933 0.5 751 0.5C1166.07 0.5 1502.5 336.933 1502.5 752ZM538.688 1050.86H392.94C362.314 1050.86 347.186 1050.86 337.962 1044.96C327.999 1038.5 321.911 1027.8 321.173 1015.99C320.619 1005.11 328.184 991.822 343.312 965.255L703.182 330.935C718.495 303.999 726.243 290.531 736.021 285.55C746.537 280.2 759.083 280.2 769.599 285.55C779.377 290.531 787.126 303.999 802.438 330.935L876.42 460.079L876.797 460.738C893.336 489.635 901.723 504.289 905.385 519.669C909.443 536.458 909.443 554.169 905.385 570.958C901.695 586.455 893.393 601.215 876.604 630.549L687.573 964.702L687.084 965.558C670.436 994.693 661.999 1009.46 650.306 1020.6C637.576 1032.78 622.263 1041.63 605.474 1046.61C590.161 1050.86 573.004 1050.86 538.688 1050.86ZM906.75 1050.86H1115.59C1146.4 1050.86 1161.9 1050.86 1171.13 1044.78C1181.09 1038.32 1187.36 1027.43 1187.92 1015.63C1188.45 1005.1 1181.05 992.33 1166.55 967.307C1166.05 966.452 1165.55 965.582 1165.04 964.694L1060.43 785.685L1059.24 783.673C1044.54 758.79 1037.12 746.231 1027.59 741.483C1017.08 736.133 1004.71 736.133 994.191 741.483C984.413 746.464 976.665 759.563 961.352 785.871L857.118 964.881L856.76 965.503C841.502 991.997 833.876 1005.24 834.428 1016.11C835.166 1027.92 841.254 1038.69 851.217 1045.15C860.441 1050.86 875.94 1050.86 906.75 1050.86Z"
+        fill={AVALANCHE_RED}
+      />
     </svg>
   );
 }

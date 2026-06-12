@@ -1,5 +1,10 @@
 uploads = []
-generated = []
+
+[[generated]]
+id = "dq5G26mhG3VJQyFNLkrON"
+uri = "file://public/hero/mountain-bg.jpg"
+type = "image"
+title = "dark golden misty mountains"
 
 [[outputs]]
 id = "w3wGek7lFg3KPN31UU5W-"
