@@ -1,0 +1,412 @@
+SPRINT 16 IMPLEMENTATION — PROTOCOL LINEAGE VISIBILITY LAYER
+
+Proceed carefully.
+
+Do NOT run a broad audit.
+
+Do NOT redesign the site.
+
+Do NOT create a new memory system.
+
+Do NOT create a new Chronicle system.
+
+Do NOT create new protocol logic.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Chronicle Admission Candidate
+→ Chronicle Entry
+→ Chronological Timeline
+→ Verified Timestamp
+
+Core objective:
+
+Expose the existing protocol intelligence pipeline.
+
+Users, members, and future contributors should be able to understand:
+
+"What happened to this fact after it entered the protocol?"
+
+This sprint creates visibility.
+
+It does NOT create new intelligence.
+
+It only exposes existing lineage.
+
+──────────────────────────────
+
+PRE-IMPLEMENTATION CHALLENGE
+
+Before coding, answer briefly:
+
+A) Is Protocol Lineage Visibility the next dependency-valid layer?
+
+B) Is any hidden dependency missing before visibility can be exposed?
+
+C) Does the current codebase already contain all lineage information required?
+
+D) Is there any existing surface already partially exposing lineage?
+
+Keep the answer concise.
+
+Do not perform a broad audit.
+
+──────────────────────────────
+
+OBJECTIVE
+
+For any institutional fact, event, or record, expose the journey:
+
+Activity Event
+↓
+Signal
+↓
+Memory Candidate
+↓
+Review Candidate
+↓
+Promotion Decision
+↓
+Institutional Register Entry
+↓
+Chronicle Admission Candidate
+↓
+Chronicle Entry
+↓
+Chronology Position
+
+The protocol already knows this.
+
+Users currently do not.
+
+──────────────────────────────
+
+NO NEW PIPELINE
+
+Do NOT create:
+
+* new derivation layers
+* new Chronicle layers
+* new Memory layers
+* new Signal layers
+* new Register layers
+
+Reuse existing lineage.
+
+Expose only existing truth.
+
+──────────────────────────────
+
+LINEAGE OBJECT
+
+If needed, formalize a read-only lineage projection.
+
+Suggested:
+
+LineageNode
+
+* id
+* layer
+* sourceId
+* sourceType
+* status
+* timestamp
+* txHash
+* block
+* verificationStatus
+* chronologyPosition
+* lineageReason
+
+LineagePath
+
+* sourceEventId
+* nodes[]
+* currentStage
+* highestVerifiedStage
+* completenessStatus
+
+Pure projection only.
+
+──────────────────────────────
+
+ACTIVITY RELATIONSHIP
+
+Deeply evaluate /activity.
+
+This is important.
+
+Questions:
+
+Can an Activity item expose:
+
+"View protocol lineage"
+
+without turning Activity into Chronicle?
+
+Can an Activity item show:
+
+* Signal generated
+* Register admitted
+* Chronicle admitted
+* Timeline position
+
+without duplicating data?
+
+The answer may be:
+
+* yes
+* partial
+* internal only
+
+Decide based on architecture.
+
+──────────────────────────────
+
+INSTITUTIONAL REGISTER RELATIONSHIP
+
+Evaluate whether every Institutional Register Entry can display:
+
+Source Event
+↓
+Lineage
+
+If safe:
+
+add a read-only lineage section.
+
+If unsafe:
+
+return recommendation.
+
+──────────────────────────────
+
+CHRONICLE RELATIONSHIP
+
+Chronicle remains:
+
+institutional memory.
+
+Lineage remains:
+
+traceability.
+
+Do not turn Chronicle into Story.
+
+Do not turn lineage into Story.
+
+Do not create narrative generation.
+
+──────────────────────────────
+
+VISIBILITY SURFACE
+
+Choose the safest visibility surface.
+
+Possibilities:
+
+A) Internal only:
+
+/labs/protocol-lineage
+
+B) Register-integrated:
+
+Institutional Register Entry
+→ View lineage
+
+C) Activity-integrated:
+
+Activity Event
+→ View lineage
+
+D) Combination
+
+Choose what best fits the current architecture.
+
+Do not redesign public Chronicle.
+
+──────────────────────────────
+
+LINEAGE COMPLETENESS
+
+Show clearly:
+
+COMPLETE
+PARTIAL
+HELD
+COVERAGE LIMITED
+RPC LIMITED
+
+Users must understand whether the lineage is fully known.
+
+Never imply certainty where none exists.
+
+──────────────────────────────
+
+TIMELINE CONNECTION
+
+If chronology exists:
+
+show:
+
+Timeline Position
+Timestamp
+Block
+Transaction
+
+when verified.
+
+Do not invent chronology.
+
+Do not estimate chronology.
+
+──────────────────────────────
+
+FOUNDER / SYSTEM ACTIONS
+
+Protocol-centric framing only.
+
+Allowed:
+
+Protocol action
+Protocol wallet action
+Treasury movement
+Liquidity action
+Supply burn
+Deployment record
+
+Avoid:
+
+Founder achievement
+Founder made history
+Founder reward
+Hero language
+
+Lineage must remain factual.
+
+──────────────────────────────
+
+KNOWLEDGE MAP HARMONIZATION
+
+Use the Protocol Knowledge Map.
+
+Before implementing:
+
+verify whether:
+
+Activity
+Signals
+Memory
+Register
+Chronicle
+Chronology
+
+already have canonical homes.
+
+Do not create duplicate homes.
+
+Lineage should connect systems.
+
+Not duplicate them.
+
+──────────────────────────────
+
+MAINTAINER INTELLIGENCE
+
+Because you see the entire codebase:
+
+Return:
+
+1. One hidden lineage source we may have forgotten.
+2. One duplication risk this sprint prevents.
+3. One visibility improvement that helps trust.
+4. One future Story prerequisite that remains missing.
+5. One future Recognition prerequisite that remains missing.
+
+Do not turn this into an audit.
+
+──────────────────────────────
+
+TESTS REQUIRED
+
+Add tests proving:
+
+* lineage preserves source event identity.
+* lineage preserves tx/block references.
+* lineage does not invent stages.
+* lineage does not mutate source objects.
+* chronology links remain valid.
+* incomplete lineage is marked incomplete.
+* Activity and Chronicle remain distinct.
+* lineage remains read-only.
+* no Story behavior appears.
+* no Recognition behavior appears.
+
+──────────────────────────────
+
+QA REQUIRED
+
+Run:
+
+* typecheck
+* lineage tests
+* chronology tests
+* chronicle entry tests
+* admission tests
+* register tests
+* doctrine guard
+* ownership / forbidden-language guard
+* route render tests
+
+Do not fight the known production build OOM unless required.
+
+──────────────────────────────
+
+RETURN FORMAT
+
+After implementation, report:
+
+1. Pre-implementation challenge answer.
+2. Files changed.
+3. Lineage object shape.
+4. Visibility surface chosen.
+5. Activity relationship.
+6. Register relationship.
+7. Chronicle relationship.
+8. Timeline relationship.
+9. Completeness handling.
+10. Founder/system handling.
+11. Knowledge-map harmonization.
+12. Maintainer intelligence.
+13. What was intentionally not touched.
+14. Tests added.
+15. QA results.
+16. Remaining risks.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint is not Governance.
+
+This sprint is not DAO.
+
+This sprint only exposes:
+
+Event
+→ Signal
+→ Memory
+→ Review
+→ Promotion
+→ Register
+→ Chronicle
+→ Timeline
+
+so users can finally see how protocol intelligence flows through The Syndicate.

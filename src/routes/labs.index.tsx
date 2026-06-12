@@ -80,6 +80,7 @@ function LabsIndex() {
           <Link to="/labs/chronicle-admission" className="underline hover:no-underline">→ Chronicle admission (register → admission workbench)</Link>
           <Link to="/labs/chronicle-entries-preview" className="underline hover:no-underline">→ Chronicle entries (admission → entry workbench)</Link>
           <Link to="/labs/chronicle-timeline" className="underline hover:no-underline">→ Chronicle timeline (entry → chronology workbench)</Link>
+          <Link to="/labs/protocol-lineage" className="underline hover:no-underline">→ Protocol lineage (fact → full journey projection)</Link>
           <Link to="/labs/knowledge-map" className="underline hover:no-underline">→ Protocol knowledge map (layer inspection)</Link>
           <Link to="/labs/design-museum" className="underline hover:no-underline">→ Visual design museum</Link>
           <Link to="/labs/component-index" className="underline hover:no-underline">→ Technical component index</Link>

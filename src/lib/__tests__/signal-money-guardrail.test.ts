@@ -53,6 +53,7 @@ const PRESTIGE_MODULES = [
   "chronology-registry.ts",
   "chronology.ts",
   "chronology-timestamps.ts",
+  "protocol-lineage.ts",
 ];
 
 // Per-actor MONETARY MAGNITUDE field names that must never appear in the Signal
@@ -206,5 +207,18 @@ describe("Chronicle chronology layer — money-safe (canon §4.5 Rule E)", () =>
         expect(src.includes(token)).toBe(false);
       });
     }
+  }
+});
+
+// The Protocol Lineage projection re-reads a Chronology entry's carried trail and
+// re-expresses it as typed nodes. It carries IDs, block heights, and tx hashes —
+// ordinal/identity evidence — but never a monetary magnitude: a lineage row must
+// describe WHERE a fact sits in the pipeline, never HOW MUCH money moved.
+describe("Protocol lineage layer — money-safe (canon §4.5 Rule E)", () => {
+  const src = read("protocol-lineage.ts");
+  for (const token of RULE_E_MAGNITUDE_TOKENS) {
+    it(`protocol-lineage.ts never names the magnitude field "${token}"`, () => {
+      expect(src.includes(token)).toBe(false);
+    });
   }
 });

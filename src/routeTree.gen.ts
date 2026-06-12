@@ -45,6 +45,7 @@ import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
 import { Route as LabsSignalsRouteImport } from './routes/labs.signals'
 import { Route as LabsProtocolMemoryRouteImport } from './routes/labs.protocol-memory'
+import { Route as LabsProtocolLineageRouteImport } from './routes/labs.protocol-lineage'
 import { Route as LabsProtocolIntelligenceRouteImport } from './routes/labs.protocol-intelligence'
 import { Route as LabsProtocolEventsRouteImport } from './routes/labs.protocol-events'
 import { Route as LabsMemoryCandidatesRouteImport } from './routes/labs.memory-candidates'
@@ -249,6 +250,11 @@ const LabsProtocolMemoryRoute = LabsProtocolMemoryRouteImport.update({
   path: '/protocol-memory',
   getParentRoute: () => LabsRoute,
 } as any)
+const LabsProtocolLineageRoute = LabsProtocolLineageRouteImport.update({
+  id: '/protocol-lineage',
+  path: '/protocol-lineage',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsProtocolIntelligenceRoute =
   LabsProtocolIntelligenceRouteImport.update({
     id: '/protocol-intelligence',
@@ -418,6 +424,7 @@ export interface FileRoutesByFullPath {
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
+  '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
   '/milestone/$id': typeof MilestoneIdRoute
@@ -478,6 +485,7 @@ export interface FileRoutesByTo {
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
+  '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
   '/milestone/$id': typeof MilestoneIdRoute
@@ -540,6 +548,7 @@ export interface FileRoutesById {
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
+  '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
   '/milestone/$id': typeof MilestoneIdRoute
@@ -603,6 +612,7 @@ export interface FileRouteTypes {
     | '/labs/memory-candidates'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
+    | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
     | '/milestone/$id'
@@ -663,6 +673,7 @@ export interface FileRouteTypes {
     | '/labs/memory-candidates'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
+    | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
     | '/milestone/$id'
@@ -724,6 +735,7 @@ export interface FileRouteTypes {
     | '/labs/memory-candidates'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
+    | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
     | '/milestone/$id'
@@ -1035,6 +1047,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsProtocolMemoryRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/protocol-lineage': {
+      id: '/labs/protocol-lineage'
+      path: '/protocol-lineage'
+      fullPath: '/labs/protocol-lineage'
+      preLoaderRoute: typeof LabsProtocolLineageRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/protocol-intelligence': {
       id: '/labs/protocol-intelligence'
       path: '/protocol-intelligence'
@@ -1226,6 +1245,7 @@ interface LabsRouteChildren {
   LabsMemoryCandidatesRoute: typeof LabsMemoryCandidatesRoute
   LabsProtocolEventsRoute: typeof LabsProtocolEventsRoute
   LabsProtocolIntelligenceRoute: typeof LabsProtocolIntelligenceRoute
+  LabsProtocolLineageRoute: typeof LabsProtocolLineageRoute
   LabsProtocolMemoryRoute: typeof LabsProtocolMemoryRoute
   LabsSignalsRoute: typeof LabsSignalsRoute
   LabsIndexRoute: typeof LabsIndexRoute
@@ -1246,6 +1266,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsMemoryCandidatesRoute: LabsMemoryCandidatesRoute,
   LabsProtocolEventsRoute: LabsProtocolEventsRoute,
   LabsProtocolIntelligenceRoute: LabsProtocolIntelligenceRoute,
+  LabsProtocolLineageRoute: LabsProtocolLineageRoute,
   LabsProtocolMemoryRoute: LabsProtocolMemoryRoute,
   LabsSignalsRoute: LabsSignalsRoute,
   LabsIndexRoute: LabsIndexRoute,

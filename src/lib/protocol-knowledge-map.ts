@@ -393,10 +393,11 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
       "/labs/chronicle-admission",
       "/labs/chronicle-entries-preview",
       "/labs/chronicle-timeline",
+      "/labs/protocol-lineage",
     ],
     status: "partial",
     statusNote:
-      "Promotion pipeline live; public Chronicle curation is gated and human-approved. The admission → entry edge derives DRAFT institutional entries only; publication is a human / governance act. The entry → chronology edge orders entries by verified block height (unprovable order is held, never invented); verified block timestamps are now threaded onto anchored entries as read-only metadata (one getBlock per block), never as an ordering input and never estimated. Evidence: src/lib/chronicle-promotion.ts, src/lib/chronicle-entry.ts, src/lib/chronology.ts, src/lib/chronology-timestamps.ts.",
+      "Promotion pipeline live; public Chronicle curation is gated and human-approved. The admission → entry edge derives DRAFT institutional entries only; publication is a human / governance act. The entry → chronology edge orders entries by verified block height (unprovable order is held, never invented); verified block timestamps are now threaded onto anchored entries as read-only metadata (one getBlock per block), never as an ordering input and never estimated. The full event → … → chronology → timestamp journey is exposed end-to-end by the pure, read-only Protocol Lineage projection (/labs/protocol-lineage, src/lib/protocol-lineage.ts) — a visibility re-expression that creates no new intelligence. Evidence: src/lib/chronicle-promotion.ts, src/lib/chronicle-entry.ts, src/lib/chronology.ts, src/lib/chronology-timestamps.ts, src/lib/protocol-lineage.ts.",
     identityPosture: "identity-free",
     indexes: {
       canonDocs: ["docs/canon/05_FOUNDATION_FREEZE.md"],
@@ -422,9 +423,14 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     coverageModel: "config-pinned",
     promotionPath: "Terminal — durable institutional store; no onward promotion.",
     publicSurfaces: ["/institutional-register"],
-    internalSurfaces: ["/labs/institutional-register", "/labs/chronicle-admission"],
+    internalSurfaces: [
+      "/labs/institutional-register",
+      "/labs/chronicle-admission",
+      "/labs/protocol-lineage",
+    ],
     status: "live",
-    statusNote: null,
+    statusNote:
+      "Each register entry's full provenance — promotion → review → memory → signal → event → tx/block, plus the lawful genesis seed for facts that predate the scanner — is carried verbatim on the entry's lineage trail and exposed read-only by the Protocol Lineage projection (/labs/protocol-lineage, src/lib/protocol-lineage.ts). The projection re-expresses the carried trail; it creates no new intelligence and mutates nothing.",
     identityPosture: "identity-free",
     indexes: {
       canonDocs: [

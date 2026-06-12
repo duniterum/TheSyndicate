@@ -522,3 +522,56 @@ describe("Chronicle chronology timestamps — data-access surface stays adjacenc
     }
   });
 });
+
+// PROTOCOL LINEAGE (Sprint 16) — the pure VISIBILITY projection. It re-expresses
+// the trail a terminal CHRONOLOGY ENTRY already carries as typed nodes. It is a
+// pure leaf with NO data access of its own: it reads ONE neighbour — the
+// chronology REGISTRY leaf — TYPE-ONLY, and imports nothing else. It must never
+// reach the chronology deriver, the upstream pipeline layers, wagmi, or React;
+// it generates no new intelligence, it only mirrors a trail that already exists.
+describe("Protocol lineage — visibility projection stays adjacency-clean", () => {
+  const src = read("protocol-lineage.ts");
+  const importLines = src
+    .split(/\r?\n/)
+    .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+  const imports = importLines.join("\n");
+
+  it("reads the chronology registry leaf TYPE-ONLY (never a value import)", () => {
+    expect(/from\s+["']\.\/chronology-registry["']/.test(imports)).toBe(true);
+    expect(
+      /import\s+type\s+\{[\s\S]*?\}\s+from\s+["']\.\/chronology-registry["']/.test(src),
+    ).toBe(true);
+    // No VALUE import from the chronology leaf — `import {` (without `type`).
+    expect(/import\s+\{[\s\S]*?from\s+["']\.\/chronology-registry["']/.test(src)).toBe(false);
+  });
+
+  it("never imports the chronology deriver", () => {
+    expect(/from\s+["']\.\/chronology["']/.test(imports)).toBe(false);
+  });
+
+  it("does not import any upstream pipeline layer", () => {
+    expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*\/memory-candidates["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-promotion/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*institutional-register/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-admission/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*\/chronicle-entry["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-entry-registry["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-entries["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronology-timestamps["']/.test(imports)).toBe(false);
+  });
+
+  it("is a pure leaf — no wagmi, React, or react-query data access", () => {
+    const specifiers = importLines
+      .map((l) => l.match(/from\s+["']([^"']+)["']/)?.[1])
+      .filter((s): s is string => Boolean(s));
+    const allowed = new Set(["./chronology-registry"]);
+    for (const s of specifiers) {
+      expect(allowed.has(s), `unexpected import: ${s}`).toBe(true);
+    }
+  });
+});
