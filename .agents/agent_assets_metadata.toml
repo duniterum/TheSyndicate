@@ -72,3 +72,9 @@ id = "izM4l7HWEd-_tjU5Fal8q"
 uri = "file://docs/audits/PROTOCOL_CONSOLIDATION_PASS_FINAL_SYSTEM_COHERENCE_REPORT.md"
 type = "text"
 title = "Final System Coherence Report — The Syndicate"
+
+[[outputs]]
+id = "uOP8uIobHeOdafG0gvHSG"
+uri = "file://docs/handoffs/HERO_CODE_HANDOFF.md"
+type = "text"
+title = "Protocol Hero — Code Handoff"
