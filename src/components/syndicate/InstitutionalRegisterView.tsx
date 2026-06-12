@@ -27,13 +27,40 @@ import { deriveMemoryCandidates } from "@/lib/memory-candidates";
 import { deriveChronicleReviewCandidates } from "@/lib/chronicle-review-candidates";
 import { deriveChroniclePromotionDecisions } from "@/lib/chronicle-promotion";
 import { deriveInstitutionalRegister } from "@/lib/institutional-register";
-import { selectPublicInstitutionalEntries } from "@/lib/institutional-register-public";
+import {
+  selectPublicInstitutionalEntries,
+  deriveRegisterStatus,
+  isLineageComplete,
+  type RegisterDataStatus,
+  type RegisterStatus,
+} from "@/lib/institutional-register-public";
 import {
   INSTITUTIONAL_EVENT_CLASSES,
   type InstitutionalRegisterEntry,
   type InstitutionalVerificationStatus,
 } from "@/lib/institutional-register-registry";
 import { txExplorerUrl } from "@/lib/syndicate-config";
+
+// The public view reads a bounded, newest-first event window. It NEVER asserts
+// proven deployment/genesis coverage (that is a future, separately-derived fact),
+// so coverage stays conservative here and no historic "first" claim can surface.
+const EVENT_WINDOW_LIMIT = 200;
+
+// Tone per data-status for the compact status strip (presentation only).
+const STATUS_TONE: Record<RegisterDataStatus, string> = {
+  loading: "border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-400",
+  ready: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+  partial: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400",
+  "rpc-limited": "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400",
+  "coverage-limited": "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400",
+  empty: "border-border bg-muted/40 text-muted-foreground",
+  error: "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-400",
+};
+
+/** Deterministic UTC stamp (YYYY-MM-DD HH:MM UTC) — SSR/client agree. */
+function utcStamp(ms: number): string {
+  return `${new Date(ms).toISOString().slice(0, 16).replace("T", " ")} UTC`;
+}
 
 // ── Public-facing status vocabulary (only active/draft are ever shown) ────────
 const STATUS_META: Record<
@@ -143,13 +170,22 @@ function LineageTrail({ entry }: { entry: InstitutionalRegisterEntry }) {
 }
 
 function EntryCard({ entry }: { entry: InstitutionalRegisterEntry }) {
-  // Only active/draft reach the public view; default keeps the type total.
-  const status = entry.entryStatus === "active" ? "active" : "draft";
+  // Lineage status (spec §6): an entry with a broken upstream chain must NEVER be
+  // presented as a final/durable fact, even if its entryStatus is "active".
+  const lineageComplete = isLineageComplete(entry);
+  // Only active/draft reach the public view; an active entry with broken lineage
+  // is downgraded to a non-final "draft" presentation rather than shown as final.
+  const status: "active" | "draft" =
+    entry.entryStatus === "active" && lineageComplete ? "active" : "draft";
   const v = VERIFICATION_META[entry.verificationStatus];
+  // Whether a verifiable on-chain anchor is present for this entry's lineage.
+  const hasAnchor = Boolean(entry.sourceTxHash);
   // Deterministic UTC date (YYYY-MM-DD) so SSR and client agree — no locale/tz
-  // hydration mismatch. Active entries carry createdAt; drafts do not.
+  // hydration mismatch. Only a genuinely final entry shows a finalised date.
   const finalised =
-    entry.createdAt !== null ? new Date(entry.createdAt).toISOString().slice(0, 10) : null;
+    status === "active" && entry.createdAt !== null
+      ? new Date(entry.createdAt).toISOString().slice(0, 10)
+      : null;
 
   return (
     <GlassCard className="p-5">
@@ -179,9 +215,16 @@ function EntryCard({ entry }: { entry: InstitutionalRegisterEntry }) {
         </p>
       )}
 
-      {status === "draft" && (
+      {status === "draft" && entry.entryStatus === "draft" && (
         <p className="mt-2 text-[11px] leading-relaxed text-sky-700/90 dark:text-sky-400/90">
           {STATUS_META.draft.hint}
+        </p>
+      )}
+
+      {!lineageComplete && (
+        <p className="mt-2 text-[11px] leading-relaxed text-amber-700/90 dark:text-amber-400/90">
+          Lineage incomplete — an upstream reference is missing, so this entry is
+          not shown as a final fact.
         </p>
       )}
 
@@ -189,8 +232,80 @@ function EntryCard({ entry }: { entry: InstitutionalRegisterEntry }) {
 
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
         <span>{v.hint}</span>
+        <span>
+          {lineageComplete
+            ? hasAnchor
+              ? "Lineage complete · verifiable to its transaction"
+              : "Lineage complete · structural (no transaction anchor)"
+            : "Lineage incomplete"}
+        </span>
         {finalised && <span>Finalised {finalised}</span>}
       </div>
+    </GlassCard>
+  );
+}
+
+/** Compact, sober data-status strip (spec §2). */
+function RegisterStatusStrip({ status }: { status: RegisterStatus }) {
+  return (
+    <GlassCard className="p-4">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span
+          className={`mono inline-block rounded border px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] ${STATUS_TONE[status.status]}`}
+        >
+          {status.label}
+        </span>
+        <span className="text-xs leading-relaxed text-foreground/85">{status.reason}</span>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+        <span>
+          Sources: {status.sourcesAvailable}/{status.sourcesChecked} available
+        </span>
+        {status.sourceFailures.length > 0 && (
+          <span className="text-amber-700 dark:text-amber-400">
+            Unavailable: {status.sourceFailures.join(", ")}
+          </span>
+        )}
+        {status.lastDerivedAt !== null && <span>Last read: {utcStamp(status.lastDerivedAt)}</span>}
+      </div>
+
+      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">{status.coverageNote}</p>
+    </GlassCard>
+  );
+}
+
+/** Honest empty-state (spec §3): distinguishes none-yet vs partial vs coverage. */
+function EmptyState({ status }: { status: RegisterStatus }) {
+  // Within the partial posture, distinguish a truncated window from source failure.
+  const isTruncated = status.status === "partial";
+
+  const heading = status.isPartial
+    ? isTruncated
+      ? "The scanned window is bounded — the view may be incomplete"
+      : "Some sources are unavailable — the view may be incomplete"
+    : status.canTrustEmpty
+      ? "No institutional memory entries yet"
+      : "No entries are visible in the current view";
+
+  const body = status.isPartial
+    ? isTruncated
+      ? "The scanned window is bounded by a read limit, so eligible entries beyond it may not appear. This is not necessarily an empty register — every protocol movement is already visible, unfiltered, on the "
+      : "One or more on-chain sources did not respond, so eligible entries may be missing. This is not necessarily an empty register — please retry, or verify directly on the "
+    : status.canTrustEmpty
+      ? "An entry appears here only after a protocol-institutional event is promoted through the pipeline and finalised. None have been finalised yet — nothing is invented to fill the register. Every protocol movement is already visible, unfiltered, on the "
+      : "No active or draft entries fall within the current scan window, and full deployment coverage is not proven — so this is not asserted as a complete history. Every protocol movement is already visible, unfiltered, on the ";
+
+  return (
+    <GlassCard className="p-6">
+      <h3 className="text-base font-semibold text-foreground">{heading}</h3>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        {body}
+        <Link to="/activity" className="text-foreground underline-offset-4 hover:underline">
+          Activity
+        </Link>{" "}
+        feed.
+      </p>
     </GlassCard>
   );
 }
@@ -205,7 +320,7 @@ const PIPELINE_STAGES = [
 ];
 
 export function InstitutionalRegisterView() {
-  const { events, isLoading, isError } = useProtocolEvents({ limit: 200 });
+  const { events, sources } = useProtocolEvents({ limit: EVENT_WINDOW_LIMIT });
 
   const entries = useMemo(() => {
     const signals = deriveSignals(events, { windowCoversDeployment: false });
@@ -216,8 +331,30 @@ export function InstitutionalRegisterView() {
     return selectPublicInstitutionalEntries(register);
   }, [events]);
 
+  // Reliability status (Sprint 8). Coverage stays conservative (the public view
+  // never proves genesis coverage); the window is "truncated" when it hits the
+  // read limit, so older eligible entries may exist beyond it.
+  const status = useMemo(
+    () =>
+      deriveRegisterStatus({
+        sources,
+        entryCount: entries.length,
+        coverageComplete: false,
+        windowTruncated: events.length >= EVENT_WINDOW_LIMIT,
+      }),
+    [sources, entries.length, events.length],
+  );
+
+  const showLoading = status.status === "loading";
+  const showError = status.status === "error";
+
   return (
     <>
+      {/* Reliability / data status */}
+      <Section id="status">
+        <RegisterStatusStrip status={status} />
+      </Section>
+
       {/* What this is / what it is not */}
       <Section id="what-this-is">
         <GlassCard className="p-5">
@@ -261,13 +398,13 @@ export function InstitutionalRegisterView() {
           description="Newest first. Each entry traces to an on-chain event. Held and rejected entries are kept internal; nothing here is auto-published or editorial."
         />
 
-        {isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading on-chain events…</p>
-        ) : isError ? (
+        {showLoading ? (
+          <p className="text-sm text-muted-foreground">Reading on-chain events…</p>
+        ) : showError ? (
           <GlassCard className="p-5">
             <p className="text-sm text-muted-foreground">
-              The live read is unavailable right now. The register degrades rather than
-              fabricating entries — please retry shortly, or verify directly on the{" "}
+              Every on-chain source is unavailable right now. The register degrades rather
+              than fabricating entries — please retry shortly, or verify directly on the{" "}
               <Link to="/activity" className="text-foreground underline-offset-4 hover:underline">
                 Activity
               </Link>{" "}
@@ -275,21 +412,7 @@ export function InstitutionalRegisterView() {
             </p>
           </GlassCard>
         ) : entries.length === 0 ? (
-          <GlassCard className="p-6">
-            <h3 className="text-base font-semibold text-foreground">
-              No finalised institutional memory yet
-            </h3>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              An entry appears here only after a protocol-institutional event is promoted
-              through the pipeline and finalised. Until then, this register is complete —
-              nothing is invented to fill it. Every protocol movement is already visible,
-              unfiltered, on the{" "}
-              <Link to="/activity" className="text-foreground underline-offset-4 hover:underline">
-                Activity
-              </Link>{" "}
-              feed.
-            </p>
-          </GlassCard>
+          <EmptyState status={status} />
         ) : (
           <div className="flex flex-col gap-4">
             {entries.map((e) => (

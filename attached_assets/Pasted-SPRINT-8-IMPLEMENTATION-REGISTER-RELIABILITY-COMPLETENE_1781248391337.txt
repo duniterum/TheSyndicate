@@ -1,0 +1,219 @@
+SPRINT 8 IMPLEMENTATION — REGISTER RELIABILITY / COMPLETENESS GUARD
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Chronicle Promotion Decision
+→ Institutional Register Entry
+→ Read-only Institutional Register View
+
+Sprint 8 hardens the public Institutional Register so users understand whether the register is complete, partial, loading, coverage-limited, or RPC-limited.
+
+Core objective:
+
+Make the public Institutional Register trustworthy under imperfect data conditions.
+
+This sprint does NOT:
+
+* generate Story
+* build Recognition
+* build Member Register
+* build DAO governance
+* build Chronicle Phase 2
+* change derivation rules
+* create new contracts
+* redesign the page
+
+It only adds reliability, freshness, and completeness discipline around the existing public register view.
+
+1. REGISTER DATA STATUS OBJECT
+
+Create or reuse a small status object for the Institutional Register view.
+
+It should express:
+
+* loading
+* ready
+* partial
+* rpc-limited
+* coverage-limited
+* empty
+* error
+
+Include:
+
+* status
+* reason
+* sources checked
+* sources available
+* source failures if any
+* last derived time if available
+* coverage note
+* user-facing label
+
+2. PUBLIC REGISTER STATUS STRIP
+
+Add a compact status strip to `/institutional-register`.
+
+It should clearly tell the user:
+
+* whether data is loading
+* whether the view is complete
+* whether some sources failed
+* whether coverage is limited
+* whether no active/draft entries exist yet
+
+Use sober labels:
+
+* LIVE
+* INDEXING
+* PARTIAL
+* COVERAGE-LIMITED
+* RPC-LIMITED
+* EMPTY
+* ERROR
+
+Do not imply hidden entries exist.
+
+Do not imply finality when data is partial.
+
+3. EMPTY STATE DISCIPLINE
+
+If no entries are shown, distinguish:
+
+A) no active/draft institutional entries yet
+
+from
+
+B) data not ready
+
+from
+
+C) source failure / partial RPC
+
+from
+
+D) coverage limitation
+
+The current empty state must not accidentally make the protocol look empty if the issue is loading or data source failure.
+
+4. PARTIAL DATA GUARD
+
+If useProtocolEvents or any upstream source is partially unavailable:
+
+* mark the register as PARTIAL or RPC-LIMITED.
+* do not silently present incomplete results as final.
+* keep the current data visible if safe.
+* clearly state that the visible view may not include all eligible entries.
+
+5. COVERAGE GUARD
+
+If scan coverage does not include deployment/genesis range:
+
+* no “first ever” / genesis / historic wording.
+* status should show COVERAGE-LIMITED if relevant.
+* held/coverage-limited entries should remain internal unless intentionally shown with a hold label.
+
+6. LINEAGE STATUS
+
+Each visible entry should show:
+
+* verification status
+* source transaction / block if available
+* whether lineage is complete
+* whether any source is pending
+
+Do not show entries with broken lineage as final.
+
+7. COPY RULES
+
+Use only sober institutional language.
+
+Allowed:
+
+* data status
+* source coverage
+* verification status
+* register completeness
+* source availability
+* live derivation
+
+Avoid:
+
+* guaranteed
+* complete forever
+* official final truth
+* investor reward
+* profit
+* return
+* governance right
+* founder achievement
+* hidden alpha
+* heroic
+
+8. IA / VISIBILITY
+
+Do not add this to main nav.
+
+Keep route and existing restrained cross-links as-is unless a tiny label update is necessary.
+
+9. TESTS REQUIRED
+
+Add tests proving:
+
+* loading state is distinct from empty state.
+* partial/RPC-limited state is not presented as complete.
+* empty register says no active/draft entries yet only when sources are ready.
+* coverage-limited state prevents historic/first language.
+* visible entries have lineage.
+* broken lineage does not render as final.
+* status labels are clean and banned-language safe.
+
+10. QA REQUIRED
+
+Run:
+
+* typecheck
+* institutional register public tests
+* institutional register tests
+* chronicle promotion tests
+* ownership / forbidden-language guard
+* route render test
+* SSR/hydration check
+
+Do not fight the known production build OOM unless explicitly in scope.
+
+11. RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. Status object shape.
+3. Status labels implemented.
+4. Empty/loading/partial behavior.
+5. Coverage guard behavior.
+6. Lineage status behavior.
+7. What was intentionally not touched.
+8. Tests added.
+9. QA results.
+10. Remaining risks.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint is not Chronicle Phase 2.
+
+This sprint only hardens:
+
+Read-only Institutional Register View
+→ Reliable / trustworthy public register status

@@ -148,6 +148,21 @@ const fmtUsd = (n: number) => `$${n.toLocaleString("en-US", { maximumFractionDig
 const fmtSyn = (n: number) => `${n.toLocaleString("en-US", { maximumFractionDigits: 0 })} SYN`;
 const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
+/**
+ * Per-source health of the canonical event scan. Exposed additively so a
+ * reliability layer (e.g. the Institutional Register status object) can report,
+ * honestly, which on-chain sources responded, which are still loading, and which
+ * failed — without re-running any scan. `dataUpdatedAt` is react-query's own
+ * last-success stamp (0 until the first success).
+ */
+export type ProtocolEventSource = {
+  id: string;
+  label: string;
+  isLoading: boolean;
+  isError: boolean;
+  dataUpdatedAt: number;
+};
+
 export function useProtocolEvents(opts?: { limit?: number }) {
   const limit = opts?.limit ?? 40;
   const purchases = useLivePurchaseEvents({ limit: 100 });
@@ -400,9 +415,33 @@ export function useProtocolEvents(opts?: { limit?: number }) {
     return limit > 0 ? out.slice(0, limit) : out;
   }, [purchases.data, swaps.data, liquidity.data, vaultFlows.data, mints.data, burns.data, limit]);
 
+  // Per-source health (additive). All six sources feed the canonical scan; a
+  // reliability layer reasons over the full set, while the legacy isLoading/
+  // isError fields below keep their original (4-source) semantics for existing
+  // consumers. Memoized on the underlying booleans/stamps so identity is stable.
+  const sources = useMemo<ProtocolEventSource[]>(
+    () => [
+      { id: "purchases", label: "Membership purchases", isLoading: purchases.isLoading, isError: purchases.isError, dataUpdatedAt: purchases.dataUpdatedAt },
+      { id: "swaps", label: "Liquidity swaps", isLoading: swaps.isLoading, isError: swaps.isError, dataUpdatedAt: swaps.dataUpdatedAt },
+      { id: "liquidity", label: "Liquidity changes", isLoading: liquidity.isLoading, isError: liquidity.isError, dataUpdatedAt: liquidity.dataUpdatedAt },
+      { id: "vault", label: "Treasury (vault) flows", isLoading: vaultFlows.isLoading, isError: vaultFlows.isError, dataUpdatedAt: vaultFlows.dataUpdatedAt },
+      { id: "mints", label: "Archive artifacts", isLoading: mints.isLoading, isError: mints.isError, dataUpdatedAt: mints.dataUpdatedAt },
+      { id: "burns", label: "Supply burns", isLoading: burns.isLoading, isError: burns.isError, dataUpdatedAt: burns.dataUpdatedAt },
+    ],
+    [
+      purchases.isLoading, purchases.isError, purchases.dataUpdatedAt,
+      swaps.isLoading, swaps.isError, swaps.dataUpdatedAt,
+      liquidity.isLoading, liquidity.isError, liquidity.dataUpdatedAt,
+      vaultFlows.isLoading, vaultFlows.isError, vaultFlows.dataUpdatedAt,
+      mints.isLoading, mints.isError, mints.dataUpdatedAt,
+      burns.isLoading, burns.isError, burns.dataUpdatedAt,
+    ],
+  );
+
   return {
     isLoading: purchases.isLoading || swaps.isLoading || liquidity.isLoading || vaultFlows.isLoading,
     isError: purchases.isError && swaps.isError && liquidity.isError && vaultFlows.isError,
+    sources,
     refetch: () => {
       purchases.refetch();
       swaps.refetch();

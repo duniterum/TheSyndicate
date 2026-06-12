@@ -45,3 +45,30 @@ publishes nothing.
   dependency, bigint `sourceBlock` rendered via `.toString()` only (never a query key).
 - Dates: format active-entry `createdAt` as deterministic UTC `toISOString().slice(0,10)`
   — `toLocaleDateString` risks an SSR/client tz hydration mismatch.
+
+## Data-status layer (reliability hardening)
+- Pure `deriveRegisterStatus()` in the public leaf; priority is MOST-LIMITING-first
+  and first-match-wins: `loading` > `error` (all sources failed, guarded by
+  `sourcesChecked>0`) > `rpc-limited` (some failed) > `partial` (window truncated) >
+  `coverage-limited` (`!coverageComplete`) > `empty` (0 entries) > `ready`.
+  `isComplete` ⇔ `ready`; `canTrustEmpty` ⇔ `empty`; `lastDerivedAt` = max positive
+  `dataUpdatedAt` or null. `useProtocolEvents` exposes a memoized `sources[]`
+  (6 sources, each isLoading/isError/dataUpdatedAt) — additive; legacy 4-source
+  isLoading/isError shape is untouched.
+- **The view hardcodes `coverageComplete:false`** (no derivation change yet) →
+  `ready`/`empty` (the LIVE/EMPTY pills) are PROVABLY UNREACHABLE today; healthy +
+  not-truncated always resolves to `coverage-limited`. This is BY DESIGN, not a bug —
+  don't "fix" the unreachable LIVE state. LIVE/EMPTY unlock only when a future change
+  proves deployment-to-now coverage. `windowTruncated = events.length >= EVENT_WINDOW_LIMIT (200)`.
+- **Copy-safety is test-enforced, NOT guard-enforced**: the leaf is in `EXCLUDE_FILES`
+  of check-ownership-wording, so its labels/reasons/coverage notes are never scanned by
+  the guard — the public test MUST run findPublicVocabularyViolations + findForbiddenLanguage
+  + findHistoricClaims over all 7 labels+reasons and both coverage notes. (The VIEW
+  component IS guard-scanned, so its EmptyState copy is covered both ways.)
+- **Gotcha: the literal word "genesis" trips `HISTORIC_CLAIM_PATTERNS`** even in purely
+  descriptive copy (it is a bare `\bgenesis\b` pattern) → say "deployment-to-now",
+  never "genesis-to-now", in coverage/status strings.
+- Lineage: `isLineageComplete(entry)` requires every upstream ref non-blank; an `active`
+  entry with broken lineage is downgraded to DRAFT presentation (no "Finalised" date,
+  explicit "Lineage incomplete" note). EntryCard suppresses the draft hint for these
+  downgraded entries (gate on `entry.entryStatus==="draft"`, not the computed flag).
