@@ -78,6 +78,7 @@ The doctrine layer. Vision, gates, decision frameworks.
 
 - `docs/EMOTIONAL_ARCHITECTURE_AUDIT.md` — behavioral-loop research catalog; subordinate to the North Star six-loop registry. *(Registered 2026-06-09.)*
 - `docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md` — product-memory record protecting salvageable concepts and entity distinctions. *(Registered 2026-06-09.)*
+- `docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md` — knowledge-map index: where each kind of protocol knowledge lives (Protocol Knowledge vs Institutional Register Memory). Defers to the code registry `src/lib/protocol-knowledge-map.ts`. *(Registered 2026-06-12.)*
 
 ### Precedence rule (when docs disagree)
 

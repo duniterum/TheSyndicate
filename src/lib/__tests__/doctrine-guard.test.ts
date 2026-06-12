@@ -211,6 +211,7 @@ const CANONICAL_DOCS = [
   "docs/RANK_CONSTITUTIONAL_RULING.md",
   "docs/EMOTIONAL_ARCHITECTURE_AUDIT.md",
   "docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md",
+  "docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md",
 ] as const;
 
 const DOC_BANNED: Array<{ name: string; re: RegExp }> = [

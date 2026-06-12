@@ -197,6 +197,53 @@ describe("protocol-knowledge-map: doc/code cross-check", () => {
   });
 });
 
+// The 3 anti-fragmentation rules are stated in BOTH the registry header (a JS
+// comment) and doc 09. They are the doctrine the map enforces, so the two copies
+// must not drift apart. We normalize away case, JS comment markers (`//`), markdown
+// emphasis, and whitespace/line-wraps, then assert each rule fragment survives in
+// both texts. Editing a rule in one file but not the other fails this gate. This is
+// a substring presence check, not a semantic one — it closes the duplication seam
+// (per the Sprint 10 report) without forcing byte-identical prose.
+const normalizeDoctrine = (s: string): string =>
+  s
+    .replace(/\/\//g, " ") // strip JS line-comment markers (registry header)
+    .toLowerCase()
+    .replace(/[*_`]/g, "") // strip markdown emphasis
+    .replace(/\s+/g, " ") // collapse line-wraps + indentation
+    .trim();
+
+const RULE_FRAGMENTS: ReadonlyArray<{ rule: string; fragment: string }> = [
+  { rule: "1 · one home", fragment: "one canonical home per fact" },
+  {
+    rule: "1 · reference not copy",
+    fragment: "every other layer references it; nothing keeps a second copy",
+  },
+  { rule: "2 · assertion + anchor", fragment: "assertion + anchor" },
+  { rule: "2 · never a live value", fragment: "never a live value" },
+  {
+    rule: "3 · promotion or seed",
+    fragment:
+      "a fact enters durable memory only by promotion (lineage-covered) or by seed (a discrete config anchor)",
+  },
+  { rule: "3 · otherwise held", fragment: "otherwise it is held" },
+];
+
+describe("protocol-knowledge-map: doc ↔ registry rule alignment", () => {
+  const registryText = normalizeDoctrine(readFileSync(resolve(ROOT, MAP_FILE), "utf8"));
+  const docText = normalizeDoctrine(readFileSync(resolve(ROOT, DOC_FILE), "utf8"));
+
+  for (const { rule, fragment } of RULE_FRAGMENTS) {
+    it(`registry header carries rule ${rule}`, () => {
+      expect(registryText.includes(fragment), `registry missing rule fragment: "${fragment}"`).toBe(
+        true,
+      );
+    });
+    it(`doc 09 carries rule ${rule}`, () => {
+      expect(docText.includes(fragment), `doc 09 missing rule fragment: "${fragment}"`).toBe(true);
+    });
+  }
+});
+
 // Type-only reference so the ProtocolLayer import is exercised by the compiler.
 const _typecheck: ProtocolLayer | undefined = PROTOCOL_LAYERS[0];
 void _typecheck;

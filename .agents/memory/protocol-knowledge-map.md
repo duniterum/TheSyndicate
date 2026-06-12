@@ -47,7 +47,14 @@ and let the genesis seed promote it identity-free. **Promoted, not copied.**
   reserved layers exposed) — it does NOT catch a stale human-asserted status. That is why
   every non-live layer's `statusNote` must **cite an evidencing `.ts` file** (the test
   enforces the citation, not its truth).
-- Adding doc 09 to the doctrine-guard `CANONICAL_DOCS` set is a separate code follow-up
-  (same pattern as other canon docs — registering needs banned terms on `**Wrong:**` lines).
-- The 3-rule text currently lives in both the registry header and doc 09; the cross-check
-  only validates layer ids, so rule-text drift would be silent (code wins, low risk).
+- Doc 09 is NOW in the doctrine-guard `CANONICAL_DOCS` scan set (banned-vocab scanned).
+  GOTCHA: registering ANY canon doc there has a hidden companion obligation — the
+  "authority map lists every canonical doc" test asserts every `CANONICAL_DOCS` entry
+  also appears in `docs/DOCUMENTATION_AUTHORITY_MAP.md`. Add the doc to BOTH, and confirm
+  it's clean against `DOC_BANNED` first, or doctrine-guard fails.
+- The 3 anti-fragmentation rules now have a doc↔registry alignment cross-check (in the
+  knowledge-map test): normalizes both, asserts 6 rule fragments survive in each file.
+  GOTCHA: the registry "header" is a JS comment, so any text cross-check against it MUST
+  strip `//` (and collapse line-wraps) before substring matching, or comment markers split
+  multi-line phrases. It's presence-based (not semantic) and scans the whole registry
+  file, not just the header — acceptable for a guardrail, not a doctrine proof.
