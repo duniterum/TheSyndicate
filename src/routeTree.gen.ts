@@ -47,6 +47,7 @@ import { Route as LabsProtocolMemoryRouteImport } from './routes/labs.protocol-m
 import { Route as LabsProtocolIntelligenceRouteImport } from './routes/labs.protocol-intelligence'
 import { Route as LabsProtocolEventsRouteImport } from './routes/labs.protocol-events'
 import { Route as LabsMemoryCandidatesRouteImport } from './routes/labs.memory-candidates'
+import { Route as LabsKnowledgeMapRouteImport } from './routes/labs.knowledge-map'
 import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
 import { Route as LabsInstitutionalRegisterRouteImport } from './routes/labs.institutional-register'
 import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museum'
@@ -255,6 +256,11 @@ const LabsMemoryCandidatesRoute = LabsMemoryCandidatesRouteImport.update({
   path: '/memory-candidates',
   getParentRoute: () => LabsRoute,
 } as any)
+const LabsKnowledgeMapRoute = LabsKnowledgeMapRouteImport.update({
+  id: '/knowledge-map',
+  path: '/knowledge-map',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsInvariantsRoute = LabsInvariantsRouteImport.update({
   id: '/invariants',
   path: '/invariants',
@@ -379,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/institutional-register': typeof LabsInstitutionalRegisterRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
@@ -434,6 +441,7 @@ export interface FileRoutesByTo {
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/institutional-register': typeof LabsInstitutionalRegisterRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
@@ -491,6 +499,7 @@ export interface FileRoutesById {
   '/labs/design-museum': typeof LabsDesignMuseumRoute
   '/labs/institutional-register': typeof LabsInstitutionalRegisterRoute
   '/labs/invariants': typeof LabsInvariantsRoute
+  '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
@@ -549,6 +558,7 @@ export interface FileRouteTypes {
     | '/labs/design-museum'
     | '/labs/institutional-register'
     | '/labs/invariants'
+    | '/labs/knowledge-map'
     | '/labs/memory-candidates'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
@@ -604,6 +614,7 @@ export interface FileRouteTypes {
     | '/labs/design-museum'
     | '/labs/institutional-register'
     | '/labs/invariants'
+    | '/labs/knowledge-map'
     | '/labs/memory-candidates'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
@@ -660,6 +671,7 @@ export interface FileRouteTypes {
     | '/labs/design-museum'
     | '/labs/institutional-register'
     | '/labs/invariants'
+    | '/labs/knowledge-map'
     | '/labs/memory-candidates'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
@@ -987,6 +999,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsMemoryCandidatesRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/knowledge-map': {
+      id: '/labs/knowledge-map'
+      path: '/knowledge-map'
+      fullPath: '/labs/knowledge-map'
+      preLoaderRoute: typeof LabsKnowledgeMapRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/invariants': {
       id: '/labs/invariants'
       path: '/invariants'
@@ -1122,6 +1141,7 @@ interface LabsRouteChildren {
   LabsDesignMuseumRoute: typeof LabsDesignMuseumRoute
   LabsInstitutionalRegisterRoute: typeof LabsInstitutionalRegisterRoute
   LabsInvariantsRoute: typeof LabsInvariantsRoute
+  LabsKnowledgeMapRoute: typeof LabsKnowledgeMapRoute
   LabsMemoryCandidatesRoute: typeof LabsMemoryCandidatesRoute
   LabsProtocolEventsRoute: typeof LabsProtocolEventsRoute
   LabsProtocolIntelligenceRoute: typeof LabsProtocolIntelligenceRoute
@@ -1138,6 +1158,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsDesignMuseumRoute: LabsDesignMuseumRoute,
   LabsInstitutionalRegisterRoute: LabsInstitutionalRegisterRoute,
   LabsInvariantsRoute: LabsInvariantsRoute,
+  LabsKnowledgeMapRoute: LabsKnowledgeMapRoute,
   LabsMemoryCandidatesRoute: LabsMemoryCandidatesRoute,
   LabsProtocolEventsRoute: LabsProtocolEventsRoute,
   LabsProtocolIntelligenceRoute: LabsProtocolIntelligenceRoute,

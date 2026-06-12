@@ -28,6 +28,7 @@ guard-enforced (see *Enforcement* below).
 | `docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md` | "How may money / economic data surface, and what stops it becoming prestige?" |
 | `docs/canon/07_FOUNDER_PRINCIPLE.md` | "What direction has the founder approved but deliberately *not built yet*?" |
 | `docs/canon/08_PROTOCOL_OPERATING_PRINCIPLE.md` | "How should new capability be built — derive from existing truth, or invent new stores?" |
+| `docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md` | "Where does each kind of knowledge live, and is it Protocol Knowledge or Institutional Register Memory?" (defers to `src/lib/protocol-knowledge-map.ts`) |
 
 ---
 
