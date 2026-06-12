@@ -359,3 +359,59 @@ describe("Chronicle admission — Adjacency Law (REGISTER → ADMISSION only)", 
     });
   }
 });
+
+// CHRONICLE ADMISSION CANDIDATE → CHRONICLE ENTRY (Sprint 13, the controlled
+// publication edge). The Chronicle Entry layer reads CHRONICLE ADMISSION
+// CANDIDATES; it must NEVER reach back past its neighbour into the institutional-
+// register layer, the Chronicle-promotion / Chronicle-review layers, the Memory
+// layer, the Signal layer, or the raw event layer — full lineage is carried
+// THROUGH each ChronicleAdmissionCandidate. It must read the admission REGISTRY
+// leaf (the candidate vocabulary + the single-sourced copy guard), never the
+// admission DERIVER (chronicle-admission). It publishes nothing and imports no
+// Story / Recognition / Member-Register / governance surface.
+const ENTRY_MODULES = ["chronicle-entry-registry.ts", "chronicle-entry.ts"];
+
+describe("Chronicle entry — Adjacency Law (ADMISSION → ENTRY only)", () => {
+  for (const mod of ENTRY_MODULES) {
+    const src = read(mod);
+    const importLines = src
+      .split(/\r?\n/)
+      .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+    const imports = importLines.join("\n");
+
+    it(`${mod} does not import the raw event layer (protocol-events)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Signal layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Memory layer`, () => {
+      expect(/from\s+["'][^"']*\/memory-candidates["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle-review layer`, () => {
+      expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle-promotion layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/chronicle-promotion["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*chronicle-promotion-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not reach past its neighbour into the institutional-register layer`, () => {
+      expect(/from\s+["'][^"']*institutional-register/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the admission DERIVER (reads the registry leaf)`, () => {
+      expect(/from\s+["'][^"']*\/chronicle-admission["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} builds from the admission candidate vocabulary (imports the admission registry leaf)`, () => {
+      expect(/from\s+["'][^"']*chronicle-admission-registry["']/.test(imports)).toBe(true);
+    });
+  }
+});

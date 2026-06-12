@@ -1,0 +1,309 @@
+SPRINT 13 IMPLEMENTATION — CHRONICLE ENTRY PUBLICATION MECHANISM
+
+Proceed carefully.
+
+Do NOT run a broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Public Institutional Register
+→ Reliability Layer
+→ Protocol Knowledge Map
+→ Chronicle Admission Candidate
+
+Current missing edge:
+
+Chronicle Admission Candidate
+→ Chronicle Entry
+
+Core objective:
+
+Build the minimal Chronicle Entry publication mechanism for institutional memory.
+
+This sprint creates the controlled bridge that allows admitted institutional memories to become Chronicle Entries later, while preserving human/governance control.
+
+This sprint does NOT:
+
+* generate Story
+* build Recognition
+* build Member Register
+* build DAO governance
+* rewrite existing Chronicle entries
+* auto-publish public Chronicle entries without a safe gate
+* create new contracts
+* create AI summaries
+* create marketing copy
+* change Signal / Memory / Register derivation rules
+
+1. PRE-IMPLEMENTATION CHALLENGE
+
+Before coding, answer briefly:
+
+A) Is Chronicle Entry truly the next dependency-valid layer after Chronicle Admission Candidate?
+
+B) Is there any missing layer between:
+
+Chronicle Admission Candidate
+→ Chronicle Entry
+
+such as:
+
+* Chronicle Publication Decision
+* Chronicle Seal
+* Chronicle Version
+* Chronicle Governance Approval
+* Chronicle Entry Draft
+
+C) Is any existing code already partially implementing Chronicle Entry concepts?
+
+D) Is there any architectural risk that would make Chronicle Entry premature?
+
+Do not turn this into a broad audit.
+
+Only answer enough to confirm the correct next edge.
+
+2. CHRONICLE ENTRY OBJECT
+
+Create or formalize the ChronicleEntry output object for institutional entries.
+
+It should include:
+
+* id
+* sourceChronicleAdmissionCandidateId
+* sourceInstitutionalRegisterEntryId
+* sourcePromotionDecisionId
+* sourceChronicleReviewCandidateId if carried
+* sourceMemoryCandidateId if carried
+* sourceSignalId if carried
+* sourceEventId if carried
+* sourceTxHash if available
+* sourceBlock if available
+* register = protocol-institutional
+* category
+* title
+* summary
+* chronologyDate / block / tx
+* verificationStatus
+* publicationStatus
+* publicationDecision
+* createdFrom
+* lineage
+* version
+
+3. PUBLICATION STATUS
+
+Use strict statuses:
+
+* draft
+* published
+* held
+* rejected
+* superseded
+
+Default behavior:
+
+* admitted candidates → draft
+* review candidates → held
+* held candidates → held
+* rejected candidates → rejected
+* no auto-published entry unless explicitly safe and justified
+
+If publishing is unsafe now, only create draft Chronicle Entries.
+
+4. HUMAN / GOVERNANCE CONTROL
+
+Chronicle publication is a human/governance act.
+
+Implement the system so future promotion can be:
+
+* human-approved
+* governance-approved
+* manually sealed
+* later automated only if doctrine permits
+
+For now:
+
+* do not fake governance.
+* do not imply DAO approval exists.
+* do not invent a reviewer.
+* do not auto-publish unless the entry is a locked, verified institutional seed and the architecture already supports that safely.
+
+5. EXISTING CHRONICLE COMPATIBILITY
+
+Existing Chronicle entries are locked and must not be rewritten.
+
+This sprint may:
+
+* add compatibility metadata if safe,
+* add an institutional entry type if needed,
+* add a bridge from admission candidate to future Chronicle entry,
+
+but must not mutate existing manually curated Chronicle content.
+
+6. INSTITUTIONAL ONLY
+
+Only protocol-institutional entries may become Chronicle Entry candidates.
+
+Member-living remains reserved.
+
+Recognition remains reserved.
+
+DAO/member memory remains future.
+
+If a member-living admission candidate appears:
+
+* exclude it
+* hold it
+* or reject it according to existing doctrine
+
+but never publish it into the institutional Chronicle.
+
+7. COPY / TONE RULES
+
+Chronicle Entry copy must remain sober and factual.
+
+Allowed:
+
+* protocol recorded
+* protocol deployed
+* protocol seeded
+* protocol executed
+* verified protocol record
+* institutional memory
+* source transaction
+* block
+* register entry
+
+Avoid:
+
+* legendary
+* heroic
+* founder achievement
+* founder made history
+* investor reward
+* profit
+* return
+* governance right
+* financial promise
+* hype-style genesis copy
+
+GENESIS_EVENT remains allowed only as verified institutional protocol-birth fact.
+
+8. ACTIVITY RELATIONSHIP
+
+Evaluate and preserve the relationship with /activity.
+
+Rules:
+
+* /activity remains the raw factual event stream.
+* Chronicle Entry must not replace Activity.
+* Chronicle Entry must trace back to Event/Activity where applicable.
+* Do not overload /activity with narrative.
+* Do not create a duplicate activity feed.
+* If safe and low-scope, add only internal lineage metadata showing that an event is part of institutional memory or Chronicle admission.
+* If not safe, return a follow-up recommendation.
+
+9. INSPECTION SURFACE
+
+Add inspection only unless a safe public surface already exists.
+
+Acceptable:
+
+* hidden /labs/chronicle-entries-preview
+* internal registry
+* test output
+
+Do not redesign public /chronicle yet.
+
+Do not publish new entries to public /chronicle unless the pre-implementation challenge proves it is safe.
+
+10. VERSIONING / AMENDMENT RULES
+
+Define minimal rules for future durability:
+
+* Chronicle Entries are append-only.
+* If a mistake occurs, create a superseding entry rather than silently editing history.
+* Existing entries remain immutable unless explicitly marked as corrected.
+* No destructive mutation.
+
+Implementation can be metadata-only if full versioning is too early.
+
+11. MAINTAINER INTELLIGENCE
+
+Because you see the codebase directly, include a short maintainer section:
+
+* one existing Chronicle structure we should reuse
+* one risk in converting Admission → Chronicle Entry
+* one missing field that future Story would need
+* one low-scope improvement that fits this sprint without expanding scope
+
+Do not turn this into an audit.
+
+12. TESTS REQUIRED
+
+Add tests proving:
+
+* admitted institutional candidates become draft or published Chronicle Entries according to rule.
+* review / held / rejected candidates do not publish as final.
+* member-living candidates cannot become institutional Chronicle entries.
+* full lineage is preserved.
+* existing Chronicle entries are not mutated.
+* copy is clean and sober.
+* GENESIS_EVENT remains fact-only.
+* Activity remains distinct.
+* no Story / Recognition behavior is introduced.
+* versioning/supersession rules are represented if implemented.
+
+13. QA REQUIRED
+
+Run:
+
+* typecheck
+* Chronicle Entry publication tests
+* Chronicle Admission tests
+* Institutional Register tests
+* doctrine guard
+* ownership / forbidden-language guard
+* route render test if route added
+
+Do not fight the known production build OOM unless explicitly in scope.
+
+14. RETURN FORMAT
+
+After implementation, report:
+
+1. Pre-implementation challenge answer.
+2. Files changed.
+3. ChronicleEntry object shape.
+4. Publication statuses.
+5. Human/governance control model.
+6. Existing Chronicle compatibility.
+7. Activity relationship.
+8. Versioning / amendment rules.
+9. Labs/inspection surface.
+10. Maintainer intelligence.
+11. What was intentionally not touched.
+12. Tests added.
+13. QA results.
+14. Remaining risks.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint is not Governance.
+
+This sprint only builds the missing bridge:
+
+Chronicle Admission Candidate
+→ Chronicle Entry
+
+with human/governance-controlled publication semantics.

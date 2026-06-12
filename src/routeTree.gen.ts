@@ -55,6 +55,7 @@ import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museu
 import { Route as LabsDesignArchiveRouteImport } from './routes/labs.design-archive'
 import { Route as LabsComponentIndexRouteImport } from './routes/labs.component-index'
 import { Route as LabsChroniclePromotionRouteImport } from './routes/labs.chronicle-promotion'
+import { Route as LabsChronicleEntriesPreviewRouteImport } from './routes/labs.chronicle-entries-preview'
 import { Route as LabsChronicleCandidatesRouteImport } from './routes/labs.chronicle-candidates'
 import { Route as LabsChronicleAdmissionRouteImport } from './routes/labs.chronicle-admission'
 import { Route as ChaptersSlugRouteImport } from './routes/chapters.$slug'
@@ -299,6 +300,12 @@ const LabsChroniclePromotionRoute = LabsChroniclePromotionRouteImport.update({
   path: '/chronicle-promotion',
   getParentRoute: () => LabsRoute,
 } as any)
+const LabsChronicleEntriesPreviewRoute =
+  LabsChronicleEntriesPreviewRouteImport.update({
+    id: '/chronicle-entries-preview',
+    path: '/chronicle-entries-preview',
+    getParentRoute: () => LabsRoute,
+  } as any)
 const LabsChronicleCandidatesRoute = LabsChronicleCandidatesRouteImport.update({
   id: '/chronicle-candidates',
   path: '/chronicle-candidates',
@@ -393,6 +400,7 @@ export interface FileRoutesByFullPath {
   '/chapters/$slug': typeof ChaptersSlugRoute
   '/labs/chronicle-admission': typeof LabsChronicleAdmissionRoute
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
+  '/labs/chronicle-entries-preview': typeof LabsChronicleEntriesPreviewRoute
   '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
@@ -451,6 +459,7 @@ export interface FileRoutesByTo {
   '/chapters/$slug': typeof ChaptersSlugRoute
   '/labs/chronicle-admission': typeof LabsChronicleAdmissionRoute
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
+  '/labs/chronicle-entries-preview': typeof LabsChronicleEntriesPreviewRoute
   '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
@@ -511,6 +520,7 @@ export interface FileRoutesById {
   '/chapters/$slug': typeof ChaptersSlugRoute
   '/labs/chronicle-admission': typeof LabsChronicleAdmissionRoute
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
+  '/labs/chronicle-entries-preview': typeof LabsChronicleEntriesPreviewRoute
   '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
@@ -572,6 +582,7 @@ export interface FileRouteTypes {
     | '/chapters/$slug'
     | '/labs/chronicle-admission'
     | '/labs/chronicle-candidates'
+    | '/labs/chronicle-entries-preview'
     | '/labs/chronicle-promotion'
     | '/labs/component-index'
     | '/labs/design-archive'
@@ -630,6 +641,7 @@ export interface FileRouteTypes {
     | '/chapters/$slug'
     | '/labs/chronicle-admission'
     | '/labs/chronicle-candidates'
+    | '/labs/chronicle-entries-preview'
     | '/labs/chronicle-promotion'
     | '/labs/component-index'
     | '/labs/design-archive'
@@ -689,6 +701,7 @@ export interface FileRouteTypes {
     | '/chapters/$slug'
     | '/labs/chronicle-admission'
     | '/labs/chronicle-candidates'
+    | '/labs/chronicle-entries-preview'
     | '/labs/chronicle-promotion'
     | '/labs/component-index'
     | '/labs/design-archive'
@@ -1080,6 +1093,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsChroniclePromotionRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/chronicle-entries-preview': {
+      id: '/labs/chronicle-entries-preview'
+      path: '/chronicle-entries-preview'
+      fullPath: '/labs/chronicle-entries-preview'
+      preLoaderRoute: typeof LabsChronicleEntriesPreviewRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/chronicle-candidates': {
       id: '/labs/chronicle-candidates'
       path: '/chronicle-candidates'
@@ -1175,6 +1195,7 @@ const ChaptersRouteWithChildren = ChaptersRoute._addFileChildren(
 interface LabsRouteChildren {
   LabsChronicleAdmissionRoute: typeof LabsChronicleAdmissionRoute
   LabsChronicleCandidatesRoute: typeof LabsChronicleCandidatesRoute
+  LabsChronicleEntriesPreviewRoute: typeof LabsChronicleEntriesPreviewRoute
   LabsChroniclePromotionRoute: typeof LabsChroniclePromotionRoute
   LabsComponentIndexRoute: typeof LabsComponentIndexRoute
   LabsDesignArchiveRoute: typeof LabsDesignArchiveRoute
@@ -1193,6 +1214,7 @@ interface LabsRouteChildren {
 const LabsRouteChildren: LabsRouteChildren = {
   LabsChronicleAdmissionRoute: LabsChronicleAdmissionRoute,
   LabsChronicleCandidatesRoute: LabsChronicleCandidatesRoute,
+  LabsChronicleEntriesPreviewRoute: LabsChronicleEntriesPreviewRoute,
   LabsChroniclePromotionRoute: LabsChroniclePromotionRoute,
   LabsComponentIndexRoute: LabsComponentIndexRoute,
   LabsDesignArchiveRoute: LabsDesignArchiveRoute,

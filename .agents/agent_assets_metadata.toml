@@ -48,3 +48,9 @@ id = "PQqNkx3mH_SkxrXsXPK1k"
 uri = "file://docs/PROTOCOL_METRICS_REGISTRY_REPORT.md"
 type = "text"
 title = "Protocol Metrics Registry — Phase 1C Report"
+
+[[outputs]]
+id = "OXmUpDSFZGLDMcYSCJPkd"
+uri = "file://docs/SPRINT_13_CHRONICLE_ENTRY_PUBLICATION_REPORT.md"
+type = "text"
+title = "Sprint 13 — Chronicle Entry Publication Mechanism (14-section report)"

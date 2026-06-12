@@ -78,6 +78,7 @@ function LabsIndex() {
           <Link to="/labs/chronicle-promotion" className="underline hover:no-underline">→ Chronicle promotion (chronicle → promotion workbench)</Link>
           <Link to="/labs/institutional-register" className="underline hover:no-underline">→ Institutional register (promotion → register workbench)</Link>
           <Link to="/labs/chronicle-admission" className="underline hover:no-underline">→ Chronicle admission (register → admission workbench)</Link>
+          <Link to="/labs/chronicle-entries-preview" className="underline hover:no-underline">→ Chronicle entries (admission → entry workbench)</Link>
           <Link to="/labs/knowledge-map" className="underline hover:no-underline">→ Protocol knowledge map (layer inspection)</Link>
           <Link to="/labs/design-museum" className="underline hover:no-underline">→ Visual design museum</Link>
           <Link to="/labs/component-index" className="underline hover:no-underline">→ Technical component index</Link>

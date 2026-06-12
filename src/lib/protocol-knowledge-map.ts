@@ -391,14 +391,15 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
       "/labs/chronicle-candidates",
       "/labs/chronicle-promotion",
       "/labs/chronicle-admission",
+      "/labs/chronicle-entries-preview",
     ],
     status: "partial",
     statusNote:
-      "Promotion pipeline live; public Chronicle curation is gated and human-approved. Evidence: src/lib/chronicle-promotion.ts.",
+      "Promotion pipeline live; public Chronicle curation is gated and human-approved. The admission → entry edge derives DRAFT institutional entries only; publication is a human / governance act. Evidence: src/lib/chronicle-promotion.ts, src/lib/chronicle-entry.ts.",
     identityPosture: "identity-free",
     indexes: {
       canonDocs: ["docs/canon/05_FOUNDATION_FREEZE.md"],
-      registries: [],
+      registries: ["src/lib/chronicle-entry-registry.ts"],
     },
   },
   {
