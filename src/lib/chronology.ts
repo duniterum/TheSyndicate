@@ -17,6 +17,7 @@ import type { InstitutionalChronicleEntry } from "./chronicle-entry-registry";
 import {
   chronologyAnchorKey,
   isActiveEntryStatus,
+  resolveBlockTimestamp,
   resolveChronology,
   type ChronologyEntry,
 } from "./chronology-registry";
@@ -103,7 +104,7 @@ export function deriveChronologicalTimeline(
       chronologyStatus: status,
       chronologyType: e.category,
       blockNumber,
-      blockTimestamp: null,
+      ...resolveBlockTimestamp(blockNumber, undefined),
       txHash,
       sequenceNumber: sequenceById.get(e.id) ?? null,
       chapter: null,

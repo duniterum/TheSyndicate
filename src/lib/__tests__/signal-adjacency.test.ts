@@ -467,3 +467,58 @@ describe("Chronicle chronology — Adjacency Law (ENTRY → CHRONOLOGY only)", (
     });
   }
 });
+
+// CHRONOLOGY TIMESTAMPS (Sprint 15) — the block-timestamp DATA-ACCESS surface.
+// It is the only chronology module allowed to touch the chain (wagmi + react-
+// query), but it must stay adjacency-clean: it reads the chronology REGISTRY
+// leaf (types + pure resolvers) and nothing upstream — never the deriver, never
+// the raw event / signal / memory / review / promotion / register / admission
+// layers, never chapters / milestones, and never the chain-time approximation
+// module. It threads a VERIFIED timestamp as metadata; it never derives order.
+describe("Chronicle chronology timestamps — data-access surface stays adjacency-clean", () => {
+  const src = read("chronology-timestamps.ts");
+  const importLines = src
+    .split(/\r?\n/)
+    .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+  const imports = importLines.join("\n");
+
+  it("reads the chronology registry leaf (types/resolvers) only — never the chronology deriver", () => {
+    expect(/from\s+["'][^"']*chronology-registry["']/.test(imports)).toBe(true);
+    expect(/from\s+["']\.\/chronology["']/.test(imports)).toBe(false);
+  });
+
+  it("does not import any upstream pipeline layer", () => {
+    expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*\/memory-candidates["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-promotion/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*institutional-register/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-admission/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*\/chronicle-entry["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chronicle-entry-registry["']/.test(imports)).toBe(false);
+  });
+
+  it("does not reach into chapters, milestones, or the chain-time approximation", () => {
+    expect(/from\s+["'][^"']*\/chapters["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*activity-milestones["']/.test(imports)).toBe(false);
+    expect(/from\s+["'][^"']*chain-time["']/.test(imports)).toBe(false);
+  });
+
+  it("takes its I/O only from wagmi and react-query (its allowed data-access deps)", () => {
+    const specifiers = importLines
+      .map((l) => l.match(/from\s+["']([^"']+)["']/)?.[1])
+      .filter((s): s is string => Boolean(s));
+    const allowed = new Set([
+      "react",
+      "@tanstack/react-query",
+      "wagmi",
+      "./chronology-registry",
+    ]);
+    for (const s of specifiers) {
+      expect(allowed.has(s), `unexpected import: ${s}`).toBe(true);
+    }
+  });
+});

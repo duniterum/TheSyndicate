@@ -52,6 +52,7 @@ const PRESTIGE_MODULES = [
   "chronicle-entry.ts",
   "chronology-registry.ts",
   "chronology.ts",
+  "chronology-timestamps.ts",
 ];
 
 // Per-actor MONETARY MAGNITUDE field names that must never appear in the Signal
@@ -198,7 +199,7 @@ describe("Chronicle entry layer — money-safe (canon §4.5 Rule E)", () => {
 // magnitude. It must never name a monetary field: chronological position is
 // decided from block / transaction evidence, never from how much money moved.
 describe("Chronicle chronology layer — money-safe (canon §4.5 Rule E)", () => {
-  for (const mod of ["chronology-registry.ts", "chronology.ts"]) {
+  for (const mod of ["chronology-registry.ts", "chronology.ts", "chronology-timestamps.ts"]) {
     const src = read(mod);
     for (const token of RULE_E_MAGNITUDE_TOKENS) {
       it(`${mod} never names the magnitude field "${token}"`, () => {

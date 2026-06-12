@@ -17,8 +17,11 @@
 //     THROUGH each entry. No chapters / milestones (count-derived, not time).
 //   • Block ordering — only ACTIVE, block-anchored, non-duplicate entries earn a
 //     sequence (block number asc, entry-id tie-break). Everything else is HELD.
-//   • Never invent — blockTimestamp stays null (no timestamp is fetched); a
-//     tx-only or anchor-free entry proves existence, never order.
+//   • Never invent — a verified block timestamp is threaded as metadata
+//     (Sprint 15), read straight from chain (getBlock) for anchored blocks;
+//     held / pending / error / not-applicable entries carry NO date, and a date
+//     is never estimated. A tx-only or anchor-free entry proves existence, never
+//     order, and never carries a timestamp.
 //   • Duplicate-safe — two entries sharing a (block, tx) anchor: the first is
 //     sequenced, the second flagged and retained, never silently dropped.
 //   • Existing Chronicle entries are never mutated; chronology is an OVERLAY.
@@ -40,11 +43,17 @@ import { deriveChronicleAdmissionCandidates } from "@/lib/chronicle-admission";
 import { deriveInstitutionalChronicleEntries } from "@/lib/chronicle-entry";
 import { deriveChronologicalTimeline } from "@/lib/chronology";
 import {
+  applyBlockTimestamps,
   CHRONOLOGY_MAINTAINER,
   orderedTimeline,
   type ChronologyEntry,
   type ChronologyStatus,
+  type TimestampStatus,
 } from "@/lib/chronology-registry";
+import {
+  collectAnchoredBlockNumbers,
+  useBlockTimestamps,
+} from "@/lib/chronology-timestamps";
 
 export const Route = createFileRoute("/labs/chronicle-timeline")({
   head: () => ({
@@ -69,15 +78,34 @@ const STATUS_TONE: Record<ChronologyStatus, string> = {
 
 const STATUSES: ChronologyStatus[] = ["ordered", "held-no-anchor", "coverage-limited"];
 
+const TIMESTAMP_TONE: Record<TimestampStatus, string> = {
+  verified: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+  pending: "border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-400",
+  unavailable: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400",
+  error: "border-destructive/40 bg-destructive/10 text-destructive",
+  "not-applicable": "border-border bg-muted/40 text-muted-foreground",
+};
+
 function short(hash?: string | null): string {
   if (!hash) return "—";
   return hash.length > 14 ? `${hash.slice(0, 8)}…${hash.slice(-4)}` : hash;
 }
 
+/**
+ * Format a VERIFIED unix-seconds timestamp as a UTC string. Deterministic (UTC,
+ * not the local clock), so it is hydration-safe and never invents a date — it
+ * only ever renders a real timestamp that was read from chain.
+ */
+function formatUtc(unix: number | null): string {
+  if (unix === null || !Number.isFinite(unix)) return "—";
+  return `${new Date(unix * 1000).toISOString().replace(/\.\d{3}Z$/, "Z")}`;
+}
+
 function ChronicleTimelineWorkbench() {
   const { events, isLoading, isError } = useProtocolEvents({ limit: 48 });
 
-  const { chronology } = useMemo(() => {
+  // Base chronology — the pure, ordered overlay (no timestamps yet).
+  const baseChronology = useMemo(() => {
     const signals = deriveSignals(events, { windowCoversDeployment: false });
     const memory = deriveMemoryCandidates(signals);
     const review = deriveChronicleReviewCandidates(memory);
@@ -86,15 +114,33 @@ function ChronicleTimelineWorkbench() {
     const merged = mergeInstitutionalEntries(deriveGenesisRegisterEntries(), derived);
     const candidates = deriveChronicleAdmissionCandidates(merged);
     const entries = deriveInstitutionalChronicleEntries(candidates);
-    const chron = deriveChronologicalTimeline(entries);
-    return { chronology: chron };
+    return deriveChronologicalTimeline(entries);
   }, [events]);
+
+  // Collect anchored block heights, read their VERIFIED timestamps off-chain,
+  // then thread them on as metadata. Ordering is already fixed in baseChronology;
+  // applyBlockTimestamps only overlays the five timestamp fields.
+  const anchoredBlocks = useMemo(
+    () => collectAnchoredBlockNumbers(baseChronology),
+    [baseChronology],
+  );
+  const timestampLookup = useBlockTimestamps(anchoredBlocks);
+  const chronology = useMemo(
+    () => applyBlockTimestamps(baseChronology, timestampLookup),
+    [baseChronology, timestampLookup],
+  );
 
   const ordered = useMemo(() => orderedTimeline(chronology), [chronology]);
 
   const byStatus = useMemo(() => {
     const m = new Map<ChronologyStatus, number>();
     for (const c of chronology) m.set(c.chronologyStatus, (m.get(c.chronologyStatus) ?? 0) + 1);
+    return m;
+  }, [chronology]);
+
+  const byTimestamp = useMemo(() => {
+    const m = new Map<TimestampStatus, number>();
+    for (const c of chronology) m.set(c.timestampStatus, (m.get(c.timestampStatus) ?? 0) + 1);
     return m;
   }, [chronology]);
 
@@ -157,6 +203,12 @@ function ChronicleTimelineWorkbench() {
           </span>
           <span>
             Chronology entries: <b>{chronology.length}</b>
+          </span>
+          <span className="text-emerald-700 dark:text-emerald-400">
+            Timestamps verified: <b>{byTimestamp.get("verified") ?? 0}</b>
+          </span>
+          <span className="text-sky-700 dark:text-sky-400">
+            Pending: <b>{byTimestamp.get("pending") ?? 0}</b>
           </span>
           <span className="text-emerald-700 dark:text-emerald-400">
             Ordered: <b>{ordered.length}</b>
@@ -222,8 +274,10 @@ function ChronicleTimelineWorkbench() {
         </h2>
         <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
           The proven order: only entries with a verified block height, by ascending block. Block
-          numbers are ordinal positions, <b>not dates</b> — no timestamp is fetched anywhere in the
-          pipeline, so <code>blockTimestamp</code> is null by design.
+          numbers are ordinal positions, <b>not dates</b> — ordering is by block height alone. A
+          verified block timestamp is now threaded as metadata (read from chain via{" "}
+          <code>getBlock</code>), but it is never an ordering input; an entry whose timestamp is
+          pending, errored, or unavailable carries no date and is never estimated.
         </p>
 
         {ordered.length === 0 ? (
@@ -308,8 +362,20 @@ function ChronicleTimelineWorkbench() {
                     <td className="px-3 py-2 mono text-xs text-foreground/80">
                       {c.blockNumber?.toLocaleString() ?? "—"}
                     </td>
-                    <td className="px-3 py-2 mono text-xs text-muted-foreground">
-                      {c.blockTimestamp ?? "—"}
+                    <td className="px-3 py-2 text-xs">
+                      <span
+                        className={`mono rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-[0.14em] ${TIMESTAMP_TONE[c.timestampStatus]}`}
+                      >
+                        {c.timestampStatus}
+                      </span>
+                      {c.timestampStatus === "verified" && (
+                        <div className="mt-0.5 mono text-[11px] text-foreground/80">
+                          {formatUtc(c.blockTimestamp)}
+                        </div>
+                      )}
+                      <div className="mt-0.5 text-[10px] text-muted-foreground">
+                        src {c.timestampSource}
+                      </div>
                     </td>
                     <td className="px-3 py-2 mono text-xs text-muted-foreground">
                       {c.chapter ?? "—"}

@@ -61,6 +61,50 @@ export type ChronologyAnchor = "block-number" | "tx" | "deployment" | "none";
 export type ChronologyConfidence = "verified" | "held";
 
 /**
+ * Lifecycle of a block-timestamp lookup for a chronology entry (Sprint 15 §3).
+ *   • verified        — a real block timestamp was read from verified chain
+ *                       metadata; the only status that carries a date.
+ *   • unavailable     — the block was queried but no timestamp could be found.
+ *   • pending         — the entry is block-anchored but no lookup has resolved
+ *                       yet (the default before the async fetch lands).
+ *   • error           — the timestamp lookup failed (e.g. RPC unavailable).
+ *   • not-applicable  — the entry carries no block anchor, so no block timestamp
+ *                       can ever apply (a tx-only or no-anchor held entry).
+ */
+export type TimestampStatus =
+  | "verified"
+  | "unavailable"
+  | "pending"
+  | "error"
+  | "not-applicable";
+
+/**
+ * Where a verified block timestamp came from (Sprint 15 §3). Only the chain RPC
+ * getBlock read is honest today; "none" is carried whenever no date is present.
+ */
+export type TimestampSource = "chain-rpc-getblock" | "none";
+
+/**
+ * The result of an out-of-layer block-timestamp fetch, handed BACK into the pure
+ * overlay as plain data. The chronology layer never performs the fetch itself
+ * (no I/O); a caller resolves these and applies them via applyBlockTimestamps.
+ *   • verified    — carries the real unix seconds read from chain metadata.
+ *   • unavailable — the block was queried, no timestamp found.
+ *   • error       — the lookup failed.
+ * A block with NO entry in the lookup is treated as still "pending".
+ */
+export type BlockTimestampFetch =
+  | { state: "verified"; unix: number }
+  | { state: "unavailable" }
+  | { state: "error" };
+
+/**
+ * A caller-resolved map of block number → fetch result. Plain data so the
+ * overlay stays pure and deterministic: same (chronology, lookup) in → same out.
+ */
+export type BlockTimestampLookup = ReadonlyMap<number, BlockTimestampFetch>;
+
+/**
  * One chronology overlay record (spec §2). It is a SEPARATE object derived 1:1
  * from a Chronicle Entry — it never mutates the entry. It carries only factual,
  * verifiable ordering metadata: no narrative, no interpretation, no invented date.
@@ -77,10 +121,20 @@ export type ChronologyEntry = {
   /** Verified block height, or null when the source fact carried no block. */
   blockNumber: number | null;
   /**
-   * Block timestamp — ALWAYS null today: no block timestamp is fetched anywhere
-   * in the pipeline. Kept so a future timestamp lookup has a home (spec §10).
+   * Verified block timestamp in unix SECONDS, or null. Non-null ONLY when
+   * timestampStatus is "verified" (a real timestamp read from chain metadata).
+   * Held / pending / error / not-applicable entries keep this null — a date is
+   * NEVER inferred, estimated, or carried from the local clock (Sprint 15).
    */
   blockTimestamp: number | null;
+  /** Where the timestamp lookup stands (verified / unavailable / pending / error / not-applicable). */
+  timestampStatus: TimestampStatus;
+  /** The verified source of the timestamp, or "none" when no date is present. */
+  timestampSource: TimestampSource;
+  /** Whether the timestamp is proven ("verified") or merely held ("held"). */
+  timestampConfidence: ChronologyConfidence;
+  /** Sober, person-free explanation of the timestamp status — carries no magnitude. */
+  timestampReason: string;
   /** Source transaction hash, when the entry carried one. */
   txHash: string | null;
   /**
@@ -230,6 +284,103 @@ export function orderedTimeline(
     .sort((a, b) => (a.sequenceNumber as number) - (b.sequenceNumber as number));
 }
 
+/**
+ * PURE resolution of the timestamp fields for a single chronology entry from a
+ * caller-resolved lookup result (Sprint 15 §3). It performs NO I/O and reads no
+ * clock — it only classifies plain data:
+ *   • no block anchor (blockNumber null) → not-applicable, no date.
+ *   • block-anchored but no fetch resolved yet (fetched undefined) → pending.
+ *   • verified fetch → the ONLY path that carries a date (the real unix).
+ *   • unavailable / error fetch → held, no date.
+ * A date is NEVER inferred, estimated, or invented: blockTimestamp is non-null
+ * only on the verified path, and only from a real unix supplied by the caller.
+ */
+export function resolveBlockTimestamp(
+  blockNumber: number | null,
+  fetched: BlockTimestampFetch | undefined,
+): Pick<
+  ChronologyEntry,
+  | "blockTimestamp"
+  | "timestampStatus"
+  | "timestampSource"
+  | "timestampConfidence"
+  | "timestampReason"
+> {
+  if (blockNumber === null) {
+    return {
+      blockTimestamp: null,
+      timestampStatus: "not-applicable",
+      timestampSource: "none",
+      timestampConfidence: "held",
+      timestampReason:
+        "No block anchor, so no block timestamp can apply; the entry is held without a date.",
+    };
+  }
+
+  if (fetched === undefined) {
+    return {
+      blockTimestamp: null,
+      timestampStatus: "pending",
+      timestampSource: "none",
+      timestampConfidence: "held",
+      timestampReason:
+        "Block-anchored; awaiting a verified block timestamp lookup. Ordered by block height in the meantime.",
+    };
+  }
+
+  if (fetched.state === "verified") {
+    return {
+      blockTimestamp: fetched.unix,
+      timestampStatus: "verified",
+      timestampSource: "chain-rpc-getblock",
+      timestampConfidence: "verified",
+      timestampReason:
+        "Verified block timestamp read from chain metadata via getBlock.",
+    };
+  }
+
+  if (fetched.state === "unavailable") {
+    return {
+      blockTimestamp: null,
+      timestampStatus: "unavailable",
+      timestampSource: "none",
+      timestampConfidence: "held",
+      timestampReason:
+        "The block was queried but carried no timestamp; held without a date, ordering preserved by block height.",
+    };
+  }
+
+  // fetched.state === "error"
+  return {
+    blockTimestamp: null,
+    timestampStatus: "error",
+    timestampSource: "none",
+    timestampConfidence: "held",
+    timestampReason:
+      "The block timestamp lookup failed; held without a date, ordering preserved by block height.",
+  };
+}
+
+/**
+ * PURE overlay that threads caller-resolved block timestamps onto an EXISTING
+ * chronology set (Sprint 15 §3). It runs AFTER ordering is fully computed, so a
+ * timestamp can never become an ordering input: this function changes ONLY the
+ * five timestamp fields (blockTimestamp, timestampStatus, timestampSource,
+ * timestampConfidence, timestampReason) and preserves array order, sequence
+ * numbers, and every other field exactly. Same (chronology, lookup) in → same
+ * out; it performs no I/O and reads no clock.
+ */
+export function applyBlockTimestamps(
+  chronology: ReadonlyArray<ChronologyEntry>,
+  lookup: BlockTimestampLookup,
+): ChronologyEntry[] {
+  return chronology.map((c) => {
+    const fetched =
+      c.blockNumber === null ? undefined : lookup.get(c.blockNumber);
+    return { ...c, ...resolveBlockTimestamp(c.blockNumber, fetched) };
+  });
+}
+
 // ─── MAINTAINER SECTION ─────────────────────────────────────────────────────
 // Spec §11 — four durable notes a future maintainer needs. Kept as data (not
 // just a comment) so the guard test can assert they exist and stay copy-clean.
@@ -240,7 +391,7 @@ export const CHRONOLOGY_MAINTAINER: ReadonlyArray<{
 }> = [
   {
     topic: "One chronology risk we are not seeing",
-    note: "Block heights are ordinal, not calendar time. Two facts in the same block, or a chain reorganisation that renumbers a height, both order purely by block number with an entry-id tie-break here — deterministic, but not a true clock. Until a block timestamp is fetched, the timeline proves SEQUENCE, never date; do not let a future surface present a block number as a date.",
+    note: "Block heights are ordinal, not calendar time. Two facts in the same block, or a chain reorganisation that renumbers a height, both order purely by block number with an entry-id tie-break here — deterministic, but not a true clock. A verified block timestamp is now threaded as metadata (applyBlockTimestamps), but it is NEVER an ordering input: ordering stays block-height based, and a date appears only on the verified path. Do not let a future surface order by timestamp, nor present a block number as a date.",
   },
   {
     topic: "One existing data source we should reuse",
@@ -252,6 +403,6 @@ export const CHRONOLOGY_MAINTAINER: ReadonlyArray<{
   },
   {
     topic: "One future Story prerequisite that still remains",
-    note: "A real block timestamp. Story needs to narrate over dates, not just sequence positions; chronology can order entries by block but cannot date them, because no timestamp is fetched anywhere in the pipeline. A block-timestamp lookup (one read per anchored block) is the outstanding prerequisite before any dated narrative is honest.",
+    note: "Dated coverage, not just a lookup. The verified block-timestamp lookup now lands a real date on verified entries (one getBlock per anchored block, cached forever), but held / pending / error / not-applicable entries still carry NO date. Story must narrate sequence for the dated subset and degrade — never invent a date — for the rest; full dated coverage across all anchored facts is the outstanding prerequisite before any uniformly dated narrative is honest.",
   },
 ];

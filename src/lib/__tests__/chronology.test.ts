@@ -22,7 +22,16 @@ import {
   chronologyAnchorKey,
   orderedTimeline,
   resolveChronology,
+  resolveBlockTimestamp,
+  applyBlockTimestamps,
+  type BlockTimestampFetch,
+  type BlockTimestampLookup,
 } from "../chronology-registry";
+import {
+  blockTimestampQueryKey,
+  buildBlockTimestampLookup,
+  collectAnchoredBlockNumbers,
+} from "../chronology-timestamps";
 import {
   baselinePublicationDecision,
   type InstitutionalChronicleEntry,
@@ -398,5 +407,227 @@ describe("chronology — end-to-end over the genesis seed", () => {
 
   it("no chronology entry over the genesis seed invents a date", () => {
     for (const c of chron) expect(c.blockTimestamp).toBeNull();
+  });
+});
+
+// ─── Sprint 15 · Block Timestamp Threading (§10 matrix) ─────────────────────
+// A VERIFIED block timestamp is threaded onto already-block-anchored entries as
+// READ-ONLY METADATA. It never changes order, never invents a date, and fails
+// soft: pending until fetched, held (no date) on unavailable/error.
+describe("chronology timestamps — resolveBlockTimestamp (pure classification)", () => {
+  it("no block anchor → not-applicable, no date, source none, held", () => {
+    const r = resolveBlockTimestamp(null, undefined);
+    expect(r.timestampStatus).toBe("not-applicable");
+    expect(r.blockTimestamp).toBeNull();
+    expect(r.timestampSource).toBe("none");
+    expect(r.timestampConfidence).toBe("held");
+  });
+
+  it("block-anchored but no fetch yet → pending, no date", () => {
+    const r = resolveBlockTimestamp(100, undefined);
+    expect(r.timestampStatus).toBe("pending");
+    expect(r.blockTimestamp).toBeNull();
+    expect(r.timestampSource).toBe("none");
+    expect(r.timestampConfidence).toBe("held");
+  });
+
+  it("verified is the ONLY path that carries a date, and only from a real unix", () => {
+    const r = resolveBlockTimestamp(100, { state: "verified", unix: 1_700_000_000 });
+    expect(r.timestampStatus).toBe("verified");
+    expect(r.blockTimestamp).toBe(1_700_000_000);
+    expect(r.timestampSource).toBe("chain-rpc-getblock");
+    expect(r.timestampConfidence).toBe("verified");
+  });
+
+  it("unavailable and error both hold: null date + held confidence + source none", () => {
+    for (const state of ["unavailable", "error"] as const) {
+      const r = resolveBlockTimestamp(100, { state });
+      expect(r.timestampStatus).toBe(state);
+      expect(r.blockTimestamp).toBeNull();
+      expect(r.timestampConfidence).toBe("held");
+      expect(r.timestampSource).toBe("none");
+    }
+  });
+
+  it("never reports verified without a real unix (no undated state carries a date)", () => {
+    const undated = [
+      resolveBlockTimestamp(null, undefined),
+      resolveBlockTimestamp(100, undefined),
+      resolveBlockTimestamp(100, { state: "unavailable" }),
+      resolveBlockTimestamp(100, { state: "error" }),
+    ];
+    for (const r of undated) {
+      expect(r.timestampStatus).not.toBe("verified");
+      expect(r.blockTimestamp).toBeNull();
+      expect(r.timestampConfidence).not.toBe("verified");
+    }
+  });
+
+  it("every timestampReason is copy-clean (sober, person-free, no banned vocab)", () => {
+    const reasons = [
+      resolveBlockTimestamp(null, undefined),
+      resolveBlockTimestamp(100, undefined),
+      resolveBlockTimestamp(100, { state: "verified", unix: 1 }),
+      resolveBlockTimestamp(100, { state: "unavailable" }),
+      resolveBlockTimestamp(100, { state: "error" }),
+    ].map((r) => r.timestampReason);
+    for (const reason of reasons) {
+      expect(reason.trim().length).toBeGreaterThan(0);
+      expect(findForbiddenLanguage(reason)).toEqual([]);
+      expect(findPublicVocabularyViolations(reason)).toEqual([]);
+    }
+  });
+});
+
+describe("chronology timestamps — applyBlockTimestamps (pure overlay)", () => {
+  // base preserves INPUT order: [a(block 100), b(block 200), c(no anchor)].
+  const entries = [
+    makeEntry({ id: "chronicle-entry:a", chronology: { date: null, block: 100, txHash: "0xa" } }),
+    makeEntry({ id: "chronicle-entry:b", chronology: { date: null, block: 200, txHash: "0xb" } }),
+    makeEntry({ id: "chronicle-entry:c", chronology: { date: null, block: null, txHash: null } }),
+  ];
+  const base = deriveChronologicalTimeline(entries);
+
+  it("the deriver baseline holds anchored entries pending and unanchored not-applicable", () => {
+    expect(base[0].timestampStatus).toBe("pending");
+    expect(base[0].blockTimestamp).toBeNull();
+    expect(base[1].timestampStatus).toBe("pending");
+    expect(base[2].timestampStatus).toBe("not-applicable");
+  });
+
+  it("overlays verified dates from the lookup; an unmatched anchored entry stays pending", () => {
+    const lookup = new Map<number, BlockTimestampFetch>([
+      [100, { state: "verified", unix: 1_700_000_000 }],
+    ]);
+    const dated = applyBlockTimestamps(base, lookup);
+    expect(dated[0].timestampStatus).toBe("verified");
+    expect(dated[0].blockTimestamp).toBe(1_700_000_000);
+    expect(dated[1].timestampStatus).toBe("pending"); // block 200 absent from lookup
+    expect(dated[1].blockTimestamp).toBeNull();
+    expect(dated[2].timestampStatus).toBe("not-applicable");
+  });
+
+  it("ordering is NEVER a function of the timestamp — a contradicting lookup does not reorder", () => {
+    // Block 100 (earlier) gets a LATER unix than block 200 — order must stay by block.
+    const lookup = new Map<number, BlockTimestampFetch>([
+      [100, { state: "verified", unix: 2_000_000_000 }],
+      [200, { state: "verified", unix: 1_000_000_000 }],
+    ]);
+    const dated = applyBlockTimestamps(base, lookup);
+    expect(orderedTimeline(dated).map((c) => c.chronologyId)).toEqual(
+      orderedTimeline(base).map((c) => c.chronologyId),
+    );
+    for (let i = 0; i < base.length; i++) {
+      expect(dated[i].sequenceNumber).toBe(base[i].sequenceNumber);
+      expect(dated[i].chronologyStatus).toBe(base[i].chronologyStatus);
+    }
+  });
+
+  it("changes ONLY the five timestamp fields — every other field is identical", () => {
+    const lookup = new Map<number, BlockTimestampFetch>([
+      [100, { state: "verified", unix: 1_700_000_000 }],
+    ]);
+    const dated = applyBlockTimestamps(base, lookup);
+    const TS_FIELDS = new Set([
+      "blockTimestamp",
+      "timestampStatus",
+      "timestampSource",
+      "timestampConfidence",
+      "timestampReason",
+    ]);
+    base.forEach((before, i) => {
+      const after = dated[i];
+      for (const k of Object.keys(before) as (keyof typeof before)[]) {
+        if (TS_FIELDS.has(k as string)) continue;
+        expect(after[k]).toEqual(before[k]);
+      }
+    });
+  });
+
+  it("is deterministic — same (chronology, lookup) in → same out", () => {
+    const lookup = new Map<number, BlockTimestampFetch>([[100, { state: "verified", unix: 1 }]]);
+    expect(applyBlockTimestamps(base, lookup)).toEqual(applyBlockTimestamps(base, lookup));
+  });
+
+  it("introduces no Story / Recognition field and keeps reasons copy-clean after overlay", () => {
+    const lookup = new Map<number, BlockTimestampFetch>([[100, { state: "verified", unix: 1 }]]);
+    const [c] = applyBlockTimestamps(base, lookup);
+    for (const k of Object.keys(c)) {
+      expect(/story|narrative|caption|prose|headline|tagline/i.test(k)).toBe(false);
+      expect(/rank|recognition|score|tier|prestige|amount|usd|balance|reward/i.test(k)).toBe(false);
+    }
+    expect(findForbiddenLanguage(c.timestampReason)).toEqual([]);
+    expect(findPublicVocabularyViolations(c.timestampReason)).toEqual([]);
+  });
+});
+
+describe("chronology timestamps — helpers (collect / key / build)", () => {
+  it("collectAnchoredBlockNumbers dedupes, sorts ascending, and drops unanchored entries", () => {
+    const entries = [
+      makeEntry({ id: "chronicle-entry:a", chronology: { date: null, block: 200, txHash: "0xa" } }),
+      makeEntry({ id: "chronicle-entry:b", chronology: { date: null, block: 100, txHash: "0xb" } }),
+      makeEntry({ id: "chronicle-entry:c", chronology: { date: null, block: 200, txHash: "0xc" } }),
+      makeEntry({ id: "chronicle-entry:d", chronology: { date: null, block: null, txHash: null } }),
+    ];
+    const chron = deriveChronologicalTimeline(entries);
+    expect(collectAnchoredBlockNumbers(chron)).toEqual([100, 200]);
+  });
+
+  it("blockTimestampQueryKey is namespaced by chain id", () => {
+    expect(blockTimestampQueryKey(43114, 100)).toEqual(["block-timestamp", 43114, 100]);
+    expect(blockTimestampQueryKey(undefined, 100)).toEqual(["block-timestamp", undefined, 100]);
+  });
+
+  it("buildBlockTimestampLookup maps success→verified, error→error, pending/missing→absent", () => {
+    const blocks = [100, 200, 300, 400];
+    const lookup = buildBlockTimestampLookup(blocks, [
+      { status: "success", data: 1_700_000_000 },
+      { status: "error", data: undefined },
+      { status: "pending", data: undefined },
+      // index 3 absent → not yet resolved
+    ]);
+    expect(lookup.get(100)).toEqual({ state: "verified", unix: 1_700_000_000 });
+    expect(lookup.get(200)).toEqual({ state: "error" });
+    expect(lookup.has(300)).toBe(false); // pending → absent → resolver reports pending
+    expect(lookup.has(400)).toBe(false); // missing state → absent
+  });
+
+  it("buildBlockTimestampLookup never invents a date — success without a number is unavailable", () => {
+    const lookup = buildBlockTimestampLookup([100], [{ status: "success", data: null }]);
+    expect(lookup.get(100)).toEqual({ state: "unavailable" });
+  });
+});
+
+describe("chronology timestamps — end-to-end over the genesis seed", () => {
+  const entries = deriveInstitutionalChronicleEntries(
+    deriveChronicleAdmissionCandidates(mergeInstitutionalEntries(deriveGenesisRegisterEntries(), [])),
+  );
+  const base = deriveChronologicalTimeline(entries);
+
+  it("baseline: every anchored entry is pending, every unanchored not-applicable (no invented dates)", () => {
+    for (const c of base) {
+      expect(c.timestampStatus).toBe(c.blockNumber === null ? "not-applicable" : "pending");
+      expect(c.blockTimestamp).toBeNull();
+    }
+  });
+
+  it("seeded + applied share ONE path: verifying the anchored blocks dates exactly them, order intact", () => {
+    const blocks = collectAnchoredBlockNumbers(base);
+    const lookup: BlockTimestampLookup = new Map<number, BlockTimestampFetch>(
+      blocks.map((b, i): [number, BlockTimestampFetch] => [
+        b,
+        { state: "verified", unix: 1_700_000_000 + i },
+      ]),
+    );
+    const dated = applyBlockTimestamps(base, lookup);
+    const verified = dated.filter((c) => c.timestampStatus === "verified");
+    expect(verified.length).toBe(blocks.length);
+    for (const c of verified) {
+      expect(c.blockNumber).not.toBeNull();
+      expect(typeof c.blockTimestamp).toBe("number");
+    }
+    expect(orderedTimeline(dated).map((c) => c.chronologyId)).toEqual(
+      orderedTimeline(base).map((c) => c.chronologyId),
+    );
   });
 });

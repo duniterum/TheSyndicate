@@ -1,0 +1,242 @@
+SPRINT 15 IMPLEMENTATION — BLOCK TIMESTAMP THREADING
+
+Proceed carefully.
+
+Do NOT run a broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Chronicle Admission Candidate
+→ Chronicle Entry
+→ Chronological Timeline
+
+Current limitation from Sprint 14:
+
+Chronology proves order by block height, but blockTimestamp is null.
+
+Core objective:
+
+Thread verified block timestamps into the Chronicle Chronology Layer so future Chronicle publication and future Story can use real dates without inventing them.
+
+This sprint does NOT:
+
+* build Story
+* publish Chronicle entries
+* build Recognition
+* build Governance
+* build AI
+* create new contracts
+* change chronological ordering rules
+* infer dates
+* estimate dates
+
+It only adds verified timestamp metadata to already block-anchored chronology entries.
+
+1. PRE-IMPLEMENTATION CHALLENGE
+
+Before coding, answer briefly:
+
+A) Is Block Timestamp Threading the next dependency-valid layer after Chronicle Chronology?
+
+B) Is any hidden dependency missing before timestamps can be added?
+
+C) Does the codebase already fetch block timestamps anywhere?
+
+D) Is there any architectural risk that would make timestamp threading premature?
+
+Keep the answer concise.
+
+Do not perform a broad audit.
+
+2. TIMESTAMP SOURCE
+
+Use only verified block timestamp sources.
+
+Preferred:
+
+* chain RPC getBlock / block timestamp
+* existing block metadata hook if already present
+* existing cached block lookup if already present
+
+Do not use:
+
+* approximate dates
+* local clock
+* deployment date guesses
+* explorer scraping
+* hardcoded dates unless already locked as verified config
+
+3. TIMESTAMP OBJECT / FIELD
+
+Extend chronology metadata safely.
+
+For block-anchored entries, populate:
+
+* blockTimestamp
+* timestampStatus
+* timestampSource
+* timestampConfidence
+* timestampReason
+
+Suggested statuses:
+
+* verified
+* unavailable
+* pending
+* error
+* not-applicable
+
+4. CACHE / PERFORMANCE
+
+Avoid excessive RPC calls.
+
+Rules:
+
+* deduplicate block numbers before lookup
+* cache block timestamps if there is an existing query/cache pattern
+* avoid one RPC call per render if possible
+* fail softly if RPC is unavailable
+
+Do not introduce heavy indexing infrastructure.
+
+5. FAILURE / PARTIAL STATE
+
+If timestamp lookup fails:
+
+* keep chronology ordering by block number
+* set timestampStatus appropriately
+* do not hide the entry
+* do not invent a date
+* do not mark date as verified
+
+6. CHRONOLOGY RULES
+
+Do not change ordering hierarchy.
+
+Ordering remains:
+
+* block number ascending
+* source-entry-id tie-break
+
+Timestamp is metadata only.
+
+Timestamp must not become the ordering source.
+
+7. SEEDED VS PIPELINE FACTS
+
+Apply the same timestamp logic to:
+
+* genesis-seeded entries
+* pipeline-derived entries
+
+No special timestamp rules for seeded facts except source integrity.
+
+8. PUBLIC / LABS SURFACE
+
+Update only internal/labs chronology inspection if needed.
+
+Acceptable:
+
+* /labs/chronicle-timeline
+
+Show:
+
+* block number
+* timestamp status
+* timestamp value if verified
+* timestamp source
+* reason if unavailable
+
+Do not expose public Story.
+
+Do not redesign public Chronicle.
+
+9. FUTURE STORY COMPATIBILITY
+
+Without building Story, document what timestamps now unlock later:
+
+* calendar timeline
+* date-grouping
+* episode ordering
+* chapter-aligned narrative
+* milestone chronology
+
+Do not implement these now.
+
+10. TESTS REQUIRED
+
+Add tests proving:
+
+* block timestamps are added only from verified block metadata.
+* duplicate block numbers are deduplicated.
+* failed timestamp lookup does not remove entries.
+* failed lookup does not invent dates.
+* ordering remains block-number based, not timestamp based.
+* entries without block anchor remain timestamp unavailable / not applicable.
+* seeded and pipeline facts share the same timestamp path.
+* no Story / Recognition behavior is introduced.
+
+11. QA REQUIRED
+
+Run:
+
+* typecheck
+* chronology tests
+* chronicle entry tests
+* chronicle admission tests
+* institutional register tests if touched
+* doctrine guard
+* ownership / forbidden-language guard
+* route render test
+
+Do not fight the known production build OOM unless explicitly required.
+
+12. MAINTAINER INTELLIGENCE
+
+Because you see the codebase directly, include:
+
+* one timestamp-risk we may not see
+* one existing source/cache to reuse
+* one future Story prerequisite still missing after timestamps
+* one low-scope improvement that fits without expanding scope
+
+13. RETURN FORMAT
+
+After implementation, report:
+
+1. Pre-implementation challenge answer.
+2. Files changed.
+3. Timestamp source.
+4. Timestamp object/fields.
+5. Cache/performance behavior.
+6. Failure/partial handling.
+7. Ordering rules confirmation.
+8. Seeded vs pipeline handling.
+9. Labs/inspection updates.
+10. Future Story compatibility.
+11. Maintainer intelligence.
+12. What was intentionally not touched.
+13. Tests added.
+14. QA results.
+15. Remaining risks.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Chronicle publishing.
+
+This sprint is not Recognition.
+
+This sprint only adds:
+
+Chronological Timeline
+→ Verified block timestamp metadata
+
+so future Story can use real dates without inventing them.
