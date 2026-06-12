@@ -127,7 +127,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
         aria-label="Connect wallet"
         className="hidden md:inline-flex mono items-center gap-1.5 rounded-md border border-border px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground hover:border-[var(--gold)]/60 hover:text-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        {label}
+        {connectPending ? "Connecting…" : "Connect Wallet"}
       </button>
     );
   }

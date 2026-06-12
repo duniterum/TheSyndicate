@@ -131,9 +131,9 @@ export function Header() {
             onClick={() => track("join_cta_click", { surface: "header" })}
             className="mono inline-flex items-center gap-2 rounded-[3px] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-[filter] hover:brightness-110"
             style={{
-              background: "var(--accent)",
-              color: "var(--accent-foreground)",
-              boxShadow: "var(--shadow-glow-gold)",
+              background: "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%)",
+              color: "#15110A",
+              boxShadow: "0 10px 30px -12px color-mix(in oklab, #E3A92B 60%, transparent)",
             }}
           >
             Join
@@ -157,7 +157,7 @@ export function Header() {
               to="/join"
               onClick={() => { setMobileOpen(false); track("join_cta_click", { surface: "header_mobile" }); }}
               className="mono flex w-full items-center justify-center gap-2 rounded-[3px] px-4 py-3 text-[12px] font-bold uppercase tracking-[0.18em]"
-              style={{ background: "var(--accent)", color: "var(--accent-foreground)", boxShadow: "var(--shadow-glow-gold)" }}
+              style={{ background: "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%)", color: "#15110A", boxShadow: "0 10px 30px -12px color-mix(in oklab, #E3A92B 60%, transparent)" }}
             >
               Join The Syndicate →
             </Link>

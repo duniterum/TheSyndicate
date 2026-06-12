@@ -34,8 +34,20 @@ figure traces to a
 real hook (useProtocolTruth/Pulse/ChainTip/QuoteSyn); the "Live on-chain reads" microline
 is gated on `chainLive` (no invented "operational" claims).
 
+**Join / claim-seat CTA is gold in BOTH themes everywhere (hero AND Header).** The
+primary conversion CTA ("Join") is hardcoded with the gold gradient
+(`linear-gradient(135deg,#F5C94A,#E3A92B,#9E6412)`, text `#15110A`) in the Header too,
+NOT `var(--accent)` (which is cyan in `.dark`). Connect Wallet stays a neutral outline
+(secondary) and lives in the Header before Join; theme toggle stays visible. This is the
+ONE sanctioned site-wide gold extension beyond the hero — gold tracks seat/identity, and
+Join = "claim your seat". Do NOT revert the Header Join to `var(--accent)` thinking the
+dark-mode cyan is the bug; it is intentional. The seam rule still holds for everything
+else (chrome/links/secondary stay cyan in dark).
+
 **Why:** keeps the whole site reading as ONE product and prevents drift back to soft
-"museum" styling or generic crypto templates.
+"museum" styling or generic crypto templates; and keeps the single most important
+conversion action visually identical (gold) across themes so it always reads as the
+strongest CTA.
 
 **How to apply:** when touching any shell/brand surface, pull color from tokens (cyan in
 dark), keep geometry sharp, use the shared Logo, and never introduce serif outside the
