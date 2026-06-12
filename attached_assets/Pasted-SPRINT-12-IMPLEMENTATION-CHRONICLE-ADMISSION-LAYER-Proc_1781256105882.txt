@@ -1,0 +1,262 @@
+SPRINT 12 IMPLEMENTATION — CHRONICLE ADMISSION LAYER
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed work:
+
+* Sprint 1: Diffusion + Anticipation
+* Sprint 2: Event → Signal
+* Sprint 3: Signal → Memory Candidate
+* Sprint 4: Memory Candidate → Chronicle Review Candidate
+* Sprint 5: Chronicle Review Candidate → Promotion Decision
+* Sprint 6: Promotion Decision → Institutional Register Entry
+* Sprint 7: Read-only Institutional Register View
+* Sprint 8: Register Reliability / Completeness Guard
+* Sprint 9: Institutional Register Seeding + GENESIS_EVENT classification
+* Sprint 10: Protocol Knowledge Map
+* Sprint 10.1: Knowledge Map Guardrail Tightening
+* Sprint 11: Protocol Knowledge Graph Visualization
+
+Core objective:
+
+Build the minimal Chronicle Admission Layer:
+
+Institutional Register Entry
+→ Chronicle Admission Candidate
+
+This sprint decides which verified institutional memories are eligible to become Chronicle entries later.
+
+This sprint does NOT:
+
+* auto-publish Chronicle entries
+* rewrite existing Chronicle
+* generate Story
+* build Recognition
+* build Member Register
+* build Governance / DAO
+* build AI
+* change derivation rules
+* create new contracts
+
+It only creates the admission bridge between durable institutional memory and future Chronicle entries.
+
+1. CHRONICLE ADMISSION OBJECT
+
+Create ChronicleAdmissionCandidate.
+
+Fields should include:
+
+* id
+* sourceInstitutionalRegisterEntryId
+* sourcePromotionDecisionId
+* sourceChronicleReviewCandidateId
+* sourceMemoryCandidateId
+* sourceSignalId
+* sourceEventId
+* sourceTxHash if available
+* sourceBlock if available
+* register = protocol-institutional
+* category
+* admissionStatus
+* admissionReason
+* proposedChronicleTitle
+* proposedChronicleSummary
+* proposedChronicleRegister
+* verificationStatus
+* lineage
+* createdFrom
+
+2. ADMISSION STATUS
+
+Use strict statuses:
+
+* admitted
+* review
+* held
+* rejected
+
+Rules:
+
+* active verified institutional entries may become admitted or review.
+* draft entries should usually remain review.
+* held entries remain held.
+* rejected entries are rejected or excluded.
+* coverage-limited entries must not be admitted.
+
+3. ADMISSION RULES
+
+Define deterministic admission rules.
+
+Suggested baseline:
+
+Admit or review:
+
+* verified protocol-birth facts
+* token deployment
+* sale deployment
+* archive deployment
+* initial distribution
+* first liquidity
+* first burn / Proof of Fire
+* first verified protocol milestone
+* major verified treasury action
+* major verified operations action
+* major verified liquidity action
+
+Hold:
+
+* coverage-limited facts
+* facts requiring human context
+* facts without complete lineage
+
+Reject:
+
+* routine operational noise
+* repeated small movements
+* facts with unsafe copy
+* member-living entries
+* unverified “first” claims
+
+4. CHRONICLE COMPATIBILITY
+
+Do not mutate existing Chronicle entries.
+
+Do not add new public Chronicle entries yet.
+
+Only prepare compatibility so a future sprint can convert:
+
+ChronicleAdmissionCandidate
+→ ChronicleEntry
+
+Existing locked Chronicle entries remain untouched.
+
+5. PROTOCOL-CENTRIC FRAMING
+
+Institutional Chronicle must stay protocol-centric.
+
+Allowed framing:
+
+* protocol deployed
+* protocol recorded
+* protocol seeded
+* protocol executed
+* protocol reached
+* protocol verified
+
+Avoid:
+
+* founder achievement
+* founder made history
+* legendary
+* heroic
+* investor reward
+* profit
+* return
+* governance right
+* financial promise
+
+Founder/steward/system wallet actions may be admitted only when they are institutional protocol facts.
+
+6. GENESIS_EVENT HANDLING
+
+GENESIS_EVENT is allowed only as a verified institutional protocol-birth fact.
+
+Unsafe genesis/historic marketing copy remains blocked.
+
+Do not weaken the guardrails.
+
+7. INSPECTION SURFACE
+
+Add inspection only.
+
+Acceptable:
+
+* hidden /labs/chronicle-admission route
+* internal registry view
+* test output
+
+Do not create public UI.
+
+Inspection should show:
+
+* admission status
+* category
+* source institutional entry
+* proposed Chronicle title/summary
+* lineage
+* verification status
+* reason
+
+8. MAINTAINER INTELLIGENCE
+
+Because you see the codebase directly, include a short maintainer section:
+
+* one institutional entry type that should never become Chronicle
+* one institutional entry type that should almost always become Chronicle
+* one edge case around seeded entries vs pipeline-derived entries
+* one future-proof improvement that fits this layer without expanding scope
+
+Do not turn this into an audit.
+
+9. TESTS REQUIRED
+
+Add tests proving:
+
+* active verified register entries can become admission candidates.
+* draft entries remain review.
+* held / coverage-limited entries are not admitted.
+* rejected entries are excluded or rejected.
+* member-living cannot enter admission.
+* unsafe genesis/historic marketing copy remains blocked.
+* GENESIS_EVENT institutional facts can be admitted when verified.
+* founder/system actions are protocol-framed.
+* full lineage is preserved.
+* no Chronicle entries are mutated.
+* no Story/Recognition behavior is introduced.
+
+10. QA REQUIRED
+
+Run:
+
+* typecheck
+* chronicle admission tests
+* institutional register tests
+* institutional register public tests
+* knowledge-map tests if touched
+* doctrine guard
+* ownership / forbidden-language guard
+* route render test
+
+Do not fight the known production build OOM unless explicitly in scope.
+
+11. RETURN FORMAT
+
+After implementation, report:
+
+1. Files changed.
+2. ChronicleAdmissionCandidate shape.
+3. Admission statuses.
+4. Admission rules.
+5. GENESIS_EVENT handling.
+6. Founder/system handling.
+7. Labs/inspection surface.
+8. Maintainer intelligence.
+9. What was intentionally not touched.
+10. Tests added.
+11. QA results.
+12. Remaining risks.
+
+Important:
+
+This sprint is not public Chronicle publishing.
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint only builds:
+
+Institutional Register Entry
+→ Chronicle Admission Candidate

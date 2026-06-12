@@ -387,7 +387,11 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     promotionPath:
       "Chronicle review → Chronicle promotion → Institutional Register (protocol-institutional facts only).",
     publicSurfaces: ["/chronicle"],
-    internalSurfaces: ["/labs/chronicle-candidates", "/labs/chronicle-promotion"],
+    internalSurfaces: [
+      "/labs/chronicle-candidates",
+      "/labs/chronicle-promotion",
+      "/labs/chronicle-admission",
+    ],
     status: "partial",
     statusNote:
       "Promotion pipeline live; public Chronicle curation is gated and human-approved. Evidence: src/lib/chronicle-promotion.ts.",
@@ -416,7 +420,7 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     coverageModel: "config-pinned",
     promotionPath: "Terminal — durable institutional store; no onward promotion.",
     publicSurfaces: ["/institutional-register"],
-    internalSurfaces: ["/labs/institutional-register"],
+    internalSurfaces: ["/labs/institutional-register", "/labs/chronicle-admission"],
     status: "live",
     statusNote: null,
     identityPosture: "identity-free",
@@ -425,7 +429,10 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
         "docs/canon/05_FOUNDATION_FREEZE.md",
         "docs/canon/08_PROTOCOL_OPERATING_PRINCIPLE.md",
       ],
-      registries: ["src/lib/institutional-register-registry.ts"],
+      registries: [
+        "src/lib/institutional-register-registry.ts",
+        "src/lib/chronicle-admission-registry.ts",
+      ],
     },
   },
   {

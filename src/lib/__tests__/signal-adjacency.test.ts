@@ -295,3 +295,67 @@ describe("Institutional register GENESIS SEED — Adjacency Law (CONFIG → SEED
     });
   }
 });
+
+// INSTITUTIONAL REGISTER ENTRY → CHRONICLE ADMISSION CANDIDATE (Sprint 12, the
+// new LAST edge). The Chronicle Admission layer reads durable INSTITUTIONAL
+// REGISTER ENTRIES; it must NEVER reach back past its neighbour into the
+// Chronicle-promotion layer (chronicle-promotion / chronicle-promotion-registry),
+// the Chronicle-review layer, the Memory layer, the Signal layer, or the raw
+// event layer — full lineage is carried THROUGH each InstitutionalRegisterEntry.
+// It must also NEVER import the institutional-register DERIVER or the GENESIS
+// leaf: it operates on already-built entries (whoever produced them), and the
+// genesis seed is merged at the ROUTE, outside the guard. It MAY import the
+// register REGISTRY leaf (the entry vocabulary + findHistoricClaims), the register
+// public leaf (the §5 sober-language guard + isLineageComplete), the protocol-
+// language guard, and the Chronicle's own register map (chronicle-entries) — it
+// decides Chronicle eligibility, so it reads the Chronicle's classification
+// vocabulary, never its candidate pipeline.
+const ADMISSION_MODULES = [
+  "chronicle-admission-registry.ts",
+  "chronicle-admission.ts",
+];
+
+describe("Chronicle admission — Adjacency Law (REGISTER → ADMISSION only)", () => {
+  for (const mod of ADMISSION_MODULES) {
+    const src = read(mod);
+    const importLines = src
+      .split(/\r?\n/)
+      .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+    const imports = importLines.join("\n");
+
+    it(`${mod} does not import the raw event layer (protocol-events)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Signal layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Memory layer`, () => {
+      expect(/from\s+["'][^"']*\/memory-candidates["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle-review layer`, () => {
+      expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle-promotion layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/chronicle-promotion["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*chronicle-promotion-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the institutional-register DERIVER (reads the registry leaf)`, () => {
+      expect(/from\s+["'][^"']*\/institutional-register["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the genesis SEED leaf (operates on already-built entries)`, () => {
+      expect(/from\s+["'][^"']*institutional-register-genesis["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} builds from the Institutional Register vocabulary (imports the registry leaf)`, () => {
+      expect(/from\s+["'][^"']*institutional-register-registry["']/.test(imports)).toBe(true);
+    });
+  }
+});
