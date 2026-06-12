@@ -15,9 +15,20 @@ It is enforced on-chain ONLY inside the Membership Sale contract.
   proceeds accrue to the Archive1155 contract and are withdrawn by the owner
   wallet. They do **not** pass through the 70/20/10 split. Destination of NFT
   revenue is not the same as sale revenue — state it as such, don't conflate.
-- **LP trading fees**: accrue to the Liquidity wallet's LP position on Trader Joe
-  (real, on-chain), but are NOT surfaced as a revenue figure
-  (`VAULT_INFLOWS.lpFees` is mock/PENDING placeholder data).
+- **LP trading fees**: compound into the Trader Joe pair reserves; the protocol's
+  LP position (JLP) is held by the Liquidity wallet (real, on-chain). A
+  Uniswap-V2-style pair exposes NO per-position accrued-fee read, so the fee
+  AMOUNT is PENDING by doctrine and must NEVER be computed/estimated. The
+  DESTINATION is now surfaced (not the amount).
+
+**Canonical registry:** `src/lib/revenue-streams.ts` is THE pure-config
+enumeration of the 3 streams (membership-sale / nft-mints / lp-fees) with their
+destinations + a per-stream `amountStatus` (live | pending) and a
+`routedThroughMembershipSplit` flag (true ONLY for membership-sale). Surfaced by
+`RevenueStreams.tsx` on `/vault#revenue-streams` + a cross-link on `/liquidity`.
+NFT destination is read live via `useArchiveOwnership()` (owner()/treasury() in
+`archive-nft-hooks.ts`, allowFailure → PENDING; `treasury()` is the actual
+withdraw destination, NOT "The Vault"). Pinned by `revenue-streams.test.ts`.
 
 **Also note (mock/legacy traps):** `VAULT_ASSETS` and `VAULT_INFLOWS` in
 `syndicate-config.ts` are simulated placeholder numbers (status PENDING), and

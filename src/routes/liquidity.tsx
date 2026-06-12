@@ -39,6 +39,10 @@ export const Route = createFileRoute("/liquidity")({
           description="Refreshes every 60 seconds via Avalanche RPC."
         />
         <LpStatusCard />
+        <p className="mt-4 text-xs text-muted-foreground border-l-2 border-amber-500/40 pl-3 max-w-3xl">
+          LP trading fees compound into these reserves; the protocol&rsquo;s LP position (JLP) is held by the Liquidity Wallet. This is a separate income stream from the 70 / 20 / 10 Membership Sale split — see{" "}
+          <a href="/vault#revenue-streams" className="underline">income streams on the Vault page</a>. No per-position fee figure is readable on-chain, so any fee amount stays <span className="mono">PENDING</span>.
+        </p>
       </Section>
       <LiquidityTrustContext />
       <DexScreenerChart />

@@ -119,7 +119,7 @@ only the one directly above it. This map does not restate those rules; it points
   Coverage: none · **partial** (programmatic Vault pending).
 - **Asset** — `asset`. Home: `src/lib/treasury-hooks.ts`. **Formally named here for the
   first time.** What the Vault actually *holds* — live multi-asset balances. Coverage:
-  none (point-in-time) · **live**. The `VAULT_ASSETS` demo data stays mock & quarantined.
+  none (point-in-time) · **live**. The earlier `VAULT_ASSETS` demo data was removed 2026-06-12 — this layer is now the only Vault-holdings source.
 - **Liquidity** — `liquidity`. Home: `src/lib/syndicate-config.ts` (`LP_POOL`),
   `src/lib/sale-hooks.ts`. SYN/USDC pair reserves/price. Coverage: config-pinned ·
   **partial** (LP fee accrual reserved).
@@ -141,8 +141,8 @@ These existed in code but were not yet formal layers in the mental model:
 
 - **Asset Layer** (`asset`) — **real and live.** `treasury-hooks.ts` already does live
   RPC balance reads (AVAX/USDC/BTC.b/WETH.e) of the Vault wallet. It was unnamed and
-  visually entangled with the quarantined `VAULT_ASSETS` mock. Now named; the mock
-  stays quarantined and is explicitly *not* this layer's truth.
+  visually entangled with the `VAULT_ASSETS` mock, which was removed 2026-06-12. Now
+  named, it is the only Vault-holdings source on `/vault` and `/transparency`.
 - **Treasury / Vault Layer** (`treasury-vault`) — the *destination* concept, distinct
   from the *split rule* (Economic/Routing) and the *holdings* (Asset). Naming the three
   separately is the whole point: split ≠ destination ≠ holdings.

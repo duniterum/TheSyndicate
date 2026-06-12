@@ -422,7 +422,7 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     permanence: "append-only-curated",
     coverageModel: "config-pinned",
     promotionPath: "Terminal — durable institutional store; no onward promotion.",
-    publicSurfaces: ["/institutional-register", "/chronicle"],
+    publicSurfaces: ["/institutional-register", "/chronicle", "/activity"],
     internalSurfaces: [
       "/labs/institutional-register",
       "/labs/chronicle-admission",
@@ -537,11 +537,11 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     permanence: "recomputed-projection",
     coverageModel: "none",
     promotionPath: "Point-in-time snapshot; no onward promotion.",
-    publicSurfaces: ["/tokenomics", "/vault"],
+    publicSurfaces: ["/tokenomics", "/vault", "/transparency"],
     internalSurfaces: [],
     status: "live",
     statusNote:
-      "Real RPC balance reads are live. The VAULT_ASSETS / VAULT_INFLOWS demo data in src/lib/syndicate-config.ts is mock, quarantined, and explicitly labeled — NOT part of this layer's truth.",
+      "Real RPC balance reads via useTreasuryAssets (src/lib/treasury-hooks.ts) are the only Vault asset data the site shows — surfaced via TreasuryComposition on /vault and /transparency. No illustrative or mock Vault balance-sheet data remains in the codebase.",
     identityPosture: "identity-free",
     indexes: {
       canonDocs: ["docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md"],

@@ -54,7 +54,7 @@ Every concept in the protocol belongs to exactly one of these layers.
 | **Belongs** | Balances, total/circulating/burned supply, raw logs, addresses, ABIs, metric definitions. |
 | **Does NOT belong** | Opinion, curation, narrative, status labels, significance, synthesized/MOCK numbers presented as real. |
 | **Codebase examples** | `protocol-truth.ts`, `protocol-metrics-registry.ts`, `known-addresses.ts`, `chain-registry.ts`, `contract-registry.ts`, `data-verification-registry.ts`, `syndicate-config.ts`. |
-| **Drift risks** | MOCK data (`VAULT_ASSETS`, `VAULT_INFLOWS`) leaking upward as truth; duplicate metric definitions; a second "members" definition reappearing. |
+| **Drift risks** | Duplicate metric definitions; a second "members" definition reappearing; synthesized/illustrative numbers reappearing as truth (the earlier `VAULT_ASSETS` / `VAULT_INFLOWS` MOCK was removed 2026-06-12). |
 
 ### EVENTS
 

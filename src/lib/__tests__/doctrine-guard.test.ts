@@ -212,6 +212,33 @@ const CANONICAL_DOCS = [
   "docs/EMOTIONAL_ARCHITECTURE_AUDIT.md",
   "docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md",
   "docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md",
+  // ── Coupled to the Authority Map's CANONICAL class (2026-06-12, Batch 8) ──
+  // Classified CANONICAL in docs/DOCUMENTATION_AUTHORITY_MAP.md but not
+  // previously machine-scanned. Each was verified clean of DOC_BANNED before
+  // wiring. The vocabulary-defining canon docs (01/03/04) are deliberately
+  // EXEMPT below — they define the banned terms they govern.
+  "docs/NORTH_STAR_SYSTEM.md",
+  "docs/INFORMATION_HIERARCHY.md",
+  "docs/PROTOCOL_EXECUTION_CONTROL_SYSTEM.md",
+  "docs/canon/00_AUTHORITY_MAP.md",
+  "docs/canon/02_SOURCE_OF_TRUTH_TABLE.md",
+  "docs/canon/05_FOUNDATION_FREEZE.md",
+  "docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md",
+  "docs/canon/07_FOUNDER_PRINCIPLE.md",
+  "docs/canon/08_PROTOCOL_OPERATING_PRINCIPLE.md",
+] as const;
+
+// Vocabulary-defining canon docs: CANONICAL authority, but they necessarily
+// NAME the banned terms they govern (e.g. the glossary lists "Relic" as deep-
+// lore-only). Scanning them for banned vocabulary is self-defeating — the same
+// reason protocol-language.ts is exempt from its own findForbiddenLanguage scan,
+// and the Authority Map's "Superseded doctrines" table is not self-scanned. They
+// stay authoritative and are drift-checked below (must remain CANONICAL-listed),
+// so the exemption can never become a silent omission.
+const VOCABULARY_DEFINING_DOCS = [
+  "docs/canon/01_FOUNDER_INTENT_MAP.md",
+  "docs/canon/03_GLOSSARY.md",
+  "docs/canon/04_DOC_SYNC_CHECKLIST.md",
 ] as const;
 
 const DOC_BANNED: Array<{ name: string; re: RegExp }> = [
@@ -253,6 +280,30 @@ describe("Doctrine guard — canonical docs scan", () => {
     );
     for (const doc of CANONICAL_DOCS) {
       expect(map, `${doc} missing from authority map`).toContain(doc);
+    }
+  });
+
+  it("vocabulary-defining canon docs stay CANONICAL-listed (exempt, not dropped)", () => {
+    // These are exempt from the banned-vocab scan above, but must remain
+    // registered CANONICAL authority — the exemption is intentional, never a
+    // silent omission. Asserting against the CANONICAL *section* (not the whole
+    // file) closes the hole where reclassifying a doc to HISTORICAL/OPERATIONAL
+    // would still leave it exempt-but-no-longer-canonical.
+    const map = readFileSync(
+      join(ROOT, "docs/DOCUMENTATION_AUTHORITY_MAP.md"),
+      "utf8",
+    );
+    const start = map.indexOf("## CANONICAL");
+    expect(start, "authority map has no ## CANONICAL section").toBeGreaterThan(
+      -1,
+    );
+    const end = map.indexOf("\n## ", start + 1);
+    const canonicalSection = map.slice(start, end === -1 ? undefined : end);
+    for (const doc of VOCABULARY_DEFINING_DOCS) {
+      expect(
+        canonicalSection,
+        `${doc} missing from the authority map's CANONICAL section`,
+      ).toContain(doc);
     }
   });
 });

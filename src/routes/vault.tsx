@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import { VaultPolicyCore } from "@/components/syndicate/VaultPolicyCore";
 import { VaultDisambiguation } from "@/components/syndicate/VaultDisambiguation";
-import { VaultDashboard, VaultGrowthChart, VaultPolicy } from "@/components/syndicate/Sections";
+import { TreasuryComposition } from "@/components/syndicate/TreasuryComposition";
+import { RevenueStreams } from "@/components/syndicate/RevenueStreams";
 import { GlassCard, Section, SectionHeader, MetricExplainer, ProofButton } from "@/components/syndicate/Primitives";
 import { vaultFlow, explorerUrlFor, CONTRACTS } from "@/lib/syndicate-config";
 import { fmtAddress } from "@/lib/sale-hooks";
@@ -30,7 +30,6 @@ export const Route = createFileRoute("/vault")({
 });
 
 function VaultPage() {
-  const [showDemo, setShowDemo] = useState(false);
   return (
     <PageShell
       eyebrow="Vault"
@@ -119,34 +118,10 @@ function VaultPage() {
       </Section>
 
 
-      <Section id="vault-demo-toggle">
-        <div className="surface p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 justify-between">
-          <div>
-            <div className="text-sm font-semibold">Future Vault preview</div>
-            <p className="text-xs text-muted-foreground mt-1 max-w-xl">
-              The Vault contract is <span className="mono">PENDING</span> — not deployed yet.
-              The balance sheet, growth chart, and dashboard below are an illustrative preview of
-              what the contract will surface once live. They are not on-chain data.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowDemo((v) => !v)}
-            aria-pressed={showDemo}
-            className="mono text-[11px] uppercase tracking-[0.18em] rounded border border-border/60 px-3 py-2 hover:border-[var(--gold)]/60"
-          >
-            {showDemo ? "Hide preview" : "Show preview"}
-          </button>
-        </div>
-      </Section>
+      <RevenueStreams />
 
-      {showDemo && (
-        <>
-          <VaultDashboard />
-          <VaultGrowthChart />
-          <VaultPolicy />
-        </>
-      )}
+      <TreasuryComposition />
+
     <RouteFinalCTA preset="verify" />
     </PageShell>
   );

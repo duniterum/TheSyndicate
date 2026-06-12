@@ -42,7 +42,7 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | Governance | *(none)* | none | `UNIFIED_PROTOCOL_DOCTRINE_MAP.md` | FUTURE | Low | Med |
 | Legal language | `LEGAL_DISCLAIMER`, `live-content-rules.json` | — | `TERMINOLOGY_GLOSSARY.md` | LIVE | High | Med |
 | Banned vocabulary | `doctrine-guard.test.ts` `DOC_BANNED` / `BANNED` | — | glossary | LIVE | Med | Med (guard decoupled) |
-| Mock treasury data | `VAULT_ASSETS` / `VAULT_INFLOWS` / `VAULT_HISTORY` / `useLiveData` | — | — | **MOCK (quarantined)** | High (fabricated) | Low — gated behind off-by-default, labeled "Future Vault preview" on `/vault`; dead fake constants (`GENESIS_NFT_PRICE`, `VAULT_STARTING_VALUE`, `NEXT_MILESTONE_VALUE`) removed 2026-06-11 |
+| Mock treasury data | *(removed)* | — | — | **REMOVED** | None | Removed 2026-06-12 — `VAULT_ASSETS` / `VAULT_INFLOWS` / `VAULT_HISTORY` / `useLiveData` and the off-by-default "Future Vault preview" deleted. `/vault` now shows only real `useTreasuryAssets` reads (TreasuryComposition). Earlier dead fake constants (`GENESIS_NFT_PRICE`, `VAULT_STARTING_VALUE`, `NEXT_MILESTONE_VALUE`) removed 2026-06-11 |
 
 ---
 

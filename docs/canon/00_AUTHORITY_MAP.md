@@ -117,10 +117,14 @@ The doctrine guard (`src/lib/__tests__/doctrine-guard.test.ts`) is the automated
 freeze. It scans rendered source (`src/routes`, `src/components`, `src/lib`) and
 a hardcoded `CANONICAL_DOCS` list for banned legacy vocabulary.
 
-**Known decoupling (carried forward):** the guard's `CANONICAL_DOCS` and
-`DOC_BANNED` arrays are hardcoded — they are *not* parsed from any map. Adding
-these `docs/canon/` files to the guard's scanned set is a **code follow-up**,
-intentionally out of scope of this docs consolidation pass (consistent with the
-authority map's own 2026-06-09 note). Until then, treat the canon as
-authoritative-by-convention, not yet machine-enforced. See
-`docs/canon/04_DOC_SYNC_CHECKLIST.md`.
+**Coupling status (updated 2026-06-12, Batch 8):** the guard's `CANONICAL_DOCS`
+and `DOC_BANNED` arrays are still hardcoded — *not* parsed from any map. That is
+deliberate: a docs-only pass can reclassify docs and add supersession rows
+without the guard drifting red. What changed: the `docs/canon/` set is now in
+the guard's scanned set, so this canon is **machine-enforced** for banned
+vocabulary — except the vocabulary-defining docs (`01_FOUNDER_INTENT_MAP`,
+`03_GLOSSARY`, `04_DOC_SYNC_CHECKLIST`), which are intentionally EXEMPT because
+they define the banned terms (the guard still pins them as CANONICAL-listed, so
+the exemption cannot become a silent omission). The remaining follow-up is
+mechanizing the rank-row `DOC_BANNED` regexes, deferred for false-positive risk.
+See `docs/canon/04_DOC_SYNC_CHECKLIST.md`.

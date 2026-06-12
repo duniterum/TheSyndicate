@@ -12,6 +12,11 @@ import { applyActivityFilter, type ActivityFilterKey } from "@/lib/activity-filt
 import { GlassCard, Section, SectionHeader, StatusPill } from "./Primitives";
 import { TxProofPill, isValidTxHash } from "./TxProofDrawer";
 import { EmptyState } from "./EmptyState";
+import {
+  ACTIVE_INSTITUTIONAL_TX_INDEX,
+  INSTITUTIONAL_REGISTER_ROUTE,
+  institutionalLinkForTx,
+} from "@/lib/activity-institutional-link";
 
 const KIND_ICON: Record<ProtocolEvent["kind"], string> = {
   purchase: "🟢",
@@ -52,11 +57,14 @@ export function ProtocolEventsFeed({
   compact = false,
   withSection = true,
   filter = "all",
+  showInstitutionalLink = false,
 }: {
   limit?: number;
   compact?: boolean;
   withSection?: boolean;
   filter?: ActivityFilterKey;
+  /** Opt-in: mark rows whose tx is in the ACTIVE Institutional Register (/activity only). */
+  showInstitutionalLink?: boolean;
 }) {
   const { events: allEvents, isLoading, refetch } = useProtocolEvents({ limit });
   const events = useMemo(() => applyActivityFilter(allEvents, filter), [allEvents, filter]);
@@ -100,7 +108,12 @@ export function ProtocolEventsFeed({
         <>
           <ul className="divide-y divide-border/40">
             {visibleEvents.map((e) => (
-              <EventRow key={e.id} e={e} compact={compact} />
+              <EventRow
+                key={e.id}
+                e={e}
+                compact={compact}
+                showInstitutionalLink={showInstitutionalLink}
+              />
             ))}
           </ul>
           {!compact && (
@@ -138,8 +151,19 @@ export function ProtocolEventsFeed({
   );
 }
 
-function EventRow({ e, compact }: { e: ProtocolEvent; compact: boolean }) {
+function EventRow({
+  e,
+  compact,
+  showInstitutionalLink,
+}: {
+  e: ProtocolEvent;
+  compact: boolean;
+  showInstitutionalLink: boolean;
+}) {
   const actorHref = e.actor ? explorerUrlForAddress(e.actor) : null;
+  const institutional = showInstitutionalLink
+    ? institutionalLinkForTx(ACTIVE_INSTITUTIONAL_TX_INDEX, e.txHash)
+    : null;
   const toneCls =
     e.badge === "live"
       ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
@@ -157,6 +181,15 @@ function EventRow({ e, compact }: { e: ProtocolEvent; compact: boolean }) {
       <div className={`col-span-12 ${compact ? "md:col-span-7" : "md:col-span-6"} min-w-0`}>
         <div className="font-medium truncate">{e.title}</div>
         <div className="text-xs text-muted-foreground truncate">{e.detail}</div>
+        {institutional ? (
+          <Link
+            to={INSTITUTIONAL_REGISTER_ROUTE}
+            title={`This transaction is recorded in the Protocol Institutional Register: ${institutional.title}`}
+            className="mono mt-1 inline-flex items-center gap-1 rounded-full border border-border/60 bg-background/40 px-2 py-0.5 text-[9px] uppercase tracking-[0.16em] text-muted-foreground hover:text-[var(--gold)] hover:border-[var(--gold)]/50"
+          >
+            ◆ Institutional record →
+          </Link>
+        ) : null}
       </div>
       <div className="col-span-6 md:col-span-2 mono text-[10px] text-muted-foreground truncate flex items-center gap-2">
         {e.actor && isAddress(e.actor) ? (

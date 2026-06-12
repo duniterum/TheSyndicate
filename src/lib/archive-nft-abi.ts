@@ -79,6 +79,26 @@ export const ARCHIVE_NFT_ABI = [
     inputs: [],
     outputs: [{ type: "bool" }],
   },
+  // OpenZeppelin Ownable.owner() — the wallet authorized to withdraw proceeds.
+  // Read with allowFailure=true; if absent on-chain the UI shows PENDING and
+  // never fabricates an address.
+  {
+    type: "function",
+    stateMutability: "view",
+    name: "owner",
+    inputs: [],
+    outputs: [{ type: "address" }],
+  },
+  // treasury() — the address withdrawUSDC pays out to (the actual NFT-revenue
+  // DESTINATION; not necessarily the owner). Mutable on-chain via setTreasury.
+  // Read with allowFailure=true; degrades to PENDING when unreadable.
+  {
+    type: "function",
+    stateMutability: "view",
+    name: "treasury",
+    inputs: [],
+    outputs: [{ type: "address" }],
+  },
 
   {
     type: "function",

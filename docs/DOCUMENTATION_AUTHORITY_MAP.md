@@ -80,6 +80,24 @@ The doctrine layer. Vision, gates, decision frameworks.
 - `docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md` — product-memory record protecting salvageable concepts and entity distinctions. *(Registered 2026-06-09.)*
 - `docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md` — knowledge-map index: where each kind of protocol knowledge lives (Protocol Knowledge vs Institutional Register Memory). Defers to the code registry `src/lib/protocol-knowledge-map.ts`. *(Registered 2026-06-12.)*
 
+### Consolidated canon set (`docs/canon/`)
+
+The `docs/canon/` front-door set consolidates the authority map, doctrine maps,
+glossary, and source-of-truth findings into one navigable layer. Entry point
+`docs/canon/00_AUTHORITY_MAP.md` and knowledge-map index
+`docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md` are listed above. All are CANONICAL.
+
+- `docs/canon/01_FOUNDER_INTENT_MAP.md` — why each concept exists and what it must never become. *(Vocabulary-defining: exempt from the banned-vocab scan — see Enforcement.)*
+- `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` — per-concept contract / code / doc source + status.
+- `docs/canon/03_GLOSSARY.md` — the one approved word per concept + collision rulings. *(Vocabulary-defining: exempt from the banned-vocab scan — see Enforcement.)*
+- `docs/canon/04_DOC_SYNC_CHECKLIST.md` — what to update, in what order, after a change. *(Vocabulary-defining: exempt from the banned-vocab scan — see Enforcement.)*
+- `docs/canon/05_FOUNDATION_FREEZE.md` — the five-layer architecture constitution + Adjacency Law.
+- `docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md` — how money may surface; the money≠prestige guardrail.
+- `docs/canon/07_FOUNDER_PRINCIPLE.md` — approved-but-unbuilt strategic direction.
+- `docs/canon/08_PROTOCOL_OPERATING_PRINCIPLE.md` — derive, don't invent.
+
+*(Canon set wired into the doctrine guard's `CANONICAL_DOCS` scan 2026-06-12, Batch 8.)*
+
 ### Precedence rule (when docs disagree)
 
 1. **On-chain truth** (live read from Avalanche C-Chain 43114)
@@ -262,6 +280,15 @@ match the chapter system. Carry a `Historical note` header.
 > doctrine. Wiring them into the automated `doctrine-guard.test.ts` `DOC_BANNED`
 > scan (and adding the newly-constitutional docs to its `CANONICAL_DOCS` list)
 > is a **code** follow-up, intentionally out of scope of this docs-only pass.
+>
+> **Update (2026-06-12, Batch 8):** the *doc-list* half is now done — the
+> constitutional docs (`NORTH_STAR_SYSTEM`, `INFORMATION_HIERARCHY`,
+> `PROTOCOL_EXECUTION_CONTROL_SYSTEM`) and the `docs/canon/` set are wired into
+> the guard's `CANONICAL_DOCS` scan (vocabulary-defining canon docs 01/03/04 are
+> an explicit exemption — see Enforcement). The *rank-row regex* half remains
+> deferred: phrases like "Founder" / "Genesis Circle" as a rank collide with
+> legitimate cohort/chapter usage and would false-positive across clean docs, so
+> they are not yet mechanized — a known, low-priority hardening item.
 
 ---
 
@@ -312,5 +339,17 @@ Source of truth in code: `src/lib/chapters.ts`.
 
 A docs guard test (`src/lib/__tests__/doctrine-guard.test.ts`) scans every
 CANONICAL doc for the banned vocabulary above and fails the suite if any
-appears. Historical and Deprecated docs may contain the old terms **only**
-when their first non-empty line begins with `Historical note:`.
+appears. As of 2026-06-12 (Batch 8) the guard's `CANONICAL_DOCS` set is coupled
+to this CANONICAL classification: the constitutional docs and the `docs/canon/`
+set are scanned, not just a hand-picked subset.
+
+**Vocabulary-defining exemption.** Docs that *define* the banned vocabulary
+cannot be scanned for it without self-failing. This file's "Superseded
+doctrines" table, and the canon vocabulary docs
+(`docs/canon/01_FOUNDER_INTENT_MAP.md`, `docs/canon/03_GLOSSARY.md`,
+`docs/canon/04_DOC_SYNC_CHECKLIST.md`), are therefore CANONICAL authority but
+EXEMPT from the banned-vocab scan. The guard still asserts they remain
+CANONICAL-listed here, so the exemption can never become a silent omission.
+
+Historical and Deprecated docs may contain the old terms **only** when their
+first non-empty line begins with `Historical note:`.

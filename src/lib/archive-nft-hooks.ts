@@ -191,6 +191,53 @@ export function useArchiveArtifactReads(ids: readonly number[]): ArchiveReadsRes
   };
 }
 
+// ── NFT-revenue destination reads (Batch 3b) ────────────────────────────────
+// owner() = who may withdraw; treasury() = where withdrawUSDC pays out (the
+// actual revenue destination). Both allowFailure=true: an unreadable address
+// surfaces as `undefined` so the UI shows PENDING — never a fabricated address.
+// This reads the DESTINATION only; cumulative NFT revenue has no single
+// on-chain read and stays PENDING by doctrine.
+export type ArchiveOwnershipRead = {
+  owner: `0x${string}` | undefined;
+  treasury: `0x${string}` | undefined;
+  errors: { owner: string | null; treasury: string | null };
+  isLoading: boolean;
+};
+
+export function useArchiveOwnership(): ArchiveOwnershipRead {
+  const q = useReadContracts({
+    allowFailure: true,
+    contracts: [
+      { address: ADDR, abi: ARCHIVE_NFT_ABI, functionName: "owner", args: [] },
+      { address: ADDR, abi: ARCHIVE_NFT_ABI, functionName: "treasury", args: [] },
+    ],
+    query: { refetchInterval: 60_000, staleTime: 30_000 },
+  });
+
+  const ownerSlot = q.data?.[0];
+  const treasurySlot = q.data?.[1];
+
+  const owner =
+    ownerSlot && ownerSlot.status === "success"
+      ? (ownerSlot.result as unknown as `0x${string}`)
+      : undefined;
+  const treasury =
+    treasurySlot && treasurySlot.status === "success"
+      ? (treasurySlot.result as unknown as `0x${string}`)
+      : undefined;
+
+  return {
+    owner,
+    treasury,
+    errors: {
+      owner: ownerSlot && ownerSlot.status === "failure" ? errMsg(ownerSlot.error) : null,
+      treasury:
+        treasurySlot && treasurySlot.status === "failure" ? errMsg(treasurySlot.error) : null,
+    },
+    isLoading: q.isLoading,
+  };
+}
+
 export function formatRelativeTime(ms: number | undefined): string {
   if (!ms) return "—";
   const diff = Date.now() - ms;

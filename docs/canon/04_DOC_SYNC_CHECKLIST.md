@@ -35,7 +35,7 @@ depends on the one above it being correct.
 
 | Check | How |
 |---|---|
-| Stale / mock values | grep mock constants: `VAULT_ASSETS`, `VAULT_INFLOWS`, `GENESIS_NFT_PRICE`, `VAULT_STARTING_VALUE`, `CURRENT_EPISODE`. |
+| Stale / mock values | grep removed mock constants — `VAULT_ASSETS`, `VAULT_INFLOWS`, `VAULT_HISTORY`, `useLiveData`, `GENESIS_NFT_PRICE`, `VAULT_STARTING_VALUE` — these were deleted and must return **zero** hits under `src/`; also grep `CURRENT_EPISODE`. |
 | Banned legacy doctrine | run `doctrine-guard.test.ts`. |
 | Retired rank vocabulary | grep `scoreMultiplier`, `Compounder`, `Genesis Circle`, "Founder" as a rank name. |
 | Retired cohort labels | grep the superseded cohort labels listed in `docs/DOCUMENTATION_AUTHORITY_MAP.md`. |

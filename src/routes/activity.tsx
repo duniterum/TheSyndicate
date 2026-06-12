@@ -116,7 +116,7 @@ function ActivityPage() {
         <div className="mb-4">
           <ActivityFilterChips value={filter} onChange={setFilter} counts={counts} />
         </div>
-        <ProtocolEventsFeed limit={80} filter={filter} withSection={false} />
+        <ProtocolEventsFeed limit={80} filter={filter} withSection={false} showInstitutionalLink />
       </Section>
 
       {/* Bucketed timeline — recency view (Wave 3A) */}
