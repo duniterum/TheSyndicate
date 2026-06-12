@@ -392,14 +392,15 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
       "/labs/chronicle-promotion",
       "/labs/chronicle-admission",
       "/labs/chronicle-entries-preview",
+      "/labs/chronicle-timeline",
     ],
     status: "partial",
     statusNote:
-      "Promotion pipeline live; public Chronicle curation is gated and human-approved. The admission → entry edge derives DRAFT institutional entries only; publication is a human / governance act. Evidence: src/lib/chronicle-promotion.ts, src/lib/chronicle-entry.ts.",
+      "Promotion pipeline live; public Chronicle curation is gated and human-approved. The admission → entry edge derives DRAFT institutional entries only; publication is a human / governance act. The entry → chronology edge orders entries by verified block height (unprovable order is held, never invented). Evidence: src/lib/chronicle-promotion.ts, src/lib/chronicle-entry.ts, src/lib/chronology.ts.",
     identityPosture: "identity-free",
     indexes: {
       canonDocs: ["docs/canon/05_FOUNDATION_FREEZE.md"],
-      registries: ["src/lib/chronicle-entry-registry.ts"],
+      registries: ["src/lib/chronicle-entry-registry.ts", "src/lib/chronology-registry.ts"],
     },
   },
   {

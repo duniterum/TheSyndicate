@@ -108,8 +108,9 @@ export type ChronicleChronology = {
  * The individually-named upstream ids (review/memory/signal/event) are spec §2
  * "if carried" fields; the admission candidate carries the full trail as a
  * lineage array rather than as separate ids, so the complete provenance lives in
- * `lineage`. `sourceBlock` is intentionally absent: it is not carried through the
- * candidate, and a field that is always undefined would be dishonest.
+ * `lineage`. The verified block height is now carried (Sprint 14) and surfaced as
+ * `chronology.block` (null when the source fact had no block anchor) rather than
+ * as a separate `sourceBlock` field, so the on-chain anchor lives in one place.
  */
 export type InstitutionalChronicleEntry = {
   /** Deterministic entry id (1:1 with the source admission candidate). */
@@ -268,11 +269,11 @@ export const CHRONICLE_ENTRY_MAINTAINER: ReadonlyArray<{
   },
   {
     topic: "Missing field future Story would need",
-    note: "A real chronology time axis. chronology.date and chronology.block are null today because the pipeline carries only transaction anchors, not block timestamps. Story needs an ordered date / sequence to narrate over; until a timestamp is threaded through, entries can be anchored but not time-ordered.",
+    note: "A real calendar time axis. chronology.date is null because no block timestamp is fetched anywhere in the pipeline — only block heights and transaction anchors are carried. The Chronicle Chronology layer can therefore order entries by verified block number but cannot date them; Story needs an actual timestamp to narrate over, so a block-timestamp lookup remains the outstanding prerequisite.",
   },
   {
-    topic: "Low-scope improvement that fits this sprint",
-    note: "Thread the source block height from the register entry through the admission candidate so chronology.block can be populated. It is deferred here to avoid changing the upstream candidate shape; it is a one-line addition at the admission layer and would give every entry a verifiable block anchor.",
+    topic: "Verified block anchor (threaded in Sprint 14)",
+    note: "The source block height is now carried from the register entry through the admission candidate (narrowed bigint to number) and surfaced as chronology.block, so every entry whose source fact had an on-chain block carries a verifiable height. The Chronicle Chronology layer reads chronology.block to order entries; entries without a block anchor are held, never ordered by guess.",
   },
   {
     topic: "Hardening the future human-publish / correction flow",

@@ -415,3 +415,55 @@ describe("Chronicle entry — Adjacency Law (ADMISSION → ENTRY only)", () => {
     });
   }
 });
+
+// CHRONICLE ENTRY → CHRONOLOGICAL TIMELINE only. The Chronology layer reads
+// CHRONICLE ENTRIES (the institutional entry TYPE) and nothing else: not the
+// raw event / signal / memory / review / promotion / register / admission
+// layers, not the chronicle-entry DERIVER, and not chapters / milestones (those
+// are member-ordinal / pulse-derived, not time-derived). It orders by the
+// VERIFIED block height carried on the entry; lineage is carried THROUGH.
+const CHRONOLOGY_MODULES = ["chronology-registry.ts", "chronology.ts"];
+
+describe("Chronicle chronology — Adjacency Law (ENTRY → CHRONOLOGY only)", () => {
+  for (const mod of CHRONOLOGY_MODULES) {
+    const src = read(mod);
+    const importLines = src
+      .split(/\r?\n/)
+      .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+    const imports = importLines.join("\n");
+
+    it(`${mod} does not import the raw event layer (protocol-events)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Signal layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Memory layer`, () => {
+      expect(/from\s+["'][^"']*\/memory-candidates["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle-review / promotion / register / admission layers`, () => {
+      expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*chronicle-promotion/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*institutional-register/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*chronicle-admission/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the chronicle-entry DERIVER (reads the registry leaf)`, () => {
+      expect(/from\s+["'][^"']*\/chronicle-entry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not reach into chapters or milestones (order is block-derived, not count-derived)`, () => {
+      expect(/from\s+["'][^"']*\/chapters["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*activity-milestones["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} builds from the Chronicle entry vocabulary (imports the chronicle-entry registry leaf)`, () => {
+      expect(/from\s+["'][^"']*chronicle-entry-registry["']/.test(imports)).toBe(true);
+    });
+  }
+});

@@ -1,0 +1,347 @@
+SPRINT 14 IMPLEMENTATION — CHRONICLE CHRONOLOGY LAYER
+
+Proceed carefully.
+
+Do NOT run a broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Public Institutional Register
+→ Reliability Layer
+→ Protocol Knowledge Map
+→ Chronicle Admission Candidate
+→ Chronicle Entry
+
+Core objective:
+
+Build the Chronicle Chronology Layer.
+
+This sprint introduces deterministic time ordering for Chronicle Entries.
+
+The objective is not Story.
+
+The objective is not publishing.
+
+The objective is not narrative generation.
+
+The objective is:
+
+Chronicle Entry
+→ Chronological Timeline
+
+This layer establishes the protocol's permanent sense of historical order.
+
+1. PRE-IMPLEMENTATION CHALLENGE
+
+Before coding, answer briefly:
+
+A) Is Chronicle Chronology truly the next dependency-valid layer?
+
+B) Is any hidden layer missing between:
+
+Chronicle Entry
+→ Chronological Timeline
+
+C) Does any existing code already partially implement chronology, sequencing, block ordering, timestamps, timeline positioning, milestone ordering, or chapter progression?
+
+D) Is there any architectural risk that would make chronology premature?
+
+Keep the answer concise.
+
+Do not perform a broad audit.
+
+2. CHRONOLOGY OBJECT
+
+Create a dedicated chronology representation.
+
+Suggested fields:
+
+* chronologyId
+* sourceChronicleEntryId
+* chronologyStatus
+* chronologyType
+* blockNumber
+* blockTimestamp
+* txHash
+* sequenceNumber
+* chapter
+* milestone
+* chronologyAnchor
+* chronologyConfidence
+* chronologyReason
+* lineage
+
+Chronology must remain factual.
+
+No narrative.
+
+No interpretation.
+
+No generated storytelling.
+
+3. TIME SOURCES
+
+Determine the safest ordering hierarchy.
+
+Preferred order:
+
+1. Verified block timestamp
+2. Verified block number
+3. Verified tx anchor
+4. Verified deployment anchor
+5. Explicit held status
+
+Never invent chronology.
+
+Never estimate dates.
+
+Never infer historic ordering without evidence.
+
+If chronology cannot be proven:
+
+* hold it
+* mark it incomplete
+* mark it coverage-limited
+
+Do not fabricate order.
+
+4. SEEDED VS PIPELINE FACTS
+
+The protocol currently contains:
+
+* seeded institutional facts
+* pipeline-derived facts
+
+Define how they coexist chronologically.
+
+Questions:
+
+* Where do genesis-seeded facts appear?
+* How do they relate to later pipeline-derived facts?
+* How do they receive sequence numbers?
+* How are duplicates avoided?
+
+Chronology must unify them without rewriting history.
+
+5. CHRONICLE ENTRY COMPATIBILITY
+
+Do not modify existing Chronicle Entries.
+
+Do not publish new Chronicle Entries.
+
+Do not generate Story.
+
+Only provide chronology metadata.
+
+Existing entries remain immutable.
+
+Chronology is an overlay.
+
+6. ACTIVITY RELATIONSHIP
+
+Evaluate relationship with:
+
+/activity
+
+Rules:
+
+* Activity remains raw event flow.
+* Chronology remains institutional memory order.
+* Do not duplicate Activity.
+* Do not replace Activity.
+* Do not create a second activity feed.
+
+If safe:
+
+show how an Activity event can be traced into chronology through lineage.
+
+If not safe:
+
+document the future path.
+
+7. CHAPTERS / MILESTONES
+
+The protocol already contains:
+
+* Chapters
+* Milestones
+* Membership progression
+* Institutional milestones
+
+Determine whether chronology should reference them.
+
+Allowed:
+
+* chapter references
+* milestone references
+
+Not allowed:
+
+* narrative interpretation
+* story generation
+
+Chronology records.
+
+Story interprets.
+
+Keep them separate.
+
+8. CHRONICLE DUPLICATION PREVENTION
+
+Sprint 13 identified overlap risk:
+
+Genesis facts
+↔
+Existing locked Chronicle entries
+
+Chronology must help prevent:
+
+* duplicate Chronicle entries
+* duplicate institutional records
+* duplicate timeline events
+
+Implement the safest mechanism possible.
+
+9. VERSIONING / CORRECTIONS
+
+Chronology must support:
+
+* original entry
+* superseded entry
+* corrected entry
+
+Rules:
+
+* chronology is append-only
+* history is never silently rewritten
+* supersession remains visible
+* ordering remains deterministic
+
+Do not build full correction workflows.
+
+Only build chronology-safe foundations.
+
+10. FUTURE STORY COMPATIBILITY
+
+Without building Story:
+
+determine what Story will eventually need.
+
+Examples:
+
+* timeline ordering
+* chronology anchors
+* chapter boundaries
+* milestone references
+* event grouping
+
+Add only the minimum metadata necessary.
+
+Do not build Story.
+
+11. MAINTAINER INTELLIGENCE
+
+Because you see the codebase directly:
+
+Return:
+
+* one chronology risk we are not seeing
+* one existing data source we should reuse
+* one duplication risk chronology can solve
+* one future Story prerequisite that still remains after this sprint
+
+Do not turn this into an audit.
+
+12. INSPECTION SURFACE
+
+Create inspection only.
+
+Acceptable:
+
+* /labs/chronicle-timeline
+* internal timeline view
+* internal chronology table
+
+Display:
+
+* chronology status
+* ordering
+* anchors
+* timestamps
+* sequence numbers
+* chapter references
+* milestone references
+* lineage
+
+Do not redesign public Chronicle.
+
+13. TESTS REQUIRED
+
+Add tests proving:
+
+* chronology ordering is deterministic
+* chronology never invents dates
+* chronology never invents ordering
+* seeded and pipeline facts coexist safely
+* duplicate chronology entries are prevented
+* superseded entries preserve history
+* chronology remains append-only
+* chronology preserves lineage
+* chronology does not mutate Chronicle Entries
+* chronology does not introduce Story
+* chronology does not introduce Recognition
+
+14. QA REQUIRED
+
+Run:
+
+* typecheck
+* chronology tests
+* Chronicle Entry tests
+* Chronicle Admission tests
+* Institutional Register tests
+* doctrine guard
+* ownership / forbidden-language guard
+* route render test
+
+Do not fight the known production build OOM unless explicitly required.
+
+15. RETURN FORMAT
+
+After implementation, report:
+
+1. Pre-implementation challenge answer.
+2. Files changed.
+3. Chronology object shape.
+4. Ordering hierarchy.
+5. Seeded vs pipeline chronology handling.
+6. Activity relationship.
+7. Chapter / milestone integration.
+8. Duplication prevention mechanism.
+9. Versioning / correction handling.
+10. Maintainer intelligence.
+11. What was intentionally not touched.
+12. Tests added.
+13. QA results.
+14. Remaining risks.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint is not Governance.
+
+This sprint only builds:
+
+Chronicle Entry
+→ Chronological Timeline
+
+so that future Chronicle publication and future Story have a truthful temporal foundation.

@@ -50,6 +50,8 @@ const PRESTIGE_MODULES = [
   "chronicle-admission.ts",
   "chronicle-entry-registry.ts",
   "chronicle-entry.ts",
+  "chronology-registry.ts",
+  "chronology.ts",
 ];
 
 // Per-actor MONETARY MAGNITUDE field names that must never appear in the Signal
@@ -183,6 +185,20 @@ describe("Chronicle admission layer — money-safe (canon §4.5 Rule E)", () => 
 // carry no monetary magnitude.
 describe("Chronicle entry layer — money-safe (canon §4.5 Rule E)", () => {
   for (const mod of ["chronicle-entry-registry.ts", "chronicle-entry.ts"]) {
+    const src = read(mod);
+    for (const token of RULE_E_MAGNITUDE_TOKENS) {
+      it(`${mod} never names the magnitude field "${token}"`, () => {
+        expect(src.includes(token)).toBe(false);
+      });
+    }
+  }
+});
+
+// The Chronology layer orders by BLOCK HEIGHT only — an ordinal anchor, never a
+// magnitude. It must never name a monetary field: chronological position is
+// decided from block / transaction evidence, never from how much money moved.
+describe("Chronicle chronology layer — money-safe (canon §4.5 Rule E)", () => {
+  for (const mod of ["chronology-registry.ts", "chronology.ts"]) {
     const src = read(mod);
     for (const token of RULE_E_MAGNITUDE_TOKENS) {
       it(`${mod} never names the magnitude field "${token}"`, () => {

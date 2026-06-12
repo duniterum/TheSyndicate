@@ -85,6 +85,13 @@ export type ChronicleAdmissionCandidate = {
   sourcePromotionDecisionId: string;
   /** On-chain anchor carried from the source entry (inspection only, no magnitude). */
   sourceTxHash?: string;
+  /**
+   * Verified source block height, carried from the register entry as a plain
+   * number (the upstream pipeline carries it as bigint; it is narrowed at the
+   * deriver boundary to stay JSON-serialisable). The Chronicle Chronology layer
+   * orders by this. Inspection only — a height, never a magnitude.
+   */
+  sourceBlock?: number;
   // ── Carried classification ──
   register: InstitutionalRegister;
   category: InstitutionalEntryCategory;

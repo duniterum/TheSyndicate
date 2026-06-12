@@ -54,6 +54,7 @@ import { Route as LabsInstitutionalRegisterRouteImport } from './routes/labs.ins
 import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museum'
 import { Route as LabsDesignArchiveRouteImport } from './routes/labs.design-archive'
 import { Route as LabsComponentIndexRouteImport } from './routes/labs.component-index'
+import { Route as LabsChronicleTimelineRouteImport } from './routes/labs.chronicle-timeline'
 import { Route as LabsChroniclePromotionRouteImport } from './routes/labs.chronicle-promotion'
 import { Route as LabsChronicleEntriesPreviewRouteImport } from './routes/labs.chronicle-entries-preview'
 import { Route as LabsChronicleCandidatesRouteImport } from './routes/labs.chronicle-candidates'
@@ -295,6 +296,11 @@ const LabsComponentIndexRoute = LabsComponentIndexRouteImport.update({
   path: '/component-index',
   getParentRoute: () => LabsRoute,
 } as any)
+const LabsChronicleTimelineRoute = LabsChronicleTimelineRouteImport.update({
+  id: '/chronicle-timeline',
+  path: '/chronicle-timeline',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsChroniclePromotionRoute = LabsChroniclePromotionRouteImport.update({
   id: '/chronicle-promotion',
   path: '/chronicle-promotion',
@@ -402,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
   '/labs/chronicle-entries-preview': typeof LabsChronicleEntriesPreviewRoute
   '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
+  '/labs/chronicle-timeline': typeof LabsChronicleTimelineRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -461,6 +468,7 @@ export interface FileRoutesByTo {
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
   '/labs/chronicle-entries-preview': typeof LabsChronicleEntriesPreviewRoute
   '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
+  '/labs/chronicle-timeline': typeof LabsChronicleTimelineRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -522,6 +530,7 @@ export interface FileRoutesById {
   '/labs/chronicle-candidates': typeof LabsChronicleCandidatesRoute
   '/labs/chronicle-entries-preview': typeof LabsChronicleEntriesPreviewRoute
   '/labs/chronicle-promotion': typeof LabsChroniclePromotionRoute
+  '/labs/chronicle-timeline': typeof LabsChronicleTimelineRoute
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
@@ -584,6 +593,7 @@ export interface FileRouteTypes {
     | '/labs/chronicle-candidates'
     | '/labs/chronicle-entries-preview'
     | '/labs/chronicle-promotion'
+    | '/labs/chronicle-timeline'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -643,6 +653,7 @@ export interface FileRouteTypes {
     | '/labs/chronicle-candidates'
     | '/labs/chronicle-entries-preview'
     | '/labs/chronicle-promotion'
+    | '/labs/chronicle-timeline'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -703,6 +714,7 @@ export interface FileRouteTypes {
     | '/labs/chronicle-candidates'
     | '/labs/chronicle-entries-preview'
     | '/labs/chronicle-promotion'
+    | '/labs/chronicle-timeline'
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
@@ -1086,6 +1098,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsComponentIndexRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/chronicle-timeline': {
+      id: '/labs/chronicle-timeline'
+      path: '/chronicle-timeline'
+      fullPath: '/labs/chronicle-timeline'
+      preLoaderRoute: typeof LabsChronicleTimelineRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/chronicle-promotion': {
       id: '/labs/chronicle-promotion'
       path: '/chronicle-promotion'
@@ -1197,6 +1216,7 @@ interface LabsRouteChildren {
   LabsChronicleCandidatesRoute: typeof LabsChronicleCandidatesRoute
   LabsChronicleEntriesPreviewRoute: typeof LabsChronicleEntriesPreviewRoute
   LabsChroniclePromotionRoute: typeof LabsChroniclePromotionRoute
+  LabsChronicleTimelineRoute: typeof LabsChronicleTimelineRoute
   LabsComponentIndexRoute: typeof LabsComponentIndexRoute
   LabsDesignArchiveRoute: typeof LabsDesignArchiveRoute
   LabsDesignMuseumRoute: typeof LabsDesignMuseumRoute
@@ -1216,6 +1236,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsChronicleCandidatesRoute: LabsChronicleCandidatesRoute,
   LabsChronicleEntriesPreviewRoute: LabsChronicleEntriesPreviewRoute,
   LabsChroniclePromotionRoute: LabsChroniclePromotionRoute,
+  LabsChronicleTimelineRoute: LabsChronicleTimelineRoute,
   LabsComponentIndexRoute: LabsComponentIndexRoute,
   LabsDesignArchiveRoute: LabsDesignArchiveRoute,
   LabsDesignMuseumRoute: LabsDesignMuseumRoute,

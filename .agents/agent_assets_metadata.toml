@@ -54,3 +54,9 @@ id = "OXmUpDSFZGLDMcYSCJPkd"
 uri = "file://docs/SPRINT_13_CHRONICLE_ENTRY_PUBLICATION_REPORT.md"
 type = "text"
 title = "Sprint 13 — Chronicle Entry Publication Mechanism (14-section report)"
+
+[[outputs]]
+id = "F7IOmS_cNHEDPNa2dBR4d"
+uri = "file://docs/SPRINT_14_CHRONICLE_CHRONOLOGY_LAYER_REPORT.md"
+type = "text"
+title = "Sprint 14 — Chronicle Chronology Layer Report"

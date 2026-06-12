@@ -57,8 +57,11 @@ function toEntry(candidate: ChronicleAdmissionCandidate): InstitutionalChronicle
     title: candidate.title,
     summary: candidate.summary,
     chronology: {
+      // date stays null — no block timestamp is fetched anywhere in the pipeline.
       date: null,
-      block: null,
+      // Verified block height carried from the candidate (Sprint 14); null when
+      // the source fact had no on-chain block anchor.
+      block: candidate.sourceBlock ?? null,
       txHash: candidate.sourceTxHash ?? null,
     },
     verificationStatus: candidate.verificationStatus,

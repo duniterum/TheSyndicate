@@ -62,6 +62,10 @@ export function deriveChronicleAdmissionCandidates(
       sourceInstitutionalEntryId: e.id,
       sourcePromotionDecisionId: e.sourcePromotionDecisionId,
       sourceTxHash: e.sourceTxHash,
+      // Narrow the upstream bigint block height to a plain number so the
+      // candidate stays JSON-serialisable (block heights are far below 2^53);
+      // the Chronicle Chronology layer reads this to order entries.
+      sourceBlock: e.sourceBlock === undefined ? undefined : Number(e.sourceBlock),
       register: e.register,
       category: e.category,
       createdFrom: e.createdFrom,
