@@ -1,0 +1,152 @@
+SPRINT 9 IMPLEMENTATION — INSTITUTIONAL REGISTER SEEDING
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Public Institutional Register
+→ Reliability Layer
+
+Core objective:
+
+Populate the Institutional Register with real, verified, historically accurate protocol memory.
+
+This sprint does NOT:
+
+* generate Story
+* build Recognition
+* create fictional entries
+* create marketing entries
+* create manual placeholder entries
+* create governance systems
+* create member-memory systems
+
+The objective is:
+
+Convert existing verified protocol history into Institutional Register entries using the already-built pipeline wherever possible.
+
+1. INSTITUTIONAL MEMORY INVENTORY
+
+Identify all currently verifiable protocol-history events.
+
+Examples to evaluate:
+
+* SYN deployment
+* Membership Sale deployment
+* First member
+* First liquidity
+* First burn
+* First artifact
+* First milestone
+* First campaign funding
+* Existing protocol milestones
+* Existing verified Chronicle records
+
+Return:
+
+* candidate list
+* source
+* verification status
+* coverage status
+
+2. PIPELINE FIRST
+
+Use the existing chain wherever possible:
+
+Event
+→ Signal
+→ Memory
+→ Review
+→ Promotion
+→ Register
+
+Do not bypass the architecture.
+
+Only create explicit exceptions if a foundational event predates the event pipeline.
+
+3. GENESIS EVENTS
+
+Evaluate whether protocol-birth events should become a reserved category:
+
+* token deployment
+* initial distribution
+* protocol launch
+
+Do not introduce story language.
+
+Treat these as institutional facts.
+
+4. NO INVENTED HISTORY
+
+Every seeded entry must:
+
+* be verifiable
+* have lineage
+* have a source
+* have a justification
+
+If verification is insufficient:
+
+* hold
+* coverage-limit
+* exclude
+
+5. INSTITUTIONAL REGISTER QUALITY CHECK
+
+After seeding:
+
+Review:
+
+* duplication
+* chronology
+* coverage
+* missing foundational events
+
+Return gaps.
+
+Do not fill gaps with assumptions.
+
+6. QA REQUIRED
+
+Run:
+
+* typecheck
+* institutional register tests
+* promotion tests
+* lineage tests
+* ownership guard
+* chronology checks
+
+7. RETURN FORMAT
+
+8. Entries seeded.
+
+9. Sources used.
+
+10. Entries excluded.
+
+11. Coverage limitations.
+
+12. Genesis-event recommendation.
+
+13. Remaining institutional-memory gaps.
+
+14. QA results.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint is not Chronicle automation.
+
+This sprint only ensures that the Institutional Register contains real protocol memory.
