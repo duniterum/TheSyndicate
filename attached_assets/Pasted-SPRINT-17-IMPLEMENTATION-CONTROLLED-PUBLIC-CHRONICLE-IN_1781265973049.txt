@@ -1,0 +1,341 @@
+SPRINT 17 IMPLEMENTATION — CONTROLLED PUBLIC CHRONICLE INTEGRATION
+
+Proceed carefully.
+
+Do NOT run a broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Promotion Decision
+→ Institutional Register Entry
+→ Public Institutional Register
+→ Reliability Layer
+→ Protocol Knowledge Map
+→ Chronicle Admission Candidate
+→ Chronicle Entry
+→ Chronological Timeline
+→ Verified Timestamp
+→ Protocol Lineage Visibility
+
+Core objective:
+
+Integrate the derived Chronicle Entry pipeline into the public Chronicle experience in a controlled, non-duplicative, non-story way.
+
+This sprint is the first public bridge from the institutional memory engine to `/chronicle`.
+
+This sprint does NOT:
+
+* generate Story
+* build Recognition
+* build Member Register
+* build Governance / DAO
+* build AI
+* auto-publish everything
+* rewrite locked Chronicle entries
+* create marketing narrative
+* change upstream derivation rules
+* create new contracts
+
+It only adds a safe public Chronicle integration layer.
+
+──────────────────────────────
+
+1. PRE-IMPLEMENTATION CHALLENGE
+
+Before coding, answer briefly:
+
+A) Is Controlled Public Chronicle Integration the next dependency-valid layer?
+
+B) Is any hidden dependency missing before derived Chronicle entries can appear publicly?
+
+C) Does existing `/chronicle` already have locked/manual entries that overlap with derived genesis-seed entries?
+
+D) What is the safest non-duplicative integration model?
+
+Do not run a broad audit.
+
+Only answer enough to prevent public duplication or doctrine drift.
+
+──────────────────────────────
+
+2. EXISTING CHRONICLE COMPATIBILITY
+
+Existing public Chronicle entries are locked and must remain canonical.
+
+Do not rewrite them.
+
+Do not delete them.
+
+Do not silently replace them.
+
+Do not duplicate them with derived entries.
+
+If a derived institutional Chronicle Entry overlaps an existing locked entry:
+
+* detect overlap,
+* suppress duplicate rendering,
+* or show it only as lineage/support metadata,
+* never double-publish the same fact.
+
+──────────────────────────────
+
+3. PUBLIC CHRONICLE INTEGRATION MODEL
+
+Choose the safest model:
+
+A) Existing locked entries remain primary; derived entries appear as “Institutional record support.”
+
+B) Derived entries appear in a separate “Institutional Register feed” section below locked Chronicle.
+
+C) Derived entries appear only when no locked Chronicle entry overlaps.
+
+D) Derived entries remain hidden but linked as lineage.
+
+Pick the model that best preserves:
+
+* no duplication,
+* no Story generation,
+* no doctrine drift,
+* maximum trust.
+
+──────────────────────────────
+
+4. CHRONICLE ENTRY STATUS DISCIPLINE
+
+Only public-safe statuses may appear.
+
+Rules:
+
+* published locked manual entries = canonical public Chronicle.
+* derived draft entries may be shown only as draft / institutional record support, not final Chronicle.
+* held entries must not appear publicly except in labs.
+* rejected entries must not appear publicly.
+* superseded entries must be handled append-only if surfaced.
+
+Do not present draft as final.
+
+Do not imply governance approval.
+
+Do not imply DAO approval.
+
+──────────────────────────────
+
+5. TIMELINE / CHRONOLOGY INTEGRATION
+
+Use chronology only as factual ordering metadata.
+
+Allowed:
+
+* block number
+* verified timestamp if available
+* sequence position
+* source transaction
+* lineage link
+
+Not allowed:
+
+* story interpretation
+* emotional framing
+* AI-generated narrative
+* speculative chapter meaning
+
+Chronology orders.
+
+Story interprets later.
+
+Keep them separate.
+
+──────────────────────────────
+
+6. LINEAGE VISIBILITY
+
+Every public derived Chronicle item must expose or link to its lineage.
+
+At minimum:
+
+* Institutional Register Entry
+* Admission Candidate
+* Chronicle Entry
+* Chronology
+* source transaction / block
+
+If public lineage is too heavy, link to a restrained “View lineage” detail.
+
+Do not expose noisy internal lab paths publicly.
+
+──────────────────────────────
+
+7. ACTIVITY RELATIONSHIP
+
+Keep `/activity` distinct.
+
+Rules:
+
+* `/activity` remains raw event stream.
+* `/chronicle` remains curated institutional memory.
+* `/chronicle` must not become an activity feed.
+* Do not backfill activity rows in this sprint unless low-risk and strictly metadata-only.
+
+If relevant, add a follow-up note for future:
+
+Activity Event
+→ “part of institutional memory”
+indicator.
+
+Do not implement unless clearly safe and low-scope.
+
+──────────────────────────────
+
+8. COPY / TONE RULES
+
+Chronicle integration must remain sober.
+
+Allowed:
+
+* Institutional record
+* Verified source
+* Protocol memory
+* Chronicle support
+* Source transaction
+* Verified timestamp
+* Timeline position
+
+Avoid:
+
+* legendary
+* heroic
+* founder achievement
+* founder made history
+* investor reward
+* profit
+* return
+* governance right
+* financial promise
+* AI story
+* mythic language
+
+GENESIS_EVENT remains allowed only as verified institutional fact.
+
+No hype-style genesis copy.
+
+──────────────────────────────
+
+9. PUBLIC SURFACE DESIGN
+
+Keep design restrained.
+
+Do not redesign the whole Chronicle page.
+
+Add only the minimum required to show:
+
+* locked Chronicle entries,
+* derived institutional support / draft entries if safe,
+* lineage / source verification,
+* status distinction,
+* no duplication.
+
+Mobile must remain readable.
+
+──────────────────────────────
+
+10. KNOWLEDGE MAP HARMONIZATION
+
+Update Protocol Knowledge Map only if needed.
+
+Do not create new nodes unless a genuinely new canonical home is introduced.
+
+Likely this sprint only adds or refines public surface references for Chronicle.
+
+No architecture changes.
+
+──────────────────────────────
+
+11. MAINTAINER INTELLIGENCE
+
+Because you see the full codebase directly, return:
+
+1. One existing Chronicle structure we should preserve.
+2. One overlap/duplication risk you found.
+3. One public-surface risk.
+4. One future Story prerequisite that remains after this sprint.
+5. One future Activity-lineage improvement that should wait.
+
+Keep this narrow.
+
+Do not turn it into an audit.
+
+──────────────────────────────
+
+12. TESTS REQUIRED
+
+Add tests proving:
+
+* existing locked Chronicle entries are not mutated.
+* derived entries do not duplicate locked Chronicle entries.
+* draft derived entries are not presented as final.
+* held/rejected entries do not appear publicly.
+* chronology metadata is factual only.
+* lineage is preserved or linked.
+* copy remains clean.
+* no Story behavior is introduced.
+* no Recognition behavior is introduced.
+* no Governance / DAO behavior is introduced.
+
+──────────────────────────────
+
+13. QA REQUIRED
+
+Run:
+
+* typecheck
+* Chronicle integration tests
+* Chronicle Entry tests
+* Chronology tests
+* Lineage tests
+* doctrine guard
+* ownership / forbidden-language guard
+* route render test for `/chronicle`
+* mobile/responsive check if possible
+
+Do not fight the known production build OOM unless explicitly required.
+
+──────────────────────────────
+
+14. RETURN FORMAT
+
+After implementation, report:
+
+1. Pre-implementation challenge answer.
+2. Integration model chosen.
+3. Files changed.
+4. Existing Chronicle compatibility.
+5. Duplication prevention.
+6. Status handling.
+7. Timeline / timestamp handling.
+8. Lineage handling.
+9. Activity relationship.
+10. Knowledge-map harmonization.
+11. Maintainer intelligence.
+12. What was intentionally not touched.
+13. Tests added.
+14. QA results.
+15. Remaining risks.
+
+Important:
+
+This sprint is not Story.
+
+This sprint is not Recognition.
+
+This sprint is not Governance.
+
+This sprint only builds:
+
+Derived institutional Chronicle intelligence
+→ controlled public Chronicle integration
+
+without duplicating, rewriting, or mythologizing the existing Chronicle.
