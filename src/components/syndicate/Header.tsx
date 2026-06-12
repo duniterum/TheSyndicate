@@ -10,25 +10,27 @@ import { track } from "@/lib/analytics";
 type Item = { label: string; to: string; hint?: string };
 type Group = { label: string; items: Item[] };
 
-// Cockpit nav: 4 primary destinations + a single "More" instrument group.
+// Cockpit nav: 6 primary destinations + a single "More" instrument group
+// (mirrors the reference header lockup).
 const PRIMARY: Item[] = [
   { label: "Activity", to: "/activity", hint: "Onchain events stream" },
   { label: "Vault", to: "/vault", hint: "70% routing destination" },
-  { label: "NFT", to: "/nft", hint: "The First Signal · Chapter I mint open" },
+  { label: "NFT / Archive", to: "/nft", hint: "The First Signal · Chapter I mint open" },
   { label: "Verify", to: "/transparency", hint: "Verify every claim" },
+  { label: "Members", to: "/members", hint: "Who is joining" },
+  { label: "Token (SYN)", to: "/token", hint: "SYN contract & spec" },
 ];
 
 const GROUPS: Group[] = [
   {
     label: "More",
     items: [
+      { label: "Archive", to: "/archive", hint: "Collector artifacts & seals" },
       { label: "Roadmap", to: "/roadmap", hint: "Live · Next · Pending · Future" },
       { label: "Referral · Preview", to: "/referral", hint: "Simulated future model" },
-      { label: "Token", to: "/token", hint: "SYN contract & spec" },
       { label: "Tokenomics", to: "/tokenomics", hint: "Allocation & supply" },
       { label: "Liquidity", to: "/liquidity", hint: "SYN/USDC pool" },
       { label: "Contract Registry", to: "/registry", hint: "Every contract & wallet address" },
-      { label: "Members", to: "/members", hint: "Who is joining" },
       { label: "Founders", to: "/founders", hint: "Who was here first" },
       { label: "Chapters", to: "/chapters", hint: "How the protocol formed" },
       { label: "Ranks", to: "/ranks", hint: "Where you fit" },
@@ -41,7 +43,7 @@ const GROUPS: Group[] = [
 
 // Shared nav-link chrome: mono, uppercase, muted → cyan active.
 const NAV_BASE =
-  "mono px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors";
+  "mono whitespace-nowrap px-2.5 py-2 text-[11px] uppercase tracking-[0.13em] text-muted-foreground hover:text-foreground transition-colors";
 const NAV_ACTIVE = "text-[color:var(--accent)]";
 
 export function Header() {
@@ -62,8 +64,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/85 border-b border-border">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 md:px-8 h-16">
-        {/* Logo */}
-        <Logo size="sm" withChapter onClick={() => setMobileOpen(false)} />
+        {/* Logo — gold brand lockup (reference header) */}
+        <Logo size="sm" tone="gold" withProtocolLabel withChapter onClick={() => setMobileOpen(false)} />
 
         {/* Desktop grouped nav */}
         <nav className="hidden lg:flex items-center gap-0.5 relative">
@@ -73,6 +75,11 @@ export function Header() {
               to={it.to}
               className={NAV_BASE}
               activeProps={{ className: `${NAV_BASE} ${NAV_ACTIVE}` }}
+              onClick={
+                it.to === "/transparency"
+                  ? () => track("verify_click", { surface: "header" })
+                  : undefined
+              }
             >
               {it.label}
             </Link>
@@ -107,6 +114,9 @@ export function Header() {
                         {it.hint && <div className="mono mt-0.5 text-[10px] uppercase tracking-[0.1em] text-muted-foreground">{it.hint}</div>}
                       </Link>
                     ))}
+                    <div className="mt-1 border-t border-border/60 pt-1.5">
+                      <ThemeToggle variant="pill" className="w-full justify-start" />
+                    </div>
                   </div>
                 </div>
               )}
@@ -114,18 +124,10 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Action cluster — Bell, Wallet chip, Theme, Verify (outline), Join (solid cyan) */}
+        {/* Action cluster — Bell, Avalanche C-Chain wallet/network pill, Join (gold). Mirrors reference header. */}
         <div className="flex items-center gap-2">
           <NotificationBell className="hidden sm:inline-flex" />
           <HeaderWalletChip />
-          <ThemeToggle variant="icon" className="hidden sm:inline-flex" />
-          <Link
-            to="/transparency"
-            onClick={() => track("verify_click", { surface: "header" })}
-            className="mono hidden sm:inline-flex items-center gap-1.5 rounded-[3px] border border-border px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-foreground hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] transition-colors"
-          >
-            Verify
-          </Link>
           <Link
             to="/join"
             onClick={() => track("join_cta_click", { surface: "header" })}

@@ -10,6 +10,18 @@ import {
 import { AVALANCHE_CHAIN_ID } from "@/lib/syndicate-config";
 import { fmtAddress } from "@/lib/sale-hooks";
 
+// Avalanche red — reserved for the chain pill ONLY (semantic-color doctrine).
+const AVALANCHE_RED = "#E84142";
+
+/** Avalanche triangle mark — same path as the hero proof badge. */
+function AvalancheMark({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={AVALANCHE_RED} aria-hidden>
+      <path d="M12 2 2 21h20L12 2Zm0 6.2 3.1 5.8h-2.2l-1.7-3.2-2.4 4.6h7.9l1.1 2.1H6.2L12 8.2Z" />
+    </svg>
+  );
+}
+
 /**
  * Persistent wallet/network chip rendered in the header.
  *
@@ -124,33 +136,50 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
       <button
         onClick={() => c && connect({ connector: c })}
         disabled={connectPending || !c}
-        aria-label="Connect wallet"
-        className="hidden md:inline-flex mono items-center gap-1.5 rounded-md border border-border px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground hover:border-[var(--gold)]/60 hover:text-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        aria-label="Connect wallet · live on Avalanche C-Chain"
+        title={connectPending ? "Connecting…" : "Connect wallet"}
+        className="hidden md:inline-flex items-center gap-2 rounded-md border border-border px-2.5 py-1.5 hover:border-[color:var(--gold)]/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60"
       >
-        {connectPending ? "Connecting…" : "Connect Wallet"}
+        <AvalancheMark />
+        <span className="mono whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] leading-none text-foreground">
+          Avalanche
+        </span>
+        <span className="mono hidden lg:inline whitespace-nowrap text-[10px] uppercase tracking-[0.16em] leading-none text-muted-foreground">
+          C-Chain
+        </span>
+        <span
+          className="size-1.5 rounded-full"
+          style={{ background: connectPending ? "#F59E0B" : "var(--success)" }}
+          aria-hidden="true"
+        />
       </button>
     );
   }
 
   // ── Connected ─────────────────────────────────────────────────────────────
-  const statusClasses = wrongChain
-    ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400"
-    : "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400";
-
   const networkLabel = wrongChain ? "Wrong network" : "Avalanche";
 
   const chipInner = (
     <>
+      <AvalancheMark />
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9px] mono uppercase tracking-[0.16em] border ${statusClasses}`}
-        aria-label={`Network: ${networkLabel}`}
+        className={`mono whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] leading-none ${
+          wrongChain ? "text-amber-600 dark:text-amber-400" : "text-foreground"
+        }`}
       >
-        <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
-        {wrongChain ? "Wrong net" : "Avalanche"}
+        {networkLabel}
       </span>
-      <span className="mono text-[11px] text-foreground" aria-label={`Connected as ${address}`}>
+      <span
+        className="mono text-[11px] leading-none text-muted-foreground"
+        aria-label={`Connected as ${address}`}
+      >
         {fmtAddress(address)}
       </span>
+      <span
+        className="size-1.5 rounded-full"
+        style={{ background: wrongChain ? "#F59E0B" : "var(--success)" }}
+        aria-label={`Network: ${networkLabel}`}
+      />
     </>
   );
 

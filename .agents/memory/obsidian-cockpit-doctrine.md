@@ -37,12 +37,28 @@ is gated on `chainLive` (no invented "operational" claims).
 **Join / claim-seat CTA is gold in BOTH themes everywhere (hero AND Header).** The
 primary conversion CTA ("Join") is hardcoded with the gold gradient
 (`linear-gradient(135deg,#F5C94A,#E3A92B,#9E6412)`, text `#15110A`) in the Header too,
-NOT `var(--accent)` (which is cyan in `.dark`). Connect Wallet stays a neutral outline
-(secondary) and lives in the Header before Join; theme toggle stays visible. This is the
-ONE sanctioned site-wide gold extension beyond the hero — gold tracks seat/identity, and
-Join = "claim your seat". Do NOT revert the Header Join to `var(--accent)` thinking the
-dark-mode cyan is the bug; it is intentional. The seam rule still holds for everything
-else (chrome/links/secondary stay cyan in dark).
+NOT `var(--accent)` (which is cyan in `.dark`). This is a sanctioned site-wide gold
+extension beyond the hero — gold tracks seat/identity, and Join = "claim your seat". Do
+NOT revert the Header Join to `var(--accent)` thinking the dark-mode cyan is the bug; it
+is intentional. The seam rule still holds for everything else (chrome/links/secondary
+stay cyan in dark).
+
+**Header lockup now matches the user reference image (header-match pass).** Logo uses
+`tone="gold" withProtocolLabel` (gold "S" plate + "The Syndicate"/"PROTOCOL" sub-line) —
+the 2nd sanctioned gold extension. `Logo.tsx` defaults stay cyan (`tone="accent"`), so
+Footer/PageShell/Sections are UNAFFECTED — gold is opt-in per call site only.
+Right cluster = **Bell + Avalanche C-Chain pill + gold Join** ONLY. There is NO standalone
+"Connect Wallet" button and NO desktop theme-toggle icon anymore — both were removed to
+match the reference. **Wallet connect is folded INTO the Avalanche pill** (HeaderWalletChip
+disconnected-desktop state): the pill (red AvalancheMark `#E84142` + "Avalanche C-Chain" +
+liveness dot) IS the connect affordance — clicking it connects; mobile drawer keeps an
+explicit "Connect Wallet" button. **Desktop theme toggle relocated into the More dropdown**
+(mobile drawer still has it) — do NOT re-add a toggle to the top-bar thinking it's missing.
+Dot color = `var(--success)` green (live, shown even for visitors) / amber `#F59E0B` = wrong
+network or connecting; on wrong chain the connected pill label switches to "Wrong network"
+(amber text) — keep that visible truth signal, don't collapse it back to a static "Avalanche".
+Verify is NOT a right-cluster button — it lives in PRIMARY nav (its `verify_click` analytics
+is fired via a per-link onClick guarded on `to === "/transparency"`).
 
 **Why:** keeps the whole site reading as ONE product and prevents drift back to soft
 "museum" styling or generic crypto templates; and keeps the single most important
