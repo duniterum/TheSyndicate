@@ -13,6 +13,8 @@ export function PageShell({
   children,
   hideHeader = false,
   hideIntelligenceBar = false,
+  hideDemoBanner = false,
+  hideIdentityRibbon = false,
   serif = false,
 }: {
   eyebrow?: string;
@@ -26,6 +28,14 @@ export function PageShell({
    *  sets this because its hero already renders the full protocol overview —
    *  the ticker would duplicate those metrics directly above the hero. */
   hideIntelligenceBar?: boolean;
+  /** When true, suppress the top "Membership Sale live" announcement strip. The
+   *  homepage sets this so the header sits directly on the hero as one
+   *  continuous scene (matching the intended hero composition). */
+  hideDemoBanner?: boolean;
+  /** When true, suppress the slim seat-context ribbon. The homepage sets this —
+   *  the hero already carries seat / visitor context, so the ribbon would
+   *  double it and break the header→hero blend. */
+  hideIdentityRibbon?: boolean;
   /** When true, scope this page into editorial serif (Fraunces). Reserved for
    *  the Chronicle and whitepaper — serif is retired everywhere else. */
   serif?: boolean;
@@ -35,10 +45,10 @@ export function PageShell({
       className={`min-h-dvh text-foreground pb-20 md:pb-0 overflow-x-hidden${serif ? " editorial-serif" : ""}`}
       style={{ background: "var(--background)" }}
     >
-      <DemoBanner />
+      {!hideDemoBanner && <DemoBanner />}
       <Header />
       {!hideIntelligenceBar && <ProtocolIntelligenceBar />}
-      <IdentityRibbon />
+      {!hideIdentityRibbon && <IdentityRibbon />}
       <main>
         {!hideHeader && (
           <section

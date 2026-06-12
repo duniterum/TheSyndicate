@@ -149,13 +149,13 @@ export function ProtocolHero() {
   return (
     <section
       id="top"
-      className="relative min-h-[calc(100svh-72px)] overflow-hidden border-b border-border/60"
+      className="relative min-h-[calc(100svh-64px)] overflow-hidden border-b border-border/60"
       style={{ background: "var(--background)" }}
     >
       <HeroAtmosphere />
 
       <div className="relative mx-auto max-w-[1540px] px-5 md:px-8">
-        <div className="grid min-h-[calc(100svh-72px)] grid-cols-1 items-center gap-8 py-8 lg:grid-cols-[0.78fr_1.26fr_0.82fr] xl:gap-10">
+        <div className="grid min-h-[calc(100svh-64px)] grid-cols-1 items-center gap-8 py-6 lg:grid-cols-[0.78fr_1.26fr_0.82fr] xl:gap-10">
           <HeroLeft />
 
           <HeroEngine
@@ -231,18 +231,6 @@ export function ProtocolHero() {
 function HeroLeft() {
   return (
     <div className="relative z-10 max-w-xl lg:pb-10">
-      <div
-        className="mono mb-6 inline-flex items-center gap-2 rounded-[4px] border px-3 py-1.5 text-[10px] uppercase tracking-[0.22em]"
-        style={{
-          color: GOLD,
-          borderColor: GOLD_LINE,
-          background: GOLD_FAINT,
-        }}
-      >
-        <span className="size-1.5 rounded-full pulse-dot" style={{ background: GOLD }} />
-        Live protocol
-      </div>
-
       <h1 className="font-serif text-[clamp(3.2rem,2.15rem+3.2vw,5.75rem)] font-normal leading-[0.98] tracking-[-0.045em] text-foreground">
         Own the
         <br />
@@ -342,7 +330,7 @@ function HeroEngine({
   const operationsLane = lanes.find((l) => l.key === "OPERATIONS_WALLET");
 
   return (
-    <div className="relative mx-auto w-full max-w-[640px] py-5">
+    <div className="relative mx-auto w-full max-w-[580px] py-2">
       <div
         aria-hidden
         className="absolute inset-[-5%] rounded-full blur-3xl"
@@ -938,12 +926,14 @@ function NodeLabel({ title, value, color }: { title: string; value: string; colo
 function HeroAtmosphere() {
   return (
     <>
-      {/* Photographic misty-mountain backdrop (golden dawn) — dark theme only,
-          where it reads as designed; light theme keeps the clean ivory field. */}
+      {/* Photographic Swiss-alps backdrop — the Cervin / Matterhorn at golden
+          dawn. Shown in BOTH themes: dark reads it as a moody golden-dawn scene,
+          light as a warm washed horizon. Theme-adaptive scrims below keep the
+          headline and radial engine readable in either mode. */}
       <div
         aria-hidden
-        className="absolute inset-0 hidden bg-cover bg-center bg-no-repeat opacity-[0.55] dark:block"
-        style={{ backgroundImage: "url(/hero/mountain-bg.jpg)" }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.5] dark:opacity-[0.6]"
+        style={{ backgroundImage: "url(/hero/cervin.jpg)" }}
       />
       {/* Readability scrim — darkens top/bottom and the left text column while
           letting the golden horizon glow through behind the radial engine. */}
@@ -952,16 +942,16 @@ function HeroAtmosphere() {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, color-mix(in oklab, var(--background) 74%, transparent) 0%, color-mix(in oklab, var(--background) 30%, transparent) 42%, color-mix(in oklab, var(--background) 86%, transparent) 100%), linear-gradient(90deg, color-mix(in oklab, var(--background) 82%, transparent) 0%, color-mix(in oklab, var(--background) 22%, transparent) 44%, transparent 66%, color-mix(in oklab, var(--background) 28%, transparent) 100%)",
+            "linear-gradient(180deg, color-mix(in oklab, var(--background) 70%, transparent) 0%, color-mix(in oklab, var(--background) 22%, transparent) 44%, color-mix(in oklab, var(--background) 88%, transparent) 100%), linear-gradient(90deg, color-mix(in oklab, var(--background) 84%, transparent) 0%, color-mix(in oklab, var(--background) 30%, transparent) 46%, transparent 70%, color-mix(in oklab, var(--background) 24%, transparent) 100%)",
         }}
       />
-      <div aria-hidden className="absolute inset-0 grid-bg opacity-[0.07]" />
+      <div aria-hidden className="absolute inset-0 grid-bg opacity-[0.06]" />
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(72% 62% at 52% 40%, color-mix(in oklab, #E3A92B 12%, transparent), transparent 64%), radial-gradient(60% 52% at 6% 55%, color-mix(in oklab, #E3A92B 14%, transparent), transparent 62%)",
+            "radial-gradient(72% 62% at 52% 38%, color-mix(in oklab, #E3A92B 14%, transparent), transparent 64%), radial-gradient(60% 52% at 6% 55%, color-mix(in oklab, #E3A92B 12%, transparent), transparent 62%)",
         }}
       />
     </>

@@ -72,7 +72,7 @@ export const Route = createFileRoute("/")({
 // ─────────────────────────────────────────────────────────────────────────────
 function Index() {
   return (
-    <PageShell title="" hideHeader hideIntelligenceBar>
+    <PageShell title="" hideHeader hideIntelligenceBar hideDemoBanner hideIdentityRibbon>
       {/* ── ACT 01 · WHAT IS THIS? ──────────────────────────────────────────
           A living protocol on Avalanche. SYN is the seat. */}
       <ProtocolHero />

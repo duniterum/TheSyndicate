@@ -2,9 +2,9 @@ uploads = []
 
 [[generated]]
 id = "dq5G26mhG3VJQyFNLkrON"
-uri = "file://public/hero/mountain-bg.jpg"
+uri = "file://public/hero/cervin.jpg"
 type = "image"
-title = "dark golden misty mountains"
+title = "Cervin / Matterhorn at golden dawn — hero backdrop"
 
 [[outputs]]
 id = "w3wGek7lFg3KPN31UU5W-"
@@ -83,3 +83,99 @@ id = "uOP8uIobHeOdafG0gvHSG"
 uri = "file://docs/handoffs/HERO_CODE_HANDOFF.md"
 type = "text"
 title = "Protocol Hero — Code Handoff"
+
+[[outputs]]
+id = "pSLQ545uBwUSF-JIVJddD"
+uri = "file://attached_assets/stock_images/matterhorn_1.jpg"
+type = "image"
+title = "Matterhorn mountain Switzerland"
+
+[[outputs]]
+id = "_vZvYZu6x4jiTOhynPqyw"
+uri = "file://attached_assets/stock_images/matterhorn_2.jpg"
+type = "image"
+title = "Matterhorn mountain Switzerland"
+
+[[outputs]]
+id = "4ylGPsxajt4KDbBpjMDI5"
+uri = "file://attached_assets/stock_images/matterhorn_3.jpg"
+type = "image"
+title = "Matterhorn mountain Switzerland"
+
+[[outputs]]
+id = "to-hj25aWjoSqTtVhOcZE"
+uri = "file://attached_assets/stock_images/matterhorn_4.jpg"
+type = "image"
+title = "Matterhorn mountain Switzerland"
+
+[[outputs]]
+id = "yVwWDDEEBTyCuVuMIFV3j"
+uri = "file://attached_assets/stock_images/jungfrau_1.jpg"
+type = "image"
+title = "Jungfrau Swiss Alps snow mountain"
+
+[[outputs]]
+id = "pCsE1R-INDwzXDdi8PC9-"
+uri = "file://attached_assets/stock_images/jungfrau_2.jpg"
+type = "image"
+title = "Jungfrau Swiss Alps snow mountain"
+
+[[outputs]]
+id = "ZTim8iSElq7FVMqYfFyjR"
+uri = "file://attached_assets/stock_images/jungfrau_3.jpg"
+type = "image"
+title = "Jungfrau Swiss Alps snow mountain"
+
+[[outputs]]
+id = "rUdOK1Zwffr3ACeHaKsTl"
+uri = "file://attached_assets/stock_images/jungfrau_4.jpg"
+type = "image"
+title = "Jungfrau Swiss Alps snow mountain"
+
+[[outputs]]
+id = "sHnTj8O7zwgIxYjaqN4I9"
+uri = "file://attached_assets/stock_images/peak_sunrise_1.jpg"
+type = "image"
+title = "snowy mountain peak sunrise golden light"
+
+[[outputs]]
+id = "gGid8t-y-FzWwXX2lJLPn"
+uri = "file://attached_assets/stock_images/peak_sunrise_2.jpg"
+type = "image"
+title = "snowy mountain peak sunrise golden light"
+
+[[outputs]]
+id = "rQ0R6P1uyazHX-UPqGokq"
+uri = "file://attached_assets/stock_images/peak_sunrise_3.jpg"
+type = "image"
+title = "snowy mountain peak sunrise golden light"
+
+[[outputs]]
+id = "QQd7v5hjRw-BPV7bOptDj"
+uri = "file://attached_assets/stock_images/peak_sunrise_4.jpg"
+type = "image"
+title = "snowy mountain peak sunrise golden light"
+
+[[outputs]]
+id = "xxHOzdWN8Vw1t7j-CI46K"
+uri = "file://attached_assets/stock_images/swiss_alps_1.jpg"
+type = "image"
+title = "swiss alps mountains dramatic"
+
+[[outputs]]
+id = "597EpnVnPEYbMK_nsG9e2"
+uri = "file://attached_assets/stock_images/swiss_alps_2.jpg"
+type = "image"
+title = "swiss alps mountains dramatic"
+
+[[outputs]]
+id = "D07fS2ZGv4GB-3vuK0uWa"
+uri = "file://attached_assets/stock_images/swiss_alps_3.jpg"
+type = "image"
+title = "swiss alps mountains dramatic"
+
+[[outputs]]
+id = "Ig7BTf7Lihnea8WZP12eV"
+uri = "file://attached_assets/stock_images/swiss_alps_4.jpg"
+type = "image"
+title = "swiss alps mountains dramatic"
