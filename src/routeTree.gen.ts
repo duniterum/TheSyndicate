@@ -28,6 +28,7 @@ import { Route as MembersRouteImport } from './routes/members'
 import { Route as LiquidityRouteImport } from './routes/liquidity'
 import { Route as LabsRouteImport } from './routes/labs'
 import { Route as JoinRouteImport } from './routes/join'
+import { Route as InstitutionalRegisterRouteImport } from './routes/institutional-register'
 import { Route as FoundersRouteImport } from './routes/founders'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EpisodesRouteImport } from './routes/episodes'
@@ -156,6 +157,11 @@ const LabsRoute = LabsRouteImport.update({
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstitutionalRegisterRoute = InstitutionalRegisterRouteImport.update({
+  id: '/institutional-register',
+  path: '/institutional-register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FoundersRoute = FoundersRouteImport.update({
@@ -344,6 +350,7 @@ export interface FileRoutesByFullPath {
   '/episodes': typeof EpisodesRoute
   '/faq': typeof FaqRoute
   '/founders': typeof FoundersRoute
+  '/institutional-register': typeof InstitutionalRegisterRoute
   '/join': typeof JoinRoute
   '/labs': typeof LabsRouteWithChildren
   '/liquidity': typeof LiquidityRoute
@@ -399,6 +406,7 @@ export interface FileRoutesByTo {
   '/episodes': typeof EpisodesRoute
   '/faq': typeof FaqRoute
   '/founders': typeof FoundersRoute
+  '/institutional-register': typeof InstitutionalRegisterRoute
   '/join': typeof JoinRoute
   '/liquidity': typeof LiquidityRoute
   '/members': typeof MembersRoute
@@ -454,6 +462,7 @@ export interface FileRoutesById {
   '/episodes': typeof EpisodesRoute
   '/faq': typeof FaqRoute
   '/founders': typeof FoundersRoute
+  '/institutional-register': typeof InstitutionalRegisterRoute
   '/join': typeof JoinRoute
   '/labs': typeof LabsRouteWithChildren
   '/liquidity': typeof LiquidityRoute
@@ -511,6 +520,7 @@ export interface FileRouteTypes {
     | '/episodes'
     | '/faq'
     | '/founders'
+    | '/institutional-register'
     | '/join'
     | '/labs'
     | '/liquidity'
@@ -566,6 +576,7 @@ export interface FileRouteTypes {
     | '/episodes'
     | '/faq'
     | '/founders'
+    | '/institutional-register'
     | '/join'
     | '/liquidity'
     | '/members'
@@ -620,6 +631,7 @@ export interface FileRouteTypes {
     | '/episodes'
     | '/faq'
     | '/founders'
+    | '/institutional-register'
     | '/join'
     | '/labs'
     | '/liquidity'
@@ -676,6 +688,7 @@ export interface RootRouteChildren {
   EpisodesRoute: typeof EpisodesRoute
   FaqRoute: typeof FaqRoute
   FoundersRoute: typeof FoundersRoute
+  InstitutionalRegisterRoute: typeof InstitutionalRegisterRoute
   JoinRoute: typeof JoinRoute
   LabsRoute: typeof LabsRouteWithChildren
   LiquidityRoute: typeof LiquidityRoute
@@ -839,6 +852,13 @@ declare module '@tanstack/react-router' {
       path: '/join'
       fullPath: '/join'
       preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/institutional-register': {
+      id: '/institutional-register'
+      path: '/institutional-register'
+      fullPath: '/institutional-register'
+      preLoaderRoute: typeof InstitutionalRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/founders': {
@@ -1153,6 +1173,7 @@ const rootRouteChildren: RootRouteChildren = {
   EpisodesRoute: EpisodesRoute,
   FaqRoute: FaqRoute,
   FoundersRoute: FoundersRoute,
+  InstitutionalRegisterRoute: InstitutionalRegisterRoute,
   JoinRoute: JoinRoute,
   LabsRoute: LabsRouteWithChildren,
   LiquidityRoute: LiquidityRoute,

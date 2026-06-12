@@ -1,0 +1,206 @@
+SPRINT 7 IMPLEMENTATION — PUBLIC INSTITUTIONAL REGISTER VIEW
+
+Proceed with implementation.
+
+Do NOT run another broad audit.
+
+Accepted completed chain:
+
+Event
+→ Signal
+→ Memory Candidate
+→ Chronicle Review Candidate
+→ Chronicle Promotion Decision
+→ Institutional Register Entry
+
+Sprint 7 builds the first safe read-only surface over the Institutional Register.
+
+Core objective:
+
+Expose Institutional Register Entries as verifiable protocol memory without turning them into Story, Recognition, or public Chronicle automation.
+
+This sprint does NOT:
+
+* generate Story
+* build Recognition
+* build Member Register
+* build DAO governance
+* create public member memory
+* auto-publish Chronicle
+* rewrite existing Chronicle
+* create new contracts
+
+It only creates a controlled read-only view of institutional memory.
+
+1. PUBLIC / INTERNAL SURFACE DECISION
+
+Determine the safest surface:
+
+Preferred options:
+
+A) `/institutional-register`
+B) `/registry/institutional`
+C) `/chronicle/institutional`
+D) keep it labs-only if public surfacing is not yet safe
+
+Choose the best route based on current IA.
+
+If public:
+
+* must be clearly labeled as Protocol Institutional Register.
+* must explain it is verified protocol memory.
+* must not use Story-style language.
+* must not imply governance, rights, returns, or investment value.
+
+2. REGISTER VIEW
+
+Display only Institutional Register Entries.
+
+Show:
+
+* title
+* category
+* entry status
+* verification status
+* tx / block / source fact
+* lineage link
+* rationale
+* date / derived time if available
+
+Do not show member-living entries.
+
+Do not show rejected entries unless in an internal/labs mode.
+
+Held entries may be shown only if clearly labeled as held/review/context/coverage, or kept internal.
+
+3. LINEAGE VIEW
+
+Every entry must be verifiable.
+
+Provide a compact lineage:
+
+Institutional Register Entry
+→ Promotion Decision
+→ Chronicle Review Candidate
+→ Memory Candidate
+→ Signal
+→ Event
+→ Tx / Block
+
+Each entry should have an explorer link where possible.
+
+4. STATUS DISCIPLINE
+
+Status meanings:
+
+* active = accepted institutional memory
+* draft = approved but not finalized
+* held = not ready
+* rejected = excluded
+
+Public view should probably show only active/draft unless there is a strong reason to expose held.
+
+No hidden claim may be presented as final.
+
+5. COPY RULES
+
+Use sober institutional language.
+
+Allowed:
+
+* Protocol record
+* Institutional memory
+* Verified event
+* Source event
+* Protocol action
+* Treasury movement
+* Liquidity event
+* Supply burn
+* Milestone
+
+Avoid:
+
+* legendary
+* heroic
+* founder achievement
+* guaranteed
+* profit
+* return
+* governance right
+* investor reward
+* financial promise
+
+6. FOUNDER / SYSTEM ACTIONS
+
+If an entry comes from founder/system wallet action:
+
+Frame it protocol-centrically.
+
+Examples:
+
+* “Protocol seeded initial liquidity”
+* “Protocol executed supply burn”
+* “Protocol wallet funded operations”
+
+Do not frame as:
+
+* “Founder achievement”
+* “Founder made history”
+* “Founder rewarded members”
+
+Founder/system transparency is important, but the protocol remains the subject.
+
+7. IA / NAVIGATION
+
+Decide whether this surface should be linked from:
+
+* Transparency
+* Activity
+* Chronicle
+* Registry
+* Footer
+* Labs only
+
+Keep it restrained.
+
+Do not overload the main nav.
+
+8. QA REQUIRED
+
+Run:
+
+* typecheck
+* institutional register tests
+* chronicle promotion tests
+* ownership / forbidden-language guard
+* route render test
+* SSR/hydration check
+* mobile layout check if route is public
+
+9. RETURN FORMAT
+
+After implementation, report:
+
+1. Route chosen.
+2. Files changed.
+3. Whether public or internal.
+4. What entries are shown.
+5. Status filtering.
+6. Lineage rendering.
+7. Founder/system handling.
+8. What was intentionally not touched.
+9. QA results.
+10. Remaining risks.
+
+Important:
+
+This is not Story.
+
+This is not Recognition.
+
+This is not Chronicle Phase 2.
+
+This is only:
+
+Institutional Register Entry
+→ Read-only Institutional Register View

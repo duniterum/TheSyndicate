@@ -26,6 +26,7 @@ const ENTRIES: SitemapEntry[] = [
   { path: "/chapters",     changefreq: "weekly",  priority: "0.7" },
   { path: "/liquidity",    changefreq: "weekly",  priority: "0.7" },
   { path: "/registry",     changefreq: "weekly",  priority: "0.7" },
+  { path: "/institutional-register", changefreq: "weekly", priority: "0.5" },
   { path: "/members",      changefreq: "weekly",  priority: "0.6" },
   { path: "/founders",     changefreq: "weekly",  priority: "0.6" },
   // /episodes retired — now 302s to /chapters; excluded from sitemap.

@@ -161,6 +161,12 @@ function ChroniclePage() {
           >
             Chapter archive ↗
           </Link>
+          <Link
+            to="/institutional-register"
+            className="text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+          >
+            Institutional register ↗
+          </Link>
         </div>
         <p className="mt-4 text-xs text-muted-foreground/80 leading-relaxed">
           This page is the protocol's own record of what has happened.

@@ -241,6 +241,12 @@ export function institutionalCopyFor(ruleBucket: string): InstitutionalCopy {
 }
 
 /**
+ * All documented copy rule-buckets. Additive coverage surface so copy-safety
+ * tests can iterate every bucket authoritatively (imports only — guard-safe).
+ */
+export const INSTITUTIONAL_COPY_BUCKETS: readonly string[] = Object.keys(COPY_BY_BUCKET);
+
+/**
  * Historic-claim patterns (spec §9). An entry may NOT assert any of these unless
  * its verification is "verified"/"locked". The generated copy never contains
  * them, so this is a defensive guard against a future copy regression.

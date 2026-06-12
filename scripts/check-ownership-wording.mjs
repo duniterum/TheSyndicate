@@ -25,6 +25,10 @@ const EXCLUDE_FILES = new Set([
   // list (FORBIDDEN_LANGUAGE / REFERRAL_FORBIDDEN forbiddenVocab), not public
   // copy; the literal arrays outrun / underscore-defeat the 3-line denial window.
   "src/lib/protocol-language.ts",
+  // PUBLIC_FORBIDDEN_VOCAB literally lists the §5 sober-language banned words it
+  // guards against (yield / investor reward / …). Coverage is restored by the
+  // copy-safety test in institutional-register-public.test.ts.
+  "src/lib/institutional-register-public.ts",
   "src/lib/protocol-event-registry.ts",
   "src/lib/execution-gates.ts",
   "src/lib/archive-config.ts",
