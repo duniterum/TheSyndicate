@@ -1,0 +1,203 @@
+HERO COMPOSITION FIX — RESPONSIVE LAYOUT ONLY
+
+Do not redesign the hero again.
+
+The new visual direction is accepted.
+
+Now fix the composition/layout problems shown in the screenshots.
+
+Core issue:
+
+The hero has good elements, but the right-side cards and lower mini-cards are not placed correctly. The central engine, protocol overview, latest activity, and chapter card are visually fighting each other and leaving awkward empty space.
+
+Do a layout pass only.
+
+Do not change data hooks.
+
+Do not change copy deeply.
+
+Do not add metrics.
+
+Do not remove the throne/engine concept.
+
+1. DESKTOP COMPOSITION
+
+Target desktop layout:
+
+Left column:
+
+* headline
+* short copy
+* Join CTA
+* Verify CTA
+* proof mini-row
+
+Center column:
+
+* throne / seat
+* circular protocol engine
+* $25 routed amount
+* 70 / 20 / 10 nodes
+
+Right column:
+
+* Protocol Overview only at the top
+* Latest Activity directly under Protocol Overview
+
+Do NOT place Current Chapter beside Latest Activity in the narrow right column.
+
+The right column should be:
+
+Protocol Overview
+↓
+Latest Activity
+
+only.
+
+2. CURRENT CHAPTER CARD
+
+Move Current Chapter out of the right-side stack.
+
+Place it as a wider horizontal card in the empty space below the center/left hero area, above the Entry Preview rail.
+
+It should use the empty mountain-background space currently visible in the screenshots.
+
+It can be shorter height than the current vertical card.
+
+Suggested layout:
+
+Current Chapter
+Genesis Signal
+Chapter #1
+Progress bar
+2 / 333 seats
+331 remaining
+[View chapter]
+
+This card should feel like a transition between the hero and the entry preview rail.
+
+3. RIGHT CARD HEIGHT
+
+The Protocol Overview card is currently tall and heavy.
+
+Keep it useful, but make sure it does not force bad stacking.
+
+If needed:
+
+* reduce internal spacing
+* use a tighter 3-column grid
+* keep the important metrics only above the fold
+* do not let it dominate the hero
+
+4. CENTER ENGINE ALIGNMENT
+
+Keep the engine centered between left and right columns.
+
+The engine should align vertically with:
+
+* left headline block
+* top of Protocol Overview card
+
+The center engine should not fall too low.
+
+The throne should stay visible and important.
+
+The $25 routed amount should remain the dominant center number.
+
+5. EMPTY SPACE USAGE
+
+Use the empty horizontal space below the center/left hero intelligently.
+
+Do not leave a large dead rectangle.
+
+Do not fill it with random data.
+
+Use it for the Current Chapter horizontal card only, because chapter progression belongs to identity/anticipation and bridges into the entry preview.
+
+6. RESPONSIVE RULES
+
+Desktop ≥1280:
+
+* 3-column layout:
+  left / engine / right
+* Current Chapter becomes a horizontal card under left+center area
+* right column = overview + latest activity
+
+Tablet:
+
+* left and engine stack cleanly
+* Protocol Overview goes below engine
+* Latest Activity and Current Chapter can become two cards side by side if space allows
+
+Mobile:
+
+* order must be:
+  headline
+  Join / Verify
+  seat/throne
+  $ routed engine
+  entry preview
+  protocol overview
+  latest activity
+  current chapter
+
+Do not make mobile a tiny desktop dashboard.
+
+7. SPECIFIC FIXES FROM SCREENSHOTS
+
+Fix these:
+
+* Current Chapter must not be a tall narrow card beside Latest Activity.
+* Latest Activity should be the only block under Protocol Overview on desktop right side.
+* Use the empty area above the Entry Preview rail for the Chapter card.
+* Ensure no card overlaps or visually crowds the circular engine.
+* Ensure the bottom Entry Preview rail starts after the hero content, not while cards are still floating beside it.
+* Keep right-side card alignment clean and intentional.
+
+8. DO NOT TOUCH
+
+Do not touch:
+
+* sale logic
+* hooks
+* routing math
+* header logic
+* Chronicle
+* Activity derivation
+* Institutional Register
+* Archive
+* My Syndicate
+* homepage sections below the hero
+
+9. QA
+
+Run:
+
+* typecheck
+* relevant homepage/header tests
+* ownership wording guard
+* visitor vocabulary guard
+* desktop screenshot around 1440px
+* responsive check around 1280px
+* mobile screenshot if possible
+
+10. REPORT
+
+Return:
+
+1. Files changed.
+2. Layout changes made.
+3. Desktop layout behavior.
+4. Tablet/mobile layout behavior.
+5. Where Current Chapter moved.
+6. Confirmation Latest Activity is now the only card under Protocol Overview.
+7. What was intentionally not touched.
+8. QA results.
+
+Important:
+
+This is not another redesign.
+
+This is a composition correction.
+
+The goal is to make the accepted hero design breathe correctly and use the empty space intelligently.

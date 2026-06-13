@@ -156,10 +156,11 @@ export function ProtocolHero() {
       <HeroAtmosphere />
 
       <div className="relative mx-auto max-w-[1480px] px-5 md:px-8">
-        <div className="grid min-h-[calc(100svh-64px)] grid-cols-1 items-start gap-6 py-6 lg:grid-cols-[1.15fr_1.9fr_0.95fr] xl:gap-8">
-          <HeroLeft />
+        <div className="grid min-h-[calc(100svh-64px)] grid-cols-1 items-start gap-6 py-6 xl:grid-cols-[1.1fr_1.78fr_1.12fr] xl:gap-8">
+          <HeroLeft className="xl:col-start-1 xl:row-start-1" />
 
           <HeroEngine
+            className="xl:col-start-2 xl:row-start-1"
             amount={amount}
             routedValue={routedValue}
             routedStatus={t.usdcRaised.status}
@@ -171,7 +172,16 @@ export function ProtocolHero() {
             chainLive={chainLive}
           />
 
+          <EntryRail
+            className="xl:col-start-1 xl:col-span-3 xl:row-start-3"
+            amount={amount}
+            setAmount={setAmount}
+            synEstimate={synEstimate}
+            synStatus={synStatus}
+          />
+
           <HeroRight
+            className="xl:col-start-3 xl:row-start-1"
             members={t.members.value}
             membersStatus={t.members.status}
             nextSeat={seatLabel}
@@ -194,16 +204,13 @@ export function ProtocolHero() {
             latestLabel={latestLabel}
             latestAmount={latestAmount}
             latestTx={pulse.lastBuyTxHash}
+          />
+
+          <ChapterStrip
+            className="xl:col-start-1 xl:col-span-2 xl:row-start-2"
             chapter={chapter}
           />
         </div>
-
-        <EntryRail
-          amount={amount}
-          setAmount={setAmount}
-          synEstimate={synEstimate}
-          synStatus={synStatus}
-        />
 
         <BottomFacts
           members={t.members.value}
@@ -229,9 +236,9 @@ export function ProtocolHero() {
   );
 }
 
-function HeroLeft() {
+function HeroLeft({ className = "" }: { className?: string }) {
   return (
-    <div className="relative z-10 max-w-xl lg:pb-10">
+    <div className={`relative z-10 max-w-xl lg:pb-10 ${className}`}>
       <h1 className="font-serif text-[clamp(3.2rem,2.15rem+3.2vw,5.75rem)] font-normal leading-[0.98] tracking-[-0.045em] text-foreground">
         Own the
         <br />
@@ -308,6 +315,7 @@ function HeroEngine({
   chapterLabel,
   lanes,
   chainLive,
+  className = "",
 }: {
   amount: number;
   routedValue: number | undefined;
@@ -325,13 +333,14 @@ function HeroEngine({
     fact: { value: number | undefined; status: CanonicalStatus };
   }>;
   chainLive: boolean;
+  className?: string;
 }) {
   const vaultLane = lanes.find((l) => l.key === "VAULT_WALLET");
   const liquidityLane = lanes.find((l) => l.key === "LIQUIDITY_WALLET");
   const operationsLane = lanes.find((l) => l.key === "OPERATIONS_WALLET");
 
   return (
-    <div className="relative mx-auto w-full max-w-[640px] py-2 lg:self-start">
+    <div className={`relative mx-auto w-full max-w-[640px] py-2 lg:self-start ${className}`}>
       <div
         aria-hidden
         className="absolute inset-[-8%] rounded-full blur-3xl"
@@ -534,7 +543,7 @@ function HeroRight({
   latestLabel,
   latestAmount,
   latestTx,
-  chapter,
+  className = "",
 }: {
   members: number | undefined;
   membersStatus: CanonicalStatus;
@@ -558,15 +567,15 @@ function HeroRight({
   latestLabel: string;
   latestAmount: string;
   latestTx: string | undefined;
-  chapter: { label: string; progressPct: number; taken: number; capacity: number; remaining: number } | undefined;
+  className?: string;
 }) {
   return (
-    <div className="relative z-10 grid gap-4 lg:pb-10">
+    <div className={`relative z-10 grid gap-4 lg:pb-10 ${className}`}>
       <div className="surface p-5">
-        <div className="mono mb-5 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+        <div className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           Protocol overview
         </div>
-        <div className="grid grid-cols-2 gap-x-5 gap-y-5 xl:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4 xl:grid-cols-3">
           <Stat label="Members" value={fmtCount(members)} status={membersStatus} />
           <Stat label="Next seat" value={nextSeat} status={membersStatus} gold />
           <Stat label="SYN price" value={fmtUsd(synPrice, 4)} status={synPriceStatus} />
@@ -589,62 +598,83 @@ function HeroRight({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <div className="surface p-5">
-          <div className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            Latest activity
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <div className="mono text-[13px] text-foreground">{latestLabel}</div>
-              <div className="mt-2 mono text-lg font-semibold tabular-nums" style={{ color: "var(--success)" }}>
-                {latestAmount}
-              </div>
-            </div>
-            {latestTx ? (
-              <ProofButton href={txExplorerUrl(latestTx)} ariaLabel="Verify latest purchase on-chain">
-                Tx ↗
-              </ProofButton>
-            ) : (
-              <StatusPill status="PENDING" />
-            )}
-          </div>
-          <Link
-            to="/activity"
-            className="mono mt-5 inline-flex w-full items-center justify-center rounded-[4px] border border-border/70 px-4 py-3 text-[11px] uppercase tracking-[0.16em] text-foreground/85 transition-colors hover:border-[var(--verify)] hover:text-[var(--verify)]"
-          >
-            View activity →
-          </Link>
+      <div className="surface p-5">
+        <div className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+          Latest activity
         </div>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <div className="mono text-[13px] text-foreground">{latestLabel}</div>
+            <div className="mt-2 mono text-lg font-semibold tabular-nums" style={{ color: "var(--success)" }}>
+              {latestAmount}
+            </div>
+          </div>
+          {latestTx ? (
+            <ProofButton href={txExplorerUrl(latestTx)} ariaLabel="Verify latest purchase on-chain">
+              Tx ↗
+            </ProofButton>
+          ) : (
+            <StatusPill status="PENDING" />
+          )}
+        </div>
+        <Link
+          to="/activity"
+          className="mono mt-5 inline-flex w-full items-center justify-center rounded-[4px] border border-border/70 px-4 py-3 text-[11px] uppercase tracking-[0.16em] text-foreground/85 transition-colors hover:border-[var(--verify)] hover:text-[var(--verify)]"
+        >
+          View activity →
+        </Link>
+      </div>
+    </div>
+  );
+}
 
-        <div className="surface p-5">
-          <div className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+function ChapterStrip({
+  chapter,
+  className = "",
+}: {
+  chapter:
+    | { label: string; progressPct: number; taken: number; capacity: number; remaining: number }
+    | undefined;
+  className?: string;
+}) {
+  return (
+    <div className={`surface relative z-10 p-5 md:p-6 ${className}`}>
+      <div className="flex flex-col gap-5 md:flex-row md:items-center md:gap-8">
+        <div className="md:w-60 md:shrink-0">
+          <div className="mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             Current chapter
           </div>
           {chapter ? (
             <>
-              <div className="font-serif text-xl text-foreground">{chapter.label}</div>
-              <div className="mono mt-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+              <div className="mt-1 font-serif text-2xl text-foreground">{chapter.label}</div>
+              <div className="mono mt-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                 In progress
-              </div>
-              <div className="mt-4">
-                <ProgressBar value={chapter.progressPct} max={100} tone="gold" />
-              </div>
-              <div className="mono mt-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                {fmtCount(chapter.taken)} / {fmtCount(chapter.capacity)} seats ·{" "}
-                {fmtCount(chapter.remaining)} remaining
               </div>
             </>
           ) : (
-            <div className="mono text-sm text-muted-foreground">Chapter syncing</div>
+            <div className="mt-2 mono text-sm text-muted-foreground">Chapter syncing</div>
           )}
-          <Link
-            to="/chapters"
-            className="mono mt-5 inline-flex w-full items-center justify-center rounded-[4px] border border-border/70 px-4 py-3 text-[11px] uppercase tracking-[0.16em] text-foreground/85 transition-colors hover:border-[var(--verify)] hover:text-[var(--verify)]"
-          >
-            View chapter →
-          </Link>
         </div>
+
+        {chapter && (
+          <div className="md:flex-1">
+            <ProgressBar value={chapter.progressPct} max={100} tone="gold" />
+            <div className="mono mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="text-foreground/85">
+                {fmtCount(chapter.taken)} / {fmtCount(chapter.capacity)} seats
+              </span>
+              <span aria-hidden>·</span>
+              <span>{fmtCount(chapter.remaining)} remaining</span>
+            </div>
+          </div>
+        )}
+
+        <Link
+          to="/chapters"
+          className="mono inline-flex shrink-0 items-center justify-center rounded-[4px] border border-border/70 px-5 py-3 text-[11px] uppercase tracking-[0.16em] text-foreground/85 transition-colors hover:border-[var(--verify)] hover:text-[var(--verify)]"
+        >
+          View chapter →
+        </Link>
       </div>
     </div>
   );
@@ -655,14 +685,16 @@ function EntryRail({
   setAmount,
   synEstimate,
   synStatus,
+  className = "",
 }: {
   amount: number;
   setAmount: (amount: number) => void;
   synEstimate: number;
   synStatus: CanonicalStatus;
+  className?: string;
 }) {
   return (
-    <div className="relative z-10 -mt-2 mb-5 rounded-xl border p-5 backdrop-blur-xl md:p-6"
+    <div className={`relative z-10 rounded-xl border p-5 backdrop-blur-xl md:p-6 ${className}`}
       style={{
         borderColor: GOLD_LINE,
         background:
@@ -795,7 +827,7 @@ function BottomFacts({
   chapterLabel: string | undefined;
 }) {
   return (
-    <div className="relative z-10 mb-8 grid grid-cols-2 gap-0 overflow-hidden rounded-xl border border-border/70 bg-card/42 backdrop-blur-xl sm:grid-cols-3 lg:grid-cols-8">
+    <div className="relative z-10 mb-8 mt-2 grid grid-cols-2 gap-0 overflow-hidden rounded-xl border border-border/70 bg-card/42 backdrop-blur-xl sm:grid-cols-3 lg:grid-cols-8">
       <Fact icon={<PersonIcon />} label="Members" value={fmtCount(members)} status={membersStatus} />
       <Fact icon={<DollarIcon />} label="USDC routed" value={fmtUsd(routed, 2)} status={routedStatus} money />
       <Fact icon={<VaultIcon />} label="Vault" value={fmtUsd(vault, 2)} status={vaultStatus} money />
@@ -981,12 +1013,12 @@ function Stat({
       : "var(--muted-foreground)";
 
   return (
-    <div className="border-l border-border/50 pl-4">
+    <div className="border-l border-border/50 pl-3">
       <div className="mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
         {label}
       </div>
       <div
-        className="mono mt-2 text-xl font-semibold tabular-nums leading-none"
+        className="mono mt-2 text-lg font-semibold tabular-nums leading-none"
         style={money && status === "LIVE" ? { color: "var(--success)" } : gold ? { color: GOLD } : undefined}
       >
         {value}
@@ -1002,11 +1034,11 @@ function Stat({
 function BurnStat({ value, status }: { value: number | undefined; status: CanonicalStatus }) {
   const known = value !== undefined;
   return (
-    <div className="border-l border-border/50 pl-4">
+    <div className="border-l border-border/50 pl-3">
       <div className="mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
         Burned
       </div>
-      <div className="mono mt-2 flex items-center gap-2 text-xl font-semibold tabular-nums leading-none">
+      <div className="mono mt-2 flex items-center gap-2 text-lg font-semibold tabular-nums leading-none">
         <span>{known ? `${fmtCount(value)} SYN` : "—"}</span>
         {known && <FlameIcon />}
       </div>
