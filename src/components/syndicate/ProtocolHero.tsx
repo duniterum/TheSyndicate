@@ -37,8 +37,8 @@ const GOLD_GRAD = "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%
 const GOLD_SOFT = "color-mix(in oklab, #E3A92B 13%, transparent)";
 const GOLD_LINE = "color-mix(in oklab, #E3A92B 46%, transparent)";
 const GOLD_FAINT = "color-mix(in oklab, #E3A92B 8%, transparent)";
-const FLAME = "#F97316";
-const FLAME_SOFT = "color-mix(in oklab, #F97316 13%, transparent)";
+const FLAME = "#E0902A";
+const FLAME_SOFT = "color-mix(in oklab, #E0902A 13%, transparent)";
 const AVALANCHE_RED = "#E84142";
 const GREEN_DEEP = "color-mix(in oklab, var(--success) 78%, #052e1a)";
 
@@ -55,10 +55,10 @@ const NODE_POS: Record<string, { wrap: string; line: [number, number] }> = {
 };
 
 const CTA_PRIMARY =
-  "mono inline-flex items-center justify-center gap-2 rounded-[4px] px-6 py-4 text-[12px] font-bold uppercase tracking-[0.15em] transition-all duration-200 whitespace-nowrap";
+  "mono inline-flex items-center justify-center gap-2 rounded-[4px] px-6 py-4 text-[12px] font-bold uppercase tracking-[0.15em] transition-all duration-200 whitespace-nowrap will-change-transform hover:-translate-y-0.5 hover:brightness-[1.06] active:translate-y-0";
 
 const CTA_SECONDARY =
-  "mono inline-flex items-center justify-center gap-2 rounded-[4px] px-6 py-4 text-[12px] font-semibold uppercase tracking-[0.15em] transition-all duration-200 whitespace-nowrap";
+  "group mono inline-flex items-center justify-center gap-2 rounded-[4px] px-6 py-4 text-[12px] font-semibold uppercase tracking-[0.15em] transition-all duration-200 whitespace-nowrap will-change-transform hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0";
 
 const fmtCompactUsd = (n: number | undefined): string =>
   n === undefined
@@ -184,7 +184,6 @@ export function ProtocolHero() {
             synEstimate={synEstimate}
             synStatus={synStatus}
             seatLabel={seatLabel}
-            chapterLabel={chapter?.label}
             lanes={lanes}
             chainLive={chainLive}
             burnedSyn={burnedSyn}
@@ -310,7 +309,9 @@ function HeroLeft({ className = "" }: { className?: string }) {
         >
           <ShieldIcon />
           Verify live flows
-          <span aria-hidden>→</span>
+          <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-1">
+            →
+          </span>
         </Link>
       </div>
 
@@ -331,7 +332,6 @@ function HeroEngine({
   synEstimate,
   synStatus,
   seatLabel,
-  chapterLabel,
   lanes,
   chainLive,
   burnedSyn,
@@ -344,7 +344,6 @@ function HeroEngine({
   synEstimate: number;
   synStatus: CanonicalStatus;
   seatLabel: string;
-  chapterLabel: string | undefined;
   lanes: Array<{
     key: string;
     label: string;
@@ -373,10 +372,13 @@ function HeroEngine({
       />
 
       <div className="relative z-20 mb-4 hidden text-center sm:block">
-        <div className="mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+        <div className="mono text-[10px] uppercase tracking-[0.26em] text-muted-foreground">
           You are visitor
         </div>
-        <div className="mono mt-1 text-base font-semibold tracking-[0.04em]" style={{ color: GOLD }}>
+        <div
+          className="mono mt-1.5 text-2xl font-bold tracking-[0.02em]"
+          style={{ color: GOLD, textShadow: "0 2px 22px color-mix(in oklab, #E3A92B 45%, transparent)" }}
+        >
           Seat {seatLabel} available
         </div>
       </div>
@@ -454,7 +456,7 @@ function HeroEngine({
 
         {vaultLane && (
           <EngineNode wrap={vaultLane.pos.wrap}>
-            <NodeIcon icon={<VaultIcon />} color={vaultLane.color} />
+            <NodeImage src="/hero/icons/vault.webp" />
             <NodeLabel
               title="70% Vault"
               value={fmtUsd(vaultLane.fact.value, 2)}
@@ -465,7 +467,7 @@ function HeroEngine({
 
         {liquidityLane && (
           <EngineNode wrap={liquidityLane.pos.wrap}>
-            <NodeIcon icon={<DropIcon />} color={liquidityLane.color} />
+            <NodeImage src="/hero/icons/liquidity.webp" />
             <NodeLabel
               title="20% Liquidity"
               value={fmtUsd(liquidityLane.fact.value, 2)}
@@ -476,7 +478,7 @@ function HeroEngine({
 
         {operationsLane && (
           <EngineNode wrap={operationsLane.pos.wrap}>
-            <NodeIcon icon={<GearIcon />} color={operationsLane.color} />
+            <NodeImage src="/hero/icons/operations.webp" />
             <NodeLabel
               title="10% Operations"
               value={fmtUsd(operationsLane.fact.value, 2)}
@@ -485,19 +487,20 @@ function HeroEngine({
           </EngineNode>
         )}
 
-        <EngineNode wrap="left-[10%] top-[56%]">
-          <NodeIcon icon={<BookIcon />} color={GOLD} />
-          <NodeLabel title="Chronicle" value={chapterLabel ?? "Memory"} color={GOLD} />
-        </EngineNode>
-
         <EngineNode wrap="left-[84%] top-[84%]">
-          <NodeIcon icon={<MembersIcon />} color={GOLD} />
-          <NodeLabel title="Membership Sale" value="" color={GOLD} />
+          <NodeImage src="/hero/icons/membership.webp" />
+          <NodeLabel title="Membership Sale" value="Entry" color={GOLD} />
         </EngineNode>
       </div>
 
       <div className="glass-card elevated p-5 text-center sm:hidden">
-        <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+        <div className="mono text-[10px] uppercase tracking-[0.26em] text-muted-foreground">
+          You are visitor
+        </div>
+        <div
+          className="mono mt-1.5 text-lg font-bold uppercase tracking-[0.06em]"
+          style={{ color: GOLD, textShadow: "0 2px 18px color-mix(in oklab, #E3A92B 42%, transparent)" }}
+        >
           Seat {seatLabel} available
         </div>
         <div className="mx-auto mt-4 flex items-center justify-center">
@@ -570,34 +573,28 @@ function BurnMonument({
   const reducedMotion = usePrefersReducedMotion();
   const known = burnedSyn !== undefined;
   const embers = [
-    { x: "38%", kf: "syn-ember-l", delay: "0s", dur: "4.2s", size: 3 },
-    { x: "46%", kf: "syn-ember-c", delay: "0.6s", dur: "4.8s", size: 2 },
-    { x: "54%", kf: "syn-ember-r", delay: "1.0s", dur: "4.4s", size: 3 },
-    { x: "61%", kf: "syn-ember-r", delay: "1.6s", dur: "5.0s", size: 2 },
-    { x: "42%", kf: "syn-ember-l", delay: "2.1s", dur: "4.6s", size: 2 },
-    { x: "50%", kf: "syn-ember-c", delay: "2.6s", dur: "4.9s", size: 3 },
-    { x: "57%", kf: "syn-ember-l", delay: "3.2s", dur: "4.3s", size: 2 },
-    { x: "35%", kf: "syn-ember-r", delay: "3.7s", dur: "4.7s", size: 2 },
-    { x: "64%", kf: "syn-ember-c", delay: "1.3s", dur: "5.1s", size: 2 },
+    { x: "44%", kf: "syn-ember-c", delay: "0s", dur: "7.2s", size: 2 },
+    { x: "52%", kf: "syn-ember-r", delay: "1.8s", dur: "8.0s", size: 2 },
+    { x: "48%", kf: "syn-ember-l", delay: "3.4s", dur: "7.6s", size: 2 },
+    { x: "56%", kf: "syn-ember-c", delay: "5.0s", dur: "8.4s", size: 2 },
+    { x: "41%", kf: "syn-ember-r", delay: "6.2s", dur: "7.8s", size: 2 },
   ];
   const coals = [
-    { cx: 80, r: 2.6, dur: "2.8s", delay: "0s" },
-    { cx: 92, r: 3.0, dur: "3.3s", delay: "0.5s" },
-    { cx: 100, r: 3.4, dur: "2.6s", delay: "0.2s" },
-    { cx: 109, r: 3.0, dur: "3.1s", delay: "0.8s" },
-    { cx: 120, r: 2.6, dur: "2.9s", delay: "0.4s" },
+    { cx: 88, r: 2.4, dur: "5.2s", delay: "0s" },
+    { cx: 100, r: 3.0, dur: "6.0s", delay: "0.6s" },
+    { cx: 112, r: 2.4, dur: "5.6s", delay: "0.3s" },
   ];
   return (
     <div className="relative z-10 mt-5 flex flex-col items-center text-center select-none sm:mt-7">
-      <div className="syn-burn-flame relative flex h-[184px] w-[152px] items-end justify-center sm:h-[200px] sm:w-[166px]" aria-hidden>
+      <div className="syn-burn-flame relative flex h-[150px] w-[124px] items-end justify-center sm:h-[164px] sm:w-[136px]" aria-hidden>
         {/* warm radial halo + ground glow — centered by flex; scale/opacity only */}
         <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
           <div
-            className="h-[155%] w-[155%] rounded-full blur-2xl"
+            className="h-[150%] w-[150%] rounded-full blur-2xl"
             style={{
               background:
-                "radial-gradient(circle at 50% 60%, color-mix(in oklab, #FDBA74 48%, transparent) 0%, color-mix(in oklab, #F97316 30%, transparent) 30%, color-mix(in oklab, #B45309 15%, transparent) 56%, transparent 74%)",
-              animation: reducedMotion ? undefined : "syn-glow-pulse 4.5s ease-in-out infinite",
+                "radial-gradient(circle at 50% 60%, color-mix(in oklab, #F2CE7A 42%, transparent) 0%, color-mix(in oklab, #D9982E 26%, transparent) 32%, color-mix(in oklab, #8A5A12 13%, transparent) 58%, transparent 76%)",
+              animation: reducedMotion ? undefined : "syn-glow-pulse 7s ease-in-out infinite",
             }}
           />
         </div>
@@ -608,33 +605,33 @@ function BurnMonument({
           viewBox="0 0 200 260"
           className="relative h-full w-auto overflow-visible"
           style={{
-            filter: "drop-shadow(0 8px 18px color-mix(in oklab, #7C2D12 50%, transparent))",
+            filter: "drop-shadow(0 8px 18px color-mix(in oklab, #4A300E 52%, transparent))",
           }}
         >
           <defs>
             <linearGradient id="syn-flame-body" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="#7C2D12" />
-              <stop offset="14%" stopColor="#B45309" />
-              <stop offset="40%" stopColor="#EA580C" />
-              <stop offset="66%" stopColor="#F97316" />
-              <stop offset="86%" stopColor="#FBBF24" />
-              <stop offset="100%" stopColor="#FCD34D" stopOpacity="0.55" />
+              <stop offset="0%" stopColor="#5A3A12" />
+              <stop offset="16%" stopColor="#8A5A12" />
+              <stop offset="42%" stopColor="#B8791C" />
+              <stop offset="68%" stopColor="#D9982E" />
+              <stop offset="88%" stopColor="#F0C455" />
+              <stop offset="100%" stopColor="#FBE3A0" stopOpacity="0.55" />
             </linearGradient>
             <linearGradient id="syn-flame-mid" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="#EA580C" />
-              <stop offset="38%" stopColor="#FB923C" />
-              <stop offset="72%" stopColor="#FBBF24" />
-              <stop offset="100%" stopColor="#FDE68A" />
+              <stop offset="0%" stopColor="#B8791C" />
+              <stop offset="40%" stopColor="#D9982E" />
+              <stop offset="74%" stopColor="#F0C455" />
+              <stop offset="100%" stopColor="#FBE6B0" />
             </linearGradient>
             <linearGradient id="syn-flame-core" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="#FDE68A" />
+              <stop offset="0%" stopColor="#FBE6B0" />
               <stop offset="55%" stopColor="#FEF3C7" />
               <stop offset="100%" stopColor="#FFFFFF" />
             </linearGradient>
             <radialGradient id="syn-flame-bed" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#FFF7E0" stopOpacity="0.95" />
-              <stop offset="42%" stopColor="#FDBA74" stopOpacity="0.65" />
-              <stop offset="100%" stopColor="#B45309" stopOpacity="0" />
+              <stop offset="42%" stopColor="#F0C97A" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#8A5A12" stopOpacity="0" />
             </radialGradient>
             <filter id="syn-fire-distort" x="-45%" y="-25%" width="190%" height="150%">
               <feTurbulence
@@ -647,8 +644,8 @@ function BurnMonument({
                 {!reducedMotion && (
                   <animate
                     attributeName="baseFrequency"
-                    dur="7s"
-                    values="0.016 0.045;0.022 0.063;0.014 0.052;0.016 0.045"
+                    dur="11s"
+                    values="0.016 0.045;0.020 0.055;0.014 0.050;0.016 0.045"
                     repeatCount="indefinite"
                   />
                 )}
@@ -656,7 +653,7 @@ function BurnMonument({
               <feDisplacementMap
                 in="SourceGraphic"
                 in2="n"
-                scale="9"
+                scale="5"
                 xChannelSelector="R"
                 yChannelSelector="G"
                 result="d"
@@ -679,7 +676,7 @@ function BurnMonument({
             style={{
               transformBox: "fill-box",
               transformOrigin: "50% 50%",
-              animation: reducedMotion ? undefined : "syn-bed-pulse 3.4s ease-in-out infinite",
+              animation: reducedMotion ? undefined : "syn-bed-pulse 5.5s ease-in-out infinite",
             }}
           />
           <ellipse
@@ -693,7 +690,7 @@ function BurnMonument({
             style={{
               transformBox: "fill-box",
               transformOrigin: "50% 50%",
-              animation: reducedMotion ? undefined : "syn-bed-pulse 2.7s ease-in-out infinite",
+              animation: reducedMotion ? undefined : "syn-bed-pulse 4.6s ease-in-out infinite",
             }}
           />
           {coals.map((c, i) => (
@@ -718,20 +715,9 @@ function BurnMonument({
             style={{
               transformBox: "fill-box",
               transformOrigin: "50% 100%",
-              animation: reducedMotion ? undefined : "syn-flame-breathe 4.4s ease-in-out infinite",
+              animation: reducedMotion ? undefined : "syn-flame-breathe 6.8s ease-in-out infinite",
             }}
           >
-            {/* flanking licking tongues — widen the base into a fuller fire */}
-            <path
-              d="M86 236 C66 232 58 210 64 186 C68 172 60 164 70 152 C74 166 78 176 82 194 C86 214 92 230 86 236 Z"
-              fill="url(#syn-flame-body)"
-              opacity="0.9"
-            />
-            <path
-              d="M114 236 C134 232 142 210 136 186 C132 172 140 164 130 152 C126 166 122 176 118 194 C114 214 108 230 114 236 Z"
-              fill="url(#syn-flame-body)"
-              opacity="0.9"
-            />
             <path
               d="M100 236 C66 232 50 200 60 168 C66 150 53 138 64 120 C71 108 61 96 74 88 C79 72 69 64 81 58 C85 44 92 36 100 24 C110 38 117 50 121 64 C130 70 123 80 132 90 C143 98 133 110 140 122 C151 140 137 152 144 170 C153 200 134 232 100 236 Z"
               fill="url(#syn-flame-body)"
@@ -758,8 +744,8 @@ function BurnMonument({
                 bottom: "15%",
                 width: `${e.size}px`,
                 height: `${e.size}px`,
-                background: i % 3 === 0 ? "#FFF7E0" : i % 3 === 1 ? "#FDE68A" : "#FBBF24",
-                boxShadow: "0 0 6px color-mix(in oklab, #F97316 70%, transparent)",
+                background: i % 3 === 0 ? "#FFF7E0" : i % 3 === 1 ? "#FBE6B0" : "#F0C455",
+                boxShadow: "0 0 6px color-mix(in oklab, #D9982E 65%, transparent)",
                 animation: `${e.kf} ${e.dur} ease-out ${e.delay} infinite`,
               }}
             />
@@ -767,23 +753,23 @@ function BurnMonument({
       </div>
 
       <div
-        className="mono mt-3 text-[11px] uppercase tracking-[0.34em]"
-        style={{ color: "color-mix(in oklab, #FBBF24 34%, var(--muted-foreground))" }}
+        className="mono mt-4 text-[11px] uppercase tracking-[0.34em]"
+        style={{ color: "color-mix(in oklab, #E3A92B 34%, var(--muted-foreground))" }}
       >
         Burned supply
       </div>
       <div
-        className="mt-1.5 text-[clamp(2.1rem,1.3rem+1.9vw,3.1rem)] font-semibold leading-none tabular-nums"
+        className="mt-2 text-[clamp(2.7rem,1.7rem+2.7vw,4.1rem)] font-bold leading-none tabular-nums"
         style={
           known
             ? {
                 fontFamily: "var(--font-mono)",
                 backgroundImage:
-                  "linear-gradient(180deg, #FDE68A 0%, #F2C544 40%, #E3A92B 72%, #F97316 100%)",
+                  "linear-gradient(180deg, #FBE6A8 0%, #F0C455 38%, #E3A92B 72%, #B8791C 100%)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 color: "transparent",
-                filter: "drop-shadow(0 0 22px color-mix(in oklab, #F97316 36%, transparent))",
+                filter: "drop-shadow(0 2px 20px color-mix(in oklab, #D9982E 34%, transparent))",
               }
             : { fontFamily: "var(--font-mono)", color: "var(--muted-foreground)" }
         }
@@ -791,10 +777,10 @@ function BurnMonument({
         {known ? `${fmtCount(burnedSyn)} SYN` : "—"}
       </div>
       <div
-        className="mono mt-2 text-[11px] uppercase tracking-[0.32em]"
+        className="mono mt-2.5 text-[11px] uppercase tracking-[0.32em]"
         style={{
           color: known ? FLAME : "var(--muted-foreground)",
-          textShadow: known ? "0 0 16px color-mix(in oklab, #F97316 45%, transparent)" : undefined,
+          textShadow: known ? "0 0 16px color-mix(in oklab, #D9982E 42%, transparent)" : undefined,
         }}
       >
         {known ? "Proof of Fire" : status}
@@ -859,11 +845,11 @@ function HeroRight({
           Protocol overview
         </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-3">
-          <Stat label="Members" value={fmtCount(members)} status={membersStatus} />
-          <Stat label="Next seat" value={nextSeat} status={membersStatus} gold />
+          <Stat label="Members" value={fmtCount(members)} status={membersStatus} primary />
+          <Stat label="Next seat" value={nextSeat} status={membersStatus} gold primary />
           <Stat label="SYN price" value={fmtUsd(synPrice, 4)} status={synPriceStatus} />
 
-          <Stat label="USDC routed" value={fmtUsd(routedValue, 2)} status={routedStatus} money />
+          <Stat label="USDC routed" value={fmtUsd(routedValue, 2)} status={routedStatus} money primary />
           <Stat label="Ref. market" value={fmtCompactUsd(refFdv)} status="DERIVED" />
           <Stat label="Ref. FDV" value={fmtCompactUsd(refFdv)} status="DERIVED" />
 
@@ -875,7 +861,7 @@ function HeroRight({
           />
           <BurnStat value={burnedSyn} status={burnedStatus} />
 
-          <Stat label="Vault holdings" value={fmtUsd(vault, 2)} status={vaultStatus} money />
+          <Stat label="Vault holdings" value={fmtUsd(vault, 2)} status={vaultStatus} money primary />
           <Stat label="Liquidity TVL" value={fmtUsd(liquidity, 2)} status={liquidityStatus} money />
           <Stat label="Operations" value={fmtUsd(operations, 2)} status={operationsStatus} money />
         </div>
@@ -951,9 +937,20 @@ function ChapterStrip({
 
         {chapter ? (
           <div>
-            <ProgressBar value={chapter.progressPct} max={100} tone="gold" size="lg" />
-            <div className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1">
-              <span className="mono text-3xl font-semibold tabular-nums text-foreground">
+            <div className="mono mb-2 flex items-baseline justify-between text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <span>Seats filled</span>
+              <span className="tabular-nums" style={{ color: GOLD }}>
+                {chapter.progressPct}%
+              </span>
+            </div>
+            <div
+              className="rounded-full p-[2px]"
+              style={{ background: "color-mix(in oklab, #E3A92B 14%, transparent)" }}
+            >
+              <ProgressBar value={chapter.progressPct} max={100} tone="gold" size="lg" />
+            </div>
+            <div className="mt-3.5 flex flex-wrap items-baseline gap-x-5 gap-y-1">
+              <span className="mono text-3xl font-bold tabular-nums text-foreground">
                 {fmtCount(chapter.taken)}
                 <span className="ml-1.5 text-base font-normal text-muted-foreground">
                   / {fmtCount(chapter.capacity)} seats
@@ -1233,34 +1230,45 @@ function EngineNode({ wrap, children }: { wrap: string; children: ReactNode }) {
   );
 }
 
-function NodeIcon({ icon, color }: { icon: ReactNode; color: string }) {
+function NodeImage({ src }: { src: string }) {
   return (
-    <div
-      className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full border backdrop-blur-md"
-      style={{
-        color,
-        borderColor: `color-mix(in oklab, ${color} 52%, transparent)`,
-        background: "color-mix(in oklab, var(--card) 55%, transparent)",
-        boxShadow: `0 0 34px -18px ${color}`,
-      }}
-    >
-      {icon}
+    <div className="relative mx-auto mb-2 flex size-16 items-center justify-center sm:size-[68px]">
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 rounded-full blur-md"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 46%, color-mix(in oklab, #E3A92B 38%, transparent), transparent 70%)",
+        }}
+      />
+      <img
+        src={src}
+        alt=""
+        aria-hidden
+        width={68}
+        height={68}
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+        className="h-full w-full select-none object-contain"
+        style={{ filter: "drop-shadow(0 6px 13px color-mix(in oklab, #5c3d0a 58%, transparent))" }}
+      />
     </div>
   );
 }
 
 function NodeLabel({ title, value, color }: { title: string; value: string; color: string }) {
   return (
-    <>
-      <div className="mono text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
+    <div style={{ textShadow: "0 1px 12px color-mix(in oklab, var(--background) 82%, transparent)" }}>
+      <div className="mono text-[12px] font-semibold uppercase tracking-[0.1em] text-foreground sm:text-[13px]">
         {title}
       </div>
       {value && (
-        <div className="mono mt-1 text-sm tabular-nums" style={{ color }}>
+        <div className="mono mt-1 text-[15px] font-semibold tabular-nums" style={{ color }}>
           {value}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
@@ -1305,12 +1313,14 @@ function Stat({
   status,
   money,
   gold,
+  primary,
 }: {
   label: string;
   value: string;
   status: CanonicalStatus;
   money?: boolean;
   gold?: boolean;
+  primary?: boolean;
 }) {
   const tone =
     status === "LIVE"
@@ -1327,8 +1337,16 @@ function Stat({
         {label}
       </div>
       <div
-        className="mono mt-1.5 text-xl font-semibold tabular-nums leading-none"
-        style={money && status === "LIVE" ? { color: "var(--success)" } : gold ? { color: GOLD } : undefined}
+        className={`mono mt-1.5 tabular-nums leading-none ${primary ? "text-[1.4rem] font-bold" : "text-[15px] font-medium"}`}
+        style={
+          money && status === "LIVE"
+            ? { color: "var(--success)" }
+            : gold
+            ? { color: GOLD }
+            : primary
+            ? undefined
+            : { color: "var(--muted-foreground)" }
+        }
       >
         {value}
       </div>
@@ -1347,7 +1365,7 @@ function BurnStat({ value, status }: { value: number | undefined; status: Canoni
       <div className="mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
         Burned
       </div>
-      <div className="mono mt-2 flex items-center gap-1.5 text-xl font-semibold tabular-nums leading-none">
+      <div className="mono mt-2 flex items-center gap-1.5 text-[1.4rem] font-bold tabular-nums leading-none">
         {known && <FlameIcon />}
         <span>{known ? `${fmtCount(value)} SYN` : "—"}</span>
       </div>
@@ -1498,16 +1516,6 @@ function JoinIcon() {
   return (
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M7 17 17 7M9 7h8v8" />
-    </svg>
-  );
-}
-
-function MembersIcon() {
-  return (
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" />
     </svg>
   );
 }

@@ -1,0 +1,397 @@
+Reasoning
+
+We are no longer designing from scratch.
+
+The hero is now 80% there.
+
+The next step is not "more features".
+
+The next step is:
+
+Consistency → Hierarchy → Clarity → Premium Finish.
+
+The throne solved the identity problem.
+
+The mountain solved the atmosphere problem.
+
+The green routed amount solved the capital-flow problem.
+
+Now we must solve:
+
+icon consistency
+visual hierarchy
+redundancy
+spacing
+readability
+premium execution
+
+The new gold icon family (Vault / Liquidity / Operations / Membership Sale) is important because they finally belong to the same visual language as the throne.
+
+The goal is that a visitor instantly understands:
+
+Seat → Capital → Vault → Liquidity → Operations
+
+without reading much.
+
+This pass is about making the hero feel designed by one person instead of assembled from multiple components.
+
+Prompt
+
+Recalibrate from the current live homepage.
+
+Do NOT redesign the hero from scratch.
+
+Do NOT add new sections.
+
+Do NOT add more data.
+
+This is a premium-polish pass focused on hierarchy, consistency, and visual clarity.
+
+The throne hero direction is correct.
+
+The mountain atmosphere is correct.
+
+The large green routed amount is correct.
+
+The protocol overview panel is correct.
+
+The chapter section is correct.
+
+The entry preview section is correct.
+
+Preserve those foundations.
+
+Visual Goal
+
+The homepage should feel like:
+
+Avalanche × Apple × Swiss Private Bank × Luxury Collector Protocol
+
+not:
+
+dashboard builder
+admin panel
+crypto casino
+fintech app
+
+The page should communicate:
+
+Seat
+→
+Capital Flow
+→
+Protocol Growth
+→
+Protocol Memory
+
+1. Replace Hero Circle Icons
+
+The current icons feel mixed.
+
+Use one unified gold icon family.
+
+The attached icon references are the new direction.
+
+Vault
+
+Keep a premium gold vault door.
+
+Vault is the strongest economic destination.
+
+Make it visually important.
+
+Liquidity
+
+Replace the water-droplet concept.
+
+Liquidity is not water.
+
+Use the new liquidity symbol:
+
+SYN ↔ USDC balance scale
+
+or
+
+pool-balance style symbol.
+
+Meaning:
+
+capital balance
+market depth
+exchangeability
+
+not liquid.
+
+Operations
+
+Replace the simple gear.
+
+Use a protocol-network icon.
+
+Meaning:
+
+infrastructure
+systems
+development
+operations
+
+not machinery.
+
+Membership Sale
+
+Replace the person-style symbol.
+
+Use the premium growth symbol.
+
+Growing bars + crown.
+
+Meaning:
+
+protocol adoption
+member growth
+seat acquisition
+
+2. Increase Hero Readability
+
+Current labels around the circle are too small.
+
+Increase readability of:
+
+Vault
+Liquidity
+Operations
+Membership Sale
+
+Increase:
+
+font size
+spacing
+contrast
+
+Do not increase clutter.
+
+Make them readable at first glance.
+
+3. Simplify the Circle
+
+Remove visual noise.
+
+Evaluate:
+
+Chronicle label
+Genesis Signal label
+duplicated explanatory text
+
+The circle should primarily explain:
+
+USDC
+→
+SYN
+→
+70 / 20 / 10
+
+Keep the story clean.
+
+If an element does not strengthen capital-flow understanding, remove it.
+
+4. Improve Center Hierarchy
+
+The eye should see:
+
+Throne
+Routed Amount
+Seat Available
+Routing Structure
+
+Current hierarchy is close but not perfect.
+
+Increase emphasis on:
+
+Seat # Available
+
+and
+
+the throne.
+
+The throne is the symbolic hero object.
+
+It represents:
+
+identity
+ownership
+membership
+status
+
+5. Burned Supply Monument
+
+The burn area is the next major improvement.
+
+Current flame feels pasted on.
+
+It does not feel integrated into the protocol world.
+
+Replace it with a premium burn monument.
+
+Visual inspiration:
+
+the throne treatment.
+
+Requirements:
+
+integrated into mountain scene
+feels architectural
+feels permanent
+feels ceremonial
+
+Not:
+
+campfire
+candle
+cartoon flame
+
+Animation should be subtle:
+
+heat shimmer
+glowing embers
+slow pulse
+
+No aggressive flame movement.
+
+Think:
+
+eternal protocol fire.
+
+Burn Section Layout
+
+Display:
+
+BURNED SUPPLY
+
+2,000 SYN
+
+PROOF OF BURN
+
+with stronger hierarchy.
+
+The amount should be the dominant element.
+
+The flame supports the number.
+
+The number does not support the flame.
+
+Burn Color
+
+Current orange is disconnected from the site palette.
+
+Use:
+
+gold
+amber
+warm protocol glow
+
+that harmonizes with:
+
+throne
+gold accents
+protocol lines
+
+Avoid bright orange.
+
+6. Chapter Progress Block
+
+Current chapter block is moving in the right direction.
+
+Improve:
+
+progress bar thickness
+progress visibility
+spacing
+typography
+
+Make it feel equal in quality to the protocol overview panel.
+
+The chapter section is important because it connects:
+
+story
+milestones
+membership
+
+7. Protocol Overview Panel
+
+Review metric hierarchy.
+
+Important metrics should visually dominate:
+
+Members
+Next Seat
+USDC Routed
+Burned Supply
+Vault Holdings
+
+Less important metrics should have lower emphasis.
+
+Avoid making every metric visually identical.
+
+8. CTA Optimization
+
+The CTA row is now correct conceptually.
+
+Maintain:
+
+Join The Protocol
+
+Verify Live Flows
+
+But improve:
+
+icon quality
+hover states
+visual polish
+premium feel
+
+No additional buttons.
+
+No additional actions.
+
+9. Performance
+
+While polishing:
+
+optimize images
+reduce unnecessary asset weight
+avoid layout shifts
+maintain excellent Lighthouse scores
+preserve fast initial render
+
+The homepage must feel immediate.
+
+Premium does not mean heavy.
+
+10. Final Review Standard
+
+Before considering the hero finished, ask:
+
+Can a visitor understand within 5 seconds:
+
+This is a live Avalanche protocol.
+A seat is available.
+Capital routes automatically.
+70% goes to Vault.
+Everything is verifiable.
+Membership creates identity.
+Burns are permanent.
+The protocol is growing.
+
+If any element does not improve those understandings, simplify or remove it.
+
+Provide after completion:
+
+files changed
+components modified
+icon assets replaced
+burn monument implementation details
+animation details
+performance impact
+mobile behavior
+desktop behavior
+remaining visual opportunities before full site-wide harmonization.
