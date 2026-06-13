@@ -85,7 +85,11 @@ const fmtCoreUsd = (n: number): string =>
     : Math.round(n).toLocaleString("en-US");
 
 function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
+  // Initialize `true` so SSR and the first client render emit NO animation
+  // (incl. the SMIL <animate> in the turbulence filter). This keeps hydration
+  // stable and guarantees reduced-motion users never receive a flash of motion;
+  // normal users gain animation one frame after mount via the effect below.
+  const [reduced, setReduced] = useState(true);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () => setReduced(mq.matches);
@@ -566,90 +570,179 @@ function BurnMonument({
   const reducedMotion = usePrefersReducedMotion();
   const known = burnedSyn !== undefined;
   const embers = [
-    { x: "41%", kf: "syn-ember-l", delay: "0s", dur: "3.6s", size: 3 },
-    { x: "52%", kf: "syn-ember-r", delay: "0.5s", dur: "4.2s", size: 2 },
-    { x: "46%", kf: "syn-ember-c", delay: "1.1s", dur: "3.8s", size: 2 },
-    { x: "57%", kf: "syn-ember-r", delay: "1.7s", dur: "4.4s", size: 3 },
-    { x: "44%", kf: "syn-ember-l", delay: "2.3s", dur: "3.9s", size: 2 },
-    { x: "50%", kf: "syn-ember-c", delay: "2.8s", dur: "4.1s", size: 3 },
-    { x: "54%", kf: "syn-ember-l", delay: "3.3s", dur: "3.7s", size: 2 },
-    { x: "48%", kf: "syn-ember-r", delay: "0.9s", dur: "4.0s", size: 2 },
+    { x: "38%", kf: "syn-ember-l", delay: "0s", dur: "4.2s", size: 3 },
+    { x: "46%", kf: "syn-ember-c", delay: "0.6s", dur: "4.8s", size: 2 },
+    { x: "54%", kf: "syn-ember-r", delay: "1.0s", dur: "4.4s", size: 3 },
+    { x: "61%", kf: "syn-ember-r", delay: "1.6s", dur: "5.0s", size: 2 },
+    { x: "42%", kf: "syn-ember-l", delay: "2.1s", dur: "4.6s", size: 2 },
+    { x: "50%", kf: "syn-ember-c", delay: "2.6s", dur: "4.9s", size: 3 },
+    { x: "57%", kf: "syn-ember-l", delay: "3.2s", dur: "4.3s", size: 2 },
+    { x: "35%", kf: "syn-ember-r", delay: "3.7s", dur: "4.7s", size: 2 },
+    { x: "64%", kf: "syn-ember-c", delay: "1.3s", dur: "5.1s", size: 2 },
+  ];
+  const coals = [
+    { cx: 80, r: 2.6, dur: "2.8s", delay: "0s" },
+    { cx: 92, r: 3.0, dur: "3.3s", delay: "0.5s" },
+    { cx: 100, r: 3.4, dur: "2.6s", delay: "0.2s" },
+    { cx: 109, r: 3.0, dur: "3.1s", delay: "0.8s" },
+    { cx: 120, r: 2.6, dur: "2.9s", delay: "0.4s" },
   ];
   return (
-    <div className="relative z-10 mt-7 flex flex-col items-center text-center select-none sm:mt-9">
-      <div className="syn-burn-flame relative flex h-[136px] w-[112px] items-end justify-center" aria-hidden>
-        {/* soft radial glow — centered by flex; animates scale/opacity only */}
+    <div className="relative z-10 mt-5 flex flex-col items-center text-center select-none sm:mt-7">
+      <div className="syn-burn-flame relative flex h-[184px] w-[152px] items-end justify-center sm:h-[200px] sm:w-[166px]" aria-hidden>
+        {/* warm radial halo + ground glow — centered by flex; scale/opacity only */}
         <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
           <div
-            className="size-[150%] rounded-full blur-2xl"
+            className="h-[155%] w-[155%] rounded-full blur-2xl"
             style={{
               background:
-                "radial-gradient(circle, color-mix(in oklab, #F97316 34%, transparent) 0%, color-mix(in oklab, #B45309 16%, transparent) 42%, transparent 70%)",
-              animation: reducedMotion ? undefined : "syn-glow-pulse 4s ease-in-out infinite",
+                "radial-gradient(circle at 50% 60%, color-mix(in oklab, #FDBA74 48%, transparent) 0%, color-mix(in oklab, #F97316 30%, transparent) 30%, color-mix(in oklab, #B45309 15%, transparent) 56%, transparent 74%)",
+              animation: reducedMotion ? undefined : "syn-glow-pulse 4.5s ease-in-out infinite",
             }}
           />
         </div>
 
-        {/* layered flame: outer amber → inner gold → white-hot core */}
+        {/* living fire: layered flame whose organic edges come from a
+            turbulence + displacement filter, over a glowing coal bed */}
         <svg
-          viewBox="0 0 64 96"
-          className="relative h-[136px] w-auto overflow-visible"
+          viewBox="0 0 200 260"
+          className="relative h-full w-auto overflow-visible"
           style={{
-            filter: "drop-shadow(0 6px 14px color-mix(in oklab, #7C2D12 55%, transparent))",
+            filter: "drop-shadow(0 8px 18px color-mix(in oklab, #7C2D12 50%, transparent))",
           }}
         >
           <defs>
-            <linearGradient id="syn-flame-outer-g" x1="0" y1="1" x2="0" y2="0">
+            <linearGradient id="syn-flame-body" x1="0" y1="1" x2="0" y2="0">
               <stop offset="0%" stopColor="#7C2D12" />
-              <stop offset="10%" stopColor="#B45309" />
-              <stop offset="42%" stopColor="#F97316" />
-              <stop offset="76%" stopColor="#E3A92B" />
-              <stop offset="100%" stopColor="#F2C544" stopOpacity="0.6" />
+              <stop offset="14%" stopColor="#B45309" />
+              <stop offset="40%" stopColor="#EA580C" />
+              <stop offset="66%" stopColor="#F97316" />
+              <stop offset="86%" stopColor="#FBBF24" />
+              <stop offset="100%" stopColor="#FCD34D" stopOpacity="0.55" />
             </linearGradient>
-            <linearGradient id="syn-flame-inner-g" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="#F97316" />
-              <stop offset="48%" stopColor="#F2C544" />
+            <linearGradient id="syn-flame-mid" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stopColor="#EA580C" />
+              <stop offset="38%" stopColor="#FB923C" />
+              <stop offset="72%" stopColor="#FBBF24" />
               <stop offset="100%" stopColor="#FDE68A" />
             </linearGradient>
-            <linearGradient id="syn-flame-core-g" x1="0" y1="1" x2="0" y2="0">
+            <linearGradient id="syn-flame-core" x1="0" y1="1" x2="0" y2="0">
               <stop offset="0%" stopColor="#FDE68A" />
-              <stop offset="100%" stopColor="#FFFDF5" />
+              <stop offset="55%" stopColor="#FEF3C7" />
+              <stop offset="100%" stopColor="#FFFFFF" />
             </linearGradient>
+            <radialGradient id="syn-flame-bed" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#FFF7E0" stopOpacity="0.95" />
+              <stop offset="42%" stopColor="#FDBA74" stopOpacity="0.65" />
+              <stop offset="100%" stopColor="#B45309" stopOpacity="0" />
+            </radialGradient>
+            <filter id="syn-fire-distort" x="-45%" y="-25%" width="190%" height="150%">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.016 0.05"
+                numOctaves="2"
+                seed="7"
+                result="n"
+              >
+                {!reducedMotion && (
+                  <animate
+                    attributeName="baseFrequency"
+                    dur="7s"
+                    values="0.016 0.045;0.022 0.063;0.014 0.052;0.016 0.045"
+                    repeatCount="indefinite"
+                  />
+                )}
+              </feTurbulence>
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="n"
+                scale="9"
+                xChannelSelector="R"
+                yChannelSelector="G"
+                result="d"
+              />
+              <feGaussianBlur in="d" stdDeviation="0.5" />
+            </filter>
+            <filter id="syn-fire-bed" x="-60%" y="-80%" width="220%" height="260%">
+              <feGaussianBlur stdDeviation="5" />
+            </filter>
           </defs>
-          <g
+
+          {/* glowing coal / ember bed beneath the flame */}
+          <ellipse
+            cx="100"
+            cy="234"
+            rx="60"
+            ry="16"
+            fill="url(#syn-flame-bed)"
+            filter="url(#syn-fire-bed)"
             style={{
               transformBox: "fill-box",
-              transformOrigin: "50% 100%",
-              animation: reducedMotion ? undefined : "syn-flame-a 3.6s ease-in-out infinite",
+              transformOrigin: "50% 50%",
+              animation: reducedMotion ? undefined : "syn-bed-pulse 3.4s ease-in-out infinite",
             }}
-          >
-            <path
-              d="M32 4 C40 22 50 30 44 48 C42 56 46 60 44 66 C56 60 58 84 40 92 C46 84 36 82 36 92 C36 82 28 82 28 92 C28 82 18 84 24 92 C8 84 10 60 22 66 C20 60 22 56 20 48 C16 30 24 22 32 4 Z"
-              fill="url(#syn-flame-outer-g)"
+          />
+          <ellipse
+            cx="100"
+            cy="234"
+            rx="30"
+            ry="8.5"
+            fill="#FFE9B0"
+            opacity="0.9"
+            filter="url(#syn-fire-bed)"
+            style={{
+              transformBox: "fill-box",
+              transformOrigin: "50% 50%",
+              animation: reducedMotion ? undefined : "syn-bed-pulse 2.7s ease-in-out infinite",
+            }}
+          />
+          {coals.map((c, i) => (
+            <ellipse
+              key={i}
+              cx={c.cx}
+              cy={234}
+              rx={c.r}
+              ry={c.r * 0.7}
+              fill={i % 2 === 0 ? "#FFF3D0" : "#FDBA74"}
+              style={{
+                transformBox: "fill-box",
+                transformOrigin: "50% 50%",
+                animation: reducedMotion ? undefined : `syn-coal-pulse ${c.dur} ease-in-out ${c.delay} infinite`,
+              }}
             />
-          </g>
+          ))}
+
+          {/* flame body + mid + white-hot core, distorted as one living mass */}
           <g
+            filter="url(#syn-fire-distort)"
             style={{
               transformBox: "fill-box",
               transformOrigin: "50% 100%",
-              animation: reducedMotion ? undefined : "syn-flame-b 3.0s ease-in-out infinite",
+              animation: reducedMotion ? undefined : "syn-flame-breathe 4.4s ease-in-out infinite",
             }}
           >
+            {/* flanking licking tongues — widen the base into a fuller fire */}
             <path
-              d="M32 26 C38 40 44 46 40 58 C39 64 41 66 40 72 C48 68 49 84 36 90 C40 84 33 83 33 90 C33 83 26 84 28 90 C16 84 17 68 25 72 C24 66 25 64 24 58 C21 46 26 40 32 26 Z"
-              fill="url(#syn-flame-inner-g)"
+              d="M86 236 C66 232 58 210 64 186 C68 172 60 164 70 152 C74 166 78 176 82 194 C86 214 92 230 86 236 Z"
+              fill="url(#syn-flame-body)"
+              opacity="0.9"
             />
-          </g>
-          <g
-            style={{
-              transformBox: "fill-box",
-              transformOrigin: "50% 100%",
-              animation: reducedMotion ? undefined : "syn-flame-c 2.2s ease-in-out infinite",
-            }}
-          >
             <path
-              d="M32 50 C36 60 39 64 37 72 C42 70 43 82 34 88 C37 82 32 82 32 88 C32 82 27 82 30 88 C21 82 22 70 27 72 C25 64 28 60 32 50 Z"
-              fill="url(#syn-flame-core-g)"
+              d="M114 236 C134 232 142 210 136 186 C132 172 140 164 130 152 C126 166 122 176 118 194 C114 214 108 230 114 236 Z"
+              fill="url(#syn-flame-body)"
+              opacity="0.9"
+            />
+            <path
+              d="M100 236 C66 232 50 200 60 168 C66 150 53 138 64 120 C71 108 61 96 74 88 C79 72 69 64 81 58 C85 44 92 36 100 24 C110 38 117 50 121 64 C130 70 123 80 132 90 C143 98 133 110 140 122 C151 140 137 152 144 170 C153 200 134 232 100 236 Z"
+              fill="url(#syn-flame-body)"
+            />
+            <path
+              d="M100 232 C80 228 70 204 78 178 C83 162 74 152 85 136 C90 124 83 114 92 104 C96 90 91 82 97 72 C99 64 100 58 100 52 C102 60 105 70 108 80 C114 92 108 102 113 114 C121 126 114 136 119 152 C126 178 119 206 100 232 Z"
+              fill="url(#syn-flame-mid)"
+            />
+            <path
+              d="M100 228 C88 226 80 206 87 184 C91 170 86 162 92 148 C96 136 92 128 96 116 C98 106 100 100 100 94 C102 104 104 114 106 126 C110 140 106 150 109 164 C114 184 110 206 100 228 Z"
+              fill="url(#syn-flame-core)"
             />
           </g>
         </svg>
@@ -662,18 +755,21 @@ function BurnMonument({
               className="absolute rounded-full"
               style={{
                 left: e.x,
-                bottom: "24%",
+                bottom: "15%",
                 width: `${e.size}px`,
                 height: `${e.size}px`,
-                background: i % 2 === 0 ? "#FDE68A" : "#F2C544",
-                boxShadow: "0 0 4px color-mix(in oklab, #F97316 60%, transparent)",
+                background: i % 3 === 0 ? "#FFF7E0" : i % 3 === 1 ? "#FDE68A" : "#FBBF24",
+                boxShadow: "0 0 6px color-mix(in oklab, #F97316 70%, transparent)",
                 animation: `${e.kf} ${e.dur} ease-out ${e.delay} infinite`,
               }}
             />
           ))}
       </div>
 
-      <div className="mono mt-2 text-[11px] uppercase tracking-[0.32em] text-muted-foreground">
+      <div
+        className="mono mt-3 text-[11px] uppercase tracking-[0.34em]"
+        style={{ color: "color-mix(in oklab, #FBBF24 34%, var(--muted-foreground))" }}
+      >
         Burned supply
       </div>
       <div
@@ -695,8 +791,11 @@ function BurnMonument({
         {known ? `${fmtCount(burnedSyn)} SYN` : "—"}
       </div>
       <div
-        className="mono mt-2 text-[11px] uppercase tracking-[0.3em]"
-        style={{ color: known ? FLAME : "var(--muted-foreground)" }}
+        className="mono mt-2 text-[11px] uppercase tracking-[0.32em]"
+        style={{
+          color: known ? FLAME : "var(--muted-foreground)",
+          textShadow: known ? "0 0 16px color-mix(in oklab, #F97316 45%, transparent)" : undefined,
+        }}
       >
         {known ? "Proof of Fire" : status}
       </div>

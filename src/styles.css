@@ -446,46 +446,47 @@
 }
 
 /* ============================================================
- * Burn monument flame — layered SVG flame (outer / inner / core)
- * + soft glow + rising embers. transform / opacity only (cheap to
- * composite); the component drops ALL animation under
- * prefers-reduced-motion and keeps a static glowing flame.
- * Flame groups use transform-box:fill-box + transform-origin
- * bottom-center, so these keyframes never need a centering offset.
+ * Burn monument fire — layered SVG flame (body / mid / white-hot
+ * core) whose organic, living edges come from an animated
+ * feTurbulence + feDisplacementMap filter, over a glowing coal bed
+ * with rising sparks. Only transform / opacity / displacement is
+ * animated. The component drops the SMIL turbulence + all CSS
+ * animation under prefers-reduced-motion and keeps a static,
+ * still-displaced (organic) glowing flame. The flame group uses
+ * transform-box:fill-box + transform-origin bottom-center.
  * ============================================================ */
-@keyframes syn-flame-a {
-  0%, 100% { transform: scaleY(1) scaleX(1) translateX(0); }
-  20%      { transform: scaleY(1.06) scaleX(0.97) translateX(-1.5px); }
-  45%      { transform: scaleY(0.96) scaleX(1.03) translateX(1.5px); }
-  70%      { transform: scaleY(1.04) scaleX(0.98) translateX(-1px); }
-}
-@keyframes syn-flame-b {
-  0%, 100% { transform: scaleY(1) translateX(0); }
-  30%      { transform: scaleY(1.05) translateX(1px); }
-  60%      { transform: scaleY(0.95) translateX(-1.5px); }
-}
-@keyframes syn-flame-c {
-  0%, 100% { transform: scaleY(1) translateX(0); opacity: 1; }
-  50%      { transform: scaleY(0.9) translateX(1px); opacity: 0.85; }
+@keyframes syn-flame-breathe {
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  28%      { transform: scaleY(1.05) scaleX(0.98); }
+  55%      { transform: scaleY(0.97) scaleX(1.02); }
+  80%      { transform: scaleY(1.03) scaleX(0.99); }
 }
 @keyframes syn-glow-pulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50%      { opacity: 0.82; transform: scale(1.1); }
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.9; transform: scale(1.08); }
+}
+@keyframes syn-bed-pulse {
+  0%, 100% { opacity: 0.85; transform: scaleX(1); }
+  50%      { opacity: 1; transform: scaleX(1.09); }
+}
+@keyframes syn-coal-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1; }
 }
 @keyframes syn-ember-l {
   0%   { opacity: 0; transform: translate(0, 0) scale(1); }
-  15%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(-7px, -72px) scale(0.3); }
+  12%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-11px, -120px) scale(0.25); }
 }
 @keyframes syn-ember-r {
   0%   { opacity: 0; transform: translate(0, 0) scale(1); }
-  15%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(7px, -74px) scale(0.3); }
+  12%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(12px, -126px) scale(0.25); }
 }
 @keyframes syn-ember-c {
   0%   { opacity: 0; transform: translate(0, 0) scale(1); }
-  18%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(0, -80px) scale(0.28); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(2px, -134px) scale(0.22); }
 }
 /* First-paint safety net: the JS hook resolves prefers-reduced-motion only
  * after mount, so back it with CSS to freeze the flame from the very first
