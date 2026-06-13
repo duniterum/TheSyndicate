@@ -42,7 +42,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: "https://thesyndicate.money/og/og-protocol-default.png" },
       { name: "twitter:image:alt", content: "The Syndicate — Living protocol on Avalanche C-Chain" },
     ],
-    links: [{ rel: "canonical", href: "https://thesyndicate.money/" }],
+    links: [
+      { rel: "canonical", href: "https://thesyndicate.money/" },
+      { rel: "preload", as: "image", href: "/hero/cervin.webp" },
+    ],
     scripts: [
       {
         type: "application/ld+json",

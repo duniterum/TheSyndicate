@@ -1,0 +1,304 @@
+HERO COMPOSITION + PERFORMANCE PASS — FINAL POLISH BEFORE HARMONIZATION
+
+Proceed carefully.
+
+Do not redesign the whole site.
+
+Do not restart architecture.
+
+Do not change protocol logic.
+
+Do not add new systems, new metrics, or new sections.
+
+The current hero direction is accepted:
+
+* dark premium protocol aesthetic
+* throne / seat identity
+* circular live capital-flow engine
+* right-side protocol overview
+* latest activity under overview
+* horizontal current chapter card
+* entry preview rail
+* improved header
+
+Now perform a senior composition + performance pass.
+
+Use your judgment as the implementer, but fix the obvious issues below.
+
+CORE OBJECTIVE
+
+Make the homepage hero feel balanced, premium, fast, and conversion-ready.
+
+The current problem is not missing information.
+
+The current problem is composition, hierarchy, responsive behavior, and loading performance.
+
+1. COMPOSITION BALANCE
+
+The hero currently feels bottom-heavy.
+
+The central engine is still too low and does not dominate enough.
+
+Adjust desktop composition so the visual triangle is clear:
+
+Left headline
+↔
+Central throne / capital-flow engine
+↔
+Right protocol overview
+
+The throne/engine should align higher, closer to the top of the Protocol Overview card and the headline block.
+
+Do not blindly move everything; rebalance using CSS/layout best practices.
+
+Goal:
+
+The eye should read:
+
+Headline → Throne / Engine → Join
+
+not:
+
+Headline → right card → scattered cards.
+
+2. CENTRAL ENGINE DOMINANCE
+
+The protocol engine is the main visual asset.
+
+Improve:
+
+* vertical placement
+* scale
+* breathing room
+* label spacing
+* ring balance
+* throne integration
+* routed amount visibility
+
+The green routed amount should be more dominant.
+
+The throne should feel integrated into the engine, not pasted on top.
+
+The orbit labels should not crowd the center.
+
+If needed:
+
+* push labels outward,
+* reduce label clutter,
+* increase the central amount,
+* adjust ring opacity,
+* reduce competing card weight.
+
+Do not remove the throne.
+
+Do not remove the capital-flow concept.
+
+3. RIGHT COLUMN
+
+Right column should remain:
+
+Protocol Overview
+↓
+Latest Activity
+
+Only.
+
+Latest Activity currently feels too tall for its content.
+
+Make it more compact and aligned with the overview.
+
+Protocol Overview should remain useful, but the numbers should dominate labels, not the reverse.
+
+Burned SYN / Proof of Fire should feel like a passive protocol memory fact:
+
+🔥 2,000 SYN
+Proof of Fire
+
+No button.
+No link.
+No CTA.
+
+4. CURRENT CHAPTER CARD
+
+The Current Chapter horizontal card is the correct place.
+
+Now improve it.
+
+It should feel like anticipation, not a filler box.
+
+Suggested proportions:
+
+* 30% title / chapter info
+* 50% progress
+* 20% CTA
+
+Make the progress area more readable:
+
+* bigger progress bar
+* bigger 2 / 333 seats
+* bigger remaining seats
+* clear “Genesis Signal” / current chapter identity
+
+Use the empty mountain-background space intelligently.
+
+Do not let this card feel random.
+
+5. ENTRY PREVIEW RAIL
+
+This is the conversion surface.
+
+Make it stronger.
+
+Increase prominence of:
+
+* $5 / $10 / $25 / $50 / $75 buttons
+* You receive SYN
+* 70% Vault
+* 20% Liquidity
+* 10% Operations
+
+The rail should feel premium and full-width, not like a small form.
+
+Do not add new amounts.
+
+Do not add new logic.
+
+6. HEADER
+
+Header is now mostly correct.
+
+Do not reopen header redesign unless needed for responsiveness/performance.
+
+Keep:
+
+* Bell
+* Avalanche C-Chain pill
+* visible theme toggle
+* Connect Wallet / connected wallet chip
+* Join CTA
+
+Ensure no overflow at 1280px, connected and disconnected wallet states.
+
+7. RESPONSIVE BEHAVIOR
+
+Desktop:
+
+* balanced 3-column hero
+* engine elevated
+* right column clean
+* chapter card horizontal
+* entry rail prominent
+
+Tablet:
+
+* stack without awkward gaps
+* overview and latest activity remain readable
+* chapter card should not become a tall narrow box unless necessary
+
+Mobile:
+
+* do not shrink the desktop dashboard into unreadable cards
+* order should be:
+
+  1. headline
+  2. Join / Verify
+  3. seat / throne
+  4. routed amount
+  5. entry preview
+  6. protocol overview
+  7. latest activity
+  8. current chapter
+
+8. HOMEPAGE PERFORMANCE PASS
+
+The hero is now visually heavier, so performance matters.
+
+Before finishing, perform a targeted homepage performance pass.
+
+Check and improve where safe:
+
+* optimize / compress hero background image
+* use WebP/AVIF if current image is heavy
+* preload critical hero background if useful
+* lazy-load non-critical below-the-fold visuals
+* avoid layout shift
+* avoid huge unoptimized PNGs
+* ensure throne/hero assets are compressed
+* avoid duplicate image requests
+* keep first screen fast
+* avoid animations that hurt performance
+* respect reduced motion if applicable
+
+Do not spend time fighting unrelated build OOM.
+
+Focus on homepage load experience.
+
+9. FLEXIBILITY
+
+You may choose the exact CSS/layout solution.
+
+If your implementation judgment says a slightly different grid, sizing, or card arrangement works better, do it.
+
+But do not violate the accepted information architecture:
+
+* left = meaning / CTAs
+* center = throne + capital-flow engine
+* right = overview + latest activity
+* chapter = horizontal anticipation card
+* bottom = entry preview conversion rail
+
+10. DO NOT TOUCH
+
+Do not change:
+
+* contracts
+* sale logic
+* hooks
+* holder index
+* Chronicle
+* Activity derivation
+* Institutional Register
+* Archive1155 logic
+* My Syndicate
+* homepage sections below the hero
+* Recognition
+* Governance
+* Story
+* DAO
+
+11. QA
+
+Run:
+
+* typecheck
+* ownership wording guard
+* visitor vocabulary guard
+* relevant homepage/header tests
+* desktop screenshot around 1440px
+* responsive screenshot/check around 1280px
+* mobile screenshot/check if possible
+* performance observations for homepage assets
+
+12. RETURN FORMAT
+
+Return:
+
+1. Files changed.
+2. Composition changes.
+3. Central engine changes.
+4. Right column changes.
+5. Current Chapter card changes.
+6. Entry Preview rail changes.
+7. Responsive behavior.
+8. Performance optimizations.
+9. What was intentionally not touched.
+10. QA results.
+11. Remaining design/performance risks.
+
+Important:
+
+This is not another redesign sprint.
+
+This is the final senior composition and performance polish pass for the accepted premium hero direction.
+
+After this, we harmonize the rest of the site.

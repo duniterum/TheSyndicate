@@ -1,5 +1,5 @@
 // src/components/syndicate/ProtocolHero.tsx
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { formatUnits, parseUnits } from "viem";
 import { useProtocolTruth, fmtUsd, fmtCount } from "@/lib/protocol-truth";
@@ -49,9 +49,9 @@ const LANE_COLOR: Record<string, string> = {
 };
 
 const NODE_POS: Record<string, { wrap: string; line: [number, number] }> = {
-  VAULT_WALLET: { wrap: "left-[20%] top-[24%]", line: [109, 121] },
-  LIQUIDITY_WALLET: { wrap: "left-[80%] top-[24%]", line: [291, 121] },
-  OPERATIONS_WALLET: { wrap: "left-[20%] top-[79%]", line: [114, 283] },
+  VAULT_WALLET: { wrap: "left-[14%] top-[31%]", line: [104, 132] },
+  LIQUIDITY_WALLET: { wrap: "left-[86%] top-[31%]", line: [296, 132] },
+  OPERATIONS_WALLET: { wrap: "left-[16%] top-[84%]", line: [108, 276] },
 };
 
 const CTA_PRIMARY =
@@ -84,6 +84,18 @@ const fmtCoreUsd = (n: number): string =>
       }).format(n)
     : Math.round(n).toLocaleString("en-US");
 
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return reduced;
+}
+
 export function ProtocolHero() {
   const t = useProtocolTruth();
   const pulse = useProtocolPulse();
@@ -104,7 +116,8 @@ export function ProtocolHero() {
 
   const chapter = t.chapterProgress.value;
   const blockNo = tip.data?.number;
-  const chainLive = blockNo !== undefined;
+  const reducedMotion = usePrefersReducedMotion();
+  const chainLive = blockNo !== undefined && !reducedMotion;
 
   // Burned SYN is a passive proof/memory fact — the live dead-address balance
   // (Proof of Fire), read from the existing on-chain supply hook. Never an
@@ -207,7 +220,7 @@ export function ProtocolHero() {
           />
 
           <ChapterStrip
-            className="xl:col-start-1 xl:col-span-2 xl:row-start-2"
+            className="xl:col-start-1 xl:col-span-3 xl:row-start-2"
             chapter={chapter}
           />
         </div>
@@ -361,26 +374,36 @@ function HeroEngine({
       <div className="relative hidden aspect-square w-full sm:block">
         <RadialStage lanes={lanes} chainLive={chainLive} />
 
-        <div className="pointer-events-none absolute left-1/2 top-[1.5%] z-20 w-[24%] -translate-x-1/2">
+        <div className="pointer-events-none absolute left-1/2 top-[2%] z-20 w-[26%] -translate-x-1/2">
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-[46%] -z-10 size-[165%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 42%, color-mix(in oklab, #E3A92B 34%, transparent), transparent 64%)",
+            }}
+          />
           <img
-            src="/hero/throne.png"
+            src="/hero/throne.webp"
             alt=""
             aria-hidden
+            width={560}
+            height={546}
             draggable={false}
-            className="h-auto w-full select-none"
+            className="relative h-auto w-full select-none"
             style={{
-              filter: "drop-shadow(0 12px 22px color-mix(in oklab, #E3A92B 38%, transparent))",
+              filter: "drop-shadow(0 16px 30px color-mix(in oklab, #E3A92B 44%, transparent))",
             }}
           />
         </div>
 
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 pt-[6%] text-center">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-start px-8 pt-[30%] text-center">
           <div className="mono text-[11px] uppercase tracking-[0.28em]" style={{ color: "var(--success)" }}>
             Live capital flow
           </div>
 
           <div
-            className="mt-2 mono tabular-nums font-semibold leading-none text-[clamp(3rem,0.7rem+3.9vw,5.5rem)]"
+            className="mt-2 mono tabular-nums font-semibold leading-none text-[clamp(3.6rem,1.1rem+4.6vw,6.5rem)]"
             style={{
               color: "var(--success)",
               textShadow: "0 0 40px color-mix(in oklab, var(--success) 34%, transparent)",
@@ -452,17 +475,17 @@ function HeroEngine({
           </EngineNode>
         )}
 
-        <EngineNode wrap="left-[16%] top-[54%]">
+        <EngineNode wrap="left-[10%] top-[56%]">
           <NodeIcon icon={<BookIcon />} color={GOLD} />
           <NodeLabel title="Chronicle" value={chapterLabel ?? "Memory"} color={GOLD} />
         </EngineNode>
 
-        <EngineNode wrap="left-[84%] top-[54%]">
+        <EngineNode wrap="left-[90%] top-[56%]">
           <NodeIcon icon={<JoinIcon />} color={GOLD} />
           <NodeLabel title="Join" value="With USDC" color={GOLD} />
         </EngineNode>
 
-        <EngineNode wrap="left-[76%] top-[78%]">
+        <EngineNode wrap="left-[84%] top-[84%]">
           <NodeIcon icon={<MembersIcon />} color={GOLD} />
           <NodeLabel title="Membership Sale" value="SYN received" color={GOLD} />
         </EngineNode>
@@ -474,9 +497,11 @@ function HeroEngine({
         </div>
         <div className="mx-auto mt-4 flex items-center justify-center">
           <img
-            src="/hero/throne.png"
+            src="/hero/throne.webp"
             alt=""
             aria-hidden
+            width={560}
+            height={546}
             draggable={false}
             className="h-auto w-[100px] select-none"
             style={{
@@ -599,13 +624,19 @@ function HeroRight({
       </div>
 
       <div className="surface p-5">
-        <div className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-          Latest activity
+        <div className="mono mb-3 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+          <span>Latest activity</span>
+          <Link
+            to="/activity"
+            className="text-foreground/55 transition-colors hover:text-[var(--verify)]"
+          >
+            View all →
+          </Link>
         </div>
         <div className="flex items-center justify-between gap-4">
           <div>
             <div className="mono text-[13px] text-foreground">{latestLabel}</div>
-            <div className="mt-2 mono text-lg font-semibold tabular-nums" style={{ color: "var(--success)" }}>
+            <div className="mt-1.5 mono text-xl font-semibold tabular-nums" style={{ color: "var(--success)" }}>
               {latestAmount}
             </div>
           </div>
@@ -617,12 +648,6 @@ function HeroRight({
             <StatusPill status="PENDING" />
           )}
         </div>
-        <Link
-          to="/activity"
-          className="mono mt-5 inline-flex w-full items-center justify-center rounded-[4px] border border-border/70 px-4 py-3 text-[11px] uppercase tracking-[0.16em] text-foreground/85 transition-colors hover:border-[var(--verify)] hover:text-[var(--verify)]"
-        >
-          View activity →
-        </Link>
       </div>
     </div>
   );
@@ -638,16 +663,26 @@ function ChapterStrip({
   className?: string;
 }) {
   return (
-    <div className={`surface relative z-10 p-5 md:p-6 ${className}`}>
-      <div className="flex flex-col gap-5 md:flex-row md:items-center md:gap-8">
-        <div className="md:w-60 md:shrink-0">
+    <div
+      className={`relative z-10 rounded-xl border p-5 md:p-6 ${className}`}
+      style={{
+        borderColor: GOLD_LINE,
+        background:
+          "linear-gradient(180deg, color-mix(in oklab, var(--card) 72%, transparent), color-mix(in oklab, var(--background) 72%, transparent))",
+        boxShadow: "0 22px 70px -52px color-mix(in oklab, #E3A92B 60%, transparent)",
+      }}
+    >
+      <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-[3fr_5fr_2fr] md:gap-8">
+        <div>
           <div className="mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             Current chapter
           </div>
           {chapter ? (
             <>
-              <div className="mt-1 font-serif text-2xl text-foreground">{chapter.label}</div>
-              <div className="mono mt-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+              <div className="mt-1.5 font-serif text-[1.95rem] leading-none text-foreground">
+                {chapter.label}
+              </div>
+              <div className="mono mt-2 text-[11px] uppercase tracking-[0.16em]" style={{ color: GOLD }}>
                 In progress
               </div>
             </>
@@ -656,22 +691,33 @@ function ChapterStrip({
           )}
         </div>
 
-        {chapter && (
-          <div className="md:flex-1">
-            <ProgressBar value={chapter.progressPct} max={100} tone="gold" />
-            <div className="mono mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              <span className="text-foreground/85">
-                {fmtCount(chapter.taken)} / {fmtCount(chapter.capacity)} seats
+        {chapter ? (
+          <div>
+            <ProgressBar value={chapter.progressPct} max={100} tone="gold" size="lg" />
+            <div className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1">
+              <span className="mono text-3xl font-semibold tabular-nums text-foreground">
+                {fmtCount(chapter.taken)}
+                <span className="ml-1.5 text-base font-normal text-muted-foreground">
+                  / {fmtCount(chapter.capacity)} seats
+                </span>
               </span>
-              <span aria-hidden>·</span>
-              <span>{fmtCount(chapter.remaining)} remaining</span>
+              <span className="mono text-base font-semibold tabular-nums" style={{ color: GOLD }}>
+                {fmtCount(chapter.remaining)} remaining
+              </span>
             </div>
           </div>
+        ) : (
+          <div />
         )}
 
         <Link
           to="/chapters"
-          className="mono inline-flex shrink-0 items-center justify-center rounded-[4px] border border-border/70 px-5 py-3 text-[11px] uppercase tracking-[0.16em] text-foreground/85 transition-colors hover:border-[var(--verify)] hover:text-[var(--verify)]"
+          className="mono inline-flex items-center justify-center rounded-[4px] border px-5 py-3.5 text-[11px] uppercase tracking-[0.16em] transition-all hover:brightness-110 md:justify-self-end"
+          style={{
+            borderColor: GOLD_LINE,
+            color: GOLD,
+            background: "color-mix(in oklab, #E3A92B 8%, transparent)",
+          }}
         >
           View chapter →
         </Link>
@@ -704,7 +750,7 @@ function EntryRail({
     >
       <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-[1.05fr_2.2fr_1fr_2.4fr]">
         <div>
-          <div className="mono text-lg uppercase tracking-[0.08em] text-foreground">
+          <div className="mono text-xl uppercase tracking-[0.08em] text-foreground">
             Join the protocol
           </div>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -725,7 +771,7 @@ function EntryRail({
                   type="button"
                   onClick={() => setAmount(v)}
                   aria-pressed={active}
-                  className="mono min-w-[68px] rounded-[5px] border px-4 py-3 text-base tracking-[0.02em] transition-all"
+                  className="mono min-w-[78px] rounded-[6px] border px-5 py-3.5 text-lg tracking-[0.02em] transition-all"
                   style={
                     active
                       ? {
@@ -752,7 +798,7 @@ function EntryRail({
           <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             You receive
           </div>
-          <div className="mono mt-2 text-3xl font-semibold tabular-nums text-foreground">
+          <div className="mono mt-2 text-4xl font-semibold tabular-nums text-foreground">
             {fmtCount(Math.round(synEstimate))} SYN
           </div>
           <div className="mt-2">
@@ -864,6 +910,7 @@ function RadialStage({
   lanes: { key: string; color: string; pos: { line: [number, number] } }[];
   chainLive: boolean;
 }) {
+  const reducedMotion = usePrefersReducedMotion();
   const orbitPath = "M200,35 a165,165 0 1,0 0,330 a165,165 0 1,0 0,-330";
 
   return (
@@ -878,7 +925,9 @@ function RadialStage({
 
       <circle cx="200" cy="200" r="190" fill="none" strokeWidth="1" style={{ stroke: GOLD_LINE }} />
       <circle cx="200" cy="200" r="166" fill="none" strokeWidth="1" strokeDasharray="3 10" style={{ stroke: GOLD_LINE }}>
-        <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="90s" repeatCount="indefinite" />
+        {!reducedMotion && (
+          <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="90s" repeatCount="indefinite" />
+        )}
       </circle>
       <circle cx="200" cy="200" r="132" fill="none" strokeWidth="1" style={{ stroke: "color-mix(in oklab, #E3A92B 28%, transparent)" }} />
       <circle cx="200" cy="200" r="114" fill="url(#heroHub)" />
@@ -920,7 +969,7 @@ function RadialStage({
 
 function EngineNode({ wrap, children }: { wrap: string; children: ReactNode }) {
   return (
-    <div className={`absolute ${wrap} z-20 -translate-x-1/2 -translate-y-1/2 text-center`}>
+    <div className={`absolute ${wrap} z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center`}>
       {children}
     </div>
   );
@@ -929,7 +978,7 @@ function EngineNode({ wrap, children }: { wrap: string; children: ReactNode }) {
 function NodeIcon({ icon, color }: { icon: ReactNode; color: string }) {
   return (
     <div
-      className="mx-auto mb-2 flex size-13 items-center justify-center rounded-full border backdrop-blur-md"
+      className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full border backdrop-blur-md"
       style={{
         color,
         borderColor: `color-mix(in oklab, ${color} 52%, transparent)`,
@@ -965,7 +1014,7 @@ function HeroAtmosphere() {
       <div
         aria-hidden
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.5] dark:opacity-[0.6]"
-        style={{ backgroundImage: "url(/hero/cervin.jpg)" }}
+        style={{ backgroundImage: "url(/hero/cervin.webp)" }}
       />
       {/* Readability scrim — darkens top/bottom and the left text column while
           letting the golden horizon glow through behind the radial engine. */}
@@ -1018,7 +1067,7 @@ function Stat({
         {label}
       </div>
       <div
-        className="mono mt-2 text-lg font-semibold tabular-nums leading-none"
+        className="mono mt-2 text-xl font-semibold tabular-nums leading-none"
         style={money && status === "LIVE" ? { color: "var(--success)" } : gold ? { color: GOLD } : undefined}
       >
         {value}
@@ -1038,9 +1087,9 @@ function BurnStat({ value, status }: { value: number | undefined; status: Canoni
       <div className="mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
         Burned
       </div>
-      <div className="mono mt-2 flex items-center gap-2 text-lg font-semibold tabular-nums leading-none">
-        <span>{known ? `${fmtCount(value)} SYN` : "—"}</span>
+      <div className="mono mt-2 flex items-center gap-1.5 text-xl font-semibold tabular-nums leading-none">
         {known && <FlameIcon />}
+        <span>{known ? `${fmtCount(value)} SYN` : "—"}</span>
       </div>
       <div className="mt-2">
         {known ? (

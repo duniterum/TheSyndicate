@@ -87,6 +87,13 @@ export function AnimatedNumber({
   }, [value]);
 
   function animateTo(target: number, dur: number) {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setN(target);
+      return;
+    }
     const from = n;
     const start = performance.now();
     const tick = (now: number) => {
@@ -234,14 +241,16 @@ export function ProgressBar({
   value,
   max = 100,
   tone = "gold",
+  size = "sm",
 }: {
   value: number;
   max?: number;
   tone?: "gold" | "navy";
+  size?: "sm" | "lg";
 }) {
   const pct = Math.min(100, (value / max) * 100);
   return (
-    <div className="h-1.5 w-full rounded-full bg-border/50 overflow-hidden">
+    <div className={`${size === "lg" ? "h-3" : "h-1.5"} w-full rounded-full bg-border/50 overflow-hidden`}>
       <div
         className="h-full rounded-full"
         style={{
