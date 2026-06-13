@@ -27,12 +27,12 @@ belong on the homepage.
 | `nextMember`  | Next Member     | derived (`members + 1`)                           | n/a — pure derivation of the Members count                                                       | LIVE   | 60s     |
 | `synSupply`   | Total Supply    | `useSynSupply`                                    | SYN ERC20 `totalSupply()` — fixed 1,000,000,000, no mint function                                | LIVE   | 120s    |
 | `circulating` | Circulating     | `useCirculatingSupply`                            | `totalSupply()` − Σ allocation-wallet `balanceOf()` − burned (SYN in public hands)               | LIVE   | 120s    |
-| `synBurned`   | Burned          | `useSynSupply` (`balanceOf(0x…dEaD)`)             | SYN ERC20 `balanceOf()` of the standard dead address — currently 1,000 SYN (Proof of Fire #001)  | LIVE   | 120s    |
+| `synBurned`   | Burned          | `useSynSupply` (`balanceOf(0x…dEaD)`)             | SYN ERC20 `balanceOf()` of the standard dead address — currently 1,000 SYN (Proof of Burn #001)  | LIVE   | 120s    |
 
 > `synSupply` / `circulating` / `synBurned` surface in the **SupplyTruthLine**
 > (homepage pulse strip + `/tokenomics`). They are LIVE reads off the SYN
 > contract. `synBurned` reads `balanceOf(0x…dEaD)` — SYN permanently sent to the
-> standard dead address. One verified burn exists: **Proof of Fire #001**, a
+> standard dead address. One verified burn exists: **Proof of Burn #001**, a
 > 1,000 SYN Founder Burn (`tx 0x2db1…2d47`). Burns are manual transfers with no
 > automation, so `totalSupply` stays fixed at 1,000,000,000 and `circulating`
 > excludes the burned balance.

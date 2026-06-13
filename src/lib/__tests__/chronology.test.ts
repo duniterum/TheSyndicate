@@ -388,7 +388,7 @@ describe("chronology — end-to-end over the genesis seed", () => {
     expect(ordered).toHaveLength(2);
     expect(ordered.map((c) => c.sourceChronicleEntryId)).toEqual([
       "chronicle-entry:institutional-entry:genesis:membership-sale-deployment",
-      "chronicle-entry:institutional-entry:genesis:proof-of-fire-001",
+      "chronicle-entry:institutional-entry:genesis:proof-of-burn-001",
     ]);
     expect(ordered.map((c) => c.blockNumber)).toEqual([
       Number(SALE_DEPLOYMENT_BLOCK),

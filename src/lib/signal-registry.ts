@@ -124,7 +124,7 @@ export type StructuralFacts = {
   windowCoversDeployment: boolean;
   /** Structured seat ordinal (e.g. 100) — count, never an amount. */
   memberOrdinal?: number;
-  /** Proof of Fire index (1-based) — count, never an amount. */
+  /** Proof of Burn index (1-based) — count, never an amount. */
   proofOfFireIndex?: number;
   /** Nth purchase by the same seat (continuity count, never a sum). */
   repeatPurchaseIndex?: number;
@@ -207,5 +207,5 @@ export function tierForMilestone(milestoneId: string): SignalTier {
   return MILESTONE_SIGNAL_TIER[milestoneId] ?? "S3";
 }
 
-/** Proof of Fire #001 — the protocol's first verified burn — is historical. */
+/** Proof of Burn #001 — the protocol's first verified burn — is historical. */
 export const PROOF_OF_FIRE_FIRST_TIER: SignalTier = "S4";

@@ -178,7 +178,7 @@ describe("Public render + merge (spec §7)", () => {
       expect(findPublicVocabularyViolations(copyOf(e))).toEqual([]);
     }
     // Newest-first: the last fact in chronological order surfaces at the top.
-    expect(publicSeeds[0].id).toBe("institutional-entry:genesis:proof-of-fire-001");
+    expect(publicSeeds[0].id).toBe("institutional-entry:genesis:proof-of-burn-001");
   });
 
   it("no duplicate ids across the seeded set", () => {

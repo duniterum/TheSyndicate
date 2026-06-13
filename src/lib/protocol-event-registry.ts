@@ -103,8 +103,8 @@ export const EVENT_METRIC_EFFECTS: Record<ProtocolEventKind, readonly string[]> 
   "nft-mint-first-signal": ["artifactsTotal", "firstSignalMinted"],
   "nft-mint-patron-seal": ["artifactsTotal", "patronSealMinted"],
   "nft-mint-other": ["artifactsTotal"],
-  "burn-founder": ["burnedSupply", "circulatingSupply", "proofOfFireCount", "latestBurn"],
-  "burn-community": ["burnedSupply", "circulatingSupply", "proofOfFireCount", "latestBurn"],
+  "burn-founder": ["burnedSupply", "circulatingSupply", "proofOfBurnCount", "latestBurn"],
+  "burn-community": ["burnedSupply", "circulatingSupply", "proofOfBurnCount", "latestBurn"],
 };
 
 /**

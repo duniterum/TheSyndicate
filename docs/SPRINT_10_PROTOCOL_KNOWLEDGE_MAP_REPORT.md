@@ -86,7 +86,7 @@ The doc and route both defer to the registry per the precedence law (code outran
 | First milestone | Activity/milestones | derived | not proven via register feed | held |
 | First chapter transition | `chapter` | derived (no discrete tx) | rides member-number coverage | not a register entry |
 | First liquidity | `liquidity` | yes (creation tx) | config-pinned | seeded (locked) |
-| First burn (Proof of Fire #001) | `truth` config | yes | config-pinned | seeded (locked) |
+| First burn (Proof of Burn #001) | `truth` config | yes | config-pinned | seeded (locked) |
 | Contract births | `truth` config | yes | config-pinned | seeded |
 
 "First member" is fully known in the Holder Index yet held by the Register because the

@@ -86,7 +86,7 @@ function useCategories(): Category[] {
           supply.burned !== undefined
             ? `${supply.burned.toLocaleString("en-US")} SYN burned`
             : undefined,
-        note: "Proof of Fire #001 — a Founder Burn of 1,000 SYN to the standard dead address. There is no automated burn; any burn is a manual, verifiable transfer.",
+        note: "Proof of Burn #001 — a Founder Burn of 1,000 SYN to the standard dead address. There is no automated burn; any burn is a manual, verifiable transfer.",
       },
       {
         id: "supply-source",

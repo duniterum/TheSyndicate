@@ -215,7 +215,7 @@ export const INSTITUTIONAL_MEMORY_GUIDANCE: ReadonlyArray<PromotionGuidanceRow> 
     bucket: "protocol-wallet burn",
     baseline: "hold-context",
     guidance:
-      "A protocol-initiated supply burn is historic, but a human must frame it protocol-centrically (e.g. Proof of Fire) — never as a person's act.",
+      "A protocol-initiated supply burn is historic, but a human must frame it protocol-centrically (e.g. Proof of Burn) — never as a person's act.",
   },
   {
     bucket: "artifact issuance",
@@ -321,7 +321,7 @@ export function promotionPathFor(
 //    suppressing it (opacity) OR promoting it as a heroic personal act
 //    (identity/Recognition leak, banned vocabulary). The baseline holds it for
 //    human framing and the copy is forced protocol-centric ("protocol-wallet
-//    funding/burn", e.g. Proof of Fire) — never "the founder did X". A maintainer
+//    funding/burn", e.g. Proof of Burn) — never "the founder did X". A maintainer
 //    overriding to approve must keep the framing protocol-centric and person-free.
 //
 // 3. DAO-TRANSITION edge case — ratifying the member-living register.

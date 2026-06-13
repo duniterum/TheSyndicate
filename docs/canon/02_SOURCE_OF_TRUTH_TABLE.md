@@ -19,7 +19,7 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | 70/20/10 routing | `USDC_ROUTING`, `vaultFlow()` | sale contract | `REVENUE_ATTRIBUTION_LAYER.md` | LIVE | High | Med (applied beyond sale) |
 | Total supply | `TOKEN_SPEC.totalSupply` | SYN ERC-20 | glossary | LIVE | High | Low |
 | Circulating supply | `treasury-hooks.ts` `useCirculatingSupply` | derived (total − reserved) | `TREASURY_LEDGER_DOCTRINE.md` | PARTIAL | Med | Med (estimate) |
-| Burned supply | `protocol-metrics-registry.ts` `burnedSupply`, `treasury-hooks.ts` `useSynSupply` | SYN ERC-20 `balanceOf(0x…dEaD)` | glossary | LIVE | High (Proof of Fire #001 · 1,000 SYN) | Med (one verified Founder Burn; no automated burn — a burn is a transfer, totalSupply unchanged) |
+| Burned supply | `protocol-metrics-registry.ts` `burnedSupply`, `treasury-hooks.ts` `useSynSupply` | SYN ERC-20 `balanceOf(0x…dEaD)` | glossary | LIVE | High (Proof of Burn #001 · 1,000 SYN) | Med (one verified Founder Burn; no automated burn — a burn is a transfer, totalSupply unchanged) |
 | Allocation wallets | `ALLOCATION_WALLETS`, `nonCirculating` | 7 wallets | `DATA_SOURCE_MAP.md` | LIVE | High | Low |
 | Member number | `holder-index.ts` | derived from sale events | `HOLDER_INDEX_ARCHITECTURE.md` | LIVE | High | Low |
 | Chapters | `chapters.ts` | derived | authority map | LIVE | High | Low |

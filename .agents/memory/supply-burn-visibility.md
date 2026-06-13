@@ -13,7 +13,7 @@ panel + transparency (VerifyEverything) carry the same claim as plain copy/rows.
 `burned` is the dead-address balance.
 **Why:** The Syndicate's burns are TRANSFERS to the dead address, not contract `burn()`
 calls — so `totalSupply` stays fixed at 1,000,000,000 and the 1B−totalSupply "gap" is
-always 0. A real burn happened (Proof of Fire #001: Founder wallet → 0x…dEaD = 1,000
+always 0. A real burn happened (Proof of Burn #001: Founder wallet → 0x…dEaD = 1,000
 SYN, tx 0x2db1…2d47, block 87,703,847). Computing burned as 1B−totalSupply reads 0 and
 HIDES the real burn — that was the earlier mistake, now corrected.
 
@@ -25,12 +25,12 @@ reserved`. `useCirculatingSupply` computes `totalSupply − reserved − burned`
 **No NEW taxonomy for the burn.** Do NOT add a `ProtocolEventKind` for it — that union
 is literally called "taxonomy" in code (NotificationBell/ActivityHeartbeat have
 exhaustive `Record<ProtocolEvent["kind"]>` + protocol-awareness.test.ts), and the
-founder forbids new taxonomy. Proof of Fire #001 is surfaced as a PINNED recognition
+founder forbids new taxonomy. Proof of Burn #001 is surfaced as a PINNED recognition
 card (`ProofOfFireCard` on /activity), sourced from the `PROOF_OF_FIRE_001` constant in
 syndicate-config — guaranteed visible, zero ripple into the event taxonomy.
 
 **Legal-safe wording only.** Allowed: verified supply reduction, standard burn/dead
-address, Proof of Fire, Founder Burn, permanently sent. FORBIDDEN: price impact, pump,
+address, Proof of Burn, Founder Burn, permanently sent. FORBIDDEN: price impact, pump,
 ROI, yield, burn rewards, guaranteed scarcity value, buyback, financial return. There
 is no AUTOMATED burn — say "manual, verifiable transfer (no automation)," never imply a
 running burn mechanism.

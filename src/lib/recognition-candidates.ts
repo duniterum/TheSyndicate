@@ -21,7 +21,7 @@ export type RecognitionDisplayTier = "anonymous" | "alias" | "public";
 
 export type RecognitionKind =
   | "patron-seal-holder"
-  | "proof-of-fire-participant"
+  | "proof-of-burn-participant"
   | "early-chapter-member"
   | "major-rank-reached"
   | "artifact-tied"
@@ -64,7 +64,7 @@ export const RECOGNITION_LEGAL_NOTE =
 
 export const RECOGNITION_KIND_BASIS: Record<RecognitionKind, string> = {
   "patron-seal-holder": "Holds a Patron Seal artifact.",
-  "proof-of-fire-participant": "Participated in a verified Proof of Fire burn.",
+  "proof-of-burn-participant": "Participated in a verified Proof of Burn.",
   "early-chapter-member": "Took a seat during an early chapter.",
   "major-rank-reached": "Rose to a major rank through cumulative on-chain activity.",
   "artifact-tied": "Tied to a historical artifact issuance.",
@@ -133,7 +133,7 @@ export function deriveRecognitionCandidates(
   const ref = memberRefFor(input.memberNumber);
   const out: RecognitionCandidate[] = [];
   if ((input.patronSeals ?? 0) > 0) out.push(candidate("patron-seal-holder", ref, input.verifyHref));
-  if (input.proofOfFireParticipant) out.push(candidate("proof-of-fire-participant", ref, input.verifyHref));
+  if (input.proofOfFireParticipant) out.push(candidate("proof-of-burn-participant", ref, input.verifyHref));
   if (input.isEarlyChapterMember) out.push(candidate("early-chapter-member", ref, input.verifyHref));
   if (input.isMajorRank) out.push(candidate("major-rank-reached", ref, input.verifyHref));
   if ((input.firstSignals ?? 0) > 0) out.push(candidate("artifact-tied", ref, input.verifyHref));

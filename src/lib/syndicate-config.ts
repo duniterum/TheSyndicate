@@ -271,15 +271,15 @@ export const ALLOCATION_WALLETS: Record<string, string> = {
 // any burn is a manual, verifiable transfer to this address. Recognition only,
 // never a buyback or a promise of price/scarcity value.
 export const SYN_BURN_ADDRESS = "0x000000000000000000000000000000000000dEaD" as const;
-export const SYN_BURN_ADDRESS_LABEL = "Proof of Fire / Burn Address";
+export const SYN_BURN_ADDRESS_LABEL = "Proof of Burn / Burn Address";
 
-// Proof of Fire #001 — the first verified SYN burn. A manual Founder Burn:
+// Proof of Burn #001 — the first verified SYN burn. A manual Founder Burn:
 // 1,000 SYN sent from the Founder allocation wallet to the standard dead
 // address. Verified on-chain (block 87,703,847). This is a recognition record,
 // not a financial instrument — no price impact, ROI, yield, or scarcity claim.
 export const PROOF_OF_FIRE_001 = {
   id: "001",
-  label: "Proof of Fire #001",
+  label: "Proof of Burn #001",
   category: "Founder Burn",
   amountSyn: 1_000,
   from: ALLOCATION_WALLETS["Founder"],

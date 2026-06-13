@@ -1,4 +1,4 @@
-// Guard for the SYN burn scanner's Proof-of-Fire numbering. The live RPC scan
+// Guard for the SYN burn scanner's Proof-of-Burn numbering. The live RPC scan
 // can't run in unit tests, so we test the PURE numbering contract and the
 // scan-floor invariant that guarantees #001 is always in range.
 
@@ -15,14 +15,14 @@ function burn(over: Partial<SynBurnEvent> & { blockNumber: bigint; txHash: strin
   };
 }
 
-describe("SYN burn scanner — Proof of Fire numbering", () => {
-  it("scan floor (SALE_DEPLOYMENT_BLOCK) is at or below Proof of Fire #001's block", () => {
+describe("SYN burn scanner — Proof of Burn numbering", () => {
+  it("scan floor (SALE_DEPLOYMENT_BLOCK) is at or below Proof of Burn #001's block", () => {
     // If the floor were above #001's block, the cursor scan would never reach it
     // and the numbering would start at the wrong burn.
     expect(SALE_DEPLOYMENT_BLOCK <= PROOF_OF_FIRE_001.blockNumber).toBe(true);
   });
 
-  it("numbers the oldest burn #1 — and the oldest IS Proof of Fire #001", () => {
+  it("numbers the oldest burn #1 — and the oldest IS Proof of Burn #001", () => {
     // Newest-first input (as the scanner produces) including the real #001 burn.
     const events: SynBurnEvent[] = [
       burn({ blockNumber: 88_000_000n, txHash: "0xbbbb", logIndex: 2 }),

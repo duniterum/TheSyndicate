@@ -48,8 +48,8 @@ const KIND_LABEL: Record<ProtocolEvent["kind"], string> = {
   "nft-mint-first-signal": "NFT Mint",
   "nft-mint-patron-seal": "NFT Mint",
   "nft-mint-other": "NFT Mint",
-  "burn-founder": "Proof of Fire",
-  "burn-community": "Proof of Fire",
+  "burn-founder": "Proof of Burn",
+  "burn-community": "Proof of Burn",
 };
 
 export function ProtocolEventsFeed({

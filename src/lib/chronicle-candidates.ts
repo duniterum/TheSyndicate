@@ -115,7 +115,7 @@ function suggestCopyFor(category: ProtocolEventCategory): SuggestedCopy {
         body:
           "A quantity of SYN was permanently sent to the standard dead address, " +
           "lowering circulating supply. The protocol runs no automated burn; each " +
-          "reduction is a manual, on-chain-verifiable act recorded under Proof of Fire.",
+          "reduction is a manual, on-chain-verifiable act recorded under Proof of Burn.",
         whatChanged:
           "Circulating supply decreased by a verified, permanent amount anchored on-chain.",
       };

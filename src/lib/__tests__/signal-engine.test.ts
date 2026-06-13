@@ -7,7 +7,7 @@
 //   • lets a monetary amount move a person-subject tier (money → tier leak)
 //   • fabricates a "first ever" / ordinal / threshold milestone without
 //     deployment coverage
-//   • mislabels Proof of Fire #001 (historical, S4)
+//   • mislabels Proof of Burn #001 (historical, S4)
 //   • emits doctrine-forbidden language in a signal reason
 
 import { describe, expect, it } from "vitest";
@@ -194,16 +194,16 @@ describe("Signals — pre-declared milestones (protocol subject)", () => {
 });
 
 describe("Signals — burn history & continuity", () => {
-  it("Proof of Fire #001 is a historical (S4) protocol signal", () => {
+  it("Proof of Burn #001 is a historical (S4) protocol signal", () => {
     const s4 = deriveSignals([
       ev({ kind: "burn-founder", id: "pof1", proofOfFireIndex: 1 }),
     ]).find((s) => s.tier === "S4")!;
     expect(s4.type).toBe("MILESTONE");
     expect(s4.subject).toBe("protocol");
-    expect(s4.reason).toContain("Proof of Fire #001");
+    expect(s4.reason).toContain("Proof of Burn #001");
   });
 
-  it("a later Proof of Fire is not historical", () => {
+  it("a later Proof of Burn is not historical", () => {
     const signals = deriveSignals([
       ev({ kind: "burn-community", id: "pof2", proofOfFireIndex: 2 }),
     ]);

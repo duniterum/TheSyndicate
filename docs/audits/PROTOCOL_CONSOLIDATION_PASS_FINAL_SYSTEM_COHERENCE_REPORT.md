@@ -146,7 +146,7 @@ Status legend: **LIVE** (on-chain-backed, public) · **PARTIAL** (built, partial
 | **Member count** | `holder-index.ts` ← canonical `purchase-events` scan | `/members`, `/my-syndicate`, home | One derivation, many readers | **No** — single scan; ~31 consumers share it. |
 | **First member** | genesis seed (held-not-invented ordinals) | `/institutional-register`, `/chronicle` backing | Seed + Chronicle | **No** — Chronicle backing reads the *active* seed, not a second copy. |
 | **First liquidity** | genesis seed (deployment fact) | `/institutional-register`, `/liquidity` | No | **No.** |
-| **First burn (Proof of Fire #001)** | `1,000 SYN → 0x…dEaD`; burned = `balanceOf(dead)` | `/vault`/supply surfaces, genesis seed | Pinned card | **No** — burned is read from the dead address, never `1B − totalSupply`. |
+| **First burn (Proof of Burn #001)** | `1,000 SYN → 0x…dEaD`; burned = `balanceOf(dead)` | `/vault`/supply surfaces, genesis seed | Pinned card | **No** — burned is read from the dead address, never `1B − totalSupply`. |
 | **Treasury balances** | live reads (`useProtocolTruth`/`useAllocationBalances`) | `/vault`, `/transparency`, `/tokenomics` | Read on several surfaces | **Low** — same hooks; **risk is the mock `VAULT_ASSETS`** (quarantined/labelled, but a drift surface until removed). |
 | **NFT issuance** | `archive-id-registry.ts` + on-chain | `/nft`, `/archive` | No | **No.** |
 | **Chapter progression** | `chapters.ts` | `/chapters`, ribbons, cockpit | One function | **No.** |

@@ -228,7 +228,7 @@
 | **Contracts** | CommissionRouter, SeatRecord721 — all future |
 | **User action** | none yet |
 | **Economic relevance** | Future revenue/retention; **must not be implied live** |
-| **Narrative relevance** | Medium (burn = "Proof of Fire" potential) |
+| **Narrative relevance** | Medium (burn = "Proof of Burn" potential) |
 | **Legal/risk** | **Highest future risk** — referral/reward = jurisdictional |
 | **Must never become** | Live-looking before contracts exist |
 | **Drift risk** | Labs copy ("Rank unlocked", reward language) leaking into production |
@@ -293,7 +293,7 @@
 
 **Referral** — *Purpose:* attribution of who caused a sale. *Psychology:* "bringing people matters." *Economic:* future commission from the Operations slice. *Narrative:* low. *Legal:* **jurisdictional — highest future risk.** *Future:* CommissionRouter. *Don't confuse with:* Reward (the payout).
 
-**Burn / Proof of Fire** — *Purpose:* verifiable supply reduction (future). *Psychology:* commitment/sacrifice. *Economic:* supply effect only, no payout. *Narrative:* high ("Proof of Fire / Ash Seal"). *Legal:* never frame as price-pumping. *Future:* founder/community/vote burns + burn artifact. *Don't confuse with:* LP "Burn" (liquidity removal), generic tokenomics events.
+**Burn / Proof of Burn** — *Purpose:* verifiable supply reduction (future). *Psychology:* commitment/sacrifice. *Economic:* supply effect only, no payout. *Narrative:* high ("Proof of Burn / Ash Seal"). *Legal:* never frame as price-pumping. *Future:* founder/community/vote burns + burn artifact. *Don't confuse with:* LP "Burn" (liquidity removal), generic tokenomics events.
 
 **Governance** — *Purpose:* the rules for changing the rules. *Psychology:* "I have a voice eventually." *Economic:* none in V1. *Narrative:* constitutional. *Legal:* must say "founder-managed until DAO." *Future:* token/council voting. *Don't confuse with:* the **Council rank**.
 
@@ -403,7 +403,7 @@
 | Community burn event | Conceptual ("Future Ecosystem … may be partially burned by vote") |
 | Automated burn | Not advisable in V1 (no mechanism, legal sensitivity) |
 | Chronicle entry for burns | Schema-ready (event-driven); not wired |
-| Burn artifact (Proof of Fire / Ash Seal) | Concept only; would be a new Archive1155 ID via Mythology Gate |
+| Burn artifact (Proof of Burn / Ash Seal) | Concept only; would be a new Archive1155 ID via Mythology Gate |
 | Legal-safe wording | "Verifiable supply reduction. Not a price mechanism, not a buyback, no payout." |
 | How to show "Burned: 0" today | As a **static verified fact** (0, with the dead-address link once one exists), labeled clearly — **never** a live counter that implies an active burn program |
 

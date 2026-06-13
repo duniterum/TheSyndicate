@@ -104,7 +104,7 @@ three groupings of *existing* protocol facts:
 |---|---|---|---|
 | **Financial Trace** *(economic-participation facts; cf. the Financial Trace record of `06` / `08` — see note)* | purchases · burns · support actions · artifact mints | Participation · Conviction (burn) · Support | EVENTS |
 | **Protocol Trace** | referrals · chapter participation · milestone participation · protocol-growth participation | Growth (referral — FUTURE) · Structural | EVENTS |
-| **Memory Trace** | Chronicle appearances · historical firsts · Proof of Fire · recognition milestones | Historic · Timing · Conviction | **EVENTS only.** Firsts + Proof of Fire are events; Chronicle appearance / recognition milestone must be **re-expressed as EVENTS first** (founder ruling — `05` §2.1). SIGNALS never read MEMORY. |
+| **Memory Trace** | Chronicle appearances · historical firsts · Proof of Burn · recognition milestones | Historic · Timing · Conviction | **EVENTS only.** Firsts + Proof of Burn are events; Chronicle appearance / recognition milestone must be **re-expressed as EVENTS first** (founder ruling — `05` §2.1). SIGNALS never read MEMORY. |
 
 **On the word "Trace".** These three Traces are *signal-source groupings* — how the future
 engine **reads** facts for meaning — not the same object as the **Financial Trace data
@@ -129,7 +129,7 @@ money alone stays Financial Trace / Participation Depth and may carry a magnitud
 Signal layer). A Signal grants nothing (no reward, right, identity, or yield); the three Traces are
 *source groupings*, not new architectures — they fold into the frozen seven Signal Types, never
 beside them. Repeated buying / continued participation is **Participation Depth, not Conviction**
-(`05` §4.5 Rule D); Conviction stays reserved for irreversible actions (Proof of Fire / burns).
+(`05` §4.5 Rule D); Conviction stays reserved for irreversible actions (Proof of Burn / burns).
 
 **Resolved — founder ruling (`05` §2.1).** The Memory-Trace adjacency question is
 **closed: no carve-out. SIGNALS read EVENTS only and must never read MEMORY.** Chronicle

@@ -49,7 +49,7 @@ layer(s) beneath it, not a new source of fact:
 
 **Status note — truth-labeling survives derivation.** Deriving a view never upgrades
 the status of its inputs. A Financial Trace is only as live as its weakest source:
-purchases LIVE, token burn LIVE (Proof of Fire), NFT mints PARTIAL, **referral
+purchases LIVE, token burn LIVE (Proof of Burn), NFT mints PARTIAL, **referral
 FUTURE / PENDING**, wallet history LIVE-read. Every derived surface must still carry
 the weakest input's status pill (LIVE / PARTIAL / PENDING / FUTURE). Derivation changes
 *where insight comes from*, never *what may be claimed as true* — "don't trust, verify"

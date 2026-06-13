@@ -72,7 +72,7 @@ export type InstitutionalEntryStatus = "draft" | "active" | "held" | "rejected";
  * The entry's verification posture (spec §9). "coverage-limited" means the
  * upstream scan could not cover deployment, so NO historic ("first ever",
  * "genesis", …) wording may be asserted. "locked" is RESERVED for facts that are
- * explicitly locked/verified (e.g. a pinned Proof of Fire) — the baseline deriver
+ * explicitly locked/verified (e.g. a pinned Proof of Burn) — the baseline deriver
  * only ever emits "verified" or "coverage-limited".
  */
 export type InstitutionalVerificationStatus = "verified" | "coverage-limited" | "locked";
@@ -148,7 +148,7 @@ export const INSTITUTIONAL_EVENT_CLASSES: ReadonlyArray<InstitutionalEventClass>
   { class: "sale deployment", availability: "seeded", description: "The membership-sale contract deployment. Seeded as a locked genesis fact (pinned to its creation transaction and deployment block); predates the event scanner." },
   { class: "first liquidity", availability: "seeded", description: "The first establishment of the SYN/USDC pair. Seeded as a locked genesis fact pinned to the pool creation transaction; predates the event scanner." },
   { class: "liquidity event", availability: "live", description: "A change to the protocol liquidity position (seeding live; removals held for human framing)." },
-  { class: "burn / Proof of Fire", availability: "live", description: "A protocol-initiated supply reduction, framed protocol-centrically; held for human framing." },
+  { class: "burn / Proof of Burn", availability: "live", description: "A protocol-initiated supply reduction, framed protocol-centrically; held for human framing." },
   { class: "first artifact", availability: "reserved", description: "The first artifact to enter the archive. Recorded live as an artifact issuance; the 'first' claim is coverage-gated." },
   { class: "milestone", availability: "live", description: "A pre-declared structural threshold the protocol crossed — a permanent coordinate." },
   { class: "chapter", availability: "live", description: "A protocol chapter coordinate that anchors the seats claimed within it." },
@@ -222,7 +222,7 @@ const COPY_BY_BUCKET: Readonly<Record<string, InstitutionalCopy>> = {
   },
   "protocol-wallet burn": {
     title: "Protocol performed a supply burn",
-    summary: "A protocol-initiated supply reduction (Proof of Fire), held for protocol-centric human framing.",
+    summary: "A protocol-initiated supply reduction (Proof of Burn), held for protocol-centric human framing.",
   },
   "system-wallet action": {
     title: "Protocol system-wallet action",

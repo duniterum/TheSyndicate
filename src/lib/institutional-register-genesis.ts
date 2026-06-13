@@ -179,12 +179,12 @@ export const GENESIS_FACTS: readonly GenesisFact[] = [
     anchor: { contract: CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS },
   },
   {
-    id: "proof-of-fire-001",
+    id: "proof-of-burn-001",
     eventClass: "FIRST_BURN",
     category: "burn",
-    title: "Protocol executed first supply burn — Proof of Fire #001",
+    title: "Protocol executed first supply burn — Proof of Burn #001",
     summary:
-      "The protocol permanently removed 1,000 SYN from circulation by transferring it to the standard dead address — Proof of Fire #001. Locked to its transaction and block (87,703,847), independently verifiable on-chain.",
+      "The protocol permanently removed 1,000 SYN from circulation by transferring it to the standard dead address — Proof of Burn #001. Locked to its transaction and block (87,703,847), independently verifiable on-chain.",
     rationale:
       "Institutional protocol fact: a protocol-executed supply burn, locked to its transaction. A recognition record only — no price impact or scarcity claim.",
     verificationStatus: "locked",

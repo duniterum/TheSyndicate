@@ -32,7 +32,7 @@ Recognition, governance, or public UI).
   event KIND only — never an amount, never who acted. A protocol-wallet
   ("founder")/system act is NEVER auto-approved; it is `hold-context` for human
   framing, framed protocol-centrically ("protocol-wallet funding/burn", e.g.
-  Proof of Fire) — never "the founder did X". Buckets are named
+  Proof of Burn) — never "the founder did X". Buckets are named
   "protocol-wallet funding/burn" specifically because `CHRONICLE_BANNED_TERMS`
   bans "founder"/"founders" in GENERATED copy (source comments may say it).
 - **Institutional verdict map:** milestone/genesis/chapter/artifact/lp-add

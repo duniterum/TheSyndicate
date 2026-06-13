@@ -15,7 +15,7 @@
 //   • Nothing here implies ROI, yield, return, or scarcity value.
 //
 // The burn appears here as a METRIC (Burned Supply = 1,000 SYN) carrying the
-// Proof of Fire visual badge (Founder Burn). The full activity event lives on
+// Proof of Burn visual badge (Founder Burn). The full activity event lives on
 // /activity (ProofOfFireCard).
 
 import { Link } from "@tanstack/react-router";
@@ -215,7 +215,7 @@ export function ProtocolIntelligenceBar({ className = "" }: { className?: string
             <BarCell key={c.key} cell={c} />
           ))}
 
-          {/* Burned Supply — carries the Proof of Fire badge (Founder Burn) */}
+          {/* Burned Supply — carries the Proof of Burn badge (Founder Burn) */}
           <BurnedCell value={fmtSynExact(burned)} />
 
           {tail.map((c) => (
@@ -261,7 +261,7 @@ function BurnedCell({ value }: { value: string }) {
           }}
         >
           <Flame className="size-2.5" aria-hidden />
-          PROOF OF FIRE
+          PROOF OF BURN
         </span>
       </span>
       <span className="mono text-[12px] font-semibold text-foreground whitespace-nowrap group-hover:text-[var(--gold)] transition-colors">

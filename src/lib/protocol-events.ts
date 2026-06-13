@@ -1,6 +1,6 @@
 // Protocol Intelligence — the canonical, unified chronological event stream.
 // Merges Purchases · LP Swaps · LP Mint/Burn · Vault USDC Flows · Archive mints
-// · SYN burns (Proof of Fire) into one newest-first feed. Every entry includes
+// · SYN burns (Proof of Burn) into one newest-first feed. Every entry includes
 // blockNumber for time ordering and txHash for verification.
 //
 // This is the SINGLE pipeline:
@@ -87,7 +87,7 @@ export type CanonicalProtocolEvent = ProtocolEvent & {
    */
   memberOrdinal?: number;
   /**
-   * Proof of Fire index (1-based) for a burn event, present ONLY when the burn
+   * Proof of Burn index (1-based) for a burn event, present ONLY when the burn
    * scan is gapless. Money-safe count consumed by the Signals Engine.
    */
   proofOfFireIndex?: number;
@@ -105,7 +105,7 @@ export type EnrichContext = {
   status?: EventStatus;
   /** Structured seat ordinal for a new-member event (money-safe count). */
   memberOrdinal?: number;
-  /** Proof of Fire index (1-based) for a burn event (money-safe count). */
+  /** Proof of Burn index (1-based) for a burn event (money-safe count). */
   proofOfFireIndex?: number;
 };
 
@@ -367,15 +367,15 @@ export function useProtocolEvents(opts?: { limit?: number }) {
       );
     }
 
-    // SYN burns (Proof of Fire). amountUsd is intentionally LEFT UNDEFINED —
+    // SYN burns (Proof of Burn). amountUsd is intentionally LEFT UNDEFINED —
     // burns move SYN, not USDC; including a USD amount would inflate
-    // summarizeActivity's usdcSettledTotal. A burn is numbered "Proof of Fire
+    // summarizeActivity's usdcSettledTotal. A burn is numbered "Proof of Burn
     // #N" only when the scan is complete (gapless); otherwise it shows without a
     // number and carries status PARTIAL.
     const burnScan = burns.data;
     for (const b of burnScan?.events ?? []) {
       const pof = b.proofOfFireNumber;
-      const label = pof !== undefined ? `Proof of Fire #${String(pof).padStart(3, "0")}` : "SYN burn";
+      const label = pof !== undefined ? `Proof of Burn #${String(pof).padStart(3, "0")}` : "SYN burn";
       const status: EventStatus = !isValidTxHash(b.txHash)
         ? "PENDING"
         : pof !== undefined

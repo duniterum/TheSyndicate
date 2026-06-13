@@ -179,7 +179,7 @@ A single scalar cannot power recognition labels or report sections at scale; two
 | **S1** | Standard activity | normal purchase, normal NFT mint, routine LP add |
 | **S2** | Recognized action | rank milestone, Patron Seal mint, community burn |
 | **S3** | Protocol milestone | member #100/#333/#1,000, first Patron Seal, major LP/Vault threshold |
-| **S4** | Historical event | chapter sealed, Proof of Fire #001, member #10,000, major liquidity milestone |
+| **S4** | Historical event | chapter sealed, Proof of Burn #001, member #10,000, major liquidity milestone |
 | **S5** | Constitutional event | contract migration, governance activation, SeatRecord721 deployment, doctrine change |
 
 **Final Signal Type list (frozen — seven types):**
@@ -187,7 +187,7 @@ A single scalar cannot power recognition labels or report sections at scale; two
 | Type | Meaning | Earned via | Recognition label |
 |---|---|---|---|
 | **Timing** | when you arrived | Member Number | `Early` / `Founder-era` |
-| **Conviction** | what you gave up | Proof of Fire (burn) | `Proof of Fire participant` |
+| **Conviction** | what you gave up | Proof of Burn (burn) | `Proof of Burn participant` |
 | **Support** | what you backed | Patron Seal | `Patron Seal holder` |
 | **Growth** | who you brought | referral (FUTURE) | `Growth builder` |
 | **Participation** | what you do | purchases, mints, rank | (depth, aggregate) |
@@ -221,7 +221,7 @@ and Type on top. It is **additive, not a rewrite.**
 4. **Self-preserving scarcity.** Recognition becomes *harder* to earn as the protocol grows: the S3+ threshold rises with membership, so prestige stays scarce automatically.
 
 **The unbuyability ladder (frozen ordering, most → least unbuyable):**
-`Member Number (immutable)` › `Being First (time-locked)` › `Chronicle inclusion (curated)` › `Proof of Fire (sacrifice)` › `Recognition labels (earned)` › **`Rank (purchasable → least prestigious axis)`**.
+`Member Number (immutable)` › `Being First (time-locked)` › `Chronicle inclusion (curated)` › `Proof of Burn (sacrifice)` › `Recognition labels (earned)` › **`Rank (purchasable → least prestigious axis)`**.
 
 ### 4.5 Economic significance — founder ruling (money is truth; subject decides standing)
 
@@ -255,7 +255,7 @@ context only.
 
 **Rule D — Repeated commitment = Participation Depth, not Conviction.** Repeated buying or continued
 participation over time is recorded as **Participation Depth.** **Conviction** stays reserved for
-irreversible / high-commitment actions (Proof of Fire, burns, future irreversible support). Avoid
+irreversible / high-commitment actions (Proof of Burn, burns, future irreversible support). Avoid
 investment-performance language ("held through drawdown", "bought the dip", "survived the crash",
 "adverse window").
 
@@ -274,7 +274,7 @@ Signals divide into two classes. This split is the spine of the scarcity law.
 
 | Class | Nature | Examples | Role |
 |---|---|---|---|
-| **Permanent** | Immutable / time-locked — true forever once earned | Member Number · Chronicle inclusion · Historical Firsts · Proof of Fire · chapter membership | The **spine** of prestige; unbuyable after the fact |
+| **Permanent** | Immutable / time-locked — true forever once earned | Member Number · Chronicle inclusion · Historical Firsts · Proof of Burn · chapter membership | The **spine** of prestige; unbuyable after the fact |
 | **Temporary** | Present-state — can rise and fall | Rank · current holdings · current chapter *progress* · current LP participation | **Texture**; reflects now, never primacy |
 
 **Ruling:** prestige is anchored in Permanent signals. Temporary signals are honest

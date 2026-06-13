@@ -130,14 +130,14 @@ describe("deriveMemoryCandidates — creation rule (tiers)", () => {
     expect(c.verification).toBe("verified");
   });
 
-  it("S4 historic (Proof of Fire #001) → protocol-institutional milestone", () => {
+  it("S4 historic (Proof of Burn #001) → protocol-institutional milestone", () => {
     const s = sig({
       id: "pof",
       type: "MILESTONE",
       tier: "S4",
       subject: "protocol",
       createdFrom: "burn-founder",
-      reason: "Proof of Fire #001 — the protocol's first verified burn.",
+      reason: "Proof of Burn #001 — the protocol's first verified burn.",
       facts: facts({ isFirstOfKind: true, windowCoversDeployment: true, proofOfFireIndex: 1 }),
     });
     const [c] = deriveMemoryCandidates([s]);

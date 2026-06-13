@@ -65,7 +65,7 @@ function ActivityPage() {
       {/* Protocol Heartbeat — single latest verified event with why-it-matters + proof */}
       <ActivityHeartbeat />
 
-      {/* Proof of Fire #001 — recognition of the first verified SYN burn */}
+      {/* Proof of Burn #001 — recognition of the first verified SYN burn */}
       <ProofOfFireCard />
 
       {/* Feed health banner — one-glance LIVE / INDEXED / PARTIAL / FAIL state */}

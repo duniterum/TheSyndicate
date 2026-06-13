@@ -211,7 +211,7 @@ left untouched to respect scope; recommended fix below.
 
 - **Row 22 "Burned supply": FUTURE → LIVE.** Grounded in the registry
   `burnedSupply` metric (`balanceOf` the standard dead address) and one verified
-  Founder Burn (Proof of Fire #001, 1,000 SYN). The metric was already rendered
+  Founder Burn (Proof of Burn #001, 1,000 SYN). The metric was already rendered
   live in the UI; the table was stale, and the canon explicitly states *"code
   outranks this table — fix it when stale."*
 - **Row 40 "Burn mechanism (automated)": stays FUTURE.** Clarified so the *live

@@ -54,7 +54,7 @@ export const KNOWN_ADDRESSES: readonly KnownAddress[] = [
   { address: CONTRACTS.LIQUIDITY_WALLET,                 role: "liquidity",              label: "Liquidity Wallet" },
   { address: CONTRACTS.OPERATIONS_WALLET,                role: "operations",             label: "Operations Wallet" },
   { address: CONTRACTS.MEMBERSHIP_SYN_WALLET,            role: "membership-syn-wallet",  label: "Membership Distribution Wallet" },
-  { address: SYN_BURN_ADDRESS,                           role: "burn",                   label: "Proof of Fire / Burn Address" },
+  { address: SYN_BURN_ADDRESS,                           role: "burn",                   label: "Proof of Burn / Burn Address" },
 ] as const;
 
 // Lower-cased lookup index, built once. A checksummed and an all-lowercase
@@ -92,7 +92,7 @@ export function isProtocolWallet(addr?: string | null): boolean {
   return PROTOCOL_WALLET_ROLES.has(labelForAddress(addr).role);
 }
 
-/** True for the standard dead address (Proof of Fire / burn). */
+/** True for the standard dead address (Proof of Burn / burn). */
 export function isBurnAddress(addr?: string | null): boolean {
   return Boolean(addr) && labelForAddress(addr).role === "burn";
 }

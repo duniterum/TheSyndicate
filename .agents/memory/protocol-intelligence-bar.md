@@ -20,4 +20,4 @@ The bar's `StatusPill` is derived from aggregate fact presence (LIVE only when e
 **Why:** doctrine — every public claim is on-chain or labeled PENDING. A blanket LIVE over a possibly-PENDING cell is the exact pattern already flagged against LivePulseStrip's "Live Protocol Pulse".
 
 ## Data sourcing
-Read facts from `useProtocolTruth` (wallets, LP TVL, SYN sold, USDC routed, members, chapter) + `useSynSupply`/`useCirculatingSupply` (total/circulating/burned) — same hooks as `SupplyTruthLine`, so wagmi dedupes the reads. Burn appears as the "Burned Supply" metric carrying the "Proof of Fire" flame badge (category "Founder Burn"), linking to /activity.
+Read facts from `useProtocolTruth` (wallets, LP TVL, SYN sold, USDC routed, members, chapter) + `useSynSupply`/`useCirculatingSupply` (total/circulating/burned) — same hooks as `SupplyTruthLine`, so wagmi dedupes the reads. Burn appears as the "Burned Supply" metric carrying the "Proof of Burn" flame badge (category "Founder Burn"), linking to /activity.

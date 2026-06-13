@@ -22,7 +22,7 @@ description: Hard economic facts from syndicate-config.ts + holder-index.ts that
 - **No AUTOMATED burn mechanism, but a real burn HAS happened.** SYN spec has
   `futureMint:false` and no contract burn fn — burns are TRANSFERS to the
   standard dead address `SYN_BURN_ADDRESS = 0x…dEaD` (constant in
-  syndicate-config). Proof of Fire #001 = a manual Founder Burn of 1,000 SYN →
+  syndicate-config). Proof of Burn #001 = a manual Founder Burn of 1,000 SYN →
   dead (tx 0x2db1…2d47, block 87,703,847). `burned` is a LIVE metric =
   `balanceOf(0x…dEaD)` — NOT 1B−totalSupply (transfer-burns keep totalSupply
   fixed at 1B). The Trader Joe LP `Burn` event is **liquidity removal**, a

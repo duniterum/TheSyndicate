@@ -1,4 +1,4 @@
-// Proof of Fire #001 — recognition of the first verified SYN burn.
+// Proof of Burn #001 — recognition of the first verified SYN burn.
 // A manual Founder Burn: 1,000 SYN permanently sent to the standard dead
 // address. Recognition only — no buyback, no automation, no price/scarcity or
 // financial claim. Every fact links to its on-chain proof.
@@ -28,7 +28,7 @@ export function ProofOfFireCard() {
   return (
     <Section id="proof-of-fire">
       <SectionHeader
-        eyebrow="Proof of Fire"
+        eyebrow="Proof of Burn"
         title={<>{PROOF_OF_FIRE_001.label} — <span className="text-gradient-gold">Founder Burn</span></>}
         description="The first verified SYN burn: 1,000 SYN permanently sent to the standard dead address — a verified supply reduction. Recognition only — no automation, no buyback, no financial claim."
       />
@@ -75,7 +75,7 @@ export function ProofOfFireCard() {
           >
             Burn transaction on Snowtrace ↗
           </a>
-          <TxProofPill txHash={PROOF_OF_FIRE_001.txHash} ariaLabel="Verify Proof of Fire #001 burn transaction" />
+          <TxProofPill txHash={PROOF_OF_FIRE_001.txHash} ariaLabel="Verify Proof of Burn #001 burn transaction" />
         </div>
 
         <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed">

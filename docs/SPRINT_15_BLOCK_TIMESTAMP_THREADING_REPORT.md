@@ -143,7 +143,7 @@ timestamp rule exists beyond source integrity.
 the spec: block number, **timestamp status badge**, **UTC value when verified**
 (deterministic `formatUtc`), **timestamp source**, and the reason via status. The
 header gained `Timestamps verified` / `Pending` counts. Live verification: the two
-genesis anchored entries (membership-sale-deployment block and Proof of Fire #001
+genesis anchored entries (membership-sale-deployment block and Proof of Burn #001
 block) resolved to **verified** timestamps read from chain on first render
 (`verified: 2, pending: 0`). No public Story exposed; public Chronicle untouched.
 

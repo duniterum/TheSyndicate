@@ -87,7 +87,7 @@ describe("activity-institutional-link: default genesis index", () => {
     // Active facts pinned to a transaction → indexed.
     expect(ids.has("institutional-entry:genesis:membership-sale-deployment")).toBe(true);
     expect(ids.has("institutional-entry:genesis:first-liquidity")).toBe(true);
-    expect(ids.has("institutional-entry:genesis:proof-of-fire-001")).toBe(true);
+    expect(ids.has("institutional-entry:genesis:proof-of-burn-001")).toBe(true);
     // Active but contract-anchored (no single tx) → excluded.
     expect(ids.has("institutional-entry:genesis:syn-token-deployment")).toBe(false);
     expect(ids.has("institutional-entry:genesis:archive-contract-deployment")).toBe(false);

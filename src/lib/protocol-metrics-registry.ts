@@ -254,7 +254,7 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     status: "LIVE",
     unit: "SYN",
     description:
-      "SYN permanently removed from circulation by sending it to the standard dead address (0x…dEaD), read live as the balanceOf() of that address. One verified burn has occurred — Proof of Fire #001, a 1,000 SYN Founder Burn. A burn here is a transfer, so totalSupply is unchanged; there is no automated burn — any future burn would be a manual, verifiable transfer.",
+      "SYN permanently removed from circulation by sending it to the standard dead address (0x…dEaD), read live as the balanceOf() of that address. One verified burn has occurred — Proof of Burn #001, a 1,000 SYN Founder Burn. A burn here is a transfer, so totalSupply is unchanged; there is no automated burn — any future burn would be a manual, verifiable transfer.",
     source:
       "Avalanche C-Chain RPC. Reads balanceOf() of the standard dead address on the SYN ERC20 contract.",
     formula: "ERC20 balanceOf(0x…dEaD)",
@@ -828,18 +828,18 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
 
   // ── Burn (recognition-only — never a buyback / scarcity claim) ──────────────
   m({
-    id: "proofOfFireCount",
+    id: "proofOfBurnCount",
     aliases: [],
-    label: "Proof of Fire",
-    shortLabel: "Proof of Fire",
+    label: "Proof of Burn",
+    shortLabel: "Proof of Burn",
     category: "burn",
     type: "AGGREGATE",
     status: "LIVE",
     unit: "count",
     description:
-      "Count of verified, recognition-only SYN burns — manual transfers to the standard dead address. One has occurred: Proof of Fire #001, a 1,000 SYN Founder Burn. No price, scarcity, or value claim attaches to a burn.",
-    source: "src/lib/syndicate-config.ts · PROOF_OF_FIRE records, each verifiable as a transfer to the dead address.",
-    formula: "count of recorded Proof of Fire burn records",
+      "Count of verified, recognition-only SYN burns — manual transfers to the standard dead address. One has occurred: Proof of Burn #001, a 1,000 SYN Founder Burn. No price, scarcity, or value claim attaches to a burn.",
+    source: "src/lib/syndicate-config.ts · Proof of Burn records, each verifiable as a transfer to the dead address.",
+    formula: "count of recorded Proof of Burn burn records",
     verification: {
       primaryHref: DEAD_HREF ?? SYN_HREF,
       links: links(synLink, avascanLink),
@@ -849,7 +849,7 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     displayPriority: 80,
     surfaces: ["activity", "registry"],
     dependencies: ["burnedSupply"],
-    hook: "PROOF_OF_FIRE_001 (config) / balanceOf(0x…dEaD)",
+    hook: "Proof of Burn #001 (config) / balanceOf(0x…dEaD)",
   }),
   m({
     id: "latestBurn",
@@ -861,8 +861,8 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     status: "LIVE",
     unit: "text",
     description: `The most recent verified SYN burn — ${PROOF_OF_FIRE_001.label} (${PROOF_OF_FIRE_001.category}, ${PROOF_OF_FIRE_001.amountSyn.toLocaleString("en-US")} SYN). A manual, recognition-only transfer.`,
-    source: "src/lib/syndicate-config.ts · PROOF_OF_FIRE_001, verifiable on-chain as a transfer to the dead address.",
-    formula: "most recent Proof of Fire record",
+    source: "src/lib/syndicate-config.ts · Proof of Burn #001, verifiable on-chain as a transfer to the dead address.",
+    formula: "most recent Proof of Burn record",
     verification: {
       primaryHref: DEAD_HREF ?? SYN_HREF,
       links: links(synLink, avascanLink),
@@ -872,7 +872,7 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     displayPriority: 81,
     surfaces: ["activity", "registry"],
     dependencies: ["burnedSupply"],
-    hook: "PROOF_OF_FIRE_001 (config)",
+    hook: "Proof of Burn #001 (config)",
   }),
 
   // ── Activity (movements / classified transactions) ─────────────────────────

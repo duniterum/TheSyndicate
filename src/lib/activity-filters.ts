@@ -60,7 +60,7 @@ export const ACTIVITY_FILTER_GROUPS: ActivityFilterGroup[] = [
   },
   {
     key: "burn",
-    label: "Proof of Fire",
+    label: "Proof of Burn",
     description: "Verified SYN burns — supply permanently removed via the dead address.",
     kinds: ["burn-founder", "burn-community"],
   },

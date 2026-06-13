@@ -1,15 +1,15 @@
-// ─── SYN burn scanner (Proof of Fire) ──────────────────────────────────────
+// ─── SYN burn scanner (Proof of Burn) ──────────────────────────────────────
 // The protocol runs NO automated burn. A burn is a manual, verifiable SYN
 // Transfer to the standard dead address. This scanner indexes those transfers
 // the same way the treasury-flow scanner indexes USDC: an incremental cursor
 // from SALE_DEPLOYMENT_BLOCK, chunked, reorg-overlapped, cached.
 //
-// Why incremental-cursor (NOT a sliding lookback): Proof of Fire #001 sits at
+// Why incremental-cursor (NOT a sliding lookback): Proof of Burn #001 sits at
 // block 87,703,847, far behind the chain head. A lookback window would age it
 // out and the numbering would drift. The cursor pattern scans the full history
 // once, then only the tail — so #001 is always present and #N is stable.
 //
-// Numbering rule (doctrine): a Proof-of-Fire number is assigned ONLY when the
+// Numbering rule (doctrine): a Proof-of-Burn number is assigned ONLY when the
 // scan is complete (no failed chunk) and therefore gapless. On an incomplete
 // scan the burn is still shown, but WITHOUT a number (status PARTIAL upstream),
 // because a number implies "the Nth verified burn ever" and a gap could make
@@ -46,7 +46,7 @@ export type SynBurnEvent = {
   txHash: string;
   logIndex: number;
   /**
-   * 1-based "Proof of Fire #N" — assigned ONLY on a complete, gapless scan.
+   * 1-based "Proof of Burn #N" — assigned ONLY on a complete, gapless scan.
    * Undefined while the scan is incomplete (upstream renders that as PARTIAL).
    */
   proofOfFireNumber?: number;
@@ -59,7 +59,7 @@ export type SynBurnScan = {
 };
 
 /**
- * Pure: assign 1-based Proof-of-Fire numbers oldest → newest, returning the
+ * Pure: assign 1-based Proof-of-Burn numbers oldest → newest, returning the
  * list in its ORIGINAL order with `proofOfFireNumber` populated. The oldest
  * burn is always #1. Exported (and unit-tested) so the numbering contract is
  * verifiable without a live RPC.
@@ -97,7 +97,7 @@ async function scan<T>(
 }
 
 /**
- * Live SYN burns (Proof of Fire), newest-first. `data.complete` reports whether
+ * Live SYN burns (Proof of Burn), newest-first. `data.complete` reports whether
  * the scan was gapless; only then do events carry `proofOfFireNumber`.
  */
 export function useSynBurnEvents(opts?: { fromBlock?: bigint; limit?: number }) {

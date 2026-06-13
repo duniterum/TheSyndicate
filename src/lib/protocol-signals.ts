@@ -108,7 +108,7 @@ export type DeriveSignalsOptions = {
  * Derive Signals from the canonical event stream. Pure & deterministic: same
  * events ⇒ same signals. Each source event yields one BASE signal (from the
  * rule table) plus zero or more derived signals (continuity, pre-declared
- * milestone crossings, historical Proof of Fire). Returned oldest → newest.
+ * milestone crossings, historical Proof of Burn). Returned oldest → newest.
  */
 export function deriveSignals(
   events: ReadonlyArray<CanonicalProtocolEvent>,
@@ -258,7 +258,7 @@ export function deriveSignals(
       }
     }
 
-    // BURN historical: Proof of Fire #001 is the protocol's first verified burn.
+    // BURN historical: Proof of Burn #001 is the protocol's first verified burn.
     // proofOfFireIndex is set upstream ONLY when the burn scan is gapless, so its
     // presence is its own reliability gate.
     if (e.proofOfFireIndex === 1) {
@@ -269,7 +269,7 @@ export function deriveSignals(
           type: "MILESTONE",
           tier: PROOF_OF_FIRE_FIRST_TIER,
           subject: "protocol",
-          reason: "Proof of Fire #001 — the protocol's first verified burn.",
+          reason: "Proof of Burn #001 — the protocol's first verified burn.",
           facts,
         }),
       );

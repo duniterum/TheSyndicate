@@ -88,7 +88,7 @@ The sequence is computed over the **eligible set** (active *and* block-anchored)
 
 Both paths are treated identically — chronology never distinguishes a genesis-seeded fact from a live pipeline-derived fact; it orders **by carried block evidence alone.**
 
-- **Genesis-seeded facts** (e.g. the membership-sale deployment, Proof of Fire #001) carry their block through the same `sourceBlock → chronology.block` thread, so they earn sequences when block-anchored.
+- **Genesis-seeded facts** (e.g. the membership-sale deployment, Proof of Burn #001) carry their block through the same `sourceBlock → chronology.block` thread, so they earn sequences when block-anchored.
 - **Pipeline facts** flow through the same admission → entry thread.
 - Live e2e over the genesis seed: **8 chronology entries → 2 ordered, 6 held**:
   - seq 1 — membership-sale-deployment @ block **87,157,852**

@@ -165,7 +165,7 @@ These existed in code but were not yet formal layers in the mental model:
 | First milestone | Activity/milestones | derived from a verifiable count | not proven via register feed | held |
 | First chapter transition | `chapter` | derived (no discrete tx) | rides member-number coverage | not a natural register entry |
 | First liquidity | `liquidity` (`LP_POOL.creationTx`) | yes (creation tx) | config-pinned | **seeded (locked)** |
-| First burn (Proof of Fire #001) | `truth` config | yes (tx + block) | config-pinned | **seeded (locked)** |
+| First burn (Proof of Burn #001) | `truth` config | yes (tx + block) | config-pinned | **seeded (locked)** |
 | Contract births (token / sale / archive) | `truth` config | yes | config-pinned | **seeded** |
 
 **Why "first member" is fully known yet still held by the Register:** (1) the Register
