@@ -183,6 +183,8 @@ export function ProtocolHero() {
             chapterLabel={chapter?.label}
             lanes={lanes}
             chainLive={chainLive}
+            burnedSyn={burnedSyn}
+            burnedStatus={burnedStatus}
           />
 
           <EntryRail
@@ -328,6 +330,8 @@ function HeroEngine({
   chapterLabel,
   lanes,
   chainLive,
+  burnedSyn,
+  burnedStatus,
   className = "",
 }: {
   amount: number;
@@ -346,6 +350,8 @@ function HeroEngine({
     fact: { value: number | undefined; status: CanonicalStatus };
   }>;
   chainLive: boolean;
+  burnedSyn: number | undefined;
+  burnedStatus: CanonicalStatus;
   className?: string;
 }) {
   const vaultLane = lanes.find((l) => l.key === "VAULT_WALLET");
@@ -480,14 +486,9 @@ function HeroEngine({
           <NodeLabel title="Chronicle" value={chapterLabel ?? "Memory"} color={GOLD} />
         </EngineNode>
 
-        <EngineNode wrap="left-[90%] top-[56%]">
-          <NodeIcon icon={<JoinIcon />} color={GOLD} />
-          <NodeLabel title="Join" value="With USDC" color={GOLD} />
-        </EngineNode>
-
         <EngineNode wrap="left-[84%] top-[84%]">
           <NodeIcon icon={<MembersIcon />} color={GOLD} />
-          <NodeLabel title="Membership Sale" value="SYN received" color={GOLD} />
+          <NodeLabel title="Membership Sale" value="" color={GOLD} />
         </EngineNode>
       </div>
 
@@ -540,6 +541,99 @@ function HeroEngine({
             </div>
           ))}
         </div>
+      </div>
+
+      <BurnMonument burnedSyn={burnedSyn} status={burnedStatus} />
+    </div>
+  );
+}
+
+/**
+ * Burn monument — the symbolic opposite of the throne. Sits directly beneath
+ * the engine (seat on top, burn at the bottom: beginning and end of supply),
+ * integrated into the mountain with NO card / border / panel / CTA / link.
+ * A premium, low-cost animated flame (transform + opacity only) that freezes
+ * under prefers-reduced-motion. The burned value is the live Proof-of-Fire
+ * dead-address balance; never an action.
+ */
+function BurnMonument({
+  burnedSyn,
+  status,
+}: {
+  burnedSyn: number | undefined;
+  status: CanonicalStatus;
+}) {
+  const reducedMotion = usePrefersReducedMotion();
+  const known = burnedSyn !== undefined;
+  const anim = (v: string) => (reducedMotion ? undefined : v);
+  return (
+    <div className="relative z-10 mt-7 flex flex-col items-center text-center select-none sm:mt-9">
+      <div className="relative h-[112px] w-[96px]" aria-hidden>
+        <div
+          className="absolute left-1/2 top-[46%] -z-10 size-[190%] rounded-full blur-2xl"
+          style={{
+            background:
+              "radial-gradient(circle, color-mix(in oklab, #FF7A18 30%, transparent), transparent 66%)",
+            transform: "translate(-50%, -50%)",
+            animation: anim("syn-flame-glow 3.6s ease-in-out infinite"),
+          }}
+        />
+        <div
+          className="absolute bottom-0 left-1/2 h-[96px] w-[58px]"
+          style={{
+            background:
+              "linear-gradient(to top, #FFB347 2%, #FF7A18 42%, color-mix(in oklab, #E3A92B 92%, transparent) 74%, transparent 100%)",
+            borderRadius: "50% 50% 50% 50% / 62% 62% 38% 38%",
+            transform: "translateX(-50%)",
+            transformOrigin: "50% 100%",
+            animation: anim("syn-flame-sway 2.7s ease-in-out infinite"),
+          }}
+        />
+        <div
+          className="absolute bottom-[6px] left-1/2 h-[58px] w-[30px]"
+          style={{
+            background: "linear-gradient(to top, #FFE9A6 4%, #FFC24B 52%, transparent 100%)",
+            borderRadius: "50% 50% 50% 50% / 58% 58% 42% 42%",
+            transform: "translateX(-50%)",
+            transformOrigin: "50% 100%",
+            animation: anim("syn-flame-core 1.9s ease-in-out infinite"),
+          }}
+        />
+        {!reducedMotion &&
+          [
+            { left: "44%", delay: "0s", dur: "3.2s" },
+            { left: "58%", delay: "1.1s", dur: "3.9s" },
+            { left: "50%", delay: "2s", dur: "3.4s" },
+          ].map((e, i) => (
+            <span
+              key={i}
+              className="absolute bottom-[34%] size-[3px] rounded-full"
+              style={{
+                left: e.left,
+                background: "#FFD27A",
+                animation: `syn-ember-rise ${e.dur} ease-out ${e.delay} infinite`,
+              }}
+            />
+          ))}
+      </div>
+
+      <div className="mono mt-3 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+        Burned supply
+      </div>
+      <div
+        className="mono mt-1.5 text-[clamp(2.4rem,1.4rem+2.2vw,3.4rem)] font-semibold leading-none tabular-nums"
+        style={{
+          color: FLAME,
+          textShadow: "0 0 38px color-mix(in oklab, #FF7A18 42%, transparent)",
+        }}
+      >
+        {known ? `${fmtCount(burnedSyn)} SYN` : "—"}
+      </div>
+      <div
+        className="mono mt-2 text-[11px] uppercase tracking-[0.28em]"
+        style={{ color: known ? FLAME : "var(--muted-foreground)" }}
+      >
+        {known ? "Proof of Fire" : status}
       </div>
     </div>
   );
@@ -595,12 +689,12 @@ function HeroRight({
   className?: string;
 }) {
   return (
-    <div className={`relative z-10 grid gap-4 lg:pb-10 ${className}`}>
+    <div className={`relative z-10 grid gap-3 lg:pb-10 ${className}`}>
       <div className="surface p-5">
         <div className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           Protocol overview
         </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-4 xl:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-3">
           <Stat label="Members" value={fmtCount(members)} status={membersStatus} />
           <Stat label="Next seat" value={nextSeat} status={membersStatus} gold />
           <Stat label="SYN price" value={fmtUsd(synPrice, 4)} status={synPriceStatus} />
@@ -636,7 +730,7 @@ function HeroRight({
         <div className="flex items-center justify-between gap-4">
           <div>
             <div className="mono text-[13px] text-foreground">{latestLabel}</div>
-            <div className="mt-1.5 mono text-xl font-semibold tabular-nums" style={{ color: "var(--success)" }}>
+            <div className="mt-1.5 mono text-base font-semibold tabular-nums" style={{ color: "var(--success)" }}>
               {latestAmount}
             </div>
           </div>
@@ -997,9 +1091,11 @@ function NodeLabel({ title, value, color }: { title: string; value: string; colo
       <div className="mono text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
         {title}
       </div>
-      <div className="mono mt-1 text-sm tabular-nums" style={{ color }}>
-        {value}
-      </div>
+      {value && (
+        <div className="mono mt-1 text-sm tabular-nums" style={{ color }}>
+          {value}
+        </div>
+      )}
     </>
   );
 }
@@ -1067,12 +1163,12 @@ function Stat({
         {label}
       </div>
       <div
-        className="mono mt-2 text-xl font-semibold tabular-nums leading-none"
+        className="mono mt-1.5 text-xl font-semibold tabular-nums leading-none"
         style={money && status === "LIVE" ? { color: "var(--success)" } : gold ? { color: GOLD } : undefined}
       >
         {value}
       </div>
-      <div className="mono mt-2 inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="mono mt-1.5 inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
         <span className="size-1 rounded-full" style={{ background: tone }} />
         {status}
       </div>

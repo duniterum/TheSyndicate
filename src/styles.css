@@ -444,3 +444,30 @@
   line-height: 1;
   letter-spacing: -0.015em;
 }
+
+/* ============================================================
+ * Burn monument flame — premium, low-cost hero burn animation
+ * (orange / gold / amber). transform + opacity only (cheap to
+ * composite); the component omits the animation entirely under
+ * prefers-reduced-motion. Each animated node carries its own
+ * translateX/Y so these keyframes don't clobber centering.
+ * ============================================================ */
+@keyframes syn-flame-sway {
+  0%, 100% { transform: translateX(-50%) scaleY(1) scaleX(1) rotate(-1deg); }
+  25%      { transform: translateX(-50%) scaleY(1.08) scaleX(0.95) rotate(1.5deg); }
+  50%      { transform: translateX(-50%) scaleY(0.95) scaleX(1.05) rotate(-1.5deg); }
+  75%      { transform: translateX(-50%) scaleY(1.05) scaleX(0.97) rotate(1deg); }
+}
+@keyframes syn-flame-core {
+  0%, 100% { transform: translateX(-50%) scaleY(1); opacity: 0.95; }
+  50%      { transform: translateX(-50%) scaleY(0.88); opacity: 0.78; }
+}
+@keyframes syn-flame-glow {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+  50%      { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+}
+@keyframes syn-ember-rise {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  12%  { opacity: 0.9; }
+  100% { transform: translateY(-48px) scale(0.25); opacity: 0; }
+}

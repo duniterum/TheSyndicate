@@ -1,0 +1,360 @@
+FINAL HERO FIDELITY PASS
+
+The attached reference image is now the target visual hierarchy.
+
+Do NOT copy pixels.
+
+Do NOT hardcode values.
+
+Do NOT replace live data.
+
+Instead reproduce the composition, hierarchy, proportions, and visual weight using existing live hooks and protocol data.
+
+This is a visual fidelity pass.
+
+---
+
+## MOST IMPORTANT RULE
+
+The homepage is a protocol monument.
+
+Not a dashboard.
+
+Not a trading terminal.
+
+Not a collection of cards.
+
+The protocol itself is the hero.
+
+The page must visually tell:
+
+Visitor
+→ Seat
+→ Purchase
+→ Routing
+→ Vault
+→ Liquidity
+→ Chronicle
+→ Burn
+→ Chapter
+→ Membership
+
+---
+
+## CENTER DOMINANCE
+
+The center must become the strongest visual element.
+
+Current live site still distributes attention too evenly.
+
+The eye should naturally land here:
+
+THRONE
+↓
+LARGE GREEN ROUTED AMOUNT
+↓
+USDC ROUTED
+↓
+$5 → SYN → 70 / 20 / 10
+
+before looking anywhere else.
+
+Increase visual dominance of the center.
+
+Reduce competing visual noise.
+
+---
+
+## THRONE
+
+The throne is not decoration.
+
+It represents:
+
+* seat ownership
+* identity
+* status
+* membership
+* chapter position
+
+Keep it elegant.
+
+Premium.
+
+Institutional.
+
+No cartoon style.
+
+No oversized crown.
+
+The throne should feel like:
+
+"Your seat is waiting."
+
+---
+
+## ORBIT
+
+Keep orbit.
+
+Simplify labels.
+
+Use only:
+
+70% Vault
+20% Liquidity
+10% Operations
+Membership Sale
+Chronicle
+
+Remove unnecessary supporting text.
+
+Make orbit easier to scan.
+
+---
+
+## PROTOCOL OVERVIEW
+
+Keep existing live values.
+
+Do not invent anything.
+
+Compress vertical height.
+
+Increase information density.
+
+Reduce empty space.
+
+The card should feel efficient.
+
+Not tall.
+
+Not stretched.
+
+Not dominant.
+
+---
+
+## LATEST ACTIVITY
+
+Latest Activity is secondary.
+
+Protocol Overview is strategic.
+
+Latest Activity is tactical.
+
+Latest Activity should visually occupy less attention.
+
+---
+
+## BURN MONUMENT
+
+This is the most important new visual element.
+
+Current homepage still wastes mountain space.
+
+Integrate Burn directly into the mountain.
+
+No card.
+
+No border.
+
+No panel.
+
+No container.
+
+No CTA.
+
+No interaction.
+
+No hover effects.
+
+No links.
+
+---
+
+## ANIMATED FLAME
+
+Create a premium flame animation.
+
+Requirements:
+
+* subtle
+* elegant
+* low CPU
+* low GPU cost
+* optimized
+* mobile safe
+
+Use:
+
+orange
+gold
+amber
+
+Small embers.
+
+Soft glow.
+
+No cartoon fire.
+
+No aggressive effects.
+
+---
+
+## BURN DISPLAY
+
+Center below the flame:
+
+BURNED SUPPLY
+
+2,000 SYN
+
+PROOF OF BURN
+
+Use live burn values.
+
+If protocol doctrine requires "Proof of Fire", use that consistently.
+
+Otherwise use:
+
+PROOF OF BURN
+
+The burned amount should feel monumental.
+
+Not like another metric.
+
+The burn monument is the symbolic opposite of the throne.
+
+Top:
+Seat
+
+Bottom:
+Burn
+
+Beginning and end of supply.
+
+---
+
+## CHAPTER BAR
+
+Replace small card feeling.
+
+Current Chapter becomes a full-width progression band.
+
+Requirements:
+
+* wider
+* cleaner
+* larger progress bar
+* larger seat count
+* stronger typography
+
+Visual purpose:
+
+bridge hero → protocol
+
+not another card.
+
+---
+
+## ENTRY PREVIEW
+
+Increase importance.
+
+This is the conversion area.
+
+The user buys here.
+
+Requirements:
+
+* larger amount buttons
+* larger SYN amount
+* larger routing values
+* stronger visual hierarchy
+
+Should feel premium.
+
+Should feel intentional.
+
+Should feel valuable.
+
+---
+
+## COLOR SEMANTICS
+
+Maintain strict color meaning:
+
+GOLD
+
+* Seat
+* Identity
+* Chronicle
+* Chapter
+* Artifacts
+
+GREEN
+
+* Capital
+* Routing
+* Treasury
+* USDC
+
+CYAN
+
+* Verification
+* Transparency
+* Explorer
+
+ORANGE
+
+* Burn
+* Scarcity
+* Supply destruction
+
+No random color usage.
+
+---
+
+## PERFORMANCE
+
+Homepage must remain fast.
+
+Optimize:
+
+* hero background
+* throne asset
+* flame animation
+* below-fold content
+* layout shift
+* mobile rendering
+
+The hero should feel premium without becoming heavy.
+
+---
+
+## SUCCESS TEST
+
+If a first-time visitor sees only the first screen for 5 seconds, they should understand:
+
+1. This is a live Avalanche protocol.
+2. A seat is available.
+3. Money routes automatically.
+4. Everything is verifiable.
+5. Supply can be burned.
+6. Chapters exist.
+7. Membership has identity.
+8. Joining starts with the entry preview.
+
+That is the objective.
+
+Return:
+
+* files changed
+* components reused
+* visual hierarchy changes
+* burn implementation
+* chapter implementation
+* entry preview improvements
+* performance impact
+* screenshots desktop + mobile
