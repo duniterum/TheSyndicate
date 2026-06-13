@@ -1,0 +1,224 @@
+BURN MONUMENT + HERO FINAL POLISH — USE LIVE HTML, NOT A STATIC TEXT IMAGE
+
+Do not redesign the full hero.
+
+The current hero direction is accepted.
+
+Now fix the Burned Supply monument and final visual hierarchy.
+
+Important: do NOT use a static image that contains hardcoded “2,000 SYN” or “Proof of Burn/Fire” text.
+
+The burn monument must be live HTML/CSS/SVG so the amount and terminology come from the code/data.
+
+The generated image is only visual inspiration for composition:
+
+* flame above
+* burned amount large
+* label below/around it
+* integrated into the mountain
+* no card
+* no border
+
+1. BURN MONUMENT GOAL
+
+The burn monument should feel like the symbolic opposite of the throne.
+
+Throne = seat / membership / identity
+Burn = supply destruction / scarcity / protocol memory
+
+It should be embedded in the mountain area, not pasted as a dashboard metric.
+
+2. DO NOT USE CURRENT CANDLE FLAME
+
+The current flame looks like a candle icon.
+
+Replace it with a better flame system.
+
+Desired feel:
+
+* alive
+* layered
+* wide at the base
+* rising upward
+* ember particles
+* golden-orange glow
+* not cartoon
+* not emoji
+* not a flat icon
+* not a static candle
+
+3. IMPLEMENTATION APPROACH
+
+Build the flame using CSS/SVG, not a full text image.
+
+Recommended:
+
+* create a `BurnMonument` component inside the hero file or as a small local component.
+* use 3–5 layered flame shapes:
+
+  * outer amber flame
+  * inner gold flame
+  * small white-hot core
+  * soft radial glow
+  * ember particles
+* animate with CSS:
+
+  * slight scaleY flicker
+  * transform-origin bottom center
+  * blur/glow pulse
+  * embers rising with opacity fade
+* respect `prefers-reduced-motion`.
+
+No heavy canvas.
+No video.
+No GIF.
+No Lottie unless already present.
+No large unoptimized PNG.
+
+4. FLAME ANIMATION RULES
+
+Animation must be subtle and premium.
+
+Not fast.
+Not nervous.
+Not childish.
+
+Suggested behavior:
+
+* flame height varies 3–7%
+* inner flame shifts left/right 1–2px
+* glow pulses slowly
+* 6–10 small embers rise upward at different delays
+* total animation duration around 2.8–4.5s
+* reduced motion disables movement and keeps static glow
+
+5. BURN DISPLAY
+
+Use live burned SYN value from existing truth/data source.
+
+Do not hardcode amount.
+
+Render:
+
+BURNED SUPPLY
+2,000 SYN
+PROOF OF BURN
+
+But first verify terminology:
+
+* If current protocol doctrine/config/Chronicle uses “Proof of Fire,” keep Proof of Fire everywhere.
+* If the correct canonical term should be “Proof of Burn,” update globally and consistently.
+* Do not mix Proof of Fire and Proof of Burn.
+
+The amount should be large but not larger than the main green routed amount.
+
+Suggested hierarchy:
+
+* routed amount remains #1
+* burn amount is #2 or #3
+* chapter progress is below
+
+6. COLOR INTEGRATION
+
+Current orange feels disconnected.
+
+Use a more premium palette:
+
+* deep ember: #B45309
+* flame orange: #F97316
+* warm gold: #E3A92B
+* hot core: #FDE68A
+* subtle dark red only inside flame shadows
+
+Blend it with the existing gold system.
+
+The burn should feel related to gold identity, not random orange.
+
+7. PLACEMENT
+
+Place BurnMonument in the mountain void below the protocol engine and above the Current Chapter band.
+
+No box.
+No card.
+No border.
+No black panel.
+No button.
+No link.
+No hover CTA.
+
+It should feel like a monument emerging from the landscape.
+
+8. TEXT / TYPOGRAPHY
+
+Keep typography clean.
+
+Use mono for labels:
+
+* BURNED SUPPLY
+* PROOF OF BURN / PROOF OF FIRE
+
+Use large strong numeric typography for:
+
+* 2,000 SYN
+
+Avoid text baked into images.
+
+Avoid blurry generated text.
+
+9. HERO BALANCE
+
+After adding the burn monument:
+
+* keep the throne/engine dominant
+* keep the routed amount dominant
+* do not let the burn flame overpower the $25 routed amount
+* keep the right protocol overview readable
+* keep latest activity secondary
+* keep the entry preview strong
+
+10. PERFORMANCE
+
+This must not slow the homepage.
+
+Check:
+
+* no huge static asset
+* no heavy animation
+* no layout shift
+* no blocking image load
+* reduced motion supported
+
+11. QA
+
+Run:
+
+* typecheck
+* ownership wording guard
+* visitor vocabulary guard
+* homepage render screenshot
+* 1280px responsive check
+* mobile check if possible
+* verify no hardcoded burned amount inside image asset
+
+12. RETURN FORMAT
+
+Return:
+
+1. Files changed.
+2. Whether Proof of Fire or Proof of Burn is canonical and why.
+3. How burned value is sourced live.
+4. Flame implementation details.
+5. Animation behavior.
+6. Reduced-motion behavior.
+7. Placement in hero.
+8. Performance impact.
+9. QA results.
+10. Remaining risks.
+
+Important:
+
+The generated burn image is inspiration only.
+
+Do not embed it as a text image.
+
+Build the burn monument as live UI.

@@ -37,8 +37,8 @@ const GOLD_GRAD = "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%
 const GOLD_SOFT = "color-mix(in oklab, #E3A92B 13%, transparent)";
 const GOLD_LINE = "color-mix(in oklab, #E3A92B 46%, transparent)";
 const GOLD_FAINT = "color-mix(in oklab, #E3A92B 8%, transparent)";
-const FLAME = "#FF7A18";
-const FLAME_SOFT = "color-mix(in oklab, #FF7A18 13%, transparent)";
+const FLAME = "#F97316";
+const FLAME_SOFT = "color-mix(in oklab, #F97316 13%, transparent)";
 const AVALANCHE_RED = "#E84142";
 const GREEN_DEEP = "color-mix(in oklab, var(--success) 78%, #052e1a)";
 
@@ -565,72 +565,137 @@ function BurnMonument({
 }) {
   const reducedMotion = usePrefersReducedMotion();
   const known = burnedSyn !== undefined;
-  const anim = (v: string) => (reducedMotion ? undefined : v);
+  const embers = [
+    { x: "41%", kf: "syn-ember-l", delay: "0s", dur: "3.6s", size: 3 },
+    { x: "52%", kf: "syn-ember-r", delay: "0.5s", dur: "4.2s", size: 2 },
+    { x: "46%", kf: "syn-ember-c", delay: "1.1s", dur: "3.8s", size: 2 },
+    { x: "57%", kf: "syn-ember-r", delay: "1.7s", dur: "4.4s", size: 3 },
+    { x: "44%", kf: "syn-ember-l", delay: "2.3s", dur: "3.9s", size: 2 },
+    { x: "50%", kf: "syn-ember-c", delay: "2.8s", dur: "4.1s", size: 3 },
+    { x: "54%", kf: "syn-ember-l", delay: "3.3s", dur: "3.7s", size: 2 },
+    { x: "48%", kf: "syn-ember-r", delay: "0.9s", dur: "4.0s", size: 2 },
+  ];
   return (
     <div className="relative z-10 mt-7 flex flex-col items-center text-center select-none sm:mt-9">
-      <div className="relative h-[112px] w-[96px]" aria-hidden>
-        <div
-          className="absolute left-1/2 top-[46%] -z-10 size-[190%] rounded-full blur-2xl"
+      <div className="syn-burn-flame relative flex h-[136px] w-[112px] items-end justify-center" aria-hidden>
+        {/* soft radial glow — centered by flex; animates scale/opacity only */}
+        <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
+          <div
+            className="size-[150%] rounded-full blur-2xl"
+            style={{
+              background:
+                "radial-gradient(circle, color-mix(in oklab, #F97316 34%, transparent) 0%, color-mix(in oklab, #B45309 16%, transparent) 42%, transparent 70%)",
+              animation: reducedMotion ? undefined : "syn-glow-pulse 4s ease-in-out infinite",
+            }}
+          />
+        </div>
+
+        {/* layered flame: outer amber → inner gold → white-hot core */}
+        <svg
+          viewBox="0 0 64 96"
+          className="relative h-[136px] w-auto overflow-visible"
           style={{
-            background:
-              "radial-gradient(circle, color-mix(in oklab, #FF7A18 30%, transparent), transparent 66%)",
-            transform: "translate(-50%, -50%)",
-            animation: anim("syn-flame-glow 3.6s ease-in-out infinite"),
+            filter: "drop-shadow(0 6px 14px color-mix(in oklab, #7C2D12 55%, transparent))",
           }}
-        />
-        <div
-          className="absolute bottom-0 left-1/2 h-[96px] w-[58px]"
-          style={{
-            background:
-              "linear-gradient(to top, #FFB347 2%, #FF7A18 42%, color-mix(in oklab, #E3A92B 92%, transparent) 74%, transparent 100%)",
-            borderRadius: "50% 50% 50% 50% / 62% 62% 38% 38%",
-            transform: "translateX(-50%)",
-            transformOrigin: "50% 100%",
-            animation: anim("syn-flame-sway 2.7s ease-in-out infinite"),
-          }}
-        />
-        <div
-          className="absolute bottom-[6px] left-1/2 h-[58px] w-[30px]"
-          style={{
-            background: "linear-gradient(to top, #FFE9A6 4%, #FFC24B 52%, transparent 100%)",
-            borderRadius: "50% 50% 50% 50% / 58% 58% 42% 42%",
-            transform: "translateX(-50%)",
-            transformOrigin: "50% 100%",
-            animation: anim("syn-flame-core 1.9s ease-in-out infinite"),
-          }}
-        />
+        >
+          <defs>
+            <linearGradient id="syn-flame-outer-g" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stopColor="#7C2D12" />
+              <stop offset="10%" stopColor="#B45309" />
+              <stop offset="42%" stopColor="#F97316" />
+              <stop offset="76%" stopColor="#E3A92B" />
+              <stop offset="100%" stopColor="#F2C544" stopOpacity="0.6" />
+            </linearGradient>
+            <linearGradient id="syn-flame-inner-g" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stopColor="#F97316" />
+              <stop offset="48%" stopColor="#F2C544" />
+              <stop offset="100%" stopColor="#FDE68A" />
+            </linearGradient>
+            <linearGradient id="syn-flame-core-g" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stopColor="#FDE68A" />
+              <stop offset="100%" stopColor="#FFFDF5" />
+            </linearGradient>
+          </defs>
+          <g
+            style={{
+              transformBox: "fill-box",
+              transformOrigin: "50% 100%",
+              animation: reducedMotion ? undefined : "syn-flame-a 3.6s ease-in-out infinite",
+            }}
+          >
+            <path
+              d="M32 4 C40 22 50 30 44 48 C42 56 46 60 44 66 C56 60 58 84 40 92 C46 84 36 82 36 92 C36 82 28 82 28 92 C28 82 18 84 24 92 C8 84 10 60 22 66 C20 60 22 56 20 48 C16 30 24 22 32 4 Z"
+              fill="url(#syn-flame-outer-g)"
+            />
+          </g>
+          <g
+            style={{
+              transformBox: "fill-box",
+              transformOrigin: "50% 100%",
+              animation: reducedMotion ? undefined : "syn-flame-b 3.0s ease-in-out infinite",
+            }}
+          >
+            <path
+              d="M32 26 C38 40 44 46 40 58 C39 64 41 66 40 72 C48 68 49 84 36 90 C40 84 33 83 33 90 C33 83 26 84 28 90 C16 84 17 68 25 72 C24 66 25 64 24 58 C21 46 26 40 32 26 Z"
+              fill="url(#syn-flame-inner-g)"
+            />
+          </g>
+          <g
+            style={{
+              transformBox: "fill-box",
+              transformOrigin: "50% 100%",
+              animation: reducedMotion ? undefined : "syn-flame-c 2.2s ease-in-out infinite",
+            }}
+          >
+            <path
+              d="M32 50 C36 60 39 64 37 72 C42 70 43 82 34 88 C37 82 32 82 32 88 C32 82 27 82 30 88 C21 82 22 70 27 72 C25 64 28 60 32 50 Z"
+              fill="url(#syn-flame-core-g)"
+            />
+          </g>
+        </svg>
+
+        {/* rising embers (motion only) */}
         {!reducedMotion &&
-          [
-            { left: "44%", delay: "0s", dur: "3.2s" },
-            { left: "58%", delay: "1.1s", dur: "3.9s" },
-            { left: "50%", delay: "2s", dur: "3.4s" },
-          ].map((e, i) => (
+          embers.map((e, i) => (
             <span
               key={i}
-              className="absolute bottom-[34%] size-[3px] rounded-full"
+              className="absolute rounded-full"
               style={{
-                left: e.left,
-                background: "#FFD27A",
-                animation: `syn-ember-rise ${e.dur} ease-out ${e.delay} infinite`,
+                left: e.x,
+                bottom: "24%",
+                width: `${e.size}px`,
+                height: `${e.size}px`,
+                background: i % 2 === 0 ? "#FDE68A" : "#F2C544",
+                boxShadow: "0 0 4px color-mix(in oklab, #F97316 60%, transparent)",
+                animation: `${e.kf} ${e.dur} ease-out ${e.delay} infinite`,
               }}
             />
           ))}
       </div>
 
-      <div className="mono mt-3 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+      <div className="mono mt-2 text-[11px] uppercase tracking-[0.32em] text-muted-foreground">
         Burned supply
       </div>
       <div
-        className="mono mt-1.5 text-[clamp(2.4rem,1.4rem+2.2vw,3.4rem)] font-semibold leading-none tabular-nums"
-        style={{
-          color: FLAME,
-          textShadow: "0 0 38px color-mix(in oklab, #FF7A18 42%, transparent)",
-        }}
+        className="mt-1.5 text-[clamp(2.1rem,1.3rem+1.9vw,3.1rem)] font-semibold leading-none tabular-nums"
+        style={
+          known
+            ? {
+                fontFamily: "var(--font-mono)",
+                backgroundImage:
+                  "linear-gradient(180deg, #FDE68A 0%, #F2C544 40%, #E3A92B 72%, #F97316 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+                filter: "drop-shadow(0 0 22px color-mix(in oklab, #F97316 36%, transparent))",
+              }
+            : { fontFamily: "var(--font-mono)", color: "var(--muted-foreground)" }
+        }
       >
         {known ? `${fmtCount(burnedSyn)} SYN` : "—"}
       </div>
       <div
-        className="mono mt-2 text-[11px] uppercase tracking-[0.28em]"
+        className="mono mt-2 text-[11px] uppercase tracking-[0.3em]"
         style={{ color: known ? FLAME : "var(--muted-foreground)" }}
       >
         {known ? "Proof of Fire" : status}

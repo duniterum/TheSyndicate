@@ -446,28 +446,53 @@
 }
 
 /* ============================================================
- * Burn monument flame — premium, low-cost hero burn animation
- * (orange / gold / amber). transform + opacity only (cheap to
- * composite); the component omits the animation entirely under
- * prefers-reduced-motion. Each animated node carries its own
- * translateX/Y so these keyframes don't clobber centering.
+ * Burn monument flame — layered SVG flame (outer / inner / core)
+ * + soft glow + rising embers. transform / opacity only (cheap to
+ * composite); the component drops ALL animation under
+ * prefers-reduced-motion and keeps a static glowing flame.
+ * Flame groups use transform-box:fill-box + transform-origin
+ * bottom-center, so these keyframes never need a centering offset.
  * ============================================================ */
-@keyframes syn-flame-sway {
-  0%, 100% { transform: translateX(-50%) scaleY(1) scaleX(1) rotate(-1deg); }
-  25%      { transform: translateX(-50%) scaleY(1.08) scaleX(0.95) rotate(1.5deg); }
-  50%      { transform: translateX(-50%) scaleY(0.95) scaleX(1.05) rotate(-1.5deg); }
-  75%      { transform: translateX(-50%) scaleY(1.05) scaleX(0.97) rotate(1deg); }
+@keyframes syn-flame-a {
+  0%, 100% { transform: scaleY(1) scaleX(1) translateX(0); }
+  20%      { transform: scaleY(1.06) scaleX(0.97) translateX(-1.5px); }
+  45%      { transform: scaleY(0.96) scaleX(1.03) translateX(1.5px); }
+  70%      { transform: scaleY(1.04) scaleX(0.98) translateX(-1px); }
 }
-@keyframes syn-flame-core {
-  0%, 100% { transform: translateX(-50%) scaleY(1); opacity: 0.95; }
-  50%      { transform: translateX(-50%) scaleY(0.88); opacity: 0.78; }
+@keyframes syn-flame-b {
+  0%, 100% { transform: scaleY(1) translateX(0); }
+  30%      { transform: scaleY(1.05) translateX(1px); }
+  60%      { transform: scaleY(0.95) translateX(-1.5px); }
 }
-@keyframes syn-flame-glow {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
-  50%      { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+@keyframes syn-flame-c {
+  0%, 100% { transform: scaleY(1) translateX(0); opacity: 1; }
+  50%      { transform: scaleY(0.9) translateX(1px); opacity: 0.85; }
 }
-@keyframes syn-ember-rise {
-  0%   { transform: translateY(0) scale(1); opacity: 0; }
-  12%  { opacity: 0.9; }
-  100% { transform: translateY(-48px) scale(0.25); opacity: 0; }
+@keyframes syn-glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 0.82; transform: scale(1.1); }
+}
+@keyframes syn-ember-l {
+  0%   { opacity: 0; transform: translate(0, 0) scale(1); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-7px, -72px) scale(0.3); }
+}
+@keyframes syn-ember-r {
+  0%   { opacity: 0; transform: translate(0, 0) scale(1); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(7px, -74px) scale(0.3); }
+}
+@keyframes syn-ember-c {
+  0%   { opacity: 0; transform: translate(0, 0) scale(1); }
+  18%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(0, -80px) scale(0.28); }
+}
+/* First-paint safety net: the JS hook resolves prefers-reduced-motion only
+ * after mount, so back it with CSS to freeze the flame from the very first
+ * frame (beats the inline `animation` via !important). */
+@media (prefers-reduced-motion: reduce) {
+  .syn-burn-flame,
+  .syn-burn-flame * {
+    animation: none !important;
+  }
 }
