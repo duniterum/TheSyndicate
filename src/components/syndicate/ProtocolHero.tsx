@@ -49,8 +49,8 @@ const LANE_COLOR: Record<string, string> = {
 };
 
 const NODE_POS: Record<string, { wrap: string; line: [number, number] }> = {
-  VAULT_WALLET: { wrap: "left-[14%] top-[31%]", line: [104, 132] },
-  LIQUIDITY_WALLET: { wrap: "left-[86%] top-[31%]", line: [296, 132] },
+  VAULT_WALLET: { wrap: "left-[11%] top-[24%]", line: [86, 112] },
+  LIQUIDITY_WALLET: { wrap: "left-[89%] top-[24%]", line: [314, 112] },
   OPERATIONS_WALLET: { wrap: "left-[16%] top-[84%]", line: [108, 276] },
 };
 
@@ -409,8 +409,14 @@ function HeroEngine({
           />
         </div>
 
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-start px-8 pt-[30%] text-center">
-          <div className="mono text-[11px] uppercase tracking-[0.28em]" style={{ color: "var(--success)" }}>
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 text-center">
+          <div
+            className="mono text-[15px] font-bold uppercase tracking-[0.2em]"
+            style={{
+              color: "var(--success)",
+              textShadow: "0 0 20px color-mix(in oklab, var(--success) 42%, transparent)",
+            }}
+          >
             Live capital flow
           </div>
 
@@ -1256,11 +1262,11 @@ function NodeImage({ src }: { src: string }) {
 function NodeLabel({ title, value, color }: { title: string; value: string; color: string }) {
   return (
     <div style={{ textShadow: "0 1px 12px color-mix(in oklab, var(--background) 82%, transparent)" }}>
-      <div className="mono text-[12px] font-semibold uppercase tracking-[0.1em] text-foreground sm:text-[13px]">
+      <div className="mono text-[13px] font-semibold uppercase tracking-[0.08em] text-foreground sm:text-[15px]">
         {title}
       </div>
       {value && (
-        <div className="mono mt-1 text-[15px] font-semibold tabular-nums" style={{ color }}>
+        <div className="mono mt-1 text-[18px] font-bold tabular-nums sm:text-[20px]" style={{ color }}>
           {value}
         </div>
       )}
