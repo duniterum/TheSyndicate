@@ -431,27 +431,6 @@ function HeroEngine({
           <div className="mt-3 mono text-[13px] uppercase tracking-[0.28em] text-foreground">
             USDC routed
           </div>
-
-          <div className="mt-4 inline-flex items-center rounded-[4px] border border-border/60 bg-background/45 px-4 py-2 backdrop-blur-md">
-            <span className="mono text-[12px] uppercase tracking-[0.12em]" style={{ color: GOLD }}>
-              ${amount}
-            </span>
-            <span className="mx-2 text-muted-foreground">→</span>
-            <span className="mono text-[12px] uppercase tracking-[0.12em] text-foreground/82">
-              SYN
-            </span>
-            <span className="mx-2 text-muted-foreground">→</span>
-            <span className="mono text-[12px] uppercase tracking-[0.12em] text-foreground/82">
-              70 / 20 / 10
-            </span>
-          </div>
-
-          <div className="mt-4 flex items-center gap-2">
-            <StatusPill status={routedStatus} />
-            <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-              {synStatus === "LIVE" ? "Live route preview" : "Derived route preview"}
-            </span>
-          </div>
         </div>
 
         {vaultLane && (
