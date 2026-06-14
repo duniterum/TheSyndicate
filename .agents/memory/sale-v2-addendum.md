@@ -1,6 +1,6 @@
 ---
 name: Sale V2 economic/security addendum doctrine
-description: Durable design decisions for the FUTURE Sale V2 contract (per-era caps, timelock, no-oracle, honest "First Million"). Draft-only; not deployed.
+description: Durable design decisions for the FUTURE Sale V2 contract (per-era caps, timelock, no-oracle, honest "First Million", referral via external CommissionRouter V1). Draft-only; not deployed.
 ---
 
 Sale V2 lives ONLY as a design doc (`docs/proposals/SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md`)
@@ -54,12 +54,36 @@ dependency and contradicts the prescripted-immutable "don't trust, verify" model
 Below-market arbitrage is acceptable — bounded by the caps + the #1M hard stop; the
 escape hatch for a large market move is a future **Sale V3**, not making V2 adaptive.
 
-## Referral fan-out (impossible-to-misread rule)
-The Operations wallet is a plain EOA and NEVER pays the referrer. The **contract**
-pulls full USDC in, then fans out Vault→Liquidity→Referrer→Operations in the same
-buy tx; `opsAmt` is already net of the referral. Vault(70%)/Liquidity(20%) are never
-diluted; the 5% referral is carved only from the 10% Operations slice. Push-with-
-escrow fallback (`referralOwed`/`claimReferral`) so a bad referrer can't brick a buy.
+## Referral = external CommissionRouter V1, NOT inline-5% (the current ruling)
+Referral was moved OUT of the sale into a dedicated `CommissionRouterV1.draft.sol`.
+The sale pays Vault(70%)+Liquidity(20%) IN FULL, then hands the whole 10% Operations
+slice to `router.route()` under `try/catch`; the router PULLS the slice via
+`transferFrom`, pays the referrer a **count-only tier** (Signal/Advocate/Connector/
+Catalyst/Ambassador = 30/40/55/70/80% **of the Ops slice**, recovered verbatim from
+`src/lib/preview/referral.ts` — never invent), escrows on push-failure
+(`referralOwed`/`claimReferral` now live on the ROUTER), forwards the remainder to a
+**governance-set** operationsWallet, and emits the full RAL `Attribution` event.
+**Why a separate contract:** isolates referral policy from sale custody (a swapped/
+buggy router can only ever touch the Ops slice, never the already-paid Vault/Liquidity);
+upgrade = router swap, not sale migration; one canonical RAL emitter for read-models.
+**How to apply / invariants that MUST hold:**
+- Eligibility (re-validated IN the router): `referrer != 0 && != buyer && knownMember`
+  via the CALLING sale's view (on-chain truth, no off-chain trust in money routing).
+- `referredCount` increments ONLY on a VALID FIRST-SEAT referral; commission is paid
+  on every valid-referrer buy (OD-1 = founder must confirm every-buy vs first-seat-only).
+- `referrerAmount + operationsAmount == opsSlice` on EVERY path; max tier 80% < 100%.
+- Router unset OR `route` reverts → sale pays the FULL slice to Operations + emits
+  `CommissionRouterFallback`; buy NEVER bricks.
+- Router wiring on the SALE side: `initialRouter` ctor (day-one max-approve);
+  add/replace behind a 7-day timelock; **disable is instant** (removing trust is fast).
+- `retentionRequiredPct` is OFF-CHAIN only — retention isn't on-chain-knowable so it
+  NEVER gates a live payout. `attributionMode=1` (buyer-override), `campaign`/`refTag`/
+  `splits[4]` protocol slice are all RESERVED (0 in V1).
+- `CommissionRouteInput` struct is duplicated byte-for-byte in BOTH drafts — a mismatch
+  is an ABI break. Architect note (R9/OD-7): sale `Routed.referral` only MIRRORS the
+  router's returned `splits[2]`; the router's `Attribution` is the AUTHORITATIVE RAL leg.
+- The architecture doc now embeds BOTH .sol verbatim (§L sale, §R router) — keep both
+  byte-identical. Sprint report: `docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_SPRINT.md`.
 
 ## Parameter & treasury simulation conclusions (companion report)
 
@@ -94,6 +118,8 @@ numbers recomputed from `eras.ts` + 350M pool + 70/20/10). Durable conclusions:
   only if Legal demands an unconditional claim; 0 disables. Views
   `sellableSynForNextSeat`/`currentReserveFloor` expose the live headroom/floor.
 
-- **Referral = 5% of gross, carved from the 10% Operations slice only** — Vault
-  (70%) and Liquidity (20%) are mathematically never diluted by referrals.
+- **Referral is carved from the 10% Operations slice ONLY** — Vault (70%) and
+  Liquidity (20%) are mathematically never diluted by referrals. (The payout is now
+  a tiered 30–80% **of that slice** via CommissionRouter V1, not a flat 5% — see the
+  router section above; this simulation predates the router and used the flat 5%.)
   **"First Million" stays a TARGET, never "guarantee"** in public copy (Option 1).

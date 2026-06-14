@@ -1,0 +1,213 @@
+Founder decision locked:
+
+We choose CommissionRouter from day one.
+
+Do NOT use flat-only referral as the Sale V2 architecture.
+
+Do NOT put the full reputation system inside Sale V2.
+
+Do NOT deploy.
+
+Do NOT touch Sale V1.
+
+We now execute a controlled architecture sprint.
+
+Goal:
+Update the Sale V2 architecture so referral goes live with Sale V2 through a dedicated CommissionRouter V1, while simultaneously preserving and preparing the future Reputation / Builder Record / RAL layers.
+
+Final doctrine:
+
+1. Sale V2 remains the membership sale engine.
+2. CommissionRouter V1 owns referral routing.
+3. Referral is live with Sale V2.
+4. Tiering is live from day one, but only with data safely knowable on-chain.
+5. Reputation / retention / durability / Builder Records are NOT computed inside Sale V2.
+6. Reputation / Builder Records are future/read-model layers powered by router events.
+7. No oracle.
+8. No off-chain trust inside money routing.
+9. Vault 70% and Liquidity 20% are never diluted.
+10. Referral always comes only from Operations.
+
+Live CommissionRouter V1 tier axis:
+
+* verified referred-member count only
+
+Use the existing designed tier ladder from the project, unless you find a contradiction in source:
+
+* Signal
+* Advocate
+* Connector
+* Catalyst
+* Ambassador
+
+Use existing percentages / thresholds from the project source of truth.
+Do not invent new tier values.
+
+Flat 5% is NOT the final V2 model.
+Flat 5% may exist only as fallback/base behavior if router is unset or fails, if that is safer.
+
+Critical requirement:
+CommissionRouter V1 must emit the full RAL-compatible Attribution event, or enough canonical event data to preserve:
+
+* source
+* campaign/refTag future support
+* buyer
+* referrer
+* tier
+* gross
+* splits
+* payment mode
+* attribution mode
+* future indexer projection
+
+Do not starve Reputation / Builder Records by emitting thin events only.
+
+Sprint tasks:
+
+A. Architecture update
+Update the Sale V2 architecture docs:
+
+* Sale V2 no longer owns referral tier logic.
+* Sale V2 calls CommissionRouter.
+* Sale V2 sends only the Operations slice to CommissionRouter.
+* Sale V2 pays Vault and Liquidity first.
+* CommissionRouter returns/routes referral + remaining Operations.
+* If router is unset or fails, define safe fallback clearly.
+
+B. CommissionRouter V1 draft
+Draft CommissionRouter V1 Solidity.
+
+Must include:
+
+* tier table from existing preview/referral doctrine
+* referredCount tracking
+* known-member eligibility integration
+* referrer != buyer
+* Operations-only cap
+* push-then-escrow
+* claimReferral fallback
+* full RAL-compatible event
+* source value for membership sale
+* future-safe refTag/campaign fields if feasible without overcomplication
+* Ownable2Step / multisig direction
+* immutable or tightly controlled parameters
+* no upgradeable proxy unless strongly justified
+* no oracle
+* no retention/reputation calculation inside V1
+
+C. Sale V2 draft changes
+Update Sale V2 draft only as needed:
+
+* remove inline flat referral as primary logic
+* add CommissionRouter interface
+* add router address / timelocked router setting if needed
+* send Operations slice to router
+* preserve 70/20/10 doctrine
+* preserve era/cap/reserve logic
+* preserve V1 member continuity
+* preserve automatic era transitions
+* preserve no oracle
+* preserve mainnet-safe deployment plan
+
+D. Reputation / Builder readiness
+Simultaneously prepare the surrounding modules without making them live payout logic:
+
+Update docs/read-model plan so:
+
+* Reputation reads CommissionRouter/RAL events
+* Builder Records read CommissionRouter/RAL events
+* Retention/durability remain off-chain/indexer-derived
+* Gross USDC remains tiebreaker only, never primary score
+* no wealth leaderboard
+* no MLM/downline
+* no streaks
+* no reward badges
+* future artifacts go through Mythology Gate only
+
+E. Frontend readiness plan
+Do not implement frontend yet, but list exact future changes:
+
+* /referral
+* My Syndicate referral card
+* referral preview
+* tier ladder
+* reputation leaderboard
+* builder score
+* introduced-by card
+* member profile
+* cockpit
+* legal disclosure
+* noindex/simulated flags
+
+Classify each:
+
+* LIVE with Sale V2 + Router
+* VISIBLE FUTURE
+* SIMULATED
+* HIDDEN
+* UNCHANGED
+
+F. Test plan
+Create full test matrix for Sale V2 + CommissionRouter:
+
+* no referrer
+* valid referrer
+* invalid referrer
+* self-referral
+* V1 member referrer
+* V2 member referrer
+* referredCount increments only on valid first-seat referrals
+* repeat buyer behavior
+* tier boundary behavior
+* referral payout exactness
+* Operations remainder exactness
+* Vault/Liquidity untouched
+* router unset fallback
+* router failure fallback
+* escrow fallback
+* claimReferral
+* reentrancy
+* cap/era/reserve unaffected
+* events emitted correctly
+* indexer can reconstruct attribution
+
+G. Risk report
+Explain new risks:
+
+* extra contract
+* cross-contract call
+* router failure
+* tier gaming
+* same-human multi-wallet referrals
+* legal wording
+* event complexity
+* mainnet direct deployment risk
+
+For each, provide mitigation.
+
+H. Output required
+Return:
+
+1. What changed from the previous Sale V2 draft
+2. What did not change
+3. CommissionRouter V1 architecture
+4. Updated Sale V2 architecture
+5. Exact tier table recovered from existing source
+6. Event schema
+7. Reputation / Builder readiness plan
+8. Frontend readiness plan
+9. Test matrix
+10. Risk matrix
+11. Whether Solidity review can proceed after this sprint
+12. Files changed
+13. Architect review result
+
+Important:
+No deployment.
+No Sale V1 changes.
+No frontend implementation yet.
+No mainnet action.
+No broad archaeology.
+No new economics invented.
+
+This sprint is to convert the referral architecture from flat inline V2 to CommissionRouter V1 + Sale V2 integration, while preserving the full future referral / reputation / builder-record vision.

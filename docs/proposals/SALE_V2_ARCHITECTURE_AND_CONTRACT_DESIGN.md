@@ -52,9 +52,13 @@ plumbing, while leaving V1, SYN, and all funds untouched.
    inventory burn. *(A single global cap was rejected: a value safe for a late
    era let one wallet drain a tiny early era — see §C / §Q1.)*
 
-5. **Referral = fixed 5%, carved only from the 10% Operations slice.** Vault
-   (70%) and Liquidity (20%) are never diluted. No referrer → Operations keeps
-   the full 10%. This matches existing canon exactly (RAL doctrine + Sprint 0).
+5. **Referral = tiered commission via an external `CommissionRouter V1`, carved
+   only from the 10% Operations slice.** Sale V2 hands the full Operations slice
+   to the router, which pays the referrer a **count-based tier**
+   (Signal→Ambassador, 30–80% of the Operations slice ≈ 3–8% of gross) and
+   forwards the remainder to Operations. Vault (70%) and Liquidity (20%) are never
+   diluted; no/invalid referrer or an unset/reverting router → Operations keeps
+   the full 10%. See §D / §R.
 
 6. **V1→V2 continuity with no double-counting.** Member numbers are one global
    sequence. V2 is seeded with V1's final count **and** an immutable Merkle root
@@ -336,40 +340,80 @@ two mitigations that keep this from becoming raw plutocracy. Rank remains
 
 ---
 
-## D. Referral recommendation (fixed 5%, Operations-only)
+## D. Referral recommendation (CommissionRouter V1 — tiered, Operations-only)
 
-This aligns exactly with `docs/REVENUE_ATTRIBUTION_LAYER.md` and Sprint 0 §B4 —
-**no new doctrine invented**, just the V2 contract realization.
+> **Architecture change (this sprint).** The earlier draft carved a *flat 5%*
+> referral **inline** inside `buy()`. That is now **superseded**: all referral
+> tier logic, `referredCount` tracking, payout, escrow, and the canonical
+> attribution event move to a **dedicated external `CommissionRouterV1`**
+> (`docs/proposals/drafts/CommissionRouterV1.draft.sol`, embedded in **§R**).
+> Sale V2 keeps 70/20/10, pays Vault & Liquidity **in full**, and hands the
+> **entire 10% Operations slice** to the router. This preserves the future
+> Reputation / Builder-Record / RAL read-model layers without re-touching the
+> sale. Flat 5% survives only as a conceptual *floor* — the on-chain fallback
+> pays **no** referral and sends the full slice to Operations (rule below).
 
-| Rule | V2 design |
+| Rule | V2 design (router) |
 | --- | --- |
-| Rate | **Fixed 5% of gross** (= 50% of the 10% Operations slice). |
-| Source | **Operations only.** Vault 70% & Liquidity 20% never diluted. |
-| No referrer | Operations keeps the full 10%. |
-| Example ($100) | 70 Vault · 20 Liquidity · **5 Referrer · 5 Operations**. |
-| Eligibility | `referrer != buyer` (no self-referral) **and** referrer is a recognized member (`knownMember` — a V2 buyer, or a V1 member who registered via `claimV1Membership`). |
-| Attribution | Last-verified-referrer at point of sale; passed as a `buy()` arg (no retroactive attribution). |
-| Payout | **Push in same tx**; if the push fails (e.g. USDC blacklists the referrer), **escrow to a claimable balance** so the buy is never blocked. |
+| Where | **External `CommissionRouterV1`.** Sale V2 computes **no** referral rate. |
+| Source | **Operations only.** Vault 70% & Liquidity 20% are never referenced by the router. |
+| Rate | **Tiered, count-only.** `commission = opsSlice × commissionPct / 100`, where `commissionPct` is a **percent of the Operations slice** (NOT of gross). |
+| Tier axis | **Verified referred-member count** (`referredCount`) — the only thing safely knowable on-chain. |
+| Eligibility | `referrer != 0` **and** `referrer != buyer` **and** `knownMember(referrer)`, re-validated by the router against the calling sale's membership view. |
+| Count rule | `referredCount[referrer]` increments **only on a VALID, FIRST-SEAT** referral (a genuinely new member). Repeat buys still pay commission but do **not** raise the count. |
+| Attribution | Last-verified-referrer at point of sale, passed as a `buy()` arg. `attributionMode = 0`; buyer-override reserved (field present, unused in V1). |
+| Payout | **Push in same tx; escrow on failure** (USDC blacklist etc.) → `claimReferral()`. Escrow lives in the **router**, not the sale. |
+| Custody | Sale pre-approves the router; the router **pulls** the Operations slice via `transferFrom`. A router revert reverts the pull in the same frame → safe fallback. |
+| Fallback | Router **unset** OR call **reverts** → Sale V2 sends the **full** Operations slice to the Operations wallet, **no referral** that tx, emits `CommissionRouterFallback`. A buy can never be blocked. |
 | Wording | "direct sales commission." **Never** yield / dividend / passive income / revenue share. |
-| Tiered/reputation boosts | **V3/future.** Reframe the current `/referral` tiered preview to fixed-5% before V2 ships. |
+
+### D1. Canonical tier ladder (count-only)
+
+Recovered **verbatim** from `src/lib/preview/referral.ts` — **no economics
+invented**. `commissionPct` is the percent of the **10% Operations slice** (so
+the gross-equivalent is `0.10 × commissionPct`).
+
+| Tier | `referredCount ≥` | commissionPct (of Operations) | ≈ % of gross | retentionRequiredPct |
+| --- | --- | --- | --- | --- |
+| Signal | 0 | 30% | 3.0% | 0% |
+| Advocate | 5 | 40% | 4.0% | 60% |
+| Connector | 20 | 55% | 5.5% | 70% |
+| Catalyst | 50 | 70% | 7.0% | 75% |
+| Ambassador | 100 | 80% | 8.0% | 80% |
+
+> **`retentionRequiredPct` is NOT enforced on-chain in V1.** Retention is not
+> safely knowable on-chain at payout time, so it is deferred to the **off-chain
+> Reputation read-model**, never a payout gate. The router pays purely on the
+> count-derived tier (founder doctrine item 4: only on-chain-knowable data gates
+> a live payout).
+
+### D2. Why a router (vs inline)
+
+- **Separation of money vs meaning.** The sale stays a minimal distribution
+  engine; *all* referral policy lives in one auditable, replaceable contract.
+- **Forward-compatibility.** The router emits the full **RAL `Attribution`**
+  event (`splits[5]`, `paymentMode`, `attributionMode`, `source`, `campaign`,
+  `refTag`), so Reputation / Builder-Record projections are never starved and
+  need no sale changes.
+- **Replaceability under control.** Governance can swap the router behind a
+  **7-day timelock** (`ROUTER_TIMELOCK`) or **disable it instantly** (removing
+  trust is always safe); the first router may be wired once at construction for
+  day-one referral.
 
 **Why escrow-on-failure matters:** a plain ERC20 `transfer` has no recipient
 hook, so an EOA referrer always succeeds — *but* Circle USDC can **blacklist**
-addresses, and a `transfer` to a blacklisted referrer reverts. Without the
-`try/catch` + escrow fallback, one blacklisted referrer could brick every buy
-that names them. The draft wraps the referral push in `try/catch` and escrows on
-any failure; `claimReferral()` lets the referrer withdraw later.
+addresses, and a `transfer` to a blacklisted referrer reverts. The router wraps
+the referral push in `try/catch` and escrows on any failure; `claimReferral()`
+lets the referrer withdraw later — and the Operations remainder is forwarded
+regardless, so a bad referrer can never strand the slice or block the buy.
 
-**V1 members as referrers:** because eligibility checks `knownMember`, a V1
-member who has not yet bought in V2 must first call `claimV1Membership(proof)`
-(a gasless-to-the-buyer, one-time self-registration) to become a valid referrer.
-This is a deliberate, documented constraint, not an exclusion.
+> The RAL `Attribution{ source, buyer, referrer, campaign, refTag, token, gross,
+> tier, splits[5], paymentMode, attributionMode }` schema is now emitted
+> **on-chain by the router** — resolving prior Human-Review item **J6** in favor
+> of emitting the full struct rather than reconstructing it indexer-side.
 
-> The RAL `Attribution{ splits[5], paymentMode, attribution, refTag }` schema is
-> the richer **doctrine** event. The draft emits a lean
-> `Routed` + `ReferralAttributed` pair that the indexer can map onto the RAL
-> shape. Whether to emit the full RAL `Attribution` struct on-chain in V2 or
-> keep it as an indexer-side projection is **Human Review item J6.**
+**V1 members as referrers:** unchanged — a V1 member must first call
+`claimV1Membership(proof)` to become `knownMember` and thus a valid referrer.
 
 ---
 
@@ -398,12 +442,18 @@ canon already places it.
 | Event | Purpose | Indexed fields |
 | --- | --- | --- |
 | `Purchased(buyer, memberNumber, era, usdcIn, synOut, synPerUsdc, firstSeat)` | Canonical purchase; `firstSeat` marks member creation; `memberNumber` authoritative iff `firstSeat` | buyer, memberNumber, era |
-| `Routed(memberNumber, vault, liquidity, operations, referral)` | Deterministic money split (mirrors V1 `TokensPurchased` + referral) | memberNumber |
-| `ReferralAttributed(referrer, buyer, memberNumber, amount, escrowed)` | Referral attribution + escrow flag | referrer, buyer, memberNumber |
-| `ReferralClaimed(referrer, amount)` | Escrow withdrawal | referrer |
+| `Routed(memberNumber, vault, liquidity, operations, referral)` | Deterministic money split (mirrors V1 `TokensPurchased`; `referral` mirrors the router's `splits[2]`) | memberNumber |
+| `CommissionRouterFallback(memberNumber, operationsAmount)` | Router unset/reverted → full Operations slice paid directly, no referral that tx | memberNumber |
+| `CommissionRouterProposed/Confirmed/Disabled(router, …)` | Timelocked router-wiring lifecycle | router |
 | `EraAdvanced(fromEra, toEra, atSeatNumber)` | Automatic boundary crossing; `atSeatNumber` = first seat of the new era | fromEra, toEra |
 | `V1MembershipRecognized(member)` | A V1 member registered/recognized in V2 | member |
 | `UnsoldSynRecovered(to, amount)` | Post-conclusion / wind-down sweep to Vault | to |
+
+> **Referral attribution + escrow events moved to the router.**
+> `CommissionRouterV1` emits the canonical `Attribution{source, buyer, referrer,
+> campaign, refTag, token, gross, tier, splits[5], paymentMode, attributionMode}`
+> plus `ReferralEscrowed`, `ReferralClaimed`, and `ReferredCountIncremented` (see
+> §R). The sale no longer emits any referral-attribution event itself.
 
 **Design rules honored:**
 - **Absolute values, not deltas** — every event carries enough to reconstruct
@@ -449,14 +499,15 @@ pause-and-sweep of unsold inventory.**
 
 | # | Threat | Vector | Mitigation in draft |
 | --- | --- | --- | --- |
-| T1 | Reentrancy | External calls in `buy` (USDC/SYN transfers, referral push) | `nonReentrant` + strict checks-effects-interactions (all state written before any transfer). USDC/SYN are non-callback ERC20s. |
+| T1 | Reentrancy | External calls in `buy` (USDC/SYN transfers, the router `route` call) | `nonReentrant` + strict checks-effects-interactions (all state written before any transfer). USDC/SYN are non-callback ERC20s; the router is governance-set, `nonReentrant`, and called last among value moves. |
 | T2 | Decimal mismatch (6dp↔18dp) | Wrong scaling SYN vs USDC | Single constant `SCALE_6_TO_18 = 1e12`; `synOut = usdcIn × synPerUsdc × 1e12`. Unit tests assert exact values per era. |
 | T3 | Rounding / precision drain | Division favoring buyer | **No division in the price path** (integer rates). Split uses remainder assignment (`ops = usdcIn − vault − liq`) so totals are exact with zero dust loss. |
 | T4 | Era-boundary race / front-run | Era steps between quote and mine; buyer gets worse rate | `minSynOut` slippage floor reverts the buy if the rate stepped. (Buying *earlier* for a cheaper rate is intended, not an exploit.) |
 | T5 | Inventory exhaustion mid-tx | Buy exceeds remaining SYN (global or era cap) | Two checks: `synOut ≤ eraSynCap[e] − soldInEra[e]` → `EraInventoryInsufficient`, and `synOut ≤ availableSyn` → `InsufficientInventory`. Atomic single-era buys (no cross-era partial fills). Frontend quotes via `quote()` (returns `eraCapRemaining` + `available`). |
 | T6 | Whale accumulation | One actor (or a Sybil swarm) drains a cheap early era | Three layered caps: `MAX_USDC_PER_TX`, the **per-era** `maxUsdcPerAddressPerEra[e]` (sized tiny early → ~$25k late; a single global cap was rejected as it let one wallet drain a tiny early era → `AddressEraCapExceeded`), and the aggregate `eraSynCap[e]` — the last is the only one a Sybil swarm cannot bypass (it bounds *total* per-era sales). See §C / §Q1. |
-| T7 | Self-referral / fake referral | Buyer refers self or a non-member to skim Operations | `referrer != buyer` **and** `knownMember[referrer]` required; else `refAmt = 0` and Operations keeps the full slice. |
-| T8 | Referral griefing | Blacklisted/reverting referrer bricks the buy | `try/catch` push → escrow to `referralOwed`; buy never reverts on referral failure. `claimReferral()` for withdrawal. |
+| T7 | Self-referral / fake referral | Buyer refers self or a non-member to skim Operations | The **router** re-validates `referrer != 0`, `referrer != buyer`, and `knownMember(referrer)` (via the calling sale's view); else commission = 0 and the full slice goes to Operations. |
+| T8 | Referral griefing | Blacklisted/reverting referrer bricks the buy | Router `try/catch` push → escrow to its `referralOwed`; the Operations remainder is forwarded regardless. If the whole `route` reverts, the sale's `try/catch` pays the full slice to Operations and emits `CommissionRouterFallback`. Buy never reverts; `claimReferral()` (on the router) for withdrawal. |
+| T8b | Malicious / buggy router | A swapped router reverts, drains, or misroutes | Router is governance-set behind a **7-day timelock** (instant **disable** always available); the sale only ever `approve`s and the router only ever **pulls the Operations slice** — Vault/Liquidity are already paid; a reverting router triggers the safe full-slice-to-Operations fallback. |
 | T9 | Routing failure | A destination wallet reverts on receive | Vault/Liquidity/Operations are protocol-owned EOAs; plain USDC `transfer` has no hook. (If ever a contract, same escrow pattern would apply — note for J4.) |
 | T10 | Owner abuse | Owner drains funds or rugs price | No price/split/wallet setters; no USDC withdrawal; SYN recovery destination is Vault-only. Pause cannot move money. |
 | T11 | Pause abuse (griefing) | Owner pauses forever to freeze the sale | Pause cannot *take* anything; worst case is a halted sale, recoverable by unpause or a multisig owner. Accept as residual; mitigate via multisig owner. |
@@ -508,14 +559,27 @@ pause-and-sweep of unsold inventory.**
 - Per-address per-era cap: buy up to cap OK; one wei over reverts
   `AddressEraCapExceeded`; cap resets in the next era.
 
-### H4. Unit — referral
-- Valid referrer: 5% to referrer, 5% to Operations, 70/20 untouched.
-- No referrer / self / non-member referrer: Operations keeps full 10%, no
-  `ReferralAttributed`.
+### H4. Unit — referral (now exercised against the router; see §R)
+- Tier ladder: `referredCount` 0/5/20/50/100 → 30/40/55/70/80% of the Operations
+  slice (Signal→Ambassador); a count exactly on a boundary takes the higher tier.
+- Valid referrer (Signal): 30% of the Ops slice to referrer, 70% of Ops to
+  Operations, 70/20 untouched; router emits `Attribution(tier=0, paymentMode=push)`.
+- No referrer / self / non-member referrer: full Operations slice to Operations,
+  `referrer=address(0)` in `Attribution`, **no** payout, **no** count increment.
+- `referredCount` increments **only** on a **valid first-seat** referral; a repeat
+  buyer's referral still pays commission but does **not** raise the count.
 - V1 referrer recognized via `claimV1Membership` then used as referrer: paid.
 - Reverting/blacklisted referrer (mock USDC that reverts on transfer to X):
-  buy succeeds, `referralOwed[X]` credited, `escrowed=true`; `claimReferral`
-  pays out; double-claim reverts `NothingToClaim`.
+  router escrows to `referralOwed[X]` (`paymentMode=escrow`), forwards the Ops
+  remainder, buy succeeds; `claimReferral` pays out; double-claim reverts
+  `NothingToClaim`.
+- Router **unset** OR `route` reverts: sale pays the **full** Operations slice to
+  Operations, emits `CommissionRouterFallback`, buy succeeds.
+- Source allow-list: a non-allow-listed caller into `route` reverts
+  `NotAuthorizedSource`; a disabled source is rejected.
+- Timelocked swap: `proposeCommissionRouter` then `confirmCommissionRouter`
+  before `ROUTER_TIMELOCK` reverts `RouterTimelocked`; after it succeeds;
+  `disableCommissionRouter` takes effect immediately.
 
 ### H5. Unit — inventory & admin
 - `buy` reverts `InsufficientInventory` when `synOut > balance`; exact-remaining
@@ -528,10 +592,15 @@ pause-and-sweep of unsold inventory.**
   acceptor reverts.
 
 ### H6. Security / property
-- Reentrancy: malicious ERC20 mock attempting reentry into `buy`/`claimReferral`
-  is blocked.
-- Invariant (fork/echidna-style): `totalSynSold == Σ synOut`; contract USDC
-  balance after any `buy` == `Σ referralOwed` (nothing else lingers).
+- Reentrancy: malicious ERC20 mock attempting reentry into `buy` (sale) or
+  `route`/`claimReferral` (router) is blocked by `nonReentrant`.
+- Invariant (fork/echidna-style): `totalSynSold == Σ synOut`; the **sale's**
+  transient USDC balance after any `buy` is **zero** (every slice is forwarded or
+  pulled by the router); the **router's** USDC balance == `Σ referralOwed` (escrow
+  only, nothing else lingers).
+- Conservation (per buy): `referrerAmount + operationsAmount == opsSlice` **and**
+  `vault + liquidity + opsSlice == usdcIn` — no dust, no leak, on every path
+  (including the router-fallback path).
 - Slippage: simulate era step between quote and execution → `minSynOut` reverts.
 
 ### H7. Fork / integration (Fuji first, per D4/D5)
@@ -612,7 +681,7 @@ pause-and-sweep of unsold inventory.**
 | `eras.ts` | Flip Era II+ `FUTURE → LIVE` once V2 is live; read the **on-chain** `currentEra()`/`quote()` for live rate; keep `eraForMemberNumber` for preview. (`synForUsdcInEra` already branches LIVE vs preview.) |
 | Buy component (`LivePurchase.tsx`) | Point at V2 `buy(usdcIn, referrer, minSynOut, v1Proof)`; compute `minSynOut` from `quote()` with a slippage tolerance; show current era + price + "you'd be member #N". |
 | Write-path invariants | New buy path MUST: `assertFreshWallet` before `writeContractAsync`, pin `account:`, route links via chain-registry helpers, add the guard-test entry (`SALE_FLOW_INVARIANTS` §"Adding a new sale component"). |
-| `/referral` | Reframe tiered preview → **fixed 5% (V2)**; wire referral arg; surface `claimV1Membership` for V1 members who want to refer; "direct sales commission" wording. |
+| `/referral` | Keep the tiered preview but **bind it to the router's on-chain reads** (`referredCount`/`tierFor`/`quoteCommission` — Signal→Ambassador, % of the Operations slice); wire the referral arg; surface `claimV1Membership` for V1 members who want to refer; "direct sales commission" wording. |
 | Protocol event pipeline | Add `era-advanced` and `referral` kinds across `protocol-events.ts` + `protocol-event-registry.ts` (lockstep edits + tests — per `protocol-event-pipeline` memory). |
 | Treasury/Activity/Chronicle | `Routed`/`EraAdvanced` feed Treasury Ledger + Activity; era-open is a protocol-subject Activity candidate (recognition-only copy). |
 | `quoteSyn` parity | V2 `quote()` replaces V1 `quoteSyn` on the buy surface; verify-drawer reads the live era rate from chain, not the hardcoded $0.01. |
@@ -628,8 +697,8 @@ pause-and-sweep of unsold inventory.**
 | J2 | V2 SYN funding amount `F` | Model repeats/upgrades by era; fund with headroom but `F ≤ 350M − (V1 already sold)`. | Determines when the honest inventory hard-stop hits. |
 | J3 | Per-era address caps (`maxUsdcPerAddressPerEra[1..9]`) | Set **one value per era** from the funding model — a single global cap is wrong (it let one wallet drain a tiny early era). Defensible ramp: II $1k · III $2.5k · IV $5k · V $10k · VI $15k · VII $20k · VIII/IX $25k. Each must be ≥ its era's USDC minimum. | The primary anti-whale + distribution-fairness lever; now sized per era so early eras are genuinely protected. |
 | J4 | Wallet rotation: immutable vs 2-step timelock | **Immutable** unless ops requires rotation. | Immutable = max trust; rotation = a live privileged path to scrutinize. |
-| J5 | Referral first-purchase-only or every purchase? | **Every eligible purchase** (matches RAL "every sale"). | Affects Operations economics; confirm against legal framing. |
-| J6 | Emit full RAL `Attribution{splits[5]…}` on-chain in V2, or project it indexer-side? | Lean `Routed`+`ReferralAttributed` on-chain; project RAL shape off-chain. | Gas + simplicity vs single-event richness. |
+| J5 | Referral first-purchase-only or every purchase? | **Commission on every eligible purchase**; the tier **count** (`referredCount`) increments **only on a valid first-seat** referral. **Open** — confirm whether commission should also be first-seat-only (see sprint report). | Affects Operations economics + tier-gaming surface; confirm against legal framing. |
+| J6 | Emit full RAL `Attribution{splits[5]…}` on-chain in V2, or project it indexer-side? | **Resolved (this sprint):** the **router** emits the full `Attribution{…splits[5], paymentMode, attributionMode}` on-chain (§R). | Single-event richness for read-models; the per-buy referral gas sits in the router, not the sale's hot path. |
 | J7 | Behavior past seat #1,000,000 | **Revert `SaleConcluded`** (bounded end). Reopen via a future "Million+" contract if desired. | Sprint 0 left Era 10 TBD. |
 | J8 | Wind-down / dust recovery | **Resolved in draft:** `recoverUnsoldSyn` allowed when paused, Vault-only. Confirm this is the desired authority. | Avoids permanently-locked dust SYN without granting a rug path. |
 | J9 | USDC address | Native Avalanche USDC (D3); verify on Fuji + mainnet. | Wrong variant breaks payment. |
@@ -659,8 +728,10 @@ one file; **production must import the audited OZ libraries**, not the stubs.)
   keyword). The single global `MAX_USDC_PER_ADDRESS_PER_ERA` was REMOVED.
 - *Constants*: `GENESIS_END=333`, `FINAL_SEAT=1_000_000`, `SCALE_6_TO_18=1e12`.
 - *Mutable*: `paused`, `memberCount`, `totalUsdcRaised`, `totalSynSold`,
-  `lastEra`, and the per-address maps (`knownMember`, `memberNumberOf`,
-  `usdcContributed`, `usdcByAddressEra`, `referralOwed`).
+  `lastEra`, the per-address maps (`knownMember`, `memberNumberOf`,
+  `usdcContributed`, `usdcByAddressEra`), and the router wiring
+  (`commissionRouter`, `pendingCommissionRouter`, `commissionRouterReadyAt`).
+  (`referralOwed` now lives on the **router**, not the sale.)
 
 **Era engine:** a single `pure` function `_eraInfoForSeat(seat) → (era,
 synPerUsdc, minUsdc6)` with hardcoded boundaries identical to `eras.ts`. Pure +
@@ -675,15 +746,18 @@ numbers for V1 members stay with the indexer (events carry `0` + `firstSeat=fals
 
 **Money path (CEI-ordered):** recognize V1 (if proof) → validate (era, min, cap,
 slippage, inventory) → write all state (membership, ledgers, totals,
-`EraAdvanced` at the boundary seat) → interactions (pull USDC in; push
-Vault/Liquidity/Operations; `try/catch` referral push with escrow fallback; push
-SYN out) → emit `Routed` + `Purchased`. `nonReentrant` wraps `buy` and
-`claimReferral`.
+`EraAdvanced` at the boundary seat) → interactions (pull USDC in; push Vault &
+Liquidity in full; hand the Operations slice to `CommissionRouter.route` under
+`try/catch`, falling back to a direct full-slice payment to Operations +
+`CommissionRouterFallback` if the router is unset or reverts; push SYN out) →
+emit `Routed` + `Purchased`. `nonReentrant` wraps `buy`. Referral payout,
+escrow, and `claimReferral` now live on the **router**.
 
-**Why pull-then-fan-out** (vs direct `transferFrom` to each destination): it
-lets the referral leg use `try/catch` + escrow without leaving the other legs in
-a half-paid state, and keeps the contract's transient USDC balance provably zero
-after each tx except for escrowed referral.
+**Why pull-then-fan-out** (vs direct `transferFrom` to each destination): it lets
+the sale hand the Operations slice to the router under `try/catch` (with a
+direct-to-Operations fallback) without leaving the other legs in a half-paid
+state, and keeps the sale's transient USDC balance provably zero after each tx
+(the **router**, not the sale, holds any escrowed referral).
 
 **Views for the frontend:** `quote(usdcIn)`, `currentEra()`,
 `nextSeatNumber()`, `availableSyn()`, `isConcluded()`, `eraOfSeat(seat)` — so the
@@ -743,8 +817,32 @@ pragma solidity 0.8.24;
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
     function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
     function balanceOf(address account) external view returns (uint256);
     function decimals() external view returns (uint8);
+}
+
+/// @notice Routing payload handed to the CommissionRouter. Duplicated byte-for-byte
+///         in docs/proposals/drafts/CommissionRouterV1.draft.sol — keep in lockstep.
+struct CommissionRouteInput {
+    address buyer;
+    address referrer;
+    uint256 gross;
+    uint256 vaultAmount;
+    uint256 liquidityAmount;
+    uint256 opsSlice;
+    bool    firstSeat;
+    bytes32 campaign;
+    bytes32 refTag;
+}
+
+/// @notice Minimal interface to the external CommissionRouter V1, which owns ALL
+///         referral tier logic + routing. Sale V2 hands it ONLY the Operations
+///         slice; the router pulls that slice via transferFrom (Sale V2 pre-approves).
+interface ICommissionRouter {
+    function route(CommissionRouteInput calldata p)
+        external
+        returns (uint256 referrerAmount, uint256 operationsAmount);
 }
 
 /**
@@ -790,12 +888,14 @@ interface IERC20 {
  *     and the aggregate per-era SYN sold-cap; the optional seat-reserve
  *     (RESERVE_THROUGH_SEAT) adds a fourth, seat-preservation bound.
  *
- *  5. 70 / 20 / 10 PRESERVED, REFERRAL FROM OPERATIONS ONLY. Vault (70%) and
- *     Liquidity (20%) are NEVER diluted. A 5% referral is carved strictly out
- *     of the 10% Operations slice (i.e. half of Operations). The contract pulls
- *     the full payment in, THEN fans out; the referrer is paid by the CONTRACT
- *     inside the same buy tx, NEVER by the Operations wallet afterwards. No
- *     referrer => Operations keeps the full 10%.
+ *  5. 70 / 20 / 10 PRESERVED, REFERRAL VIA CommissionRouter. Vault (70%) and
+ *     Liquidity (20%) are NEVER diluted. Sale V2 no longer computes any referral
+ *     rate inline: it pays Vault and Liquidity in full, then hands the ENTIRE 10%
+ *     Operations slice to an external CommissionRouter (a timelocked, governance-
+ *     set contract) that owns all tier logic, referredCount tracking, push-then-
+ *     escrow payout, and the full RAL-compatible Attribution event. If the router
+ *     is unset OR its call reverts, the full Operations slice falls back to the
+ *     Operations wallet (no referral) so a buy can NEVER be blocked.
  *
  *  6. CONTINUITY WITH V1 (no double-counting). Member numbers are a single
  *     global sequence. V2 is constructed with the final V1 unique-member count
@@ -822,8 +922,8 @@ contract SyndicateSaleV2 {
     error SlippageExceeded(uint256 got, uint256 minOut);
     error NotWindingDown();
     error RecoveryTimelocked(uint256 readyAt);
-    error NothingToClaim();
     error ProtectedToken();
+    error RouterTimelocked(uint256 readyAt);
     error AlreadyKnown();
     error InvalidProof();
     error ReserveFloorViolation(uint256 maxSynOut);
@@ -849,14 +949,10 @@ contract SyndicateSaleV2 {
         uint256 operationsAmount,
         uint256 referralAmount
     );
-    event ReferralAttributed(
-        address indexed referrer,
-        address indexed buyer,
-        uint256 indexed memberNumber,
-        uint256 amount,
-        bool    escrowed
-    );
-    event ReferralClaimed(address indexed referrer, uint256 amount);
+    event CommissionRouterProposed(address indexed router, uint64 readyAt);
+    event CommissionRouterConfirmed(address indexed router);
+    event CommissionRouterDisabled(address indexed previousRouter);
+    event CommissionRouterFallback(uint256 indexed memberNumber, uint256 operationsAmount);
     // `reason` distinguishes a NATURAL boundary open (range filled, atSeatNumber
     // == first seat of the new era) from a CAP-triggered advance (atSeatNumber
     // == the next seat to be issued, which may be mid-range).
@@ -889,6 +985,7 @@ contract SyndicateSaleV2 {
     uint256 private constant FINAL_SEAT    = 1_000_000;
     uint256 private constant SCALE_6_TO_18 = 1e12;
     uint256 public  constant RECOVERY_TIMELOCK = 7 days; // delay on the PAUSED recovery path
+    uint256 public  constant ROUTER_TIMELOCK   = 7 days; // delay on SWAPPING the commission router
 
     // ------------------------------------------------------------- ownership
     address public owner;
@@ -918,7 +1015,12 @@ contract SyndicateSaleV2 {
     mapping(address => uint256) public memberNumberOf;  // set for V2-new seats only
     mapping(address => uint256) public usdcContributed; // lifetime, per address (V2)
     mapping(address => mapping(uint16 => uint256)) public usdcByAddressEra; // anti-whale
-    mapping(address => uint256) public referralOwed;    // escrowed referral (6dp)
+    // CommissionRouter wiring. The FIRST router may be set ONCE at construction
+    // (day-one referral); later SWAPS are timelocked (adding trust is delayed).
+    // Disabling is instant (removing trust is always safe). See the admin section.
+    address public commissionRouter;
+    address public pendingCommissionRouter;
+    uint64  public commissionRouterReadyAt;
 
     // ----------------------------------------------------------- modifiers
     modifier onlyOwner() { require(msg.sender == owner, "not owner"); _; }
@@ -972,7 +1074,8 @@ contract SyndicateSaleV2 {
         uint256[9] memory addrCaps,
         uint256 maxUsdcPerTx,
         uint256 reserveThroughSeat,
-        uint256[9] memory eraCaps
+        uint256[9] memory eraCaps,
+        address initialRouter
     ) {
         if (
             usdc == address(0) || syn == address(0) || vault == address(0) ||
@@ -1024,6 +1127,17 @@ contract SyndicateSaleV2 {
 
         owner = msg.sender;
         emit OwnershipTransferred(address(0), msg.sender);
+
+        // Day-one referral: optionally wire the CommissionRouter at construction and
+        // grant it a max USDC allowance so it can PULL the Operations slice during
+        // buy(). Pass address(0) to launch with referral OFF (safe base behavior);
+        // a router can be added later via the timelocked setter. ALL LATER swaps go
+        // through proposeCommissionRouter -> confirmCommissionRouter (timelocked).
+        if (initialRouter != address(0)) {
+            commissionRouter = initialRouter;
+            USDC.approve(initialRouter, type(uint256).max);
+            emit CommissionRouterConfirmed(initialRouter);
+        }
     }
 
     // =================================================== V1 recognition
@@ -1105,14 +1219,12 @@ contract SyndicateSaleV2 {
             if (synOut > sellableNow) revert ReserveFloorViolation(sellableNow);
         }
 
-        // splits (70/20/10, remainder-safe; referral from Ops only)
+        // splits (70/20/10, remainder-safe). Vault & Liquidity are NEVER diluted;
+        // the ENTIRE Operations slice (10%) is routed through the CommissionRouter,
+        // which owns ALL referral tier logic. Sale V2 computes NO referral rate.
         uint256 vaultAmt = (usdcIn * 70) / 100;
         uint256 liqAmt = (usdcIn * 20) / 100;
         uint256 opsSlice = usdcIn - vaultAmt - liqAmt; // exact remainder == ~10%
-        uint256 refAmt = 0;
-        bool referralValid = referrer != address(0) && referrer != msg.sender && knownMember[referrer];
-        if (referralValid) refAmt = opsSlice / 2; // fixed 5% of gross
-        uint256 opsAmt = opsSlice - refAmt;
 
         // ================= EFFECTS (state before interactions) =============
         // `firstSeat` was computed above (reserve check) and is reused here.
@@ -1134,40 +1246,48 @@ contract SyndicateSaleV2 {
         totalSynSold += synOut;
 
         // ================= INTERACTIONS ====================================
-        // Pull the FULL payment into the contract, THEN fan out. The referrer
-        // is paid by THIS CONTRACT (never by the Operations wallet afterwards).
-        // Order mirrors the canonical flow: Vault -> Liquidity -> Referrer -> Ops.
+        // Pull the FULL payment in, THEN fan out. Vault & Liquidity are paid first
+        // and IN FULL. The Operations slice is handed to the CommissionRouter,
+        // which pays the referrer (tiered, from Operations only) and forwards the
+        // remainder to the Operations wallet. If the router is unset OR its call
+        // reverts, the FULL Operations slice falls back to the Operations wallet so
+        // a buy can NEVER be blocked by the referral path.
         _safeTransferFrom(USDC, msg.sender, address(this), usdcIn);
         _safeTransfer(USDC, VAULT, vaultAmt);
         _safeTransfer(USDC, LIQUIDITY, liqAmt);
 
-        bool escrowed = false;
-        if (refAmt > 0) {
-            // Try push; escrow on failure (e.g. USDC blacklist) so the BUY IS
-            // NEVER BLOCKED by a bad referrer. opsAmt is ALREADY net of refAmt,
-            // so the Operations wallet is paid its reduced slice regardless.
-            try USDC.transfer(referrer, refAmt) returns (bool ok) {
-                if (!ok) { referralOwed[referrer] += refAmt; escrowed = true; }
+        address router = commissionRouter;
+        if (router != address(0)) {
+            CommissionRouteInput memory ri = CommissionRouteInput({
+                buyer: msg.sender,
+                referrer: referrer,
+                gross: usdcIn,
+                vaultAmount: vaultAmt,
+                liquidityAmount: liqAmt,
+                opsSlice: opsSlice,
+                firstSeat: firstSeat,
+                campaign: bytes32(0), // reserved (registered campaign id) — future
+                refTag: bytes32(0)    // reserved (raw analytics tag) — future
+            });
+            // The router PULLS opsSlice via transferFrom (Sale V2 pre-approved it
+            // when the router was set). A revert reverts that pull in the SAME
+            // frame, so the catch path re-routes the UNTOUCHED slice safely.
+            try ICommissionRouter(router).route(ri) returns (uint256 refPaid, uint256 opsPaid) {
+                emit Routed(assignedNumber, vaultAmt, liqAmt, opsPaid, refPaid);
             } catch {
-                referralOwed[referrer] += refAmt; escrowed = true;
+                _safeTransfer(USDC, OPERATIONS, opsSlice);
+                emit CommissionRouterFallback(assignedNumber, opsSlice);
+                emit Routed(assignedNumber, vaultAmt, liqAmt, opsSlice, 0);
             }
-            emit ReferralAttributed(referrer, msg.sender, assignedNumber, refAmt, escrowed);
+        } else {
+            // Router unset — safe base behavior: full Operations slice, no referral.
+            _safeTransfer(USDC, OPERATIONS, opsSlice);
+            emit Routed(assignedNumber, vaultAmt, liqAmt, opsSlice, 0);
         }
 
-        _safeTransfer(USDC, OPERATIONS, opsAmt);
         _safeTransfer(SYN, msg.sender, synOut);
 
-        emit Routed(assignedNumber, vaultAmt, liqAmt, opsAmt, refAmt);
         emit Purchased(msg.sender, assignedNumber, era, usdcIn, synOut, synPerUsdc, firstSeat);
-    }
-
-    /// @notice Referrer claims any escrowed commission (pull fallback).
-    function claimReferral() external nonReentrant {
-        uint256 amt = referralOwed[msg.sender];
-        if (amt == 0) revert NothingToClaim();
-        referralOwed[msg.sender] = 0;
-        _safeTransfer(USDC, msg.sender, amt);
-        emit ReferralClaimed(msg.sender, amt);
     }
 
     // ================================================================ views
@@ -1282,6 +1402,48 @@ contract SyndicateSaleV2 {
         paused = false;
         pausedAt = 0;
         emit Unpaused(msg.sender);
+    }
+
+    // ============================================ commission router (referral)
+    /// @notice Propose a NEW CommissionRouter. Two-step + timelocked: ADDING trust
+    ///         is delayed (ROUTER_TIMELOCK) so a router swap cannot be slipped in
+    ///         silently. address(0) is rejected here — use disableCommissionRouter
+    ///         to turn referral OFF instantly. (The FIRST router may instead be set
+    ///         once at construction for day-one referral.)
+    function proposeCommissionRouter(address router) external onlyOwner {
+        if (router == address(0)) revert ZeroAddress();
+        pendingCommissionRouter = router;
+        commissionRouterReadyAt = uint64(block.timestamp + ROUTER_TIMELOCK);
+        emit CommissionRouterProposed(router, commissionRouterReadyAt);
+    }
+
+    /// @notice Activate the proposed router after the timelock. Zeroes the OLD
+    ///         router's USDC allowance and grants the NEW router a max USDC
+    ///         allowance so it can PULL the Operations slice during buy().
+    function confirmCommissionRouter() external onlyOwner {
+        address router = pendingCommissionRouter;
+        if (router == address(0)) revert ZeroAddress();
+        uint256 readyAt = commissionRouterReadyAt;
+        if (block.timestamp < readyAt) revert RouterTimelocked(readyAt);
+        address old = commissionRouter;
+        if (old != address(0)) USDC.approve(old, 0);
+        commissionRouter = router;
+        pendingCommissionRouter = address(0);
+        commissionRouterReadyAt = 0;
+        USDC.approve(router, type(uint256).max);
+        emit CommissionRouterConfirmed(router);
+    }
+
+    /// @notice Instantly DISABLE referral routing (no timelock — removing trust is
+    ///         always safe). Buys then route the full Operations slice straight to
+    ///         the Operations wallet (no referral) until a new router is confirmed.
+    function disableCommissionRouter() external onlyOwner {
+        address old = commissionRouter;
+        if (old != address(0)) USDC.approve(old, 0);
+        commissionRouter = address(0);
+        pendingCommissionRouter = address(0);
+        commissionRouterReadyAt = 0;
+        emit CommissionRouterDisabled(old);
     }
 
     /// @notice Return remaining unsold SYN to the immutable Vault. Allowed when:
@@ -1517,18 +1679,25 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
   `eraSynCap` reverts `EraInventoryInsufficient` (the buyer sizes down), and the
   era only advances *between* buys via `_syncEra`. `minSynOut` reverts if the era
   stepped between quote and mine (T4). There are **no cross-era partial fills.**
-- **How referral works / is deferred** — **fixed 5% of gross, carved only from
-  the 10% Operations slice** (Vault 70% / Liquidity 20% never diluted). Valid iff
-  `referrer != buyer` **and** `knownMember[referrer]`. Push in-tx; on failure
-  (e.g. USDC blacklist) **escrow** to `referralOwed` and let the referrer
-  `claimReferral()` — the buy is never blocked. Tiered/reputation boosts are
-  **deferred to V3** (J5/J6).
+- **How referral works** — Sale V2 hands the full 10% Operations slice to an
+  external **`CommissionRouter V1`** (Vault 70% / Liquidity 20% never diluted).
+  The router pays a **count-based tier** (Signal 30% → Ambassador 80% **of the
+  Operations slice**; ≈3–8% of gross), valid iff `referrer != 0`,
+  `referrer != buyer` **and** `knownMember(referrer)`. Push in-tx; on failure
+  (e.g. USDC blacklist) **escrow** to the router's `referralOwed` →
+  `claimReferral()` — the buy is never blocked. Router unset/reverting → full
+  slice to Operations (`CommissionRouterFallback`). Retention-gating and
+  reputation boosts stay **off-chain** read-models.
 - **What admin can do** — `pause`/`unpause`; `recoverUnsoldSyn` (Vault-only, only
   when concluded or paused); `rescueToken` (non-USDC/SYN only, to Vault); 2-step
-  `transferOwnership`/`acceptOwnership` (to a multisig).
+  `transferOwnership`/`acceptOwnership` (to a multisig); wire the commission router
+  — `proposeCommissionRouter`→`confirmCommissionRouter` (7-day timelock) or
+  `disableCommissionRouter` (instant; turns referral off → full slice to Operations).
 - **What admin cannot do** — change era rates/boundaries, change the 70/20/10
   split, change any wallet, withdraw USDC, take buyer SYN, or touch escrowed
-  referral funds. **Pause cannot move a single dollar.**
+  referral funds. Even the commission router can only ever touch the **Operations
+  slice** — Vault & Liquidity are paid in full before it is called. **Pause cannot
+  move a single dollar.**
 - **Can unsold SYN be recovered?** — Yes, via `recoverUnsoldSyn()`, but **only**
   when the sale is concluded, or after the sale has been **paused for ≥
   `RECOVERY_TIMELOCK`** (no instant pause-and-sweep).
@@ -1561,14 +1730,18 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
 | Era boundary purchase | Buy that takes count across a boundary (e.g. #333→#334) | `EraAdvanced(from,to,atSeatNumber=boundary seat)` once; that buy priced at the **new** current era; correct even if a repeat buyer triggers it. |
 | Too large for remaining era inventory | `uscIn` valid but `synOut > balance` | Revert `InsufficientInventory(available)`; exact-remaining buy succeeds and zeroes inventory. **No partial fill.** |
 | Too large for remaining contract inventory | Same as above (one shared balance) | Same `InsufficientInventory`; below-min dust → pause + `recoverUnsoldSyn`. |
-| Referral valid | `referrer != buyer`, `knownMember[referrer]` | 5% to referrer, 5% Operations, 70/20 untouched; `ReferralAttributed(escrowed=false)`. |
-| Referral invalid (non-member) | `knownMember[referrer]=false` | `refAmt=0`, Operations keeps full 10%, **no** `ReferralAttributed`. |
-| Self-referral | `referrer == msg.sender` | `refAmt=0`, Operations keeps full 10%, no attribution. |
+| Referral valid (Signal tier) | `referrer != buyer`, `knownMember(referrer)`, `referredCount<5` | 30% of the Ops slice to referrer, 70% of Ops to Operations, 70/20 untouched; router `Attribution(tier=0, paymentMode=push)`. |
+| Referral tier step | `referredCount` = 5 / 20 / 50 / 100 | commission steps 40 / 55 / 70 / 80% of the Ops slice (Advocate→Ambassador). |
+| `referredCount` increment | valid **first-seat** vs repeat buy | first-seat → count++ (`ReferredCountIncremented`); repeat buy pays commission but **no** count++. |
+| Referral invalid (non-member) | `knownMember(referrer)=false` | commission 0, Operations keeps full 10%, `Attribution(referrer=address(0))`. |
+| Self-referral | `referrer == buyer` | commission 0, Operations keeps full 10%, `referrer=address(0)`. |
+| Router unset / reverts | `commissionRouter==0` or `route` reverts | sale pays full Ops slice to Operations, `CommissionRouterFallback`, buy succeeds. |
+| Unauthorized source | non-allow-listed caller → `route` | reverts `NotAuthorizedSource`. |
 | Paused sale | `paused=true`, `buy` | Revert (`whenNotPaused`); `unpause` restores. |
 | Recover unsold SYN | concluded **or** paused | Sweeps full SYN balance to **Vault**, `UnsoldSynRecovered`; reverts `NotWindingDown` if neither. |
 | Admin abuse cases | owner tries to: set rate/split/wallet (no such fn); withdraw USDC (no path); `rescueToken(USDC/SYN)` → `ProtectedToken`; `recoverUnsoldSyn` while live → `NotWindingDown`; non-pending `acceptOwnership` → revert | All blocked; no path moves buyer funds, USDC, or non-Vault SYN. |
-| Blacklisted/reverting referrer | mock USDC reverts transfer→referrer | `buy` succeeds, `referralOwed` credited, `escrowed=true`; `claimReferral` pays; double-claim `NothingToClaim`. |
-| Reentrancy | malicious token re-enters `buy`/`claimReferral` | Blocked by `nonReentrant` + CEI. |
+| Blacklisted/reverting referrer | mock USDC reverts transfer→referrer | router escrows to `referralOwed` (`paymentMode=escrow`), forwards the Ops remainder, `buy` succeeds; `claimReferral` pays; double-claim `NothingToClaim`. |
+| Reentrancy | malicious token re-enters `buy` (sale) or `route`/`claimReferral` (router) | Blocked by `nonReentrant` + CEI. |
 | Exact pricing per era | min-entry buy each era II–IX | `synOut == usdcIn × synPerUsdc × 1e12` exactly (e.g. Era II $10→500 SYN, Era IX $100→100 SYN); split sums to `usdcIn`. |
 | Per-era address cap | buyer exceeds `maxUsdcPerAddressPerEra[era]` (cumulative) | Revert `AddressEraCapExceeded(capRemaining)`; a different era's cap is independent; a buy within the era's cap succeeds. |
 | Cap is per-era, not global | tiny Era II cap + large late-era cap | Era II ceiling does not constrain a late-era buyer and vice-versa (no single global value). |
@@ -1627,8 +1800,9 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
   `minSynOut` from `quote()` + slippage; read live `currentEra()`/`quote()`.
 - Apply the six write-path invariants (`assertFreshWallet`, `account:` pinning,
   chain-registry links, guard-test entry) per `SALE_FLOW_INVARIANTS`.
-- `/referral`: reframe tiered preview → **fixed 5% (V2)**; surface
-  `claimV1Membership` for V1 referrers.
+- `/referral`: bind the tiered preview to the **router's** on-chain
+  `referredCount`/`tierFor`/`quoteCommission`; surface `claimV1Membership` for V1
+  referrers.
 - Add `era-advanced` + `referral` event kinds across the protocol-event pipeline
   (lockstep edits + tests); extend the localStorage purchase-events cache to V2.
 
@@ -1639,7 +1813,8 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
 > Scope: this addendum answers the founder's seven-part economic/security review.
 > It changed **only** this report and the draft `.sol` — no deploy, no Sale V1
 > change, no `src/` change, no funds moved. Economic doctrine (rates, splits,
-> wallets, referral 5%) is unchanged; these changes are **bounds + clarity**.
+> wallets) is unchanged; these changes are **bounds + clarity**. (Referral was
+> later moved from inline-5% to the external CommissionRouter — see §D / §R.)
 
 ### Q1. Inventory model — per-era SYN caps
 
@@ -1745,9 +1920,10 @@ revert**.
 
 ### Q4. Referral cash flow (must be impossible to misread)
 
-The Operations wallet is a **plain EOA**. It **never** pays the referrer. The
-**contract** pulls the full USDC in, then fans out and pays the referrer in the
-**same `buy` transaction**.
+The Operations wallet is a **plain EOA**. It **never** pays the referrer. Sale V2
+pays Vault & Liquidity in full, then hands the Operations slice to the
+**CommissionRouter**, which pays the referrer (a count-based tier of *that slice*)
+and forwards the remainder to Operations — all in the **same `buy` transaction**.
 
 ```
               10 USDC (with a valid referrer)
@@ -1756,35 +1932,47 @@ The Operations wallet is a **plain EOA**. It **never** pays the referrer. The
               ┌────────────────────────┐
    buyer ───▶ │   Sale V2 contract      │  (pulls the FULL 10 USDC in first)
               └───────────┬────────────┘
-                          │  splits computed BEFORE any payout:
-                          │    vault = 7.00   liq = 2.00   opsSlice = 1.00
-                          │    ref = opsSlice / 2 = 0.50
-                          │    ops = opsSlice − ref = 0.50
+                          │  vault = 7.00, liq = 2.00 paid IN FULL
+                          │  opsSlice = 1.00 → CommissionRouter.route()
+                          ▼
+              ┌────────────────────────┐
+              │  CommissionRouter V1    │  (pulls the 1.00 opsSlice)
+              └───────────┬────────────┘
+                          │  tier from referredCount (Signal = 30% of opsSlice):
+                          │    ref = 1.00 × 30% = 0.30
+                          │    ops = 1.00 − 0.30 = 0.70
           ┌───────────────┼────────────────┬────────────────┐
           ▼               ▼                ▼                ▼
        Vault           Liquidity        Referrer         Operations
-       7.00 USDC       2.00 USDC        0.50 USDC        0.50 USDC
-       (70%)           (20%)            (5%, from Ops)   (5%, net)
+       7.00 USDC       2.00 USDC        0.30 USDC        0.70 USDC
+       (70%)           (20%)            (Signal: 30%     (net of the
+                                         of opsSlice)     commission)
 ```
 
-Without a referrer: Vault 7.00 · Liquidity 2.00 · Operations **1.00** (full 10%).
-**Vault and Liquidity are never diluted.**
+Without a referrer (or an unset/reverting router): Vault 7.00 · Liquidity 2.00 ·
+Operations **1.00** (full 10%). **Vault and Liquidity are never diluted.** (The
+0.30 / 0.70 split above is the Signal tier; higher tiers pay 40/55/70/80% of the
+opsSlice — the referrer share never exceeds the opsSlice.)
 
-1. **Exact step the referrer is paid?** Inside `buy()`, after the full
-   `transferFrom` pulls USDC in and after state effects, in the fan-out (the
-   `refAmt > 0` block) — before the Operations transfer.
-2. **Pull-then-fan-out?** Yes — `transferFrom(buyer → contract, usdcIn)` first,
-   then all payouts originate from the contract.
-3. **Does Operations ever pay the referrer manually?** **No, never.** `opsAmt` is
-   already net of `refAmt`; Operations receives only its reduced slice.
-4. **If the referrer transfer fails?** It is **escrowed** to `referralOwed` and
-   the buy still succeeds; the referrer later calls `claimReferral()`. A bad
-   referrer can never brick a buy.
-5. **Escrow safe/clear?** Yes — pull-payment fallback, `nonReentrant`,
-   `ReferralAttributed(…, escrowed=true)` emitted.
-6. **Event shows referral and operations separately?** Yes — `Routed(memberNumber,
-   vaultAmount, liquidityAmount, operationsAmount, referralAmount)` carries both,
-   and `ReferralAttributed` carries the referral leg explicitly.
+1. **Exact step the referrer is paid?** Inside the **router's** `route()` — which
+   Sale V2 calls (under `try/catch`) after paying Vault & Liquidity in full and
+   after its own state effects. The router pulls the Operations slice, pays the
+   referrer, then forwards the remainder to Operations.
+2. **Pull-then-fan-out?** Yes — the sale does `transferFrom(buyer → sale, usdcIn)`
+   first and pays Vault/Liquidity; the router then **pulls** the Operations slice
+   from the sale via its own `transferFrom`.
+3. **Does Operations ever pay the referrer manually?** **No, never.** The router
+   forwards Operations only the remainder after the commission; the Operations EOA
+   never sends anything.
+4. **If the referrer transfer fails?** The router **escrows** to its `referralOwed`
+   and still forwards the Operations remainder; the buy succeeds and the referrer
+   later calls `claimReferral()`. If the whole `route` reverts, the sale's
+   `try/catch` pays the full slice to Operations. A bad referrer can never brick a buy.
+5. **Escrow safe/clear?** Yes — pull-payment fallback on the router, `nonReentrant`,
+   `Attribution(…, paymentMode=escrow)` emitted.
+6. **Event shows referral and operations separately?** Yes — the sale's
+   `Routed(memberNumber, vault, liquidity, operations, referral)` carries both
+   legs, and the router's `Attribution{…splits[5]…}` carries the full breakdown.
 
 ### Q5. Admin / recovery rules
 
@@ -1821,8 +2009,8 @@ pause for safety only, recovered SYN never to the owner.
 | Buy crossing an era boundary | Revert `EraInventoryInsufficient`; advance only between buys | Split / partial fill | **Revert (adopted)** | No silent split; clear revert; single-era pricing. |
 | Unsold era inventory | Remains in the global pool for later eras | Reserve / return to Vault | **Remain in pool** | Simplest + safe; no stranded SYN. |
 | Market-price arbitrage protection | Hard caps + bounded end + future V3 | Oracle / peg | **Hard caps, no oracle** | Oracle = manipulation/trust/complexity; contradicts the prescripted schedule. |
-| Referral payment flow | Contract pays referrer in-tx (Vault→Liq→Ref→Ops) | Operations pays later | **Contract in-tx (adopted)** | Automatic, atomic; the Operations EOA never pays out. |
-| Referral escrow | `referralOwed` + `claimReferral` on push failure | Block the buy on failure | **Escrow (keep)** | A bad referrer can't brick buys. |
+| Referral payment flow | **Router** pays referrer in-tx from the Operations slice (Vault & Liquidity paid in full first; sale → `route` under `try/catch` with a direct-to-Operations fallback) | Inline in the sale / Operations pays later | **External router (adopted, this sprint)** | Isolates all referral policy; automatic, atomic; the Operations EOA never pays out; fallback keeps buys unblockable. |
+| Referral escrow | Router `referralOwed` + `claimReferral` on push failure | Block the buy on failure | **Escrow on the router (keep)** | A bad referrer can't brick buys; escrow is isolated from the sale. |
 | Admin recovery | Concluded OR paused-for-≥-timelock, Vault-only | Concluded-only / instant-paused | **Timelocked (adopted)** | Keeps the dust-deadlock fix; blocks an instant pause+sweep. |
 | V1 member recognition | Immutable Merkle root + `knownMember` + proof | Numeric offset only | **Merkle (keep)** | Prevents double-count; lets V1 members refer. |
 
@@ -1882,6 +2070,432 @@ timelock duration. **J16 is now implemented** as the configurable
 `RESERVE_THROUGH_SEAT` (choose the value at deploy; default #10,000 = Eras II–IV),
 and **J3 is now per-era** (`maxUsdcPerAddressPerEra[1..9]`, not a single global
 cap).
+
+---
+
+## R. CommissionRouter V1 (referral routing)
+
+> **UNAUDITED DRAFT — NOT FOR DEPLOYMENT.** Companion to §L. Replace the stub
+> interfaces/mixins with audited OpenZeppelin v5 (`IERC20`/`SafeERC20`,
+> `Ownable2Step`, `ReentrancyGuard`) before any compile-for-deploy. Identical copy
+> saved at `docs/proposals/drafts/CommissionRouterV1.draft.sol`.
+
+### R1. Responsibility (deliberately narrow)
+
+The router owns **referral routing only**. It receives the **10% Operations
+slice** from an allow-listed sale, pays the referrer a **tier-based commission
+carved strictly from that slice**, and forwards the remainder to the sale's
+Operations wallet. It **never** references the Vault (70%) or Liquidity (20%)
+slices (they are echoed into the event for completeness only). It computes **no**
+reputation / retention / durability / Builder-Record math — those are off-chain
+read-models fed by its `Attribution` events.
+
+### R2. Trust & control surface
+
+| Concern | Design |
+| --- | --- |
+| Ownership | **Ownable2Step** (multisig owner recommended). |
+| Who may call `route` | A **governance allow-list** of sources: `addSource(caller, sourceId, operationsWallet)`. Only enabled callers route; destinations are governance-set, never passed by the caller. |
+| Eligibility | `route` re-validates the referrer via `IMembershipRegistry(msg.sender).knownMember(referrer)` — the calling sale is the on-chain source of membership truth. No off-chain trust enters money routing. |
+| Tier table | **Count-only, immutable** (`_tierFor`, a pure function mirroring `src/lib/preview/referral.ts`). No setter, no oracle, no proxy. |
+| `referredCount` | Increments **only** on a **valid first-seat** referral. |
+
+### R3. Custody & flow (per buy)
+
+1. Sale V2 pays **Vault** and **Liquidity** in full, then calls `route(p)` with
+   the Operations slice amount (`opsSlice`) and the buy context.
+2. The router **pulls** exactly `opsSlice` from the sale via `transferFrom`
+   (the sale pre-approved the router when it was set).
+3. It snapshots the referrer's tier from the **current** `referredCount`,
+   computes `referrerAmount = opsSlice × commissionPct / 100`
+   (`referrerAmount ≤ opsSlice` always; max tier is 80%).
+4. **Push** the commission to the referrer; on any failure **escrow** it
+   (`referralOwed`, claimable via `claimReferral()`).
+5. Forward `opsSlice − referrerAmount` to the source's Operations wallet.
+6. Emit the canonical **RAL `Attribution`** event.
+
+**Atomicity / fallback:** because the pull happens *inside* `route`, a router
+revert reverts the pull in the same call frame — so Sale V2's `try/catch`
+fallback re-routes the **untouched** slice to Operations. Invariant:
+`referrerAmount + operationsAmount == opsSlice` on every path (no dust, no leak).
+
+### R4. Canonical event
+
+```
+Attribution(
+  bytes32 indexed source,        // sourceId of the calling sale
+  address indexed buyer,
+  address indexed referrer,      // address(0) when no valid referral
+  bytes32 campaign,              // reserved (0 in V1)
+  bytes32 refTag,                // reserved (0 in V1)
+  address token,                 // USDC
+  uint256 gross,                 // full USDC paid by the buyer
+  uint16  tier,                  // 0..4 (0 = none / Signal)
+  uint256[5] splits,             // [vault, liquidity, referrer, operations, protocol]
+  uint8   paymentMode,           // 0 push, 1 escrow
+  uint8   attributionMode        // 0 last-verified (1 buyer-override reserved)
+)
+```
+
+### R5. Draft Solidity implementation
+
+```solidity
+// SPDX-License-Identifier: UNLICENSED
+// =============================================================================
+//  CommissionRouterV1 — DRAFT · NOT FOR DEPLOYMENT
+//  The Syndicate · Referral Commission Router (companion to SyndicateSaleV2)
+// =============================================================================
+//  STATUS: UNAUDITED DESIGN DRAFT. Produced during the Sale V2 architecture
+//          phase for HUMAN REVIEW ONLY.
+//
+//  THIS FILE MUST NOT BE:
+//    - deployed to any network (mainnet OR testnet) without sign-off,
+//    - wired into the frontend / contract-registry,
+//    - treated as final or audited.
+//
+//  SCOPE (deliberately narrow): this contract owns referral ROUTING ONLY.
+//    - It receives the Operations slice (10%) from an allow-listed sale, pays the
+//      referrer a tier-based commission carved STRICTLY from that slice, and
+//      forwards the remainder to the sale's Operations wallet.
+//    - It NEVER touches the Vault (70%) or Liquidity (20%) slices — those are paid
+//      in full by the sale BEFORE it ever calls this router.
+//    - It computes NO reputation / retention / durability / Builder-Record math.
+//      Those are OFF-CHAIN / indexer read-models, fed by this contract's
+//      RAL-compatible `Attribution` events. (Founder doctrine items 5/6.)
+//    - No oracle. No upgradeable proxy. Tightly-controlled, mostly-immutable params.
+//
+//  TIER LADDER (count-only axis) is the canonical referral ladder recovered
+//  verbatim from src/lib/preview/referral.ts — NO new economics invented:
+//      Signal     count >=   0  -> 30% of the Operations slice
+//      Advocate   count >=   5  -> 40%
+//      Connector  count >=  20  -> 55%
+//      Catalyst   count >=  50  -> 70%
+//      Ambassador count >= 100  -> 80%
+//  `commissionPct` is a PERCENT OF THE OPERATIONS SLICE (10% of gross), NOT of
+//  gross. retentionRequiredPct from the source is INTENTIONALLY NOT enforced
+//  on-chain in V1 — it is a future off-chain read-model gate, never a payout gate
+//  (only data "safely knowable on-chain" gates a live payout; founder doctrine 4).
+//
+//  Companion files:
+//    docs/proposals/drafts/SyndicateSaleV2.draft.sol
+//    docs/proposals/SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md (§D, §L, §R)
+//    docs/REVENUE_ATTRIBUTION_LAYER.md (the RAL event doctrine this satisfies)
+// =============================================================================
+pragma solidity 0.8.24;
+
+// In production, import the audited OpenZeppelin v5 base:
+//   import {IERC20}       from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+//   import {SafeERC20}    from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+//   import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
+//   import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+// The lightweight interfaces / mixins below are placeholders so the draft reads
+// as a single file. DO NOT ship these stubs — use the audited OZ libraries.
+
+interface IERC20 {
+    function transfer(address to, uint256 amount) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+}
+
+/// @notice Membership-eligibility view the calling source (sale) MUST expose. The
+///         router validates a referrer against the SALE that called it
+///         (`msg.sender`) — the on-chain source of membership truth. No off-chain
+///         trust enters money routing (founder doctrine item 8).
+interface IMembershipRegistry {
+    function knownMember(address account) external view returns (bool);
+}
+
+/// @notice Routing payload handed in by an allow-listed source. This struct is
+///         duplicated byte-for-byte in SyndicateSaleV2.draft.sol — keep them in
+///         lockstep (a mismatch is an ABI break, caught at integration).
+struct CommissionRouteInput {
+    address buyer;            // the purchaser (used for self-referral check)
+    address referrer;         // named referrer (0 = none); re-validated here
+    uint256 gross;            // full USDC paid by the buyer (6dp) — for the event
+    uint256 vaultAmount;      // 70% slice the sale already paid — for the event
+    uint256 liquidityAmount;  // 20% slice the sale already paid — for the event
+    uint256 opsSlice;         // 10% Operations slice the router will distribute
+    bool    firstSeat;        // true iff this buy issues a NEW member seat
+    bytes32 campaign;         // reserved (registered campaign id); 0 in V1
+    bytes32 refTag;           // reserved (raw analytics tag); 0 in V1
+}
+
+/**
+ * @title  CommissionRouterV1 (DRAFT)
+ * @notice Tier-based referral router for The Syndicate's membership sale. Pays
+ *         referral commission out of the Operations slice ONLY, escrows on push
+ *         failure, tracks a count-only tier axis, and emits a full RAL-compatible
+ *         `Attribution` event so downstream Reputation / Builder-Record read-models
+ *         are never starved. Governance (Ownable2Step / multisig) allow-lists the
+ *         sources that may call `route`.
+ */
+contract CommissionRouterV1 {
+    // using SafeERC20 for IERC20; // (production)
+
+    // --------------------------------------------------------------- errors
+    error ZeroAddress();
+    error NotAuthorizedSource();
+    error SourceExists();
+    error UnknownSource();
+    error NothingToClaim();
+    error OpsCapExceeded();   // defensive: referral must never exceed the Ops slice
+    error PullFailed();       // transferFrom of the Operations slice failed
+
+    // ----------------------------------------------- mode codes (event fields)
+    uint8 internal constant MODE_PUSH        = 0; // commission pushed in-tx
+    uint8 internal constant MODE_ESCROW      = 1; // commission escrowed (claimable)
+    uint8 internal constant ATTR_LAST_VERIFIED = 0; // last-verified-referrer model
+    // uint8 internal constant ATTR_BUYER_OVERRIDE = 1; // reserved for V2+ override
+
+    // --------------------------------------------------------------- events
+    /// @notice The canonical, indexer-first RAL attribution event. Carries enough
+    ///         data to reconstruct the full money movement AND to power future
+    ///         Reputation / Builder-Record projections without re-reading the sale.
+    ///         splits = [vault, liquidity, referrer, operations, protocol].
+    event Attribution(
+        bytes32 indexed source,        // sourceId of the calling sale
+        address indexed buyer,
+        address indexed referrer,      // address(0) when no valid referral
+        bytes32 campaign,              // reserved (0 in V1)
+        bytes32 refTag,                // reserved (0 in V1)
+        address token,                 // payout token (USDC)
+        uint256 gross,                 // full USDC paid by the buyer
+        uint16  tier,                  // referrer tier index 0..4 (0 = none/Signal)
+        uint256[5] splits,             // [vault, liquidity, referrer, operations, protocol]
+        uint8   paymentMode,           // 0 push, 1 escrow
+        uint8   attributionMode        // 0 last-verified (1 buyer-override reserved)
+    );
+    event ReferralEscrowed(address indexed referrer, uint256 amount);
+    event ReferralClaimed(address indexed referrer, uint256 amount);
+    event ReferredCountIncremented(address indexed referrer, uint256 newCount);
+    event SourceAdded(address indexed caller, bytes32 indexed sourceId, address operationsWallet);
+    event SourceRemoved(address indexed caller, bytes32 indexed sourceId);
+    event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    // ----------------------------------------------------------- immutables
+    IERC20 public immutable USDC; // payout token (Avalanche native USDC, 6dp)
+
+    // ------------------------------------------------------------- ownership
+    address public owner;
+    address public pendingOwner;
+
+    // ----------------------------------------------------------------- state
+    // Governance allow-list: which callers (sales) may invoke `route`, the
+    // sourceId stamped on their events, and WHERE their Operations remainder is
+    // forwarded. Destinations are governance-set here, never passed by the caller.
+    struct Source { bytes32 sourceId; address operationsWallet; bool enabled; }
+    mapping(address => Source) public sources; // caller (sale) => source config
+
+    // Protocol-wide VERIFIED referred-member count per referrer. This is the ONLY
+    // tier axis (count-only) and the only thing that is safely knowable on-chain.
+    mapping(address => uint256) public referredCount;
+
+    // Escrowed commission (USDC 6dp) pending a pull via claimReferral().
+    mapping(address => uint256) public referralOwed;
+
+    // ----------------------------------------------------------- modifiers
+    modifier onlyOwner() { require(msg.sender == owner, "not owner"); _; }
+
+    uint256 private _lock = 1;
+    modifier nonReentrant() {
+        require(_lock == 1, "reentrant");
+        _lock = 2; _; _lock = 1;
+    }
+
+    // ------------------------------------------------------------ construct
+    constructor(address usdc) {
+        if (usdc == address(0)) revert ZeroAddress();
+        USDC = IERC20(usdc);
+        owner = msg.sender;
+        emit OwnershipTransferred(address(0), msg.sender);
+    }
+
+    // ========================================================== governance
+    /// @notice Allow-list a source (sale) that may call `route`. `operationsWallet`
+    ///         is the governance-controlled destination for that source's
+    ///         Operations remainder. Reverts if already enabled.
+    function addSource(address caller, bytes32 sourceId, address operationsWallet)
+        external
+        onlyOwner
+    {
+        if (caller == address(0) || operationsWallet == address(0)) revert ZeroAddress();
+        if (sources[caller].enabled) revert SourceExists();
+        sources[caller] = Source({ sourceId: sourceId, operationsWallet: operationsWallet, enabled: true });
+        emit SourceAdded(caller, sourceId, operationsWallet);
+    }
+
+    /// @notice Remove a source's authorization (instant — removing trust is safe).
+    function removeSource(address caller) external onlyOwner {
+        Source memory s = sources[caller];
+        if (!s.enabled) revert UnknownSource();
+        delete sources[caller];
+        emit SourceRemoved(caller, s.sourceId);
+    }
+
+    // =============================================================== routing
+    /**
+     * @notice Route ONE membership sale's Operations slice. Called by an
+     *         allow-listed source AFTER it has paid Vault & Liquidity in full and
+     *         pulled the buyer's USDC into itself. The router PULLS exactly
+     *         `opsSlice` from the caller via `transferFrom` (the caller pre-approved
+     *         this router), pays the referrer a tier-based commission carved from
+     *         that slice (push, escrow on failure), and forwards the remainder to
+     *         the source's Operations wallet.
+     *
+     *  INVARIANTS
+     *  ----------
+     *   - Vault / Liquidity are NEVER referenced here (only echoed into the event).
+     *   - referrerAmount <= opsSlice ALWAYS (max tier 80% < 100%); asserted.
+     *   - referrerAmount + operationsAmount == opsSlice (no dust, no leakage).
+     *   - referredCount increments ONLY on a VALID, FIRST-SEAT referral.
+     *   - A revert here reverts the `transferFrom` pull in the SAME frame, so the
+     *     caller's `try/catch` can safely re-route the untouched slice (fallback).
+     *
+     * @return referrerAmount   commission ATTRIBUTED to the referrer (pushed OR
+     *                          escrowed). 0 when there is no valid referral.
+     * @return operationsAmount Operations remainder forwarded to the source wallet.
+     */
+    function route(CommissionRouteInput calldata p)
+        external
+        nonReentrant
+        returns (uint256 referrerAmount, uint256 operationsAmount)
+    {
+        Source memory src = sources[msg.sender];
+        if (!src.enabled) revert NotAuthorizedSource();
+
+        // ---- eligibility: distinct, non-zero, on-chain-known member ----------
+        bool valid =
+            p.referrer != address(0) &&
+            p.referrer != p.buyer &&
+            IMembershipRegistry(msg.sender).knownMember(p.referrer);
+
+        // ---- tier snapshot from the CURRENT verified count (count-only) ------
+        uint16 tier;
+        if (valid) {
+            uint16 opsPct;
+            (tier, opsPct) = _tierFor(referredCount[p.referrer]);
+            referrerAmount = (p.opsSlice * opsPct) / 100;
+            if (referrerAmount > p.opsSlice) revert OpsCapExceeded(); // unreachable; defensive
+        }
+        operationsAmount = p.opsSlice - referrerAmount;
+
+        // ---- pull EXACTLY the Operations slice the caller routes -------------
+        if (!USDC.transferFrom(msg.sender, address(this), p.opsSlice)) revert PullFailed();
+
+        // ---- EFFECTS: count a referral only on a VALID FIRST-SEAT buy --------
+        if (valid && p.firstSeat) {
+            unchecked { referredCount[p.referrer] += 1; }
+            emit ReferredCountIncremented(p.referrer, referredCount[p.referrer]);
+        }
+
+        // ---- INTERACTIONS: pay referrer (push, escrow on failure) -----------
+        uint8 paymentMode = MODE_PUSH;
+        if (referrerAmount > 0) {
+            try USDC.transfer(p.referrer, referrerAmount) returns (bool ok) {
+                if (!ok) {
+                    referralOwed[p.referrer] += referrerAmount;
+                    paymentMode = MODE_ESCROW;
+                    emit ReferralEscrowed(p.referrer, referrerAmount);
+                }
+            } catch {
+                referralOwed[p.referrer] += referrerAmount;
+                paymentMode = MODE_ESCROW;
+                emit ReferralEscrowed(p.referrer, referrerAmount);
+            }
+        }
+
+        // ---- forward the Operations remainder to the source's Ops wallet -----
+        if (operationsAmount > 0) {
+            require(USDC.transfer(src.operationsWallet, operationsAmount), "ops transfer failed");
+        }
+
+        // ---- canonical RAL Attribution event --------------------------------
+        uint256[5] memory splits;
+        splits[0] = p.vaultAmount;
+        splits[1] = p.liquidityAmount;
+        splits[2] = referrerAmount;
+        splits[3] = operationsAmount;
+        splits[4] = 0; // protocol slice (reserved; none in V1)
+        emit Attribution(
+            src.sourceId,
+            p.buyer,
+            valid ? p.referrer : address(0),
+            p.campaign,
+            p.refTag,
+            address(USDC),
+            p.gross,
+            tier,
+            splits,
+            paymentMode,
+            ATTR_LAST_VERIFIED
+        );
+    }
+
+    /// @notice Withdraw escrowed commission (pull fallback).
+    function claimReferral() external nonReentrant {
+        uint256 amt = referralOwed[msg.sender];
+        if (amt == 0) revert NothingToClaim();
+        referralOwed[msg.sender] = 0;
+        require(USDC.transfer(msg.sender, amt), "claim transfer failed");
+        emit ReferralClaimed(msg.sender, amt);
+    }
+
+    // ================================================================= views
+    /// @notice The canonical referral tier ladder (count-only axis), recovered
+    ///         verbatim from src/lib/preview/referral.ts. Returns the tier index
+    ///         (0..4) and the commission as a PERCENT OF THE OPERATIONS SLICE.
+    ///         retentionRequiredPct is deliberately NOT modeled here (off-chain).
+    function _tierFor(uint256 count) internal pure returns (uint16 tier, uint16 opsPct) {
+        if (count >= 100) return (4, 80); // Ambassador
+        if (count >= 50)  return (3, 70); // Catalyst
+        if (count >= 20)  return (2, 55); // Connector
+        if (count >= 5)   return (1, 40); // Advocate
+        return (0, 30);                   // Signal
+    }
+
+    /// @notice External preview of the tier + Operations-percent for a raw count.
+    function tierFor(uint256 count) external pure returns (uint16 tier, uint16 opsPct) {
+        return _tierFor(count);
+    }
+
+    /// @notice Preview a referrer's CURRENT commission on a hypothetical Operations
+    ///         slice (does NOT account for this transaction's potential increment).
+    function quoteCommission(address referrer, uint256 opsSlice)
+        external
+        view
+        returns (uint16 tier, uint16 opsPct, uint256 referrerAmount)
+    {
+        (tier, opsPct) = _tierFor(referredCount[referrer]);
+        referrerAmount = (opsSlice * opsPct) / 100;
+    }
+
+    /// @notice Whether `caller` is an allow-listed source, plus its config.
+    function sourceConfig(address caller)
+        external
+        view
+        returns (bool enabled, bytes32 sourceId, address operationsWallet)
+    {
+        Source memory s = sources[caller];
+        return (s.enabled, s.sourceId, s.operationsWallet);
+    }
+
+    // ====================================================== 2-step ownership
+    // (use OpenZeppelin Ownable2Step in production; multisig owner recommended)
+    function transferOwnership(address newOwner) external onlyOwner {
+        pendingOwner = newOwner;
+        emit OwnershipTransferStarted(owner, newOwner);
+    }
+
+    function acceptOwnership() external {
+        require(msg.sender == pendingOwner, "not pending owner");
+        address prev = owner;
+        owner = pendingOwner;
+        pendingOwner = address(0);
+        emit OwnershipTransferred(prev, owner);
+    }
+}
+```
 
 ---
 

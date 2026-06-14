@@ -41,8 +41,32 @@ pragma solidity 0.8.24;
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
     function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
     function balanceOf(address account) external view returns (uint256);
     function decimals() external view returns (uint8);
+}
+
+/// @notice Routing payload handed to the CommissionRouter. Duplicated byte-for-byte
+///         in docs/proposals/drafts/CommissionRouterV1.draft.sol — keep in lockstep.
+struct CommissionRouteInput {
+    address buyer;
+    address referrer;
+    uint256 gross;
+    uint256 vaultAmount;
+    uint256 liquidityAmount;
+    uint256 opsSlice;
+    bool    firstSeat;
+    bytes32 campaign;
+    bytes32 refTag;
+}
+
+/// @notice Minimal interface to the external CommissionRouter V1, which owns ALL
+///         referral tier logic + routing. Sale V2 hands it ONLY the Operations
+///         slice; the router pulls that slice via transferFrom (Sale V2 pre-approves).
+interface ICommissionRouter {
+    function route(CommissionRouteInput calldata p)
+        external
+        returns (uint256 referrerAmount, uint256 operationsAmount);
 }
 
 /**
@@ -88,12 +112,14 @@ interface IERC20 {
  *     and the aggregate per-era SYN sold-cap; the optional seat-reserve
  *     (RESERVE_THROUGH_SEAT) adds a fourth, seat-preservation bound.
  *
- *  5. 70 / 20 / 10 PRESERVED, REFERRAL FROM OPERATIONS ONLY. Vault (70%) and
- *     Liquidity (20%) are NEVER diluted. A 5% referral is carved strictly out
- *     of the 10% Operations slice (i.e. half of Operations). The contract pulls
- *     the full payment in, THEN fans out; the referrer is paid by the CONTRACT
- *     inside the same buy tx, NEVER by the Operations wallet afterwards. No
- *     referrer => Operations keeps the full 10%.
+ *  5. 70 / 20 / 10 PRESERVED, REFERRAL VIA CommissionRouter. Vault (70%) and
+ *     Liquidity (20%) are NEVER diluted. Sale V2 no longer computes any referral
+ *     rate inline: it pays Vault and Liquidity in full, then hands the ENTIRE 10%
+ *     Operations slice to an external CommissionRouter (a timelocked, governance-
+ *     set contract) that owns all tier logic, referredCount tracking, push-then-
+ *     escrow payout, and the full RAL-compatible Attribution event. If the router
+ *     is unset OR its call reverts, the full Operations slice falls back to the
+ *     Operations wallet (no referral) so a buy can NEVER be blocked.
  *
  *  6. CONTINUITY WITH V1 (no double-counting). Member numbers are a single
  *     global sequence. V2 is constructed with the final V1 unique-member count
@@ -120,8 +146,8 @@ contract SyndicateSaleV2 {
     error SlippageExceeded(uint256 got, uint256 minOut);
     error NotWindingDown();
     error RecoveryTimelocked(uint256 readyAt);
-    error NothingToClaim();
     error ProtectedToken();
+    error RouterTimelocked(uint256 readyAt);
     error AlreadyKnown();
     error InvalidProof();
     error ReserveFloorViolation(uint256 maxSynOut);
@@ -147,14 +173,10 @@ contract SyndicateSaleV2 {
         uint256 operationsAmount,
         uint256 referralAmount
     );
-    event ReferralAttributed(
-        address indexed referrer,
-        address indexed buyer,
-        uint256 indexed memberNumber,
-        uint256 amount,
-        bool    escrowed
-    );
-    event ReferralClaimed(address indexed referrer, uint256 amount);
+    event CommissionRouterProposed(address indexed router, uint64 readyAt);
+    event CommissionRouterConfirmed(address indexed router);
+    event CommissionRouterDisabled(address indexed previousRouter);
+    event CommissionRouterFallback(uint256 indexed memberNumber, uint256 operationsAmount);
     // `reason` distinguishes a NATURAL boundary open (range filled, atSeatNumber
     // == first seat of the new era) from a CAP-triggered advance (atSeatNumber
     // == the next seat to be issued, which may be mid-range).
@@ -187,6 +209,7 @@ contract SyndicateSaleV2 {
     uint256 private constant FINAL_SEAT    = 1_000_000;
     uint256 private constant SCALE_6_TO_18 = 1e12;
     uint256 public  constant RECOVERY_TIMELOCK = 7 days; // delay on the PAUSED recovery path
+    uint256 public  constant ROUTER_TIMELOCK   = 7 days; // delay on SWAPPING the commission router
 
     // ------------------------------------------------------------- ownership
     address public owner;
@@ -216,7 +239,12 @@ contract SyndicateSaleV2 {
     mapping(address => uint256) public memberNumberOf;  // set for V2-new seats only
     mapping(address => uint256) public usdcContributed; // lifetime, per address (V2)
     mapping(address => mapping(uint16 => uint256)) public usdcByAddressEra; // anti-whale
-    mapping(address => uint256) public referralOwed;    // escrowed referral (6dp)
+    // CommissionRouter wiring. The FIRST router may be set ONCE at construction
+    // (day-one referral); later SWAPS are timelocked (adding trust is delayed).
+    // Disabling is instant (removing trust is always safe). See the admin section.
+    address public commissionRouter;
+    address public pendingCommissionRouter;
+    uint64  public commissionRouterReadyAt;
 
     // ----------------------------------------------------------- modifiers
     modifier onlyOwner() { require(msg.sender == owner, "not owner"); _; }
@@ -270,7 +298,8 @@ contract SyndicateSaleV2 {
         uint256[9] memory addrCaps,
         uint256 maxUsdcPerTx,
         uint256 reserveThroughSeat,
-        uint256[9] memory eraCaps
+        uint256[9] memory eraCaps,
+        address initialRouter
     ) {
         if (
             usdc == address(0) || syn == address(0) || vault == address(0) ||
@@ -322,6 +351,17 @@ contract SyndicateSaleV2 {
 
         owner = msg.sender;
         emit OwnershipTransferred(address(0), msg.sender);
+
+        // Day-one referral: optionally wire the CommissionRouter at construction and
+        // grant it a max USDC allowance so it can PULL the Operations slice during
+        // buy(). Pass address(0) to launch with referral OFF (safe base behavior);
+        // a router can be added later via the timelocked setter. ALL LATER swaps go
+        // through proposeCommissionRouter -> confirmCommissionRouter (timelocked).
+        if (initialRouter != address(0)) {
+            commissionRouter = initialRouter;
+            USDC.approve(initialRouter, type(uint256).max);
+            emit CommissionRouterConfirmed(initialRouter);
+        }
     }
 
     // =================================================== V1 recognition
@@ -403,14 +443,12 @@ contract SyndicateSaleV2 {
             if (synOut > sellableNow) revert ReserveFloorViolation(sellableNow);
         }
 
-        // splits (70/20/10, remainder-safe; referral from Ops only)
+        // splits (70/20/10, remainder-safe). Vault & Liquidity are NEVER diluted;
+        // the ENTIRE Operations slice (10%) is routed through the CommissionRouter,
+        // which owns ALL referral tier logic. Sale V2 computes NO referral rate.
         uint256 vaultAmt = (usdcIn * 70) / 100;
         uint256 liqAmt = (usdcIn * 20) / 100;
         uint256 opsSlice = usdcIn - vaultAmt - liqAmt; // exact remainder == ~10%
-        uint256 refAmt = 0;
-        bool referralValid = referrer != address(0) && referrer != msg.sender && knownMember[referrer];
-        if (referralValid) refAmt = opsSlice / 2; // fixed 5% of gross
-        uint256 opsAmt = opsSlice - refAmt;
 
         // ================= EFFECTS (state before interactions) =============
         // `firstSeat` was computed above (reserve check) and is reused here.
@@ -432,40 +470,48 @@ contract SyndicateSaleV2 {
         totalSynSold += synOut;
 
         // ================= INTERACTIONS ====================================
-        // Pull the FULL payment into the contract, THEN fan out. The referrer
-        // is paid by THIS CONTRACT (never by the Operations wallet afterwards).
-        // Order mirrors the canonical flow: Vault -> Liquidity -> Referrer -> Ops.
+        // Pull the FULL payment in, THEN fan out. Vault & Liquidity are paid first
+        // and IN FULL. The Operations slice is handed to the CommissionRouter,
+        // which pays the referrer (tiered, from Operations only) and forwards the
+        // remainder to the Operations wallet. If the router is unset OR its call
+        // reverts, the FULL Operations slice falls back to the Operations wallet so
+        // a buy can NEVER be blocked by the referral path.
         _safeTransferFrom(USDC, msg.sender, address(this), usdcIn);
         _safeTransfer(USDC, VAULT, vaultAmt);
         _safeTransfer(USDC, LIQUIDITY, liqAmt);
 
-        bool escrowed = false;
-        if (refAmt > 0) {
-            // Try push; escrow on failure (e.g. USDC blacklist) so the BUY IS
-            // NEVER BLOCKED by a bad referrer. opsAmt is ALREADY net of refAmt,
-            // so the Operations wallet is paid its reduced slice regardless.
-            try USDC.transfer(referrer, refAmt) returns (bool ok) {
-                if (!ok) { referralOwed[referrer] += refAmt; escrowed = true; }
+        address router = commissionRouter;
+        if (router != address(0)) {
+            CommissionRouteInput memory ri = CommissionRouteInput({
+                buyer: msg.sender,
+                referrer: referrer,
+                gross: usdcIn,
+                vaultAmount: vaultAmt,
+                liquidityAmount: liqAmt,
+                opsSlice: opsSlice,
+                firstSeat: firstSeat,
+                campaign: bytes32(0), // reserved (registered campaign id) — future
+                refTag: bytes32(0)    // reserved (raw analytics tag) — future
+            });
+            // The router PULLS opsSlice via transferFrom (Sale V2 pre-approved it
+            // when the router was set). A revert reverts that pull in the SAME
+            // frame, so the catch path re-routes the UNTOUCHED slice safely.
+            try ICommissionRouter(router).route(ri) returns (uint256 refPaid, uint256 opsPaid) {
+                emit Routed(assignedNumber, vaultAmt, liqAmt, opsPaid, refPaid);
             } catch {
-                referralOwed[referrer] += refAmt; escrowed = true;
+                _safeTransfer(USDC, OPERATIONS, opsSlice);
+                emit CommissionRouterFallback(assignedNumber, opsSlice);
+                emit Routed(assignedNumber, vaultAmt, liqAmt, opsSlice, 0);
             }
-            emit ReferralAttributed(referrer, msg.sender, assignedNumber, refAmt, escrowed);
+        } else {
+            // Router unset — safe base behavior: full Operations slice, no referral.
+            _safeTransfer(USDC, OPERATIONS, opsSlice);
+            emit Routed(assignedNumber, vaultAmt, liqAmt, opsSlice, 0);
         }
 
-        _safeTransfer(USDC, OPERATIONS, opsAmt);
         _safeTransfer(SYN, msg.sender, synOut);
 
-        emit Routed(assignedNumber, vaultAmt, liqAmt, opsAmt, refAmt);
         emit Purchased(msg.sender, assignedNumber, era, usdcIn, synOut, synPerUsdc, firstSeat);
-    }
-
-    /// @notice Referrer claims any escrowed commission (pull fallback).
-    function claimReferral() external nonReentrant {
-        uint256 amt = referralOwed[msg.sender];
-        if (amt == 0) revert NothingToClaim();
-        referralOwed[msg.sender] = 0;
-        _safeTransfer(USDC, msg.sender, amt);
-        emit ReferralClaimed(msg.sender, amt);
     }
 
     // ================================================================ views
@@ -580,6 +626,48 @@ contract SyndicateSaleV2 {
         paused = false;
         pausedAt = 0;
         emit Unpaused(msg.sender);
+    }
+
+    // ============================================ commission router (referral)
+    /// @notice Propose a NEW CommissionRouter. Two-step + timelocked: ADDING trust
+    ///         is delayed (ROUTER_TIMELOCK) so a router swap cannot be slipped in
+    ///         silently. address(0) is rejected here — use disableCommissionRouter
+    ///         to turn referral OFF instantly. (The FIRST router may instead be set
+    ///         once at construction for day-one referral.)
+    function proposeCommissionRouter(address router) external onlyOwner {
+        if (router == address(0)) revert ZeroAddress();
+        pendingCommissionRouter = router;
+        commissionRouterReadyAt = uint64(block.timestamp + ROUTER_TIMELOCK);
+        emit CommissionRouterProposed(router, commissionRouterReadyAt);
+    }
+
+    /// @notice Activate the proposed router after the timelock. Zeroes the OLD
+    ///         router's USDC allowance and grants the NEW router a max USDC
+    ///         allowance so it can PULL the Operations slice during buy().
+    function confirmCommissionRouter() external onlyOwner {
+        address router = pendingCommissionRouter;
+        if (router == address(0)) revert ZeroAddress();
+        uint256 readyAt = commissionRouterReadyAt;
+        if (block.timestamp < readyAt) revert RouterTimelocked(readyAt);
+        address old = commissionRouter;
+        if (old != address(0)) USDC.approve(old, 0);
+        commissionRouter = router;
+        pendingCommissionRouter = address(0);
+        commissionRouterReadyAt = 0;
+        USDC.approve(router, type(uint256).max);
+        emit CommissionRouterConfirmed(router);
+    }
+
+    /// @notice Instantly DISABLE referral routing (no timelock — removing trust is
+    ///         always safe). Buys then route the full Operations slice straight to
+    ///         the Operations wallet (no referral) until a new router is confirmed.
+    function disableCommissionRouter() external onlyOwner {
+        address old = commissionRouter;
+        if (old != address(0)) USDC.approve(old, 0);
+        commissionRouter = address(0);
+        pendingCommissionRouter = address(0);
+        commissionRouterReadyAt = 0;
+        emit CommissionRouterDisabled(old);
     }
 
     /// @notice Return remaining unsold SYN to the immutable Vault. Allowed when:
