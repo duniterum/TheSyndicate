@@ -942,6 +942,167 @@ contract SyndicateSaleV2 {
 
 ---
 
+## M. Changelog — first draft → fixed draft
+
+Three findings from the architect review were fixed in **both** this report and
+`docs/proposals/drafts/SyndicateSaleV2.draft.sol`. Nothing else in the economic
+model changed.
+
+| # | Area | First draft (before) | Fixed draft (after) | Why |
+| --- | --- | --- | --- | --- |
+| 1 | **V1 continuity / double-counting** | V2 only had a numeric `GENESIS_OFFSET`. A returning V1 member buying in V2 was treated as a brand-new buyer: minted a **new seat**, **incremented `memberCount`** (nudging the era boundary), and — because they were not yet `knownMember` — **could not be a referrer**. | Added immutable `V1_MEMBER_ROOT` (Merkle root of V1 member addresses) + `knownMember` map + permissionless `claimV1Membership(proof)` + an inline `bytes32[] v1Proof` arg on `buy()`. A proven V1 member is recognized as **existing**: no new seat, no `memberCount++`, `firstSeat=false`, and immediately eligible as a referrer. New errors `InvalidProof`/`AlreadyKnown`, event `V1MembershipRecognized`, threats **T13/T17**. | Prevents the V1→V2 boundary from being corrupted and lets V1 members refer. Residual (member buying via a non-canonical UI without a proof) is documented as **T17 / J12**, bounded by ≤333 Genesis members. |
+| 2 | **`EraAdvanced` reported the wrong seat** | The event reported the **triggering buyer's** member number. If the tx that crossed a boundary was a *repeat* buyer (who gets no new number), the "era opened at seat #X" value was wrong/misleading. | `EraAdvanced(fromEra, toEra, atSeatNumber)` now emits `atSeatNumber = nextSeat` — **the first seat of the new era** — computed before the firstSeat/repeat branch, so it is correct regardless of who triggers the crossing. | The era-open event is the canonical hook for an Activity/Chronicle "an era opened" candidate; it must name the boundary seat, not an arbitrary buyer. |
+| 3 | **Unsold-SYN dust deadlock** | `recoverUnsoldSyn` was callable **only when concluded** (seat #1,000,000 issued). If heavy upgrades exhausted inventory *before* #1,000,000, the sale could never conclude, so leftover dust SYN (below every era minimum) was **permanently locked**. | `recoverUnsoldSyn` is now callable when **concluded OR paused**, with the destination still **Vault-only**. Founder pauses, then sweeps dust to the Vault. Captured as threat **T12**; **J8** marked resolved. | Removes a permanent-lock failure mode **without** adding any owner SYN-drain path — the destination remains the immutable Vault, paused or not. |
+
+> `buy()`'s signature changed across the fix:
+> `buy(uint256 usdcIn, address referrer, uint256 minSynOut, bytes32[] calldata v1Proof)`.
+> Newcomers and already-known members pass an **empty** `v1Proof`.
+
+---
+
+## N. Critical decisions (quick answers)
+
+- **How V1 members are recognized in V2** — by an **immutable Merkle root** of the
+  V1 member address set (`V1_MEMBER_ROOT`), frozen at handoff. A member proves
+  inclusion once (inline in `buy` via `v1Proof`, or via the permissionless
+  `claimV1Membership`) and is flagged `knownMember`. Identity (member #N) still
+  comes from the indexer; the root only proves "already a member."
+- **How double-counting is prevented** — a recognized V1 member has
+  `knownMember=true`, so `buy()` takes the `firstSeat=false` branch: **no new
+  seat, no `memberCount++`, no era nudge.** The on-chain count and the indexer
+  ordinal agree by construction when the offset + root are correct.
+- **How automatic era transitions work** — the rate is a **pure function of the
+  next seat number**: `_eraInfoForSeat(memberCount + 1)`. Crossing seat #333→#334,
+  #1000→#1001, etc., flips the era for everyone with no switch, timer, or oracle.
+  `EraAdvanced` is emitted once per crossing at the boundary seat.
+- **Member-limited, inventory-limited, or both?** — **Both, independently.** Era
+  *rate* is chosen by member number (seat ranges from `eras.ts`); each `buy` is
+  also hard-bounded by the contract's remaining SYN balance. Either can bind first.
+- **If era inventory is exhausted before the member range ends** — there is no
+  separate "per-era inventory bucket"; the contract sells from **one SYN balance**.
+  If a `buy` would exceed the remaining balance it reverts
+  `InsufficientInventory`. If the dust left is below every era minimum the sale is
+  *economically* over even though `isConcluded()` is still false → founder
+  **pauses** + `recoverUnsoldSyn()` to wind down (dust → Vault). SYN is **never**
+  minted to continue.
+- **If the member range ends before inventory is exhausted** — at seat
+  #1,000,000 the sale concludes; the next `buy` reverts `SaleConcluded` (incl.
+  repeat buys). Leftover SYN is swept to the Vault via `recoverUnsoldSyn()`.
+  Whether to instead open a future "Million+" era is **J7**.
+- **Can large purchases drain an era?** — Bounded, not unbounded. A single tx is
+  capped by (a) `MAX_USDC_PER_ADDRESS_PER_ERA` (per-address, per-era) and (b)
+  remaining inventory. One wallet cannot sweep a cheap early era; many distinct
+  funded wallets still could, by design tradeoff (see the "pick two" finding, §C).
+- **Boundary-crossing purchase: rejected or split?** — **Neither split nor
+  silently mixed.** A `buy` is priced entirely at the **current** era (the era of
+  `memberCount + 1` at call time). It does **not** straddle two rates. If a buy
+  would push the count past #1,000,000 it does not partial-fill — and `minSynOut`
+  reverts if the era stepped between quote and mine (T4). There are **no cross-era
+  partial fills.**
+- **How referral works / is deferred** — **fixed 5% of gross, carved only from
+  the 10% Operations slice** (Vault 70% / Liquidity 20% never diluted). Valid iff
+  `referrer != buyer` **and** `knownMember[referrer]`. Push in-tx; on failure
+  (e.g. USDC blacklist) **escrow** to `referralOwed` and let the referrer
+  `claimReferral()` — the buy is never blocked. Tiered/reputation boosts are
+  **deferred to V3** (J5/J6).
+- **What admin can do** — `pause`/`unpause`; `recoverUnsoldSyn` (Vault-only, only
+  when concluded or paused); `rescueToken` (non-USDC/SYN only, to Vault); 2-step
+  `transferOwnership`/`acceptOwnership` (to a multisig).
+- **What admin cannot do** — change era rates/boundaries, change the 70/20/10
+  split, change any wallet, withdraw USDC, take buyer SYN, or touch escrowed
+  referral funds. **Pause cannot move a single dollar.**
+- **Can unsold SYN be recovered?** — Yes, via `recoverUnsoldSyn()`, but **only**
+  when the sale is concluded or paused.
+- **Where recovered SYN can go** — the **immutable Vault address only**
+  (`VAULT`, a constructor immutable). There is no owner/arbitrary destination.
+- **Why this does not allow rugging users** — no price/split/wallet setters
+  (immutable bytecode); no USDC withdrawal path; SYN recovery is Vault-only and
+  gated; buyers receive SYN atomically in the same tx; CEI + `nonReentrant`;
+  worst-case owner action is a (reversible) pause, which **takes nothing**.
+- **What is immutable** — `USDC`, `SYN`, `VAULT`, `LIQUIDITY`, `OPERATIONS`,
+  `GENESIS_OFFSET`, `V1_MEMBER_ROOT`, `MAX_USDC_PER_ADDRESS_PER_ERA`; the
+  70/20/10 split; the entire era schedule (rates, boundaries, minimums); the
+  `FINAL_SEAT` conclusion.
+- **What is configurable** — only at **construction** (offset, root, anti-whale
+  cap, wallet/token addresses). At **runtime**: only `paused` and `owner`
+  (2-step). Nothing economic is runtime-mutable.
+
+---
+
+## O. Test matrix
+
+| Scenario | Setup | Expected result |
+| --- | --- | --- |
+| V1 member buys in V2 | `knownMember=false`, valid `v1Proof` | Recognized first: `firstSeat=false`, **no** `memberCount++`, `V1MembershipRecognized` + `Purchased(memberNumber=0)`; pays current era. |
+| New V2 member buys | Newcomer, empty proof | `firstSeat=true`, `memberCount++`, `memberNumberOf` set, `Purchased(memberNumber=memberCount+1)`. |
+| Same wallet buys twice | Any known member, 2nd `buy` | 2nd: `firstSeat=false`, no new number, pays **current** era rate (not original). |
+| Era boundary purchase | Buy that takes count across a boundary (e.g. #333→#334) | `EraAdvanced(from,to,atSeatNumber=boundary seat)` once; that buy priced at the **new** current era; correct even if a repeat buyer triggers it. |
+| Too large for remaining era inventory | `uscIn` valid but `synOut > balance` | Revert `InsufficientInventory(available)`; exact-remaining buy succeeds and zeroes inventory. **No partial fill.** |
+| Too large for remaining contract inventory | Same as above (one shared balance) | Same `InsufficientInventory`; below-min dust → pause + `recoverUnsoldSyn`. |
+| Referral valid | `referrer != buyer`, `knownMember[referrer]` | 5% to referrer, 5% Operations, 70/20 untouched; `ReferralAttributed(escrowed=false)`. |
+| Referral invalid (non-member) | `knownMember[referrer]=false` | `refAmt=0`, Operations keeps full 10%, **no** `ReferralAttributed`. |
+| Self-referral | `referrer == msg.sender` | `refAmt=0`, Operations keeps full 10%, no attribution. |
+| Paused sale | `paused=true`, `buy` | Revert (`whenNotPaused`); `unpause` restores. |
+| Recover unsold SYN | concluded **or** paused | Sweeps full SYN balance to **Vault**, `UnsoldSynRecovered`; reverts `NotWindingDown` if neither. |
+| Admin abuse cases | owner tries to: set rate/split/wallet (no such fn); withdraw USDC (no path); `rescueToken(USDC/SYN)` → `ProtectedToken`; `recoverUnsoldSyn` while live → `NotWindingDown`; non-pending `acceptOwnership` → revert | All blocked; no path moves buyer funds, USDC, or non-Vault SYN. |
+| Blacklisted/reverting referrer | mock USDC reverts transfer→referrer | `buy` succeeds, `referralOwed` credited, `escrowed=true`; `claimReferral` pays; double-claim `NothingToClaim`. |
+| Reentrancy | malicious token re-enters `buy`/`claimReferral` | Blocked by `nonReentrant` + CEI. |
+| Exact pricing per era | min-entry buy each era II–IX | `synOut == usdcIn × synPerUsdc × 1e12` exactly (e.g. Era II $10→500 SYN, Era IX $100→100 SYN); split sums to `usdcIn`. |
+
+---
+
+## P. Warning list (read before any deploy)
+
+**Must NOT be deployed without external review (hard gate):**
+- The draft as-is — it ships **stub** `IERC20`/`SafeERC20`/`MerkleProof`/ownership
+  mixins so it reads as one file. **Replace every stub with audited OpenZeppelin
+  v5** before any compile-for-deploy.
+- Anything before the mandated path completes: **external review (Kemal +
+  ChatGPT) → Fuji rehearsal → independent audit → mainnet** (`SOLIDITY_REVIEW_STATE`,
+  D4/D5, J11). No exceptions.
+- No deploy until `GENESIS_OFFSET` is locked to V1's **actual paused-at** count
+  and `V1_MEMBER_ROOT` is built from the **same** frozen snapshot (J1/J12).
+
+**Must be audited:**
+- The Merkle verification (replace the illustrative sorted-pair stub with OZ
+  `MerkleProof` + standardized double-hashed leaf) and the snapshot/root build.
+- The full money path: CEI ordering, `nonReentrant`, exact-integer pricing/splits,
+  the `try/catch` referral escrow, and inventory exhaustion behavior.
+- Decimal handling (native USDC 6dp ↔ SYN 18dp; `SCALE_6_TO_18`) and overflow at
+  realistic ceilings.
+- Admin surface: Vault-only SYN recovery gating, `rescueToken` protected-token
+  guard, 2-step ownership, pause semantics.
+- The anti-whale cap value `MAX_USDC_PER_ADDRESS_PER_ERA` (J3) against a real
+  per-era funding model (J2).
+
+**Legal wording to check before live:**
+- All era + referral copy for forbidden framing: **no ROI, yield, dividend,
+  passive income, profit, revenue-share**. Referral = "direct sales commission"
+  only (J10).
+- Era-advance copy must be **recognition-only** ("Era II opened at seat #334"),
+  never "price went up / buy now."
+- Confirm SYN is consistently framed as an experimental utility membership token
+  — not equity/debt/a return.
+
+**Frontend / indexer changes required before deployment (separate, reviewed PR — not this phase):**
+- `contract-registry.ts`: add V2 address + ABI (never inline).
+- `holder-index.ts`: scan **both** V1 `TokensPurchased` and V2 `Purchased`,
+  ordered by block+logIndex, one shared canonical scan; `firstSeat` marks member
+  creation.
+- Build the V1-member Merkle tree from the paused-at snapshot; the buy/referral UI
+  **must attach `v1Proof` for any connected wallet that is a V1 member** (mitigates
+  T17).
+- Buy component → V2 `buy(usdcIn, referrer, minSynOut, v1Proof)`; compute
+  `minSynOut` from `quote()` + slippage; read live `currentEra()`/`quote()`.
+- Apply the six write-path invariants (`assertFreshWallet`, `account:` pinning,
+  chain-registry links, guard-test entry) per `SALE_FLOW_INVARIANTS`.
+- `/referral`: reframe tiered preview → **fixed 5% (V2)**; surface
+  `claimV1Membership` for V1 referrers.
+- Add `era-advanced` + `referral` event kinds across the protocol-event pipeline
+  (lockstep edits + tests); extend the localStorage purchase-events cache to V2.
+
+---
+
 ## Appendix — alignment ledger (no canon was modified)
 
 | Source | What this design reuses unchanged |

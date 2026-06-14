@@ -203,3 +203,9 @@ id = "auXDwv1lRqG4pavSQIzMI"
 uri = "file://docs/SPRINT_1B_INFINITE_GAME_REPORT.md"
 type = "text"
 title = "Sprint 1B — Infinite-Game Discovery & Consistency Report"
+
+[[outputs]]
+id = "0nUE62inviZCMH1UalEgU"
+uri = "file://docs/proposals/SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md"
+type = "text"
+title = "Sale V2 — Architecture & Contract Design (A–L + Changelog/Decisions/Test Matrix/Warnings + §L Solidity)"
