@@ -1,0 +1,89 @@
+Good Sprint 1. Now do the safest follow-up pass: Sprint 1B — Homepage + Package Discovery + Whitepaper Source Cleanup.
+
+Do not touch contracts. Do not deploy until checks pass. Do not change Sale V1.
+
+Goal:
+Make the infinite-game progression visible to first-time visitors and keep all prices/explanations consistent across the site.
+
+Tasks:
+
+1. Homepage teaser
+   Add a compact, premium progression section in the right place on homepage:
+
+* after “What is The Syndicate?” / membership explanation
+* before deeper story/proof sections if that improves conversion
+
+It should show:
+
+* current Genesis seat
+* current entry price
+* SYN received now
+* current member progress to #333
+* package/progression preview
+* link to /join
+* link to /my-syndicate for existing members
+
+Do not clutter the hero.
+
+2. Package discovery
+   Make sure users can understand packages from:
+
+* homepage
+* /join
+* /my-syndicate
+* FAQ
+
+Packages must remain derived from existing rank/source of truth, not duplicated manually.
+
+3. Rank/package clarity
+   Review the Architect/Steward perception issue:
+
+* Architect at $250
+* Steward at $500
+
+Do not rename now unless needed.
+But add clear copy so the ladder feels intentional and not confusing.
+If you believe the rank order should change later, document it as a future decision, not a Sprint 1B change.
+
+4. Next Move UX polish
+   Review CockpitNextMove:
+
+* one primary action
+* secondary cards
+* explore-all path
+* no overwhelm
+* no gamification-banned words
+
+5. Whitepaper extraction layer
+   Update the docs/source material so future whitepaper sections can be extracted cleanly:
+
+* Membership
+* Packages
+* Chapters vs Eras
+* Ranks
+* DEX vs sale price
+* Future utility
+* Marketplace
+* Signal Chamber
+* Legal exclusions
+
+6. Consistency sweep
+   Ensure all prices, package names, era names, SYN amounts, and disclaimers match everywhere:
+
+* homepage
+* join
+* cockpit
+* FAQ
+* docs
+
+7. Final report
+   Return:
+
+* files changed
+* pages changed
+* exact homepage placement
+* package discovery map
+* docs/FAQ changes
+* tests run
+* ready-to-publish status
+* what remains future/pending

@@ -197,3 +197,9 @@ id = "SaAJONdqDT22v3IZQ4fUw"
 uri = "file://docs/SPRINT_1_INFINITE_GAME_REPORT.md"
 type = "text"
 title = "Sprint 1 — Infinite-Game Journey · A–F Report"
+
+[[outputs]]
+id = "auXDwv1lRqG4pavSQIzMI"
+uri = "file://docs/SPRINT_1B_INFINITE_GAME_REPORT.md"
+type = "text"
+title = "Sprint 1B — Infinite-Game Discovery & Consistency Report"

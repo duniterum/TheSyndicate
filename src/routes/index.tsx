@@ -8,6 +8,7 @@ import { ProtocolStorySoFar } from "@/components/syndicate/ProtocolStorySoFar";
 import { MilestoneApproachingTile } from "@/components/syndicate/MilestoneApproachingTile";
 import { StoryTimeline } from "@/components/syndicate/StoryTimeline";
 import { IdentityZone } from "@/components/syndicate/IdentityZone";
+import { HomeProgressionTeaser } from "@/components/syndicate/HomeProgressionTeaser";
 import { WhyJoinSimple } from "@/components/syndicate/WhyJoinSimple";
 import { HowToJoinSteps } from "@/components/syndicate/HowToJoinSteps";
 import { WhatChangesAfterJoining } from "@/components/syndicate/WhatChangesAfterJoining";
@@ -95,6 +96,7 @@ function Index() {
       />
       <WhyJoinSimple />
       <IdentityZone />
+      <HomeProgressionTeaser />
 
       {/* ── ACT 03 · WHY NOW? ───────────────────────────────────────────────
           Current chapter, seats, nearest milestone, live movement. */}

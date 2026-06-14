@@ -641,6 +641,13 @@ export function RankLadder() {
         </div>
       </div>
 
+      <p className="mt-5 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+        <span className="text-foreground">Reading the ladder.</span> Tier names
+        are recognition labels on one fixed-rate ladder, ordered only by USDC
+        threshold — Architect ($250) comes before Steward ($500). A name marks
+        where a seat sits in the archive; it never buys a better rate, a payout,
+        or different treatment. Every wallet pays the same fixed access rate.
+      </p>
 
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-5">
         <GlassCard glow="gold">

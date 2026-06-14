@@ -56,7 +56,7 @@ export function CockpitNextMove() {
   if (isConnected && loading) {
     primary = {
       label: "Reading your seat…",
-      detail: "Loading your on-chain position.",
+      detail: "Loading your on-chain record.",
     };
   } else if (!record) {
     primary = {
@@ -71,12 +71,15 @@ export function CockpitNextMove() {
   } else {
     primary = {
       label: "Buy More SYN",
-      detail: "You hold the deepest recognition tier. Add to your position any time.",
+      detail: "You hold the deepest recognition tier. Buy more SYN any time.",
     };
   }
 
-  // ── Onward moves — compact pointers to existing surfaces ────────────────
-  const moves: Move[] = [
+  // ── Onward moves ────────────────────────────────────────────────────────
+  // Four high-signal moves stay visible; the rest (one live, three future
+  // modules) live behind an "explore all moves" disclosure so the surface
+  // stays calm and uncluttered.
+  const primaryMoves: Move[] = [
     {
       label: "Recognition",
       detail: next
@@ -107,12 +110,9 @@ export function CockpitNextMove() {
       status: record ? "LIVE" : "PENDING",
       href: "#memory",
     },
-    {
-      label: "Referral",
-      detail: "Share your seat — attribution preview",
-      status: "PENDING",
-      href: "#parked",
-    },
+  ];
+
+  const moreMoves: Move[] = [
     {
       label: "Distribution era",
       detail: upcomingEra
@@ -120,6 +120,12 @@ export function CockpitNextMove() {
         : `${era.name} · live rate`,
       status: "LIVE",
       to: "/join",
+    },
+    {
+      label: "Referral",
+      detail: "Share your seat — attribution preview",
+      status: "PENDING",
+      href: "#parked",
     },
     {
       label: "Marketplace",
@@ -177,12 +183,27 @@ export function CockpitNextMove() {
         </div>
       </div>
 
-      {/* Onward moves */}
+      {/* Onward moves — four high-signal cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-border/60">
-        {moves.map((m) => (
+        {primaryMoves.map((m) => (
           <MoveCard key={m.label} move={m} />
         ))}
       </div>
+
+      {/* Explore-all path — secondary + future modules, collapsed by default */}
+      <details className="group border-t border-border/50">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground">
+          <span>Explore all moves</span>
+          <span className="transition-transform group-open:rotate-180" aria-hidden>
+            ▾
+          </span>
+        </summary>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px border-t border-border/50 bg-border/60">
+          {moreMoves.map((m) => (
+            <MoveCard key={m.label} move={m} />
+          ))}
+        </div>
+      </details>
     </div>
   );
 }
