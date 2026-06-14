@@ -53,7 +53,10 @@ access rate. A package is **not** a better rate, a payout, or an entitlement.
 
 **Must travel with it.** Featured set today: Citizen, Operator, Vanguard,
 Steward (names + USDC). Recognition only — no payout, no rate change, no
-entitlement.
+entitlement. Every tier is self-service and taken online via wallet checkout,
+up to the sale's live SYN inventory — no tier is gated, manual, or off-site; the
+featured strip is curation only. The buy UI blocks any amount that would exceed
+remaining inventory rather than letting it revert on-chain.
 
 ---
 

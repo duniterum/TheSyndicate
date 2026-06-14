@@ -11,8 +11,9 @@
 //     unlocks · a recognition-only tagline. No returns, no payouts, no yield.
 //   • Rank is recognition only — derived from cumulative USDC. A package does
 //     not buy rights, discounts, or governance.
-//   • High-conviction tiers are flagged `manual` (onboarding by review), so the
-//     UI never offers a one-click buy for an amount that is handled manually.
+//   • Every tier is self-service: any amount above the $5 minimum is taken
+//     online via wallet checkout at the same fixed rate, up to the sale's
+//     remaining on-chain SYN inventory. No tier is gated, manual, or off-site.
 //   • Pure-data leaf: deterministic, reads no chain, writes nothing.
 
 import { RANKS_V2, rankForUsdc, type RankTier } from "@/lib/syndicate-config";
@@ -29,15 +30,13 @@ export type SeatPackage = {
   synAtGenesis: number;
   /** Headline card in the featured strip. */
   featured: boolean;
-  /** Requires manual onboarding (large tiers) — no one-click buy. */
-  manual: boolean;
   /** Recognition-only descriptor. Never financial framing. */
   tagline: string;
 };
 
-// Curated headline set — a clean, directly-executable arc from entry to deep
-// support. The full ladder still renders elsewhere (RankLadder). Featured
-// packages are intentionally all non-manual so every card is one-click usable.
+// Curated headline set — a clean arc from entry to deep support. The full
+// ladder still renders elsewhere (RankLadder); every tier is self-service and
+// taken online via wallet checkout. The featured strip is curation only.
 const FEATURED_NAMES = ["Citizen", "Operator", "Vanguard", "Steward"] as const;
 
 const TAGLINES: Readonly<Record<string, string>> = {
@@ -50,9 +49,9 @@ const TAGLINES: Readonly<Record<string, string>> = {
   Architect: "Deep-supporter recognition placement.",
   Steward: "Lasting recognition in the archive.",
   Custodian: "Public, durable archive recognition.",
-  Keystone: "High-conviction recognition — by manual onboarding.",
-  "Inner Circle": "High-conviction recognition — by manual onboarding.",
-  Cornerstone: "The deepest archive recognition — by manual review.",
+  Keystone: "High-conviction recognition. Available online via wallet checkout.",
+  "Inner Circle": "High-conviction recognition. Available online via wallet checkout.",
+  Cornerstone: "The deepest archive recognition. Available online via wallet checkout.",
 };
 
 function slugForRank(name: string): string {
@@ -66,18 +65,12 @@ export const SEAT_PACKAGES: ReadonlyArray<SeatPackage> = RANKS_V2.map((rank) => 
   usdc: rank.usdc,
   synAtGenesis: synForUsdcInEra(rank.usdc, currentEra()),
   featured: (FEATURED_NAMES as ReadonlyArray<string>).includes(rank.name),
-  manual: Boolean(rank.manual),
   tagline: TAGLINES[rank.name] ?? "Permanent archive recognition.",
 }));
 
 /** Headline packages for the featured strip (all directly executable). */
 export function featuredPackages(): ReadonlyArray<SeatPackage> {
   return SEAT_PACKAGES.filter((p) => p.featured);
-}
-
-/** Packages that can be taken with a single on-chain purchase (non-manual). */
-export function executablePackages(): ReadonlyArray<SeatPackage> {
-  return SEAT_PACKAGES.filter((p) => !p.manual);
 }
 
 /** Convenience: package by stable id. */

@@ -666,7 +666,7 @@ export function RankLadder() {
               "Early archive placement",
               "Visible tier recognition",
               "Permanent public member number",
-              "Manual onboarding at top tiers",
+              "Self-service wallet checkout at every tier",
             ].map((x) => (
               <li key={x} className="flex items-start gap-2">
                 <span className="mt-1.5 size-1 rounded-full bg-[var(--gold)]" />

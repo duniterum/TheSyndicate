@@ -83,6 +83,13 @@ export function LivePurchase() {
 
   // Calculator math (off-chain mirror at fixed rate; quote on-chain on demand later).
   const synOut = usdc * 100;
+  const synOutRaw = useMemo(() => {
+    try {
+      return parseUnits(String(Number.isFinite(synOut) ? synOut : 0), SYN_DECIMALS);
+    } catch {
+      return 0n;
+    }
+  }, [synOut]);
   const { current } = rankForUsdc(usdc);
   const flow = vaultFlow(usdc);
 
@@ -148,6 +155,13 @@ export function LivePurchase() {
     userBal.usdcAllowance !== undefined && userBal.usdcAllowance < usdcRaw;
   const noInventory =
     stats.availableSyn !== undefined && stats.availableSyn === 0n;
+  // A self-service buy can never exceed the sale's remaining on-chain inventory.
+  // The largest tiers (e.g. Cornerstone = 1,000,000 SYN) can outrun current
+  // inventory; block the buy honestly instead of letting it revert on-chain.
+  const exceedsInventory =
+    stats.availableSyn !== undefined &&
+    stats.availableSyn > 0n &&
+    synOutRaw > stats.availableSyn;
   const isPaused = stats.paused === true;
 
   const approvePending = approveTx.isPending || approveReceipt.isLoading;
@@ -205,6 +219,8 @@ export function LivePurchase() {
     state = { label: "Waiting for SYN Inventory", disabled: true, tone: "muted" };
   } else if (belowMin) {
     state = { label: `Minimum ${SALE_MIN_USDC} USDC`, disabled: true, tone: "muted" };
+  } else if (exceedsInventory) {
+    state = { label: "Amount exceeds sale inventory", disabled: true, tone: "muted" };
   } else if (insufficientUsdc) {
     state = { label: "Insufficient USDC", disabled: true, tone: "error" };
   } else if (needsApprove) {

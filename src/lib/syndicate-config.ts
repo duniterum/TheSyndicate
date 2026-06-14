@@ -106,7 +106,6 @@ export type RankTier = {
   usdc: number;       // entry USDC amount
   syn: number;        // SYN received at fixed rate (1 SYN = $0.01)
   group: "Open Entry" | "Active Members" | "Deep Supporters" | "High-Conviction";
-  manual?: boolean;
   badge: string;
   benefits: string[];
 };
@@ -121,9 +120,9 @@ export const RANKS_V2: RankTier[] = [
   { name: "Architect",         usdc: 250,    syn: 25_000,    group: "Deep Supporters",  badge: "Architect badge",         benefits: ["Architect badge", "Higher visibility", "Permanent archive recognition"] },
   { name: "Steward",           usdc: 500,    syn: 50_000,    group: "Deep Supporters",  badge: "Steward badge",           benefits: ["Steward badge", "Recognition placement", "Permanent archive recognition"] },
   { name: "Custodian",         usdc: 1_000,  syn: 100_000,   group: "Deep Supporters",  badge: "Custodian badge",         benefits: ["Custodian badge", "Public recognition", "Permanent archive recognition"] },
-  { name: "Keystone",          usdc: 2_500,  syn: 250_000,   group: "High-Conviction",  manual: true, badge: "Keystone badge",       benefits: ["Keystone badge", "Manual onboarding", "Permanent archive recognition"] },
-  { name: "Inner Circle",      usdc: 5_000,  syn: 500_000,   group: "High-Conviction",  manual: true, badge: "Inner Circle badge",   benefits: ["Inner Circle badge", "Permanent archive recognition", "Manual onboarding"] },
-  { name: "Cornerstone",       usdc: 10_000, syn: 1_000_000, group: "High-Conviction",  manual: true, badge: "Cornerstone badge", benefits: ["Cornerstone badge", "Deepest archive recognition", "Manual review onboarding"] },
+  { name: "Keystone",          usdc: 2_500,  syn: 250_000,   group: "High-Conviction",  badge: "Keystone badge",       benefits: ["Keystone badge", "High-conviction recognition", "Self-service wallet checkout"] },
+  { name: "Inner Circle",      usdc: 5_000,  syn: 500_000,   group: "High-Conviction",  badge: "Inner Circle badge",   benefits: ["Inner Circle badge", "High-conviction recognition", "Self-service wallet checkout"] },
+  { name: "Cornerstone",       usdc: 10_000, syn: 1_000_000, group: "High-Conviction",  badge: "Cornerstone badge", benefits: ["Cornerstone badge", "Deepest archive recognition", "Self-service wallet checkout"] },
 ];
 
 export function rankForUsdc(usdc: number): { current: RankTier | null; next: RankTier | null } {

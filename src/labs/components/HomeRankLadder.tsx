@@ -55,7 +55,7 @@ export function HomeRankLadder() {
         })}
       </div>
       <p className="mt-4 text-xs text-muted-foreground">
-        Keystone tiers ($2,500+) include manual review. See full benefits on the <Link to="/ranks" className="underline underline-offset-2 hover:text-foreground">Ranks page</Link>.
+        Every tier — including Keystone ($2,500+) — is available online via wallet checkout. See full benefits on the <Link to="/ranks" className="underline underline-offset-2 hover:text-foreground">Ranks page</Link>.
       </p>
     </Section>
   );

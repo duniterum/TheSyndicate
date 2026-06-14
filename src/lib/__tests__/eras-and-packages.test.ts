@@ -13,7 +13,6 @@ import {
 import {
   SEAT_PACKAGES,
   featuredPackages,
-  executablePackages,
   nextSeatPackage,
   getPackageByRankName,
 } from "@/lib/package-catalog";
@@ -150,17 +149,31 @@ describe("packages — derived 1:1 from RANKS_V2", () => {
     });
   });
 
-  it("featured packages are all directly executable (non-manual)", () => {
+  it("every rank has exactly one self-service package (none gated)", () => {
+    expect(SEAT_PACKAGES).toHaveLength(RANKS_V2.length);
+    RANKS_V2.forEach((r) => expect(getPackageByRankName(r.name)).toBeDefined());
     const featured = featuredPackages();
     expect(featured.length).toBeGreaterThanOrEqual(3);
-    featured.forEach((p) => expect(p.manual).toBe(false));
   });
 
-  it("manual high-conviction tiers are excluded from executable set", () => {
-    const execNames = executablePackages().map((p) => p.rank.name);
-    expect(execNames).not.toContain("Keystone");
-    expect(execNames).not.toContain("Inner Circle");
-    expect(execNames).not.toContain("Cornerstone");
+  it("no package or rank presents manual / off-site onboarding", () => {
+    const ONBOARDING_BANNED = [
+      "manual",
+      "concierge",
+      "assisted",
+      "private onboarding",
+      "gated access",
+      "contact us",
+      "apply to join",
+    ];
+    const surfaces = [
+      ...SEAT_PACKAGES.map((p) => p.tagline),
+      ...RANKS_V2.flatMap((r) => r.benefits),
+    ];
+    for (const s of surfaces) {
+      const lower = s.toLowerCase();
+      expect(ONBOARDING_BANNED.filter((t) => lower.includes(t))).toEqual([]);
+    }
   });
 
   it("nextSeatPackage tracks the next rank threshold", () => {

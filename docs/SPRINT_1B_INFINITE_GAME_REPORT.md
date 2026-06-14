@@ -31,7 +31,7 @@ whitepaper extraction layer — all while keeping every price/term consistent.
 
 ### Task 2 — Package discovery everywhere
 Packages are now understandable from every entry point, all derived 1:1 from
-`RANKS_V2` (no manual duplication):
+`RANKS_V2` (no hand-maintained duplication):
 | Surface | Where | What it gives |
 |---|---|---|
 | Homepage | `HomeProgressionTeaser` | featured arc + "what a package is" + doors |

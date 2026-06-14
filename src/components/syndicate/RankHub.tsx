@@ -37,7 +37,7 @@ const GROUP_DESC: Record<Group, string> = {
   "Open Entry": "Where most members start. Any participation counts.",
   "Active Members": "Members shaping protocol formation week over week.",
   "Deep Supporters": "Higher-conviction members. Rare by design.",
-  "High-Conviction": "Manually onboarded. Smallest tier of the protocol.",
+  "High-Conviction": "The protocol's smallest, highest-conviction tier — available online via wallet checkout.",
 };
 
 /* ─────────── 1. Intro ─────────── */

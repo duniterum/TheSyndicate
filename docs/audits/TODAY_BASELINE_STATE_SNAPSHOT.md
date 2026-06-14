@@ -133,7 +133,7 @@ Split enforced on-chain by the Sale contract (`vaultWallet`/`liquidityWallet`/`o
 `TOKENOMICS_ALLOCATION`: Membership Distribution 35% (350M) · Vault Reserve 25% (250M) · Founder 12% (120M, 12-mo cliff + 36-mo vest) · Liquidity 10% (100M) · Partnerships 8% (80M) · Contributors 5% (50M) · Future Ecosystem 5% (50M). `STATIC`. 7 public allocation wallets in `ALLOCATION_WALLETS`.
 
 ### 3.5 Ranks (recognition only, derived from cumulative USDC)
-12 tiers, `STATIC` thresholds, `DERIVED` assignment: Citizen $5 · Scout $10 · Operator $25 · Builder $50 · Strategist $75 · Vanguard $100 · Architect $250 · Steward $500 · Custodian $1,000 · Keystone $2,500* · Inner Circle $5,000* · Cornerstone $10,000* (*manual onboarding). Rank confers **no rights/returns/discounts** (doctrine-enforced).
+12 tiers, `STATIC` thresholds, `DERIVED` assignment: Citizen $5 · Scout $10 · Operator $25 · Builder $50 · Strategist $75 · Vanguard $100 · Architect $250 · Steward $500 · Custodian $1,000 · Keystone $2,500 · Inner Circle $5,000 · Cornerstone $10,000 (all self-service online via wallet checkout, bounded by live sale inventory — the buy UI blocks any amount exceeding remaining SYN). Rank confers **no rights/returns/discounts** (doctrine-enforced).
 
 ### 3.6 Chapters (derived from member number)
 I — Genesis Signal #1–333 · II — First Thousand #334–1,000 · III — The Expansion #1,001–3,333 · IV — First Ten Thousand #3,334–10,000 · V — Open Era #10,001+. `STATIC` ranges, `DERIVED` placement (`src/lib/chapters.ts`).
