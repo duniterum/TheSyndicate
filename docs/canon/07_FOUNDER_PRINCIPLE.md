@@ -93,6 +93,10 @@ door** for it. Keep them one system, never parallel ones:
 |---|---|---|---|---|---|
 | **FS-1** | **Future Signal Engine — source taxonomy** (evaluate signals grouped as Financial / Protocol / Memory Trace — detail below) | Let the protocol grow *more interpretive without new truth*: Signals answer "why does this matter?" over facts that already exist, feeding richer recognition / curation / reports | **SIGNALS** (interpretation over EVENTS; `05` §3) | a reward / score / leaderboard; a new store of truth; a layer that *replaces* the event it reads | `05`'s SIGNALS leaf built first (`signalType()` / `signalTier()`); **+ any Memory-derived fact re-expressed as an EVENT first (founder ruling — `05` §2.1; FS-1 below)** |
 | **FS-2** | **Dedicated RPC + lightweight event indexer** (keyed Avalanche RPC provider + a normalized event-projection store/API the frontend reads — detail below) | Scale beyond browser-RPC / explorer / cached reads: serve fast, normalized reads for every current + future event source from our own API, while on-chain stays the only truth | **TRUTH → EVENTS infrastructure** (a read/ingest + normalized projection feeding the EVENTS layer; not a new layer in the five-layer model) | a claimed source of truth; a substitute for on-chain verification; a store whose values may override or contradict a chain read — explorer links stay the verification layer | Keyed RPC provider chosen; indexer/API + normalized event schema designed across the sources listed below (FS-2) |
+| **FS-3** | **Public Member Profile Pages** (human-facing member URLs like `/member/27`, projected from the holder index, wallet verification preserved — detail below) | Give every member a clean, shareable *human* identity surface addressed by founder number rather than a raw `0x` address — the page you send to a person, while the wallet page stays the page you send to a skeptic | **Identity projection** (read-only projection over the EVENTS-derived holder index; not a new layer in the five-layer model) | a profile with fabricated / off-chain identity (bios, handles, avatars); a wealth leaderboard; a surface whose values bypass on-chain verification | holder index (LIVE) — **minimal route shipped this wave**; richer enrichment (embedded activity / artifacts / Chronicle, certificates) remains future (see FS-3 detail) |
+| **FS-4** | **Genesis Seat Certificates** (future evolution of the share card: Member #N · Chapter · Rank · Verified on Avalanche · permanent public URL · shareable image — detail below) | A premium, permanent, shareable identity artifact per member — the membership card matured into a certificate | **Identity projection / MEMORY render** (render over the holder index + a permanent `/member/N` URL; not a new truth layer) | a tradable / transferable asset implying value; a certificate of return or equity; an artifact conflated with the verifiable seat (cf. **Artifact ≠ Seat**, `SeatRecord721` doctrine) | FS-3 permanent `/member/N` URLs (minimal LIVE); richer card / certificate design; **must not imply a `SeatRecord721` NFT until that contract ships** |
+| **FS-5** | **Protocol Search** (search by member number · wallet · chapter · rank — detail below) | One fast entry point to find any member or cohort across the protocol, built on indexed data | **TRUTH → EVENTS infrastructure consumer** (a query surface over FS-2's normalized projection; not a new layer) | a sort-by-wealth leaderboard; a search that surfaces fabricated / off-chain identity; a claimed source of truth over the chain | **FS-2** indexer / API (search needs indexed data to scale past the per-browser RPC scan) |
+| **FS-6** | **Protocol Timeline** (clean historical timeline: joins · burns · artifacts · chapter moments · verified milestones — detail below) | A legible living-history view of the protocol — supports the TV-series / living-history vision | **MEMORY** (chronology overlay over EVENTS; obeys `05` Adjacency Law + the chronology doctrine — verified-block ordering only) | a curated-for-marketing or fabricated timeline; an ordering by anything but verified block; a wealth narrative | EVENTS + chronology layer (registry exists); a completeness flag for true "firsts"; **FS-2** for full historical coverage at scale |
 
 ---
 
@@ -163,6 +167,8 @@ canonical EVENTS layer — on-chain logs remain the events of record.
 - SeatRecord721 *(future)*
 - Marketplace *(future)*
 - Signal Chamber *(future)*
+- AI layer *(future)*
+- Cross-chain *(future)*
 
 **Goal.** The frontend reads fast, normalized indexed data from our own API; the public
 explorer (Snowtrace / Avascan / Routescan / Sourcify) remains the **independent
@@ -184,3 +190,100 @@ still resolve to an on-chain read or be labeled **PENDING**.
 `docs/DEFERRED_WORK_LEDGER.md` (and link back here for the *why*) only once it has a
 concrete surface + fix — e.g. chosen RPC provider, indexer/API contract, and the
 normalized event schema for the sources above.
+
+---
+
+### FS-3 · Public Member Profile Pages
+
+**Approved direction.** Give every member a human-facing identity URL addressed by
+**founder number** — `/member/27` — instead of a raw `0x` address. The page is a
+**read-only projection of the same holder index** that powers `/wallet/$address` and the
+Member Wall; it introduces no new truth and no off-chain identity.
+
+**Division of labour (intentional — do not blur).**
+- `/member/N` — the *human* surface. "Who is Member #27?" Recognition only: number,
+  chapter, rank, SYN received, the share card. The page you send to a person.
+- `/wallet/$address` — the *verification* surface. Full purchase trail, 70/20/10 routing
+  totals, eligibility flags, live balance. The page you send to a skeptic.
+
+**Hierarchy (founder).** Member #N → chapter / Genesis status → rank → Verified on
+Avalanche → short wallet address + explorer link → seat proof / share card → activity /
+artifacts / Chronicle *if already available* → link to full wallet intelligence. The full
+`0x` address is never the main visual element; the short address links out to the explorer
+and the wallet page.
+
+**Guardrails.** No bios, no handles, no avatars, no fabricated identity. Never a wealth
+leaderboard or sort-by-contribution. Rank stays recognition only. Every claim resolves to
+an on-chain read or is labeled PENDING; the explorer + wallet page remain the verification
+layer.
+
+**Status:** **MINIMAL ROUTE SHIPPED.** `/member/$number` is live (hero, chapter, rank, SYN
+received, the share card preferring the `/member/N` URL, seats-around context, and verify
+links to the wallet page + Avascan). The Member Wall search + tiles and the share cards on
+`/wallet` and `/my-syndicate` now prefer `/member/N`. **Richer enrichment remains FUTURE:**
+embedded activity / artifacts / Chronicle, a per-member OG image, and the certificate
+evolution (FS-4). Graduate each to `docs/DEFERRED_WORK_LEDGER.md` when it gains a concrete
+surface.
+
+---
+
+### FS-4 · Genesis Seat Certificates
+
+**Approved direction.** Mature the share card into a **Genesis Seat Certificate** — a
+premium, permanent, shareable identity artifact: **Member #N · Chapter · Rank · Verified on
+Avalanche** — with a permanent public URL (`/member/N`, FS-3) and a shareable image.
+
+**Where it sits.** A render / projection over the holder index + the permanent `/member/N`
+URL. Not a new truth layer; not (yet) an on-chain artifact.
+
+**Guardrail (doctrine).** A certificate is **recognition, not value**. It must never become
+a tradable or transferable asset, imply return / equity / yield, or be conflated with the
+verifiable seat itself (**Artifact ≠ Seat**). It must **not** imply a `SeatRecord721` NFT
+until that contract actually ships (cf. `05` future-module doctrine). Verification stays
+on-chain.
+
+**Status:** APPROVED DIRECTION — **NOT IMPLEMENTED.** The current share card (FS-3) is the
+seed; the certificate is its future evolution.
+
+---
+
+### FS-5 · Protocol Search
+
+**Approved direction.** One fast search entry point across the protocol: by **member number
+· wallet · chapter · rank**, built on top of **future indexed data** (FS-2).
+
+**Where it sits.** A query surface / consumer of FS-2's normalized event projection — not a
+new layer in the five-layer model, and never a source of truth over the chain.
+
+**Guardrail.** Never a sort-by-wealth leaderboard; never surfaces fabricated or off-chain
+identity; results resolve to on-chain reads or are labeled PENDING. (The Member Wall search
+already resolves member number / wallet against the live holder index today; FS-5 is the
+*scaled* version over the indexer.)
+
+**Prerequisite.** **FS-2** — search needs indexed data to scale beyond the per-browser RPC
+scan.
+
+**Status:** APPROVED DIRECTION — **NOT IMPLEMENTED** (depends on FS-2).
+
+---
+
+### FS-6 · Protocol Timeline
+
+**Approved direction.** A clean, legible **historical timeline** of the protocol: **joins ·
+burns · artifacts · chapter moments · verified milestones.** This supports the TV-series /
+living-history vision.
+
+**Where it sits.** **MEMORY** — a chronology overlay over EVENTS. It obeys `05`'s Adjacency
+Law and the **chronology doctrine**: ordering is by **verified block only**; a tx proves
+existence, not order; only the verified path carries a date. True protocol-wide "firsts"
+stay gated behind a completeness flag (cf. windowed-first-claims doctrine).
+
+**Guardrail.** Never a curated-for-marketing or fabricated timeline; never ordered by
+anything but verified block; never a wealth narrative. Every entry resolves to an on-chain
+event or is labeled PENDING.
+
+**Prerequisite.** EVENTS + the chronology layer (registry exists); a completeness flag for
+true firsts; **FS-2** for full historical coverage at scale.
+
+**Status:** APPROVED DIRECTION — **NOT IMPLEMENTED** (depends on FS-2 + chronology
+completeness).

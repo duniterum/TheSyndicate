@@ -10,11 +10,11 @@
 
 export const BUILD_STAMP = {
   /** ISO timestamp of the last meaningful build pass. */
-  iso: "2026-06-09T12:00:00Z",
+  iso: "2026-06-14T12:00:00Z",
   /** Human-friendly UTC stamp shown in the footer. */
-  human: "2026-06-09 · UTC",
+  human: "2026-06-14 · UTC",
   /** Short release tag — bump on each significant wave. */
-  tag: "my-syndicate-v2-command-strip",
+  tag: "featured-paths-member-profile",
   /** Environment hint: 'preview' on lovable preview/sandbox, 'production' on custom domain. */
   envLabel(): "preview" | "production" | "local" {
     if (typeof window === "undefined") return "local";

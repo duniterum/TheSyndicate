@@ -218,7 +218,7 @@ function MemberSearch({ idx }: { idx: HolderIndex }) {
       const rec = idx.ordered.find((r) => r.founderNumber === n);
       if (rec) {
         setError(null);
-        navigate({ to: "/wallet/$address", params: { address: rec.wallet } });
+        navigate({ to: "/member/$number", params: { number: String(n) } });
         return;
       }
       setError(
@@ -475,8 +475,8 @@ function MemberTile({
 
   return (
     <Link
-      to="/wallet/$address"
-      params={{ address: record.wallet }}
+      to="/member/$number"
+      params={{ number: String(record.founderNumber) }}
       className={`group block rounded-lg border border-border/60 bg-card/40 hover:border-[var(--gold)]/60 hover:bg-card/70 transition-colors ${
         emphasis ? "p-5" : "p-4"
       }`}

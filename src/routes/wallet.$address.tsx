@@ -199,8 +199,10 @@ function MemberView({
 
   const identitySentence = `Member #${record.founderNumber} of The Syndicate · ${CHAPTER_LABEL[record.chapter]} · Rank ${record.currentRank?.name ?? "—"} · ${fmtUsd(record.cumulativeUsdc)} routed on-chain.`;
   const chapterLabel = getChapterByMemberNumber(record.memberNumber).shortLabel;
-  const walletUrl = `${CANONICAL_ORIGIN}/wallet/${record.wallet}`;
-  const shareUrl = buildReferralShareUrl(walletUrl, record.founderNumber);
+  // Public sharing prefers the human /member/N URL when a member number exists;
+  // the wallet page itself stays the verification surface.
+  const memberUrl = `${CANONICAL_ORIGIN}/member/${record.founderNumber}`;
+  const shareUrl = buildReferralShareUrl(memberUrl, record.founderNumber);
 
   return (
     <>
@@ -238,7 +240,7 @@ function MemberView({
             rankName={record.currentRank?.name ?? "Member"}
             wallet={record.wallet}
             synReceived={record.cumulativeSyn}
-            cardUrl={walletUrl}
+            cardUrl={memberUrl}
             shareUrl={shareUrl}
             shareText={identitySentence}
             hint="Share this member card"

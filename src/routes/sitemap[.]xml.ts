@@ -39,6 +39,9 @@ const ENTRIES: SitemapEntry[] = [
   { path: "/nfts",         changefreq: "monthly", priority: "0.4" },
   { path: "/ai",           changefreq: "monthly", priority: "0.4" },
   // /referral is a SIMULATED preview surface; noindex on the route — excluded from sitemap.
+  // /member/$number and /wallet/$address are DYNAMIC per-entity routes (unbounded,
+  // one URL per member/wallet) — intentionally NOT enumerated here. Crawlers reach
+  // member profiles via the indexed /members wall, which links to each /member/N.
 ];
 
 export const Route = createFileRoute("/sitemap.xml")({

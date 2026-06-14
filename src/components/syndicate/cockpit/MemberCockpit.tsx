@@ -434,9 +434,9 @@ function CockpitHeader({
             rankName={record.currentRank?.name ?? "Member"}
             wallet={record.wallet}
             synReceived={record.cumulativeSyn}
-            cardUrl={`https://thesyndicate.money/wallet/${record.wallet}`}
+            cardUrl={`https://thesyndicate.money/member/${record.memberNumber}`}
             shareUrl={buildReferralShareUrl(
-              `https://thesyndicate.money/wallet/${record.wallet}`,
+              `https://thesyndicate.money/member/${record.memberNumber}`,
               record.memberNumber,
             )}
             shareText={shareText}

@@ -1,0 +1,262 @@
+Recalibrate from the full current The Syndicate system and all recent reports:
+
+* TODAY BASELINE
+* Sprint 1 Infinite-Game Journey
+* Sprint 1B Homepage / Package Discovery
+* Self-service correction
+* Deferred Ledger audit
+* Post-Sprint Strategic Roadmap
+* Growth / Proof / Discovery sprint
+* Final Polish sprint
+* Post-publish verification report
+
+Do NOT remove previous work.
+Do NOT rebuild existing systems.
+Do NOT mix future modules with live modules.
+Do NOT touch smart contracts.
+Do NOT change Sale V1.
+Do NOT change tokenomics.
+Do NOT deploy contracts.
+Do NOT invent data.
+Do NOT use banned financial language.
+
+The goal now is:
+Ship the latest completed frontend work correctly, then add only the safest missing public identity layer if feasible.
+
+FIRST PRIORITY — FIX PRODUCTION STALENESS
+
+The latest work is committed but not live.
+
+Production is one publish behind.
+The live homepage does not yet show:
+
+* Featured Paths
+* 6 package cards
+* Keystone
+* Cornerstone
+* Start here
+* High-conviction
+
+Before adding anything else:
+
+1. Bump the build stamp.
+2. Publish / Update the latest build.
+3. Verify production homepage now contains the new Featured Paths.
+4. Verify /join still has packages and full ladder.
+5. Verify production on-chain reads still work.
+6. Return the build stamp and live verification.
+
+Do this before any new feature work.
+
+SECOND PRIORITY — PUBLIC MEMBER PROFILE PAGES
+
+We do not want to replace /wallet/$address.
+We want to add a more human, shareable public identity layer.
+
+Best-practice model:
+
+* /member/27 = public member identity page
+* /wallet/0x... = technical wallet / verification page
+* search supports both member number and wallet address
+* share cards prefer /member/N when member number exists
+* wallet/explorer links remain available for verification
+
+Reason:
+A wallet address is good for verification, but bad for storytelling and sharing.
+A member number is simple, memorable, collectible, and fits The Syndicate identity.
+
+Example:
+Better public share URL:
+thesyndicate.money/member/27
+
+Technical verification URL still exists:
+thesyndicate.money/wallet/0x...
+
+Assess feasibility first.
+
+If safe with the existing holder/member index, implement:
+
+Route:
+
+* /member/$number
+
+Rules:
+
+* Resolve member number from existing member/holder index.
+* If member exists, show public member profile.
+* If member does not exist, show clean “Member not found yet” state.
+* Link to /wallet/$address for technical verification.
+* Keep /wallet/$address unchanged.
+* Update /members search so member-number results prefer /member/N.
+* Update share cards so public sharing prefers /member/N when available.
+* Keep wallet address shortened visually.
+* Keep explorer verification links.
+
+Design hierarchy for /member/N:
+
+1. Member #N
+2. Chapter / Genesis status
+3. Rank
+4. Verified on Avalanche
+5. Wallet short address + explorer link
+6. Seat proof / share card
+7. Activity / artifacts / Chronicle if already available
+8. Link to full wallet intelligence
+
+Do not show full wallet address as the main visual element.
+Use short address visually.
+Full address can remain available via copy/explorer/technical page.
+
+THIRD PRIORITY — IDEAS / NEXT TECHNICAL FOUNDATIONS BACKLOG
+
+Ensure these are recorded cleanly as approved future direction, not implemented now:
+
+FS-2 — Dedicated RPC + lightweight event indexer
+Reason:
+Current browser RPC/cached reads are acceptable for V1, but V1.5/V2 should use a keyed Avalanche RPC plus normalized event-projection API.
+
+It should later support:
+
+* Sale V1
+* future Sale V2
+* Archive mints
+* burns
+* LP/liquidity
+* future Referral / CommissionRouter
+* future SeatRecord721
+* future Marketplace
+* future Signal Chamber
+* future AI layer
+* future Cross-chain
+
+Guardrail:
+Explorer links remain the verification layer.
+Indexer/API improves speed and UX but must not become an unverifiable source of truth.
+
+FS-3 — Public Member Profile Pages
+Human-facing member URLs like /member/27, built from the member index, with wallet verification preserved.
+
+FS-4 — Genesis Seat Certificates
+Future evolution of the share card:
+Member #N · Chapter · Rank · Verified on Avalanche · permanent public URL · shareable image.
+
+FS-5 — Protocol Search
+Search by:
+
+* member number
+* wallet
+* chapter
+* rank
+
+Built on top of future indexed data.
+
+FS-6 — Protocol Timeline
+A clean historical timeline of the protocol:
+
+* joins
+* burns
+* artifacts
+* chapter moments
+* verified milestones
+
+This supports the TV-series / living-history vision.
+
+FOURTH PRIORITY — KEEP RECENT WORK INTACT
+
+Do not undo:
+
+* Featured Paths 6-card section
+* Citizen start path
+* Keystone / Cornerstone display
+* /join full ladder
+* self-service wallet checkout framing
+* inventory-aware checkout guard
+* share card polish
+* member/wallet search
+* introduced-by recognition-only preview
+* honest burn-ledger note
+* Next Move cockpit
+* Signal Chamber as advisory/future
+* Marketplace as future utility
+* Referral as future / recognition-first until contract/legal ready
+
+LEGAL / WORDING GUARDRAILS
+
+Do not say:
+
+* ROI
+* yield
+* dividend
+* passive income
+* price floor
+* price support
+* guaranteed value
+* investment return
+* ownership
+* profit share
+* binding governance rights
+* earn rewards
+* XP
+* streak
+* jackpot
+
+Allowed:
+
+* member
+* seat
+* recognition
+* chapter
+* rank
+* package
+* proof
+* protocol memory
+* verified on Avalanche
+* next milestone
+* continue your path
+* share your seat
+* introduced by
+* attribution
+* advisory signal
+* future marketplace access
+
+FINAL REQUIRED REPORT
+
+Return:
+
+1. Publish verification
+
+* build stamp
+* production URL
+* homepage Featured Paths live? yes/no
+* /join packages live? yes/no
+* production reads working? yes/no
+
+2. Member profile feasibility
+
+* safe now? yes/no
+* what existing index/data it uses
+* any risk or blocker
+
+3. If implemented
+
+* route added
+* files changed
+* search behavior changed
+* share behavior changed
+* visual description
+* tests run
+
+4. Backlog update
+
+* where FS-2 to FS-6 are recorded
+* confirm not implemented yet
+
+5. Publish readiness
+
+* what is live
+* what remains pending
+* what I should visually inspect
+
+Do not add unrelated features.
+Do not continue brainstorming inside code.
+Finish publish correctness first, then the safe public member profile layer if feasible.

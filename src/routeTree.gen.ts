@@ -43,6 +43,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LabsIndexRouteImport } from './routes/labs.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
+import { Route as MemberNumberRouteImport } from './routes/member.$number'
 import { Route as LabsSignalsRouteImport } from './routes/labs.signals'
 import { Route as LabsProtocolMemoryRouteImport } from './routes/labs.protocol-memory'
 import { Route as LabsProtocolLineageRouteImport } from './routes/labs.protocol-lineage'
@@ -240,6 +241,11 @@ const MilestoneIdRoute = MilestoneIdRouteImport.update({
   path: '/milestone/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MemberNumberRoute = MemberNumberRouteImport.update({
+  id: '/member/$number',
+  path: '/member/$number',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LabsSignalsRoute = LabsSignalsRouteImport.update({
   id: '/signals',
   path: '/signals',
@@ -427,6 +433,7 @@ export interface FileRoutesByFullPath {
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
+  '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs/': typeof LabsIndexRoute
@@ -488,6 +495,7 @@ export interface FileRoutesByTo {
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
+  '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs': typeof LabsIndexRoute
@@ -551,6 +559,7 @@ export interface FileRoutesById {
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
+  '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
   '/labs/': typeof LabsIndexRoute
@@ -615,6 +624,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
+    | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs/'
@@ -676,6 +686,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
+    | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs'
@@ -738,6 +749,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
+    | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
     | '/labs/'
@@ -783,6 +795,7 @@ export interface RootRouteChildren {
   VaultRoute: typeof VaultRoute
   WhitepaperRoute: typeof WhitepaperRoute
   ApiChatRoute: typeof ApiChatRoute
+  MemberNumberRoute: typeof MemberNumberRoute
   MilestoneIdRoute: typeof MilestoneIdRoute
   WalletAddressRoute: typeof WalletAddressRoute
   ApiOgHealthRoute: typeof ApiOgHealthRoute
@@ -1031,6 +1044,13 @@ declare module '@tanstack/react-router' {
       path: '/milestone/$id'
       fullPath: '/milestone/$id'
       preLoaderRoute: typeof MilestoneIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/member/$number': {
+      id: '/member/$number'
+      path: '/member/$number'
+      fullPath: '/member/$number'
+      preLoaderRoute: typeof MemberNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/labs/signals': {
@@ -1321,6 +1341,7 @@ const rootRouteChildren: RootRouteChildren = {
   VaultRoute: VaultRoute,
   WhitepaperRoute: WhitepaperRoute,
   ApiChatRoute: ApiChatRoute,
+  MemberNumberRoute: MemberNumberRoute,
   MilestoneIdRoute: MilestoneIdRoute,
   WalletAddressRoute: WalletAddressRoute,
   ApiOgHealthRoute: ApiOgHealthRoute,
