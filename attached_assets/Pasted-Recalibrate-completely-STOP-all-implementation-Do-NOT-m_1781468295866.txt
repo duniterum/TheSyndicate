@@ -1,0 +1,97 @@
+Recalibrate completely.
+
+STOP all implementation.
+
+Do NOT modify Solidity.
+Do NOT modify Sale V2.
+Do NOT modify frontend.
+Do NOT deploy.
+
+We are still before line-by-line Solidity review.
+
+The Referral Founder Reconciliation Report solved contradictions.
+
+Now I want a protocol-memory recovery pass.
+
+I do NOT want new ideas.
+
+I do NOT want recommendations yet.
+
+I want to recover everything we have already decided.
+
+The audit itself says the protocol historically contained:
+
+* CommissionRouter
+* tiered attribution
+* Builder Records
+* Reputation
+* attribution layers
+* campaign concepts
+* future routing logic
+
+And I remember we discussed more than simple percentage tiers.
+
+Task:
+
+Search the entire project memory, doctrine, canon, audits, deferred work, founder notes, roadmap documents, protocol maps, referral documents, reputation documents, builder-record documents, CommissionRouter documents and any archived proposal.
+
+Recover every referral-related decision ever discussed.
+
+For each item classify:
+
+EXISTS
+SUPERSEDED
+PARTIALLY SUPERSEDED
+ACTIVE
+PENDING
+FUTURE
+ABANDONED
+UNKNOWN
+
+I specifically want to know whether we ever decided:
+
+1. SYN balance boosts
+2. Rank-based boosts
+3. NFT ownership boosts
+4. Builder Record boosts
+5. Reputation boosts
+6. Campaign-based attribution
+7. Referral streaks
+8. Referral achievements
+9. Multi-level attribution
+10. Revenue-source attribution
+11. Marketplace attribution
+12. Archive/NFT attribution
+13. B2B attribution
+14. Partner attribution
+15. Referral leaderboards
+16. Referral badges
+17. Referral artifacts
+18. CommissionRouter governance controls
+19. CommissionRouter upgrade controls
+20. Attribution event schema evolution
+
+For every recovered decision provide:
+
+* source document
+* exact recovered decision
+* status
+* whether V2 assumes it
+* whether CommissionRouter assumes it
+* whether it conflicts with current V2
+
+Return:
+
+A. Referral memory map
+B. Referral evolution timeline
+C. What is already frozen
+D. What is still undecided
+E. What V2 must ignore
+F. What CommissionRouter inherits
+G. What founder decisions still remain before Solidity review
+
+Do not invent.
+
+Recover only.
+
+I want protocol archaeology, not architecture.

@@ -239,3 +239,9 @@ id = "hpfhn_TFxlJu01XZpg3mO"
 uri = "file://docs/proposals/SALE_V2_REFERRAL_FOUNDER_RECONCILIATION_DECISION_REPORT.md"
 type = "text"
 title = "Referral Founder Reconciliation Decision Report"
+
+[[outputs]]
+id = "h0iUS-uzQ-0f4IwJVSkL5"
+uri = "file://docs/proposals/SALE_V2_REFERRAL_PROTOCOL_MEMORY_RECOVERY.md"
+type = "text"
+title = "Referral Protocol-Memory Recovery"
