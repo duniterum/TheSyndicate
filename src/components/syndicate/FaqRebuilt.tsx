@@ -20,6 +20,7 @@ const ENTRIES: Entry[] = [
   { cat: "Basics", q: "What is verifiable today?", a: "SYN token contract, Membership Sale contract, the Vault / Liquidity / Operations wallets, every USDC purchase, every 70/20/10 routing transfer, every SYN allocation wallet, and the SYN/USDC LP on Trader Joe. All live on Avalanche C-Chain, verifiable on Avascan, Sourcify, and Routescan." },
   { cat: "Basics", q: "What is PENDING vs LIVE?", a: "LIVE means the contract is deployed and the data is read directly from chain. PENDING means the underlying primitive (programmatic Vault contract, Seat Record contract, on-chain governance, AI Layer) is not yet deployed and is clearly labeled — never mixed with live numbers." },
   { cat: "Basics", q: "Why early matters?", a: "The first members shape culture, get the lowest Founder Numbers, and are visible in the public archive forever. Recognition and archive placement compound for those present at the start — no bonus tokens, no yield." },
+  { cat: "Basics", q: "What is the Signal Chamber?", a: "A planned future module that would surface member signals derived from on-chain activity. It is advisory only and clearly labeled PENDING — not live, conferring no rights, and never influencing the sale rate, rank, or any value. It would only describe what is already on-chain — never predict price or promise a return." },
 
   // SYN
   { cat: "SYN Token", q: "What is SYN?", a: "A fixed-supply ERC20 utility token on Avalanche C-Chain. SYN powers membership rank, identity in the archive, future governance, and access to Syndicate participation. It is not equity, not a security, and not a claim on Vault assets." },
@@ -33,6 +34,8 @@ const ENTRIES: Entry[] = [
   { cat: "Membership & Sale", q: "Can larger members get cheaper tokens?", a: "No. Same fixed rate for every wallet. Larger purchases unlock higher ranks and archive recognition — never bonus tokens, never a better rate." },
   { cat: "Membership & Sale", q: "Can I buy a custom amount?", a: "Yes. Any USDC amount above the $5 minimum works." },
   { cat: "Membership & Sale", q: "What changes after I join?", a: "You receive a permanent Founder Number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship." },
+  { cat: "Membership & Sale", q: "What is a seat package?", a: "A package is simply a featured entry amount on /join. Each one maps 1:1 to an existing recognition tier and shows the SYN you receive at the live Genesis access rate (1 SYN = $0.01 USDC). Recognition only — no payout, no rate change, no entitlement, and no bonus tokens. Any custom amount above the $5 minimum works just the same." },
+  { cat: "Membership & Sale", q: "What are the distribution eras?", a: "The distribution eras are a positional schedule layered over the member archive. Era I (Genesis, members #1–#333) is LIVE at the single fixed access rate for every member. Eras II through IX are a PROPOSED FUTURE distribution model — not live, clearly labeled, and contingent on a future sale contract before any could take effect. They never change today's fixed rate." },
 
   // Vault & Routing
   { cat: "Vault & Routing", q: "Where does my USDC go?", a: "Every USDC purchase is split inside the Membership Sale contract: 70% to the Vault Wallet, 20% to the Liquidity Wallet, 10% to the Operations Wallet. Every transfer is visible on Avascan." },
@@ -46,6 +49,7 @@ const ENTRIES: Entry[] = [
   { cat: "Liquidity", q: "How is SYN price calculated?", a: "Implied price = USDC reserve ÷ SYN reserve, read live from the pair contract via getReserves(). Initial price anchor was $0.01." },
   { cat: "Liquidity", q: "Are LP providers guaranteed rewards?", a: "No. Providing liquidity carries impermanent loss, price, and smart-contract risk. Any future LP recognition is not promised, not yield, and not guaranteed." },
   { cat: "Liquidity", q: "What risks do LP providers face?", a: "Impermanent loss, price movement, smart-contract risk, low-liquidity slippage, and total loss. Providing liquidity is risky." },
+  { cat: "Liquidity", q: "Is the access rate the same as the market price?", a: "No — they are independent. The Genesis access rate (1 SYN = $0.01 USDC) is the protocol's own sale rate for taking a seat. Once you hold SYN, it may also trade on Trader Joe at a separate, market-set price. The access rate is not a market quote, and the market price is not the access rate." },
 
   // Ranks & Identity
   { cat: "Ranks & Identity", q: "What is a Founder Number?", a: "A permanent archive ID assigned in join order. The first members carry the lowest numbers forever." },

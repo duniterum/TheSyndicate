@@ -191,3 +191,9 @@ id = "PduZRc6FNEbd89r5HM9jv"
 uri = "file://docs/proposals/ERA_ENGINE_V2_RECONCILIATION_SPRINT0.md"
 type = "text"
 title = "Era Engine (V2) Reconciliation Report — Sprint 0"
+
+[[outputs]]
+id = "SaAJONdqDT22v3IZQ4fUw"
+uri = "file://docs/SPRINT_1_INFINITE_GAME_REPORT.md"
+type = "text"
+title = "Sprint 1 — Infinite-Game Journey · A–F Report"

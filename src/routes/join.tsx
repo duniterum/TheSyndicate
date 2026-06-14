@@ -9,6 +9,7 @@ import { SeatRecordPanel } from "@/components/syndicate/SeatRecordPanel";
 import { Section, SectionHeader } from "@/components/syndicate/Primitives";
 import { SplitVisualizer } from "@/components/preview/SplitVisualizer";
 import { ReferralAttributionNote } from "@/components/syndicate/ReferralAttributionNote";
+import { SeatPackages, EraSchedulePreview } from "@/components/syndicate/JoinPackages";
 
 export const Route = createFileRoute("/join")({
   head: () => ({
@@ -39,7 +40,10 @@ export const Route = createFileRoute("/join")({
       </Section>
       {/* Action lifted directly under member identity — buy first, explain the
           split right after (identity → action → proof) */}
-      <LivePurchase />
+      <div id="buy">
+        <LivePurchase />
+      </div>
+      <SeatPackages />
       <Section id="split-visualizer">
         <SectionHeader
           eyebrow="Where every $1 goes"
@@ -50,6 +54,7 @@ export const Route = createFileRoute("/join")({
       </Section>
       <SeatRecordPanel />
       <AccessRate />
+      <EraSchedulePreview />
       <MembershipCalculator />
       <RankLadder />
       <PaymentStrategy />

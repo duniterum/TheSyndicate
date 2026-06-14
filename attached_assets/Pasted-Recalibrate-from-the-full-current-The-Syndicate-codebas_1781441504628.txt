@@ -1,0 +1,275 @@
+Recalibrate from the full current The Syndicate codebase, live site, docs, contracts, constants, TODAY BASELINE snapshot, and Era Engine Sprint 0 reconciliation report.
+
+We are finishing this stage.
+
+Goal:
+Turn The Syndicate into a clear infinite-game membership journey on the site, with packages, future price/era progression, next-step cockpit guidance, updated texts/docs/FAQ, and a clean foundation for the future whitepaper.
+
+Do NOT blindly follow our exact names or numbers.
+Do NOT blindly preserve current names or numbers either.
+Think from the real system and propose the best final version.
+
+Use Founder, Product, UX, Growth, Community, Economist, Legal, Game Designer, CTO, and QA lenses.
+
+Important:
+
+* Do not break Sale V1.
+* Do not modify smart contracts yet.
+* Do not deploy until approved.
+* Do not create legal-risk promises.
+* Do not rename existing canon without explaining the conflict and migration.
+
+Current base to preserve:
+
+* Sale V1 = Genesis Sale.
+* V1 stays $5 minimum, 1 SYN = $0.01, $5 = 500 SYN.
+* 70% Vault / 20% Liquidity / 10% Operations.
+* SYN token unchanged.
+* Membership Distribution allocation = 350M SYN.
+* Member ≠ Holder.
+* Existing ranks, chapters, cockpit, Archive, referral concepts, legal guardrails remain source material.
+
+Main product direction:
+The Syndicate should not feel like “buy once and leave.”
+It should feel like:
+Join → Seat → Rank → Package → Artifact → Referral → Chronicle → Marketplace → Signal Chamber.
+
+A member must always see:
+“I have a seat. Now I know my next move.”
+
+We need you to prepare and then implement the safest Sprint 1, focused on site/docs/UI/config only.
+
+Key things to solve:
+
+1. Packages / progression packs
+
+We want packages visible in the right places on the site, but adapted to the existing system.
+
+They should be easy for users to understand:
+
+* entry seat
+* higher participation packages
+* rank progress
+* SYN received according to current active sale/era
+* future artifact / cockpit recognition potential
+* no financial promise
+
+Do NOT force our old pack names if they conflict with rank names.
+
+Review this conflict carefully:
+Current/report suggested order included:
+
+* Operator = $25
+* Vanguard = $100
+* Architect = $250
+* Steward = $500
+
+But from a product/story perspective, Architect may feel higher than Steward.
+Do not keep this only because it exists.
+Do not change it blindly either.
+Think and propose the best final rank/package hierarchy.
+
+Questions to answer:
+
+* Should packs use current rank names?
+* Should packs use separate names?
+* Should rank names be reordered later?
+* Where would confusion appear?
+* What is safest for Sprint 1?
+
+2. Future membership price / era progression
+
+We want the site to explain that Genesis is special and future eras may have different entry prices and SYN distributions.
+
+Use this as proposal, not forced truth:
+
+* Genesis Signal: #1–333, V1, $5, 500 SYN
+* First Thousand: #334–1,000, V2, $10, 500 SYN
+* Expansion: #1,001–3,333, V2, $10, 400 SYN
+* First Ten Thousand: #3,334–10,000, V2, $25, 400 SYN
+* Open Era I: #10,001–25,000, $25, 300 SYN
+* Open Era II: #25,001–50,000, $50, 300 SYN
+* Hundred Thousand: #50,001–100,000, $50, 200 SYN
+* Quarter Million: #100,001–250,000, $100, 200 SYN
+* First Million: #250,001–1,000,000, $100, 100 SYN
+* Million+ Era: future, dynamic, maybe 50–100 SYN or no fresh SYN after distribution inventory is exhausted
+
+You must:
+
+* calculate sustainability against 350M Membership Distribution
+* propose corrections if needed
+* decide how to display this safely
+* separate Chapters as story and Eras as distribution schedule if that is still best
+* avoid making V2 look live before contracts exist
+
+3. Homepage placement
+
+Decide the best site flow.
+
+We think it should be something like:
+Hero
+→ what is The Syndicate
+→ membership / seat
+→ packages / progression
+→ chapters / story
+→ proof / transparency
+→ final CTA
+
+But do not force this if your current site structure has a better flow.
+
+Packages should appear where they increase clarity and conversion, not clutter.
+
+Homepage should probably show:
+
+* the current Seat
+* current Genesis progress
+* “next era preview”
+* a compact package/progression preview
+* clear link to /join or /my-syndicate
+
+4. Join page placement
+
+The /join flow should clearly show:
+
+* current active sale
+* current entry price
+* SYN received now
+* member number preview
+* package options if appropriate
+* next era preview
+* safe explanation that sale price is membership/access price, DEX price is market-driven
+
+Make it self-service:
+users can choose the package they want.
+
+But also guided:
+show a recommended next step.
+
+5. My Syndicate cockpit
+
+This is critical.
+
+After a user joins, the cockpit should guide them.
+
+Add or design a “Next Move” / “Progression” system.
+
+It should show, without overwhelming:
+
+* primary next step
+* next rank
+* next package
+* next artifact
+* next referral milestone
+* next Chronicle milestone
+* next era
+* future marketplace unlock
+* future Signal Chamber unlock
+
+Use best UX hierarchy:
+
+* one primary recommended action
+* secondary cards
+* explore-all area
+
+6. Texts, FAQ, docs, whitepaper preparation
+
+Update or prepare the necessary site copy so explanations stay consistent everywhere:
+
+* homepage
+* join page
+* My Syndicate
+* ranks
+* chapters
+* FAQ
+* roadmap/docs
+* token/economy explanations
+* whitepaper source material
+
+Goal:
+The whitepaper should later be extracted from the site/docs, not invented separately.
+
+Make sure prices, package names, era names, SYN amounts, and disclaimers are consistent everywhere.
+
+7. Legal / wording
+
+Keep it safe.
+
+Do not say:
+ROI, yield, dividend, passive income, price support, floor, peg, stable price, ownership, profit share, binding governance rights.
+
+Use:
+membership, seat, chapter, rank, package, artifact, protocol memory, utility, direct referral commission, advisory signal, marketplace access.
+
+DEX doctrine:
+
+* sale price = membership/access distribution price
+* DEX price = market-driven price
+* liquidity = access infrastructure, not price guarantee
+
+8. Referral
+
+Do not make referral the main task of this sprint.
+But when packages are added, think how referral fits into the full future system.
+
+Preserve the existing referral vision and do not accidentally simplify or break it.
+If you find conflicts, report them.
+Only update copy/roadmap if needed for consistency.
+
+9. Required output before/with Sprint 1
+
+Return:
+
+A. Final recommended site/product decision
+
+* package system
+* price/era ladder
+* homepage placement
+* join page placement
+* cockpit placement
+* docs/FAQ placement
+
+B. Conflict report
+
+* rank/package naming conflicts
+* chapter/era conflicts
+* referral consistency conflicts
+* legal wording conflicts
+
+C. Tokenomics table
+
+* SYN needed per era
+* cumulative SYN
+* remaining allocation
+* USDC volume
+* sustainability verdict
+
+D. Sprint 1 implementation plan
+Break into exact steps:
+
+1. constants/config
+2. package catalogue
+3. homepage sections
+4. join page
+5. cockpit next-step module
+6. FAQ/docs/text updates
+7. tests/guardrails
+8. publish checklist
+
+E. Implement only the safest Sprint 1 changes if they are frontend/docs/config only and do not touch contracts.
+If any change has contract/legal risk, leave it as simulation/docs and flag it.
+
+F. After implementation, report:
+
+* files changed
+* pages changed
+* copy changed
+* tests run
+* what is ready to publish
+* what remains internal/simulated
+* what future whitepaper sections can be extracted
+
+Final instruction:
+Think from the current product outward.
+Use best modern SaaS/crypto UX practices.
+Make the site feel premium, clear, self-service, guided, and infinite-game.
+The visitor should understand what The Syndicate is, what they can buy now, what changes later, and what their next move is after joining.

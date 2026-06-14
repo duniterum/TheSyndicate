@@ -42,6 +42,7 @@ import { CockpitCollector } from "./CockpitCollector";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { ProtocolHeartbeat } from "./ProtocolHeartbeat";
 import { CockpitProgression } from "./CockpitProgression";
+import { CockpitNextMove } from "./CockpitNextMove";
 import { CockpitBadges } from "./CockpitBadges";
 import { WakeBehindYou } from "./WakeBehindYou";
 import { SeatsAroundYou } from "./SeatsAroundYou";
@@ -159,6 +160,7 @@ export function MemberCockpit() {
             hint="your progression · what's sealing next · the protocol's live vitals"
           >
             <div className="space-y-6">
+              <CockpitNextMove />
               <CockpitProgression />
               <CockpitSealingNext />
               <ProtocolHeartbeat />
@@ -167,7 +169,7 @@ export function MemberCockpit() {
           </ArcBand>
 
           {/* ── 5 · ACTION — one dock, no CTA chaos ─────────────────────── */}
-          <ArcBand eyebrow="Your next move" hint="every action in one place">
+          <ArcBand eyebrow="Action dock" hint="every action in one place">
             <CockpitActionRail
               isConnected={isConnected}
               address={address}
