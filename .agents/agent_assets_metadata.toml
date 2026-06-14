@@ -215,3 +215,9 @@ id = "Sa_yF5ed4ZoagOYf6Iu_D"
 uri = "file://docs/proposals/SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md"
 type = "text"
 title = "Sale V2 — Parameter & Treasury Simulation Report"
+
+[[outputs]]
+id = "8x7ez_yzRT_YugF3wvn5m"
+uri = "file://docs/proposals/SALE_V2_FOUNDER_DECISION_REPORT.md"
+type = "text"
+title = "Sale V2 — Founder Decision Report"
