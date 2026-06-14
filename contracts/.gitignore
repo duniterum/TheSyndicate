@@ -1,0 +1,7 @@
+# Foundry build artifacts
+out/
+cache/
+broadcast/
+
+# Keep vendored deps (lib/) committed as plain source so the project is
+# buildable from a fresh checkout without network access.

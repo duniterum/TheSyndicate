@@ -74,16 +74,26 @@ reading router events.
 
 ---
 
-## 4 — Exact contracts/drafts to be reviewed
+## 4 — Exact contracts to be reviewed
 
-| Contract | File | Notes |
+**Review the PRODUCTION-CANDIDATE contracts** (hardened from the drafts; these are what would be
+compiled and deployed). The frozen drafts remain as the design-of-record alongside them.
+
+| Contract | PRODUCTION file (review this) | Frozen draft (design-of-record) |
 |---|---|---|
-| **CommissionRouter V1** | `docs/proposals/drafts/CommissionRouterV1.draft.sol` | Header-gated NOT-FOR-DEPLOYMENT. Lightweight ERC20/Ownable interfaces are intentional placeholders — **production must use audited OpenZeppelin** (`Ownable2Step`, `ReentrancyGuard`, `SafeERC20`). |
-| **Sale V2** | `docs/proposals/drafts/SyndicateSaleV2.draft.sol` | Referral logic removed; routes the Operations slice to the router with safe fallback. |
+| **CommissionRouter V1** | `contracts/src/CommissionRouterV1.sol` | `docs/proposals/drafts/CommissionRouterV1.draft.sol` |
+| **Sale V2** | `contracts/src/SyndicateSaleV2.sol` | `docs/proposals/drafts/SyndicateSaleV2.draft.sol` |
+
+The production files differ from the drafts ONLY by the named, frozen-scope hardening (audited
+OpenZeppelin `Ownable2Step` / `ReentrancyGuard` / `Pausable` / `SafeERC20` + `forceApprove` /
+`MerkleProof` replacing the drafts' placeholder primitives; the double-hashed Merkle leaf; and the
+H4 split-integrity guard). **No economics, referral, era, reserve, or doctrine change.** The build,
+tests, mocks, Slither output, and the reproducible `V1_MEMBER_ROOT` generator all live under
+`contracts/` (see `contracts/README.md`).
 
 Reference (non-contract): `docs/proposals/SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` §L (sale) and
-§R (router) embed each `.sol` **byte-identical**; `docs/REVENUE_ATTRIBUTION_LAYER.md` is the RAL
-event spec. `CommissionRouteInput` is duplicated byte-for-byte in both drafts — verify ABI parity.
+§R (router) embed each `.draft.sol` **byte-identical**; `docs/REVENUE_ATTRIBUTION_LAYER.md` is the RAL
+event spec. `CommissionRouteInput` is duplicated byte-for-byte in both files — verify ABI parity.
 
 ---
 
@@ -179,3 +189,81 @@ the count-only retention deferral, the architecture doc embeds are byte-identica
 the prior architect pass returned no severe/blocking issues. The only items outstanding are
 review-phase and deploy-phase steps (production OZ swap, the multisig owner address, timelock
 duration, and legal copy sign-off) — none of which block starting the line-by-line read.
+
+---
+
+## 9 — Production hardening applied (drafts → `contracts/src/`)
+
+The production-candidate contracts (§4) implement the §7-step-1/step-2 work. Changes vs the frozen
+drafts are STRICTLY the following — no economics, referral, era, reserve, or doctrine change:
+
+| # | Hardening | Where |
+|---|---|---|
+| H1 | Placeholder ERC20/Ownable interfaces → audited **OpenZeppelin v5.1.0** (`SafeERC20`, `Ownable2Step`, `ReentrancyGuard`; sale adds `Pausable`, `MerkleProof`, and `forceApprove` for the router allowance). | both |
+| H2 | Merkle V1 recognition uses **OZ `MerkleProof.verify` over a double-hashed leaf** `keccak256(bytes.concat(keccak256(abi.encode(addr))))` (StandardMerkleTree-compatible; §10). | sale |
+| H3 | **H4 input-integrity guard** `vaultAmount + liquidityAmount + opsSlice == gross` → reverts `SplitMismatch` (audit L5). | router |
+| H4 | Referrer push isolated behind a `this.pushReferral` self-call (`OnlySelf`) so a blocked/reverting referrer is **escrowed**, never reverts the route. | router |
+
+Toolchain: solc `0.8.24` pinned, `evm=paris`, optimizer `runs=200`, `via_ir=true` (`buy()` exceeds
+the legacy stack limit). Build/test/Slither/root-gen instructions: `contracts/README.md`.
+
+## 9a — Test matrix (59 tests green; fuzz at 512 runs)
+
+`forge test` → **59 passed, 0 failed** (`test/CommissionRouterV1.t.sol` 21 · `test/SyndicateSaleV2.t.sol` 38).
+Each §5 invariant and §6 requirement maps to concrete tests:
+
+| Invariant / finding | Covering test(s) |
+|---|---|
+| I1/I2 Vault & Liquidity never diluted | `test_buy_happyNewSeat`, `test_router_integrationReferralPaid`, `testFuzz_splitConservation` |
+| I3 Referral only from Operations | `test_route_validReferral_signalTier`, `testFuzz_route_conservation`, `testFuzz_referrerPlusOps_eqOpsSlice` |
+| I4 Tier count first-seat-only | `test_route_firstSeatOnly_count`, `test_route_validReferral_signalTier` |
+| I5 Payout on every eligible buy | `test_route_firstSeatOnly_count` (paid, no increment) |
+| I6 Full RAL `Attribution` | `test_attribution_fullReconstruction` |
+| I7 Router-failure fallback safe | `test_router_fallbackOnRevert`, `test_reentrancy_buyBlocked` |
+| I8 Escrow / claim safe | `test_escrow_onBlockedReferrer_thenClaim`, `test_claimReferral_nothingReverts`, `test_claimReferral_doubleClaimReverts` |
+| I10 No wealth/rank input (count-only) | `test_tierFor_boundaries`, `test_tierLadder_applies_afterFiveReferrals` |
+| I11 Reentrancy safe | `test_reentrancy_buyBlocked`, `test_pushReferral_onlySelf`, `test_claimReferral_doubleClaimReverts` |
+| I12 Era / cap / reserve unaffected | `test_eraAdvance_byCap`, `test_eraAdvance_byRange`, `test_buy_addressEraCapReverts`, `test_buy_eraInventoryInsufficientReverts`, `test_buy_insufficientInventoryReverts`, `test_buy_exceedsTxMaxReverts`, `test_reserveFloor_blocksOverdraw`, `test_eraOfSeat_positional` |
+| I13 Eligibility | `test_route_selfReferral_ignored`, `test_route_unknownReferrer_ignored`, `test_route_noReferrer_allToOps` |
+| I14 Conservation (global) | `testFuzz_splitConservation`, `test_buy_splitConservation`, `testFuzz_route_conservation` |
+| I15 Source authority | `test_route_notAuthorizedSource`, `test_addSource_onlyOwner`, `test_addSource_existsReverts`, `test_addSource_zeroReverts`, `test_removeSource`, `test_sourceConfig` |
+| H4 SplitMismatch guard | `test_route_splitMismatchReverts` |
+| M1 router ops-wallet == sale OPERATIONS | `test_router_integrationReferralPaid` (router `addSource` ops == sale `OPERATIONS`) |
+| M2 V1 proof vs no-proof | `test_buy_v1WithProof_noNewSeat` (no new seat), `test_buy_v1WithoutProof_getsSeat_M2` (double-count documented) |
+| Merkle double-hash recognition | `test_claimV1_validProof`, `test_claimV1_invalidProofReverts`, `test_claimV1_alreadyKnownReverts` |
+| Constructor validation | `test_ctor_zeroAddressReverts`, `test_ctor_badGenesisOffsetReverts`, `test_ctor_zeroMaxTxReverts`, `test_ctor_badReserveReverts`, `test_ctor_eraCapTooSmallReverts`, `test_ctor_addrCapBelowMinReverts`, `test_ctor_maxTxBelowEraMinReverts` |
+| Pause / timelocked recovery / rescue | `test_pause_blocksBuy`, `test_pause_onlyOwner`, `test_recover_notWindingDownReverts`, `test_recover_timelockedThenSucceeds`, `test_rescueToken_protectedReverts`, `test_rescueToken_otherToVault` |
+| Router swap timelock | `test_router_proposeConfirmTimelock`, `test_router_proposeZeroReverts` |
+
+**Open items NOT in scope of this sprint (documented, not fixed):** M1 (router `operationsWallet`
+must be configured == the sale's `OPERATIONS` at deploy — a deploy-config check, covered by a test
+that wires it correctly); M2 (a V1 member who omits the proof on `buy` is issued a fresh seat /
+double-counted — a known draft behavior, asserted as-is); and the `RECOVERY_TIMELOCK` is 7 days in
+code vs 14 days in the parameter simulation (a deploy-time governance decision).
+
+## 10 — `V1_MEMBER_ROOT` generation (reproducible)
+
+On-chain leaf (asserted by the tests): `keccak256(bytes.concat(keccak256(abi.encode(address))))` —
+identical to `@openzeppelin/merkle-tree` `StandardMerkleTree` with leaf encoding `["address"]`,
+verified by OZ `MerkleProof.verify` (commutative sorted-pair internal nodes).
+
+```bash
+cd contracts/tools && npm init -y && npm i @openzeppelin/merkle-tree
+node gen-v1-root.mjs members.json   # ["0xabc…", …]  (or members.txt, one per line)
+#  -> prints V1_MEMBER_ROOT; writes v1-merkle.json { root, count, proofs, tree }
+```
+
+`proofs[address]` is the array each member passes to `claimV1Membership(proof)` / `buy(…, v1Proof)`.
+The generator and the contract are provably in lockstep (same leaf formula in `tools/gen-v1-root.mjs`
+and `test/SyndicateSaleV2.t.sol`).
+
+## 11 — Static analysis (Slither) result
+
+`slither .` (full output saved to `contracts/audit/slither-report.txt`): **no high/medium findings
+in `src/`.** All results are informational — either in vendored OpenZeppelin (the `^0.8.20` pragma
+notice, `Address` low-level calls inside `SafeERC20`, unindexed `Pausable` events) or by-design notes
+on our code: `buy()` cyclomatic complexity (intentional single-CEI era/cap/reserve path), UPPERCASE
+immutable naming (deliberate), and the router↔`ICommissionRouter` "missing-inheritance" (intentional
+decoupling to avoid a circular import; the `CommissionRouteInput` struct is byte-identical in both
+files). Slither is step 2 of the §7 checklist; a second independent tool + a full external audit
+remain required before any deploy.

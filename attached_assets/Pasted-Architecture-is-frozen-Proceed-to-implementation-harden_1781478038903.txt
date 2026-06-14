@@ -1,0 +1,100 @@
+Architecture is frozen.
+
+Proceed to implementation hardening sprint.
+
+Do NOT reopen architecture.
+Do NOT change economics.
+Do NOT change referral doctrine.
+Do NOT touch frontend yet.
+Do NOT deploy.
+Do NOT touch Sale V1.
+
+Use the Protocol Freeze Review as binding.
+
+Goal:
+Convert SyndicateSaleV2 + CommissionRouterV1 drafts from architecture drafts into production-hardened Solidity ready for final review.
+
+Scope:
+Only contract hardening, tests, and reviewer artifacts.
+
+Implement ONLY the fixes already identified:
+
+1. Replace custom/stub security code with audited OpenZeppelin:
+
+* SafeERC20
+* Ownable2Step
+* ReentrancyGuard
+* Pausable if applicable
+* MerkleProof
+
+2. Fix Merkle proof safety:
+
+* use OZ MerkleProof
+* use double-hashed leaf
+* document exact V1_MEMBER_ROOT generation method
+
+3. Add router integrity check:
+
+* require vaultAmount + liquidityAmount + opsSlice == gross
+* preserve Operations-only routing
+
+4. Preserve all frozen doctrine:
+
+* Sale V2 + CommissionRouter V1
+* tiered referral live
+* tier axis = verified referred-member count
+* payout on every eligible referred buy
+* referredCount increments first-seat only
+* full RAL Attribution event
+* retention/reputation/builder off-chain later
+* Vault 70 never diluted
+* Liquidity 20 never diluted
+* no oracle
+* no wealth/rank/SYN-balance input
+* no MLM/downline
+* no frontend changes
+
+5. Add tests for all audit findings:
+
+* M1 Operations wallet equality
+* M2 V1 proof path / no-proof path
+* tier boundaries
+* router fallback
+* escrow / claimReferral
+* exact split conservation
+* reentrancy
+* reserve floor
+* per-era caps
+* per-address caps
+* router source allow-list
+* full RAL event reconstruction
+
+6. Update docs only where needed:
+
+* reviewer packet
+* deployment checklist
+* root generation instructions
+* test matrix
+* no frontend copy yet
+
+7. Run:
+
+* compile
+* full unit tests
+* relevant fuzz/property tests if available
+* static analysis if configured
+* architect/code review
+
+Return:
+A. Files changed
+B. Exact fixes implemented
+C. What was intentionally NOT changed
+D. Test results
+E. Remaining deploy blockers
+F. Remaining frontend blockers
+G. Whether contracts are ready for final pre-deploy review
+
+No deployment.
+No mainnet action.
+No frontend wiring.
+No new architecture.
