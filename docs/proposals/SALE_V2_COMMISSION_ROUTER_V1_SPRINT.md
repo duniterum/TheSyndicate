@@ -287,8 +287,8 @@ to their source `.sol` files. `src/` was not touched.
 
 | # | Decision | Current draft behavior | Needs |
 | --- | --- | --- | --- |
-| **OD-1** | Commission on **every** eligible buy, or **first-seat only**? | Commission paid on every valid-referrer buy; the tier **count** increments on first-seat only (J5). | Founder confirmation — paying on repeat buys is defensible (RAL "every sale") but widens the tier-gaming surface vs first-seat-only commission. |
-| **OD-2** | `retentionRequiredPct` enforcement | **Off-chain only** in V1 (never gates a live payout). | Confirm retention stays a read-model gate, not on-chain. |
+| **OD-1** | Commission on **every** eligible buy, or **first-seat only**? | **RATIFIED** — commission paid on **every eligible referred buy**; the tier **count** increments **first-seat only** (repeat buys do not farm tier count). Draft already implements this; no economics change. | ✅ Resolved (founder ratification). |
+| **OD-2** | `retentionRequiredPct` enforcement | **RATIFIED off-chain only** — tiers launch count-only; retention never gates a live payout. Required site wording recorded in the reviewer packet §3. | ✅ Resolved (founder ratification). |
 | **OD-3** | `attributionMode` buyer-override | Reserved (`attributionMode = 1` defined, not implemented; V1 always last-verified). | Confirm override is deferred. |
 | **OD-4** | `campaign` / `refTag` / `splits[4]` protocol slice | Reserved (0 in V1). | Confirm V1 ships with these zeroed. |
 | **OD-5** | Router owner | `Ownable2Step`; multisig recommended. | Confirm the multisig owner address before any deploy. |

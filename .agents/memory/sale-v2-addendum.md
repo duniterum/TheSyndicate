@@ -70,7 +70,9 @@ upgrade = router swap, not sale migration; one canonical RAL emitter for read-mo
 - Eligibility (re-validated IN the router): `referrer != 0 && != buyer && knownMember`
   via the CALLING sale's view (on-chain truth, no off-chain trust in money routing).
 - `referredCount` increments ONLY on a VALID FIRST-SEAT referral; commission is paid
-  on every valid-referrer buy (OD-1 = founder must confirm every-buy vs first-seat-only).
+  on EVERY valid-referrer buy (OD-1 RATIFIED: pay every eligible referred buy, but count
+  increments first-seat-only so repeat buys can't farm tier count — draft already does this).
+  Retention gate (retentionRequiredPct) RATIFIED off-chain only; tiers launch count-only.
 - `referrerAmount + operationsAmount == opsSlice` on EVERY path; max tier 80% < 100%.
 - Router unset OR `route` reverts → sale pays the FULL slice to Operations + emits
   `CommissionRouterFallback`; buy NEVER bricks.

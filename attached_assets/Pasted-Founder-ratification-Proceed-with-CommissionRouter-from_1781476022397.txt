@@ -1,0 +1,94 @@
+Founder ratification:
+
+Proceed with CommissionRouter from day one.
+
+Final referral architecture:
+
+1. Sale V2 uses CommissionRouter V1.
+2. CommissionRouter V1 launches with live count-based tiers.
+3. Full RAL-compatible Attribution event is mandatory.
+4. Reputation / Builder Records / retention / durability remain off-chain future layers reading router events.
+5. No flat-only Sale V2.
+6. No reputation/oracle logic inside Sale V2.
+7. No wealth/rank/SYN-balance boosts.
+8. No MLM/downline.
+9. No yield/ROI/revenue-share wording.
+
+Final decision on OD-1:
+
+Referral commission is paid on every eligible referred buy.
+
+But referredCount increments only once per valid first-seat referral.
+
+Meaning:
+
+* if Member A introduces Member B, Member A can receive commission on B’s later eligible purchases
+* but Member A’s tier count increases only once for Member B
+* repeat buys do not farm referral-count tiers
+* Operations-only cap remains enforced
+* Vault 70% and Liquidity 20% are never diluted
+
+Retention-deferral ratified:
+
+Tiers launch count-only.
+
+Public/site wording must say:
+“tiers are based on verified introductions today; durability-gated reputation and Builder Records arrive later through the off-chain layer.”
+
+Now create the final reviewer packet and prepare for line-by-line Solidity review.
+
+Do NOT deploy.
+Do NOT touch Sale V1.
+Do NOT modify frontend yet.
+Do NOT change economics again.
+
+Required output:
+
+1. Final frozen Sale V2 + CommissionRouter assumptions.
+2. Final OD-1 decision recorded.
+3. Final retention-deferral note recorded.
+4. Exact contracts/drafts to be reviewed:
+
+   * Sale V2
+   * CommissionRouter V1
+5. Exact invariants the reviewer must verify:
+
+   * Vault 70 never diluted
+   * Liquidity 20 never diluted
+   * referral only from Operations
+   * tier count increments first-seat only
+   * payout can happen on every eligible buy
+   * full RAL event emitted
+   * router failure fallback safe
+   * escrow/claim safe
+   * no oracle
+   * no wealth/rank/SYN balance input
+   * reentrancy safe
+   * Sale V2 era/cap/reserve logic unaffected
+6. Exact tests required before mainnet deployment.
+7. Mainnet-direct deployment checklist, because we will not use Fuji/testnet:
+
+   * compile
+   * static analysis
+   * full unit tests
+   * deploy with tiny/no funding first
+   * verify source
+   * owner/read checks
+   * quote checks
+   * tiny controlled buy
+   * tiny referred buy
+   * verify events
+   * verify routing
+   * only then larger funding
+   * only then frontend wiring
+8. Explicit answer:
+   Can line-by-line Solidity review begin now?
+
+If yes, return:
+“YES — review can begin.”
+
+If no, list exact blockers only.
+
+No new architecture.
+No new broad reports.
+Move us into review execution.
