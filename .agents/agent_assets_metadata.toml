@@ -257,3 +257,9 @@ id = "L4cUQ0xdpG-6-iSk1qgP-"
 uri = "file://docs/proposals/SALE_V2_TIERED_REFERRAL_FEASIBILITY_AND_MINIMAL_SAFE_ARCHITECTURE.md"
 type = "text"
 title = "Tiered Referral Feasibility & Minimal-Safe Architecture"
+
+[[outputs]]
+id = "F89Ho6TpYAHdWpLc7tGng"
+uri = "file://docs/proposals/SALE_V2_REFERRAL_SYSTEM_DOCTRINE_REPORT.md"
+type = "text"
+title = "Referral System Doctrine Report (Complete Inventory)"
