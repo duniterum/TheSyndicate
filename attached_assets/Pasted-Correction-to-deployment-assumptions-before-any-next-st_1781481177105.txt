@@ -1,0 +1,86 @@
+Correction to deployment assumptions before any next step.
+
+Do NOT deploy.
+Do NOT modify contracts yet.
+Do NOT touch frontend.
+Do NOT reopen architecture.
+
+Founder deployment decisions:
+
+1. No multisig at launch
+   We will NOT use a multisig owner at launch.
+
+Owner/admin will be a normal founder MetaMask EOA wallet first.
+
+Later hardening:
+
+* Ledger hardware wallet
+* or multisig
+  may be added later.
+
+Update every deployment doc/checklist that says:
+“multisig owner address” / “transfer ownership to multisig”
+
+Replace with:
+“founder/admin EOA owner address confirmed; Ownable2Step ownership accepted by founder/admin wallet; Ledger/multisig recommended as future hardening.”
+
+Important:
+
+* Still use Ownable2Step.
+* Still verify owner and pendingOwner before funding.
+* Still accept ownership explicitly.
+* Still document EOA owner is higher risk than multisig.
+* Do NOT block deployment only because no multisig exists.
+
+2. No Fuji/testnet
+   We will NOT deploy to Fuji/testnet.
+
+Replace Fuji/testnet requirement with:
+
+* local/forked-mainnet rehearsal if possible
+* then mainnet deploy with tiny/no funding first
+* source verify
+* read checks
+* tiny controlled buy
+* tiny referred buy
+* event/routing verification
+* only then larger funding
+* only then frontend wiring
+
+3. Keep these deploy blockers
+   Still mandatory before larger funding or frontend wiring:
+
+* correct USDC address
+* correct SYN address
+* final genesisOffset
+* final V1_MEMBER_ROOT
+* final eraCaps
+* final addrCaps
+* final maxUsdcPerTx
+* final reserveThroughSeat
+* router.operationsWallet == SaleV2.OPERATIONS
+* sourceConfig verified
+* V1 proof generation flow documented
+* owner EOA verified
+* router source verified
+* SaleV2 source verified
+
+4. Update docs/checklists only
+   Update:
+
+* reviewer packet
+* deployment checklist
+* mainnet-direct checklist
+* deploy blockers section
+
+Do NOT change economics.
+Do NOT change referral architecture.
+Do NOT change Solidity unless a checklist line incorrectly requires code.
+
+Return:
+A. exact docs/checklists updated
+B. deployment blocker list after correction
+C. frontend blocker list after correction
+D. risk note for EOA owner vs multisig
+E. mainnet-direct sequence without Fuji
+F. whether contracts remain ready for final pre-deploy review

@@ -153,7 +153,7 @@ Your 12 steps, adjusted only where safety requires (adjustments flagged ⚠):
 6. **Prepare the legal + copy update** (wording, disclosure, labels) — draft only.
 7. ⚠ **Legal sign-off gate** — payout copy cannot go live without it. *Explicit gate before deploy.*
 8. **Update frontend labels** (SIMULATED→live on the flat part; future-label the tiered part).
-9. **Testnet / Fuji rehearsal** (split math, escrow, claim fallback, self-referral guard).
+9. **Local / forked-mainnet rehearsal if possible** (split math, escrow, claim fallback, self-referral guard) — **no Fuji/testnet**.
 10. **Final audit / review** of any fixes.
 11. **Deploy Sale V2.**
 12. **Wire frontend to Sale V2.**
@@ -177,7 +177,7 @@ draft before deploy, flip live after wiring.)
 4. Update the **3 highest-priority doctrine lines** that currently say payout is impossible —
    Operating System §2.7, `future-referral.ts` header, Master Completion Pass G3 — plus legal sign-off
    and the `/referral` + My Syndicate labels.
-5. **Testnet → audit fixes → deploy → wire frontend → publish → verify.**
+5. **Local/forked-mainnet rehearsal → audit fixes → mainnet deploy (tiny/no funding first) → source verify → read/buy/referred-buy checks → larger funding → wire frontend → publish → verify.** (No Fuji/testnet.)
 
 That's it. No new architecture, no router, no archaeology required to proceed.
 

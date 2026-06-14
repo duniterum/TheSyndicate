@@ -163,9 +163,10 @@ Execute strictly in order; do not advance on a red:
 1. **Compile** both contracts against pinned `solc` + production OpenZeppelin (swap the placeholder interfaces).
 2. **Static analysis** (Slither + a second tool); zero unresolved high/medium.
 3. **Full unit + property/fuzz tests** green at target coverage (§6).
-4. **Deploy with tiny/no funding first** (router + sale; minimal or zero SYN funding).
+3b. **Local / forked-mainnet rehearsal (if possible)** — exercise the split math, escrow, claim fallback, and self-referral guard against a mainnet fork. **No Fuji/testnet.**
+4. **Deploy to mainnet with tiny/no funding first** (router + sale; minimal or zero SYN funding).
 5. **Verify source** on the explorer (both contracts).
-6. **Owner / read checks** — confirm owner = the multisig; `Ownable2Step` two-step accept done; immutable params (USDC, wallets, root) correct.
+6. **Owner / read checks** — confirm `owner` = the **founder/admin EOA** and `pendingOwner` is clear; `Ownable2Step` two-step ownership **explicitly accepted by the founder/admin wallet**; immutable params (USDC, SYN, wallets, root) correct. (Ledger/multisig recommended as **future** hardening — NOT a launch blocker.)
 7. **Quote checks** — `tierFor` / `quoteCommission` return the exact ladder; `sourceConfig` shows the sale allow-listed with the correct `operationsWallet`.
 8. **Tiny controlled buy** (no referrer) — verify 70/20/10 split + fallback/no-referrer path + events.
 9. **Tiny referred buy** — verify tier-0 payout, `referredCount` increment on first seat, escrow path if applicable.
@@ -175,8 +176,54 @@ Execute strictly in order; do not advance on a red:
 13. **Only then frontend wiring** (and apply the §3 retention-deferral wording).
 
 Pre-deploy sign-offs required: line-by-line Solidity review complete; OD-1 (§2) and retention
-deferral (§3) ratified [✅ done]; multisig owner address fixed; `ROUTER_TIMELOCK` duration confirmed;
-legal sign-off on public referral copy before frontend wiring.
+deferral (§3) ratified [✅ done]; **founder/admin EOA owner address confirmed and `Ownable2Step`
+ownership accepted by the founder/admin wallet** (Ledger/multisig recommended as future hardening,
+not a launch blocker); `ROUTER_TIMELOCK` duration confirmed; legal sign-off on public referral copy
+before frontend wiring.
+
+---
+
+## 7a — Deploy blockers (after the founder deployment-assumption correction)
+
+Owner model is a **founder/admin EOA** (no multisig at launch); **no Fuji/testnet** (local/forked-
+mainnet rehearsal then mainnet-direct, tiny funding first). With those corrections applied, the
+following remain **mandatory before larger funding or any frontend wiring**:
+
+- Correct **USDC** address (Avalanche-native, 6dp).
+- Correct **SYN** address (18dp).
+- Final **`genesisOffset`**.
+- Final **`V1_MEMBER_ROOT`**.
+- Final **`eraCaps`** (per-era SYN sold-caps).
+- Final **`addrCaps`** (per-era per-address USDC caps).
+- Final **`maxUsdcPerTx`**.
+- Final **`reserveThroughSeat`**.
+- **`router.operationsWallet == SaleV2.OPERATIONS`** (M1 — deploy-config equality).
+- **`sourceConfig`** verified (sale allow-listed on the router with the correct `sourceId` + `operationsWallet`).
+- **V1 proof generation flow documented** (see `contracts/README.md` §10 / `tools/gen-v1-root.mjs`).
+- **Owner EOA verified** — `owner` is the intended founder/admin EOA, `pendingOwner` clear, `Ownable2Step` acceptance done.
+- **Router source verified** on the explorer.
+- **SaleV2 source verified** on the explorer.
+
+NOT launch blockers (explicitly): the absence of a multisig, and the absence of a Fuji/testnet
+deployment. These are future-hardening / process notes, not gates.
+
+## 7b — EOA owner vs multisig — risk note
+
+The owner/admin is a **single founder/admin EOA (MetaMask)** at launch. This is a deliberate founder
+decision and does **not** block deployment, but it is a **higher-risk** custody model than a multisig:
+
+- **Single point of failure / compromise.** One key controls pause, the timelocked router swap,
+  `recoverUnsoldSyn` (Vault-only), and `rescueToken` (non-USDC/SYN, Vault-only). A lost or phished key
+  is unrecoverable and could pause the sale or (after the recovery timelock / on conclusion) sweep
+  unsold SYN to the Vault. It can **not** redirect splits, change economics, or touch the 70/20
+  Vault/Liquidity slices — those are immutable — which bounds the blast radius.
+- **No second-signer brake.** A multisig would require N-of-M approval for the same actions; an EOA
+  does not. The on-chain mitigations that remain in force regardless of owner type: `Ownable2Step`
+  (no accidental ownership handoff), `ROUTER_TIMELOCK` on adding router trust, the `RECOVERY_TIMELOCK`
+  on the paused wind-down path, and Vault-only destinations for recovery/rescue.
+- **Recommended future hardening (not required for launch):** move ownership to a **Ledger hardware
+  wallet** or a **multisig** via the `Ownable2Step` two-step flow once live. Until then, document that
+  the EOA is higher-risk and keep the key in cold/hardware storage where possible.
 
 ---
 
@@ -187,8 +234,9 @@ legal sign-off on public referral copy before frontend wiring.
 The economics are frozen and ratified (§1–§3), both drafts already implement the ratified OD-1 and
 the count-only retention deferral, the architecture doc embeds are byte-identical to the `.sol`, and
 the prior architect pass returned no severe/blocking issues. The only items outstanding are
-review-phase and deploy-phase steps (production OZ swap, the multisig owner address, timelock
-duration, and legal copy sign-off) — none of which block starting the line-by-line read.
+review-phase and deploy-phase steps (production OZ swap, the founder/admin EOA owner address accepted
+via `Ownable2Step`, timelock duration, and legal copy sign-off) — none of which block starting the
+line-by-line read.
 
 ---
 

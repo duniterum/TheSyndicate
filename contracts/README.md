@@ -6,7 +6,8 @@ frozen architecture drafts.
 
 > **STATUS: UNAUDITED — NOT DEPLOYED.** These contracts must NOT be deployed (mainnet **or**
 > testnet) or wired into the frontend until: external line-by-line review → independent audit →
-> forked-mainnet/Fuji rehearsal → multisig owner + timelock sign-off. See the deployment checklist
+> local/forked-mainnet rehearsal (no Fuji/testnet) → founder/admin EOA owner accepts `Ownable2Step`
+> ownership + timelock sign-off (Ledger/multisig recommended as future hardening). See the deployment checklist
 > in `docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_REVIEWER_PACKET.md` §7.
 
 ## What's here
@@ -102,5 +103,6 @@ The leaf formula is also asserted on-chain by the test suite (`_leaf()` in
 
 Economics, referral doctrine, era/reserve tables, the 70/20/10 split, and all canon are **frozen**.
 SYN funding is a SEPARATE post-review transaction (the constructor does not pull SYN). Owner is the
-deployer at construction; transfer to the governance multisig via the `Ownable2Step` two-step flow
-post-deploy.
+deployer at construction; the **founder/admin EOA** accepts ownership via the `Ownable2Step` two-step
+flow post-deploy (Ledger/multisig recommended as future hardening — an EOA owner is higher-risk; see
+the reviewer packet §7a deploy blockers / §7b EOA risk note).
