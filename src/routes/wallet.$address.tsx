@@ -12,12 +12,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { isAddress, formatUnits } from "viem";
 import { useReadContract } from "wagmi";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { GlassCard, Section, SectionHeader, StatusPill, ProofButton } from "@/components/syndicate/Primitives";
 import { EmptyState } from "@/components/syndicate/EmptyState";
 import { Breadcrumbs } from "@/components/syndicate/Breadcrumbs";
-import { ShareActions } from "@/components/syndicate/ShareActions";
+import { MemberShareBlock } from "@/components/syndicate/MemberShareCard";
 import { WalletContextNotice } from "@/components/syndicate/WalletContextNotice";
 import { useHolderIndex, type HolderRecord, type HolderChapter } from "@/lib/holder-index";
 import { useLivePurchaseEvents } from "@/lib/activity-hooks";
@@ -29,6 +29,8 @@ import {
   txExplorerUrl,
 } from "@/lib/syndicate-config";
 import { fmtAddress } from "@/lib/sale-hooks";
+import { getChapterByMemberNumber } from "@/lib/chapters";
+import { buildReferralShareUrl } from "@/lib/referral-attribution";
 
 const CANONICAL_ORIGIN = "https://thesyndicate.money";
 
@@ -172,7 +174,6 @@ function MemberView({
   explorer: string | null;
 }) {
   const idx = useHolderIndex();
-  const cardRef = useRef<HTMLDivElement>(null);
 
   // Pull this wallet's purchase rows for the tx history.
   const purchases = useLivePurchaseEvents({ limit: 5_000 });
@@ -197,13 +198,14 @@ function MemberView({
   }, [idx.ordered, record.wallet]);
 
   const identitySentence = `Member #${record.founderNumber} of The Syndicate · ${CHAPTER_LABEL[record.chapter]} · Rank ${record.currentRank?.name ?? "—"} · ${fmtUsd(record.cumulativeUsdc)} routed on-chain.`;
-  const shareUrl = `${CANONICAL_ORIGIN}/wallet/${record.wallet}`;
+  const chapterLabel = getChapterByMemberNumber(record.memberNumber).shortLabel;
+  const walletUrl = `${CANONICAL_ORIGIN}/wallet/${record.wallet}`;
+  const shareUrl = buildReferralShareUrl(walletUrl, record.founderNumber);
 
   return (
     <>
       <Section id="wallet-header">
-        <div ref={cardRef}>
-          <GlassCard className="p-6">
+        <GlassCard className="p-6">
             <div className="flex items-center gap-2 mb-3">
               <StatusPill status="LIVE" />
               <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -226,16 +228,22 @@ function MemberView({
                 <span className="mono">{fmtAddress(record.wallet)}</span>
               )}
             </p>
-          </GlassCard>
+        </GlassCard>
+        <div className="mt-4">
+          <MemberShareBlock
+            variant="visible"
+            filename={`syndicate-member-${record.founderNumber}.png`}
+            memberNumber={record.founderNumber}
+            chapterLabel={chapterLabel}
+            rankName={record.currentRank?.name ?? "Member"}
+            wallet={record.wallet}
+            synReceived={record.cumulativeSyn}
+            cardUrl={walletUrl}
+            shareUrl={shareUrl}
+            shareText={identitySentence}
+            hint="Share this member card"
+          />
         </div>
-        <ShareActions
-          filename={`syndicate-member-${record.founderNumber}.png`}
-          shareText={identitySentence}
-          shareUrl={shareUrl}
-          nodeRef={cardRef}
-          hint="Share this member card"
-          className="mt-3"
-        />
       </Section>
 
       <NeighboursStrip prev={neighbours.prev} current={record} next={neighbours.next} />

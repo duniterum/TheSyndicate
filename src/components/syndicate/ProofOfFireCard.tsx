@@ -82,6 +82,35 @@ export function ProofOfFireCard() {
           SYN sent to the standard dead address cannot return to circulation. The protocol runs no
           automated burn — this was a manual, verifiable transfer.
         </p>
+
+        {supply.burned !== undefined &&
+          supply.burned > PROOF_OF_FIRE_001.amountSyn + 0.5 && (
+            <div className="mt-4 rounded-lg border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-4">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <StatusPill status="PENDING" />
+                <span className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+                  Check required · pending verification
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                The live burn-address balance reads{" "}
+                <span className="mono text-foreground">
+                  {supply.burned.toLocaleString("en-US")} SYN
+                </span>
+                , above the{" "}
+                <span className="mono text-foreground">
+                  {PROOF_OF_FIRE_001.amountSyn.toLocaleString("en-US")} SYN
+                </span>{" "}
+                documented in {PROOF_OF_FIRE_001.label}. The on-chain balance is the source of
+                truth — the additional{" "}
+                <span className="mono text-foreground">
+                  {(supply.burned - PROOF_OF_FIRE_001.amountSyn).toLocaleString("en-US")} SYN
+                </span>{" "}
+                is pending ledger reconciliation. No further burn event is asserted here until it is
+                verified on-chain.
+              </p>
+            </div>
+          )}
       </GlassCard>
     </Section>
   );

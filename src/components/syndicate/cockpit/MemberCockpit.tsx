@@ -37,13 +37,14 @@ import {
   AnimatedNumber,
 } from "@/components/syndicate/Primitives";
 import { ConnectCTA } from "@/components/syndicate/ConnectCTA";
-import { ShareActions } from "@/components/syndicate/ShareActions";
+import { MemberShareBlock } from "@/components/syndicate/MemberShareCard";
 import { CockpitCollector } from "./CockpitCollector";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { ProtocolHeartbeat } from "./ProtocolHeartbeat";
 import { CockpitProgression } from "./CockpitProgression";
 import { CockpitNextMove } from "./CockpitNextMove";
 import { CockpitBadges } from "./CockpitBadges";
+import { CockpitIntroducedBy } from "./CockpitIntroducedBy";
 import { WakeBehindYou } from "./WakeBehindYou";
 import { SeatsAroundYou } from "./SeatsAroundYou";
 import { WalletAvatar } from "./WalletAvatar";
@@ -58,6 +59,7 @@ import {
   txExplorerUrl,
 } from "@/lib/syndicate-config";
 import { useProtocolPulse } from "@/lib/protocol-pulse";
+import { buildReferralShareUrl } from "@/lib/referral-attribution";
 
 // ─── local formatters ──────────────────────────────────────────────────
 const fmtInt = (n: number | undefined) =>
@@ -122,6 +124,7 @@ export function MemberCockpit() {
               record={record}
               loading={idx.isLoading}
             />
+            <CockpitIntroducedBy />
           </div>
 
           {/* ── 2 · PLACE — where you stand in the order ────────────────── */}
@@ -417,15 +420,26 @@ function CockpitHeader({
         )}
       </div>
 
-      {/* Member-only share — rendered OUTSIDE the captured card so the export
-          contains only the member card, not the share controls themselves. */}
+      {/* Member-only share — a purpose-built premium member card rendered
+          off-screen and exported to PNG. The card is the shareable artifact;
+          the live cockpit above stays the control surface. The share link
+          carries recognition-only attribution back to this member. */}
       {record && (
         <div className="px-5 sm:px-6 md:px-8 pb-5">
-          <ShareActions
+          <MemberShareBlock
+            variant="offscreen"
             filename={`syndicate-member-${record.memberNumber}.png`}
+            memberNumber={record.memberNumber}
+            chapterLabel={chapter?.shortLabel ?? "Member"}
+            rankName={record.currentRank?.name ?? "Member"}
+            wallet={record.wallet}
+            synReceived={record.cumulativeSyn}
+            cardUrl={`https://thesyndicate.money/wallet/${record.wallet}`}
+            shareUrl={buildReferralShareUrl(
+              `https://thesyndicate.money/wallet/${record.wallet}`,
+              record.memberNumber,
+            )}
             shareText={shareText}
-            shareUrl="https://thesyndicate.money/my-syndicate"
-            nodeRef={ref}
             hint="Share your seat"
           />
         </div>

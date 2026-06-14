@@ -11,14 +11,14 @@
 // Never a wealth leaderboard. Never sortable by USDC. No bios, no handles,
 // no avatars. Pure derivation of useHolderIndex. See docs/MEMBER_WALL_SPEC.md.
 
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import { Section, SectionHeader, StatusPill, GlassCard } from "@/components/syndicate/Primitives";
 import { EmptyState } from "@/components/syndicate/EmptyState";
 import { Breadcrumbs } from "@/components/syndicate/Breadcrumbs";
-import { useHolderIndex, type HolderRecord, type HolderChapter } from "@/lib/holder-index";
+import { useHolderIndex, type HolderRecord, type HolderChapter, type HolderIndex } from "@/lib/holder-index";
 import { useChainTime } from "@/lib/chain-time";
 import { fmtAddress } from "@/lib/sale-hooks";
 
@@ -137,6 +137,8 @@ function MemberWallBody() {
         </GlassCard>
       </Section>
 
+      <MemberSearch idx={idx} />
+
       <Section id="member-wall-lenses">
         <SectionHeader
           eyebrow="Three lenses · same data"
@@ -184,6 +186,93 @@ function MemberWallBody() {
         )}
       </Section>
     </>
+  );
+}
+
+// ─── Member lookup — jump straight to any verified member record ───────────
+// Client-side only: resolves a founder number (via the canonical holder index)
+// or a raw 0x address, then routes to the existing /wallet/$address surface.
+// No new backend, no fabricated data — bad input shows a clean "no match" line.
+
+function MemberSearch({ idx }: { idx: HolderIndex }) {
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  function go(raw: string) {
+    const t = raw.trim();
+    if (!t) {
+      setError("Enter a member number (e.g. 42) or a wallet address (0x…).");
+      return;
+    }
+    // Full 0x address → go straight to the wallet surface (it self-classifies).
+    if (/^0x[0-9a-fA-F]{40}$/.test(t)) {
+      setError(null);
+      navigate({ to: "/wallet/$address", params: { address: t } });
+      return;
+    }
+    // Founder / member number (a leading # is allowed).
+    const num = t.replace(/^#/, "");
+    if (/^\d+$/.test(num)) {
+      const n = Number(num);
+      const rec = idx.ordered.find((r) => r.founderNumber === n);
+      if (rec) {
+        setError(null);
+        navigate({ to: "/wallet/$address", params: { address: rec.wallet } });
+        return;
+      }
+      setError(
+        idx.hasData
+          ? `No member #${n.toLocaleString("en-US")} yet — the wall holds ${idx.totals.members.toLocaleString("en-US")} so far.`
+          : "Reading the chain — try again in a moment.",
+      );
+      return;
+    }
+    setError("Not recognized. Use a member number (e.g. 42) or a full wallet address (0x…).");
+  }
+
+  return (
+    <Section id="member-search">
+      <GlassCard className="p-5">
+        <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)] mb-2">
+          Find a member
+        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            go(q);
+          }}
+          className="flex flex-col sm:flex-row gap-2"
+        >
+          <input
+            value={q}
+            onChange={(e) => {
+              setQ(e.target.value);
+              if (error) setError(null);
+            }}
+            inputMode="text"
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="Member # (e.g. 42) or wallet 0x…"
+            aria-label="Search by member number or wallet address"
+            className="flex-1 rounded-md border border-border/60 bg-background/60 px-3.5 py-2.5 mono text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-[var(--gold)]/60"
+          />
+          <button
+            type="submit"
+            className="mono text-[11px] uppercase tracking-[0.18em] px-4 py-2.5 rounded-md border border-[var(--gold)]/60 text-[var(--gold)] hover:bg-[var(--gold)]/10 transition-colors"
+          >
+            Open record →
+          </button>
+        </form>
+        {error ? (
+          <p className="mt-2.5 text-xs text-muted-foreground">{error}</p>
+        ) : (
+          <p className="mt-2.5 text-[11px] text-muted-foreground">
+            Jump straight to any verified member record — by founder number or wallet address.
+          </p>
+        )}
+      </GlassCard>
+    </Section>
   );
 }
 
