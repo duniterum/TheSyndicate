@@ -106,6 +106,14 @@ Senior audit verdict = PASS WITH FIXES (no Critical/High). Durable, code-non-obv
   ReentrancyGuard/Pausable + double-hashed Merkle leaf; optional `route` integrity assert
   `vaultAmount+liquidityAmount+opsSlice == gross`. No Fuji → compensate with a forked-mainnet
   full rehearsal before the live tiny buy.
+- **Freeze pass (no overwrites).** Protocol-wide review of 17 items (`docs/proposals/
+  SALE_V2_PROTOCOL_FREEZE_REVIEW.md`) = ZERO overwrites; all PRESERVED or future-compatible.
+  Verdict: move architecture→implementation. The ONE reconciliation trap for the frontend-wiring
+  phase: referral PREVIEW/UI (`referral.ts` SPLIT_LEGEND, `/referral`, `SplitVisualizer`,
+  `ReferralPreview`) still shows the LEGACY flat 5% referrer / 3% infra / 2% audit split — the
+  finalized router has NO infra/audit sub-split (referrer 3–8% of gross tiered + Operations
+  remainder). Reconcile copy/diagrams + add retention-deferral wording when wiring; keep
+  money-weighted `ReputationLeaderboardPreview` quarantined until a durability-first scorer exists.
 
 ## Parameter & treasury simulation conclusions (companion report)
 

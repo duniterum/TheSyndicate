@@ -263,3 +263,9 @@ id = "F89Ho6TpYAHdWpLc7tGng"
 uri = "file://docs/proposals/SALE_V2_REFERRAL_SYSTEM_DOCTRINE_REPORT.md"
 type = "text"
 title = "Referral System Doctrine Report (Complete Inventory)"
+
+[[outputs]]
+id = "_WzBE2xE3lLA0CXgNBsfJ"
+uri = "file://docs/proposals/SALE_V2_PROTOCOL_FREEZE_REVIEW.md"
+type = "text"
+title = "Protocol Freeze Review — Sale V2 + CommissionRouter V1"
