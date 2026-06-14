@@ -1,0 +1,120 @@
+Recalibrate from the Referral Doctrine Recovery Audit.
+
+Do NOT modify Solidity.
+Do NOT modify Sale V2.
+Do NOT modify frontend.
+Do NOT deploy.
+
+We now need a founder reconciliation report, not new architecture.
+
+The audit found that the project currently contains conflicting referral tracks:
+
+1. Sale V2 draft:
+
+* fixed 5%
+* inline in Sale V2
+* paid in same transaction
+* from Operations only
+
+2. Earlier doctrine:
+
+* referral payout was pending / simulated
+* CommissionRouter future
+* tiered / reputation / builder record ideas
+* RAL full attribution schema
+* some docs say recognition-only / no payouts yet
+
+Task:
+
+Create a Referral Founder Reconciliation Decision Report.
+
+Goal:
+Freeze exactly what we mean before Solidity review.
+
+Answer these founder decisions clearly:
+
+A. Is Sale V2 the moment referral payout becomes live?
+
+* yes / no
+* what docs must be updated if yes
+* what frontend copy must change if yes
+
+B. Is Sale V2 referral fixed 5% only?
+
+* yes / no
+* confirm this is V2-only
+* confirm tiered / reputation / campaign logic moves to future CommissionRouter
+
+C. What happens to the old tiered vision?
+
+* preserve it
+* do not delete it
+* mark it as future CommissionRouter / V3+
+* explain it is not active in Sale V2
+
+D. What happens to /referral page?
+
+* currently simulated / pending
+* what must change before V2 launch
+* what must remain labeled pending
+
+E. What event schema do we choose for V2?
+
+* lean events + off-chain RAL projection
+* or full RAL Attribution event
+* recommend one
+* explain impact on Solidity review
+
+F. Buyer override / refTag / campaign
+
+* are these V2 features?
+* or CommissionRouter future features?
+* recommend one clean answer
+
+G. Legal wording
+Clarify allowed wording:
+
+* commission
+* direct sales commission
+* attribution
+* referral routing
+
+Clarify forbidden wording:
+
+* yield
+* passive income
+* ROI
+* revenue share
+* guaranteed earnings
+
+H. Same-human multi-wallet self-referral
+The audit found only referrer != msg.sender is blocked.
+Explain:
+
+* is this acceptable for V2?
+* should we rely on legal/copy/off-chain monitoring?
+* should we avoid overcomplicating contract?
+* should CommissionRouter handle stronger anti-abuse later?
+
+I. Final doctrine block
+Write a clean final doctrine statement:
+
+* What is live now
+* What Sale V2 will do
+* What CommissionRouter will do later
+* What remains future
+* What docs/code must be updated
+* Whether Solidity review can proceed unchanged
+
+Do not implement.
+Do not modify Solidity.
+Do not change frontend yet.
+
+Return:
+
+1. Founder decision table
+2. Contradictions resolved
+3. Docs that need updating
+4. Frontend surfaces that need updating
+5. Solidity impact: unchanged / changed
+6. Final recommended referral doctrine

@@ -233,3 +233,9 @@ id = "kdUUUQ82o6gRM87uJm22L"
 uri = "file://docs/proposals/SALE_V2_REFERRAL_DOCTRINE_RECOVERY_AUDIT.md"
 type = "text"
 title = "Referral Doctrine Recovery Audit"
+
+[[outputs]]
+id = "hpfhn_TFxlJu01XZpg3mO"
+uri = "file://docs/proposals/SALE_V2_REFERRAL_FOUNDER_RECONCILIATION_DECISION_REPORT.md"
+type = "text"
+title = "Referral Founder Reconciliation Decision Report"
