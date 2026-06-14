@@ -1,0 +1,173 @@
+Recalibrate from the full current project, codebase, deployed site, routes, contracts, docs, constants, and live/public configuration.
+
+Before we brainstorm or implement new economics, I need a FULL CURRENT STATE SNAPSHOT of The Syndicate as it exists today.
+
+Do NOT redesign yet. Do NOT implement yet. Do NOT invent future features. This is a truth audit.
+
+Goal: create the factual baseline that becomes the foundation for future economic design, smart contract decisions, and Class AAA superior MVP planning.
+
+Please produce a structured report covering:
+
+1. CURRENT LIVE SITE SNAPSHOT
+
+* Production URL and preview URL if different
+* Build stamp/version if available
+* All active routes/pages
+* Which routes are public, hidden, pending, or legacy
+* Current navigation/header/footer structure
+* Current mobile behavior and sticky CTAs
+* Current homepage section order
+* Current /my-syndicate structure
+* Current /nft or /archive structure
+* Current /registry, /transparency, /token, /liquidity, /ranks, /referral status
+
+2. CURRENT PRODUCT MODEL
+   Explain clearly:
+
+* What The Syndicate currently sells
+* How users buy
+* Minimum purchase amount
+* What users receive after buying
+* What is live versus only preview/pending
+* What is the current “member” definition
+* How SYN, membership, ranks, chapters, NFTs/artifacts, and cockpit currently connect
+
+3. CURRENT ECONOMIC MODEL
+   List the real current economics:
+
+* SYN token address, supply, decimals, ownership/mint/burn status
+* Membership Sale contract address
+* USDC routing logic
+* 70 / 20 / 10 wallets and exact purpose
+* Current sale volume if read on-chain
+* Current members/purchases if indexed
+* Current ranks and thresholds
+* Current chapter thresholds
+* Current LP / liquidity setup
+* Current NFT/artifact prices and mint status
+* Current referral system status: live, preview, pending, or absent
+
+4. CURRENT SMART CONTRACT SNAPSHOT
+   For each deployed or planned contract:
+
+* Contract name
+* Address if deployed
+* Chain
+* Purpose
+* Live status
+* Owner/admin powers
+* Pausable/frozen/configurable status
+* Current risks or unfinished parts
+* Whether it uses OpenZeppelin or custom logic
+* Whether the implementation is battle-tested enough or needs review
+
+Include at least:
+
+* SYN ERC20
+* Membership Sale
+* SyndicateArchive1155
+* Referral / CommissionRouter if present or planned
+* SeatRecord721 if only planned
+* Any vault/router/treasury logic if present
+
+5. CURRENT DATA / INDEXING / LIVE READS
+   Explain:
+
+* Which numbers are live on-chain reads
+* Which numbers are derived/indexed
+* Which numbers are static constants
+* Which numbers are placeholder/demo/pending
+* Where the data comes from
+* Any risk of stale values
+* Any tests or scripts that verify these values
+
+6. CURRENT LEGAL / WORDING GUARDRAILS
+   Audit current UI copy for:
+
+* forbidden or risky words like “contribution”, “raised”, “dividend”, “yield”, “profit”, “investment return”, “governance rights”
+* current approved replacements
+* places where wording may still be economically or legally dangerous
+* whether Sharia/no-riba positioning is respected
+
+7. CURRENT UX / CLASS AAA MVP QUALITY
+   Grade the current MVP from 1–10 on:
+
+* clarity
+* trust
+* conversion
+* economic explanation
+* storytelling
+* member identity
+* mobile usability
+* investor confidence
+* technical transparency
+* first-time visitor understanding
+
+Then list:
+
+* what is already strong
+* what is confusing
+* what is missing
+* what is overbuilt
+* what should be locked
+* what should NOT be touched yet
+
+8. CURRENT TECHNICAL HEALTH
+   Run or reference available checks:
+
+* route smoke checks
+* build status
+* TypeScript/lint/test status if available
+* contract constant validation
+* on-chain link validation
+* banned-copy checks
+* mobile/responsive issues
+* broken links
+* stale routes
+* dead components
+* duplicated sections
+
+9. ECONOMIC & SMART CONTRACT FEASIBILITY BASELINE
+   Without implementing yet, tell me:
+
+* what future economic modules are easy with battle-tested OpenZeppelin-style contracts
+* what requires custom logic
+* what is high-risk and should be delayed
+* what should stay off-chain/indexed for now
+* what can be safely added to a Class AAA MVP without overcomplicating the protocol
+
+Specifically evaluate:
+
+* higher membership tiers
+* artifact sales
+* referral commissions
+* rank-based referral boosts
+* SeatRecord721
+* premium tools
+* marketplace
+* vault routing
+* liquidity routing
+* treasury dashboard
+* protocol revenue ledger
+
+10. FINAL BASELINE SUMMARY
+    End with a clear “TODAY BASELINE”:
+
+* What The Syndicate is today
+* What is actually live
+* What it sells
+* How money flows
+* What the user owns/receives
+* What is pending
+* What is safe to build next
+* What must be decided before touching contracts again
+
+Output format:
+
+* Use clear headings.
+* Be brutally factual.
+* Do not flatter.
+* Do not invent.
+* Mark everything as LIVE / PARTIAL / PENDING / STATIC / UNKNOWN.
+* If something is uncertain, say exactly what file or contract must be checked.
+* This report becomes the official base for the next economic brainstorming and smart contract lock phase.

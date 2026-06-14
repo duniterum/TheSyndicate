@@ -179,3 +179,9 @@ id = "Ig7BTf7Lihnea8WZP12eV"
 uri = "file://attached_assets/stock_images/swiss_alps_4.jpg"
 type = "image"
 title = "swiss alps mountains dramatic"
+
+[[outputs]]
+id = "exxvbW9C_pUD7TGOvtaDM"
+uri = "file://docs/audits/TODAY_BASELINE_STATE_SNAPSHOT.md"
+type = "text"
+title = "The Syndicate — TODAY Baseline State Snapshot"
