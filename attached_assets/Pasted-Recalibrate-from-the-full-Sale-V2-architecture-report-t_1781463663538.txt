@@ -1,0 +1,117 @@
+Recalibrate from the full Sale V2 architecture report, the §Q economic/security addendum, the Sale V2 draft Solidity, and the Sale V2 Parameter & Treasury Simulation Report.
+
+Do NOT deploy.
+Do NOT touch Sale V1.
+Do NOT touch live frontend.
+Do NOT move funds.
+Do NOT rewrite settled doctrine unless the simulation proves a contradiction.
+
+We are not asking you to restart the design.
+
+We are asking you to apply the minimum necessary architectural corrections proven by the parameter simulation.
+
+Important:
+Use the values, variables, canon, and recommendations already present in your reports.
+Do not blindly adopt new numbers from this prompt.
+Do not re-litigate decisions that are already grounded in the docs.
+Where a value is already defined in the reports, use it or explain precisely why it must change.
+
+Main confirmed issue from the simulation:
+A single global per-address cap is structurally wrong.
+
+Reason:
+
+* A cap safe for late eras is too large for early eras.
+* A cap safe for early eras is too restrictive for late eras.
+* Era II and Era III are tiny in USDC terms, so one wallet can consume them under a global cap.
+
+Therefore, the draft should be revised toward:
+
+* per-era address caps
+* early-era reserve protection
+* preserving the existing per-era SYN caps
+* keeping automatic era transitions
+* keeping no oracle
+* keeping V2 bounded and V3-ready
+
+Task:
+Update the Sale V2 design docs and draft Solidity only if needed to reflect the strongest version of the model already discovered.
+
+Focus areas:
+
+1. Per-era address caps
+   Replace or revise the single global address cap into a per-era cap model if that remains your recommendation after review.
+
+Questions:
+
+* What exact per-era cap structure should be used?
+* Should it be a fixed array at construction?
+* Should it be immutable?
+* Should it be stored as USDC caps per era?
+* Should the values come from the Balanced model, a tightened early-era model, or a hybrid?
+* How does this affect the constructor, storage, buy validation, quote, tests, and frontend?
+
+2. Early-era reserve protection
+   Evaluate and implement in the draft only if still recommended:
+
+* reserve through Era IV
+* use the correct formula
+* each remaining seat reserved at its own era minimum
+* do not over-reserve using one blanket current-era rate
+
+Questions:
+
+* Should this be a contract invariant?
+* Should it apply only to Eras II–IV?
+* Should it be optional through constructor config or hardcoded?
+* What is the exact behavior when a buy would violate the reserve?
+
+3. Preserve previous decisions unless contradicted
+   Do not change:
+
+* automatic era transitions
+* per-era SYN caps
+* no oracle
+* no market peg
+* no manual era activation
+* V1/Sale V2 separation
+* V1 member continuity approach
+* 70/20/10 routing doctrine
+* existing referral doctrine unless the current reports themselves say it must change
+* recovery timelock
+* Vault-only SYN recovery
+* no live frontend changes
+
+4. Update consistency
+   If you change the draft, update all affected sections:
+
+* architecture report
+* Solidity draft
+* threat model
+* test plan
+* critical decisions
+* human review items
+* parameter report references if needed
+
+5. Return a precise revision report
+   Return:
+
+A. What changed
+B. What did not change
+C. Exact per-era cap recommendation
+D. Whether early-era reserve was added
+E. Exact behavior when reserve would be violated
+F. Constructor/storage changes
+G. Buy/quote behavior changes
+H. New risks
+I. New tests required
+J. Architect review result
+K. Whether the report and Solidity draft remain in sync
+
+Do not deploy.
+Do not touch Sale V1.
+Do not touch live frontend.
+Do not add unrelated features.
+
+Goal:
+Move from “good architecture” to “economically safe architecture” without destabilizing everything already decided.

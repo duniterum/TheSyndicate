@@ -73,14 +73,20 @@ interface IERC20 {
  *     IMPORTANT (honesty): per-era caps PRESERVE THE DISTRIBUTION SHAPE and
  *     reduce early depletion. They do NOT by themselves guarantee that exactly
  *     1,000,000 seats are reachable — repeat/upgrade buys can consume a cap
- *     while issuing few seats, advancing the price for everyone. "First Million"
- *     remains a TARGET bounded by funded inventory, not an on-chain guarantee.
- *     See HUMAN REVIEW J13/J16 for the optional hard-reserve alternative.
+ *     while issuing few seats, advancing the price for everyone. The configurable
+ *     immutable RESERVE_THROUGH_SEAT closes this gap when set: it refuses any buy
+ *     that would leave too little SYN to seat the remaining members at their OWN
+ *     era minimums, so seats are guaranteed up to the chosen seat (default #10,000
+ *     => Eras II–IV; #1,000,000 => the full million; 0 => off). Where the reserve
+ *     does not cover a seat, "First Million" stays a TARGET bounded by funded
+ *     inventory, not a guarantee. See HUMAN REVIEW J13 (cap sizing) / J16 (target).
  *
  *  4. HYBRID PROPORTIONAL PURCHASES. A buyer may pay any amount >= the era
  *     minimum and receives proportional SYN at the current era rate. Whale
  *     accumulation is bounded by THREE independent caps: per-transaction USDC,
- *     per-address-per-era USDC, and the aggregate per-era SYN sold-cap.
+ *     per-address-per-era USDC (sized PER ERA, maxUsdcPerAddressPerEra[1..9]),
+ *     and the aggregate per-era SYN sold-cap; the optional seat-reserve
+ *     (RESERVE_THROUGH_SEAT) adds a fourth, seat-preservation bound.
  *
  *  5. 70 / 20 / 10 PRESERVED, REFERRAL FROM OPERATIONS ONLY. Vault (70%) and
  *     Liquidity (20%) are NEVER diluted. A 5% referral is carved strictly out
@@ -118,6 +124,7 @@ contract SyndicateSaleV2 {
     error ProtectedToken();
     error AlreadyKnown();
     error InvalidProof();
+    error ReserveFloorViolation(uint256 maxSynOut);
 
     // ----------------------------------------------- era-advance reason codes
     uint8 internal constant REASON_RANGE = 0; // member-range ceiling reached
@@ -167,8 +174,14 @@ contract SyndicateSaleV2 {
     address public immutable OPERATIONS;      // 10% — 0x5cb5...E80
     uint256 public immutable GENESIS_OFFSET;  // final V1 unique-member count
     bytes32 public immutable V1_MEMBER_ROOT;  // Merkle root of V1 member addresses
-    uint256 public immutable MAX_USDC_PER_ADDRESS_PER_ERA; // anti-whale (6dp)
     uint256 public immutable MAX_USDC_PER_TX; // per-transaction ceiling (6dp)
+    // Seat-reserve target (a GLOBAL seat number). 0 = disabled; 10_000 = reserve
+    // every Era II-IV seat at its OWN era minimum (RECOMMENDED default); 1_000_000
+    // = full hard-reserve guaranteeing all 1,000,000 seats (Option 2 / J16). Set
+    // once; the contract must be FUNDED above the initial reserve or the first buy
+    // reverts. Per-era anti-whale ADDRESS caps are a mapping set in the constructor
+    // (arrays cannot use the `immutable` keyword) -- see `maxUsdcPerAddressPerEra`.
+    uint256 public immutable RESERVE_THROUGH_SEAT;
 
     uint256 private constant GENESIS_END   = 333;
     uint256 private constant FINAL_SEAT    = 1_000_000;
@@ -191,6 +204,13 @@ contract SyndicateSaleV2 {
     // eraSynCap[e] limits soldInEra[e]; both indexed by era 1..9.
     mapping(uint16 => uint256) public eraSynCap;
     mapping(uint16 => uint256) public soldInEra;
+
+    // Per-era anti-whale ADDRESS caps (USDC 6dp), indexed by era 1..9. Set once
+    // in the constructor (no setter). REPLACES the prior single global cap: one
+    // value that was safe for a late era let a single wallet drain a tiny early
+    // era, so the per-address ceiling is now sized PER ERA (tiny for the cheap
+    // early eras, ~$25k-class late). Values are HUMAN REVIEW J3.
+    mapping(uint16 => uint256) public maxUsdcPerAddressPerEra;
 
     mapping(address => bool)    public knownMember;     // V1-proven OR V2-bought
     mapping(address => uint256) public memberNumberOf;  // set for V2-new seats only
@@ -216,8 +236,19 @@ contract SyndicateSaleV2 {
      * @param v1MemberRoot   Merkle root of the V1 member address set, frozen at
      *                       handoff. Lets V2 recognize V1 members without
      *                       double-counting seats. See HUMAN REVIEW item J12.
-     * @param maxUsdcPerAddressPerEra  Anti-whale cap in USDC 6dp units (J3).
-     * @param maxUsdcPerTx   Per-transaction USDC ceiling, 6dp (J14).
+     * @param addrCaps       Per-era anti-whale ADDRESS caps in USDC 6dp units,
+     *                       index 0..8 => era 1..9. Each SELLABLE era's cap MUST
+     *                       be >= that era's USDC minimum (else no one could clear
+     *                       the era min). Size tiny for the cheap early eras and
+     *                       larger (~$25k-class) late (J3).
+     * @param maxUsdcPerTx   Per-transaction USDC ceiling, 6dp; MUST be >= the
+     *                       largest sellable era minimum (J14).
+     * @param reserveThroughSeat  Seat-reserve target (a GLOBAL seat number).
+     *                       0 = no reserve; 10_000 = reserve every Era II-IV seat
+     *                       at its own era minimum (RECOMMENDED); 1_000_000 = full
+     *                       hard-reserve for all 1M seats (Option 2 / J16). The
+     *                       contract must be FUNDED with >= the resulting initial
+     *                       reserve or the first buy reverts.
      * @param eraCaps        Per-era SYN sold-caps (18dp), index 0..8 => era 1..9.
      *                       Era 1 (Genesis) is unused by V2 (may be 0). Each
      *                       SELLABLE era's cap MUST fit at least one minimum
@@ -236,8 +267,9 @@ contract SyndicateSaleV2 {
         address operations,
         uint256 genesisOffset,
         bytes32 v1MemberRoot,
-        uint256 maxUsdcPerAddressPerEra,
+        uint256[9] memory addrCaps,
         uint256 maxUsdcPerTx,
+        uint256 reserveThroughSeat,
         uint256[9] memory eraCaps
     ) {
         if (
@@ -246,6 +278,12 @@ contract SyndicateSaleV2 {
         ) revert ZeroAddress();
         if (genesisOffset < GENESIS_END || genesisOffset >= FINAL_SEAT) revert BadGenesisOffset();
         if (maxUsdcPerTx == 0) revert BadEraCaps();
+        // Seat-reserve target must be disabled (0) or a real future seat in
+        // (GENESIS_END, FINAL_SEAT]. 10_000 = Era II-IV reserve; 1_000_000 = full.
+        if (
+            reserveThroughSeat != 0 &&
+            (reserveThroughSeat <= GENESIS_END || reserveThroughSeat > FINAL_SEAT)
+        ) revert BadEraCaps();
 
         USDC = IERC20(usdc);
         SYN = IERC20(syn);
@@ -254,24 +292,32 @@ contract SyndicateSaleV2 {
         OPERATIONS = operations;
         GENESIS_OFFSET = genesisOffset;
         V1_MEMBER_ROOT = v1MemberRoot;
-        MAX_USDC_PER_ADDRESS_PER_ERA = maxUsdcPerAddressPerEra;
         MAX_USDC_PER_TX = maxUsdcPerTx;
+        RESERVE_THROUGH_SEAT = reserveThroughSeat;
 
         memberCount = genesisOffset;
         uint16 startEra = _eraIndexForSeat(genesisOffset + 1);
         activeEra = startEra;
 
-        // Each SELLABLE era's cap must fit at least one minimum entry, else the
-        // era would be dead-on-arrival (instantly skipped). Full sizing is J13.
+        // Each SELLABLE era must: (a) have a SYN sold-cap that fits at least one
+        // minimum entry (else dead-on-arrival), AND (b) have a per-address cap
+        // >= its own USDC minimum (else NO buyer could ever clear the era min).
+        // The per-tx ceiling must also clear the largest sellable era minimum.
+        // Full sizing is J13 (SYN caps) / J3 (address caps) / J14 (per-tx).
         for (uint16 e = startEra; e <= 9; ++e) {
+            (, uint256 minU,) = _eraParams(e);
             uint256 cap = eraCaps[e - 1];
             if (cap < _minEntrySyn(e)) revert BadEraCaps();
+            if (addrCaps[e - 1] < minU) revert BadEraCaps();
+            if (maxUsdcPerTx < minU) revert BadEraCaps();
             eraSynCap[e] = cap;
+            maxUsdcPerAddressPerEra[e] = addrCaps[e - 1];
         }
         // Non-sellable lower eras (e < startEra, e.g. Genesis) keep their cap
-        // value verbatim for transparency; they are never sold by V2.
+        // values verbatim for transparency; they are never sold by V2.
         for (uint16 e = 1; e < startEra; ++e) {
             eraSynCap[e] = eraCaps[e - 1];
+            maxUsdcPerAddressPerEra[e] = addrCaps[e - 1];
         }
 
         owner = msg.sender;
@@ -325,10 +371,11 @@ contract SyndicateSaleV2 {
         if (usdcIn < minUsdc6) revert BelowEraMinimum(minUsdc6);
         if (usdcIn > MAX_USDC_PER_TX) revert ExceedsTxMax(MAX_USDC_PER_TX);
 
-        // anti-whale: per-address, per-era cumulative USDC cap
+        // anti-whale: per-address, per-era cumulative USDC cap (sized PER ERA)
         uint256 spentThisEra = usdcByAddressEra[msg.sender][era];
-        if (spentThisEra + usdcIn > MAX_USDC_PER_ADDRESS_PER_ERA) {
-            revert AddressEraCapExceeded(MAX_USDC_PER_ADDRESS_PER_ERA - spentThisEra);
+        {
+            uint256 addrCap = maxUsdcPerAddressPerEra[era];
+            if (spentThisEra + usdcIn > addrCap) revert AddressEraCapExceeded(addrCap - spentThisEra);
         }
 
         // exact pricing (no division)
@@ -343,6 +390,19 @@ contract SyndicateSaleV2 {
         uint256 available = SYN.balanceOf(address(this));
         if (synOut > available) revert InsufficientInventory(available);
 
+        // SEAT-RESERVE invariant: never sell so much SYN that the seats still to
+        // be issued (up to RESERVE_THROUGH_SEAT) could no longer be seated at
+        // their OWN era minimum. `firstSeat` is computed HERE (after V1
+        // recognition) and REUSED in effects; a repeat / recognized-V1 buyer
+        // issues no seat, so `mAfter` is unchanged. REVERT (never silent-cap) —
+        // consistent with the no-partial-fill doctrine; the buyer sizes down.
+        bool firstSeat = !knownMember[msg.sender];
+        {
+            uint256 reserveAfter = _reserveSyn(memberCount + (firstSeat ? 1 : 0));
+            uint256 sellableNow = available > reserveAfter ? available - reserveAfter : 0;
+            if (synOut > sellableNow) revert ReserveFloorViolation(sellableNow);
+        }
+
         // splits (70/20/10, remainder-safe; referral from Ops only)
         uint256 vaultAmt = (usdcIn * 70) / 100;
         uint256 liqAmt = (usdcIn * 20) / 100;
@@ -353,7 +413,7 @@ contract SyndicateSaleV2 {
         uint256 opsAmt = opsSlice - refAmt;
 
         // ================= EFFECTS (state before interactions) =============
-        bool firstSeat = !knownMember[msg.sender];
+        // `firstSeat` was computed above (reserve check) and is reused here.
         uint256 assignedNumber;
         if (firstSeat) {
             knownMember[msg.sender] = true;
@@ -444,6 +504,25 @@ contract SyndicateSaleV2 {
 
     function nextSeatNumber() external view returns (uint256) { return memberCount + 1; }
     function availableSyn() external view returns (uint256) { return SYN.balanceOf(address(this)); }
+
+    /// @notice SYN currently sellable to a buyer who WOULD take a new seat,
+    ///         without breaching the seat reserve (RESERVE_THROUGH_SEAT). This is
+    ///         OPTIMISTIC for a new seat (the buyer's own seat is excluded from
+    ///         the reserve); a repeat / recognized-V1 buyer's ceiling is one seat
+    ///         LOWER. Frontends must size a buy against this AND the era + address
+    ///         caps, then set `minSynOut` from `quote()`. 0 when at the floor.
+    function sellableSynForNextSeat() external view returns (uint256) {
+        uint256 bal = SYN.balanceOf(address(this));
+        uint256 r = _reserveSyn(memberCount + 1);
+        return bal > r ? bal - r : 0;
+    }
+
+    /// @notice SYN currently reserved to seat the remaining members up to
+    ///         RESERVE_THROUGH_SEAT at their own era minimums. 0 when the reserve
+    ///         is disabled or the target seat has already been passed.
+    function currentReserveFloor() external view returns (uint256) {
+        return _reserveSyn(memberCount);
+    }
 
     function isConcluded() public view returns (bool) {
         if (memberCount >= FINAL_SEAT) return true;
@@ -579,6 +658,28 @@ contract SyndicateSaleV2 {
             if (seat <= endSeat) return e;
         }
         revert SaleConcluded();
+    }
+
+    /// @dev SYN that must REMAIN to seat members (m+1 .. RESERVE_THROUGH_SEAT) at
+    ///      EACH one's own era minimum. Costs every remaining reservable seat at
+    ///      its era's `_minEntrySyn` — NOT a blanket current-era rate (the naive
+    ///      blanket formula under/over-reserves once eras differ). O(9): iterates
+    ///      eras, not seats. `view` (reads the RESERVE_THROUGH_SEAT immutable),
+    ///      not `pure`. Returns 0 when the reserve is disabled or m >= target.
+    function _reserveSyn(uint256 m) internal view returns (uint256 reserve) {
+        uint256 target = RESERVE_THROUGH_SEAT;
+        if (target == 0 || m >= target) return 0;
+        uint256 prevEnd = 0;
+        for (uint16 e = 1; e <= 9; ++e) {
+            (uint64 spu, uint256 minU, uint256 endSeat) = _eraParams(e);
+            uint256 segEnd = endSeat < target ? endSeat : target;
+            uint256 already = m > prevEnd ? m : prevEnd; // already-seated lower bound
+            if (segEnd > already) {
+                reserve += (segEnd - already) * (minU * uint256(spu) * SCALE_6_TO_18);
+            }
+            prevEnd = endSeat;
+            if (endSeat >= target) break;
+        }
     }
 
     // ===================================================== merkle (stub)

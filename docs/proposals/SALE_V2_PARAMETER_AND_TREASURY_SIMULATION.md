@@ -214,6 +214,15 @@ upgrade throttle. Rationale: Option 1 matches the existing canon ("don't trust,
 verify"; targets not promises), keeps the hybrid purchase model the protocol wants,
 and the early-era reserve closes the worst abuse without taxing the whole sale.
 
+> **Status (draft updated since this report):** both simulation-proven *structural*
+> corrections are now implemented in `SyndicateSaleV2.draft.sol` (mirrored in §L /
+> §M of the architecture doc): (1) the single global address cap is replaced by a
+> per-era `maxUsdcPerAddressPerEra[1..9]`, and (2) the seat-reserve is a configurable
+> immutable `RESERVE_THROUGH_SEAT` defaulting to seat #10,000 (Eras II–IV =
+> 3,933,500 SYN), settable to 1,000,000 (full = 130,933,500 SYN) or 0 (off). Only the
+> **parameter values** (the cap ramp J3, the reserve target J16, funding J2) remain
+> for the line-by-line human review — the structure is now in code, not deployed.
+
 ---
 
 ## 4. Arbitrage scenario
@@ -465,6 +474,9 @@ lost, and never over-commits the fixed SYN supply.
 - V1's already-distributed SYN must be subtracted from the 350M pool before funding
   V2; re-read on-chain at deploy time. No figure here was taken on faith — all are
   recomputed from the schedule.
-- **This document writes no code and changes no parameters.** Recommended contract
-  edits (per-era address cap, early-era reserve, 14-day timelock) are deferred to
-  the upcoming line-by-line review, per instruction.
+- **This document writes no code and changes no parameters.** Of the recommended
+  contract edits, the two simulation-proven *structural* corrections — the **per-era
+  address cap** and the **configurable early-era reserve** — have since been applied
+  to `SyndicateSaleV2.draft.sol` (draft only, not deployed); their **parameter
+  values** (cap ramp, reserve target, funding) plus the 14-day timelock tuning
+  remain for the line-by-line human review, per instruction.

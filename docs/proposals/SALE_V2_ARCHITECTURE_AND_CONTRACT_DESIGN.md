@@ -45,10 +45,12 @@ plumbing, while leaving V1, SYN, and all funds untouched.
    and SYN at 18, `synOut = usdcIn × synPerUsdc × 1e12` — **no division, zero
    rounding loss**. This removes an entire class of precision/drain bugs.
 
-4. **Hybrid proportional purchases, bounded by a per-address per-era cap.**
+4. **Hybrid proportional purchases, bounded by per-era address caps.**
    Buyers pay any amount ≥ the era minimum and get proportional SYN. A
-   per-address, per-era USDC cap is the anti-whale guard that keeps the
-   "everyone gets a fair seat" promise and bounds inventory burn.
+   **per-era** anti-whale address cap (sized per era — tiny for the cheap early
+   eras, larger late) keeps the "everyone gets a fair seat" promise and bounds
+   inventory burn. *(A single global cap was rejected: a value safe for a late
+   era let one wallet drain a tiny early era — see §C / §Q1.)*
 
 5. **Referral = fixed 5%, carved only from the 10% Operations slice.** Vault
    (70%) and Liquidity (20%) are never diluted. No referrer → Operations keeps
@@ -76,12 +78,17 @@ plumbing, while leaving V1, SYN, and all funds untouched.
 allocation, you can only pick two.** The addendum adds the **per-era SYN cap** as
 the strongest available throttle: it provably bounds early-era cheap-SYN sales
 (`soldInEra[e] ≤ eraSynCap[e]`) and preserves the distribution *shape* across
-eras. It still does **not** make "First Million" an on-chain guarantee —
-repeat/upgrade buys can consume a cap while issuing few seats, advancing the
-price for everyone. **"First Million" remains a narrative target bounded by
-funded inventory**, never a contract promise. The optional hard-reserve that
-*would* guarantee 1M seats (at the cost of restricting hybrid upgrades) is laid
-out as **Human Review J16**.
+eras. By itself a cap still does **not** make "First Million" an on-chain
+guarantee — repeat/upgrade buys can consume a cap while issuing few seats. The
+**simulation revision** (this pass) therefore adds a **configurable seat-reserve
+invariant** (`RESERVE_THROUGH_SEAT`): it refuses any buy that would leave less SYN
+than is needed to seat every remaining member **up to a chosen seat** at that
+member's **own** era minimum. The **recommended default reserves Eras II–IV**
+(seat #10,000) — a hard guarantee for the cheap early run, with late-era hybrid
+upgrades left unrestricted; setting it to #1,000,000 makes the full "First
+Million" an on-chain guarantee (Option 2 / **J16**), and `0` disables it. Where
+the reserve is off, **"First Million" remains a narrative target bounded by funded
+inventory**, never a contract promise.
 
 ---
 
@@ -274,11 +281,17 @@ to seat #1,000,000. One must give.
 1. **Keep member-number boundaries** as the narrative + identity spine — but
    treat them as **ceilings**, not exact price brackets (the per-era cap, step 3,
    can advance the price before a range fills).
-2. **Cap hybrid purchases per-address, per-era** (`MAX_USDC_PER_ADDRESS_PER_ERA`)
-   **and per-transaction** (`MAX_USDC_PER_TX`). Bounds how fast any one wallet can
-   drain a cheap era. **Cap value = Human Review J3; per-tx = J14.** A worked
-   starting point: capping each address to, say, **$25,000 per era** means
-   draining Era II's share requires many distinct funded wallets, not one.
+2. **Cap hybrid purchases with PER-ERA address caps** (`maxUsdcPerAddressPerEra[e]`)
+   **and a per-transaction cap** (`MAX_USDC_PER_TX`). Bounds how fast any one
+   wallet can drain a cheap era. **Cap values = Human Review J3; per-tx = J14.**
+   The simulation proved a *single global* address cap is structurally wrong: a
+   value safe for a late era (≈$25k) lets one wallet sweep a large fraction of a
+   tiny early era. The cap is therefore sized **per era** — small for the cheap
+   early eras, ramping to a ~$25k-class ceiling late. A defensible starting ramp
+   (J3, finalize against the funding model): **II $1k · III $2.5k · IV $5k · V
+   $10k · VI $15k · VII $20k · VIII/IX $25k**. The contract enforces each era's cap
+   independently (`AddressEraCapExceeded`) and the constructor requires every
+   sellable era's cap ≥ that era's USDC minimum.
 3. **Add an aggregate per-era SYN sold-cap** (`eraSynCap[e]`, addendum §Q1). This
    is the strongest throttle and the one a Sybil swarm **cannot** bypass: it
    bounds the *total* cheap-SYN sold per era (`soldInEra[e] ≤ eraSynCap[e]`)
@@ -299,17 +312,25 @@ to seat #1,000,000. One must give.
 5. **Model the per-era allocation before funding.** Decide funding `F ≤ 350M` for
    V2 with explicit headroom by era, and size each `eraSynCap[e]` from that model.
    Spreadsheet exercise to complete before deploy (**Human Review J2 + J13**).
-6. **(Optional) hard-guarantee 1M seats** with a min-entry reserve invariant that
-   refuses any buy leaving < the SYN needed to seat every remaining member at the
-   minimum. This would make "First Million" a contract guarantee, at the cost of
-   restricting late-in-era hybrid upgrades. Deferred as **Human Review J16** —
-   *not* in the current draft, which favors honest labeling over the complexity.
+6. **Seat-reserve invariant (now in the draft, configurable).** The simulation
+   recommended — and this revision implements — a `RESERVE_THROUGH_SEAT` invariant
+   that refuses any buy leaving less SYN than is needed to seat every remaining
+   member **up to a chosen seat** at that member's **own** era minimum (the naive
+   blanket-current-rate formula mis-reserves once eras differ). The **recommended
+   default is seat #10,000 (Eras II–IV)** — it hard-guarantees the *early* run
+   without touching late-era hybrid upgrades; #1,000,000 makes the whole "First
+   Million" a contract guarantee (Option 2 / **J16**); `0` disables it. On a
+   violation the buy **reverts** `ReserveFloorViolation(maxSynOut)` — never a
+   silent cap (consistent with the no-partial-fill doctrine). The contract must be
+   **funded above the initial reserve** or the first buy reverts (J2).
+   Worked figures: `_reserveSyn(333)` = **3,933,500 SYN** at target #10,000, and
+   **130,933,500 SYN** at target #1,000,000.
 
 ### C4. Distribution-health note
 
 Early members get **far more SYN per dollar** (100×) than late members. That
 concentrates SYN among early adopters — intended as reward for early risk, but
-worth stating plainly. The rising price curve + per-address per-era cap are the
+worth stating plainly. The rising price curve + per-era address caps are the
 two mitigations that keep this from becoming raw plutocracy. Rank remains
 **cumulative-USDC, recognition-only** and is unaffected by era rate (canon).
 
@@ -409,6 +430,7 @@ canon already places it.
 | Change era rates / boundaries | **No** | Immutable in bytecode. The whole point of "prescripted." |
 | Change 70/20/10 split | **No** | Constitutional; immutable. |
 | Change Vault/Liquidity/Operations wallets | **No (recommended)** | Immutable constructor args. A compromised wallet → deploy V3, don't add a live setter. *(Optional 2-step timelocked rotation is **Human Review J4** if ops demands it.)* |
+| Change seat-reserve, per-era SYN caps, or per-era address caps | **No** | `RESERVE_THROUGH_SEAT`, `eraSynCap[1..9]`, and `maxUsdcPerAddressPerEra[1..9]` are all set once in the constructor with no setter. Sizing is a deploy-time decision (J16/J13/J3), never a live lever. |
 | Withdraw USDC | **No** | USDC is only ever held transiently mid-`buy` and fully routed in the same tx; escrowed referral is claimable by the referrer only. Owner has **no** USDC withdrawal path. |
 | `recoverUnsoldSyn()` | **Yes, constrained + timelocked** | Callable when the sale **concluded**, OR when **paused for ≥ `RECOVERY_TIMELOCK`** (e.g. 7 days) — a deliberate, pre-announced wind-down for inventory dust. The timelock blocks an instant pause+sweep. Destination is the **immutable Vault** only — no path drains SYN to the owner, paused or not. |
 | `rescueToken(token)` | **Yes, constrained** | Recovers tokens sent by mistake; **cannot** touch USDC or SYN; destination is the immutable Vault. |
@@ -432,7 +454,7 @@ pause-and-sweep of unsold inventory.**
 | T3 | Rounding / precision drain | Division favoring buyer | **No division in the price path** (integer rates). Split uses remainder assignment (`ops = usdcIn − vault − liq`) so totals are exact with zero dust loss. |
 | T4 | Era-boundary race / front-run | Era steps between quote and mine; buyer gets worse rate | `minSynOut` slippage floor reverts the buy if the rate stepped. (Buying *earlier* for a cheaper rate is intended, not an exploit.) |
 | T5 | Inventory exhaustion mid-tx | Buy exceeds remaining SYN (global or era cap) | Two checks: `synOut ≤ eraSynCap[e] − soldInEra[e]` → `EraInventoryInsufficient`, and `synOut ≤ availableSyn` → `InsufficientInventory`. Atomic single-era buys (no cross-era partial fills). Frontend quotes via `quote()` (returns `eraCapRemaining` + `available`). |
-| T6 | Whale accumulation | One actor (or a Sybil swarm) drains a cheap early era | Three layered caps: `MAX_USDC_PER_TX`, `MAX_USDC_PER_ADDRESS_PER_ERA` (per-address), and the aggregate `eraSynCap[e]` — the last is the only one a Sybil swarm cannot bypass (it bounds *total* per-era sales). See §C / §Q1. |
+| T6 | Whale accumulation | One actor (or a Sybil swarm) drains a cheap early era | Three layered caps: `MAX_USDC_PER_TX`, the **per-era** `maxUsdcPerAddressPerEra[e]` (sized tiny early → ~$25k late; a single global cap was rejected as it let one wallet drain a tiny early era → `AddressEraCapExceeded`), and the aggregate `eraSynCap[e]` — the last is the only one a Sybil swarm cannot bypass (it bounds *total* per-era sales). See §C / §Q1. |
 | T7 | Self-referral / fake referral | Buyer refers self or a non-member to skim Operations | `referrer != buyer` **and** `knownMember[referrer]` required; else `refAmt = 0` and Operations keeps the full slice. |
 | T8 | Referral griefing | Blacklisted/reverting referrer bricks the buy | `try/catch` push → escrow to `referralOwed`; buy never reverts on referral failure. `claimReferral()` for withdrawal. |
 | T9 | Routing failure | A destination wallet reverts on receive | Vault/Liquidity/Operations are protocol-owned EOAs; plain USDC `transfer` has no hook. (If ever a contract, same escrow pattern would apply — note for J4.) |
@@ -447,7 +469,8 @@ pause-and-sweep of unsold inventory.**
 | T18 | Era-cap deadlock | An exhausted era's cap blocks all buys, bricking the sale before #1M | **Avoided by design:** when an era's remaining cap can't fit one minimum entry, `_syncEra` auto-advances to the next era (no revert-until-next, no founder switch). Tested in H8. |
 | T19 | Premature pause-and-sweep | Owner pauses then instantly `recoverUnsoldSyn` to pull unsold inventory to the Vault mid-sale | Paused recovery path gated by `RECOVERY_TIMELOCK` (`pausedAt + delay`); `pausedAt` resets on unpause. Destination is still Vault-only (not theft, but a premature-halt power) — timelock + multisig owner (J4/J15) bound it. |
 | T20 | Misleading price-by-seat | Users/surfaces assume seat #N always equals the seat-N era price | With per-era caps, a cap exhausted by early whales advances the era before its range fills, so **seat number no longer fixes price**. Mitigation is disclosure: live price comes from `currentEra()`/`quote()`; `EraAdvanced.reason` distinguishes a cap-advance from a boundary open; `eraOfSeat()` is labeled positional-preview. §I + §Q1. |
-| T21 | Misleading "First Million" | Marketing implies 1M seats are inventory-guaranteed | Per-era caps bound depletion and shape, but do **not** guarantee 1M seats (repeats can consume a cap with few seats). Doctrine: "First Million" is a narrative target bounded by funded inventory; the hard-reserve that *would* guarantee it is opt-in J16. Legal copy review J10. |
+| T21 | Misleading "First Million" | Marketing implies 1M seats are inventory-guaranteed | Per-era caps bound depletion and shape but do **not** by themselves guarantee 1M seats (repeats can consume a cap with few seats). The draft now ships a configurable `RESERVE_THROUGH_SEAT`: the **default (#10,000)** hard-guarantees Eras II–IV and #1,000,000 guarantees the full million (J16). Where the reserve does not cover a seat, "First Million" is a narrative target bounded by funded inventory. Legal copy review J10. |
+| T22 | Seat-reserve under-funding / boundary revert | Contract funded below the initial `RESERVE_THROUGH_SEAT` floor (first buy reverts), or a large upgrade buy near the floor | **Deploy-time:** fund ≥ `_reserveSyn(GENESIS_OFFSET)` before opening (J2). **Runtime:** `ReserveFloorViolation(maxSynOut)` tells the buyer exactly how much they *can* buy; `sellableSynForNextSeat()` / `currentReserveFloor()` let the frontend size down. Reverting (never silent-capping) preserves the no-partial-fill doctrine. |
 
 ---
 
@@ -550,6 +573,33 @@ pause-and-sweep of unsold inventory.**
   `REASON_RANGE` vs `REASON_CAP` and does not claim "era N opened at its range
   start" for a cap-advance.
 
+### H9. Unit — per-era address caps & seat reserve *(simulation revision)*
+- **Per-era address cap:** cumulative USDC by one address in an era is bounded by
+  `maxUsdcPerAddressPerEra[era]`; the buy that would exceed it reverts
+  `AddressEraCapExceeded(capRemaining)`; a buy of exactly the remainder succeeds.
+- **Cap is per-era, not global:** a tiny Era II cap and a large late-era cap
+  coexist; the Era II ceiling does not constrain a late-era buyer and vice-versa.
+- **Constructor addr-cap sanity:** `addrCaps[e] < that era's USDC minimum` (for a
+  sellable era) reverts `BadEraCaps`; `maxUsdcPerTx <` any sellable era minimum
+  reverts.
+- **Reserve — default (Eras II–IV):** with `RESERVE_THROUGH_SEAT = 10_000`, a buy
+  that would drop the SYN balance below `_reserveSyn(memberCount + firstSeat?1:0)`
+  reverts `ReserveFloorViolation(maxSynOut)`; a buy of exactly `maxSynOut`
+  succeeds. Assert `_reserveSyn(333) == 3_933_500e18`.
+- **Reserve — full 1M:** `RESERVE_THROUGH_SEAT = 1_000_000` →
+  `_reserveSyn(333) == 130_933_500e18`; late-era over-buys revert once inventory
+  tightens.
+- **Reserve — disabled:** `RESERVE_THROUGH_SEAT = 0` → `_reserveSyn` returns 0 and
+  no reserve check runs.
+- **Reserve — under-funded:** funding the contract below the initial reserve makes
+  the *first* buy revert `ReserveFloorViolation`; funding ≥ the floor lets it
+  proceed.
+- **Reserve construction bound:** `reserveThroughSeat` in `(0, GENESIS_END]` or
+  `> FINAL_SEAT` reverts `BadEraCaps`.
+- **View parity:** `sellableSynForNextSeat()` equals
+  `available − _reserveSyn(memberCount + 1)` (floored at 0); `currentReserveFloor()`
+  equals `_reserveSyn(memberCount)`.
+
 ---
 
 ## I. Frontend & indexer implications
@@ -576,7 +626,7 @@ pause-and-sweep of unsold inventory.**
 | --- | --- | --- | --- |
 | J1 | Pause V1 exactly at seat #333? | **Yes** — pause at the Genesis ceiling, then deploy V2 with `GENESIS_OFFSET = 333`. | If V1 overshoots, every era boundary shifts. The draft enforces `offset ≥ 333` but cannot enforce *exactly* 333. |
 | J2 | V2 SYN funding amount `F` | Model repeats/upgrades by era; fund with headroom but `F ≤ 350M − (V1 already sold)`. | Determines when the honest inventory hard-stop hits. |
-| J3 | `MAX_USDC_PER_ADDRESS_PER_ERA` value | Set per modeling; starting point ~$25k/era. | The primary anti-whale + distribution-fairness lever. |
+| J3 | Per-era address caps (`maxUsdcPerAddressPerEra[1..9]`) | Set **one value per era** from the funding model — a single global cap is wrong (it let one wallet drain a tiny early era). Defensible ramp: II $1k · III $2.5k · IV $5k · V $10k · VI $15k · VII $20k · VIII/IX $25k. Each must be ≥ its era's USDC minimum. | The primary anti-whale + distribution-fairness lever; now sized per era so early eras are genuinely protected. |
 | J4 | Wallet rotation: immutable vs 2-step timelock | **Immutable** unless ops requires rotation. | Immutable = max trust; rotation = a live privileged path to scrutinize. |
 | J5 | Referral first-purchase-only or every purchase? | **Every eligible purchase** (matches RAL "every sale"). | Affects Operations economics; confirm against legal framing. |
 | J6 | Emit full RAL `Attribution{splits[5]…}` on-chain in V2, or project it indexer-side? | Lean `Routed`+`ReferralAttributed` on-chain; project RAL shape off-chain. | Gas + simplicity vs single-event richness. |
@@ -586,10 +636,10 @@ pause-and-sweep of unsold inventory.**
 | J10 | Royalty/secondary, legal review of era + referral copy | Legal sign-off before live. | Forbidden-wording compliance (ROI/yield/dividend/etc.). |
 | J11 | Review/audit gate | External review (Kemal+ChatGPT) → Fuji → independent audit → mainnet. | `SOLIDITY_REVIEW_STATE` + D4/D5. **Non-negotiable.** |
 | J12 | V1 Merkle root: snapshot timing & frontend proof delivery | Snapshot V1 members at the same instant V1 is paused; ship the proof in the canonical buy/referral UI. | Recognition correctness + T17 residual (V1 member buying without a proof). |
-| J13 | Per-era SYN cap sizing (`eraSynCap[1..9]`) | Size each from the funding model (J2). A defensible floor is `rangeSeats × minEntrySyn` so each era can seat its full range at the minimum; add headroom for upgrades. | Sets how much cheap early-era SYN can ever be sold and where the price steps. Too small = price jumps early; too large = early eras can over-consume. |
-| J14 | `MAX_USDC_PER_TX` value | Set a sane single-tx ceiling (≥ the largest era minimum). Redundant against a Sybil swarm; primary value is UX + fat-finger safety. | Secondary to per-era/per-address caps; cheap to include. |
+| J13 | Per-era SYN cap sizing (`eraSynCap[1..9]`) | Size each from the funding model (J2). A defensible floor is `rangeSeats × minEntrySyn` so each era can seat its full range at the minimum; add headroom for upgrades. *(The seat-reserve invariant, J16, uses the same per-era `rangeSeats × minEntrySyn` shape to guarantee seats.)* | Sets how much cheap early-era SYN can ever be sold and where the price steps. Too small = price jumps early; too large = early eras can over-consume. |
+| J14 | `MAX_USDC_PER_TX` value | Set a sane single-tx ceiling. The constructor now **enforces** `maxUsdcPerTx ≥ every sellable era's minimum` (else `BadEraCaps`). Redundant against a Sybil swarm; primary value is UX + fat-finger safety. | Secondary to per-era/per-address caps; cheap to include. |
 | J15 | `RECOVERY_TIMELOCK` duration | 7–14 days suggested; pair with a multisig owner. | Long enough that a pause-and-sweep is visible to members before SYN moves; short enough to wind down real dust. |
-| J16 | Hard-guarantee 1M seats? (min-entry reserve invariant) | **Default: no** — keep the honest "narrative target" labeling. Adopt only if a contract-level 1M guarantee is required, accepting restricted late-in-era hybrid upgrades. | The only way per-era caps become a *guarantee*; otherwise repeats can consume a cap with few seats issued. |
+| J16 | Seat-reserve target (`RESERVE_THROUGH_SEAT`) | **Now implemented as one immutable parameter** — pick the value at deploy. **Recommended: 10,000** (hard-guarantee Eras II–IV, the cheap early run, with late-era hybrid upgrades unrestricted). Use **1,000,000** for a full contract-level "First Million" guarantee (restricts late-in-era upgrades once inventory tightens); **0** to disable. The contract must be funded ≥ the resulting initial reserve (J2). | Converts "First Million" (or just the early run) from a narrative target into an on-chain guarantee. Uses each remaining seat's **own** era minimum, not a blanket rate. |
 
 ---
 
@@ -601,8 +651,12 @@ one file; **production must import the audited OZ libraries**, not the stubs.)
 
 **State shape:**
 - *Immutables* (bytecode-fixed): `USDC`, `SYN`, `VAULT`, `LIQUIDITY`,
-  `OPERATIONS`, `GENESIS_OFFSET`, `V1_MEMBER_ROOT`,
-  `MAX_USDC_PER_ADDRESS_PER_ERA`.
+  `OPERATIONS`, `GENESIS_OFFSET`, `V1_MEMBER_ROOT`, `MAX_USDC_PER_TX`,
+  `RESERVE_THROUGH_SEAT`.
+- *Set once in the constructor, no setter (immutable by convention)*: the per-era
+  `eraSynCap[1..9]` **and** the per-era address caps
+  `maxUsdcPerAddressPerEra[1..9]` (mappings — arrays can't use the `immutable`
+  keyword). The single global `MAX_USDC_PER_ADDRESS_PER_ERA` was REMOVED.
 - *Constants*: `GENESIS_END=333`, `FINAL_SEAT=1_000_000`, `SCALE_6_TO_18=1e12`.
 - *Mutable*: `paused`, `memberCount`, `totalUsdcRaised`, `totalSynSold`,
   `lastEra`, and the per-address maps (`knownMember`, `memberNumberOf`,
@@ -721,14 +775,20 @@ interface IERC20 {
  *     IMPORTANT (honesty): per-era caps PRESERVE THE DISTRIBUTION SHAPE and
  *     reduce early depletion. They do NOT by themselves guarantee that exactly
  *     1,000,000 seats are reachable — repeat/upgrade buys can consume a cap
- *     while issuing few seats, advancing the price for everyone. "First Million"
- *     remains a TARGET bounded by funded inventory, not an on-chain guarantee.
- *     See HUMAN REVIEW J13/J16 for the optional hard-reserve alternative.
+ *     while issuing few seats, advancing the price for everyone. The configurable
+ *     immutable RESERVE_THROUGH_SEAT closes this gap when set: it refuses any buy
+ *     that would leave too little SYN to seat the remaining members at their OWN
+ *     era minimums, so seats are guaranteed up to the chosen seat (default #10,000
+ *     => Eras II–IV; #1,000,000 => the full million; 0 => off). Where the reserve
+ *     does not cover a seat, "First Million" stays a TARGET bounded by funded
+ *     inventory, not a guarantee. See HUMAN REVIEW J13 (cap sizing) / J16 (target).
  *
  *  4. HYBRID PROPORTIONAL PURCHASES. A buyer may pay any amount >= the era
  *     minimum and receives proportional SYN at the current era rate. Whale
  *     accumulation is bounded by THREE independent caps: per-transaction USDC,
- *     per-address-per-era USDC, and the aggregate per-era SYN sold-cap.
+ *     per-address-per-era USDC (sized PER ERA, maxUsdcPerAddressPerEra[1..9]),
+ *     and the aggregate per-era SYN sold-cap; the optional seat-reserve
+ *     (RESERVE_THROUGH_SEAT) adds a fourth, seat-preservation bound.
  *
  *  5. 70 / 20 / 10 PRESERVED, REFERRAL FROM OPERATIONS ONLY. Vault (70%) and
  *     Liquidity (20%) are NEVER diluted. A 5% referral is carved strictly out
@@ -766,6 +826,7 @@ contract SyndicateSaleV2 {
     error ProtectedToken();
     error AlreadyKnown();
     error InvalidProof();
+    error ReserveFloorViolation(uint256 maxSynOut);
 
     // ----------------------------------------------- era-advance reason codes
     uint8 internal constant REASON_RANGE = 0; // member-range ceiling reached
@@ -815,8 +876,14 @@ contract SyndicateSaleV2 {
     address public immutable OPERATIONS;      // 10% — 0x5cb5...E80
     uint256 public immutable GENESIS_OFFSET;  // final V1 unique-member count
     bytes32 public immutable V1_MEMBER_ROOT;  // Merkle root of V1 member addresses
-    uint256 public immutable MAX_USDC_PER_ADDRESS_PER_ERA; // anti-whale (6dp)
     uint256 public immutable MAX_USDC_PER_TX; // per-transaction ceiling (6dp)
+    // Seat-reserve target (a GLOBAL seat number). 0 = disabled; 10_000 = reserve
+    // every Era II-IV seat at its OWN era minimum (RECOMMENDED default); 1_000_000
+    // = full hard-reserve guaranteeing all 1,000,000 seats (Option 2 / J16). Set
+    // once; the contract must be FUNDED above the initial reserve or the first buy
+    // reverts. Per-era anti-whale ADDRESS caps are a mapping set in the constructor
+    // (arrays cannot use the `immutable` keyword) -- see `maxUsdcPerAddressPerEra`.
+    uint256 public immutable RESERVE_THROUGH_SEAT;
 
     uint256 private constant GENESIS_END   = 333;
     uint256 private constant FINAL_SEAT    = 1_000_000;
@@ -839,6 +906,13 @@ contract SyndicateSaleV2 {
     // eraSynCap[e] limits soldInEra[e]; both indexed by era 1..9.
     mapping(uint16 => uint256) public eraSynCap;
     mapping(uint16 => uint256) public soldInEra;
+
+    // Per-era anti-whale ADDRESS caps (USDC 6dp), indexed by era 1..9. Set once
+    // in the constructor (no setter). REPLACES the prior single global cap: one
+    // value that was safe for a late era let a single wallet drain a tiny early
+    // era, so the per-address ceiling is now sized PER ERA (tiny for the cheap
+    // early eras, ~$25k-class late). Values are HUMAN REVIEW J3.
+    mapping(uint16 => uint256) public maxUsdcPerAddressPerEra;
 
     mapping(address => bool)    public knownMember;     // V1-proven OR V2-bought
     mapping(address => uint256) public memberNumberOf;  // set for V2-new seats only
@@ -864,8 +938,19 @@ contract SyndicateSaleV2 {
      * @param v1MemberRoot   Merkle root of the V1 member address set, frozen at
      *                       handoff. Lets V2 recognize V1 members without
      *                       double-counting seats. See HUMAN REVIEW item J12.
-     * @param maxUsdcPerAddressPerEra  Anti-whale cap in USDC 6dp units (J3).
-     * @param maxUsdcPerTx   Per-transaction USDC ceiling, 6dp (J14).
+     * @param addrCaps       Per-era anti-whale ADDRESS caps in USDC 6dp units,
+     *                       index 0..8 => era 1..9. Each SELLABLE era's cap MUST
+     *                       be >= that era's USDC minimum (else no one could clear
+     *                       the era min). Size tiny for the cheap early eras and
+     *                       larger (~$25k-class) late (J3).
+     * @param maxUsdcPerTx   Per-transaction USDC ceiling, 6dp; MUST be >= the
+     *                       largest sellable era minimum (J14).
+     * @param reserveThroughSeat  Seat-reserve target (a GLOBAL seat number).
+     *                       0 = no reserve; 10_000 = reserve every Era II-IV seat
+     *                       at its own era minimum (RECOMMENDED); 1_000_000 = full
+     *                       hard-reserve for all 1M seats (Option 2 / J16). The
+     *                       contract must be FUNDED with >= the resulting initial
+     *                       reserve or the first buy reverts.
      * @param eraCaps        Per-era SYN sold-caps (18dp), index 0..8 => era 1..9.
      *                       Era 1 (Genesis) is unused by V2 (may be 0). Each
      *                       SELLABLE era's cap MUST fit at least one minimum
@@ -884,8 +969,9 @@ contract SyndicateSaleV2 {
         address operations,
         uint256 genesisOffset,
         bytes32 v1MemberRoot,
-        uint256 maxUsdcPerAddressPerEra,
+        uint256[9] memory addrCaps,
         uint256 maxUsdcPerTx,
+        uint256 reserveThroughSeat,
         uint256[9] memory eraCaps
     ) {
         if (
@@ -894,6 +980,12 @@ contract SyndicateSaleV2 {
         ) revert ZeroAddress();
         if (genesisOffset < GENESIS_END || genesisOffset >= FINAL_SEAT) revert BadGenesisOffset();
         if (maxUsdcPerTx == 0) revert BadEraCaps();
+        // Seat-reserve target must be disabled (0) or a real future seat in
+        // (GENESIS_END, FINAL_SEAT]. 10_000 = Era II-IV reserve; 1_000_000 = full.
+        if (
+            reserveThroughSeat != 0 &&
+            (reserveThroughSeat <= GENESIS_END || reserveThroughSeat > FINAL_SEAT)
+        ) revert BadEraCaps();
 
         USDC = IERC20(usdc);
         SYN = IERC20(syn);
@@ -902,24 +994,32 @@ contract SyndicateSaleV2 {
         OPERATIONS = operations;
         GENESIS_OFFSET = genesisOffset;
         V1_MEMBER_ROOT = v1MemberRoot;
-        MAX_USDC_PER_ADDRESS_PER_ERA = maxUsdcPerAddressPerEra;
         MAX_USDC_PER_TX = maxUsdcPerTx;
+        RESERVE_THROUGH_SEAT = reserveThroughSeat;
 
         memberCount = genesisOffset;
         uint16 startEra = _eraIndexForSeat(genesisOffset + 1);
         activeEra = startEra;
 
-        // Each SELLABLE era's cap must fit at least one minimum entry, else the
-        // era would be dead-on-arrival (instantly skipped). Full sizing is J13.
+        // Each SELLABLE era must: (a) have a SYN sold-cap that fits at least one
+        // minimum entry (else dead-on-arrival), AND (b) have a per-address cap
+        // >= its own USDC minimum (else NO buyer could ever clear the era min).
+        // The per-tx ceiling must also clear the largest sellable era minimum.
+        // Full sizing is J13 (SYN caps) / J3 (address caps) / J14 (per-tx).
         for (uint16 e = startEra; e <= 9; ++e) {
+            (, uint256 minU,) = _eraParams(e);
             uint256 cap = eraCaps[e - 1];
             if (cap < _minEntrySyn(e)) revert BadEraCaps();
+            if (addrCaps[e - 1] < minU) revert BadEraCaps();
+            if (maxUsdcPerTx < minU) revert BadEraCaps();
             eraSynCap[e] = cap;
+            maxUsdcPerAddressPerEra[e] = addrCaps[e - 1];
         }
         // Non-sellable lower eras (e < startEra, e.g. Genesis) keep their cap
-        // value verbatim for transparency; they are never sold by V2.
+        // values verbatim for transparency; they are never sold by V2.
         for (uint16 e = 1; e < startEra; ++e) {
             eraSynCap[e] = eraCaps[e - 1];
+            maxUsdcPerAddressPerEra[e] = addrCaps[e - 1];
         }
 
         owner = msg.sender;
@@ -973,10 +1073,11 @@ contract SyndicateSaleV2 {
         if (usdcIn < minUsdc6) revert BelowEraMinimum(minUsdc6);
         if (usdcIn > MAX_USDC_PER_TX) revert ExceedsTxMax(MAX_USDC_PER_TX);
 
-        // anti-whale: per-address, per-era cumulative USDC cap
+        // anti-whale: per-address, per-era cumulative USDC cap (sized PER ERA)
         uint256 spentThisEra = usdcByAddressEra[msg.sender][era];
-        if (spentThisEra + usdcIn > MAX_USDC_PER_ADDRESS_PER_ERA) {
-            revert AddressEraCapExceeded(MAX_USDC_PER_ADDRESS_PER_ERA - spentThisEra);
+        {
+            uint256 addrCap = maxUsdcPerAddressPerEra[era];
+            if (spentThisEra + usdcIn > addrCap) revert AddressEraCapExceeded(addrCap - spentThisEra);
         }
 
         // exact pricing (no division)
@@ -991,6 +1092,19 @@ contract SyndicateSaleV2 {
         uint256 available = SYN.balanceOf(address(this));
         if (synOut > available) revert InsufficientInventory(available);
 
+        // SEAT-RESERVE invariant: never sell so much SYN that the seats still to
+        // be issued (up to RESERVE_THROUGH_SEAT) could no longer be seated at
+        // their OWN era minimum. `firstSeat` is computed HERE (after V1
+        // recognition) and REUSED in effects; a repeat / recognized-V1 buyer
+        // issues no seat, so `mAfter` is unchanged. REVERT (never silent-cap) —
+        // consistent with the no-partial-fill doctrine; the buyer sizes down.
+        bool firstSeat = !knownMember[msg.sender];
+        {
+            uint256 reserveAfter = _reserveSyn(memberCount + (firstSeat ? 1 : 0));
+            uint256 sellableNow = available > reserveAfter ? available - reserveAfter : 0;
+            if (synOut > sellableNow) revert ReserveFloorViolation(sellableNow);
+        }
+
         // splits (70/20/10, remainder-safe; referral from Ops only)
         uint256 vaultAmt = (usdcIn * 70) / 100;
         uint256 liqAmt = (usdcIn * 20) / 100;
@@ -1001,7 +1115,7 @@ contract SyndicateSaleV2 {
         uint256 opsAmt = opsSlice - refAmt;
 
         // ================= EFFECTS (state before interactions) =============
-        bool firstSeat = !knownMember[msg.sender];
+        // `firstSeat` was computed above (reserve check) and is reused here.
         uint256 assignedNumber;
         if (firstSeat) {
             knownMember[msg.sender] = true;
@@ -1092,6 +1206,25 @@ contract SyndicateSaleV2 {
 
     function nextSeatNumber() external view returns (uint256) { return memberCount + 1; }
     function availableSyn() external view returns (uint256) { return SYN.balanceOf(address(this)); }
+
+    /// @notice SYN currently sellable to a buyer who WOULD take a new seat,
+    ///         without breaching the seat reserve (RESERVE_THROUGH_SEAT). This is
+    ///         OPTIMISTIC for a new seat (the buyer's own seat is excluded from
+    ///         the reserve); a repeat / recognized-V1 buyer's ceiling is one seat
+    ///         LOWER. Frontends must size a buy against this AND the era + address
+    ///         caps, then set `minSynOut` from `quote()`. 0 when at the floor.
+    function sellableSynForNextSeat() external view returns (uint256) {
+        uint256 bal = SYN.balanceOf(address(this));
+        uint256 r = _reserveSyn(memberCount + 1);
+        return bal > r ? bal - r : 0;
+    }
+
+    /// @notice SYN currently reserved to seat the remaining members up to
+    ///         RESERVE_THROUGH_SEAT at their own era minimums. 0 when the reserve
+    ///         is disabled or the target seat has already been passed.
+    function currentReserveFloor() external view returns (uint256) {
+        return _reserveSyn(memberCount);
+    }
 
     function isConcluded() public view returns (bool) {
         if (memberCount >= FINAL_SEAT) return true;
@@ -1229,6 +1362,28 @@ contract SyndicateSaleV2 {
         revert SaleConcluded();
     }
 
+    /// @dev SYN that must REMAIN to seat members (m+1 .. RESERVE_THROUGH_SEAT) at
+    ///      EACH one's own era minimum. Costs every remaining reservable seat at
+    ///      its era's `_minEntrySyn` — NOT a blanket current-era rate (the naive
+    ///      blanket formula under/over-reserves once eras differ). O(9): iterates
+    ///      eras, not seats. `view` (reads the RESERVE_THROUGH_SEAT immutable),
+    ///      not `pure`. Returns 0 when the reserve is disabled or m >= target.
+    function _reserveSyn(uint256 m) internal view returns (uint256 reserve) {
+        uint256 target = RESERVE_THROUGH_SEAT;
+        if (target == 0 || m >= target) return 0;
+        uint256 prevEnd = 0;
+        for (uint16 e = 1; e <= 9; ++e) {
+            (uint64 spu, uint256 minU, uint256 endSeat) = _eraParams(e);
+            uint256 segEnd = endSeat < target ? endSeat : target;
+            uint256 already = m > prevEnd ? m : prevEnd; // already-seated lower bound
+            if (segEnd > already) {
+                reserve += (segEnd - already) * (minU * uint256(spu) * SCALE_6_TO_18);
+            }
+            prevEnd = endSeat;
+            if (endSeat >= target) break;
+        }
+    }
+
     // ===================================================== merkle (stub)
     // Production: replace with OpenZeppelin MerkleProof.verify and a
     // standardized double-hashed leaf. This sorted-pair stub is illustrative.
@@ -1287,12 +1442,24 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
 | 8 | **Recovery timelock** | `recoverUnsoldSyn` callable the instant the owner paused. | Paused path gated by `pausedAt + RECOVERY_TIMELOCK`; `pausedAt` set on pause, reset on unpause. Concluded path unchanged. | Blocks an instant pause-and-sweep of unsold inventory; destination still Vault-only. (§Q5, T19) |
 | 9 | **Referral fan-out order** | Vault→Liquidity→Operations→Referrer. | Vault→Liquidity→**Referrer**→Operations, with explicit comments + ASCII (§Q4). Behavior identical (amounts pre-computed; `opsAmt` already net). | Makes "the contract pays the referrer, never the Operations EOA" impossible to misread. |
 | 10 | **Honest "First Million"** | Implicit. | Explicitly documented as a **narrative target bounded by funded inventory**, not a contract guarantee; opt-in hard-reserve = J16. | Caps preserve shape but can't guarantee 1M seats under heavy upgrades. (§Q1, T21) |
+| 11 | **Per-era address caps** *(simulation revision)* | Single global `MAX_USDC_PER_ADDRESS_PER_ERA` immutable. | `mapping maxUsdcPerAddressPerEra[1..9]` set once in the constructor from `uint256[9] addrCaps`; `buy` checks the **current era's** cap (`AddressEraCapExceeded`). Constructor requires each sellable era's cap ≥ its USDC minimum. | The simulation proved one global value can't protect both a tiny early era and a large late era — sized per era now. (§C/§Q1, T6, J3) |
+| 12 | **Configurable seat-reserve** *(simulation revision)* | None (a 1M guarantee was deferred to J16). | Immutable `RESERVE_THROUGH_SEAT` + `_reserveSyn(m)` (each remaining seat at its **own** era minimum) + `buy` reverts `ReserveFloorViolation`; views `sellableSynForNextSeat`/`currentReserveFloor`. Default 10,000 (Eras II–IV); 1,000,000 = full; 0 = off. | Makes the early run (or the full million) an on-chain guarantee without restricting late upgrades at the default. (§C/§Q1, T21/T22, J16) |
 
 > Constructor signature also changed: it now takes `maxUsdcPerTx` and
 > `uint256[9] eraCaps`. New errors `EraInventoryInsufficient`, `ExceedsTxMax`,
 > `RecoveryTimelocked`, `BadEraCaps`. New views `remainingEraCap`, cap-aware
 > `quote`/`currentEra`/`isConcluded`. `eraOfSeat` is now labeled
 > positional-preview only.
+>
+> **Simulation revision (this pass):** the scalar `maxUsdcPerAddressPerEra`
+> constructor arg became `uint256[9] addrCaps`, and a `reserveThroughSeat` arg was
+> added — final order `(…, addrCaps, maxUsdcPerTx, reserveThroughSeat, eraCaps)`.
+> New immutable `RESERVE_THROUGH_SEAT`, new mapping `maxUsdcPerAddressPerEra[1..9]`,
+> new errors `AddressEraCapExceeded` + `ReserveFloorViolation`, new views
+> `sellableSynForNextSeat`/`currentReserveFloor`, new helper `_reserveSyn`. The
+> constructor now also enforces `maxUsdcPerTx ≥` every sellable era minimum and
+> each `addrCaps[e] ≥` that era's minimum. Source:
+> `SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md`.
 
 ---
 
@@ -1334,12 +1501,16 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
   #1,000,000 the sale concludes; the next `buy` reverts `SaleConcluded` (incl.
   repeat buys). Leftover SYN is swept to the Vault via `recoverUnsoldSyn()`.
   Whether to instead open a future "Million+" era is **J7**.
-- **Can large purchases drain an era?** — Bounded at three levels: (a)
-  `MAX_USDC_PER_TX` per transaction, (b) `MAX_USDC_PER_ADDRESS_PER_ERA` per
-  address per era, and (c) the aggregate `eraSynCap[e]` — the only one a Sybil
-  swarm of many wallets **cannot** bypass, because it caps the *total* SYN sold in
-  that era. The cost of (c): a cap exhausted early advances the price for everyone
-  (seat ≠ fixed price; see §Q1 / T20).
+- **Can large purchases drain an era?** — Bounded at three levels, plus a seat
+  reserve: (a) `MAX_USDC_PER_TX` per transaction, (b) the **per-era** address cap
+  `maxUsdcPerAddressPerEra[e]` (sized tiny early → ~$25k late; a single global cap
+  was rejected → `AddressEraCapExceeded`), and (c) the aggregate `eraSynCap[e]` —
+  the only one a Sybil swarm of many wallets **cannot** bypass, because it caps the
+  *total* SYN sold in that era. The cost of (c): a cap exhausted early advances the
+  price for everyone (seat ≠ fixed price; see §Q1 / T20). On top of these, (d) the
+  optional `RESERVE_THROUGH_SEAT` invariant refuses any buy that would leave too
+  little SYN to seat the remaining members (to a chosen seat) at their own era
+  minimum — reverting `ReserveFloorViolation` rather than silently capping.
 - **Boundary-crossing purchase: rejected or split?** — **Neither split nor
   silently mixed.** A `buy` is priced entirely at the **current** `activeEra`. It
   never straddles two rates: a buy that won't fit the active era's remaining
@@ -1368,13 +1539,15 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
   gated; buyers receive SYN atomically in the same tx; CEI + `nonReentrant`;
   worst-case owner action is a (reversible) pause, which **takes nothing**.
 - **What is immutable** — `USDC`, `SYN`, `VAULT`, `LIQUIDITY`, `OPERATIONS`,
-  `GENESIS_OFFSET`, `V1_MEMBER_ROOT`, `MAX_USDC_PER_ADDRESS_PER_ERA`,
-  `MAX_USDC_PER_TX`, the per-era `eraSynCap[1..9]` (set once in the constructor,
-  no setter), `RECOVERY_TIMELOCK`; the 70/20/10 split; the entire era schedule
-  (rates, boundaries, minimums); the `FINAL_SEAT` conclusion.
-- **What is configurable** — only at **construction** (offset, root, anti-whale
-  cap, wallet/token addresses). At **runtime**: only `paused` and `owner`
-  (2-step). Nothing economic is runtime-mutable.
+  `GENESIS_OFFSET`, `V1_MEMBER_ROOT`, `MAX_USDC_PER_TX`, `RESERVE_THROUGH_SEAT`,
+  `RECOVERY_TIMELOCK`; the per-era `eraSynCap[1..9]` **and** the per-era address
+  caps `maxUsdcPerAddressPerEra[1..9]` (both set once in the constructor, no
+  setter); the 70/20/10 split; the entire era schedule (rates, boundaries,
+  minimums); the `FINAL_SEAT` conclusion.
+- **What is configurable** — only at **construction** (offset, root, the per-era
+  address caps, per-tx cap, the seat-reserve target, the per-era SYN caps,
+  wallet/token addresses). At **runtime**: only `paused` and `owner` (2-step).
+  Nothing economic is runtime-mutable.
 
 ---
 
@@ -1397,6 +1570,14 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
 | Blacklisted/reverting referrer | mock USDC reverts transfer→referrer | `buy` succeeds, `referralOwed` credited, `escrowed=true`; `claimReferral` pays; double-claim `NothingToClaim`. |
 | Reentrancy | malicious token re-enters `buy`/`claimReferral` | Blocked by `nonReentrant` + CEI. |
 | Exact pricing per era | min-entry buy each era II–IX | `synOut == usdcIn × synPerUsdc × 1e12` exactly (e.g. Era II $10→500 SYN, Era IX $100→100 SYN); split sums to `usdcIn`. |
+| Per-era address cap | buyer exceeds `maxUsdcPerAddressPerEra[era]` (cumulative) | Revert `AddressEraCapExceeded(capRemaining)`; a different era's cap is independent; a buy within the era's cap succeeds. |
+| Cap is per-era, not global | tiny Era II cap + large late-era cap | Era II ceiling does not constrain a late-era buyer and vice-versa (no single global value). |
+| Constructor cap sanity (address) | `addrCaps[e] < era min`, or `maxUsdcPerTx <` a sellable era min | Revert `BadEraCaps`. |
+| Seat reserve — default (II–IV) | `RESERVE_THROUGH_SEAT=10_000`; a buy that would drop the balance below `_reserveSyn(mAfter)` | Revert `ReserveFloorViolation(maxSynOut)`; a buy of exactly `maxSynOut` succeeds; `_reserveSyn(333)=3,933,500 SYN`. |
+| Seat reserve — full guarantee | `RESERVE_THROUGH_SEAT=1_000_000` | `_reserveSyn(333)=130,933,500 SYN`; late-era over-buys revert once inventory tightens. |
+| Seat reserve — disabled | `RESERVE_THROUGH_SEAT=0` | `_reserveSyn` returns 0; no reserve check (legacy behavior). |
+| Seat reserve — under-funded | fund < initial reserve, `RESERVE_THROUGH_SEAT>0` | The first buy reverts `ReserveFloorViolation`; funding ≥ the floor lets buys proceed. |
+| Reserve construction bound | `reserveThroughSeat` in (0, GENESIS_END] or > FINAL_SEAT | Revert `BadEraCaps`. |
 
 ---
 
@@ -1421,8 +1602,9 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
   realistic ceilings.
 - Admin surface: Vault-only SYN recovery gating, `rescueToken` protected-token
   guard, 2-step ownership, pause semantics.
-- The anti-whale cap value `MAX_USDC_PER_ADDRESS_PER_ERA` (J3) against a real
-  per-era funding model (J2).
+- The per-era address caps `maxUsdcPerAddressPerEra[1..9]` (J3) and the
+  `RESERVE_THROUGH_SEAT` target + the deploy-time funding that must exceed its
+  initial floor (J16/J2), against a real per-era funding model.
 
 **Legal wording to check before live:**
 - All era + referral copy for forbidden framing: **no ROI, yield, dividend,
@@ -1473,9 +1655,10 @@ sold-cap** — implemented as caps on `soldInEra[e]` against ONE global SYN bala
    The aggregate `eraSynCap[e]` is **not**: it bounds total sales in the era
    regardless of wallet count.
 3. **If inventory ends before #1,000,000, is "First Million" only narrative?**
-   Yes. It always was, and per-era caps do not change that — they bound depletion
-   and shape but cannot guarantee 1M seats under heavy upgrades. We state it
-   honestly (T21).
+   With caps alone, yes — they bound depletion and shape but cannot guarantee 1M
+   seats under heavy upgrades, and we state that honestly (T21). The configurable
+   seat-reserve (below) *can* convert this into a guarantee: the **default
+   #10,000** reserves Eras II–IV, and **#1,000,000** reserves the full million.
 4. **Would per-era buckets better protect economics?** Yes — they are the single
    strongest, non-bypassable throttle on cheap-era sales.
 5. **Worth the extra complexity?** Yes, but implemented as **sold-caps against a
@@ -1502,9 +1685,17 @@ This is economically self-correcting (early demand steps the price up sooner for
 everyone) but it means `src/lib/eras.ts` is a **positional preview**, not the
 executable pricing truth for V2 (T20).
 
-**Why not a hard 1M guarantee?** A min-entry reserve invariant *could* guarantee
-1M seats, but only by refusing late-in-era hybrid upgrades — contradicting the
-hybrid-purchase preference. Deferred as **J16**; the draft favors honest labeling.
+**Seat-reserve invariant (added by the simulation revision).** A min-entry
+reserve guarantees seats by refusing any buy that would leave too little SYN to
+seat the remaining members at their own era minimums. The earlier draft deferred
+this; the **parameter & treasury simulation** showed it is cheap and that the
+*correct* formula costs each remaining seat at **its own** era minimum (not a
+blanket current-era rate — that mis-reserves once eras differ). It is now
+implemented as `RESERVE_THROUGH_SEAT`: the **recommended default #10,000**
+hard-guarantees Eras II–IV (the cheap early run) **without** restricting late-era
+hybrid upgrades; **#1,000,000** guarantees the full "First Million" (restricts late
+upgrades once inventory tightens — the original J16 tradeoff); **0** disables it.
+Violations **revert** `ReserveFloorViolation(maxSynOut)`.
 
 ### Q2. Market price / arbitrage risk
 
@@ -1514,8 +1705,8 @@ flip on the DEX.
 1. **Can fixed future pricing become an arbitrage machine?** Yes, in principle —
    any below-market fixed price invites arbitrage.
 2. **Acceptable because inventory is limited?** Largely yes: arbitrage is bounded
-   by the same caps as everything else (per-tx, per-address, aggregate per-era,
-   total funded inventory, bounded end at #1M). Arbitrage just means seats sell
+   by the same caps as everything else (per-tx, per-era address, aggregate
+   per-era, total funded inventory, bounded end at #1M). Arbitrage just means seats sell
    faster — which is the *goal* (membership), not a drain of protocol funds (USDC
    still routes 70/20/10).
 3. **Cap future eras harder?** The per-era caps already do this; size late-era
@@ -1525,8 +1716,9 @@ flip on the DEX.
    conditions. Do not try to make V2 absorb a 20× market move.
 5. **Avoid promising "First Million" inventory if price explodes?** Yes — the
    narrative-target framing + inventory hard-stop + caps already handle this.
-6. **Protect without oracle/market logic?** Hard caps (per-tx, per-address,
-   per-era, total inventory) + bounded end + the V3 escape hatch.
+6. **Protect without oracle/market logic?** Hard caps (per-tx, per-era address,
+   aggregate per-era, total inventory) + the optional seat-reserve + bounded end +
+   the V3 escape hatch.
 
 **No oracle (strongly recommended).** An oracle adds a price-manipulation
 surface, a trust dependency, and complexity, and it **contradicts the entire
@@ -1541,7 +1733,8 @@ understands a USDC amount.**
 1. **Every buy uses the active era rate?** Yes.
 2. **Packages = frontend presets only?** Yes.
 3. **Contract understands USDC, not package names?** Yes — `buy(usdcIn,…)`.
-4. **Max per wallet per era?** Yes — `MAX_USDC_PER_ADDRESS_PER_ERA`.
+4. **Max per wallet per era?** Yes — **per-era** `maxUsdcPerAddressPerEra[e]`
+   (sized per era; a single global cap was rejected).
 5. **Max per transaction?** Yes — `MAX_USDC_PER_TX` (added).
 6. **Exceeds remaining era inventory → reject or partial-fill?** **Reject**
    (`EraInventoryInsufficient`). No partial fill.
@@ -1622,8 +1815,9 @@ pause for safety only, recovered SYN never to the owner.
 | Global vs per-era inventory | Per-era **sold-caps** over a global balance | Physical per-era buckets / pure global | **Per-era sold-caps (adopted)** | Bounds cheap-era sales without rollover/stranded-inventory complexity. |
 | Member range cap | Yes (#ranges from `eras.ts`) | Drop ranges | **Keep (as ceilings)** | Narrative + identity spine; now an upper bound, not a price guarantee. |
 | Per-era SYN cap | **Yes** (`eraSynCap[e]`) | None | **Adopt** | Only throttle a Sybil swarm can't bypass. |
-| Per-address per-era cap | Yes | None | **Keep** | Spreads distribution; first anti-whale lever. |
+| Per-address per-era cap | **Per-era** `maxUsdcPerAddressPerEra[1..9]` | Single global cap / none | **Per-era (adopted)** | A single global cap let one wallet drain a tiny early era; per-era sizing fixes it (J3). |
 | Per-transaction cap | **Yes** (`MAX_USDC_PER_TX`) | None | **Adopt** | Cheap UX / fat-finger bound (secondary). |
+| Seat reserve (early / 1M guarantee) | **Configurable** `RESERVE_THROUGH_SEAT` (default #10,000 = Eras II–IV) | None / hardcoded | **Configurable (adopted)** | One immutable covers off / early-run / full-million; uses each seat's own era minimum; reverts `ReserveFloorViolation` (J16). |
 | Buy crossing an era boundary | Revert `EraInventoryInsufficient`; advance only between buys | Split / partial fill | **Revert (adopted)** | No silent split; clear revert; single-era pricing. |
 | Unsold era inventory | Remains in the global pool for later eras | Reserve / return to Vault | **Remain in pool** | Simplest + safe; no stranded SYN. |
 | Market-price arbitrage protection | Hard caps + bounded end + future V3 | Oracle / peg | **Hard caps, no oracle** | Oracle = manipulation/trust/complexity; contradicts the prescripted schedule. |
@@ -1647,6 +1841,16 @@ pause for safety only, recovered SYN never to the owner.
   `eraOfSeat` relabeled positional-preview.
 - Constructor now takes `maxUsdcPerTx` + `uint256[9] eraCaps` with a `BadEraCaps`
   sanity check.
+- **(Simulation revision)** Replaced the single global `MAX_USDC_PER_ADDRESS_PER_ERA`
+  with a **per-era** `maxUsdcPerAddressPerEra[1..9]` mapping (constructor arg
+  `uint256[9] addrCaps`); `buy` enforces the current era's cap
+  (`AddressEraCapExceeded`); the constructor requires each sellable era's cap ≥ its
+  USDC minimum and `maxUsdcPerTx ≥` every sellable era minimum.
+- **(Simulation revision)** Added the configurable seat-reserve: immutable
+  `RESERVE_THROUGH_SEAT`, helper `_reserveSyn(m)` (each remaining seat at its own
+  era minimum), a `buy` revert `ReserveFloorViolation(maxSynOut)`, and views
+  `sellableSynForNextSeat`/`currentReserveFloor`. Default #10,000 (Eras II–IV);
+  #1,000,000 = full; 0 = off.
 
 **Why:** protect early-era economics against Sybil bypass (aggregate cap),
 prevent an inventory deadlock, prevent an instant pause-and-sweep, and make the
@@ -1654,7 +1858,9 @@ referral flow + the honest "First Million" framing impossible to misread.
 
 **New risks introduced (now in the threat model):** T19 premature
 pause-and-sweep (→ timelock), T20 seat-no-longer-fixes-price (→ disclosure +
-`reason`), T21 misleading "First Million" (→ doctrine + J16/J10). T18 records the
+`reason`), T21 misleading "First Million" (→ doctrine + J16/J10), T22 seat-reserve
+under-funding / boundary revert (→ deploy-time funding + `ReserveFloorViolation` +
+the `sellableSynForNextSeat`/`currentReserveFloor` sizing views). T18 records the
 era-cap deadlock that the design *avoids*.
 
 **Tests that must be added (H8):** cap-triggered advance + reason/seat
@@ -1663,8 +1869,19 @@ conclusion before #1M; quote/buy parity (incl. `eraCapRemaining`); repeat-buyer
 cap exhaustion; constructor cap sanity + `maxUsdcPerTx == 0`; per-tx cap;
 timelocked recovery (before/after/reset/concluded); indexer `reason` handling.
 
+**Tests that must be added (H9, simulation revision):** per-era address-cap
+exhaustion (`AddressEraCapExceeded`) + cap independence across eras; constructor
+per-era addr-cap sanity (`addrCaps[e] < era min`, `maxUsdcPerTx <` a sellable era
+min); seat-reserve revert at default/full/disabled, the under-funded first-buy
+revert, the exact-`maxSynOut` boundary fill, the construction-bound revert, and
+the `_reserveSyn` values (#333 → 3,933,500 SYN at target #10,000 / 130,933,500 SYN
+at target #1,000,000).
+
 **Human review items added:** J13 per-era cap sizing, J14 per-tx value, J15
-timelock duration, J16 optional hard-reserve for a true 1M guarantee.
+timelock duration. **J16 is now implemented** as the configurable
+`RESERVE_THROUGH_SEAT` (choose the value at deploy; default #10,000 = Eras II–IV),
+and **J3 is now per-era** (`maxUsdcPerAddressPerEra[1..9]`, not a single global
+cap).
 
 ---
 

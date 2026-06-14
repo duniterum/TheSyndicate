@@ -16,7 +16,9 @@ cheap-early-era distribution just as well. Unsold era capacity simply remains in
 global pool for later eras.
 **How to apply:** the aggregate `eraSynCap[e]` is the ONLY anti-whale throttle a
 Sybil swarm of many wallets cannot bypass (the per-address cap IS bypassable). Keep
-all three caps: per-tx, per-address-per-era, aggregate-per-era.
+all three caps: per-tx, per-era address cap, aggregate-per-era. The per-address cap
+is now sized PER ERA in the draft (`maxUsdcPerAddressPerEra[1..9]`) — a single
+global value is provably wrong (it lets one wallet drain a tiny early era).
 
 ## Seat number no longer fixes price (the honest tradeoff)
 With a cap that can be exhausted early, the era advances before its member range
@@ -26,12 +28,17 @@ is therefore a **positional preview**, NOT the executable pricing truth for V2.
 state), never from seat number. `EraAdvanced` carries a `reason` (RANGE vs CAP);
 indexers must not claim "era N opened at its range start" for a CAP advance.
 
-## "First Million" = narrative target, not a guarantee
-Per-era caps preserve distribution shape but cannot guarantee 1,000,000 reachable
-seats (repeat/upgrade buys consume a cap while issuing few seats). Label it honestly.
-**Why:** a true on-chain 1M guarantee needs a min-entry reserve invariant that would
-**restrict late-in-era hybrid upgrades** — contradicting the hybrid-purchase model.
-That hard-reserve is deferred (a human-review item), default = honest labeling.
+## "First Million" = narrative target, unless the seat-reserve is switched on
+Per-era caps preserve distribution shape but cannot by themselves guarantee 1,000,000
+reachable seats (repeat/upgrade buys consume a cap while issuing few seats).
+**Now in the draft:** a configurable immutable `RESERVE_THROUGH_SEAT` + helper
+`_reserveSyn(m)` makes seats an on-chain guarantee up to a chosen seat. Default =
+#10,000 (Eras II–IV, the cheap early run = 3,933,500 SYN); #1,000,000 = full million
+(130,933,500 SYN); 0 = off. Buy reverts `ReserveFloorViolation(maxSynOut)`.
+**Why the default isn't the full million:** a full 1M reserve restricts late-in-era
+hybrid upgrades; reserving only the cheap early eras closes the worst abuse without
+taxing the whole sale. Where the reserve doesn't cover a seat, label "First Million"
+as an honest target (never "guarantee") in public copy.
 
 ## Recovery must be timelocked, never an instant sweep
 The paused `recoverUnsoldSyn` path must be gated by `pausedAt + RECOVERY_TIMELOCK`
@@ -70,18 +77,22 @@ numbers recomputed from `eras.ts` + 350M pool + 70/20/10). Durable conclusions:
 - **Single global `MAX_USDC_PER_ADDRESS_PER_ERA` is provably wrong** — early eras
   hold so little USDC capacity (Era II ≈ $7k–$17k across models) that ONE max wallet
   drains Era II in every model. Any per-address value safe for Era IX is useless for
-  Era II and vice-versa. **Fix: make it `uint256[9]` (per-era).** This is the one
-  contract change the numbers *prove* is needed — flagged for the line-by-line
-  review, NOT applied to the draft.
+  Era II and vice-versa. **Fixed: now `uint256[9]` per-era `maxUsdcPerAddressPerEra`
+  in the draft** (constructor arg `addrCaps`, buy reverts `AddressEraCapExceeded`,
+  constructor requires each sellable era's cap ≥ its min); only the cap VALUES (the
+  ramp) remain a human-review item (J3).
 
-- **Correct "First Million" reserve invariant** (if a hard 1M guarantee is ever
-  required): `reserve(m) = seatsLeftInCurrentEra×synPerMinSeat[curEra] +
+- **Correct "First Million" reserve invariant — now in the draft** as a configurable
+  immutable `RESERVE_THROUGH_SEAT` + helper `_reserveSyn(m)`:
+  `reserve(m) = seatsLeftInCurrentEra×synPerMinSeat[curEra] +
   Σ capacity[e]×synPerMinSeat[e] (later eras)` — i.e. cost each remaining seat at
   ITS OWN era's min rate. = full V2 entry-floor 130,933,500 SYN at V2 start;
-  early-eras-only (II–IV) variant = 3,933,500 SYN. **Why:** the naïve version that
-  reserves all future seats at the *current* era's rate over-reserves to ~500M SYN
-  (more than the pool) and bricks Era II. Recommendation ships the early-era (II–IV)
-  reserve only; full global reserve only if Legal demands an unconditional claim.
+  early-eras-only (II–IV / seat #10,000) variant = 3,933,500 SYN (the default).
+  **Why own-era, not blanket:** the naïve version that reserves all future seats at
+  the *current* era's rate over-reserves to ~500M SYN (more than the pool) and bricks
+  Era II. Default ships the early-era reserve; set #1,000,000 for a full guarantee
+  only if Legal demands an unconditional claim; 0 disables. Views
+  `sellableSynForNextSeat`/`currentReserveFloor` expose the live headroom/floor.
 
 - **Referral = 5% of gross, carved from the 10% Operations slice only** — Vault
   (70%) and Liquidity (20%) are mathematically never diluted by referrals.
