@@ -1,0 +1,135 @@
+Founder override.
+
+Do NOT ratify the flat-only Sale V2 referral decision.
+
+Do NOT proceed to Solidity review under the assumption that V2 referral is fixed 5%.
+
+Do NOT deploy.
+Do NOT modify Sale V1.
+Do NOT modify frontend yet.
+
+New founder decision:
+
+I want the referral system that goes live with Sale V2 to preserve the tiered / reputation / builder-record vision we already designed.
+
+I do NOT want to launch a production referral system, publish it, then come back later to redesign the site, rewrite doctrine, rewire frontend, debug migration, and risk losing context again.
+
+Flat 5% may be acceptable only as a fallback/base layer, not as the final Sale V2 referral experience if tiered can be done safely now.
+
+Task:
+
+Create a Tiered Referral Implementation Feasibility & Minimal-Safe Architecture Report.
+
+This is not archaeology.
+This is not a debate about whether the old work exists.
+We know it exists.
+
+We need the safest way to launch tiered referral with Sale V2, or a clear technical reason why it cannot be done without unacceptable risk.
+
+Evaluate exactly three implementation paths:
+
+A. Tiered referral inside Sale V2
+
+Sale V2 calculates commission tier directly.
+
+B. CommissionRouter from day one
+
+Sale V2 calls a dedicated CommissionRouter that calculates and routes referral commission.
+
+C. Hybrid minimal tiered V2
+
+Sale V2 supports a small immutable tier table now, while richer reputation / builder / campaign logic remains future CommissionRouter.
+
+For each path, answer:
+
+1. What data does the contract need?
+2. Is that data available on-chain today?
+3. Can the contract safely compute the tier?
+4. Does it require indexer/oracle/off-chain trust?
+5. Can it be gamed?
+6. Does it preserve 70/20/10?
+7. Does referral still come only from Operations?
+8. What is the maximum referral percentage possible without diluting Vault/Liquidity?
+9. What happens to Operations at each tier?
+10. What are the audit/security risks?
+11. What frontend changes are required?
+12. What docs/legal changes are required?
+13. What can remain future?
+14. Does it break current Sale V2 parameter/economic model?
+15. Does it delay launch significantly?
+
+Important founder preference:
+
+I prefer tiered live with V2 if technically safe.
+
+The tiered system should not be wealth-yield language.
+It should be framed as:
+
+* attribution
+* builder record
+* durability
+* retention
+* verified introduction quality
+* protocol participation
+
+NOT:
+
+* passive income
+* yield
+* revenue share
+* ROI
+* rank-based ownership
+
+If rank/SYN balance is dangerous legally or technically, propose a safe replacement:
+
+* referred-member count
+* retained referred members
+* durability
+* referrer member age
+* builder record
+* verified activity
+* future reputation score
+
+Required output:
+
+1. Final recommendation:
+
+* A, B, or C
+* no fence-sitting
+
+2. If tiered can be live:
+
+* exact minimal tier table
+* max commission ceiling
+* how Operations is split
+* what contract must verify
+* what is immutable
+* what remains future
+
+3. If tiered cannot be live safely:
+
+* give the exact blocker
+* explain why flat V2 is only a temporary technical fallback
+* preserve tiered system visibly on-site as “future CommissionRouter”
+* give a no-migration path from flat V2 to tiered router
+
+4. Execution plan:
+
+* what changes before Solidity review
+* what changes before deployment
+* what changes after deployment
+* what I visually inspect on the site
+
+5. Clear stop/go answer:
+   Can Sale V2 move to Solidity review now?
+
+Answer:
+YES — if path is unchanged
+NO — if Sale V2/CommissionRouter design must change first
+
+Do not implement yet.
+Do not write Solidity yet.
+Do not touch frontend yet.
+
+But do not answer again that flat 5% is preferred just because it is simpler.
+Founder preference is tiered referral live with V2 if it can be made safe.
