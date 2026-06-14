@@ -87,6 +87,26 @@ upgrade = router swap, not sale migration; one canonical RAL emitter for read-mo
 - The architecture doc now embeds BOTH .sol verbatim (§L sale, §R router) — keep both
   byte-identical. Sprint report: `docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_SPRINT.md`.
 
+## Audit (line-by-line) — non-obvious cross-contract constraints
+
+Senior audit verdict = PASS WITH FIXES (no Critical/High). Durable, code-non-obvious findings:
+- **Two Operations destinations.** On router SUCCESS the remainder goes to the ROUTER's
+  `sources[sale].operationsWallet`; on FALLBACK it goes to the SALE's immutable `OPERATIONS`.
+  Nothing on-chain forces them equal → deploy MUST set `router.operationsWallet == OPERATIONS`
+  and verify via `sourceConfig()`, or Operations revenue splits by path.
+- **V1-no-proof double-count.** `firstSeat = !knownMember`; a V1 member who buys WITHOUT
+  submitting their Merkle proof is issued a NEW V2 seat and bumps `memberCount` (nudges era
+  boundaries/reserve). Unpreventable on-chain — frontend MUST always submit the proof; treat
+  as indexer-reconciled.
+- **Max-approval is bounded-safe ONLY because the sale is never a USDC reservoir.** Sale grants
+  the router `type(uint256).max` USDC, but holds ~0 USDC between buys and exactly `opsSlice` when
+  `route()` is called (Vault/Liq already paid) → a malicious confirmed router can pull at most
+  `opsSlice`. The guarantee breaks if the sale is ever changed to hold USDC across txs.
+- Production swaps required pre-deploy (not economics): OZ SafeERC20/Ownable2Step/
+  ReentrancyGuard/Pausable + double-hashed Merkle leaf; optional `route` integrity assert
+  `vaultAmount+liquidityAmount+opsSlice == gross`. No Fuji → compensate with a forked-mainnet
+  full rehearsal before the live tiny buy.
+
 ## Parameter & treasury simulation conclusions (companion report)
 
 Report: `docs/proposals/SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md` (docs-only;

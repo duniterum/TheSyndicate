@@ -1,0 +1,135 @@
+Proceed to line-by-line Solidity review.
+
+Do NOT deploy.
+Do NOT touch Sale V1.
+Do NOT touch frontend.
+Do NOT change economics unless you find a concrete security/math issue.
+Do NOT restart architecture.
+
+Use:
+
+* docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_REVIEWER_PACKET.md
+* SyndicateSaleV2 draft
+* CommissionRouterV1 draft
+* final founder-ratified OD-1 / OD-2 decisions
+
+Review exactly these contracts:
+
+1. SyndicateSaleV2
+2. CommissionRouterV1
+
+Perform a senior smart-contract audit-style review.
+
+Focus on:
+
+A. Sale V2
+
+* constructor validation
+* immutable addresses
+* USDC/SYN decimals
+* era table correctness
+* automatic era transition
+* per-era SYN caps
+* per-era wallet caps
+* per-tx cap
+* reserve-through-seat logic
+* V1 Merkle recognition
+* member numbering
+* repeat buyers
+* first-seat detection
+* buy path
+* quote path
+* router call path
+* fallback behavior if router fails
+* pause/unpause
+* recovery timelock
+* Vault-only recovery
+* Ownable2Step / multisig readiness
+* events
+* edge cases
+
+B. CommissionRouterV1
+
+* route() authorization
+* sale caller restrictions
+* knownMember validation
+* tier calculation
+* referredCount first-seat-only increment
+* commission payout on every eligible buy
+* full RAL Attribution event
+* splits correctness
+* Operations-only cap
+* escrow fallback
+* claimReferral
+* source allow-list
+* operations wallet handling
+* router failure handling
+* reentrancy
+* tier boundary behavior
+* event/indexer compatibility
+* governance/timelock controls
+* no oracle / no wealth input
+
+C. Cross-contract invariants
+Verify:
+
+* Vault 70% never diluted
+* Liquidity 20% never diluted
+* referral only from Operations
+* referral + operations remainder = operations slice
+* router cannot touch Vault/Liquidity
+* Sale V2 economics unaffected by router failure
+* no double-counting V1 members
+* member numbers remain stable
+* era/cap/reserve logic unaffected by referral
+* events reconstruct complete RAL attribution
+* no stuck USDC except intended referral escrow
+* no stuck SYN beyond intentional recovery rules
+
+D. Required output
+
+Return:
+
+1. Executive verdict:
+
+* PASS
+* PASS WITH FIXES
+* FAIL
+
+2. Findings table:
+
+* ID
+* severity: Critical / High / Medium / Low / Info
+* contract
+* function
+* issue
+* impact
+* recommendation
+
+3. Invariant checklist:
+
+* pass/fail for each invariant in the reviewer packet
+
+4. Required fixes:
+
+* exact code-level changes
+* whether economics change
+* whether docs change
+* whether tests change
+
+5. Tests to add:
+
+* exact unit tests
+* exact fuzz/property tests if applicable
+
+6. Deployment blockers:
+
+* what blocks mainnet deploy
+* what blocks frontend wiring
+* what blocks larger funding
+
+7. Mainnet-direct checklist validation:
+   Since we will not use Fuji/testnet, verify whether the current checklist is sufficient and improve it if needed.
+
+Do not implement fixes yet unless they are trivial documentation inconsistencies.
+First return the audit report.
