@@ -92,6 +92,7 @@ door** for it. Keep them one system, never parallel ones:
 | # | Idea | Why proposed (intent) | Layer | Must never become | Prerequisite |
 |---|---|---|---|---|---|
 | **FS-1** | **Future Signal Engine — source taxonomy** (evaluate signals grouped as Financial / Protocol / Memory Trace — detail below) | Let the protocol grow *more interpretive without new truth*: Signals answer "why does this matter?" over facts that already exist, feeding richer recognition / curation / reports | **SIGNALS** (interpretation over EVENTS; `05` §3) | a reward / score / leaderboard; a new store of truth; a layer that *replaces* the event it reads | `05`'s SIGNALS leaf built first (`signalType()` / `signalTier()`); **+ any Memory-derived fact re-expressed as an EVENT first (founder ruling — `05` §2.1; FS-1 below)** |
+| **FS-2** | **Dedicated RPC + lightweight event indexer** (keyed Avalanche RPC provider + a normalized event-projection store/API the frontend reads — detail below) | Scale beyond browser-RPC / explorer / cached reads: serve fast, normalized reads for every current + future event source from our own API, while on-chain stays the only truth | **TRUTH → EVENTS infrastructure** (a read/ingest + normalized projection feeding the EVENTS layer; not a new layer in the five-layer model) | a claimed source of truth; a substitute for on-chain verification; a store whose values may override or contradict a chain read — explorer links stay the verification layer | Keyed RPC provider chosen; indexer/API + normalized event schema designed across the sources listed below (FS-2) |
 
 ---
 
@@ -139,3 +140,47 @@ EVENT* and derive the Signal from that EVENT. Correct flow **EVENT → SIGNAL �
 RECOGNITION / CHRONICLE**; forbidden flow **MEMORY → SIGNAL** (it would make the
 architecture circular). The same resolution applies to `05` §3.2's **Historic** type: it
 derives from the originating EVENT, never by reading Chronicle.
+
+---
+
+### FS-2 · Dedicated RPC + lightweight event indexer
+
+**Approved direction.** Current browser-RPC / explorer / cached reads are acceptable for
+V1 but are not the best scalable architecture. For **V1.5 / V2**, move toward a **keyed
+Avalanche RPC provider** plus a **lightweight indexer / API** that stores **normalized event
+projections (read models)**, so the frontend reads fast indexed data from our own API while
+**explorer links remain the verification layer**. The indexer is a *projection*, not the
+canonical EVENTS layer — on-chain logs remain the events of record.
+
+**Event sources to normalize (current + future):**
+
+- Sale V1
+- Sale V2 *(future)*
+- Archive mints
+- burns
+- LP / liquidity
+- Referral / CommissionRouter *(future)*
+- SeatRecord721 *(future)*
+- Marketplace *(future)*
+- Signal Chamber *(future)*
+
+**Goal.** The frontend reads fast, normalized indexed data from our own API; the public
+explorer (Snowtrace / Avascan / Routescan / Sourcify) remains the **independent
+verification layer**. "Don't trust, verify" is preserved — the indexer is a performance
+*projection* over on-chain truth, never a substitute for it.
+
+**Where it sits in the architecture.** This is infrastructure *beneath* the five-layer
+model: a **TRUTH → EVENTS** read/ingest path. The keyed RPC is how we *read* TRUTH; the
+indexer is a *normalized projection* that feeds the **EVENTS** layer. It introduces no new
+layer and must obey `05`'s Adjacency Law for anything built on top of it.
+
+**Guardrail (doctrine — `00_AUTHORITY_MAP.md` precedence).** On-chain truth wins. The
+indexer may make reads fast and normalized, but it must **never**: (a) become a claimed
+source of truth, (b) let an indexed value override or contradict a chain read, or (c)
+remove the per-fact explorer verification link. Every surface fed by the indexer must
+still resolve to an on-chain read or be labeled **PENDING**.
+
+**Status:** APPROVED DIRECTION — **NOT IMPLEMENTED.** Do not build yet. Graduate to
+`docs/DEFERRED_WORK_LEDGER.md` (and link back here for the *why*) only once it has a
+concrete surface + fix — e.g. chosen RPC provider, indexer/API contract, and the
+normalized event schema for the sources above.
