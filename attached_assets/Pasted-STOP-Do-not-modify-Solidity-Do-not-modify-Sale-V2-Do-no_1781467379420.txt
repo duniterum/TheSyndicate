@@ -1,0 +1,139 @@
+STOP.
+
+Do not modify Solidity.
+
+Do not modify Sale V2.
+
+Do not modify frontend.
+
+Do not create a new referral model.
+
+We need a decision archaeology pass before continuing.
+
+I suspect the current reports have simplified referral into a fixed 5% model and may have lost part of the protocol decisions made during earlier architecture work.
+
+Task:
+
+# Referral Doctrine Recovery Audit
+
+I do NOT want new ideas.
+
+I do NOT want new recommendations yet.
+
+I want you to search the entire project and recover what has already been decided.
+
+Sources to inspect:
+
+* Referral doctrine
+* CommissionRouter discussions
+* Revenue Attribution Layer
+* Reputation doctrine
+* Builder record doctrine
+* My Syndicate roadmap
+* Marketplace planning
+* AI layer planning
+* B2B planning
+* Founder principle docs
+* Deferred work docs
+* Canon docs
+* Any sprint reports
+* Any proposal docs
+* Any comments or notes referencing:
+
+  * referral
+  * commission
+  * attribution
+  * reputation
+  * partner
+  * ambassador
+  * invite
+  * builder
+  * affiliate
+  * rewards
+
+Return a report with:
+
+## Part 1 — What has already been decided
+
+List every referral-related decision already present in the project.
+
+For each decision show:
+
+* source file
+* source section
+* exact decision
+* current status
+
+  * active
+  * draft
+  * superseded
+  * unclear
+
+## Part 2 — Referral evolution timeline
+
+Reconstruct the historical evolution.
+
+Example:
+
+Phase A
+→ original idea
+
+Phase B
+→ revised idea
+
+Phase C
+→ current idea
+
+I want to understand whether the current 5% model is:
+
+* the final decision
+* a simplification
+* a temporary placeholder
+* a V2-only compromise
+
+## Part 3 — Current contradictions
+
+Identify contradictions between:
+
+* Sale V2 report
+* Referral doctrine
+* CommissionRouter doctrine
+* Revenue Attribution Layer
+* Reputation Layer
+* Marketplace plans
+
+Show every mismatch.
+
+## Part 4 — What Sale V2 currently assumes
+
+Without changing anything:
+
+show exactly what the current Sale V2 draft assumes regarding:
+
+* referral percentage
+* referral eligibility
+* referral payout source
+* referral settlement
+* referral events
+* future extensibility
+
+## Part 5 — Founder decision checklist
+
+Return ONLY the referral decisions that still require founder approval.
+
+Separate:
+
+* already decided
+* undecided
+* conflicting
+* missing
+
+Goal:
+
+Recover protocol memory.
+
+Do not redesign anything.
+
+Do not recommend new models yet.
+
+We first need to know what we already decided before touching Sale V2 economics or Solidity.

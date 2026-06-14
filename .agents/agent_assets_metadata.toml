@@ -227,3 +227,9 @@ id = "0BsHLUuLFAnlKc2BdNsqe"
 uri = "file://docs/proposals/SALE_V2_REFERRAL_ARCHITECTURE_REVIEW.md"
 type = "text"
 title = "Referral Architecture & Revenue Attribution Review"
+
+[[outputs]]
+id = "kdUUUQ82o6gRM87uJm22L"
+uri = "file://docs/proposals/SALE_V2_REFERRAL_DOCTRINE_RECOVERY_AUDIT.md"
+type = "text"
+title = "Referral Doctrine Recovery Audit"
