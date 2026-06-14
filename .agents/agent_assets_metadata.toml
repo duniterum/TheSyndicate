@@ -209,3 +209,9 @@ id = "0nUE62inviZCMH1UalEgU"
 uri = "file://docs/proposals/SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md"
 type = "text"
 title = "Sale V2 Architecture & Contract Design (with Economic/Security Addendum §Q)"
+
+[[outputs]]
+id = "Sa_yF5ed4ZoagOYf6Iu_D"
+uri = "file://docs/proposals/SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md"
+type = "text"
+title = "Sale V2 — Parameter & Treasury Simulation Report"

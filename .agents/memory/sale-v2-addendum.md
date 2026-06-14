@@ -53,3 +53,36 @@ pulls full USDC in, then fans out Vault→Liquidity→Referrer→Operations in t
 buy tx; `opsAmt` is already net of the referral. Vault(70%)/Liquidity(20%) are never
 diluted; the 5% referral is carved only from the 10% Operations slice. Push-with-
 escrow fallback (`referralOwed`/`claimReferral`) so a bad referrer can't brick a buy.
+
+## Parameter & treasury simulation conclusions (companion report)
+
+Report: `docs/proposals/SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md` (docs-only;
+numbers recomputed from `eras.ts` + 350M pool + 70/20/10). Durable conclusions:
+
+- **Recommended: Model B (Balanced)** — fund ≈248M SYN (~71% of the 350M pool;
+  leaves a ~29% buffer), per-era SYN caps ×1.25 (II–IV)/×1.50 (V–VII)/×2.00
+  (VIII–IX), per-tx ~$25k, 14-day recovery timelock + multisig, no oracle, end at
+  Era IX → plan Sale V3. Model A (×1.10/1.15/1.20, 44.5%) under-raises; Model C
+  (×2.50 flat, 93.5%) over-commits the pool.
+  **Why:** B is the only model that keeps the 1M-seat mission credible AND keeps a
+  safety buffer; recompute V1's already-sold SYN out of the pool before funding.
+
+- **Single global `MAX_USDC_PER_ADDRESS_PER_ERA` is provably wrong** — early eras
+  hold so little USDC capacity (Era II ≈ $7k–$17k across models) that ONE max wallet
+  drains Era II in every model. Any per-address value safe for Era IX is useless for
+  Era II and vice-versa. **Fix: make it `uint256[9]` (per-era).** This is the one
+  contract change the numbers *prove* is needed — flagged for the line-by-line
+  review, NOT applied to the draft.
+
+- **Correct "First Million" reserve invariant** (if a hard 1M guarantee is ever
+  required): `reserve(m) = seatsLeftInCurrentEra×synPerMinSeat[curEra] +
+  Σ capacity[e]×synPerMinSeat[e] (later eras)` — i.e. cost each remaining seat at
+  ITS OWN era's min rate. = full V2 entry-floor 130,933,500 SYN at V2 start;
+  early-eras-only (II–IV) variant = 3,933,500 SYN. **Why:** the naïve version that
+  reserves all future seats at the *current* era's rate over-reserves to ~500M SYN
+  (more than the pool) and bricks Era II. Recommendation ships the early-era (II–IV)
+  reserve only; full global reserve only if Legal demands an unconditional claim.
+
+- **Referral = 5% of gross, carved from the 10% Operations slice only** — Vault
+  (70%) and Liquidity (20%) are mathematically never diluted by referrals.
+  **"First Million" stays a TARGET, never "guarantee"** in public copy (Option 1).

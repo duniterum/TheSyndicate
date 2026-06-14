@@ -1,0 +1,161 @@
+Good. The V2 architecture is now much safer with dual-bound eras, per-era SYN caps, per-address caps, per-transaction cap, automatic era transitions, referral fan-out, and recovery timelock.
+
+Now stop coding.
+
+We need the V2 economic parameter model before accepting the Solidity.
+
+Do NOT deploy.
+Do NOT modify Sale V1.
+Do NOT modify frontend.
+Do NOT change the Solidity again unless the parameter model proves a needed change.
+
+Task:
+Create the Sale V2 Parameter & Treasury Simulation Report.
+
+Use the current V2 design and model the exact numbers we must choose before deployment.
+
+Required outputs:
+
+1. Per-era minimum inventory floor
+
+For each era, calculate:
+
+* member range
+* number of seats
+* min USDC entry
+* SYN per USDC
+* SYN per minimum seat
+* total SYN needed if every member buys only minimum
+* total USDC raised if every member buys only minimum
+* Vault 70%
+* Liquidity 20%
+* Operations 10%
+* Referral 5% if every purchase is referred
+* Operations left after referral
+
+2. Per-era cap proposals
+
+Propose 3 models:
+
+Model A — Conservative
+Protect First Million as much as possible.
+
+Model B — Balanced
+Allows meaningful package upgrades while protecting future distribution.
+
+Model C — Aggressive
+Allows larger buys and higher USDC raise, but higher risk of earlier inventory exhaustion.
+
+For each model propose:
+
+* eraSynCap for Era II–IX
+* MAX_USDC_PER_ADDRESS_PER_ERA
+* MAX_USDC_PER_TX
+* total V2 SYN funding required
+* expected maximum USDC volume
+* referral fees if 100% referred
+* Vault/Liquidity/Operations totals
+
+3. First Million decision
+
+Answer clearly:
+
+Can the current V2 design truly guarantee 1,000,000 members?
+
+If yes, what invariant must be added?
+
+If no, explain:
+
+* “First Million” is a narrative target bounded by inventory
+* what wording must be used publicly
+* how to avoid misleading users
+
+Compare:
+
+Option 1:
+No hard guarantee, but more flexible upgrade purchases.
+
+Option 2:
+Hard min-entry reserve invariant guaranteeing future seats, but restricting large purchases.
+
+Recommendation required.
+
+4. Arbitrage scenario
+
+Model:
+
+SYN market price = $2
+SYN market price = $10
+SYN market price = $20
+
+Sale V2 still has Era VIII / IX pricing at $0.50 / $1.
+
+Answer:
+
+* can buyers arbitrage the sale?
+* do per-era caps make this acceptable?
+* should V2 end at Era IX and require Sale V3 for future conditions?
+* should no oracle be used?
+* what public wording avoids price-promise risk?
+
+5. Referral economics
+
+For each model calculate:
+
+If 25% of purchases are referred
+If 50% are referred
+If 100% are referred
+
+Show:
+
+* total referral paid
+* Operations gross
+* Operations after referral
+* Vault unaffected
+* Liquidity unaffected
+
+Make clear again:
+Buyer → Sale V2 contract → Vault / Liquidity / Referrer / Operations.
+Operations wallet does not manually pay the referrer.
+
+6. Whale / Sybil analysis
+
+Analyze:
+
+* one wallet buying max
+* 10 wallets buying max
+* 100 wallets buying max
+* 1,000 wallets buying max
+
+For each model, how fast can early-era caps be consumed?
+
+Recommend caps that reduce damage without making real buyers feel blocked.
+
+7. Founder decision table
+
+Return a table:
+
+Decision | Conservative | Balanced | Aggressive | Recommendation | Why
+
+Include:
+
+* eraSynCap per era
+* MAX_USDC_PER_ADDRESS_PER_ERA
+* MAX_USDC_PER_TX
+* V2 funding amount
+* First Million guarantee yes/no
+* hard reserve invariant yes/no
+* Sale V3 after Era IX yes/no
+* referral assumptions
+* recovery timelock
+* public wording
+
+8. Final recommendation
+
+At the end, answer as Founder + CTO + Economist + Growth + Legal:
+
+“If this were your protocol, which model would you choose and why?”
+
+Do not write more Solidity yet.
+Do not deploy.
+We need the numbers before reviewing the contract line by line.
