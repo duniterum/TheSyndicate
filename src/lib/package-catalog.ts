@@ -8,7 +8,8 @@
 //
 // DOCTRINE:
 //   • A package shows: entry USDC · SYN at the live Genesis rate · the rank it
-//     unlocks · a recognition-only tagline. No returns, no payouts, no yield.
+//     unlocks · a recognition-only tagline · who the path is for. No returns,
+//     no payouts, no yield.
 //   • Rank is recognition only — derived from cumulative USDC. A package does
 //     not buy rights, discounts, or governance.
 //   • Every tier is self-service: any amount above the $5 minimum is taken
@@ -30,14 +31,33 @@ export type SeatPackage = {
   synAtGenesis: number;
   /** Headline card in the featured strip. */
   featured: boolean;
+  /** The single "Start here" default path a first-time visitor should weigh first. */
+  recommended: boolean;
+  /** The headline high-conviction path among the featured set. */
+  highConviction: boolean;
+  /** Who this path is for — recognition framing, never financial. */
+  forWhom: string;
   /** Recognition-only descriptor. Never financial framing. */
   tagline: string;
 };
 
-// Curated headline set — a clean arc from entry to deep support. The full
-// ladder still renders elsewhere (RankLadder); every tier is self-service and
-// taken online via wallet checkout. The featured strip is curation only.
-const FEATURED_NAMES = ["Citizen", "Operator", "Vanguard", "Steward"] as const;
+// Curated headline set — a clean arc from open entry to deep, high-conviction
+// support (one per group). The full ladder still renders elsewhere
+// (RankLadder); every tier is self-service and taken online via wallet
+// checkout. The featured strip is curation only.
+const FEATURED_NAMES = [
+  "Citizen",
+  "Operator",
+  "Vanguard",
+  "Steward",
+  "Keystone",
+  "Cornerstone",
+] as const;
+
+// The single default path surfaced as "Start here".
+const RECOMMENDED_NAME = "Citizen";
+// The headline high-conviction path among the featured set.
+const HIGH_CONVICTION_NAME = "Cornerstone";
 
 const TAGLINES: Readonly<Record<string, string>> = {
   Citizen: "Take your seat. Permanent on-chain entry.",
@@ -54,6 +74,22 @@ const TAGLINES: Readonly<Record<string, string>> = {
   Cornerstone: "The deepest archive recognition. Available online via wallet checkout.",
 };
 
+// Who each path is for — recognition framing only, no financial language.
+const FOR_WHOM: Readonly<Record<string, string>> = {
+  Citizen: "First-time members claiming a permanent seat.",
+  Scout: "Early members marking the archive.",
+  Operator: "Members who want an active, visible place.",
+  Builder: "Members stepping into a higher public profile.",
+  Strategist: "Considered members building a member profile.",
+  Vanguard: "Committed members deepening their record.",
+  Architect: "Deep supporters of the protocol.",
+  Steward: "Long-term supporters of the archive.",
+  Custodian: "Durable, public supporters of the record.",
+  Keystone: "High-conviction members taking a deep seat.",
+  "Inner Circle": "High-conviction members taking a deep seat.",
+  Cornerstone: "The deepest-conviction members of the archive.",
+};
+
 function slugForRank(name: string): string {
   return name.toLowerCase().replace(/\s+/g, "-");
 }
@@ -65,6 +101,9 @@ export const SEAT_PACKAGES: ReadonlyArray<SeatPackage> = RANKS_V2.map((rank) => 
   usdc: rank.usdc,
   synAtGenesis: synForUsdcInEra(rank.usdc, currentEra()),
   featured: (FEATURED_NAMES as ReadonlyArray<string>).includes(rank.name),
+  recommended: rank.name === RECOMMENDED_NAME,
+  highConviction: rank.name === HIGH_CONVICTION_NAME,
+  forWhom: FOR_WHOM[rank.name] ?? "Members taking a permanent archive seat.",
   tagline: TAGLINES[rank.name] ?? "Permanent archive recognition.",
 }));
 

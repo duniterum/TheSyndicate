@@ -8,13 +8,19 @@
 // indexed Membership Sale purchases — member number, chapter, rank, SYN
 // received, wallet. Nothing is fabricated. Language stays recognition-only:
 // "Verified on Avalanche", "Member #N" — never profit / yield / ROI.
+//
+// Hierarchy: Member # (hero) → chapter + rank → SYN received → wallet (short,
+// de-emphasized). The full address is never the visual subject; the footer
+// prints only the host so the card stays clean and shareable. Full
+// verification stays one tap away via the explorer link on the profile page
+// and the Copy-link / share actions below.
 
-import { useRef, type RefObject } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { ShareActions } from "./ShareActions";
 
 const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 const fmtInt = (n: number) => Math.round(n).toLocaleString("en-US");
-const stripProtocol = (u: string) => u.replace(/^https?:\/\//, "");
+const hostOnly = (u: string) => u.replace(/^https?:\/\//, "").split("/")[0];
 
 // ─── The visual card (inline-styled for html-to-image capture reliability) ──
 export function MemberShareCard({
@@ -93,8 +99,8 @@ export function MemberShareCard({
         </div>
       </div>
 
-      {/* member number + rank */}
-      <div style={{ marginTop: 16 }}>
+      {/* chapter + member number + rank */}
+      <div style={{ marginTop: 18 }}>
         <div
           style={{
             fontFamily: "ui-monospace, monospace",
@@ -110,7 +116,7 @@ export function MemberShareCard({
         <div style={{ display: "flex", alignItems: "baseline", gap: 14, flexWrap: "wrap" }}>
           <span
             style={{
-              fontSize: 76,
+              fontSize: 64,
               fontWeight: 700,
               lineHeight: 0.9,
               background: "linear-gradient(135deg, oklch(0.93 0.12 82), oklch(0.78 0.14 76))",
@@ -124,7 +130,8 @@ export function MemberShareCard({
             style={{
               fontFamily: "ui-monospace, monospace",
               fontSize: 14,
-              color: "rgba(255,255,255,0.72)",
+              letterSpacing: "0.04em",
+              color: "rgba(255,255,255,0.74)",
             }}
           >
             {rankName}
@@ -132,16 +139,53 @@ export function MemberShareCard({
         </div>
       </div>
 
-      {/* fact row */}
-      <div style={{ marginTop: 22, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <Field label="SYN received" value={`${fmtInt(synReceived)} SYN`} />
-        <Field label="Wallet" value={short(wallet)} />
+      {/* SYN received — the prominent secondary fact */}
+      <div style={{ marginTop: 18 }}>
+        <div
+          style={{
+            fontFamily: "ui-monospace, monospace",
+            fontSize: 10,
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "oklch(0.82 0.13 80)",
+          }}
+        >
+          SYN received
+        </div>
+        <div style={{ marginTop: 4, display: "flex", alignItems: "baseline", gap: 8 }}>
+          <span style={{ fontSize: 32, fontWeight: 700, lineHeight: 1 }}>
+            {fmtInt(synReceived)}
+          </span>
+          <span
+            style={{
+              fontFamily: "ui-monospace, monospace",
+              fontSize: 13,
+              color: "rgba(255,255,255,0.55)",
+            }}
+          >
+            SYN
+          </span>
+        </div>
+      </div>
+
+      {/* wallet — short, de-emphasized */}
+      <div
+        style={{
+          marginTop: 12,
+          fontFamily: "ui-monospace, monospace",
+          fontSize: 12,
+          letterSpacing: "0.04em",
+          color: "rgba(255,255,255,0.55)",
+        }}
+      >
+        {short(wallet)}
+        <span style={{ color: "rgba(255,255,255,0.32)" }}> · verified on-chain</span>
       </div>
 
       {/* verified badge */}
       <div
         style={{
-          marginTop: 18,
+          marginTop: 14,
           display: "inline-flex",
           alignSelf: "flex-start",
           alignItems: "center",
@@ -166,7 +210,7 @@ export function MemberShareCard({
         </span>
       </div>
 
-      {/* footer */}
+      {/* footer — host only on the left; verify motto pinned on the right */}
       <div
         style={{
           marginTop: "auto",
@@ -174,6 +218,8 @@ export function MemberShareCard({
           borderTop: "1px solid rgba(255,255,255,0.08)",
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
+          gap: 16,
           fontFamily: "ui-monospace, monospace",
           fontSize: 10.5,
           letterSpacing: "0.16em",
@@ -181,37 +227,63 @@ export function MemberShareCard({
           color: "rgba(255,255,255,0.5)",
         }}
       >
-        <span>{stripProtocol(url)}</span>
-        <span>Don&apos;t trust · verify</span>
+        <span
+          style={{
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {hostOnly(url)}
+        </span>
+        <span style={{ flexShrink: 0, whiteSpace: "nowrap" }}>Don&apos;t trust · verify</span>
       </div>
     </div>
   );
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+// ─── Responsive frame — scales the fixed 640×360 card down to fit narrow
+//     viewports without horizontal scroll or clipping. The inner card keeps its
+//     intrinsic size so the PNG export (which captures the ref node) stays
+//     full-resolution; only the on-screen presentation is scaled. SSR-safe:
+//     first paint renders at scale 1, then a ResizeObserver fits to width. ──
+function ResponsiveCardFrame({ children }: { children: ReactNode }) {
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => setScale(Math.min(1, el.clientWidth / 640));
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
-    <div style={{ border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: 14 }}>
-      <div
-        style={{
-          fontFamily: "ui-monospace, monospace",
-          fontSize: 9.5,
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: "rgba(255,255,255,0.55)",
-          marginBottom: 6,
-        }}
-      >
-        {label}
-      </div>
-      <div style={{ fontFamily: "ui-monospace, monospace", fontSize: 18, fontWeight: 600 }}>
-        {value}
+    <div ref={wrapRef} style={{ width: "100%", maxWidth: 640 }}>
+      <div style={{ height: 360 * scale, overflow: "hidden" }}>
+        <div
+          style={{
+            width: 640,
+            height: 360,
+            transformOrigin: "top left",
+            transform: `scale(${scale})`,
+          }}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );
 }
 
 // ─── Block — card + the canonical ShareActions bar in one drop-in unit ──────
-// variant="visible"   → card is shown inline (member profile page).
+// variant="visible"   → card is shown inline (member profile page), scaled to
+//                       fit the viewport on mobile.
 // variant="offscreen" → card is rendered off-screen for export only, so the
 //                       live cockpit stays the control surface (the share
 //                       buttons themselves remain visible).
@@ -266,7 +338,7 @@ export function MemberShareBlock({
           {card}
         </div>
       ) : (
-        <div style={{ overflowX: "auto", maxWidth: "100%" }}>{card}</div>
+        <ResponsiveCardFrame>{card}</ResponsiveCardFrame>
       )}
       <ShareActions
         filename={filename}

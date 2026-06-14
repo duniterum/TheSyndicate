@@ -1,24 +1,19 @@
-// HomeProgressionTeaser — a compact, premium snapshot of the infinite-game
-// journey for first-time visitors. Sits in ACT 02 (Why join), after IdentityZone
-// and before ACT 03. It does NOT clutter the hero and does NOT duplicate the
-// canonical milestone/proof copy in MilestoneApproachingTile (ACT 03) — it shows
-// only a compact Genesis snapshot and a restrained package arc.
+// HomeProgressionTeaser — the homepage "Featured Paths" section. Sits in ACT 02
+// (Why join), after IdentityZone and before ACT 03. It does NOT clutter the hero
+// and does NOT duplicate the canonical milestone/proof copy in
+// MilestoneApproachingTile (ACT 03).
 //
-// Surfaces the LIVE Genesis entry at a glance: the one live access rate, the SYN
-// a minimum seat receives, live progress through the 333 Genesis seats, and a
-// preview of the featured recognition ladder. Two doors out: /join for new
-// members, /my-syndicate for members who already hold a seat.
+// Presents the package/progression system as a premium purchase surface: a
+// compact, truthful live-Genesis context strip, then six curated featured
+// paths (one per group) with strong hierarchy — a single "Start here" default
+// and one high-conviction headline. Two doors out: the full recognition ladder
+// (/join) for new members, /my-syndicate for members who already hold a seat.
 //
 // Pure presentation: reads shared config (eras, packages, access rate) + the
 // live pulse. No chain writes, no new vocabulary, recognition framing only.
 
-import {
-  Section,
-  SectionHeader,
-  GlassCard,
-  StatusPill,
-  CTAButton,
-} from "./Primitives";
+import { Section, SectionHeader, StatusPill } from "./Primitives";
+import { SeatPackageCard } from "./SeatPackageCard";
 import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { currentEra, synForUsdcInEra } from "@/lib/eras";
 import { featuredPackages } from "@/lib/package-catalog";
@@ -44,107 +39,83 @@ export function HomeProgressionTeaser() {
   return (
     <Section id="home-progression">
       <SectionHeader
-        eyebrow="The journey, at a glance"
+        eyebrow="Featured paths"
         title={
           <>
-            One seat. <span className="text-gradient-gold">Then your next move.</span>
+            Choose how you{" "}
+            <span className="text-gradient-gold">take your seat</span>
           </>
         }
-        description="Every member starts the same way — take a seat in the live Genesis era, then move at your own pace. Here is where the archive stands right now."
+        description="Every member starts the same way — take a seat in the live Genesis era, then move at your own pace. Each path below is a featured entry amount mapped 1:1 to a recognition tier. Recognition only — no payout, no rate change, no entitlement."
       />
 
-      <GlassCard className="p-5 md:p-7">
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-          {/* LEFT — live Genesis snapshot */}
-          <div className="flex flex-col gap-5">
-            <div className="flex items-center gap-2">
-              <span className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
-                Era I · Genesis
-              </span>
-              <StatusPill status="LIVE" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Stat label="Entry" value={`$${MIN_ENTRY_USDC}`} sub="minimum seat" />
-              <Stat label="You receive" value={`${fmtInt(minSyn)} SYN`} sub={rateLabel} />
-            </div>
-
-            {/* progress to #333 — compact meter only (no proof copy) */}
-            <div>
-              <div className="mb-2 flex items-baseline justify-between gap-3">
-                <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  Genesis seats · #1–#{total}
-                </span>
-                <span className="mono text-[10px] uppercase tracking-[0.2em] text-foreground/80 tabular-nums">
-                  {known ? `${fmtInt(filled!)} / ${fmtInt(total)}` : `— / ${fmtInt(total)}`}
-                </span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-border/40 ring-1 ring-border/40">
-                <div
-                  className="h-full transition-all"
-                  style={{ width: `${Math.max(2, pct)}%`, background: "var(--gradient-gold)" }}
-                  aria-label={`${pct}% of Genesis seats taken`}
-                />
-              </div>
-              <p className="mono mt-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                {known
-                  ? remaining! > 0
-                    ? `${fmtInt(remaining!)} seats until Genesis seals`
-                    : "Genesis is sealed"
-                  : "Reading the live archive…"}
-              </p>
-            </div>
-          </div>
-
-          {/* RIGHT — package arc preview + the two doors */}
-          <div className="flex flex-col gap-4 lg:border-l lg:border-border/50 lg:pl-6">
-            <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Featured seats — recognition only
+      {/* live Genesis context — one compact, truthful strip (no fake urgency) */}
+      <div className="mb-8 flex flex-col gap-4 rounded-xl border border-border/60 bg-panel/40 p-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <div className="flex items-center gap-2">
+            <span className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
+              Era I · Genesis
             </span>
-            <ul className="grid grid-cols-2 gap-2.5">
-              {pkgs.map((p) => (
-                <li
-                  key={p.id}
-                  className="flex items-center justify-between rounded-md border border-border/60 bg-panel/40 px-3 py-2"
-                >
-                  <span className="text-sm text-foreground">{p.rank.name}</span>
-                  <span className="mono text-xs text-foreground/70 tabular-nums">
-                    ${fmtInt(p.usdc)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              A package is a featured entry amount mapped 1:1 to a recognition
-              tier — no payout, no rate change, no entitlement.
-            </p>
-            <div className="mt-1 flex flex-wrap items-center gap-3">
-              <CTAButton variant="gold" href="/join">
-                Take your seat →
-              </CTAButton>
-              <CTAButton variant="ghost" href="/my-syndicate">
-                I&rsquo;m already a member
-              </CTAButton>
-            </div>
+            <StatusPill status="LIVE" />
+          </div>
+          <div className="mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground tabular-nums">
+            Entry ${MIN_ENTRY_USDC} · {fmtInt(minSyn)} SYN · {rateLabel}
           </div>
         </div>
-      </GlassCard>
-    </Section>
-  );
-}
 
-function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
-  return (
-    <div>
-      <div className="mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground">
-        {label}
+        <div className="w-full md:max-w-xs">
+          <div className="mb-1.5 flex items-baseline justify-between gap-3">
+            <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Genesis seats · #1–#{total}
+            </span>
+            <span className="mono text-[10px] uppercase tracking-[0.2em] text-foreground/80 tabular-nums">
+              {known ? `${fmtInt(filled!)} / ${fmtInt(total)}` : `— / ${fmtInt(total)}`}
+            </span>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-border/40 ring-1 ring-border/40">
+            <div
+              className="h-full transition-all"
+              style={{ width: `${Math.max(2, pct)}%`, background: "var(--gradient-gold)" }}
+              aria-label={`${pct}% of Genesis seats taken`}
+            />
+          </div>
+          <p className="mono mt-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            {known
+              ? remaining! > 0
+                ? `${fmtInt(remaining!)} seats until Genesis seals`
+                : "Genesis is sealed"
+              : "Reading the live archive…"}
+          </p>
+        </div>
       </div>
-      <div className="mt-1 font-serif text-2xl leading-tight text-gradient-gold tabular-nums md:text-3xl">
-        {value}
+
+      {/* six featured paths — one recommended, one high-conviction */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {pkgs.map((p) => (
+          <SeatPackageCard
+            key={p.id}
+            pkg={p}
+            ctaLabel={p.recommended ? "Take your seat" : "Choose this path"}
+            ctaHref="/join"
+          />
+        ))}
       </div>
-      <div className="mono mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-        {sub}
+
+      {/* full ladder + member door */}
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+        <a
+          href="/join"
+          className="mono inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.18em] text-[var(--gold)] underline-offset-4 hover:underline"
+        >
+          View full recognition ladder →
+        </a>
+        <a
+          href="/my-syndicate"
+          className="mono inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
+        >
+          I&rsquo;m already a member
+        </a>
       </div>
-    </div>
+    </Section>
   );
 }

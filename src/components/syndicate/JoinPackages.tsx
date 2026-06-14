@@ -2,8 +2,10 @@
 //
 //   • SeatPackages       — a curated strip of "featured ways to take your seat".
 //                          Each card is an EXISTING rank tier (no new naming),
-//                          showing entry USDC · SYN at the live Genesis rate ·
-//                          recognition. Recognition only — no payout/rate change.
+//                          rendered through the shared premium SeatPackageCard:
+//                          entry USDC · SYN at the live Genesis rate ·
+//                          recognition meaning · who it is for · CTA.
+//                          Recognition only — no payout/rate change.
 //   • EraSchedulePreview — the distribution-era schedule. Era I (Genesis) is the
 //                          ONE live rate; Eras II+ are a PROPOSED FUTURE model,
 //                          labeled PENDING / not live. Includes the sale-vs-DEX
@@ -17,6 +19,7 @@ import {
   SectionHeader,
   StatusPill,
 } from "@/components/syndicate/Primitives";
+import { SeatPackageCard } from "@/components/syndicate/SeatPackageCard";
 import { featuredPackages } from "@/lib/package-catalog";
 import { ERAS, ERA_SCHEDULE_NOTE, currentEra, eraSynPerUsdc } from "@/lib/eras";
 
@@ -36,39 +39,17 @@ export function SeatPackages() {
             Pick a <span className="text-gradient-gold">seat package</span>
           </>
         }
-        description="A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier and the SYN you receive at the live Genesis access rate (1 SYN = $0.01 USDC). Recognition only — no payout, no rate change, no entitlement."
+        description="A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier and the SYN you receive at the live Genesis access rate (1 SYN = $0.01 USDC). Recognition only — no payout, no rate change, no better rate, no entitlement. Every tier is self-service: taken online through your own wallet at the same fixed rate."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {pkgs.map((p) => (
-          <div
+          <SeatPackageCard
             key={p.id}
-            className="surface elevated p-5 flex flex-col gap-3"
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {p.rank.name}
-              </span>
-              <StatusPill status="LIVE" />
-            </div>
-            <div className="font-serif text-3xl text-gradient-gold tabular-nums">
-              {fmtUsd(p.usdc)}
-            </div>
-            <div className="mono text-sm text-foreground tabular-nums">
-              {fmtInt(p.synAtGenesis)} SYN
-              <span className="text-muted-foreground"> at Genesis rate</span>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed flex-1">
-              {p.tagline}
-            </p>
-            <a
-              href="#buy"
-              className="mono inline-flex items-center justify-between gap-2 rounded-[3px] border border-[var(--gold)]/60 px-3.5 py-2.5 text-[11px] uppercase tracking-[0.16em] text-foreground hover:bg-[var(--gold)]/10 transition-colors"
-            >
-              <span>Take this seat</span>
-              <span aria-hidden>↑</span>
-            </a>
-          </div>
+            pkg={p}
+            ctaLabel={p.recommended ? "Take this seat" : "Choose this path"}
+            ctaHref="#buy"
+          />
         ))}
       </div>
 

@@ -28,6 +28,15 @@ re-bounding the canonical chapters (which other surfaces depend on).
 - **Packages are NOT a new naming system.** `package-catalog.ts` projects 1:1
   from `RANKS_V2` (same names/thresholds/SYN). Add or rename a tier in `RANKS_V2`
   only; the catalog follows. Recognition only — no payout/rate-change/rights.
+- **One featured strip, two surfaces.** `featuredPackages()` is the single source
+  for BOTH the homepage "Featured Paths" teaser (`HomeProgressionTeaser`) AND the
+  `/join` package grid (`JoinPackages`), rendered through the shared
+  `SeatPackageCard`. Curated set = 6 (`FEATURED_NAMES`: Citizen, Operator,
+  Vanguard, Steward, Keystone, Cornerstone). `recommended` ("Start here") and
+  `highConviction` flags live on the projected `SeatPackage` (Citizen / Cornerstone
+  respectively). Change the featured set / badges in `package-catalog.ts` only —
+  editing one surface and not the other is impossible by design, but the curated
+  list and uniqueness of the two flags are pinned by `eras-and-packages.test.ts`.
 
 ## Cockpit orchestrator gotcha
 `CockpitNextMove` opens the Momentum band (before `CockpitProgression`); the

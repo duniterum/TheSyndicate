@@ -1,0 +1,174 @@
+Recalibrate from all completed work:
+
+* Sprint 1 infinite-game journey
+* Sprint 1B homepage/package discovery
+* self-service correction
+* deferred ledger audit
+* growth/proof/discovery sprint
+* latest visual smoke findings
+
+We are now doing the final visual/product polish sprint before publish.
+
+Do NOT add new systems.
+Do NOT touch contracts.
+Do NOT change Sale V1.
+Do NOT change tokenomics.
+Do NOT invent data.
+Do NOT deploy until approved.
+
+Goal:
+Make the existing package/progression system visually premium, conversion-friendly, crypto-native, and easy to understand.
+
+Main problem:
+Packages currently exist, but the homepage presentation still feels too much like a config/documentation card. We want it to feel like a premium purchase/progression section.
+
+Build/adjust:
+
+1. Homepage Featured Paths section
+
+Show 6 well-designed featured packages, not all 12 ranks.
+
+Recommended structure:
+
+* Citizen / Seat — $5
+* Operator — $25
+* Vanguard — $100
+* Steward — $500
+* Keystone — $2,500
+* Cornerstone — $10,000
+
+But adapt to current system if needed.
+
+Each card should clearly show:
+
+* package name
+* price
+* SYN received at current Genesis rate
+* recognition meaning
+* who it is for
+* CTA
+
+Use strong visual hierarchy:
+
+* one recommended/default option
+* one high-conviction option
+* clear “Start here” path
+* no clutter
+* no fake urgency
+
+Add CTA:
+
+* “Take your seat”
+* “Choose this path”
+* “View full recognition ladder”
+
+2. Full package / recognition page or section
+
+Add a “View all packages” link from homepage to the full detailed ladder.
+
+This can go to:
+
+* /join if best
+* /ranks if best
+* or a dedicated section if already existing
+
+The full view should explain all ranks/packages cleanly:
+
+* prices
+* SYN received today
+* recognition-only status
+* self-service wallet checkout
+* no payout / no rights / no better rate
+
+3. Placement
+
+Review homepage order and place Featured Paths where it helps conversion most.
+
+Preferred:
+Hero
+→ What is The Syndicate?
+→ Take a Seat / Genesis live
+→ Featured Paths
+→ Story / Chapters
+→ Proof / Transparency
+→ Final CTA
+
+Do not clutter the hero.
+Do not bury packages too low.
+
+4. Member card polish
+
+Fix the share card visual issues:
+
+* do not show full wallet address as main visual noise
+* use short address visually
+* keep full verification available through link/QR/explorer
+* fix bottom-right truncated “DON’T…” text
+* improve hierarchy around Member #, Genesis, Rank, wallet, SYN received
+* if QR is easy/safe, add QR for member profile or explorer; otherwise leave QR for later
+
+Do not expose anything private; wallet/member data is public on-chain, but design should still be clean and shareable.
+
+5. Package psychology
+
+Make packages feel like progression paths, not token-sale boxes.
+
+Safe language:
+
+* Start your seat
+* Deepen your record
+* Continue your path
+* High-conviction member
+* Recognition only
+* Verified on Avalanche
+* Protocol memory
+
+Avoid:
+
+* investment
+* ROI
+* yield
+* passive income
+* rewards
+* jackpot
+* XP
+* guaranteed value
+
+6. Mobile
+
+Check mobile carefully:
+
+* packages should stack cleanly
+* CTA visible
+* cards not too dense
+* share card not cut off
+* no horizontal overflow
+
+7. Checks
+
+Run:
+
+* TypeScript
+* wording guards
+* doctrine tests
+* package/era tests
+* visual smoke on homepage, /join, /ranks, /wallet/$address, /my-syndicate if possible
+
+8. Final report
+
+Return:
+
+* files changed
+* exact homepage placement
+* package cards shown
+* full package/ladder destination
+* member card fixes
+* mobile notes
+* tests run
+* publish readiness
+* anything I should inspect visually before publishing
+
+Final goal:
+A visitor should land, understand the protocol, see an attractive package/progression choice, join easily, and then share a beautiful member card.
+
+No more feature expansion in this sprint. Only premium presentation, clarity, conversion, and publish readiness.

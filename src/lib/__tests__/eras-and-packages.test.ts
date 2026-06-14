@@ -156,6 +156,31 @@ describe("packages — derived 1:1 from RANKS_V2", () => {
     expect(featured.length).toBeGreaterThanOrEqual(3);
   });
 
+  it("featured strip is the curated six, with one recommended + one high-conviction", () => {
+    const featured = featuredPackages();
+    expect(featured.map((p) => p.rank.name)).toEqual([
+      "Citizen",
+      "Operator",
+      "Vanguard",
+      "Steward",
+      "Keystone",
+      "Cornerstone",
+    ]);
+    // Exactly one default "Start here" path, and it is the entry tier.
+    const recommended = SEAT_PACKAGES.filter((p) => p.recommended);
+    expect(recommended.map((p) => p.rank.name)).toEqual(["Citizen"]);
+    // Exactly one high-conviction headline, and it is the deepest tier.
+    const highConviction = SEAT_PACKAGES.filter((p) => p.highConviction);
+    expect(highConviction.map((p) => p.rank.name)).toEqual(["Cornerstone"]);
+  });
+
+  it("every package carries a non-empty forWhom descriptor", () => {
+    SEAT_PACKAGES.forEach((p) => {
+      expect(typeof p.forWhom).toBe("string");
+      expect(p.forWhom.trim().length).toBeGreaterThan(0);
+    });
+  });
+
   it("no package or rank presents manual / off-site onboarding", () => {
     const ONBOARDING_BANNED = [
       "manual",
@@ -168,6 +193,7 @@ describe("packages — derived 1:1 from RANKS_V2", () => {
     ];
     const surfaces = [
       ...SEAT_PACKAGES.map((p) => p.tagline),
+      ...SEAT_PACKAGES.map((p) => p.forWhom),
       ...RANKS_V2.flatMap((r) => r.benefits),
     ];
     for (const s of surfaces) {
@@ -197,6 +223,7 @@ describe("language — era + package copy stays doctrine-clean", () => {
     ERA_SCHEDULE_NOTE,
     ...ERAS.map((e) => `${e.name} ${e.blurb}`),
     ...SEAT_PACKAGES.map((p) => p.tagline),
+    ...SEAT_PACKAGES.map((p) => p.forWhom),
   ];
 
   it("no forbidden protocol-language framing", () => {
