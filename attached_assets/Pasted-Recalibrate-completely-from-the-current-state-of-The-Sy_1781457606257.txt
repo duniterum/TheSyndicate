@@ -1,0 +1,528 @@
+Recalibrate completely from the current state of The Syndicate.
+
+Current reality:
+
+* V1 is live.
+* Production is published and verified.
+* Featured Paths are live.
+* /join ladder is live.
+* /member/N public identity pages are live.
+* /wallet/$address technical verification pages remain live.
+* /my-syndicate cockpit is live.
+* Sale V1 remains live and unchanged.
+* SYN remains unchanged.
+* Current frontend architecture is stable.
+* FS-2 through FS-6 are recorded as future foundations.
+* Dedicated RPC + Indexer is approved future direction but not implemented.
+* No smart contract deployment is authorized.
+
+We are now entering:
+
+SALE V2 ARCHITECTURE & CONTRACT DESIGN PHASE
+
+Important:
+
+DO NOT DEPLOY.
+DO NOT MODIFY SALE V1.
+DO NOT TOUCH SYN.
+DO NOT MIGRATE FUNDS.
+DO NOT IMPLEMENT YET.
+
+This phase is architecture, security review, economics review, event design, and Solidity draft preparation only.
+
+──────────────────────────────
+FOUNDATIONAL DOCTRINE
+──────────────────────────────
+
+The Syndicate is designed as an infinite game.
+
+The protocol should be able to continue for decades without founder intervention.
+
+The protocol history creates future protocol history.
+
+Every member becomes part of the archive.
+
+Every chapter creates future chapters.
+
+Every era creates future eras.
+
+The protocol should feel alive, growing, and evolving without requiring constant manual founder decisions.
+
+We prefer deterministic rules over discretionary rules whenever possible.
+
+Trust increases when participants know the rules in advance.
+
+──────────────────────────────
+SALE V2 OBJECTIVE
+──────────────────────────────
+
+Sale V2 becomes the future distribution engine.
+
+Sale V1 remains Genesis.
+
+Sale V2 continues the member journey.
+
+Sale V2 must support:
+
+* future eras
+* future chapters
+* future member growth
+* future referral layer
+* future member profiles
+* future indexer
+* future marketplace
+* future SeatRecord721
+* future Signal Chamber
+
+without needing redesign every few months.
+
+──────────────────────────────
+ERA SYSTEM
+──────────────────────────────
+
+IMPORTANT CORRECTION:
+
+We do NOT want manual founder activation.
+
+We prefer:
+
+AUTOMATIC PRESCRIPTED ERA TRANSITIONS
+
+Reason:
+
+The era ladder is part of protocol law.
+
+If era rules are known in advance:
+
+* founder should not decide when eras advance
+* founder should not delay transitions
+* founder should not accelerate transitions
+
+The protocol should know automatically.
+
+Preferred architecture:
+
+Fixed era schedule.
+
+Automatic era detection.
+
+Automatic era transition.
+
+Founder may only:
+
+* pause
+* unpause
+
+for safety.
+
+Evaluate whether this should be:
+
+A. fully immutable
+
+or
+
+B. immutable era schedule with emergency pause only
+
+or
+
+C. hybrid architecture
+
+and recommend the safest option.
+
+──────────────────────────────
+CURRENT ERA LADDER
+──────────────────────────────
+
+Evaluate current proposed ladder:
+
+Era II
+First Thousand
+Members #334–1,000
+Entry: 10 USDC
+500 SYN
+
+Era III
+The Expansion
+Members #1,001–3,333
+Entry: 10 USDC
+400 SYN
+
+Era IV
+First Ten Thousand
+Members #3,334–10,000
+Entry: 25 USDC
+400 SYN
+
+Era V
+Open Era I
+Members #10,001–25,000
+Entry: 25 USDC
+300 SYN
+
+Era VI
+Open Era II
+Members #25,001–50,000
+Entry: 50 USDC
+300 SYN
+
+Era VII
+Hundred Thousand
+Members #50,001–100,000
+Entry: 50 USDC
+200 SYN
+
+Era VIII
+Quarter Million
+Members #100,001–250,000
+Entry: 100 USDC
+200 SYN
+
+Era IX
+First Million
+Members #250,001–1,000,000
+Entry: 100 USDC
+100 SYN
+
+Review whether these numbers are coherent.
+
+If not, propose adjustments.
+
+Explain reasoning.
+
+──────────────────────────────
+INFINITE GAME REVIEW
+──────────────────────────────
+
+Review from:
+
+Founder lens
+CTO lens
+Protocol lens
+Investor lens
+Growth lens
+Game design lens
+Community lens
+Legal lens
+
+Questions:
+
+1.
+
+Does this ladder remain attractive at:
+
+* 10,000 members
+* 100,000 members
+* 1,000,000 members
+
+2.
+
+Can someone joining much later still feel progression?
+
+3.
+
+Can someone joining much later still become meaningful inside the protocol?
+
+4.
+
+Does token distribution remain healthy?
+
+5.
+
+Does decentralization improve?
+
+6.
+
+Can whales dominate too easily?
+
+7.
+
+How would you improve it?
+
+──────────────────────────────
+PURCHASE LOGIC
+──────────────────────────────
+
+Review:
+
+Should purchases be:
+
+A.
+Fixed package purchases
+
+or
+
+B.
+Custom USDC purchases
+
+or
+
+C.
+Hybrid
+
+Current preference:
+
+Hybrid.
+
+Example:
+
+Era active:
+100 SYN per USDC
+
+User buys:
+
+10 USDC
+100 USDC
+500 USDC
+2,500 USDC
+10,000 USDC
+
+Receive proportional SYN.
+
+Review whether this is optimal.
+
+──────────────────────────────
+ROUTING
+──────────────────────────────
+
+Current doctrine:
+
+70% Vault
+20% Liquidity
+10% Operations
+
+Preserve unless strong reason not to.
+
+──────────────────────────────
+REFERRAL SYSTEM
+──────────────────────────────
+
+Review all previous discussions.
+
+We previously discussed:
+
+* direct commission
+* future progression
+* future reputation
+* future recognition
+
+Current preferred doctrine:
+
+Referral never dilutes Vault.
+
+Referral never dilutes Liquidity.
+
+Referral comes from Operations allocation only.
+
+Example:
+
+100 USDC purchase.
+
+70 Vault
+20 Liquidity
+10 Operations
+
+5 referral
+
+Result:
+
+70 Vault
+20 Liquidity
+5 Referral
+5 Operations
+
+Evaluate:
+
+Should referral logic be:
+
+inside Sale V2
+
+or
+
+external CommissionRouter
+
+or
+
+future module
+
+Recommend safest architecture.
+
+We previously discussed progression-based referral evolution.
+
+Review whether that remains advisable.
+
+──────────────────────────────
+MEMBER IDENTITY
+──────────────────────────────
+
+Current reality:
+
+* /member/N exists
+* member identity exists
+* public member pages exist
+
+Sale V2 must support:
+
+future member identity continuity.
+
+Review:
+
+What event structure is needed for:
+
+* member profiles
+* protocol timeline
+* member search
+* future SeatRecord721
+* future marketplace
+* future indexer
+
+──────────────────────────────
+EVENT DESIGN
+──────────────────────────────
+
+Design events for:
+
+* purchases
+* member creation
+* referral attribution
+* routing
+* era transitions
+* pauses
+* future indexing
+
+Design event schema first.
+
+──────────────────────────────
+SECURITY REVIEW
+──────────────────────────────
+
+Review:
+
+* reentrancy
+* decimals
+* USDC precision
+* race conditions
+* era boundaries
+* inventory exhaustion
+* referral abuse
+* self-referral
+* routing failures
+* owner abuse
+* pause abuse
+* indexer consistency
+* failed transfers
+* front-running
+* whale accumulation
+
+Provide mitigation.
+
+──────────────────────────────
+ADMIN POWERS
+──────────────────────────────
+
+We want minimum trust assumptions.
+
+Review:
+
+Can owner:
+
+* pause
+* unpause
+* change wallets
+* change rates
+* change era schedule
+* withdraw SYN
+* withdraw USDC
+
+Recommend minimal powers.
+
+Explain rationale.
+
+──────────────────────────────
+INDEXER COMPATIBILITY
+──────────────────────────────
+
+Review compatibility with:
+
+FS-2
+
+Dedicated RPC
+Event Indexer
+
+Future:
+
+* member search
+* protocol timeline
+* share cards
+* SeatRecord721
+* marketplace
+* Signal Chamber
+* AI layer
+
+──────────────────────────────
+LEGAL REVIEW
+──────────────────────────────
+
+Confirm:
+
+No ROI
+No dividends
+No yield
+No passive income
+No revenue share
+No ownership rights
+No security-like promises
+
+Sale V2 remains:
+
+membership access
+SYN distribution
+protocol participation
+recognition
+
+──────────────────────────────
+OUTPUT REQUIRED
+──────────────────────────────
+
+Return in this order:
+
+A.
+Architecture recommendation
+
+B.
+Era recommendation
+
+C.
+Tokenomics review
+
+D.
+Referral recommendation
+
+E.
+Identity/event recommendation
+
+F.
+Admin powers recommendation
+
+G.
+Threat model
+
+H.
+Test plan
+
+I.
+Frontend/indexer implications
+
+J.
+Human review items before deployment
+
+K.
+Solidity architecture
+
+L.
+Draft Solidity implementation
+
+Do not deploy.
+
+Do not modify Sale V1.
+
+Produce the strongest possible V2 architecture.
