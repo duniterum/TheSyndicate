@@ -1,0 +1,258 @@
+Recalibrate from the full Sale V2 design report and the latest founder questions.
+
+Do NOT deploy.
+Do NOT touch Sale V1.
+Do NOT modify frontend.
+Do NOT move funds.
+Do NOT continue broad brainstorming.
+
+We need a focused Sale V2 economic/security addendum before accepting the contract draft.
+
+Main concerns:
+
+1. Early eras must not accidentally sell too much cheap SYN.
+2. “First Million” must not become misleading if inventory sells out earlier.
+3. Referral payment flow must be crystal clear and automatic.
+4. Operations wallet is a normal wallet, not a smart contract.
+5. Referrer must be paid inside the same buy transaction, not later manually.
+
+──────────────────────────────
+PART 1 — INVENTORY MODEL
+──────────────────────────────
+
+Current draft uses:
+
+* global SYN balance
+* member-number era boundaries
+* per-address per-era USDC cap
+
+But it does NOT appear to have explicit per-era SYN inventory buckets.
+
+Please evaluate whether Sale V2 should enforce BOTH:
+
+A. member range per era
+B. SYN allocation per era
+
+Example Era II:
+
+* members #334–#1,000
+* min entry 10 USDC
+* rate 50 SYN per USDC
+* max Era II SYN allocation = X SYN
+* soldInEra tracked on-chain
+
+Questions:
+
+1. Can the current global-inventory draft allow early eras to consume too much total SYN?
+2. Can many wallets bypass the per-address cap?
+3. If inventory ends before #1,000,000, is “First Million” only narrative?
+4. Would per-era inventory buckets better protect the economics?
+5. Is per-era inventory worth the extra contract complexity?
+6. Should era advance automatically when:
+
+   * member range ends
+   * OR era SYN allocation is exhausted?
+7. If member range ends first but SYN remains:
+
+   * should unsold era inventory roll forward?
+   * return to Vault?
+   * remain in contract for later eras?
+8. If era inventory ends first but member range is not full:
+
+   * should the next era begin automatically?
+   * should purchases revert until next era?
+   * should sale pause?
+9. What is the cleanest, safest rule for users and indexers?
+
+Founder preference:
+Automatic, prescripted, no founder activation.
+But economics must be protected.
+
+──────────────────────────────
+PART 2 — MARKET PRICE / ARBITRAGE RISK
+──────────────────────────────
+
+Evaluate this scenario:
+
+Future SYN DEX market price = $20
+Sale V2 Era IX price = $1
+
+Then buyers may buy from Sale V2 only to arbitrage.
+
+Questions:
+
+1. Can fixed future era pricing become an arbitrage machine?
+2. Is this acceptable because inventory is limited?
+3. Should future eras be capped harder?
+4. Should Sale V2 end at a defined point and require a new Sale V3 for later market conditions?
+5. Should V2 avoid promising “First Million” inventory if market price explodes?
+6. How do we protect without using oracle/market-price logic?
+
+Do NOT add oracle pricing unless you strongly justify it.
+Default preference:
+no oracle, no peg, no market-price promise, only hard inventory/range caps.
+
+──────────────────────────────
+PART 3 — PURCHASE MODEL
+──────────────────────────────
+
+Review the best purchase model.
+
+Compare:
+
+A. fixed packages only
+B. custom USDC amount only
+C. hybrid packages + custom amount
+
+Current preference:
+hybrid, if safe.
+
+But answer:
+
+1. Should every buy use the active era SYN-per-USDC rate?
+2. Should packages be only frontend presets?
+3. Should contract only understand USDC amount, not package names?
+4. Should there be max per wallet per era?
+5. Should there be max per transaction?
+6. Should purchase that exceeds remaining era inventory be rejected or partially filled?
+7. Should purchase ever split across eras?
+
+Founder preference:
+No silent split.
+No partial fill unless there is a very strong reason.
+Clear revert is better than surprising user.
+
+──────────────────────────────
+PART 4 — REFERRAL CASH FLOW CLARITY
+──────────────────────────────
+
+This must be explained and implemented clearly.
+
+Operations wallet is a normal wallet, not a smart contract.
+
+Referral payment must happen inside the same buy transaction.
+
+Example:
+
+Buyer pays 10 USDC with a valid referrer.
+
+Without referral:
+
+* 7 USDC → Vault
+* 2 USDC → Liquidity
+* 1 USDC → Operations
+
+With referral:
+
+* 7 USDC → Vault
+* 2 USDC → Liquidity
+* 0.50 USDC → Referrer
+* 0.50 USDC → Operations
+
+Important:
+The 1 USDC Operations slice is split before final routing.
+It is NOT sent to Operations first.
+Founder does NOT manually pay referrer later.
+Referrer receives automatically in the same transaction.
+
+Flow should be:
+
+Buyer wallet
+→ Sale V2 contract
+→ Vault / Liquidity / Referrer / Operations
+
+NOT:
+
+Buyer
+→ Operations
+→ Referrer
+
+Please update the architecture/report/code comments so this is impossible to misunderstand.
+
+Questions:
+
+1. In the current draft, at what exact step does the referrer receive USDC?
+2. Does Sale V2 pull USDC into the contract first and then fan out?
+3. Does the Operations wallet ever need to pay the referrer manually?
+4. What happens if referrer transfer fails?
+5. Is referral escrow safe and clear?
+6. Does the event show referralAmount and operationsAmount separately?
+
+──────────────────────────────
+PART 5 — ADMIN / RECOVERY RULES
+──────────────────────────────
+
+Review current draft recovery logic.
+
+Questions:
+
+1. Can owner recover unsold SYN?
+2. Only when paused/concluded?
+3. Only to Vault?
+4. Could owner pause and sweep all inventory too early?
+5. Is that acceptable?
+6. Should recoverUnsoldSyn require sale concluded only, or paused OR concluded?
+7. Should there be a time delay or multisig requirement?
+8. Should owner ever be able to change wallets?
+9. Should V2 use Ownable2Step and recommend multisig owner?
+
+Founder preference:
+Minimal admin power.
+No price changes.
+No wallet changes unless strongly justified.
+Pause for safety only.
+Recovered SYN should not go to owner.
+
+──────────────────────────────
+PART 6 — DECISION TABLE
+──────────────────────────────
+
+Return a table:
+
+Decision | Current draft | Alternative | Recommendation | Why
+
+Include:
+
+* global inventory vs per-era inventory
+* member range cap
+* per-era SYN cap
+* per-address per-era cap
+* per-transaction cap
+* purchase crossing era boundary
+* unsold era inventory
+* market-price arbitrage protection
+* referral payment flow
+* referral escrow
+* admin recovery
+* V1 member Merkle recognition
+
+──────────────────────────────
+PART 7 — IF CHANGES ARE NEEDED
+──────────────────────────────
+
+If you recommend changing the draft:
+
+Update only the design documents and draft Solidity.
+
+Do NOT touch live src code.
+Do NOT modify Sale V1.
+Do NOT deploy.
+
+Update:
+
+* architecture report
+* threat model
+* test plan
+* Solidity draft
+* critical decisions section
+
+Return:
+
+* what changed
+* why
+* new risks
+* tests that must be added
+* human review items
+
+Goal:
+Before we review line-by-line, we need Sale V2 to be economically safe, referral-flow clear, inventory-bounded, and impossible to misinterpret.

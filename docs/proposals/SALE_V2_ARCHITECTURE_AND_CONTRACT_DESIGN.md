@@ -25,7 +25,7 @@ protocol wants. **Sale V2** is a new, separate contract that adds an
 **automatic, prescripted, immutable era ladder** on top of the same money
 plumbing, while leaving V1, SYN, and all funds untouched.
 
-**The five headline design decisions:**
+**The headline design decisions:**
 
 1. **Era transitions are automatic and on-chain — not founder-activated.**
    The access rate is a pure function of how many seats have been issued. The
@@ -59,14 +59,29 @@ plumbing, while leaving V1, SYN, and all funds untouched.
    of V1 member addresses, so a returning V1 member is recognized as *existing*
    (no new seat, no era acceleration) and can act as a referrer.
 
-**The single most important structural finding:** with **member-number era
-boundaries + uncapped hybrid purchases + a fixed SYN allocation, you can only
-pick two.** A whale buying millions of USDC at an early cheap rate would drain
-inventory long before the millionth seat. The resolution is the per-address
-per-era cap (bounds burn while preserving the narrative member-number ladder),
-plus an honest "sale concludes when the allocation is exhausted OR the millionth
-seat is issued" stance — the "First Million" is a narrative target, not a
-contract guarantee of inventory.
+7. **Dual-bound eras (member range AND per-era SYN cap).** *(Added in the
+   economic/security addendum — see §Q.)* Each era now closes on whichever comes
+   first: its member-range ceiling, OR an aggregate **per-era SYN sold-cap**
+   (`eraSynCap[e]` limiting `soldInEra[e]`). This bounds how much cheap early-era
+   SYN can ever be sold — even by many Sybil wallets — without physical buckets:
+   caps limit sales against ONE global SYN balance, so unsold early-era capacity
+   simply remains for later eras. Two more hard caps were added — a
+   **per-transaction USDC max** and a **recovery timelock** on the paused
+   wind-down path. `activeEra` is now tracked in storage and rolled forward
+   (cap-aware), so the live price comes from `currentEra()`/`quote()`, **not**
+   from the seat number alone.
+
+**The single most important structural finding (unchanged, now sharper):** with
+**member-number era boundaries + uncapped hybrid purchases + a fixed SYN
+allocation, you can only pick two.** The addendum adds the **per-era SYN cap** as
+the strongest available throttle: it provably bounds early-era cheap-SYN sales
+(`soldInEra[e] ≤ eraSynCap[e]`) and preserves the distribution *shape* across
+eras. It still does **not** make "First Million" an on-chain guarantee —
+repeat/upgrade buys can consume a cap while issuing few seats, advancing the
+price for everyone. **"First Million" remains a narrative target bounded by
+funded inventory**, never a contract promise. The optional hard-reserve that
+*would* guarantee 1M seats (at the cost of restricting hybrid upgrades) is laid
+out as **Human Review J16**.
 
 ---
 
@@ -246,27 +261,49 @@ Entry-only is a **floor**, not a forecast. Hybrid purchases let members buy
 boundaries, (b) uncapped hybrid purchases, (c) a fixed SYN allocation that lasts
 to seat #1,000,000. One must give.
 
+> **Addendum sharpening (§Q1):** the per-era SYN cap added in the addendum does
+> not dissolve this trilemma — it lets you *choose which two* by bounding (b) per
+> era. With caps, early-era cheap-SYN sales are provably bounded
+> (`soldInEra[e] ≤ eraSynCap[e]`); the cost is that a member's **price is no
+> longer fixed by their seat number** — a cap exhausted by early whales advances
+> the era (price) for everyone, so member ranges become *ceilings*, not exact
+> price brackets. See §Q1 for the full analysis.
+
 ### C3. Recommended resolution
 
-1. **Keep member-number boundaries** (they are the narrative + identity spine).
-2. **Cap hybrid purchases per-address, per-era** (`MAX_USDC_PER_ADDRESS_PER_ERA`
-   in the draft). This bounds how fast cheap eras can be drained, spreads
-   distribution across more wallets, and is the single most important anti-whale
-   lever. **The cap value is Human Review item J3.** A worked starting point:
-   capping each address to, say, **$25,000 per era** means draining Era II's
-   share requires many distinct funded wallets, not one.
-3. **Make inventory an honest hard stop.** The contract sells from its own SYN
-   balance; when `synOut` would exceed the remaining balance, `buy` reverts
+1. **Keep member-number boundaries** as the narrative + identity spine — but
+   treat them as **ceilings**, not exact price brackets (the per-era cap, step 3,
+   can advance the price before a range fills).
+2. **Cap hybrid purchases per-address, per-era** (`MAX_USDC_PER_ADDRESS_PER_ERA`)
+   **and per-transaction** (`MAX_USDC_PER_TX`). Bounds how fast any one wallet can
+   drain a cheap era. **Cap value = Human Review J3; per-tx = J14.** A worked
+   starting point: capping each address to, say, **$25,000 per era** means
+   draining Era II's share requires many distinct funded wallets, not one.
+3. **Add an aggregate per-era SYN sold-cap** (`eraSynCap[e]`, addendum §Q1). This
+   is the strongest throttle and the one a Sybil swarm **cannot** bypass: it
+   bounds the *total* cheap-SYN sold per era (`soldInEra[e] ≤ eraSynCap[e]`)
+   against one global SYN balance. The era advances automatically when the range
+   ends OR the cap can no longer fit a minimum entry — no deadlock, no founder
+   switch. Unsold capacity is not physically reserved, so it stays in the pool for
+   later eras. **Cap sizing = Human Review J13.**
+4. **Make inventory an honest hard stop.** The contract sells from its own SYN
+   balance; a `buy` that would exceed the remaining balance reverts
    `InsufficientInventory`. If the dust left is below every era minimum, the sale
    is *economically* over even though `isConcluded()` (seat #1,000,000) is still
-   false. To formally wind down and return that dust SYN to the Vault, the
-   founder **pauses** and calls `recoverUnsoldSyn()` (Vault-only destination —
-   see §F). The "First Million" is a *narrative* destination — if heavy upgrade
-   behavior exhausts the allocation early, the sale honestly ends there rather
-   than minting more (SYN supply is fixed; **we do not touch it**).
-4. **Model the per-era allocation before funding.** Decide funding `F ≤ 350M`
-   for V2 with explicit headroom assumptions for repeats/upgrades by era. This
-   is a spreadsheet exercise to complete before deploy (**Human Review J2**).
+   false. To wind down and return dust SYN to the Vault, the founder **pauses**
+   and — after a `RECOVERY_TIMELOCK` (e.g. 7 days) — calls `recoverUnsoldSyn()`
+   (Vault-only destination; see §F). The timelock blocks an instant pause+sweep.
+   **"First Million" is a *narrative* destination** — if heavy upgrade behavior
+   exhausts the allocation early, the sale honestly ends there rather than minting
+   more (SYN supply is fixed; **we do not touch it**).
+5. **Model the per-era allocation before funding.** Decide funding `F ≤ 350M` for
+   V2 with explicit headroom by era, and size each `eraSynCap[e]` from that model.
+   Spreadsheet exercise to complete before deploy (**Human Review J2 + J13**).
+6. **(Optional) hard-guarantee 1M seats** with a min-entry reserve invariant that
+   refuses any buy leaving < the SYN needed to seat every remaining member at the
+   minimum. This would make "First Million" a contract guarantee, at the cost of
+   restricting late-in-era hybrid upgrades. Deferred as **Human Review J16** —
+   *not* in the current draft, which favors honest labeling over the complexity.
 
 ### C4. Distribution-health note
 
@@ -373,15 +410,16 @@ canon already places it.
 | Change 70/20/10 split | **No** | Constitutional; immutable. |
 | Change Vault/Liquidity/Operations wallets | **No (recommended)** | Immutable constructor args. A compromised wallet → deploy V3, don't add a live setter. *(Optional 2-step timelocked rotation is **Human Review J4** if ops demands it.)* |
 | Withdraw USDC | **No** | USDC is only ever held transiently mid-`buy` and fully routed in the same tx; escrowed referral is claimable by the referrer only. Owner has **no** USDC withdrawal path. |
-| `recoverUnsoldSyn()` | **Yes, constrained** | Callable when the sale **concluded** OR is **paused** (deliberate wind-down for inventory dust). Destination is the **immutable Vault** only — no path drains SYN to the owner, paused or not. |
+| `recoverUnsoldSyn()` | **Yes, constrained + timelocked** | Callable when the sale **concluded**, OR when **paused for ≥ `RECOVERY_TIMELOCK`** (e.g. 7 days) — a deliberate, pre-announced wind-down for inventory dust. The timelock blocks an instant pause+sweep. Destination is the **immutable Vault** only — no path drains SYN to the owner, paused or not. |
 | `rescueToken(token)` | **Yes, constrained** | Recovers tokens sent by mistake; **cannot** touch USDC or SYN; destination is the immutable Vault. |
 | `claimV1Membership(proof)` | **Yes, permissionless** | Not an admin power — any V1 member self-registers via Merkle proof. No owner involvement. |
 | `transferOwnership` / `acceptOwnership` | **Yes (2-step)** | Safe handoff to a Safe/multisig (mirrors Archive D1/D6: EOA → Safe ≤ 30 days). |
 
 **Net owner capability:** pause the sale; recover *unsold* SYN to the Vault only
-when concluded or paused; rescue mistaken non-sale tokens to the Vault; hand the
-keys to a multisig. **No power over price, splits, destinations, buyer SYN, or
-referral funds.**
+when concluded, or after a timelocked wind-down once paused; rescue mistaken
+non-sale tokens to the Vault; hand the keys to a multisig. **No power over price,
+splits, destinations, buyer SYN, or referral funds — and no instant
+pause-and-sweep of unsold inventory.**
 
 ---
 
@@ -393,19 +431,23 @@ referral funds.**
 | T2 | Decimal mismatch (6dp↔18dp) | Wrong scaling SYN vs USDC | Single constant `SCALE_6_TO_18 = 1e12`; `synOut = usdcIn × synPerUsdc × 1e12`. Unit tests assert exact values per era. |
 | T3 | Rounding / precision drain | Division favoring buyer | **No division in the price path** (integer rates). Split uses remainder assignment (`ops = usdcIn − vault − liq`) so totals are exact with zero dust loss. |
 | T4 | Era-boundary race / front-run | Era steps between quote and mine; buyer gets worse rate | `minSynOut` slippage floor reverts the buy if the rate stepped. (Buying *earlier* for a cheaper rate is intended, not an exploit.) |
-| T5 | Inventory exhaustion mid-tx | Buy exceeds remaining SYN | `require(synOut ≤ availableSyn)` → `InsufficientInventory`. Atomic single-era buys (no cross-era partial fills). Frontend quotes against `availableSyn()`. |
-| T6 | Whale accumulation | One actor drains a cheap early era | `MAX_USDC_PER_ADDRESS_PER_ERA` per-address per-era cap (§C). |
+| T5 | Inventory exhaustion mid-tx | Buy exceeds remaining SYN (global or era cap) | Two checks: `synOut ≤ eraSynCap[e] − soldInEra[e]` → `EraInventoryInsufficient`, and `synOut ≤ availableSyn` → `InsufficientInventory`. Atomic single-era buys (no cross-era partial fills). Frontend quotes via `quote()` (returns `eraCapRemaining` + `available`). |
+| T6 | Whale accumulation | One actor (or a Sybil swarm) drains a cheap early era | Three layered caps: `MAX_USDC_PER_TX`, `MAX_USDC_PER_ADDRESS_PER_ERA` (per-address), and the aggregate `eraSynCap[e]` — the last is the only one a Sybil swarm cannot bypass (it bounds *total* per-era sales). See §C / §Q1. |
 | T7 | Self-referral / fake referral | Buyer refers self or a non-member to skim Operations | `referrer != buyer` **and** `knownMember[referrer]` required; else `refAmt = 0` and Operations keeps the full slice. |
 | T8 | Referral griefing | Blacklisted/reverting referrer bricks the buy | `try/catch` push → escrow to `referralOwed`; buy never reverts on referral failure. `claimReferral()` for withdrawal. |
 | T9 | Routing failure | A destination wallet reverts on receive | Vault/Liquidity/Operations are protocol-owned EOAs; plain USDC `transfer` has no hook. (If ever a contract, same escrow pattern would apply — note for J4.) |
 | T10 | Owner abuse | Owner drains funds or rugs price | No price/split/wallet setters; no USDC withdrawal; SYN recovery destination is Vault-only. Pause cannot move money. |
 | T11 | Pause abuse (griefing) | Owner pauses forever to freeze the sale | Pause cannot *take* anything; worst case is a halted sale, recoverable by unpause or a multisig owner. Accept as residual; mitigate via multisig owner. |
-| T12 | Stuck SYN | Unsold dust SYN locked below every era minimum | `recoverUnsoldSyn` is callable when **paused** (not only when concluded) → founder pauses and sweeps dust to the Vault. Resolves the deadlock (was J8). |
+| T12 | Stuck SYN | Unsold dust SYN locked below every era minimum | `recoverUnsoldSyn` is callable when **concluded**, or when **paused for ≥ `RECOVERY_TIMELOCK`** → founder winds down and sweeps dust to the Vault. Resolves the deadlock (was J8) without enabling an instant sweep (T19). |
 | T13 | V1/V2 double-count | V1 member treated as a new V2 member; era boundary accelerates; V1 member can't refer | Immutable `V1_MEMBER_ROOT` + `knownMember`: a V1 member supplying a proof (in `buy` or via `claimV1Membership`) is recognized as existing — no new seat, no count++. (Residual: see T17.) |
 | T14 | Wrong USDC variant | Bridged vs native USDC | Constructor pins native Avalanche USDC (decision D3); verify on Fuji + mainnet. |
 | T15 | Approval/allowance abuse | Infinite approve exploited later | Contract only ever pulls `usdcIn` it just validated; no path spends more than the buyer authorized for that call. |
 | T16 | Wallet-drift signing (project's repeated bug) | Tx signed by a different injected account than the UI shows | **Frontend** invariant, not contract: `assertFreshWallet` + `account:` pinning per `docs/SALE_FLOW_INVARIANTS.md` (see §I). |
 | T17 | V1 member buys via a non-canonical frontend without a proof | They omit `v1Proof` → treated as a new seat (double-count) | Cannot be prevented on-chain (you can't cheaply prove a *negative*). The canonical frontend MUST attach the proof for known V1 members (§I); residual exposure bounded by ≤333 Genesis members. **Human Review J12.** |
+| T18 | Era-cap deadlock | An exhausted era's cap blocks all buys, bricking the sale before #1M | **Avoided by design:** when an era's remaining cap can't fit one minimum entry, `_syncEra` auto-advances to the next era (no revert-until-next, no founder switch). Tested in H8. |
+| T19 | Premature pause-and-sweep | Owner pauses then instantly `recoverUnsoldSyn` to pull unsold inventory to the Vault mid-sale | Paused recovery path gated by `RECOVERY_TIMELOCK` (`pausedAt + delay`); `pausedAt` resets on unpause. Destination is still Vault-only (not theft, but a premature-halt power) — timelock + multisig owner (J4/J15) bound it. |
+| T20 | Misleading price-by-seat | Users/surfaces assume seat #N always equals the seat-N era price | With per-era caps, a cap exhausted by early whales advances the era before its range fills, so **seat number no longer fixes price**. Mitigation is disclosure: live price comes from `currentEra()`/`quote()`; `EraAdvanced.reason` distinguishes a cap-advance from a boundary open; `eraOfSeat()` is labeled positional-preview. §I + §Q1. |
+| T21 | Misleading "First Million" | Marketing implies 1M seats are inventory-guaranteed | Per-era caps bound depletion and shape, but do **not** guarantee 1M seats (repeats can consume a cap with few seats). Doctrine: "First Million" is a narrative target bounded by funded inventory; the hard-reserve that *would* guarantee it is opt-in J16. Legal copy review J10. |
 
 ---
 
@@ -476,6 +518,38 @@ referral funds.**
   in V2 keeps their original number.
 - Gas snapshot for `buy` (first vs repeat, with/without referral, with proof).
 
+### H8. Unit — per-era SYN caps, per-tx cap & timelocked recovery *(addendum)*
+- **Cap-triggered advance:** with Era II `eraSynCap` set small, large buys push
+  `soldInEra[II]` to where remaining < min-entry; the next `buy` auto-advances to
+  Era III and emits `EraAdvanced(2,3,nextSeat,REASON_CAP)` — **even mid member
+  range** (member #500 can already be in Era III).
+- **No partial fill:** a `buy` whose `synOut` exceeds the active era's remaining
+  cap reverts `EraInventoryInsufficient(remaining)`; sizing down to ≤ remaining
+  succeeds, and if it leaves < min-entry the *next* buy advances.
+- **Exact-cap fill then roll:** filling a cap to the wei leaves remaining 0 →
+  next buy advances the era; invariant `soldInEra[e] ≤ eraSynCap[e]` always holds.
+- **Boundary vs cap reason:** a range-filled crossing emits `REASON_RANGE` with
+  `atSeatNumber = endSeat+1`; a cap-exhausted crossing emits `REASON_CAP` with
+  `atSeatNumber = memberCount+1`.
+- **Era IX inventory conclusion:** when Era IX remaining cap < its min-entry,
+  `isConcluded()` is true and `buy`/`quote` revert `SaleConcluded` *before*
+  seat #1,000,000.
+- **quote/buy parity:** `quote(usdcIn)` returns the same `era`, `synOut`, and
+  `eraCapRemaining` the next `buy(usdcIn,…)` uses (read-only twin ↔ state agree).
+- **Repeat-buyer cap exhaustion:** a repeat buyer (no new seat) can still push
+  `soldInEra` to the cap and trigger an advance; assert no `memberCount` change.
+- **Constructor cap sanity:** deploying with a *sellable* era cap < its min-entry
+  reverts `BadEraCaps`; `maxUsdcPerTx == 0` reverts.
+- **Per-tx cap:** `usdcIn > MAX_USDC_PER_TX` reverts `ExceedsTxMax`; at the cap it
+  succeeds.
+- **Timelocked recovery:** while paused but `now < pausedAt + RECOVERY_TIMELOCK`,
+  `recoverUnsoldSyn` reverts `RecoveryTimelocked(readyAt)`; after the delay it
+  succeeds (Vault); `unpause` resets `pausedAt` so the clock restarts; when
+  concluded it succeeds with no delay.
+- **Indexer reason handling:** an `EraAdvanced` consumer distinguishes
+  `REASON_RANGE` vs `REASON_CAP` and does not claim "era N opened at its range
+  start" for a cap-advance.
+
 ---
 
 ## I. Frontend & indexer implications
@@ -512,6 +586,10 @@ referral funds.**
 | J10 | Royalty/secondary, legal review of era + referral copy | Legal sign-off before live. | Forbidden-wording compliance (ROI/yield/dividend/etc.). |
 | J11 | Review/audit gate | External review (Kemal+ChatGPT) → Fuji → independent audit → mainnet. | `SOLIDITY_REVIEW_STATE` + D4/D5. **Non-negotiable.** |
 | J12 | V1 Merkle root: snapshot timing & frontend proof delivery | Snapshot V1 members at the same instant V1 is paused; ship the proof in the canonical buy/referral UI. | Recognition correctness + T17 residual (V1 member buying without a proof). |
+| J13 | Per-era SYN cap sizing (`eraSynCap[1..9]`) | Size each from the funding model (J2). A defensible floor is `rangeSeats × minEntrySyn` so each era can seat its full range at the minimum; add headroom for upgrades. | Sets how much cheap early-era SYN can ever be sold and where the price steps. Too small = price jumps early; too large = early eras can over-consume. |
+| J14 | `MAX_USDC_PER_TX` value | Set a sane single-tx ceiling (≥ the largest era minimum). Redundant against a Sybil swarm; primary value is UX + fat-finger safety. | Secondary to per-era/per-address caps; cheap to include. |
+| J15 | `RECOVERY_TIMELOCK` duration | 7–14 days suggested; pair with a multisig owner. | Long enough that a pause-and-sweep is visible to members before SYN moves; short enough to wind down real dust. |
+| J16 | Hard-guarantee 1M seats? (min-entry reserve invariant) | **Default: no** — keep the honest "narrative target" labeling. Adopt only if a contract-level 1M guarantee is required, accepting restricted late-in-era hybrid upgrades. | The only way per-era caps become a *guarantee*; otherwise repeats can consume a cap with few seats issued. |
 
 ---
 
@@ -573,22 +651,40 @@ UI never hardcodes a rate and always reads on-chain truth.
 //  SyndicateSaleV2 — DRAFT · NOT FOR DEPLOYMENT
 //  The Syndicate · Membership Distribution Engine (Sale V2)
 // =============================================================================
-//  STATUS: UNAUDITED DESIGN DRAFT. For HUMAN REVIEW ONLY. Do NOT deploy, do NOT
-//  wire into the frontend, do NOT treat as final or audited.
+//  STATUS: UNAUDITED DESIGN DRAFT. Produced during the Sale V2 architecture
+//          phase for HUMAN REVIEW ONLY.
 //
-//  HARD CONSTRAINTS HONORED:
+//  THIS FILE MUST NOT BE:
+//    - deployed to any network (mainnet OR testnet) without sign-off,
+//    - wired into the frontend / contract-registry,
+//    - treated as final or audited.
+//
+//  HARD CONSTRAINTS HONORED BY THIS DRAFT:
 //    - Does NOT modify Sale V1 (0x0020Df30C127306f0F5B44E6a6E4368D2855842d).
 //    - Does NOT touch the SYN token (0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170).
-//    - Does NOT migrate funds. Routes only NEW USDC from NEW buys to the
-//      EXISTING 70/20/10 wallets; pays SYN out of its own funded balance.
+//    - Does NOT migrate funds. It only routes NEW USDC from NEW buys to the
+//      EXISTING 70/20/10 wallets and pays SYN out of its own funded balance.
 //
-//  REQUIRED GATE BEFORE DEPLOY: external review (Kemal + ChatGPT) -> Fuji
-//  rehearsal -> independent audit -> mainnet (docs/SOLIDITY_REVIEW_STATE.md).
+//  REQUIRED GATE BEFORE ANY DEPLOY (per docs/SOLIDITY_REVIEW_STATE.md +
+//  docs/SMART_CONTRACT_DECISIONS_PENDING.md D4/D5):
+//    external review (Kemal + ChatGPT) -> Fuji rehearsal -> independent audit
+//    -> mainnet. No exceptions.
+//
+//  Companion design doc:
+//    docs/proposals/SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md
 // =============================================================================
 pragma solidity 0.8.24;
 
-// Production: import the audited OpenZeppelin v5 base instead of the stubs below.
-//   IERC20, SafeERC20, Ownable2Step, Pausable, ReentrancyGuard, MerkleProof.
+// In production, import the audited OpenZeppelin v5 base:
+//   import {IERC20}        from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+//   import {SafeERC20}     from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+//   import {Ownable2Step}  from "@openzeppelin/contracts/access/Ownable2Step.sol";
+//   import {Pausable}      from "@openzeppelin/contracts/utils/Pausable.sol";
+//   import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+//   import {MerkleProof}   from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+//
+// The lightweight interfaces / mixins below are placeholders so the draft reads
+// as a single file. DO NOT ship these stubs — use the audited OZ libraries.
 
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
@@ -599,25 +695,81 @@ interface IERC20 {
 
 /**
  * @title  SyndicateSaleV2 (DRAFT)
- * @notice Automatic, prescripted, immutable era-stepped membership distribution.
- *         Only privileged power is emergency pause. Exact integer pricing.
- *         70/20/10 preserved; fixed 5% referral from Operations only. V1 members
- *         recognized via an immutable Merkle root (no double-counting).
+ * @notice Era-stepped, automatic, immutable membership distribution engine.
+ *
+ *  DESIGN PILLARS
+ *  --------------
+ *  1. AUTOMATIC, PRESCRIPTED ERAS. The access rate steps purely as a function
+ *     of protocol state (seats issued AND SYN sold per era). No founder switch,
+ *     no oracle, no timer. The only privileged power is emergency pause.
+ *
+ *  2. EXACT INTEGER MATH. Every era's price is an integer number of SYN per
+ *     1 USDC (Genesis 100 -> Era IX 1). USDC has 6 decimals, SYN has 18, so:
+ *         synOut(18dp) = usdcIn(6dp) * synPerUsdc * 1e12
+ *     There is no division in the price path, hence ZERO rounding/precision
+ *     loss and no rounding-favoring-buyer drain vector.
+ *
+ *  3. DUAL-BOUND ERAS (member range AND per-era SYN cap). Each era closes on
+ *     whichever comes first: its member-range ceiling is reached, OR its SYN
+ *     sold-cap can no longer fit even one minimum entry. This bounds how much
+ *     cheap early-era SYN can ever be sold (anti-Sybil at the aggregate level)
+ *     WITHOUT physical buckets: caps limit `soldInEra[e]` against ONE global
+ *     SYN balance, so unsold early-era capacity simply remains in the pool and
+ *     is available to later eras. The era engine NEVER splits a purchase across
+ *     two rates: a buy is priced entirely at one era, or it reverts.
+ *
+ *     IMPORTANT (honesty): per-era caps PRESERVE THE DISTRIBUTION SHAPE and
+ *     reduce early depletion. They do NOT by themselves guarantee that exactly
+ *     1,000,000 seats are reachable — repeat/upgrade buys can consume a cap
+ *     while issuing few seats, advancing the price for everyone. "First Million"
+ *     remains a TARGET bounded by funded inventory, not an on-chain guarantee.
+ *     See HUMAN REVIEW J13/J16 for the optional hard-reserve alternative.
+ *
+ *  4. HYBRID PROPORTIONAL PURCHASES. A buyer may pay any amount >= the era
+ *     minimum and receives proportional SYN at the current era rate. Whale
+ *     accumulation is bounded by THREE independent caps: per-transaction USDC,
+ *     per-address-per-era USDC, and the aggregate per-era SYN sold-cap.
+ *
+ *  5. 70 / 20 / 10 PRESERVED, REFERRAL FROM OPERATIONS ONLY. Vault (70%) and
+ *     Liquidity (20%) are NEVER diluted. A 5% referral is carved strictly out
+ *     of the 10% Operations slice (i.e. half of Operations). The contract pulls
+ *     the full payment in, THEN fans out; the referrer is paid by the CONTRACT
+ *     inside the same buy tx, NEVER by the Operations wallet afterwards. No
+ *     referrer => Operations keeps the full 10%.
+ *
+ *  6. CONTINUITY WITH V1 (no double-counting). Member numbers are a single
+ *     global sequence. V2 is constructed with the final V1 unique-member count
+ *     as an immutable offset, AND with an immutable Merkle root of all V1
+ *     member addresses. A V1 member who buys (or registers) in V2 is recognized
+ *     as an EXISTING member: they get NO new seat and do NOT advance the seat
+ *     boundary. Identity (member #N) remains indexer-derived across both
+ *     contracts; the Merkle root only prevents double-counting and enables V1
+ *     members to act as referrers.
  */
 contract SyndicateSaleV2 {
+    // using SafeERC20 for IERC20;  // (production)
+
     // --------------------------------------------------------------- errors
     error ZeroAddress();
     error BadGenesisOffset();
+    error BadEraCaps();
     error SaleConcluded();
     error BelowEraMinimum(uint256 min);
+    error ExceedsTxMax(uint256 maxTx);
     error AddressEraCapExceeded(uint256 capRemaining);
+    error EraInventoryInsufficient(uint256 eraCapRemaining);
     error InsufficientInventory(uint256 available);
     error SlippageExceeded(uint256 got, uint256 minOut);
     error NotWindingDown();
+    error RecoveryTimelocked(uint256 readyAt);
     error NothingToClaim();
     error ProtectedToken();
     error AlreadyKnown();
     error InvalidProof();
+
+    // ----------------------------------------------- era-advance reason codes
+    uint8 internal constant REASON_RANGE = 0; // member-range ceiling reached
+    uint8 internal constant REASON_CAP   = 1; // era SYN sold-cap exhausted
 
     // --------------------------------------------------------------- events
     event Purchased(
@@ -644,7 +796,10 @@ contract SyndicateSaleV2 {
         bool    escrowed
     );
     event ReferralClaimed(address indexed referrer, uint256 amount);
-    event EraAdvanced(uint16 indexed fromEra, uint16 indexed toEra, uint256 atSeatNumber);
+    // `reason` distinguishes a NATURAL boundary open (range filled, atSeatNumber
+    // == first seat of the new era) from a CAP-triggered advance (atSeatNumber
+    // == the next seat to be issued, which may be mid-range).
+    event EraAdvanced(uint16 indexed fromEra, uint16 indexed toEra, uint256 atSeatNumber, uint8 reason);
     event V1MembershipRecognized(address indexed member);
     event UnsoldSynRecovered(address indexed to, uint256 amount);
     event Paused(address account);
@@ -661,10 +816,12 @@ contract SyndicateSaleV2 {
     uint256 public immutable GENESIS_OFFSET;  // final V1 unique-member count
     bytes32 public immutable V1_MEMBER_ROOT;  // Merkle root of V1 member addresses
     uint256 public immutable MAX_USDC_PER_ADDRESS_PER_ERA; // anti-whale (6dp)
+    uint256 public immutable MAX_USDC_PER_TX; // per-transaction ceiling (6dp)
 
-    uint256 private constant GENESIS_END = 333;
-    uint256 private constant FINAL_SEAT  = 1_000_000;
+    uint256 private constant GENESIS_END   = 333;
+    uint256 private constant FINAL_SEAT    = 1_000_000;
     uint256 private constant SCALE_6_TO_18 = 1e12;
+    uint256 public  constant RECOVERY_TIMELOCK = 7 days; // delay on the PAUSED recovery path
 
     // ------------------------------------------------------------- ownership
     address public owner;
@@ -672,10 +829,16 @@ contract SyndicateSaleV2 {
 
     // ---------------------------------------------------------------- state
     bool    public paused;
+    uint64  public pausedAt;          // timestamp of the last false->true pause
     uint256 public memberCount;       // global; starts at GENESIS_OFFSET
     uint256 public totalUsdcRaised;   // V2 only (6dp)
     uint256 public totalSynSold;      // V2 only (18dp)
-    uint16  public lastEra;
+    uint16  public activeEra;         // CURRENT sellable era (advanced, never derived-only)
+
+    // Per-era SYN sold-caps (18dp). Immutable after construction (no setter).
+    // eraSynCap[e] limits soldInEra[e]; both indexed by era 1..9.
+    mapping(uint16 => uint256) public eraSynCap;
+    mapping(uint16 => uint256) public soldInEra;
 
     mapping(address => bool)    public knownMember;     // V1-proven OR V2-bought
     mapping(address => uint256) public memberNumberOf;  // set for V2-new seats only
@@ -694,6 +857,25 @@ contract SyndicateSaleV2 {
     }
 
     // ------------------------------------------------------------ construct
+    /**
+     * @param genesisOffset  Final V1 unique-member count at handoff. MUST be
+     *                       >= 333 so V2 only ever sells Era II+ (Genesis is
+     *                       V1-only). See HUMAN REVIEW item J1.
+     * @param v1MemberRoot   Merkle root of the V1 member address set, frozen at
+     *                       handoff. Lets V2 recognize V1 members without
+     *                       double-counting seats. See HUMAN REVIEW item J12.
+     * @param maxUsdcPerAddressPerEra  Anti-whale cap in USDC 6dp units (J3).
+     * @param maxUsdcPerTx   Per-transaction USDC ceiling, 6dp (J14).
+     * @param eraCaps        Per-era SYN sold-caps (18dp), index 0..8 => era 1..9.
+     *                       Era 1 (Genesis) is unused by V2 (may be 0). Each
+     *                       SELLABLE era's cap MUST fit at least one minimum
+     *                       entry; recommended sizing per funding model (J13).
+     *
+     *  NOTE: This constructor does NOT pull SYN. The contract must be funded
+     *  with its membership-distribution SYN allocation in a SEPARATE,
+     *  explicitly-authorized transaction AFTER review (honors "do not migrate
+     *  funds" during the design phase).
+     */
     constructor(
         address usdc,
         address syn,
@@ -702,13 +884,16 @@ contract SyndicateSaleV2 {
         address operations,
         uint256 genesisOffset,
         bytes32 v1MemberRoot,
-        uint256 maxUsdcPerAddressPerEra
+        uint256 maxUsdcPerAddressPerEra,
+        uint256 maxUsdcPerTx,
+        uint256[9] memory eraCaps
     ) {
         if (
             usdc == address(0) || syn == address(0) || vault == address(0) ||
             liquidity == address(0) || operations == address(0)
         ) revert ZeroAddress();
         if (genesisOffset < GENESIS_END || genesisOffset >= FINAL_SEAT) revert BadGenesisOffset();
+        if (maxUsdcPerTx == 0) revert BadEraCaps();
 
         USDC = IERC20(usdc);
         SYN = IERC20(syn);
@@ -718,9 +903,24 @@ contract SyndicateSaleV2 {
         GENESIS_OFFSET = genesisOffset;
         V1_MEMBER_ROOT = v1MemberRoot;
         MAX_USDC_PER_ADDRESS_PER_ERA = maxUsdcPerAddressPerEra;
+        MAX_USDC_PER_TX = maxUsdcPerTx;
 
         memberCount = genesisOffset;
-        lastEra = _eraIndexForSeat(genesisOffset + 1);
+        uint16 startEra = _eraIndexForSeat(genesisOffset + 1);
+        activeEra = startEra;
+
+        // Each SELLABLE era's cap must fit at least one minimum entry, else the
+        // era would be dead-on-arrival (instantly skipped). Full sizing is J13.
+        for (uint16 e = startEra; e <= 9; ++e) {
+            uint256 cap = eraCaps[e - 1];
+            if (cap < _minEntrySyn(e)) revert BadEraCaps();
+            eraSynCap[e] = cap;
+        }
+        // Non-sellable lower eras (e < startEra, e.g. Genesis) keep their cap
+        // value verbatim for transparency; they are never sold by V2.
+        for (uint16 e = 1; e < startEra; ++e) {
+            eraSynCap[e] = eraCaps[e - 1];
+        }
 
         owner = msg.sender;
         emit OwnershipTransferred(address(0), msg.sender);
@@ -728,7 +928,7 @@ contract SyndicateSaleV2 {
 
     // =================================================== V1 recognition
     /// @notice Register as an existing V1 member (e.g. to act as a referrer)
-    ///         without buying. Reverts if already known or proof is invalid.
+    ///         without buying. Idempotent; reverts if already known or proof bad.
     function claimV1Membership(bytes32[] calldata proof) external {
         if (knownMember[msg.sender]) revert AlreadyKnown();
         if (!_verifyV1(proof, msg.sender)) revert InvalidProof();
@@ -738,12 +938,20 @@ contract SyndicateSaleV2 {
 
     // ============================================================ purchase
     /**
-     * @param usdcIn    USDC amount (6dp). Must be >= current era minimum.
+     * @notice Buy SYN at the CURRENT era rate. Hybrid/proportional, single-era.
+     * @param usdcIn    USDC amount (6dp). Must be >= current era minimum and
+     *                  <= MAX_USDC_PER_TX, and fit the per-address-per-era cap.
      * @param referrer  Optional referrer (existing member, not self). 0 = none.
      * @param minSynOut Slippage floor.
-     * @param v1Proof   Merkle proof that msg.sender is a V1 member. EMPTY for
-     *                  newcomers / already-known members. Supplying it for a V1
-     *                  member prevents a new (double-counted) seat.
+     * @param v1Proof   Merkle proof that msg.sender is a V1 member. Pass an
+     *                  EMPTY array for protocol-newcomers and already-known
+     *                  members. Supplying it for a V1 member prevents a new
+     *                  (double-counted) seat being issued.
+     *
+     *  NO SILENT SPLIT / NO PARTIAL FILL: a purchase is priced entirely at one
+     *  era. If it cannot fit the active era's remaining SYN cap, it REVERTS
+     *  (`EraInventoryInsufficient`) — the buyer sizes down. The era only
+     *  advances between buys, automatically, via `_syncEra`.
      */
     function buy(uint256 usdcIn, address referrer, uint256 minSynOut, bytes32[] calldata v1Proof)
         external
@@ -751,66 +959,79 @@ contract SyndicateSaleV2 {
         whenNotPaused
     {
         // Recognize V1 membership first so a returning V1 member is NOT minted
-        // a new seat / does NOT advance the era boundary.
+        // a new seat / does NOT advance the seat boundary.
         if (v1Proof.length > 0 && !knownMember[msg.sender] && _verifyV1(v1Proof, msg.sender)) {
             knownMember[msg.sender] = true;
             emit V1MembershipRecognized(msg.sender);
         }
 
-        uint256 nextSeat = memberCount + 1;
-        if (nextSeat > FINAL_SEAT) revert SaleConcluded();
+        // Roll the era forward (emits EraAdvanced per step) and detect conclusion.
+        (uint16 era, bool concluded) = _syncEra();
+        if (concluded || memberCount >= FINAL_SEAT) revert SaleConcluded();
 
-        (uint16 era, uint64 synPerUsdc, uint256 minUsdc6) = _eraInfoForSeat(nextSeat);
+        (uint64 synPerUsdc, uint256 minUsdc6,) = _eraParams(era);
         if (usdcIn < minUsdc6) revert BelowEraMinimum(minUsdc6);
+        if (usdcIn > MAX_USDC_PER_TX) revert ExceedsTxMax(MAX_USDC_PER_TX);
 
+        // anti-whale: per-address, per-era cumulative USDC cap
         uint256 spentThisEra = usdcByAddressEra[msg.sender][era];
         if (spentThisEra + usdcIn > MAX_USDC_PER_ADDRESS_PER_ERA) {
             revert AddressEraCapExceeded(MAX_USDC_PER_ADDRESS_PER_ERA - spentThisEra);
         }
 
-        uint256 synOut = usdcIn * uint256(synPerUsdc) * SCALE_6_TO_18; // exact, no division
+        // exact pricing (no division)
+        uint256 synOut = usdcIn * uint256(synPerUsdc) * SCALE_6_TO_18;
         if (synOut < minSynOut) revert SlippageExceeded(synOut, minSynOut);
 
+        // per-era aggregate SYN sold-cap (NO partial fill — revert if it won't fit)
+        uint256 eraRemaining = eraSynCap[era] - soldInEra[era];
+        if (synOut > eraRemaining) revert EraInventoryInsufficient(eraRemaining);
+
+        // global inventory (the contract's own funded SYN balance)
         uint256 available = SYN.balanceOf(address(this));
         if (synOut > available) revert InsufficientInventory(available);
 
-        // splits: 70/20/10 (remainder-safe), referral from Ops only
+        // splits (70/20/10, remainder-safe; referral from Ops only)
         uint256 vaultAmt = (usdcIn * 70) / 100;
         uint256 liqAmt = (usdcIn * 20) / 100;
-        uint256 opsSlice = usdcIn - vaultAmt - liqAmt; // exact ~10% remainder
+        uint256 opsSlice = usdcIn - vaultAmt - liqAmt; // exact remainder == ~10%
         uint256 refAmt = 0;
         bool referralValid = referrer != address(0) && referrer != msg.sender && knownMember[referrer];
-        if (referralValid) refAmt = opsSlice / 2; // 5% of gross
+        if (referralValid) refAmt = opsSlice / 2; // fixed 5% of gross
         uint256 opsAmt = opsSlice - refAmt;
 
-        // ---- EFFECTS ----
+        // ================= EFFECTS (state before interactions) =============
         bool firstSeat = !knownMember[msg.sender];
         uint256 assignedNumber;
         if (firstSeat) {
             knownMember[msg.sender] = true;
-            memberCount = nextSeat;
-            memberNumberOf[msg.sender] = nextSeat;
-            assignedNumber = nextSeat;
+            memberCount += 1;
+            memberNumberOf[msg.sender] = memberCount;
+            assignedNumber = memberCount;
         } else {
-            assignedNumber = memberNumberOf[msg.sender]; // 0 for V1 members; indexer is source
+            // 0 for recognized V1 members (indexer is the authoritative source).
+            assignedNumber = memberNumberOf[msg.sender];
         }
+
+        soldInEra[era] += synOut;
         usdcByAddressEra[msg.sender][era] = spentThisEra + usdcIn;
         usdcContributed[msg.sender] += usdcIn;
         totalUsdcRaised += usdcIn;
         totalSynSold += synOut;
-        if (era != lastEra) {
-            emit EraAdvanced(lastEra, era, nextSeat); // boundary seat, not buyer #
-            lastEra = era;
-        }
 
-        // ---- INTERACTIONS ----
+        // ================= INTERACTIONS ====================================
+        // Pull the FULL payment into the contract, THEN fan out. The referrer
+        // is paid by THIS CONTRACT (never by the Operations wallet afterwards).
+        // Order mirrors the canonical flow: Vault -> Liquidity -> Referrer -> Ops.
         _safeTransferFrom(USDC, msg.sender, address(this), usdcIn);
         _safeTransfer(USDC, VAULT, vaultAmt);
         _safeTransfer(USDC, LIQUIDITY, liqAmt);
-        _safeTransfer(USDC, OPERATIONS, opsAmt);
 
         bool escrowed = false;
         if (refAmt > 0) {
+            // Try push; escrow on failure (e.g. USDC blacklist) so the BUY IS
+            // NEVER BLOCKED by a bad referrer. opsAmt is ALREADY net of refAmt,
+            // so the Operations wallet is paid its reduced slice regardless.
             try USDC.transfer(referrer, refAmt) returns (bool ok) {
                 if (!ok) { referralOwed[referrer] += refAmt; escrowed = true; }
             } catch {
@@ -819,12 +1040,14 @@ contract SyndicateSaleV2 {
             emit ReferralAttributed(referrer, msg.sender, assignedNumber, refAmt, escrowed);
         }
 
+        _safeTransfer(USDC, OPERATIONS, opsAmt);
         _safeTransfer(SYN, msg.sender, synOut);
 
         emit Routed(assignedNumber, vaultAmt, liqAmt, opsAmt, refAmt);
         emit Purchased(msg.sender, assignedNumber, era, usdcIn, synOut, synPerUsdc, firstSeat);
     }
 
+    /// @notice Referrer claims any escrowed commission (pull fallback).
     function claimReferral() external nonReentrant {
         uint256 amt = referralOwed[msg.sender];
         if (amt == 0) revert NothingToClaim();
@@ -837,49 +1060,127 @@ contract SyndicateSaleV2 {
     function quote(uint256 usdcIn)
         external
         view
-        returns (uint256 synOut, uint16 era, uint64 synPerUsdc, uint256 seatIfFirst, uint256 available)
+        returns (
+            uint256 synOut,
+            uint16 era,
+            uint64 synPerUsdc,
+            uint256 seatIfFirst,
+            uint256 available,
+            uint256 eraCapRemaining
+        )
     {
-        uint256 nextSeat = memberCount + 1;
-        if (nextSeat > FINAL_SEAT) revert SaleConcluded();
-        uint256 minUsdc6;
-        (era, synPerUsdc, minUsdc6) = _eraInfoForSeat(nextSeat);
+        bool concluded;
+        (era, concluded) = _resolveEraView();
+        if (concluded || memberCount >= FINAL_SEAT) revert SaleConcluded();
+        (synPerUsdc,,) = _eraParams(era);
         synOut = usdcIn * uint256(synPerUsdc) * SCALE_6_TO_18;
-        seatIfFirst = nextSeat;
+        seatIfFirst = memberCount + 1;
         available = SYN.balanceOf(address(this));
+        eraCapRemaining = eraSynCap[era] - soldInEra[era];
     }
 
     function currentEra() external view returns (uint16) {
-        uint256 nextSeat = memberCount + 1;
-        if (nextSeat > FINAL_SEAT) return 0;
-        return _eraIndexForSeat(nextSeat);
+        (uint16 era, bool concluded) = _resolveEraView();
+        return concluded ? 0 : era; // 0 == concluded
+    }
+
+    function remainingEraCap(uint16 era) external view returns (uint256) {
+        uint256 cap = eraSynCap[era];
+        uint256 sold = soldInEra[era];
+        return cap > sold ? cap - sold : 0;
     }
 
     function nextSeatNumber() external view returns (uint256) { return memberCount + 1; }
     function availableSyn() external view returns (uint256) { return SYN.balanceOf(address(this)); }
-    function isConcluded() public view returns (bool) { return memberCount >= FINAL_SEAT; }
+
+    function isConcluded() public view returns (bool) {
+        if (memberCount >= FINAL_SEAT) return true;
+        (, bool concluded) = _resolveEraView();
+        return concluded;
+    }
+
+    /// @notice POSITIONAL preview only — the era a seat WOULD fall in by member
+    ///         range alone. NOT the executable price: cap-triggered advances mean
+    ///         the live price comes from `currentEra()`/`quote()`, not seat number.
     function eraOfSeat(uint256 seat) external pure returns (uint16) { return _eraIndexForSeat(seat); }
 
-    // ============================================================ admin (min)
-    function pause() external onlyOwner { paused = true; emit Paused(msg.sender); }
-    function unpause() external onlyOwner { paused = false; emit Unpaused(msg.sender); }
+    // ===================================================== era engine (state)
+    /// @dev Roll `activeEra` forward while the current era is closed (member
+    ///      range reached OR its cap can't fit a minimum entry). Emits one
+    ///      EraAdvanced per step with the triggering reason + seat. Mutating
+    ///      twin of `_resolveEraView`.
+    function _syncEra() internal returns (uint16 era, bool concluded) {
+        era = activeEra == 0 ? 1 : activeEra;
+        while (true) {
+            (uint64 spu, uint256 minU, uint256 endSeat) = _eraParams(era);
+            uint256 minEntry = minU * uint256(spu) * SCALE_6_TO_18;
+            bool rangeFilled = memberCount >= endSeat;
+            bool capExhausted = (eraSynCap[era] - soldInEra[era]) < minEntry;
+            if (!rangeFilled && !capExhausted) { concluded = false; break; }
+            if (era == 9) { concluded = true; break; }
+            uint8 reason = rangeFilled ? REASON_RANGE : REASON_CAP;
+            uint256 atSeat = rangeFilled ? endSeat + 1 : memberCount + 1;
+            emit EraAdvanced(era, era + 1, atSeat, reason);
+            era += 1;
+        }
+        if (era != activeEra) activeEra = era;
+    }
 
-    /// @notice Return remaining unsold SYN to the immutable Vault. Allowed only
-    ///         when concluded OR paused (deliberate wind-down for inventory
-    ///         dust). Destination is Vault-only: no discretionary SYN drain.
+    /// @dev Read-only twin of `_syncEra` for views (no emit, no state write).
+    function _resolveEraView() internal view returns (uint16 era, bool concluded) {
+        era = activeEra == 0 ? 1 : activeEra;
+        while (true) {
+            (uint64 spu, uint256 minU, uint256 endSeat) = _eraParams(era);
+            uint256 minEntry = minU * uint256(spu) * SCALE_6_TO_18;
+            bool rangeFilled = memberCount >= endSeat;
+            bool capExhausted = (eraSynCap[era] - soldInEra[era]) < minEntry;
+            if (!rangeFilled && !capExhausted) return (era, false);
+            if (era == 9) return (9, true);
+            era += 1;
+        }
+    }
+
+    // ============================================================ admin (min)
+    function pause() external onlyOwner {
+        if (!paused) { paused = true; pausedAt = uint64(block.timestamp); }
+        emit Paused(msg.sender);
+    }
+    function unpause() external onlyOwner {
+        paused = false;
+        pausedAt = 0;
+        emit Unpaused(msg.sender);
+    }
+
+    /// @notice Return remaining unsold SYN to the immutable Vault. Allowed when:
+    ///           - the sale has CONCLUDED (all seats issued, or era 9 inventory
+    ///             can no longer fit a minimum entry); OR
+    ///           - the sale has been PAUSED for at least RECOVERY_TIMELOCK
+    ///             (deliberate, pre-announced wind-down — e.g. dust below any
+    ///             era minimum).
+    ///         The timelock blocks an instant pause+sweep; destination is
+    ///         Vault-only (no discretionary owner SYN drain exists, ever). A
+    ///         multisig owner is recommended (J4/J15).
     function recoverUnsoldSyn() external onlyOwner {
-        if (!isConcluded() && !paused) revert NotWindingDown();
+        bool concluded = isConcluded();
+        if (!concluded) {
+            if (!paused) revert NotWindingDown();
+            uint256 readyAt = uint256(pausedAt) + RECOVERY_TIMELOCK;
+            if (pausedAt == 0 || block.timestamp < readyAt) revert RecoveryTimelocked(readyAt);
+        }
         uint256 bal = SYN.balanceOf(address(this));
         _safeTransfer(SYN, VAULT, bal);
         emit UnsoldSynRecovered(VAULT, bal);
     }
 
     /// @notice Rescue tokens sent here by mistake. CANNOT touch USDC or SYN.
+    ///         Destination is the immutable Vault.
     function rescueToken(address token) external onlyOwner {
         if (token == address(USDC) || token == address(SYN)) revert ProtectedToken();
         IERC20 t = IERC20(token);
         _safeTransfer(t, VAULT, t.balanceOf(address(this)));
     }
 
+    // 2-step ownership (use OZ Ownable2Step in prod).
     function transferOwnership(address newOwner) external onlyOwner {
         pendingOwner = newOwner;
         emit OwnershipTransferStarted(owner, newOwner);
@@ -893,26 +1194,39 @@ contract SyndicateSaleV2 {
     }
 
     // ====================================================== era schedule (pure)
-    // Boundaries are GLOBAL seat numbers; match src/lib/eras.ts exactly.
-    function _eraInfoForSeat(uint256 seat)
+    // IMMUTABLE, hardcoded in bytecode. Boundaries are GLOBAL seat numbers and
+    // match src/lib/eras.ts exactly. synPerUsdc is an exact integer per era.
+    // `_eraParams` (indexed by era) is THE single source; `_eraIndexForSeat`
+    // derives the positional era from a seat by walking this table.
+    function _eraParams(uint16 era)
         internal
         pure
-        returns (uint16 era, uint64 synPerUsdc, uint256 minUsdc6)
+        returns (uint64 synPerUsdc, uint256 minUsdc6, uint256 endSeat)
     {
-        if (seat <= 333)       return (1, 100, 5_000_000);   // Genesis (V1-only)
-        if (seat <= 1_000)     return (2, 50, 10_000_000);
-        if (seat <= 3_333)     return (3, 40, 10_000_000);
-        if (seat <= 10_000)    return (4, 16, 25_000_000);
-        if (seat <= 25_000)    return (5, 12, 25_000_000);
-        if (seat <= 50_000)    return (6, 6, 50_000_000);
-        if (seat <= 100_000)   return (7, 4, 50_000_000);
-        if (seat <= 250_000)   return (8, 2, 100_000_000);
-        if (seat <= 1_000_000) return (9, 1, 100_000_000);
+        if (era == 1) return (100, 5_000_000, 333);       // Genesis (V1-only)
+        if (era == 2) return (50, 10_000_000, 1_000);
+        if (era == 3) return (40, 10_000_000, 3_333);
+        if (era == 4) return (16, 25_000_000, 10_000);
+        if (era == 5) return (12, 25_000_000, 25_000);
+        if (era == 6) return (6, 50_000_000, 50_000);
+        if (era == 7) return (4, 50_000_000, 100_000);
+        if (era == 8) return (2, 100_000_000, 250_000);
+        if (era == 9) return (1, 100_000_000, 1_000_000);
         revert SaleConcluded();
     }
 
-    function _eraIndexForSeat(uint256 seat) internal pure returns (uint16 era) {
-        (era,,) = _eraInfoForSeat(seat);
+    /// @dev Minimum-entry SYN (18dp) for an era: minUsdc6 * synPerUsdc * 1e12.
+    function _minEntrySyn(uint16 era) internal pure returns (uint256) {
+        (uint64 spu, uint256 minU,) = _eraParams(era);
+        return minU * uint256(spu) * SCALE_6_TO_18;
+    }
+
+    function _eraIndexForSeat(uint256 seat) internal pure returns (uint16) {
+        for (uint16 e = 1; e <= 9; ++e) {
+            (,, uint256 endSeat) = _eraParams(e);
+            if (seat <= endSeat) return e;
+        }
+        revert SaleConcluded();
     }
 
     // ===================================================== merkle (stub)
@@ -958,6 +1272,28 @@ model changed.
 > `buy(uint256 usdcIn, address referrer, uint256 minSynOut, bytes32[] calldata v1Proof)`.
 > Newcomers and already-known members pass an **empty** `v1Proof`.
 
+### M2. Economic / security addendum (this revision)
+
+A second pass — the **economic/security addendum** — added inventory and admin
+hardening on top of the three fixes above. Economic doctrine (rates, splits,
+wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
+
+| # | Area | Before | After | Why |
+| --- | --- | --- | --- | --- |
+| 4 | **Per-era SYN sold-cap** | One global SYN balance; early eras could over-consume cheap SYN (a Sybil swarm bypassed the per-address cap). | Immutable `eraSynCap[1..9]` + `soldInEra[e]`; a buy reverts `EraInventoryInsufficient` if it won't fit; `soldInEra[e] ≤ eraSynCap[e]` always. Bounds total cheap-SYN per era without physical buckets. | The only throttle a Sybil swarm can't bypass; protects distribution shape. (§Q1, T6) |
+| 5 | **Stateful, cap-aware era engine** | Era derived purely from `memberCount+1`. | `activeEra` stored and rolled forward by `_syncEra` (range-end OR cap-can't-fit-min); `quote`/`currentEra` use the read-only twin. Price now comes from contract state, not seat number. | A cap can advance the era mid-range; seat number alone can no longer fix price. (§Q1, T20) |
+| 6 | **`EraAdvanced` reason + seat** | `EraAdvanced(from,to,atSeat)`. | `EraAdvanced(from,to,atSeatNumber,reason)` — `REASON_RANGE` (boundary, seat = `endSeat+1`) vs `REASON_CAP` (cap, seat = `memberCount+1`). | Indexers must not claim "era opened at its range start" for a cap-advance. (T20) |
+| 7 | **Per-transaction cap** | None. | Immutable `MAX_USDC_PER_TX`; `buy` reverts `ExceedsTxMax`. | Simple UX/fat-finger bound (secondary to the per-era/per-address caps). (J14) |
+| 8 | **Recovery timelock** | `recoverUnsoldSyn` callable the instant the owner paused. | Paused path gated by `pausedAt + RECOVERY_TIMELOCK`; `pausedAt` set on pause, reset on unpause. Concluded path unchanged. | Blocks an instant pause-and-sweep of unsold inventory; destination still Vault-only. (§Q5, T19) |
+| 9 | **Referral fan-out order** | Vault→Liquidity→Operations→Referrer. | Vault→Liquidity→**Referrer**→Operations, with explicit comments + ASCII (§Q4). Behavior identical (amounts pre-computed; `opsAmt` already net). | Makes "the contract pays the referrer, never the Operations EOA" impossible to misread. |
+| 10 | **Honest "First Million"** | Implicit. | Explicitly documented as a **narrative target bounded by funded inventory**, not a contract guarantee; opt-in hard-reserve = J16. | Caps preserve shape but can't guarantee 1M seats under heavy upgrades. (§Q1, T21) |
+
+> Constructor signature also changed: it now takes `maxUsdcPerTx` and
+> `uint256[9] eraCaps`. New errors `EraInventoryInsufficient`, `ExceedsTxMax`,
+> `RecoveryTimelocked`, `BadEraCaps`. New views `remainingEraCap`, cap-aware
+> `quote`/`currentEra`/`isConcluded`. `eraOfSeat` is now labeled
+> positional-preview only.
+
 ---
 
 ## N. Critical decisions (quick answers)
@@ -971,34 +1307,45 @@ model changed.
   `knownMember=true`, so `buy()` takes the `firstSeat=false` branch: **no new
   seat, no `memberCount++`, no era nudge.** The on-chain count and the indexer
   ordinal agree by construction when the offset + root are correct.
-- **How automatic era transitions work** — the rate is a **pure function of the
-  next seat number**: `_eraInfoForSeat(memberCount + 1)`. Crossing seat #333→#334,
-  #1000→#1001, etc., flips the era for everyone with no switch, timer, or oracle.
-  `EraAdvanced` is emitted once per crossing at the boundary seat.
-- **Member-limited, inventory-limited, or both?** — **Both, independently.** Era
-  *rate* is chosen by member number (seat ranges from `eras.ts`); each `buy` is
-  also hard-bounded by the contract's remaining SYN balance. Either can bind first.
-- **If era inventory is exhausted before the member range ends** — there is no
-  separate "per-era inventory bucket"; the contract sells from **one SYN balance**.
-  If a `buy` would exceed the remaining balance it reverts
-  `InsufficientInventory`. If the dust left is below every era minimum the sale is
-  *economically* over even though `isConcluded()` is still false → founder
-  **pauses** + `recoverUnsoldSyn()` to wind down (dust → Vault). SYN is **never**
-  minted to continue.
+- **How automatic era transitions work** — `activeEra` is stored and rolled
+  forward by `_syncEra` at the start of every `buy` (and previewed by the
+  read-only twin in `quote`/`currentEra`). An era closes — automatically, with no
+  switch, timer, or oracle — when **either** its member-range ceiling is reached
+  **or** its remaining `eraSynCap` can no longer fit one minimum entry.
+  `EraAdvanced(from,to,atSeatNumber,reason)` fires once per step: `REASON_RANGE`
+  (seat = `endSeat+1`) or `REASON_CAP` (seat = `memberCount+1`).
+- **Member-limited, inventory-limited, or both?** — **Both, at two levels.** Each
+  era is bounded by a member range **and** an aggregate `eraSynCap[e]`; whichever
+  binds first advances the era. On top of that, every `buy` is hard-bounded by the
+  contract's global remaining SYN balance. Per-era caps limit `soldInEra[e]`
+  against one global pool — no physical buckets, so unsold era capacity stays
+  available to later eras.
+- **If era inventory is exhausted before the member range ends** — the era's
+  `eraSynCap` is a sold-*cap* against one global SYN balance (not a physical
+  bucket). When the remaining cap can't fit a minimum entry, `_syncEra`
+  **auto-advances** to the next era (next buyers pay the higher rate); buys are
+  never blocked and never split, and unsold capacity simply remains in the pool
+  for later eras. A buy that exceeds the *current* era's remaining cap reverts
+  `EraInventoryInsufficient` (size down — no partial fill). Only when the global
+  balance dust is below every era minimum is the sale economically over → founder
+  **pauses**, waits `RECOVERY_TIMELOCK`, then `recoverUnsoldSyn()` (dust → Vault).
+  SYN is **never** minted to continue.
 - **If the member range ends before inventory is exhausted** — at seat
   #1,000,000 the sale concludes; the next `buy` reverts `SaleConcluded` (incl.
   repeat buys). Leftover SYN is swept to the Vault via `recoverUnsoldSyn()`.
   Whether to instead open a future "Million+" era is **J7**.
-- **Can large purchases drain an era?** — Bounded, not unbounded. A single tx is
-  capped by (a) `MAX_USDC_PER_ADDRESS_PER_ERA` (per-address, per-era) and (b)
-  remaining inventory. One wallet cannot sweep a cheap early era; many distinct
-  funded wallets still could, by design tradeoff (see the "pick two" finding, §C).
+- **Can large purchases drain an era?** — Bounded at three levels: (a)
+  `MAX_USDC_PER_TX` per transaction, (b) `MAX_USDC_PER_ADDRESS_PER_ERA` per
+  address per era, and (c) the aggregate `eraSynCap[e]` — the only one a Sybil
+  swarm of many wallets **cannot** bypass, because it caps the *total* SYN sold in
+  that era. The cost of (c): a cap exhausted early advances the price for everyone
+  (seat ≠ fixed price; see §Q1 / T20).
 - **Boundary-crossing purchase: rejected or split?** — **Neither split nor
-  silently mixed.** A `buy` is priced entirely at the **current** era (the era of
-  `memberCount + 1` at call time). It does **not** straddle two rates. If a buy
-  would push the count past #1,000,000 it does not partial-fill — and `minSynOut`
-  reverts if the era stepped between quote and mine (T4). There are **no cross-era
-  partial fills.**
+  silently mixed.** A `buy` is priced entirely at the **current** `activeEra`. It
+  never straddles two rates: a buy that won't fit the active era's remaining
+  `eraSynCap` reverts `EraInventoryInsufficient` (the buyer sizes down), and the
+  era only advances *between* buys via `_syncEra`. `minSynOut` reverts if the era
+  stepped between quote and mine (T4). There are **no cross-era partial fills.**
 - **How referral works / is deferred** — **fixed 5% of gross, carved only from
   the 10% Operations slice** (Vault 70% / Liquidity 20% never diluted). Valid iff
   `referrer != buyer` **and** `knownMember[referrer]`. Push in-tx; on failure
@@ -1012,7 +1359,8 @@ model changed.
   split, change any wallet, withdraw USDC, take buyer SYN, or touch escrowed
   referral funds. **Pause cannot move a single dollar.**
 - **Can unsold SYN be recovered?** — Yes, via `recoverUnsoldSyn()`, but **only**
-  when the sale is concluded or paused.
+  when the sale is concluded, or after the sale has been **paused for ≥
+  `RECOVERY_TIMELOCK`** (no instant pause-and-sweep).
 - **Where recovered SYN can go** — the **immutable Vault address only**
   (`VAULT`, a constructor immutable). There is no owner/arbitrary destination.
 - **Why this does not allow rugging users** — no price/split/wallet setters
@@ -1020,9 +1368,10 @@ model changed.
   gated; buyers receive SYN atomically in the same tx; CEI + `nonReentrant`;
   worst-case owner action is a (reversible) pause, which **takes nothing**.
 - **What is immutable** — `USDC`, `SYN`, `VAULT`, `LIQUIDITY`, `OPERATIONS`,
-  `GENESIS_OFFSET`, `V1_MEMBER_ROOT`, `MAX_USDC_PER_ADDRESS_PER_ERA`; the
-  70/20/10 split; the entire era schedule (rates, boundaries, minimums); the
-  `FINAL_SEAT` conclusion.
+  `GENESIS_OFFSET`, `V1_MEMBER_ROOT`, `MAX_USDC_PER_ADDRESS_PER_ERA`,
+  `MAX_USDC_PER_TX`, the per-era `eraSynCap[1..9]` (set once in the constructor,
+  no setter), `RECOVERY_TIMELOCK`; the 70/20/10 split; the entire era schedule
+  (rates, boundaries, minimums); the `FINAL_SEAT` conclusion.
 - **What is configurable** — only at **construction** (offset, root, anti-whale
   cap, wallet/token addresses). At **runtime**: only `paused` and `owner`
   (2-step). Nothing economic is runtime-mutable.
@@ -1100,6 +1449,222 @@ model changed.
   `claimV1Membership` for V1 referrers.
 - Add `era-advanced` + `referral` event kinds across the protocol-event pipeline
   (lockstep edits + tests); extend the localStorage purchase-events cache to V2.
+
+---
+
+## Q. Economic & security addendum (Sale V2 hardening)
+
+> Scope: this addendum answers the founder's seven-part economic/security review.
+> It changed **only** this report and the draft `.sol` — no deploy, no Sale V1
+> change, no `src/` change, no funds moved. Economic doctrine (rates, splits,
+> wallets, referral 5%) is unchanged; these changes are **bounds + clarity**.
+
+### Q1. Inventory model — per-era SYN caps
+
+**Decision: adopt BOTH (A) a member range per era AND (B) a per-era SYN
+sold-cap** — implemented as caps on `soldInEra[e]` against ONE global SYN balance
+(not physical buckets).
+
+1. **Can the global-inventory draft over-sell cheap early SYN?** Yes. With one
+   global balance and only a per-address cap, a swarm of wallets could consume a
+   disproportionate share of cheap Era II/III SYN. The aggregate per-era cap
+   closes this.
+2. **Can many wallets bypass the per-address cap?** Yes — it is Sybil-bypassable.
+   The aggregate `eraSynCap[e]` is **not**: it bounds total sales in the era
+   regardless of wallet count.
+3. **If inventory ends before #1,000,000, is "First Million" only narrative?**
+   Yes. It always was, and per-era caps do not change that — they bound depletion
+   and shape but cannot guarantee 1M seats under heavy upgrades. We state it
+   honestly (T21).
+4. **Would per-era buckets better protect economics?** Yes — they are the single
+   strongest, non-bypassable throttle on cheap-era sales.
+5. **Worth the extra complexity?** Yes, but implemented as **sold-caps against a
+   global balance**, which is materially simpler than physical buckets (no
+   rollover logic, no stranded inventory).
+6. **Should the era advance when range ends OR cap exhausted?** Yes — exactly
+   this dual trigger, automatically, in `_syncEra` (no founder switch).
+7. **Range ends first, SYN remains?** Unsold capacity is **not** physically
+   reserved, so it simply **remains in the global pool for later eras** — the
+   cleanest of the three options (roll forward / return to Vault / remain). No
+   extra code.
+8. **Cap ends first, range not full?** The **next era begins automatically**;
+   purchases do **not** revert-until-next (that would deadlock), and the sale does
+   **not** pause. Subsequent buyers pay the next era's higher rate.
+9. **Cleanest, safest rule for users + indexers?** *"An era closes when its
+   member range fills OR its SYN cap can no longer fit one minimum entry,
+   whichever comes first. The live era/price is always readable from
+   `currentEra()`/`quote()`; `EraAdvanced.reason` says why each step happened."*
+
+**The honest tradeoff (must be stated):** because a cap exhausted by early whales
+advances the era before its range fills, **a member's price is no longer fixed by
+their seat number** — member ranges become *ceilings*, not exact price brackets.
+This is economically self-correcting (early demand steps the price up sooner for
+everyone) but it means `src/lib/eras.ts` is a **positional preview**, not the
+executable pricing truth for V2 (T20).
+
+**Why not a hard 1M guarantee?** A min-entry reserve invariant *could* guarantee
+1M seats, but only by refusing late-in-era hybrid upgrades — contradicting the
+hybrid-purchase preference. Deferred as **J16**; the draft favors honest labeling.
+
+### Q2. Market price / arbitrage risk
+
+Scenario: future DEX price $20, Sale V2 Era IX $1 → buyers buy from V2 only to
+flip on the DEX.
+
+1. **Can fixed future pricing become an arbitrage machine?** Yes, in principle —
+   any below-market fixed price invites arbitrage.
+2. **Acceptable because inventory is limited?** Largely yes: arbitrage is bounded
+   by the same caps as everything else (per-tx, per-address, aggregate per-era,
+   total funded inventory, bounded end at #1M). Arbitrage just means seats sell
+   faster — which is the *goal* (membership), not a drain of protocol funds (USDC
+   still routes 70/20/10).
+3. **Cap future eras harder?** The per-era caps already do this; size late-era
+   caps conservatively (J13) if extra protection is wanted.
+4. **Should V2 end and require a V3?** **Yes — recommended.** V2 concludes at #1M
+   (or inventory end). A future **Sale V3** can re-price for then-current market
+   conditions. Do not try to make V2 absorb a 20× market move.
+5. **Avoid promising "First Million" inventory if price explodes?** Yes — the
+   narrative-target framing + inventory hard-stop + caps already handle this.
+6. **Protect without oracle/market logic?** Hard caps (per-tx, per-address,
+   per-era, total inventory) + bounded end + the V3 escape hatch.
+
+**No oracle (strongly recommended).** An oracle adds a price-manipulation
+surface, a trust dependency, and complexity, and it **contradicts the entire
+"prescripted, immutable, don't-trust-verify" model**. The product is membership
+at a known schedule, not a market-pegged sale. **Do not add oracle pricing.**
+
+### Q3. Purchase model
+
+**Recommendation: hybrid — "packages" are frontend presets; the contract only
+understands a USDC amount.**
+
+1. **Every buy uses the active era rate?** Yes.
+2. **Packages = frontend presets only?** Yes.
+3. **Contract understands USDC, not package names?** Yes — `buy(usdcIn,…)`.
+4. **Max per wallet per era?** Yes — `MAX_USDC_PER_ADDRESS_PER_ERA`.
+5. **Max per transaction?** Yes — `MAX_USDC_PER_TX` (added).
+6. **Exceeds remaining era inventory → reject or partial-fill?** **Reject**
+   (`EraInventoryInsufficient`). No partial fill.
+7. **Split across eras?** **Never.** A buy is priced entirely at one era.
+
+Matches the founder stance: no silent split, no surprise partial fill, **clear
+revert**.
+
+### Q4. Referral cash flow (must be impossible to misread)
+
+The Operations wallet is a **plain EOA**. It **never** pays the referrer. The
+**contract** pulls the full USDC in, then fans out and pays the referrer in the
+**same `buy` transaction**.
+
+```
+              10 USDC (with a valid referrer)
+                        │
+                        ▼
+              ┌────────────────────────┐
+   buyer ───▶ │   Sale V2 contract      │  (pulls the FULL 10 USDC in first)
+              └───────────┬────────────┘
+                          │  splits computed BEFORE any payout:
+                          │    vault = 7.00   liq = 2.00   opsSlice = 1.00
+                          │    ref = opsSlice / 2 = 0.50
+                          │    ops = opsSlice − ref = 0.50
+          ┌───────────────┼────────────────┬────────────────┐
+          ▼               ▼                ▼                ▼
+       Vault           Liquidity        Referrer         Operations
+       7.00 USDC       2.00 USDC        0.50 USDC        0.50 USDC
+       (70%)           (20%)            (5%, from Ops)   (5%, net)
+```
+
+Without a referrer: Vault 7.00 · Liquidity 2.00 · Operations **1.00** (full 10%).
+**Vault and Liquidity are never diluted.**
+
+1. **Exact step the referrer is paid?** Inside `buy()`, after the full
+   `transferFrom` pulls USDC in and after state effects, in the fan-out (the
+   `refAmt > 0` block) — before the Operations transfer.
+2. **Pull-then-fan-out?** Yes — `transferFrom(buyer → contract, usdcIn)` first,
+   then all payouts originate from the contract.
+3. **Does Operations ever pay the referrer manually?** **No, never.** `opsAmt` is
+   already net of `refAmt`; Operations receives only its reduced slice.
+4. **If the referrer transfer fails?** It is **escrowed** to `referralOwed` and
+   the buy still succeeds; the referrer later calls `claimReferral()`. A bad
+   referrer can never brick a buy.
+5. **Escrow safe/clear?** Yes — pull-payment fallback, `nonReentrant`,
+   `ReferralAttributed(…, escrowed=true)` emitted.
+6. **Event shows referral and operations separately?** Yes — `Routed(memberNumber,
+   vaultAmount, liquidityAmount, operationsAmount, referralAmount)` carries both,
+   and `ReferralAttributed` carries the referral leg explicitly.
+
+### Q5. Admin / recovery rules
+
+1. **Owner can recover unsold SYN?** Yes.
+2. **Only paused/concluded?** Yes.
+3. **Only to Vault?** Yes — immutable `VAULT`; no other destination exists.
+4. **Could owner pause and sweep too early?** This was the gap. Fixed with a
+   **timelock**.
+5. **Acceptable?** Only with the timelock + (recommended) multisig owner. Even
+   then the destination is the Vault (protocol-owned), so it is a *premature-halt*
+   power, never theft.
+6. **Concluded-only, or paused OR concluded?** **Concluded, OR paused for ≥
+   `RECOVERY_TIMELOCK`.** Concluded-only would re-introduce the dust deadlock
+   (T12); the timelock keeps the deadlock fix without enabling an instant sweep.
+7. **Time delay or multisig?** **Both** — `RECOVERY_TIMELOCK` (J15) + multisig
+   owner (J4).
+8. **Owner change wallets?** **No** — all wallets immutable. A compromised wallet
+   → deploy V3.
+9. **Ownable2Step + multisig?** Yes — 2-step in the draft; multisig recommended.
+
+Matches the founder stance: minimal admin, no price changes, no wallet changes,
+pause for safety only, recovered SYN never to the owner.
+
+### Q6. Decision table
+
+| Decision | Current draft | Alternative | Recommendation | Why |
+| --- | --- | --- | --- | --- |
+| Global vs per-era inventory | Per-era **sold-caps** over a global balance | Physical per-era buckets / pure global | **Per-era sold-caps (adopted)** | Bounds cheap-era sales without rollover/stranded-inventory complexity. |
+| Member range cap | Yes (#ranges from `eras.ts`) | Drop ranges | **Keep (as ceilings)** | Narrative + identity spine; now an upper bound, not a price guarantee. |
+| Per-era SYN cap | **Yes** (`eraSynCap[e]`) | None | **Adopt** | Only throttle a Sybil swarm can't bypass. |
+| Per-address per-era cap | Yes | None | **Keep** | Spreads distribution; first anti-whale lever. |
+| Per-transaction cap | **Yes** (`MAX_USDC_PER_TX`) | None | **Adopt** | Cheap UX / fat-finger bound (secondary). |
+| Buy crossing an era boundary | Revert `EraInventoryInsufficient`; advance only between buys | Split / partial fill | **Revert (adopted)** | No silent split; clear revert; single-era pricing. |
+| Unsold era inventory | Remains in the global pool for later eras | Reserve / return to Vault | **Remain in pool** | Simplest + safe; no stranded SYN. |
+| Market-price arbitrage protection | Hard caps + bounded end + future V3 | Oracle / peg | **Hard caps, no oracle** | Oracle = manipulation/trust/complexity; contradicts the prescripted schedule. |
+| Referral payment flow | Contract pays referrer in-tx (Vault→Liq→Ref→Ops) | Operations pays later | **Contract in-tx (adopted)** | Automatic, atomic; the Operations EOA never pays out. |
+| Referral escrow | `referralOwed` + `claimReferral` on push failure | Block the buy on failure | **Escrow (keep)** | A bad referrer can't brick buys. |
+| Admin recovery | Concluded OR paused-for-≥-timelock, Vault-only | Concluded-only / instant-paused | **Timelocked (adopted)** | Keeps the dust-deadlock fix; blocks an instant pause+sweep. |
+| V1 member recognition | Immutable Merkle root + `knownMember` + proof | Numeric offset only | **Merkle (keep)** | Prevents double-count; lets V1 members refer. |
+
+### Q7. Deltas — what changed, why, new risks, tests, review
+
+**What changed (draft + report in lockstep):**
+- Added immutable `eraSynCap[1..9]` + `soldInEra[e]`; stateful cap-aware
+  `activeEra` with `_syncEra` / `_resolveEraView`; revert `EraInventoryInsufficient`
+  (no partial fill); auto-advance on range-end OR cap-can't-fit-min.
+- Added `MAX_USDC_PER_TX` (`ExceedsTxMax`).
+- Added `RECOVERY_TIMELOCK` + `pausedAt`; gated the paused recovery path.
+- `EraAdvanced` gained a `reason` (RANGE vs CAP) and a correct `atSeatNumber`.
+- Reordered the referral fan-out to Vault→Liquidity→Referrer→Operations with
+  explicit comments + ASCII; behavior unchanged.
+- New views `remainingEraCap`, cap-aware `quote`/`currentEra`/`isConcluded`;
+  `eraOfSeat` relabeled positional-preview.
+- Constructor now takes `maxUsdcPerTx` + `uint256[9] eraCaps` with a `BadEraCaps`
+  sanity check.
+
+**Why:** protect early-era economics against Sybil bypass (aggregate cap),
+prevent an inventory deadlock, prevent an instant pause-and-sweep, and make the
+referral flow + the honest "First Million" framing impossible to misread.
+
+**New risks introduced (now in the threat model):** T19 premature
+pause-and-sweep (→ timelock), T20 seat-no-longer-fixes-price (→ disclosure +
+`reason`), T21 misleading "First Million" (→ doctrine + J16/J10). T18 records the
+era-cap deadlock that the design *avoids*.
+
+**Tests that must be added (H8):** cap-triggered advance + reason/seat
+correctness; no-partial-fill revert; exact-cap-fill then roll; Era IX inventory
+conclusion before #1M; quote/buy parity (incl. `eraCapRemaining`); repeat-buyer
+cap exhaustion; constructor cap sanity + `maxUsdcPerTx == 0`; per-tx cap;
+timelocked recovery (before/after/reset/concluded); indexer `reason` handling.
+
+**Human review items added:** J13 per-era cap sizing, J14 per-tx value, J15
+timelock duration, J16 optional hard-reserve for a true 1M guarantee.
 
 ---
 
