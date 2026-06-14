@@ -1,0 +1,191 @@
+STOP.
+
+Do not write more Solidity.
+
+Do not modify Sale V1.
+
+Do not modify frontend.
+
+Do not deploy.
+
+Do not implement anything.
+
+This is a final architecture review pass before the line-by-line Solidity review.
+
+I want a dedicated report:
+
+# Referral Architecture & Revenue Attribution Review
+
+Use everything already implemented and documented:
+
+* Sale V1
+* Sale V2 draft
+* Referral doctrine
+* CommissionRouter discussions
+* Marketplace plans
+* Archive1155
+* SeatRecord721
+* Signal Chamber
+* AI Layer
+* B2B future modules
+* Sale V3 possibility
+* Revenue Attribution Layer doctrine
+
+The goal is to determine the FINAL referral architecture.
+
+## Part 1 — Current V2 referral flow
+
+Explain exactly:
+
+Buyer
+→ Sale V2
+→ Vault
+→ Liquidity
+→ Referrer
+→ Operations
+
+Show:
+
+* how referral links become a referrer address
+* how the address reaches the contract
+* how the contract validates eligibility
+* when the payment occurs
+* what happens if payment fails
+* what events are emitted
+
+No assumptions.
+
+Use the actual current draft.
+
+---
+
+## Part 2 — Inline referral vs CommissionRouter
+
+Compare:
+
+### Option A
+
+Referral logic permanently inside Sale V2.
+
+### Option B
+
+Sale V2 becomes a client of a dedicated CommissionRouter.
+
+Compare:
+
+* security
+* gas
+* audit complexity
+* maintainability
+* upgradeability
+* future protocol growth
+* legal clarity
+* analytics
+* attribution tracking
+* future integrations
+
+Score both.
+
+---
+
+## Part 3 — Long-term protocol compatibility
+
+Evaluate compatibility with:
+
+* Sale V2
+* Sale V3
+* Archive1155
+* Patron Seal
+* Future NFT sales
+* SeatRecord721
+* Marketplace
+* Signal Chamber
+* AI Layer
+* B2B campaigns
+* Affiliate programs
+* Future revenue sharing systems
+
+Show which architecture creates less technical debt.
+
+---
+
+## Part 4 — Revenue Attribution Layer
+
+Revisit the Revenue Attribution Layer doctrine.
+
+Explain whether:
+
+* Sale V2 should own referral logic
+* CommissionRouter should own attribution logic
+* Both should exist
+* One should be deprecated
+
+Explain the cleanest architecture.
+
+---
+
+## Part 5 — Future migration risk
+
+If we launch with inline referrals:
+
+* what becomes difficult later?
+* what can remain unchanged?
+* what requires migration?
+
+If we launch with CommissionRouter:
+
+* what complexity is added today?
+* what future work disappears?
+
+---
+
+## Part 6 — Founder recommendation
+
+Answer as:
+
+* Founder
+* CTO
+* Security reviewer
+* Economist
+* Growth lead
+* Protocol architect
+
+Then provide ONE final recommendation.
+
+Do not sit on the fence.
+
+Choose:
+
+A) Inline referrals inside Sale V2
+
+or
+
+B) CommissionRouter architecture
+
+and justify it using the entire Syndicate roadmap.
+
+---
+
+## Part 7 — Impact on Solidity review
+
+After making the recommendation:
+
+state explicitly:
+
+"Sale V2 Solidity draft can proceed to line-by-line review unchanged"
+
+OR
+
+"Sale V2 draft should be modified before review"
+
+and explain exactly why.
+
+This is an architecture decision report only.
+
+No coding.
+
+No implementation.
+
+No deployment.
+
+The objective is to freeze the referral architecture before the final Solidity review.

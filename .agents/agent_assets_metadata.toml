@@ -221,3 +221,9 @@ id = "8x7ez_yzRT_YugF3wvn5m"
 uri = "file://docs/proposals/SALE_V2_FOUNDER_DECISION_REPORT.md"
 type = "text"
 title = "Sale V2 — Founder Decision Report"
+
+[[outputs]]
+id = "0BsHLUuLFAnlKc2BdNsqe"
+uri = "file://docs/proposals/SALE_V2_REFERRAL_ARCHITECTURE_REVIEW.md"
+type = "text"
+title = "Referral Architecture & Revenue Attribution Review"
