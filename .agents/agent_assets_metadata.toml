@@ -245,3 +245,9 @@ id = "h0iUS-uzQ-0f4IwJVSkL5"
 uri = "file://docs/proposals/SALE_V2_REFERRAL_PROTOCOL_MEMORY_RECOVERY.md"
 type = "text"
 title = "Referral Protocol-Memory Recovery"
+
+[[outputs]]
+id = "3k4HNkmRD519ZFCpJnnNK"
+uri = "file://docs/proposals/SALE_V2_REFERRAL_LAUNCH_EXECUTION_PLAN.md"
+type = "text"
+title = "Sale V2 Referral Launch Execution Plan"

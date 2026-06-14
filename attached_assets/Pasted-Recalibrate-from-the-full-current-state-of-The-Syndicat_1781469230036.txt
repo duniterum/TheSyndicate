@@ -1,0 +1,208 @@
+Recalibrate from the full current state of The Syndicate.
+
+Do NOT do more archaeology.
+Do NOT create another broad report.
+Do NOT modify Solidity yet.
+Do NOT modify Sale V1.
+Do NOT deploy.
+Do NOT touch frontend yet.
+
+We are now moving from discovery to execution sequencing.
+
+Current known state:
+
+* V1 site is live and verified.
+* Sale V1 is live and unchanged.
+* /member/N, /join packages, Featured Paths, cockpit, share card are live.
+* Sale V2 architecture exists.
+* Sale V2 draft exists.
+* Sale V2 parameter simulation exists.
+* Sale V2 founder decision report exists.
+* Referral recovery audit exists.
+* Referral reconciliation report exists.
+* Referral protocol-memory recovery exists.
+
+We do not want to lose the tiered / reputation / builder-record referral vision.
+We also do not want to overload Sale V2 with dangerous complexity.
+
+Founder position:
+
+I prefer the tiered / reputation / builder-record referral system long term because many pages, previews, doctrines, and UX concepts were already built around it.
+
+But I accept that Sale V2 may need to launch with the simplest safe referral logic if that is the correct security/audit decision.
+
+The key rule:
+
+Flat V2 must never overwrite the tiered vision.
+Flat V2 can only be the launch layer.
+Tiered / reputation / builder-record / campaign referral must remain preserved as the future CommissionRouter layer.
+
+Task:
+
+Create the FINAL Sale V2 Referral Launch Execution Plan.
+
+This is not archaeology.
+This is not new architecture.
+This is the action plan that tells us exactly what to do next.
+
+Return only the following:
+
+1. Final referral launch decision
+
+Choose one:
+
+A. Sale V2 launches flat referral live; tiered remains visible as future CommissionRouter.
+B. Sale V2 launches tiered referral live.
+C. CommissionRouter must ship before Sale V2.
+D. Referral payout delayed until CommissionRouter.
+
+Pick one.
+Do not sit on the fence.
+
+2. Why this choice is safest
+
+Explain from:
+
+* Founder
+* CTO
+* Security
+* Growth
+* Legal
+* Product UX
+
+3. What becomes live with Sale V2
+
+List exactly:
+
+* referral link
+* referral capture
+* referral attribution
+* referrer payout
+* /referral page
+* My Syndicate referral card
+* cockpit introduced-by card
+* tier ladder preview
+* reputation leaderboard
+* builder records
+* future CommissionRouter preview
+
+For each item classify:
+
+LIVE WITH V2
+VISIBLE FUTURE
+HIDDEN
+SIMULATED
+UNCHANGED
+REMOVE / DEMOTE
+
+4. What must be updated before Solidity review
+
+Only include items that must be updated before we can review Solidity without confusion.
+
+Examples:
+
+* doctrine wording
+* founder decision docs
+* Sale V2 review checklist
+* referral contradiction notes
+
+Do not include frontend polish unless it blocks Solidity review.
+
+5. What must be updated before deployment
+
+Include:
+
+* legal wording
+* /referral labels
+* My Syndicate labels
+* referral preview labels
+* noindex/simulated status
+* docs that still say payout is pending
+* docs that still imply tiered is live
+* docs that still imply fixed 5% is forever
+
+6. What can wait until after deployment
+
+Include:
+
+* CommissionRouter
+* tiered referral
+* reputation scoring live
+* builder records live
+* campaign/refTag
+* marketplace attribution
+* AI/B2B attribution
+* richer analytics
+* leaderboard productionization
+
+7. What must not be lost
+
+List the preserved future vision explicitly:
+
+* tiered commission
+* reputation weighting
+* builder records
+* durability/retention logic
+* campaign tags
+* source attribution
+* buyer override
+* marketplace attribution
+* Archive/NFT attribution
+* B2B attribution
+* CommissionRouter governance
+* Mythology Gate / future artifacts if applicable
+
+8. Exact execution order from today
+
+Give a numbered checklist:
+
+Step 1 — founder ratifies referral launch decision
+Step 2 — freeze Sale V2 referral doctrine
+Step 3 — run line-by-line Solidity review
+Step 4 — fix Solidity only if review finds issues
+Step 5 — prepare legal/copy update
+Step 6 — update frontend labels
+Step 7 — testnet/Fuji rehearsal
+Step 8 — final audit/review
+Step 9 — deploy Sale V2
+Step 10 — wire frontend to Sale V2
+Step 11 — publish
+Step 12 — visual verification
+
+Adjust if your system needs a safer order.
+
+9. Minimum actions to stop debating
+
+Tell me the shortest safe path to execution.
+
+Example:
+
+* ratify flat V2 + future router
+* update 3 doctrine lines
+* review Solidity
+* run testnet
+* then frontend launch
+
+10. Explicit answer
+
+At the end, answer:
+
+Can Sale V2 Solidity review proceed after this decision?
+
+YES / NO
+
+If NO, list the exact blockers.
+
+If YES, list the exact assumptions we are freezing for the reviewer.
+
+Important constraints:
+
+* Do not write code.
+* Do not update Solidity.
+* Do not update frontend.
+* Do not deploy.
+* Do not do new archaeology.
+* Do not invent new referral economics.
+
+Goal:
+End the loop and give us the exact execution path from current state to Sale V2 launch without losing the long-term tiered referral vision.
