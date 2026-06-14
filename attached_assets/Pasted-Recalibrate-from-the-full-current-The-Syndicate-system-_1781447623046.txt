@@ -1,0 +1,283 @@
+Recalibrate from the full current The Syndicate system:
+
+* live site
+* current codebase
+* current contracts
+* TODAY BASELINE
+* Sprint 1
+* Sprint 1B
+* self-service correction
+* deferred ledger audit
+* Post-Sprint Strategic Roadmap
+
+Important:
+Do NOT rebuild what already exists.
+Do NOT mix all modules together.
+Do NOT create duplicate systems.
+Do NOT touch smart contracts.
+Do NOT change Sale V1.
+Do NOT deploy until approved.
+
+The current strategic conclusion is:
+
+The project is not blocked by more UI theory.
+The project is blocked by distribution, belief, proof, activity, and growth.
+
+So the next sprint must be:
+
+V1-compatible.
+V2-ready.
+Visual.
+Safe.
+Growth-oriented.
+No contract risk.
+
+Build only what is missing or incomplete from the current system.
+
+Before coding, inspect what already exists for each area below and classify:
+
+EXISTS / PARTIAL / MISSING / SHOULD NOT BUILD YET
+
+Then implement only safe missing or partial frontend/docs/config/read-only pieces.
+
+1. Event indexing / search foundation
+
+Check what already exists:
+
+* activity feed
+* member index
+* holder index
+* protocol events
+* purchase history
+* Archive mints
+* liquidity events
+* burn events
+* search/filter surfaces
+
+Add only missing safe improvements.
+
+Goal:
+A V1-compatible event layer that can later support:
+
+* Sale V1
+* Sale V2
+* CommissionRouter
+* SeatRecord721
+* Marketplace
+* Signal Chamber
+* Vault automation
+* AI layer
+* Cross-chain
+
+Do not invent events.
+Do not fake data.
+Use real chain/indexed data only.
+If something is future, label PENDING / FUTURE.
+
+2. Recognition-only growth loop
+
+Do NOT build monetary referral yet.
+
+Check current referral/attribution system first.
+
+If missing or partial, add a safe V1-compatible recognition layer:
+
+* share your seat
+* invite / introduction concept
+* introduced-by preview if already possible
+* shareable member path
+* future referral status clearly PENDING
+
+Language:
+Use “introduce”, “share”, “invite”, “recognized”, “attribution”.
+Do not use “earn”, “yield”, “passive income”, “commission” unless clearly future/contract-bound.
+
+3. Shareable seat proof
+
+Check whether we already have member cards, wallet pages, cockpit identity cards, or share components.
+
+If partial, improve/add a premium shareable proof surface:
+
+* member number
+* chapter
+* rank
+* wallet short address
+* verified on Avalanche
+* link to member page / explorer
+* current package/rank if safe
+* no financial promise
+
+Goal:
+A member can proudly share:
+“I have a seat.”
+
+If image export is not already supported, do not overbuild it.
+Start with a beautiful share card + share URL.
+
+4. Live activity / join feed
+
+Check what already exists before adding.
+
+If partial, improve the feeling that the protocol is alive:
+
+* latest member
+* latest purchase
+* latest artifact mint
+* latest protocol moment
+* latest burn/proof if available
+
+Use only real data.
+If empty, use elegant empty state:
+“Waiting for the next verified signal.”
+
+5. Trust quick-wins surfaced visually
+
+Check if already visible:
+
+* Archive source verification status
+* burn ledger mismatch / Proof of Burn #002 pending
+* NFT price constant verification
+* sale inventory remaining
+* Genesis progress
+* deployed contract links
+* explorer verification
+
+Add only what is missing or unclear.
+
+Do not hide unresolved items.
+Present them as honest transparency:
+LIVE / VERIFIED / PENDING VERIFICATION / CHECK REQUIRED.
+
+6. V2-ready architecture without V2 claims
+
+Prepare data structures and UI slots so these can plug in later:
+
+* Referral / CommissionRouter
+* Era Engine V2
+* Marketplace
+* SeatRecord721
+* Signal Chamber
+* Vault automation
+* Governance parameters
+* AI layer
+* Cross-chain
+
+But do NOT make them look live.
+Everything future must be marked:
+PENDING / FUTURE / PROPOSED.
+
+7. Site placement
+
+Think from the current product outward.
+
+Do not clutter the homepage.
+Do not duplicate existing sections.
+
+Evaluate best placement:
+
+Homepage:
+
+* compact activity/proof/share teaser only if missing
+* current Genesis progress
+* join CTA
+
+/join:
+
+* packages
+* inventory-aware buy
+* current Genesis status
+* next era preview
+
+/my-syndicate:
+
+* strongest place for seat proof
+* next move
+* share/invite
+* member activity
+
+/activity:
+
+* deeper feed/search if safe
+
+/members or /registry:
+
+* member lookup/search if already supported or easy
+
+/docs / whitepaper source:
+
+* document what was added as utility, memory, participation, proof
+
+8. Design standard
+
+Use premium crypto/SaaS best practices:
+
+* clear cards
+* mobile-first
+* strong hierarchy
+* one primary CTA per section
+* no clutter
+* no fake urgency
+* no casino/XP/streak language
+* soft progression allowed
+
+Allowed:
+
+* Your next move
+* Next milestone
+* Continue your path
+* Share your seat
+* Verified member record
+* Protocol memory
+
+Forbidden:
+
+* ROI
+* yield
+* dividend
+* passive income
+* price floor
+* price support
+* guaranteed price
+* earn rewards
+* XP
+* streak
+* jackpot
+
+9. Required process
+
+Step 1:
+Return a short pre-implementation map:
+Area | Existing surface | Status | What is missing | Proposed safe action
+
+Step 2:
+Implement only safe V1-compatible frontend/docs/config/read-only changes.
+
+Step 3:
+Run checks.
+
+Step 4:
+Return final report:
+
+* files changed
+* pages changed
+* what already existed
+* what was added
+* what stayed untouched
+* LIVE vs PENDING map
+* screenshots or visual description of what I should inspect
+* tests run
+* publish readiness
+* what remains V2/contract-bound
+
+Final goal:
+The site should visibly feel alive and self-service:
+
+visitor lands
+→ sees proof/activity
+→ understands seat/packages
+→ joins
+→ sees seat proof
+→ shares/invites
+→ follows next move
+
+Everything must remain V1-compatible and V2-ready.
