@@ -1,0 +1,267 @@
+Recalibrate from the full current The Syndicate codebase, docs, live site, contracts, constants, TODAY BASELINE snapshot, and all existing doctrine.
+
+IMPORTANT:
+Do NOT blindly overwrite what already exists.
+Do NOT rename established canon unless you show the conflict first.
+Do NOT break Sale V1.
+Do NOT deploy or modify smart contracts yet.
+Treat this as a safe sprint: reconcile → simulate/config/docs/UI → only then propose contract changes.
+
+Current factual base to preserve:
+
+* Sale V1 is live and becomes Genesis Sale.
+* Current V1: $5 minimum, 1 SYN = $0.01, $5 = 500 SYN.
+* USDC routes 70% Vault / 20% Liquidity / 10% Operations.
+* SYN token remains the same.
+* Membership Distribution allocation = 350M SYN.
+* Member ≠ Holder. Member comes from official sale/protocol-recognized membership action.
+* Existing ranks, chapters, referral preview, Archive/NFT layer, cockpit, legal guardrails already exist.
+* Forbidden wording stays forbidden: ROI, yield, dividend, passive income, ownership, profit share, price support, price floor, stable price, binding governance rights.
+
+What we brainstormed and want to test:
+
+The Syndicate should become an infinite game, not only a token sale.
+
+Core doctrine:
+
+* V1 = Genesis.
+* V2 = Era Engine.
+* Genesis is fixed; legacy is earned continuously.
+* Early members get early history and more SYN.
+* Future members can still become powerful through ranks, packs, artifacts, referrals, marketplace activity, tools, reputation, and Signal Chamber status.
+* Money can buy SYN/access, but money cannot directly buy legacy.
+* History never stops.
+
+Main missing product loop:
+After joining, every member must always see “what is next.”
+
+We want multiple progression ladders, not only one rank ladder:
+
+1. Seat ladder
+
+* Join
+* receive member number
+* chapter
+* SYN
+* cockpit
+* “you are part of the protocol memory”
+
+2. Rank ladder
+   Keep or reconcile with current rank system.
+   Ranks should remain based on cumulative USDC / protocol-recognized purchase activity if that is already canon.
+   Do not break existing rank names without conflict report.
+
+3. Pack ladder
+   This is the new safe sprint idea.
+   Not separate memberships.
+   Not new contracts at first.
+   Start as UI/docs/config simulation using existing sale purchase amounts if possible.
+
+Possible pack model to reconcile:
+
+* Seat Pack: $5 — entry seat, 500 SYN during Genesis
+* Builder Pack: $25 — deeper participation, additional SYN allocation based on the active era distribution schedule, rank progress, and potential future artifact eligibility
+* Steward Pack: $100 — higher-status progression path with a larger SYN allocation based on the active era distribution schedule and cockpit recognition
+* Architect Pack: $500 — major supporter recognition path with an expanded SYN allocation based on the active era distribution schedule
+* Keystone Pack: $2,500 — high-conviction recognition path with a substantial SYN allocation based on the active era distribution schedule
+* Cornerstone Pack: $10,000 — major historical marker, premium onboarding path if required by doctrine, and a significant SYN allocation based on the active era distribution schedule
+
+Important:
+If these conflict with current ranks/presets, do not overwrite. Propose the cleanest mapping.
+The user experience should feel like:
+“I joined. Now I know exactly what pack/step/rank/artifact/referral milestone comes next.”
+
+4. Artifact ladder
+   Connect packs/ranks/eras to future artifact eligibility, but do not promise financial value.
+   Artifacts = protocol memory, collectibles, proof of being there.
+   Archive1155 V1 remains collectible protocol artifacts only.
+   SeatRecord721 remains future/pending unless already otherwise decided.
+
+5. Referral ladder
+   Reconcile with current referral docs/preview.
+   We remember both ideas:
+
+* fixed 5% referral commission
+* possible evolved/tiered referral later
+
+Do not force one if current docs already contain a better structure.
+Recommended safe direction:
+
+* V2 starts with fixed 5% only
+* tiered boosts remain V3/future after legal and contract review
+
+Referral rule:
+Commission is paid atomically in the same transaction.
+It comes only from the Operations tranche.
+Vault and Liquidity are never diluted.
+
+Example 100 USDC purchase with 5% referral:
+
+* 70 USDC → Vault
+* 20 USDC → Liquidity
+* 5 USDC → Referrer
+* 5 USDC → Operations
+
+Language:
+direct sales commission, not yield, not dividend, not passive income, not revenue share.
+
+6. Era ladder
+   Test this proposed ladder against current chapters and 350M SYN allocation.
+   Do not blindly accept if numbers are wrong.
+
+Proposed:
+
+* Genesis Signal: members #1–333, V1, $5, 500 SYN
+* First Thousand: #334–1,000, V2, $10, 500 SYN
+* Expansion: #1,001–3,333, V2, $10, 400 SYN
+* First Ten Thousand: #3,334–10,000, V2, $25, 400 SYN
+* Open Era I: #10,001–25,000, $25, 300 SYN
+* Open Era II: #25,001–50,000, $50, 300 SYN
+* Hundred Thousand: #50,001–100,000, $50, 200 SYN
+* Quarter Million: #100,001–250,000, $99 or $100, 200 SYN
+* First Million: #250,001–1,000,000, $99 or $100, 100 SYN
+* Million+ Era: future Era Engine, possibly 50–100 SYN or no fresh SYN after distribution inventory is exhausted
+
+Calculate and verify:
+
+* SYN needed per era
+* cumulative SYN distributed
+* remaining 350M membership allocation
+* USDC volume
+* 70/20/10 routing
+* referral impact if active
+
+7. Era transition rule
+   Preferred safe model:
+   automatic detection + manual activation.
+
+The site can show:
+
+* “Genesis closes at #333”
+* “Next era preview”
+* “You would become Member #N”
+* “Current era progress”
+  But contract transition should not auto-activate until reviewed/admin-approved.
+
+8. DEX / sale price doctrine
+   We have two prices:
+
+* official membership sale/access price
+* DEX market price
+
+Do not promise peg/floor/stability.
+Do not present liquidity as price defense.
+
+Safe wording:
+
+* Sale price = membership access/distribution price.
+* DEX price = market-driven price.
+* Liquidity = access infrastructure, not price guarantee.
+
+9. Future SYN utility phase
+   Document, do not implement:
+   “USDC brings members in. SYN powers what members do next.”
+
+Future SYN utility:
+
+* artifacts
+* premium cockpit tools
+* AI modules
+* marketplace listings
+* protocol actions
+
+Future SYN payments may be:
+
+* burned
+* treasury-routed
+* creator/operations-routed
+* split by module
+
+Possible future split to evaluate:
+50% burn / 30% treasury / 20% creator-operations.
+Never say burn increases price.
+
+10. DAO replacement
+    Do not use DAO as active product framing.
+    Use:
+    The Signal Chamber
+
+Definition:
+A member-only advisory/status system where members can signal preferred directions, artifact themes, roadmap priorities, chapter rituals, and product priorities.
+
+Safe wording:
+“The Signal Chamber gives members a visible voice in the protocol’s evolving story. It is advisory and does not grant ownership, treasury rights, dividends, or binding governance control.”
+
+11. Marketplace
+    Marketplace comes before DAO/governance because it strengthens utility.
+
+Future phases:
+
+* Marketplace V1: protocol artifacts and chapter collectibles
+* Marketplace V2: premium analytics, AI tools, reports, templates
+* Marketplace V3: member-created tools/products with protocol fee
+
+Do not implement now unless only roadmap/docs/UI placeholder.
+
+12. My Syndicate / cockpit next-step engine
+    This is the most important UX change.
+
+Every member should see:
+
+* Next Rank
+* Next Pack
+* Next Artifact
+* Next Referral Milestone
+* Next Chronicle Milestone
+* Next Era
+* Next Marketplace Unlock
+* Future Signal Chamber Unlock
+
+Goal:
+A member should never feel “I bought once and I am done.”
+They should feel:
+“I have a seat. Now I know my next move.”
+
+13. Required output before changes
+    First return a report with:
+
+A. Existing canon vs proposed ideas
+Table:
+Existing system | Proposed idea | Conflict? | Recommendation | Files affected
+
+B. Final recommended decision sheet
+
+* era names
+* thresholds
+* entry prices
+* SYN amounts
+* pack names
+* pack mapping to existing ranks/presets
+* referral version
+* transition model
+* next-step cockpit model
+
+C. Tokenomics calculation
+Use 350M membership distribution.
+
+D. Safest sprint plan
+Sprint 0 — audit and reconciliation only
+Sprint 1 — docs/config decision sheet
+Sprint 2 — UI simulation: Era preview + Pack ladder + Next-step cockpit, no new contract
+Sprint 3 — referral/era contract spec only
+Sprint 4 — tests/legal/QA
+Sprint 5 — deploy only after explicit approval
+
+E. Implementation constraints
+
+* No smart contract changes yet.
+* No V1 breakage.
+* No live economic promises.
+* No legal-risk words.
+* No renaming canon without showing conflict.
+* Prefer adapting from existing system over forcing this prompt.
+
+Final goal:
+Build the safest first sprint that lets users understand the infinite game:
+Join → Seat → Rank → Pack → Artifact → Referral → Chronicle → Marketplace → Signal Chamber,
+while preserving existing live truth and legal safety.

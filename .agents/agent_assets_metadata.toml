@@ -185,3 +185,9 @@ id = "exxvbW9C_pUD7TGOvtaDM"
 uri = "file://docs/audits/TODAY_BASELINE_STATE_SNAPSHOT.md"
 type = "text"
 title = "The Syndicate — TODAY Baseline State Snapshot"
+
+[[outputs]]
+id = "PduZRc6FNEbd89r5HM9jv"
+uri = "file://docs/proposals/ERA_ENGINE_V2_RECONCILIATION_SPRINT0.md"
+type = "text"
+title = "Era Engine (V2) Reconciliation Report — Sprint 0"
