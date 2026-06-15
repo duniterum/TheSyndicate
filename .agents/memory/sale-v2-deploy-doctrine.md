@@ -63,6 +63,11 @@ real pause block.
   seats beyond the reserve target.
 - **Why:** prevents the founder over-sourcing SYN or fearing an unfunded deploy. Verify the live number
   with a fork read of `currentReserveFloor()` after any param change — do not trust a memorized figure.
+- **Funding SOURCE — read the live balance, the 997,500 figure is STALE.** The recovered wallet
+  `0x975a…ecec8` was topped up well beyond the V1 sweep and (live read 2026-06-15) holds **~349,997,500
+  SYN**, so it alone covers the 5M funding and is the recommended source; the Vault Reserve
+  `0x205DdC…f464` (250M SYN) is the alternative. Always `cast call SYN balanceOf` the source before
+  recommending it — never repeat the "recovered = 997,500" number.
 
 ## Where this lives in the docs
 Reviewer packet §7 (mainnet-direct checklist), §7a (deploy blockers), §7b (EOA-vs-multisig risk note);
