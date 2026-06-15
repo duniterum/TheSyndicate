@@ -1,0 +1,162 @@
+Recalibrate from the Consolidated Completion Roadmap and the accepted Model 2 decision.
+
+We are now optimizing for speed of execution.
+
+Important:
+
+Do NOT reopen architecture.
+Do NOT reopen economics.
+Do NOT reopen identity.
+Do NOT reopen referral doctrine.
+Do NOT redesign.
+Do NOT deploy.
+Do NOT move funds.
+
+Goal:
+
+Minimize total calendar time to first controlled V2 buy.
+
+We are no longer optimizing for analysis.
+
+We are optimizing for parallel execution.
+
+Task:
+
+Create an Execution Compression Plan.
+
+First:
+
+Review all remaining work:
+
+* WS1 multi-source indexing
+* WS2 V1 proof flow
+* members.json export tooling
+* Merkle generation pipeline
+* deployment scripts
+* deployment parameter assembly
+* external audit package
+* frontend V2 activation
+* V1 sealing process
+* snapshot process
+* funding process
+* first-buy process
+
+Then:
+
+1. Parallelization Matrix
+
+Show:
+
+Can start immediately
+Depends on nothing
+
+Can start immediately but finishes later
+
+Depends on WS1
+
+Depends on audit
+
+Depends on snapshot
+
+Depends on deploy
+
+I want the maximum parallel execution plan.
+
+2. WS1 + WS2 Compression
+
+Evaluate:
+
+Should WS1 and WS2 really be separate sprints?
+
+Or can they be developed together in one branch and reviewed together?
+
+Return recommendation.
+
+3. Snapshot Preparation
+
+Do NOT execute snapshot.
+
+Prepare everything needed BEFORE the actual snapshot:
+
+* export tooling
+* proof tooling
+* root tooling
+* validation tooling
+* documentation
+
+Goal:
+
+When V1 is sealed, snapshot generation should be almost instant.
+
+4. Audit Package Readiness
+
+Do a final review of the audit package.
+
+Return:
+
+Missing
+Incomplete
+Stale
+Ready
+
+Identify every item that can be fixed BEFORE auditors begin.
+
+5. Deployment Preparation
+
+Without deploying:
+
+Prepare all deploy-time assets:
+
+* scripts
+* parameter manifests
+* checklists
+* verification commands
+* read-back assertions
+
+So that deployment becomes a mechanical operation.
+
+6. Critical Path Reduction
+
+Current roadmap estimates ~5 execution sprints.
+
+Show:
+
+Original path
+
+Compressed path
+
+Best possible path
+
+And identify:
+
+What is the true bottleneck?
+
+Audit?
+Snapshot?
+Frontend?
+Funding?
+Legal?
+
+7. Final Recommendation
+
+Return:
+
+A. Work that should start immediately
+B. Work that should run in parallel
+C. Work that must wait
+D. Work that is unnecessary now
+
+Important:
+
+I am not asking for more planning.
+
+I am asking how to finish faster.
+
+Output:
+
+* compressed execution roadmap
+* critical path
+* revised timeline
+* revised sprint structure
+
+Focus only on completion speed.

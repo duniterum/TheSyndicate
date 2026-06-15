@@ -29,6 +29,20 @@ final addrCaps · final maxUsdcPerTx · final reserveThroughSeat · `router.oper
 SaleV2.OPERATIONS` (M1) · sourceConfig verified · V1 proof-gen flow documented · owner EOA verified ·
 router source verified · SaleV2 source verified.
 
+## Compression / sequencing (speed)
+- **Deploy with `router == address(0)`** for the first controlled buy. ADDING a router post-deploy
+  costs `ROUTER_TIMELOCK` (14 days); the first buy needs NO referral, so keep referral fully
+  post-launch and the 14-day timelock OFF the critical path. Only set the router AT construction if
+  referral is genuinely wanted day-one (construction-time router has no timelock).
+- **Seal V1 LATE, not early.** Sealing pauses ALL V1 sales, so doing it weeks before V2 is live = a
+  dead no-active-sale window. Pre-build + dry-run the WHOLE snapshot pipeline on live V1 (#1–#2 only,
+  tiny) so seal→snapshot→deploy→activate is a hours-long mechanical sequence; seal only when the
+  audit is cleared and deploy is imminent. The snapshot is effectively pre-computable (re-confirm at
+  seal), not a build step.
+- **WS1 + WS2 are ONE coupled change, not two sprints** — they share files (sale-v2-abi, syndicate-
+  config, LivePurchase, holder-index) and WS2's ref→address needs WS1's unified index; build on one
+  branch, review once against the combined test matrix.
+
 ## Where this lives in the docs
 Reviewer packet §7 (mainnet-direct checklist), §7a (deploy blockers), §7b (EOA-vs-multisig risk note);
 `SALE_V2_REFERRAL_LAUNCH_EXECUTION_PLAN.md` (deploy sequence); `contracts/README.md` (status banner +
