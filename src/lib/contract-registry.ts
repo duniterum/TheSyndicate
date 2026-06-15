@@ -16,7 +16,7 @@
  * no "0x000…", no inferred addresses.
  */
 
-import { CONTRACTS, isLiveAddress } from "./syndicate-config";
+import { CONTRACTS, isLiveAddress, MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS } from "./syndicate-config";
 import { addressUrl, tokenUrl, contractUrl, CHAIN_REGISTRY } from "./chain-registry";
 
 export type ContractRole =
@@ -99,6 +99,15 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     "LIVE",
     CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS,
     "USDC → SYN sale, 70/20/10 split enforced on-chain.",
+    "src/lib/sale-abi.ts",
+  ),
+  entry(
+    "MEMBERSHIP_SALE_V2",
+    "Syndicate Membership Sale V2",
+    "sale",
+    "PENDING",
+    MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
+    "Model 2 continuation sale (per-era SYN caps, V1 recognition, external CommissionRouter). NOT DEPLOYED — address PENDING; indexer/ABI staged dormant. Continues Genesis numbering via the Holder Index, never a new member registry.",
     "src/lib/sale-abi.ts",
   ),
   entry(

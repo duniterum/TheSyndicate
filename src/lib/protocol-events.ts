@@ -19,7 +19,7 @@ import { useLivePurchaseEvents } from "./activity-hooks";
 import { useLpSwaps, useLpLiquidityEvents, useUsdcFlows } from "./onchain-events";
 import { useArchiveMintEvents } from "./archive-mint-events";
 import { useSynBurnEvents } from "./syn-burn-events";
-import { CONTRACTS, rankForUsdc, txExplorerUrl, SYN_BURN_ADDRESS } from "./syndicate-config";
+import { CONTRACTS, rankForUsdc, txExplorerUrl, SYN_BURN_ADDRESS, MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS } from "./syndicate-config";
 import { isValidTxHash } from "@/components/syndicate/TxProofDrawer";
 import { labelForAddress } from "./known-addresses";
 import { classifyFounderAction, type FounderActionCategory } from "./founder-actions";
@@ -213,6 +213,10 @@ export function useProtocolEvents(opts?: { limit?: number }) {
 
     for (const p of purchases.data ?? []) {
       const rank = rankForUsdc(p.usdcAmount).current?.name ?? "Member";
+      // Attribute each purchase to the sale contract it actually came from.
+      // V2 is dormant today (null address ⇒ no v2 events), so this resolves to
+      // SALE for every current event — byte-identical until V2 deploys.
+      const saleSource = p.source === "v2" && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS : SALE;
       out.push(
         enrichEvent(
           {
@@ -227,7 +231,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
             actor: p.buyer,
             badge: "live",
           },
-          { from: p.buyer, to: SALE, amount: p.usdcAmount, token: "USDC", sourceContract: SALE },
+          { from: p.buyer, to: saleSource, amount: p.usdcAmount, token: "USDC", sourceContract: saleSource },
         ),
       );
       const memberNo = memberIndex.get(`${p.txHash}-${p.logIndex}`);
@@ -245,7 +249,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
               actor: p.buyer,
               badge: "info",
             },
-            { from: p.buyer, to: SALE, sourceContract: SALE, memberOrdinal: memberNo },
+            { from: p.buyer, to: saleSource, sourceContract: saleSource, memberOrdinal: memberNo },
           ),
         );
       }
@@ -267,7 +271,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
               actor: p.buyer,
               badge: "info",
             },
-            { from: p.buyer, sourceContract: SALE },
+            { from: p.buyer, sourceContract: saleSource },
           ),
         );
       }

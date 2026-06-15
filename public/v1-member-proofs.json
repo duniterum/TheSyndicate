@@ -1,0 +1,7 @@
+{
+  "pending": true,
+  "root": null,
+  "count": 0,
+  "proofs": {},
+  "note": "PLACEHOLDER — not a real snapshot. The production artifact is generated from a live V1 snapshot via contracts/tools/export-members.mjs -> gen-v1-root.mjs -> validate-snapshot.mjs, and its `root` must equal the V1_MEMBER_ROOT baked into the deployed Sale V2. While `pending` is true the V2 buy flow fails closed (it refuses to build buy args) so no V1 member is ever mis-handled as a new seat."
+}

@@ -137,6 +137,7 @@ function buildPreviewIndex(cfg: PresetConfig, real: HolderIndex): HolderIndex {
     const usdc = viewer ? cfg.usdc : 25; // neighbours: Operator-tier, no amounts shown anyway
     const syn = viewer ? cfg.syn : 2_500;
     events.push({
+      source: "v1",
       buyer: seatWallet(i),
       purchaseId: BigInt(i),
       usdcAmount: usdc,

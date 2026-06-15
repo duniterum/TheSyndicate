@@ -26,6 +26,7 @@ const read = (rel: string) => readFileSync(join(ROOT, rel), "utf8");
 
 function ev(block: number, logIndex: number): PurchaseEvent {
   return {
+    source: "v1",
     buyer: `0x${"0".repeat(39)}${logIndex % 10}`,
     purchaseId: BigInt(block * 100 + logIndex),
     usdcAmount: 100,
@@ -83,8 +84,10 @@ describe("P0 · applyPurchaseLimit (slice happens after the fetch)", () => {
 describe("P0 · canonical query key (one scan per chain/sale, not per limit)", () => {
   const src = read("src/lib/activity-hooks.ts");
 
-  it("the live-purchases queryKey does NOT include limit", () => {
-    expect(src).toMatch(/queryKey:\s*\["live-purchases",\s*String\(fromBlock\),\s*SALE\]/);
+  it("the live-purchases queryKey does NOT include limit (carries the V2 address)", () => {
+    expect(src).toMatch(
+      /queryKey:\s*\["live-purchases",\s*String\(fromBlock\),\s*SALE,\s*saleV2\s*\?\?\s*"v2-pending"\]/,
+    );
     // Anti-regression: the old per-limit key must be gone.
     expect(src).not.toMatch(/\["live-purchases",\s*String\(fromBlock\),\s*limit/);
   });

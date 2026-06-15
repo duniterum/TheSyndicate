@@ -255,9 +255,9 @@ drafts are STRICTLY the following — no economics, referral, era, reserve, or d
 Toolchain: solc `0.8.24` pinned, `evm=paris`, optimizer `runs=200`, `via_ir=true` (`buy()` exceeds
 the legacy stack limit). Build/test/Slither/root-gen instructions: `contracts/README.md`.
 
-## 9a — Test matrix (59 tests green; fuzz at 512 runs)
+## 9a — Test matrix (71 tests green; fuzz at 512 runs)
 
-`forge test` → **59 passed, 0 failed** (`test/CommissionRouterV1.t.sol` 21 · `test/SyndicateSaleV2.t.sol` 38).
+`forge test` → **71 passed, 0 failed** (`test/CommissionRouterV1.t.sol` 21 · `test/SyndicateSaleV2.t.sol` 50).
 Each §5 invariant and §6 requirement maps to concrete tests:
 
 | Invariant / finding | Covering test(s) |
@@ -307,7 +307,8 @@ and `test/SyndicateSaleV2.t.sol`).
 
 ## 11 — Static analysis (Slither) result
 
-`slither .` (full output saved to `contracts/audit/slither-report.txt`): **no high/medium findings
+`slither .` (authoritative current output: `contracts/audit/slither-report-14day.txt` — the post-F4
+run with both timelocks = `14 days`; the prior pre-F4 run is `contracts/audit/slither-report.txt`): **no high/medium findings
 in `src/`.** All results are informational — either in vendored OpenZeppelin (the `^0.8.20` pragma
 notice, `Address` low-level calls inside `SafeERC20`, unindexed `Pausable` events) or by-design notes
 on our code: `buy()` cyclomatic complexity (intentional single-CEI era/cap/reserve path), UPPERCASE

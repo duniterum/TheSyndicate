@@ -1,0 +1,8 @@
+node_modules/
+
+# Generated snapshot artifacts (real or partial) — never commit; regenerate via
+# the RUNBOOK. The published proof artifact lives at public/v1-member-proofs.json.
+members.json
+members.txt
+members.snapshot.json
+v1-merkle.json

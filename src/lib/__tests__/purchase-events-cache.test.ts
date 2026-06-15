@@ -23,6 +23,7 @@ import { applyPurchaseLimit, type PurchaseEvent } from "../activity-hooks";
 
 function ev(block: number, logIndex: number): PurchaseEvent {
   return {
+    source: "v1",
     buyer: `0x${"0".repeat(39)}${logIndex % 10}`,
     purchaseId: BigInt(block * 100 + logIndex),
     usdcAmount: 100,

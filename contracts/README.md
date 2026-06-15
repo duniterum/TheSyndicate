@@ -16,7 +16,7 @@ frozen architecture drafts.
 |---|---|
 | `src/SyndicateSaleV2.sol` | Production membership sale engine (era table, caps, reserve, 70/20/10, Merkle V1 recognition, timelocked router wiring). |
 | `src/CommissionRouterV1.sol` | Production referral router (Operations-slice-only, tier ladder, push/escrow, RAL `Attribution` event). |
-| `test/SyndicateSaleV2.t.sol` | 38 tests (incl. fuzz) — constructor validation, buy path, era engine, caps, reserve, Merkle, router glue, pause/recovery, reentrancy. |
+| `test/SyndicateSaleV2.t.sol` | 50 tests (incl. fuzz) — constructor validation, buy path, era engine, caps, reserve, Merkle, router glue, pause/recovery, reentrancy. |
 | `test/CommissionRouterV1.t.sol` | 21 tests (incl. fuzz) — tier ladder/boundaries, split conservation, H4 guard, source allow-list, push/escrow/claim, full RAL reconstruction. |
 | `test/mocks/` | `MockERC20` (configurable decimals), `BlocklistERC20` (USDC-blocklist sim), `MockSource` (allow-listed sale), `RevertingRouter` / `ReentrantRouter` (router fallback + reentrancy). |
 | `audit/slither-report.txt` | Saved Slither output (see "Static analysis" below). |
@@ -48,12 +48,12 @@ export FOUNDRY_DIR=/home/runner/workspace/.config/.foundry
 
 cd contracts
 forge build                 # compile
-forge test                  # run all 59 tests
+forge test                  # run all 71 tests
 forge test --gas-report     # tests + gas table
 forge test --match-contract SyndicateSaleV2Test -vvv   # focused, verbose
 ```
 
-Expected: **59 passed; 0 failed** (21 router + 38 sale).
+Expected: **71 passed; 0 failed** (21 router + 50 sale).
 
 ## Static analysis (Slither)
 

@@ -1,0 +1,16 @@
+{
+  "_README": "TEMPLATE — NOT a real deploy config. Do NOT deploy from placeholder values. genesisOffset + v1MemberRoot come from the LIVE V1 snapshot (pause V1 <= #333, then contracts/tools/export-members.mjs -> gen-v1-root.mjs -> validate-snapshot.mjs). The economic caps (addrCaps / eraCaps / maxUsdcPerTx / reserveThroughSeat) MUST be transcribed from docs/proposals/SALE_V2_FINAL_DEPLOY_PARAMETER_SHEET.md (Model B; J3 address-cap ramp, J13 SYN caps, J14 per-tx) and signed off. initialRouter is intentionally NOT read here — Deploy.s.sol forces address(0) (day-one no referral; wire the CommissionRouter post-deploy via the timelocked path). All numeric values are JSON strings so big SYN caps (18dp) survive parsing.",
+  "_PLACEHOLDER_FIELDS": ["vault", "liquidity", "operations", "genesisOffset", "v1MemberRoot", "addrCaps[1..8]", "eraCaps[1..8]", "maxUsdcPerTx"],
+  "usdc": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+  "syn": "0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
+  "vault": "0x0000000000000000000000000000000000000000",
+  "liquidity": "0x0000000000000000000000000000000000000000",
+  "operations": "0x0000000000000000000000000000000000000000",
+  "genesisOffset": "0",
+  "v1MemberRoot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "addrCaps": ["5000000", "0", "0", "0", "0", "0", "0", "0", "0"],
+  "maxUsdcPerTx": "0",
+  "reserveThroughSeat": "10000",
+  "eraCaps": ["0", "0", "0", "0", "0", "0", "0", "0", "0"],
+  "initialRouter": "0x0000000000000000000000000000000000000000"
+}

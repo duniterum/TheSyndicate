@@ -1,0 +1,121 @@
+Yes. Start Wave 1 now.
+
+Important correction:
+For now, external audit = internal audit by ChatGPT/Replit + Foundry + Slither + architect review.
+
+Do NOT wait for external auditors.
+Do NOT make external audit a launch blocker for this experimental mainnet rollout.
+
+We are live-mainnet experimenting with small amounts, no promises, no ROI/yield/equity wording, and controlled funding.
+
+Goal:
+Compress execution and prepare for first controlled V2 buy as fast as safely possible.
+
+Start Wave 1.
+
+Scope:
+Implement the combined WS1 + WS2 branch and execution tooling.
+
+Do NOT deploy.
+Do NOT move funds.
+Do NOT publish frontend.
+Do NOT touch Sale V1 yet.
+Do NOT reopen architecture.
+Do NOT change contracts unless a true blocker appears.
+
+Wave 1 tasks:
+
+1. Combined WS1 + WS2 frontend/indexing branch
+
+Implement:
+
+* V1 + V2 multi-source indexing
+* V2 Purchased/Routed event support
+* NormalizedPurchase model
+* Holder Index identity view
+* contribution/spend view
+* V2 firstSeat=true creates member
+* V2 firstSeat=false updates spend only
+* global sorting by blockNumber/logIndex
+* cache schema bump
+* V2 address pending/null safe mode
+* current live V1 behavior unchanged
+
+2. V1 proof flow
+
+Implement:
+
+* proof artifact format
+* proof lookup util
+* fail-closed logic for known V1 wallets
+* buy(usdcIn, referrer, minSynOut, v1Proof[]) integration preparation
+* claimV1Membership support if needed
+* returning V1 member cannot accidentally mint a second seat
+
+Use fixtures/mock proof data until live snapshot.
+
+3. Snapshot tooling
+
+Add physical runnable tooling:
+
+* export members.json from current V1 logs / Holder Index logic
+* generate V1_MEMBER_ROOT
+* generate v1-merkle.json
+* validate proof replay
+* dry-run on current 2-member V1 state if RPC access works
+
+Do not pause V1 yet.
+
+4. Deployment tooling
+
+Prepare, but do not execute:
+
+* deploy-params.json manifest
+* Deploy.s.sol or equivalent deploy script
+* verify-deploy/read-back assertions
+* forked-mainnet rehearsal if possible
+* commands for mainnet direct deployment later
+
+5. Audit/package sync
+
+Since external audit is not a launch blocker for now:
+
+* sync stale test counts
+* sync Slither artifact references
+* ensure reviewer packet matches current 71-test state
+* keep package ready for later professional audit
+
+6. Tests
+
+Run:
+
+* relevant frontend/unit tests
+* Holder Index tests
+* new normalization tests
+* proof-flow tests
+* Foundry only if any contract/ABI-impacting logic requires it
+* typecheck
+* production build if feasible
+* architect/code review
+
+7. Output report
+
+Return:
+
+A. Files changed
+B. WS1 implementation summary
+C. WS2 implementation summary
+D. Snapshot tooling added
+E. Deployment tooling added
+F. Tests/checks run
+G. What remains before V1 seal
+H. What remains before deployment
+I. What remains before first controlled V2 buy
+J. Whether Wave 1 is complete
+K. Recommended next step
+
+Important:
+We are accelerating.
+No more broad reports.
+No more architecture loops.
+If a task is safe and in scope, execute it autonomously.

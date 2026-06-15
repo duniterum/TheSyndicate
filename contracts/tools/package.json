@@ -1,0 +1,17 @@
+{
+  "name": "syndicate-contracts-tools",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Isolated, read-only tooling for Sale V2: V1 snapshot export, Merkle root generation, snapshot validation, and post-deploy read-back verification. No dependency on the main app.",
+  "scripts": {
+    "export-members": "node export-members.mjs",
+    "gen-root": "node gen-v1-root.mjs",
+    "validate-snapshot": "node validate-snapshot.mjs",
+    "verify-deploy": "node verify-deploy.mjs"
+  },
+  "dependencies": {
+    "@openzeppelin/merkle-tree": "^1.0.7",
+    "viem": "^2.21.0"
+  }
+}

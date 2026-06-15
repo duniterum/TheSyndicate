@@ -113,7 +113,7 @@ return MerkleProof.verify(proof, V1_MEMBER_ROOT, leaf);
   `claimV1Membership` idempotency, seat continuity from `genesisOffset`,
   reserve-floor reverts. (Suite GREEN. NOTE: the later **2026-06-15 F4
   parameter-lock** changed the timelock constants in
-  `contracts/src/SyndicateSaleV2.sol` and re-ran the full Foundry suite — 59 tests
+  `contracts/src/SyndicateSaleV2.sol` and re-ran the full Foundry suite — 71 tests
   GREEN; this plan's V1-proof coverage is unaffected.)
 - `contracts/README.md` — the canonical `V1_MEMBER_ROOT` generation procedure.
 

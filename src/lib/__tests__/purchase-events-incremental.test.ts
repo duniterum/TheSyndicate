@@ -31,6 +31,7 @@ const read = (rel: string) => readFileSync(join(ROOT, rel), "utf8");
 // deliberately re-emit the same event (the reorg-overlap case).
 function ev(block: number, logIndex: number): PurchaseEvent {
   return {
+    source: "v1",
     buyer: `0x${"0".repeat(39)}${logIndex % 10}`,
     purchaseId: BigInt(block * 100 + logIndex),
     usdcAmount: 100,
@@ -148,7 +149,22 @@ describe("P4a · source invariants on useLivePurchaseEvents", () => {
     expect(src).toMatch(/mergePurchaseEvents\(cached\?\.events \?\? \[\], fresh\)/);
   });
 
-  it("keeps the canonical queryKey (one scan per chain/sale, not per limit)", () => {
-    expect(src).toMatch(/queryKey:\s*\["live-purchases",\s*String\(fromBlock\),\s*SALE\]/);
+  it("V2 is dormant until live: the queryFn returns the V1 list unchanged when V2 is null", () => {
+    expect(src).toMatch(/if \(!saleV2 \|\| SALE_V2_DEPLOYMENT_BLOCK === null\) return v1/);
+  });
+
+  it("the V2 money-split join fails closed: joinIncomplete gates persistence, no zero-fill", () => {
+    expect(src).toMatch(/joinV2PurchaseEvents\(purchased, routedByTx\)/);
+    expect(src).toMatch(/routedFailed \|\| purchasedFailed \|\| joinIncomplete/);
+    // Anti-regression: the old zero-fill of an absent Routed split must be gone.
+    expect(src).not.toMatch(/split\?\.vault \?\? 0/);
+  });
+
+  it("keeps the canonical queryKey (one scan per chain/sale + V2 addr, not per limit)", () => {
+    expect(src).toMatch(
+      /queryKey:\s*\["live-purchases",\s*String\(fromBlock\),\s*SALE,\s*saleV2\s*\?\?\s*"v2-pending"\]/,
+    );
+    // Anti-regression: limit must never enter the canonical key.
+    expect(src).not.toMatch(/\["live-purchases",\s*String\(fromBlock\),\s*limit/);
   });
 });
