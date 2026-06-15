@@ -1,0 +1,120 @@
+Funding is done.
+
+Funding tx:
+https://snowtrace.io/tx/0x38db4d34362087805a4acfd05ab74195175aed305695795c48a3f60e0e4b3802
+
+SaleV2:
+0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48
+
+Proceed immediately.
+
+Tasks:
+
+1. Verify funding
+
+Read on-chain:
+
+* SYN.balanceOf(SaleV2)
+* currentReserveFloor()
+* sellableSynForNextSeat()
+* availableSyn()
+
+Expected:
+
+* balance = 5,000,000 SYN
+* floor = 4,099,000 SYN
+* sellable > 0
+* availableSyn = 5,000,000 SYN
+
+If mismatch, STOP.
+
+2. Prepare first controlled buy
+
+Use a fresh buyer wallet if available.
+
+Buy:
+
+* 5 USDC
+* raw USDC = 5000000
+* referrer = address(0)
+* v1Proof = []
+* minSynOut = 500000000000000000000
+
+Expected:
+
+* member #3
+* 500 SYN
+* Era I
+* Genesis Signal
+* no referral
+* 70/20/10 routing
+
+Give exact approve + buy commands and wait for my signature.
+
+3. After buy is signed
+
+Verify:
+
+* memberCount == 3
+* memberNumberOf(buyer) == 3
+* knownMember(buyer) == true
+* buyer SYN +500
+* SaleV2 SYN = 4,999,500
+* Vault +3.5 USDC
+* Liquidity +1 USDC
+* Operations +0.5 USDC
+* Routed + Purchased events visible
+
+4. Then autonomously wire frontend
+
+After first buy verification, update:
+
+* SaleV2 address
+* deployment block 88095827
+* public/v1-member-proofs.json pending:false
+* Holder Index V1 + V2
+* homepage live metrics
+* /join
+* /my-syndicate
+* /members
+* /member/3
+* /activity
+* /registry
+* /transparency
+
+V1 must show as sealed/history.
+V2 must show as live.
+Genesis continues from #3.
+Referral remains hidden/noindex.
+No fabricated values.
+No stale pending copy.
+No ROI/yield/equity/promises.
+
+5. QA
+
+Run:
+
+* typecheck
+* build
+* route smoke
+* content guard
+* banned wording guard
+* live-read smoke
+* mobile sanity
+
+6. Final report
+
+Return:
+
+A. Funding verification
+B. First buy command
+C. First buy verification
+D. Frontend files changed
+E. Pages updated
+F. Tests run
+G. Final V2 status
+
+No architecture.
+No doctrine.
+No delay.
+Execution only.
