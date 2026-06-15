@@ -52,6 +52,13 @@ derived from the Holder Index first-seen ordering, with NO V1-vs-V2 branch:
 - **Cache migration:** `purchase-events-cache` must bump its schema/version and key on
   chainId + BOTH sale addresses + both deployment blocks; prefer per-source cursors over one
   global cursor, or an old V1-only snapshot silently hides V2 events.
+- **Seal V1 AT the snapshot block (correctness, not optional):** `V1_MEMBER_ROOT` is an
+  IMMUTABLE constructor arg frozen from the snapshot. Any V1 sale that lands AFTER the
+  snapshot creates a V1 member absent from the root → unrecognizable in V2 → orphaned
+  identity or double-seat. So V1 must be `pause()`d (it exposes `paused()` → OZ Pausable;
+  permanent seal = pause + optionally sweep unsold SYN) at/before the snapshot block, and no
+  in-flight V1 buy may land between snapshot and pause. Sealing ≠ deleting: keep V1 on-chain,
+  Holder Index keeps reading its history forever; sealing only stops NEW first-seen entries.
 
 ## Audit ANTI-PATTERN (apply to every future Model 2 continuity pass)
 Pure member-number boundaries — "#1–#333", "Chapter I seals at #333", "Founders #1–#333" —
