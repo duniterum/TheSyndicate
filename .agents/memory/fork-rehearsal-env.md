@@ -45,3 +45,18 @@ fat-finger broadcast would make stale/phantom V1 membership authoritative on-cha
 pause block, overwrite `genesisOffset`/`v1MemberRoot`, and set `"provisional": false`
 — the ONLY way to deploy without the env opt-in. Never set `provisional:false` while
 the values are still pre-pause.
+
+## Canonical-pass gotchas (observed during the real V1 seal pass)
+- **`verify-deploy.mjs` is cwd-relative.** It `readFileSync("../script/deploy-params.json")`,
+  so it MUST run from `contracts/tools/` (`cd tools && SALE_V2=… RPC_URL=… node verify-deploy.mjs`).
+  Running it from `contracts/` throws `ENOENT ../script/deploy-params.json` — invocation
+  bug, not a deploy failure.
+- **`export-members.mjs` over the full V1 range:** point `RPC_URL` at the drpc archive and
+  widen `LOG_CHUNK=10000` (the default 2048 = ~454 sequential getLogs over the ~930k-block
+  V1 lifetime). Watch stderr for `! getLogs … failed` — any chunk failure silently drops
+  logs (sets exitCode=1 but continues); a clean run prints `unique V1 members = N`.
+- **Determinism check:** the canonical pause-block snapshot reproduced the earlier
+  pre-pause dry-run root EXACTLY (same 2 buyers, no purchases between the dry-run and the
+  pause). Identical root is the expected, healthy outcome — not a copy/stale artifact.
+- **Once `provisional:false`,** `Deploy.s.sol` broadcasts through the guard with NO
+  `ALLOW_PROVISIONAL_DEPLOY` env — that is the proof the gate flipped correctly.
