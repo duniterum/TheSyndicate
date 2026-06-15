@@ -45,13 +45,13 @@ export function HeroActivityRail({ className = "" }: { className?: string }) {
       </div>
 
       {hasRows ? (
-        <ul className="-mb-1 divide-y divide-border/40">
+        <ul className="-mb-1 min-h-[15rem] divide-y divide-border/40">
           {rows.map((e) => (
             <HeroEventRow key={e.id} e={e} />
           ))}
         </ul>
       ) : (
-        <div className="py-7 text-center">
+        <div className="flex min-h-[15rem] flex-col items-center justify-center text-center">
           <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             {isLoading ? "Reading recent blocks" : "Awaiting first event"}
           </div>
