@@ -150,17 +150,23 @@ inventory**, never a contract promise.
 3. **Pause V1.** (This is the one unavoidable discretionary action in the whole
    model — a one-time migration step on the *old* contract, not a recurring
    economic lever on V2.)
-4. Deploy V2 with `GENESIS_OFFSET = C` and `V1_MEMBER_ROOT = root`. The draft
-   requires `C ≥ 333` so V2 can only ever sell Era II+ (Genesis remains V1-only).
+4. Deploy V2 with `GENESIS_OFFSET = C` and `V1_MEMBER_ROOT = root`. **Model 2
+   (ratified, 2026-06-15):** `C` may be the REAL V1 count anywhere in
+   `[0, 1_000_000)`. If `C < 333`, V2 **continues Genesis** from seat `C + 1` at
+   Era I pricing (100 SYN/USDC); Era II still opens at #334. (The frozen §L draft
+   still shows the old `C ≥ 333` floor — superseded; see the §L production delta.)
 5. Fund V2 with its membership-distribution SYN allocation (separate authorized
    tx — see §C).
 6. Frontend flips the buy surface from V1 to V2; `eras.ts` Era II+ flip
    `FUTURE → LIVE` (a code change, reviewed separately).
 
-> **Why pause V1 at exactly #333?** If V1 sells to #340 before pausing, then
-> `GENESIS_OFFSET = 340` and Era II would start at global #341, not #334 — the
-> whole narrative ladder shifts by 7. Pausing precisely at the Genesis ceiling
-> keeps the published boundaries true. This is **Human Review item J1.**
+> **Where to pause V1? (Model 2)** Pausing *below* the Genesis ceiling is now
+> SAFE: with `GENESIS_OFFSET = C < 333`, V2 continues selling the remaining
+> Genesis seats (`C + 1 … 333`) at Era I pricing, and **Era II still opens at
+> global #334** — the published narrative ladder is preserved. The one case that
+> still shifts every boundary is an *overshoot*: if V1 sells past #333 before
+> pausing, Era II would start late. So pause **at or below #333; never above.**
+> This is **Human Review item J1.**
 
 ---
 
@@ -549,8 +555,11 @@ pause-and-sweep of unsold inventory.**
 ### H3. Unit — membership, V1 recognition & caps
 - First buy sets `knownMember`, assigns `memberCount+1`, emits `firstSeat=true`.
 - Second buy by same address: no new number, `firstSeat=false`.
-- `GENESIS_OFFSET` seeding: with offset 333, first V2 newcomer is #334 (Era II).
-- Constructor reverts when `genesisOffset < 333` or `≥ 1_000_000`.
+- `GENESIS_OFFSET` seeding: with offset 333, first V2 newcomer is #334 (Era II);
+  under Model 2 with offset `C < 333`, the first V2 newcomer is seat `C + 1`,
+  priced in Era I (Genesis, 100 SYN/USDC) until #334 opens Era II.
+- Constructor reverts when `genesisOffset ≥ 1_000_000` (Model 2: the lower 333
+  floor was removed; `[0, 1_000_000)` is valid).
 - **V1 recognition:** an address in `V1_MEMBER_ROOT` that supplies a valid proof
   (via `claimV1Membership` or inline in `buy`) is `knownMember`, gets **no new
   seat**, does **not** increment `memberCount`, emits `firstSeat=false`, and is a
@@ -693,7 +702,7 @@ pause-and-sweep of unsold inventory.**
 
 | # | Decision | Recommendation | Why it matters |
 | --- | --- | --- | --- |
-| J1 | Pause V1 exactly at seat #333? | **Yes** — pause at the Genesis ceiling, then deploy V2 with `GENESIS_OFFSET = 333`. | If V1 overshoots, every era boundary shifts. The draft enforces `offset ≥ 333` but cannot enforce *exactly* 333. |
+| J1 | Where to pause V1 / set `genesisOffset`? | **Model 2 (ratified):** pause V1 at or below the Genesis ceiling and deploy V2 with `GENESIS_OFFSET = the REAL V1 count`. If `< 333`, V2 continues Genesis from `offset + 1` at Era I pricing; Era II still opens at #334. | The production contract enforces only `offset < FINAL_SEAT` (no lower floor). It cannot verify the count is *real* (a too-high value invents phantom seats), and an *overshoot* past #333 still shifts Era II late — so a live V1 snapshot, paused ≤ #333, is the blocker. |
 | J2 | V2 SYN funding amount `F` | Model repeats/upgrades by era; fund with headroom but `F ≤ 350M − (V1 already sold)`. | Determines when the honest inventory hard-stop hits. |
 | J3 | Per-era address caps (`maxUsdcPerAddressPerEra[1..9]`) | Set **one value per era** from the funding model — a single global cap is wrong (it let one wallet drain a tiny early era). Defensible ramp: II $1k · III $2.5k · IV $5k · V $10k · VI $15k · VII $20k · VIII/IX $25k. Each must be ≥ its era's USDC minimum. | The primary anti-whale + distribution-fairness lever; now sized per era so early eras are genuinely protected. |
 | J4 | Wallet rotation: immutable vs 2-step timelock | **Immutable** unless ops requires rotation. | Immutable = max trust; rotation = a live privileged path to scrutinize. |
@@ -780,6 +789,28 @@ UI never hardcodes a rate and always reads on-chain truth.
 > (`contracts/src/SyndicateSaleV2.sol`) and this document's prose set **both to
 > 14 days**. Treat **14 days** as authoritative; the 7-day value here is a
 > preserved historical snapshot only.
+>
+> **Model 2 production delta (2026-06-15).** This embedded block is the frozen
+> pre-Model-2 draft and still shows the constructor floor
+> `genesisOffset < GENESIS_END || genesisOffset >= FINAL_SEAT`, plus the
+> `Genesis is V1-only` / `Era 1 (Genesis) is unused by V2` NatSpec and the
+> `// Genesis (V1-only)` era-tuple comment. It also shows the original
+> sellable-era constructor loop, which validated and stored a finite
+> `eraSynCap[e]` for **every** sellable era including Era I. Per the ratified
+> **Model 2**, the **production source** (`contracts/src/SyndicateSaleV2.sol`)
+> applies TWO deltas: (1) it **removes the lower floor** — the only constructor
+> check is `genesisOffset >= FINAL_SEAT` — so V2 can continue Genesis from a real
+> sub-333 V1 count at Era I pricing; and (2) it makes **Genesis (Era I)
+> range-bounded** — when Era I is the start era the constructor forces
+> `eraSynCap[1] = type(uint256).max` (ignoring `eraCaps[0]`), so Genesis advances
+> to Era II **only by reaching seat #334**, never by aggregate-cap exhaustion.
+> Without delta (2), repeat / recognized-V1 buys could grow `soldInEra[1]` and
+> cap-advance to Era II before #334, mispricing Genesis seats — the exact
+> invariant Model 2 guarantees. Anti-whale for Genesis remains `addrCaps[0]` + the
+> 333 ceiling + the reserve floor. Eras II–IX keep their finite §Q caps unchanged.
+> Treat the production source as authoritative; the floor, the finite-Era-I-cap
+> loop, and the "V1-only" wording embedded here are a preserved historical
+> snapshot only.
 
 ```solidity
 // SPDX-License-Identifier: UNLICENSED

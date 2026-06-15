@@ -51,18 +51,24 @@ constructor(
 | 3 | `vault` | `0x205DdC8921A4C60106930eE35e1F395c8D13f464` | address | **FINAL** | 70% slice; `CONTRACTS.VAULT_WALLET` (= Vault Reserve) | — |
 | 4 | `liquidity` | `0xa9b072db8DcDbb470235204B69D37275d74a2e25` | address | **FINAL** | 20% slice; `CONTRACTS.LIQUIDITY_WALLET` | — |
 | 5 | `operations` | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` | address | **FINAL** | 10% slice; `CONTRACTS.OPERATIONS_WALLET` | — |
-| 6 | `genesisOffset` | Final V1 unique-member count (recommend pause V1 at the Genesis ceiling → **333**) | seat # | **DECISION** | `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` §A3, J1; constructor reverts if `< 333` or `>= 1_000_000` | **Live V1 snapshot at handoff** |
+| 6 | `genesisOffset` | Final V1 unique-member count at handoff — **any real count in `[0, 1_000_000)`** (Model 2). If V1 sealed **below** the Genesis ceiling (333), V2 **continues Genesis** from seat `genesisOffset + 1` at Era I pricing; Era II still opens at #334 | seat # | **DECISION** | `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` §A3, J1; constructor reverts **only** if `>= 1_000_000` | **Live V1 snapshot at handoff (pause ≤ #333)** |
 | 7 | `v1MemberRoot` | Merkle root of the frozen V1 member address set | bytes32 | **DECISION** | `contracts/README.md` (exact root-generation procedure); `_verifyV1` uses OZ `MerkleProof.verify`, standard double-hashed leaf | **Live V1 snapshot at handoff** |
-| 8 | `addrCaps[9]` | Per-era ADDRESS cap ramp: tiny early → **$25,000-class** late (anti-whale) | USDC 6dp | **DECISION** | `SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md` (per-address ramp), `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` §C3/J3/T6; constructor reverts `BadEraCaps` if a sellable era's cap `<` that era's USDC minimum | **Transcribe the 9-value ramp from the sim** |
+| 8 | `addrCaps[9]` | Per-era ADDRESS cap ramp: tiny early → **$25,000-class** late (anti-whale). `addrCaps[0]` (Era I) is unused when `genesisOffset ≥ 333`; under **Model 2** it must be ≥ the Era I min ($5 = `5_000_000`), recommended **`5_000_000`** (flat one-seat Genesis = tightest anti-whale) | USDC 6dp | **DECISION** | `SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md` (per-address ramp), `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` §C3/J3/T6; constructor reverts `BadEraCaps` if a sellable era's cap `<` that era's USDC minimum | **Transcribe the 9-value ramp from the sim** |
 | 9 | `maxUsdcPerTx` | **`25_000_000_000`** ($25,000) | USDC 6dp | **DECISION** (recommended) | sim §7b; `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` J14; must be `>= every sellable era minimum`, else `BadEraCaps` | Founder sign-off |
 | 10 | `reserveThroughSeat` | **`10_000`** (guarantees Eras II–IV; reserves ≈ **3.93M SYN**). Alternatives: `1_000_000` = full "First Million" (≈ **130.9M SYN**); `0` = disabled | seat # | **DECISION (F2)** | `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` J16, §C3, T21/T22; valid range `(GENESIS_END, FINAL_SEAT]` or `0` | Founder sign-off |
-| 11 | `eraCaps[9]` | **Model B** (see §2). `eraCaps[0]` (Era I / Genesis) = **0** (V1-sealed); indices 1–8 = Eras II–IX | SYN 18dp | **DECISION (F3)** (Model B recommended) | sim §7a, §verdict; constructor reverts `BadEraCaps` on malformed caps | Founder sign-off + confirm index↔era mapping |
+| 11 | `eraCaps[9]` | **Model B** (see §2). `eraCaps[0]` (Era I / Genesis) is **IGNORED** in BOTH paths — pass **`0`**. When V2 starts in Era II+ (`genesisOffset ≥ 333`) Genesis is V1-sealed; under **Model 2** (`genesisOffset < 333`) the constructor forces the Genesis aggregate cap **non-binding** (`type(uint256).max`) because Genesis is **range-bounded** (advances to Era II only at seat #334), so any `eraCaps[0]` value is accepted and discarded. Indices 1–8 = Eras II–IX (these ARE validated). | SYN 18dp | **DECISION (F3)** (Model B recommended) | sim §7a, §verdict; constructor reverts `BadEraCaps` if a SELLABLE era II–IX cap `<` one min entry | Founder sign-off + confirm index↔era mapping |
 | 12 | `initialRouter` | `CommissionRouterV1` deployed address (or `address(0)` to bootstrap with **no referral** — full Operations slice to Operations) | address | **DECISION** | `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` §router; swap later via 14-day `ROUTER_TIMELOCK` | Router deployed first |
 
 > **Index↔era caution.** `eraCaps` / `addrCaps` are `uint256[9]` indexed era 1..9.
-> Era I is Genesis and is **V1-sealed** — V2's first newcomer is seat #334 (Era II)
-> when `genesisOffset = 333`. Confirm the index-0 (Era I) handling against
-> `_eraForSeat` / the era-boundary table in the design doc **at deploy time**.
+> When `genesisOffset = 333`, Era I is fully V1-sealed and V2's first newcomer is
+> seat #334 (Era II) — index-0 caps are unused (`eraCaps[0] = 0`). Under **Model 2**
+> (`genesisOffset < 333`) **`addrCaps[0]` IS live and binding** — it (plus the 333
+> ceiling, the reserve floor and funded inventory) is the anti-whale guard for the
+> Genesis seats V2 still sells (Era I, 100 SYN/USDC, $5 min), so it MUST be a valid
+> Era I value. **`eraCaps[0]` is IGNORED** (the constructor forces the Genesis
+> aggregate cap non-binding so Genesis cannot cap-advance to Era II before #334);
+> pass `0`. Confirm the index-0 handling against `_eraParams` / the era-boundary
+> table in the design doc **at deploy time**.
 
 ---
 
@@ -72,7 +78,7 @@ From `docs/proposals/SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md` §7a (verdict
 
 | Index | Era | SYN sold-cap |
 |-------|-----|--------------|
-| 0 | I (Genesis) | **0** (sealed by Sale V1) |
+| 0 | I (Genesis) | **0** (IGNORED in both paths — V1-sealed when `genesisOffset ≥ 333`; range-bounded / cap forced non-binding under Model 2, so any value is discarded) |
 | 1 | II | 416,875 |
 | 2 | III | 1,166,500 |
 | 3 | IV | 3,333,500 |
@@ -88,6 +94,18 @@ From `docs/proposals/SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md` §7a (verdict
 > recommends **B** for headroom + buffer. V1's already-distributed SYN must be
 > subtracted from the 350M pool before funding (the contract is funded by SYN
 > balance held at its address).
+>
+> **Model 2 (sub-333 handoff).** `eraCaps[0]` is **IGNORED** in both paths (pass
+> `0`) — Genesis is **range-bounded**, not throttled by an aggregate SYN cap, so the
+> II–IX total above is unchanged. If V1 seals **below** 333, V2 continues Genesis at
+> Era I pricing; the *funding* needed for that continued tranche is **volume-
+> dependent** (there is no aggregate cap), bounded by `addrCaps[0]` per address and
+> the remaining `≤ (333 − genesisOffset)` first-seat slots. At the recommended
+> `addrCaps[0] = $5` (one-seat Genesis, 500 SYN/seat), the entry-only base is
+> `≤ (333 − genesisOffset) × 500 SYN` (e.g. ≈ **166,500 SYN** for a full 333 from
+> offset 0), plus any V1-recognized Genesis buys — fund with headroom. Eras II–IX
+> are UNCHANGED. The unsold Genesis tranche is auto-protected by the seat reserve
+> (`_reserveSyn(genesisOffset)` rises accordingly — see §5 funding).
 
 ---
 
@@ -137,7 +155,7 @@ diluted). Effective gross % = `opsPct / 10`.
 |------|----------------|--------|
 | `SyndicateSaleV2` owner | `Ownable2Step` (2-step `transferOwnership` → multisig `acceptOwnership`). Transfer ownership to a **multisig** immediately after deploy. Owner powers are constrained: pause, router swap (timelocked), timelocked recovery-to-Vault only — **no price/split discretion, no SYN-to-owner path**. | DECISION (multisig address) |
 | `CommissionRouterV1` owner | `Ownable2Step` — accept ownership from a **multisig** (2-step). | DECISION (multisig address) |
-| Initial SYN funding | Fund the sale's SYN balance **≥ the initial reserve floor** `_reserveSyn(genesisOffset)` BEFORE opening, else the first buy reverts (under-funding / `ReserveFloorViolation`). With `reserveThroughSeat = 10_000` the floor ≈ **3.93M SYN**. Top-ups over time are allowed; never let the funded balance fall below the live reserve floor while the sale is open. | DECISION |
+| Initial SYN funding | Fund the sale's SYN balance **≥ the initial reserve floor** `_reserveSyn(genesisOffset)` BEFORE opening, else the first buy reverts (under-funding / `ReserveFloorViolation`). With `reserveThroughSeat = 10_000` the floor is ≈ **3.93M SYN** when `genesisOffset = 333`; under **Model 2** (`genesisOffset < 333`) the floor is HIGHER because the unsold Genesis seats are also reserved — e.g. `_reserveSyn(2)` ≈ **4.10M SYN**. Top-ups over time are allowed; never let the funded balance fall below the live reserve floor while the sale is open. | DECISION |
 
 > **Pre-buy test needs ZERO funding:** `claimV1Membership(proof)` only marks
 > `knownMember` — it never moves SYN. Use it to validate the V1 proof path before
@@ -147,8 +165,12 @@ diluted). Effective gross % = `opsPct / 10`.
 
 ## 6. Blockers summary (what must clear before deploy)
 
-1. **Live V1 snapshot** at handoff → `genesisOffset` + `v1MemberRoot`
-   (pause V1 first; recommend exactly at #333).
+1. **Live V1 snapshot** at handoff → `genesisOffset` + `v1MemberRoot` (pause V1
+   first, at or below #333). **Model 2:** `genesisOffset` = the REAL V1 count even
+   if **below 333**; V2 then continues Genesis from `genesisOffset + 1`. For a
+   sub-333 handoff set `addrCaps[0]` (rec `5_000_000` = $5) to a valid Era I value —
+   it is the binding Genesis anti-whale. `eraCaps[0]` is IGNORED (Genesis is
+   range-bounded; the constructor forces its aggregate cap non-binding) — pass `0`.
 2. **Founder rulings:** F2 `reserveThroughSeat` (rec 10,000), F3 funding model
    (rec Model B). F4 `RECOVERY_TIMELOCK` / `ROUTER_TIMELOCK` — **RESOLVED:
    founder ruled 14 days (both); constants set in

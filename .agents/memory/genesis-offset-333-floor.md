@@ -1,29 +1,48 @@
 ---
-name: genesisOffset 333 floor
-description: Why "genesisOffset >= 333" is a hard SaleV2 deploy floor, what enforces it, and what does NOT.
+name: genesisOffset 333 floor (Model 2 — lower floor REMOVED)
+description: Post-Model-2 truth about genesisOffset bounds, what 333 still means, and what enforces the "Era II opens at #334" invariant.
 ---
 
-# The 333 floor — narrative number, hard-coded as a technical gate
+# 333 after Model 2 — NOT a deploy floor anymore; only a chapter boundary + range gate
 
-**Rule:** `SyndicateSaleV2` is un-constructable unless `genesisOffset ∈ [333, 999_999]`.
-Minimum safe V1 unique-member count before V2 can exist = **exactly 333**.
+**Ratified change (Model 2):** the constructor LOWER floor was REMOVED. `genesisOffset`
+may now be ANY real V1 unique-member count in `[0, FINAL_SEAT)`. The only constructor
+revert is the upper bound: `if (genesisOffset >= FINAL_SEAT) revert BadGenesisOffset();`
+(`FINAL_SEAT = 1_000_000`). A sub-333 V1 handoff IS deployable: V2 then CONTINUES selling
+the remaining Genesis seats at Era I pricing (100 SYN/USDC, $5 min) from seat
+`genesisOffset + 1`, and **Era II still opens at seat #334**.
 
-**Enforced in EXACTLY one place (plus one redundant lock):**
-- PRIMARY: constructor — `if (genesisOffset < GENESIS_END || genesisOffset >= FINAL_SEAT) revert BadGenesisOffset();`
-  with `GENESIS_END = 333`, `FINAL_SEAT = 1_000_000`.
-- SECONDARY (same outcome): `startEra = _eraIndexForSeat(genesisOffset+1)`. If `genesisOffset < 333`, seat ≤ 333 →
-  `startEra = 1` (Genesis), and the constructor era-cap loop then reverts `BadEraCaps` because the frozen
-  `addrCaps[0] = 0 < $5` (Era I min). So even bypassing the primary check, deploy still fails.
+**What 333 still is:** `GENESIS_END = 333` is retained as the Genesis ceiling for
+(a) reserve math and (b) the Era I→II boundary in the era table. It is NO LONGER a
+constructability gate.
 
-**What does NOT require 333 (all narrative / derived — enforce nothing):** chapters.ts (`endN/capacity=333`, `isFounder<=333`,
-explicitly "NOT contract-driven"), eras.ts display, Holder Index cohort labels, ~20 frontend surfaces (Hero "seals at #333",
-members.tsx "/333", milestone trackers), canon doctrine. These are pure functions of member number and break nothing at any count.
+**The invariant that replaced the old SECONDARY lock — Genesis is RANGE-bounded:**
+the OLD secondary block (`addrCaps[0]=0 < $5` → `BadEraCaps`, which incidentally blocked
+sub-333 deploys) is gone for Model 2 because:
+- the constructor now special-cases `e == 1`: it FORCES `eraSynCap[1] = type(uint256).max`
+  and SKIPS the per-era cap-fit check for Era I. `eraCaps[0]` is IGNORED (pass 0).
+- it KEEPS `addrCaps[0] >= eraMin` and `maxUsdcPerTx >= eraMin`.
+- **Why max-cap is mandatory, not cosmetic:** repeat buys + recognized-V1 buys grow
+  `soldInEra[1]` WITHOUT advancing `memberCount`. A FINITE `eraCaps[0]` could exhaust →
+  `_syncEra` would advance to Era II BEFORE #334, mispricing Genesis seats. Forcing the
+  Genesis aggregate cap non-binding means Genesis advances to Era II ONLY by the range
+  check (`memberCount >= 333`), never by cap exhaustion. (Architect raised this as a HIGH;
+  the max-cap sentinel resolved it.)
+- Anti-whale for Genesis under Model 2 = `addrCaps[0]` ($5 = one seat) + the 333 ceiling
+  + the reserve floor + funded inventory. There is NO Genesis aggregate SYN cap.
 
-**What actually breaks if Genesis closes < 333:** ONLY that V2 cannot be deployed. Snapshot/Merkle of <333 is cryptographically
-valid; Holder Index/chapters/identity/frontend all function; **V1 keeps running**. 333 blocks the *existence of V2*, nothing else.
+**Recommended path unaffected:** when V2 starts in Era II+ (`genesisOffset >= 333`,
+`startEra >= 2`) the `e == 1` branch never runs; that pause-at-333 path is byte-for-byte
+unchanged. Eras II–IX keep their finite §Q SYN cap-fit validation.
 
-**Why this matters / how to apply:** When asked "is 333 a real blocker or just a milestone?" the answer is BOTH — origin is
-doctrine, enforcement is hard+absolute *under the freeze*. The ONLY lever to launch V2 below 333 is editing GENESIS_END / the era
-table / the constructor = unfreezing the contract = a governance act, NOT a launch-path tweak. Do not propose "launch V2 earlier"
-as a launch option. Overflow (>333) is deployable but causes minor Era-II positional accounting drift (Era II SYN cap doesn't
-subtract SYN already sold to seats 334..current at the Genesis rate); closing at exactly 333 is the only zero-drift handoff.
+**Still narrative / derived (enforce nothing):** chapters.ts (`endN/capacity=333`,
+`isFounder<=333`), eras.ts display, Holder Index cohort labels, frontend surfaces
+("seals at #333", "/333"), canon doctrine — pure functions of member number, break at no count.
+
+**The ONE irreversible gate is no longer 333 — it is `FINAL_SEAT` + identity:** lowering/raising
+the Era boundary or `FINAL_SEAT` is a contract edit = governance, not a launch tweak. But
+launching V2 below 333 is now a ratified, supported config, not an unfreeze.
+
+**Doc sync:** param sheet / sim / architecture all now document `eraCaps[0]` as IGNORED
+(range-bounded), NOT "≈208,125 SYN cap" (that earlier recommendation was superseded by the
+range-bounded fix). If you see a 208,125 / 248,125 Genesis-cap figure anywhere, it is stale.

@@ -18,7 +18,13 @@
 
 ## 0. Framing & the one finding that drives everything
 
-Sale V2 sells SYN for USDC across **eras II–IX** (Genesis / Era I is V1-only). Each
+Sale V2 sells SYN for USDC across **eras II–IX**, and — under **Model 2**, when the
+V1 handoff count is below the Genesis ceiling (333) — the **remaining Genesis (Era I)**
+seats too, at Era I pricing (100 SYN/USDC). The figures in this sim assume the
+recommended pause-at-333 handoff (Era I fully V1-sealed); a sub-333 handoff simply
+adds the unsold Genesis tranche at Era I rates. Genesis is **range-bounded** (no
+aggregate SYN cap — `eraCaps[0]` is ignored; the continued tranche is bounded by the
+per-address cap and the 333 ceiling; see the deploy sheet §2). Each
 era has a **member range** (a seat-count ceiling) and — per the §Q addendum — an
 aggregate **`eraSynCap[e]`** that bounds the *total* SYN sold in that era against
 ONE global balance. USDC is split **70% Vault / 20% Liquidity / 10% Operations**;
@@ -58,7 +64,7 @@ each era's `eraSynCap` must clear, and the baseline treasury inflow.
 | IX · First Million | 250,001–1,000,000 | 750,000 | $100 | 1 | 100 | 75,000,000 | $75,000,000 | $52,500,000 | $15,000,000 | $7,500,000 | $3,750,000 | $3,750,000 |
 | **V2 total (II–IX)** | 334–1,000,000 | **999,667** | — | — | — | **130,933,500** | **$94,321,675** | **$66,025,172** | **$18,864,335** | **$9,432,168** | **$4,716,084** | **$4,716,084** |
 
-> Including Genesis (V1, 333 seats), the full path to 1,000,000 members is
+> Including Genesis (333 seats — sold by V1, plus any continued by V2 under Model 2), the full path to 1,000,000 members is
 > **131,100,000 SYN** and **≈ $94,323,340** entry-only — matching the architecture
 > doc §C1. Of the **350,000,000 SYN** pool that leaves **218,900,000 SYN (62.5%)**
 > of headroom for repeats/upgrades — *which is exactly what the per-era caps below

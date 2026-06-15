@@ -2,6 +2,7 @@
 pragma solidity 0.8.24;
 
 import {Test} from "forge-std/Test.sol";
+import {Vm} from "forge-std/Vm.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {SyndicateSaleV2} from "../src/SyndicateSaleV2.sol";
 import {CommissionRouterV1} from "../src/CommissionRouterV1.sol";
@@ -35,6 +36,8 @@ contract SyndicateSaleV2Test is Test {
     uint256 internal constant MAXTX = 1_000_000_000_000; // $1,000,000
     uint256 internal constant FUND = 1e27;        // 1,000,000,000 SYN
     uint256 internal constant ERA2_MIN_ENTRY = 5e20; // $10 * 50 * 1e12 = 500 SYN
+    uint256 internal constant USDC_5 = 5_000_000;     // $5 (Era I / Genesis minimum)
+    uint256 internal constant GEN_MIN_ENTRY = 5e20;   // $5 * 100 * 1e12 = 500 SYN
 
     event EraAdvanced(uint16 indexed fromEra, uint16 indexed toEra, uint256 atSeatNumber, uint8 reason);
     event CommissionRouterFallback(uint256 indexed memberNumber, uint256 operationsAmount);
@@ -58,6 +61,15 @@ contract SyndicateSaleV2Test is Test {
     function _eraCaps() internal pure returns (uint256[9] memory c) {
         c[0] = 0;                    // era 1 unused by V2
         for (uint256 i = 1; i < 9; ++i) c[i] = 1e30; // large SYN caps
+    }
+
+    // Model 2 caps. NOTE: Genesis (Era I) is RANGE-bounded; the constructor forces
+    // its aggregate SYN cap NON-BINDING (type(uint256).max), so eraCaps[0] is
+    // IGNORED under Model 2 (a deploy may pass 0, like _eraCaps()). This helper
+    // keeps a non-zero c[0] only to prove that any value is accepted-and-ignored.
+    function _eraCapsGen() internal pure returns (uint256[9] memory c) {
+        c[0] = 208_125e18;
+        for (uint256 i = 1; i < 9; ++i) c[i] = 1e30;
     }
 
     function _deploy(
@@ -117,10 +129,30 @@ contract SyndicateSaleV2Test is Test {
     }
 
     function test_ctor_badGenesisOffsetReverts() public {
-        vm.expectRevert(SyndicateSaleV2.BadGenesisOffset.selector);
-        _deploy(332, _addrCaps(), MAXTX, 0, _eraCaps(), address(0), root); // < 333
+        // Model 2: the lower 333 floor is REMOVED; the only invalid genesisOffset
+        // is >= FINAL_SEAT (the sale would already be concluded). 332 now DEPLOYS
+        // (see test_ctor_genesisOffsetModel2_valid).
         vm.expectRevert(SyndicateSaleV2.BadGenesisOffset.selector);
         _deploy(1_000_000, _addrCaps(), MAXTX, 0, _eraCaps(), address(0), root); // >= FINAL
+    }
+
+    function test_ctor_genesisOffsetModel2_valid() public {
+        // Below the Genesis ceiling now DEPLOYS and starts in Era I (Model 2).
+        SyndicateSaleV2 s0 = _deploy(0, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(0), root);
+        assertEq(s0.GENESIS_OFFSET(), 0);
+        assertEq(s0.memberCount(), 0);
+        assertEq(s0.activeEra(), 1, "genesisOffset 0 => first seat is Genesis");
+
+        SyndicateSaleV2 s2 = _deploy(2, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(0), root);
+        assertEq(s2.GENESIS_OFFSET(), 2);
+        assertEq(s2.memberCount(), 2);
+        assertEq(s2.activeEra(), 1, "genesisOffset 2 => next seat #3 is Genesis");
+
+        SyndicateSaleV2 s332 = _deploy(332, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(0), root);
+        assertEq(s332.activeEra(), 1, "seat #333 is still Genesis");
+
+        SyndicateSaleV2 s333 = _deploy(333, _addrCaps(), MAXTX, 0, _eraCaps(), address(0), root);
+        assertEq(s333.activeEra(), 2, "seat #334 is Era II (unchanged)");
     }
 
     function test_ctor_zeroMaxTxReverts() public {
@@ -535,5 +567,235 @@ contract SyndicateSaleV2Test is Test {
         assertEq(usdc.balanceOf(operations), o);
         assertEq(v + l + o, usdcIn, "splits reconstruct gross");
         assertEq(usdc.balanceOf(address(sale)), 0, "balance returns to 0");
+    }
+
+    // ============================================== Model 2 (Genesis V2 sale)
+    function test_model2_genesisOffset2_firstBuyerGetsSeat3_eraI() public {
+        SyndicateSaleV2 s = _deploy(2, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(0), root);
+        syn.mint(address(s), FUND);
+
+        // Era I quote: 100 SYN/USDC, next seat #3.
+        (uint256 q, uint16 era, uint64 spu, uint256 seatIfFirst,,) = s.quote(USDC_5);
+        assertEq(era, 1, "Era I (Genesis)");
+        assertEq(spu, 100, "100 SYN/USDC");
+        assertEq(q, GEN_MIN_ENTRY, "$5 => 500 SYN");
+        assertEq(seatIfFirst, 3, "first V2 seat is #3");
+
+        address a = makeAddr("g2a");
+        _approve(s, a, USDC_5);
+        _buy(s, a, USDC_5, address(0), _noProof());
+        assertEq(s.memberCount(), 3, "first V2 buyer is member #3");
+        assertEq(s.memberNumberOf(a), 3);
+        assertEq(syn.balanceOf(a), GEN_MIN_ENTRY, "Era I buy fills at 100 SYN/USDC");
+        assertEq(s.soldInEra(1), GEN_MIN_ENTRY, "Genesis era cap consumed");
+        assertEq(s.activeEra(), 1, "still Genesis");
+    }
+
+    function test_model2_genesisOffset0_firstSeatIsOne() public {
+        SyndicateSaleV2 s = _deploy(0, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(0), root);
+        syn.mint(address(s), FUND);
+        assertEq(s.memberCount(), 0);
+        assertEq(s.currentEra(), 1, "Genesis from seat #1");
+
+        address a = makeAddr("g0a");
+        _approve(s, a, USDC_5);
+        _buy(s, a, USDC_5, address(0), _noProof());
+        assertEq(s.memberCount(), 1, "first ever seat is #1");
+        assertEq(s.memberNumberOf(a), 1);
+        assertEq(syn.balanceOf(a), GEN_MIN_ENTRY);
+    }
+
+    function test_model2_eraIaddrCapApplies() public {
+        // default a[0] = $5 (Era I min == cap): a 2nd buy by the same wallet exceeds
+        // the per-address Era I cap.
+        SyndicateSaleV2 s = _deploy(2, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(0), root);
+        syn.mint(address(s), FUND);
+        address a = makeAddr("g2cap");
+        _approve(s, a, USDC_100);
+        _buy(s, a, USDC_5, address(0), _noProof()); // $5 hits the $5 cap exactly
+        vm.prank(a);
+        vm.expectRevert(abi.encodeWithSelector(SyndicateSaleV2.AddressEraCapExceeded.selector, 0));
+        s.buy(USDC_5, address(0), 0, _noProof());
+    }
+
+    function test_model2_eraI_aggregateCapDoesNotBind() public {
+        // MODEL 2 invariant: Genesis (Era I) is RANGE-bounded, NOT SYN-cap-bounded.
+        // Even with eraCaps[0] set to a single tiny Genesis entry, a larger Era I
+        // buy must SUCCEED (no EraInventoryInsufficient) and must NOT advance the
+        // era — the aggregate cap is non-binding for Genesis (eraCaps[0] ignored).
+        uint256[9] memory a = _addrCaps();
+        a[0] = 20_000_000; // $20 per-address room
+        uint256[9] memory c = _eraCapsGen();
+        c[0] = GEN_MIN_ENTRY; // deliberately tiny: exactly one $5 Genesis entry
+        SyndicateSaleV2 s = _deploy(2, a, MAXTX, 0, c, address(0), root);
+        syn.mint(address(s), FUND);
+        address g = makeAddr("g2eracap");
+        _approve(s, g, USDC_100);
+        _buy(s, g, USDC_20, address(0), _noProof()); // $20 => 2000 SYN, far over the tiny cap
+        assertEq(syn.balanceOf(g), USDC_20 * 100 * 1e12, "Era I fills at 100 SYN/USDC despite tiny eraCaps[0]");
+        assertEq(s.activeEra(), 1, "Genesis does NOT advance by cap");
+        assertEq(s.memberCount(), 3, "Genesis seat still issued");
+    }
+
+    function test_model2_eraI_capExhaustionDoesNotAdvanceBefore334() public {
+        // REGRESSION (architect HIGH): repeat buys grow soldInEra[1] WITHOUT
+        // advancing memberCount. With a finite Genesis cap this would have
+        // cap-advanced to Era II BEFORE seat #334, mispricing Genesis seats. Under
+        // the fix (Genesis range-bounded), the era stays I until #334 no matter how
+        // much SYN is sold in Genesis via repeats.
+        uint256[9] memory a = _addrCaps();
+        a[0] = 100_000_000; // $100 per-address room => many repeats per wallet
+        uint256[9] memory c = _eraCapsGen();
+        c[0] = GEN_MIN_ENTRY; // tiny finite cap (would exhaust almost immediately pre-fix)
+        SyndicateSaleV2 s = _deploy(330, a, MAXTX, 0, c, address(0), root);
+        syn.mint(address(s), FUND);
+
+        // One wallet hammers Genesis with repeat buys (no new seats after the
+        // first), piling soldInEra[1] far past the tiny eraCaps[0].
+        address whale = makeAddr("g330whale");
+        _approve(s, whale, USDC_100);
+        for (uint256 i = 0; i < 10; ++i) {
+            _buy(s, whale, USDC_5, address(0), _noProof()); // $5 each => 500 SYN each
+        }
+        assertEq(s.memberCount(), 331, "whale took ONE Genesis seat (#331); repeats add none");
+        assertGt(s.soldInEra(1), c[0], "soldInEra[1] is far past the tiny finite cap");
+        assertEq(s.activeEra(), 1, "Genesis did NOT advance by cap");
+
+        // Genesis seats #332, #333 still price at Era I.
+        address a332 = makeAddr("seat332b");
+        _approve(s, a332, USDC_5);
+        _buy(s, a332, USDC_5, address(0), _noProof());
+        assertEq(s.memberCount(), 332);
+        assertEq(syn.balanceOf(a332), GEN_MIN_ENTRY, "Era I pricing at #332");
+        assertEq(s.activeEra(), 1);
+
+        address a333 = makeAddr("seat333b");
+        _approve(s, a333, USDC_5);
+        _buy(s, a333, USDC_5, address(0), _noProof());
+        assertEq(s.memberCount(), 333);
+        assertEq(s.activeEra(), 1, "still Genesis at #333");
+
+        // Seat #334 opens Era II by RANGE — exactly as the invariant requires.
+        address a334 = makeAddr("seat334b");
+        _approve(s, a334, USDC_10);
+        vm.expectEmit(true, true, false, true);
+        emit EraAdvanced(1, 2, 334, 0); // REASON_RANGE
+        _buy(s, a334, USDC_10, address(0), _noProof());
+        assertEq(s.memberCount(), 334);
+        assertEq(s.activeEra(), 2, "Era II opens at #334, never before");
+        assertEq(syn.balanceOf(a334), USDC_10 * 50 * 1e12, "Era II = 50 SYN/USDC");
+    }
+
+    function test_model2_eraCaps0Zero_acceptedAndIgnored() public {
+        // Under Model 2, eraCaps[0] is IGNORED (Genesis range-bounded), so the SAME
+        // zero value used on the recommended pause-at-333 path is valid here — the
+        // pre-fix constructor would have reverted BadEraCaps on c[0] < min entry.
+        uint256[9] memory c = _eraCaps(); // c[0] = 0
+        SyndicateSaleV2 s = _deploy(2, _addrCaps(), MAXTX, 0, c, address(0), root);
+        syn.mint(address(s), FUND);
+        assertEq(s.activeEra(), 1, "deploys in Genesis with eraCaps[0] = 0");
+        assertEq(s.eraSynCap(1), type(uint256).max, "Genesis aggregate cap is non-binding");
+
+        address a = makeAddr("g2zero");
+        _approve(s, a, USDC_5);
+        _buy(s, a, USDC_5, address(0), _noProof());
+        assertEq(s.memberCount(), 3, "Genesis seat issued");
+        assertEq(syn.balanceOf(a), GEN_MIN_ENTRY, "Era I pricing");
+    }
+
+    function test_model2_autoAdvanceToEraIIatSeat334() public {
+        // genesisOffset 332 => next seat #333 (Genesis); seat #334 opens Era II by RANGE.
+        SyndicateSaleV2 s = _deploy(332, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(0), root);
+        syn.mint(address(s), FUND);
+
+        address a1 = makeAddr("seat333");
+        _approve(s, a1, USDC_5);
+        _buy(s, a1, USDC_5, address(0), _noProof()); // seat #333, Genesis
+        assertEq(s.memberCount(), 333);
+        assertEq(s.activeEra(), 1, "still Genesis at #333");
+        assertEq(syn.balanceOf(a1), GEN_MIN_ENTRY, "100 SYN/USDC in Genesis");
+        assertEq(s.currentEra(), 2, "view rolls to Era II once the range is filled");
+
+        address a2 = makeAddr("seat334");
+        _approve(s, a2, USDC_10);
+        vm.expectEmit(true, true, false, true);
+        emit EraAdvanced(1, 2, 334, 0); // REASON_RANGE, opens at seat #334
+        _buy(s, a2, USDC_10, address(0), _noProof()); // seat #334, Era II
+        assertEq(s.activeEra(), 2);
+        assertEq(s.memberCount(), 334);
+        assertEq(syn.balanceOf(a2), USDC_10 * 50 * 1e12, "Era II = 50 SYN/USDC");
+    }
+
+    function test_model2_reserveFloorIncludesGenesisSeats() public {
+        // genesisOffset 2 + reserveThroughSeat 10,000: the floor must also reserve
+        // the remaining Genesis seats (#3..#333) -> strictly MORE than the 333-handoff
+        // floor (which only reserves Era II..IV).
+        SyndicateSaleV2 s2 = _deploy(2, _addrCaps(), MAXTX, 10_000, _eraCapsGen(), address(0), root);
+        SyndicateSaleV2 s333 = _deploy(333, _addrCaps(), MAXTX, 10_000, _eraCaps(), address(0), root);
+        assertEq(s2.currentReserveFloor(), 4_099_000e18, "incl. Genesis #3..#333");
+        assertEq(s333.currentReserveFloor(), 3_933_500e18, "Era II..IV only");
+        assertGt(s2.currentReserveFloor(), s333.currentReserveFloor());
+    }
+
+    function test_model2_repeatBuyerNoSeatIncrement_eraI() public {
+        uint256[9] memory a = _addrCaps();
+        a[0] = 15_000_000; // $15 lets one wallet buy in Genesis more than once
+        SyndicateSaleV2 s = _deploy(2, a, MAXTX, 0, _eraCapsGen(), address(0), root);
+        syn.mint(address(s), FUND);
+        address r = makeAddr("g2repeat");
+        _approve(s, r, USDC_100);
+        _buy(s, r, USDC_5, address(0), _noProof()); // seat #3
+        assertEq(s.memberCount(), 3);
+        _buy(s, r, USDC_5, address(0), _noProof()); // repeat: NO new seat
+        assertEq(s.memberCount(), 3, "repeat buyer issues no new seat");
+        assertEq(s.memberNumberOf(r), 3, "seat number unchanged");
+        assertEq(syn.balanceOf(r), GEN_MIN_ENTRY * 2, "still receives SYN both times");
+    }
+
+    function test_model2_v1ProofFlow_eraI_noNewSeat() public {
+        // V1 proof recognition still works while V2 is selling Genesis.
+        SyndicateSaleV2 s = _deploy(2, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(0), root);
+        syn.mint(address(s), FUND);
+        _approve(s, v1A, USDC_5);
+        vm.expectEmit(true, false, false, false);
+        emit V1MembershipRecognized(v1A);
+        _buy(s, v1A, USDC_5, address(0), _proof2(v1B));
+        assertEq(s.memberCount(), 2, "recognized V1 member: no new Genesis seat");
+        assertEq(s.memberNumberOf(v1A), 0);
+        assertTrue(s.knownMember(v1A));
+        assertGt(syn.balanceOf(v1A), 0);
+    }
+
+    function test_model2_referralPinnedToZero_eraI_emitsAttributionZeroPayout() public {
+        // Router SET, referrer pinned to address(0): route() still runs, pays the
+        // referrer NOTHING, forwards the FULL Operations slice, and emits Attribution.
+        CommissionRouterV1 r = new CommissionRouterV1(address(usdc));
+        SyndicateSaleV2 s = _deploy(2, _addrCaps(), MAXTX, 0, _eraCapsGen(), address(r), root);
+        syn.mint(address(s), FUND);
+        r.addSource(address(s), keccak256("SALE_V2"), operations);
+
+        address buyer = makeAddr("g2pin");
+        _approve(s, buyer, USDC_5);
+
+        vm.recordLogs();
+        _buy(s, buyer, USDC_5, address(0), _noProof());
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+
+        bytes32 sig = keccak256(
+            "Attribution(bytes32,address,address,bytes32,bytes32,address,uint256,uint16,uint256[5],uint8,uint8)"
+        );
+        bool found;
+        for (uint256 i = 0; i < logs.length; ++i) {
+            if (logs[i].topics[0] == sig) {
+                found = true;
+                assertEq(logs[i].topics[3], bytes32(0), "Attribution referrer is zero");
+            }
+        }
+        assertTrue(found, "router emitted Attribution");
+
+        // Zero referrer payout: full ops slice (10% of $5 = $0.5) to OPERATIONS.
+        assertEq(usdc.balanceOf(operations), 500_000, "full ops slice; referrer paid nothing");
+        assertEq(r.referredCount(address(0)), 0);
+        assertEq(s.memberCount(), 3, "buyer still seated #3");
     }
 }

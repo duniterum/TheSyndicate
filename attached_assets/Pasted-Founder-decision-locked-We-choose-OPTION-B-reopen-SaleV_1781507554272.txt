@@ -1,0 +1,145 @@
+Founder decision locked:
+
+We choose OPTION B — reopen SaleV2 and let V2 continue Genesis.
+
+Final decision:
+
+* V1 currently has 2 buyers.
+* We will NOT wait indefinitely for 333.
+* V2 should be able to start from the real V1 count.
+* V2 continues Genesis from member #3.
+* Genesis still remains #1–#333.
+* Era II still starts at #334.
+* No phantom members.
+* No genesisOffset=333 trick.
+* No Model 1.
+* No date-seal.
+* No waiting for 333.
+
+Do NOT deploy.
+Do NOT move funds.
+Do NOT publish frontend.
+Do NOT touch Sale V1.
+Do NOT change referral doctrine.
+Do NOT change identity doctrine.
+Do NOT change pricing ladder.
+Do NOT change Era II–IX economics.
+
+Now execute the bounded Model 2 implementation sprint.
+
+Scope:
+
+1. Contract change
+   Update SyndicateSaleV2 so genesisOffset can equal the real V1 member count below 333.
+
+Goal:
+
+* genesisOffset = real V1 distinct buyers is valid.
+* first V2 member = genesisOffset + 1.
+* If V1 has 2 members, first V2 member = #3.
+* V2 sells remaining Genesis seats #3–#333 at Era I pricing.
+* Era II still starts at #334.
+* FINAL_SEAT remains 1,000,000.
+
+Do the cleanest minimal implementation.
+Do not rewrite era logic unless required.
+Do not change CommissionRouter unless required.
+
+2. Deploy parameters
+   Update the deploy parameter sheet for Model 2:
+
+* genesisOffset = real V1 count
+* V1_MEMBER_ROOT = real V1 root
+* eraCaps[0] must no longer be 0
+* addrCaps[0] must be >= Era I minimum
+* Era I cap must cover remaining Genesis V2 inventory
+* reserveThroughSeat = 10,000 remains
+* maxUsdcPerTx remains $25,000
+* Era II–IX caps remain Model B
+* addrCaps[1–8] remain frozen
+* timelocks remain 14 days
+* initialRouter = CommissionRouterV1
+* referrer pinned to address(0) until referral UI/legal clears
+
+Recommend exact Era I eraCap[0] and addrCap[0] values.
+
+3. Tests
+   Update and add Foundry tests:
+
+* genesisOffset = 2 deploys successfully
+* genesisOffset = 0 behavior explicitly tested
+* first V2 buyer after genesisOffset=2 gets member #3
+* Era I quote works at 100 SYN/USDC
+* Era I buy works
+* Era I addrCap applies
+* Era I eraCap applies
+* Era I auto-advances to Era II at #334
+* Era II pricing remains 50 SYN/USDC
+* reserveThroughSeat still works
+* V1 proof flow still works
+* repeat buyers still do not increment member count
+* CommissionRouter still works unchanged
+* referral pinned-to-zero path still emits Attribution with zero referrer payout
+* all existing tests still pass
+
+4. Docs sync
+   Update only docs that must change:
+
+* Genesis no longer requires all 333 seats to be sold on V1
+* V2 can continue Genesis
+* Genesis remains #1–#333
+* V1 is the first verified cohort
+* V2 is the full membership engine
+* no phantom seats
+* Holder Index remains master identity
+* SeatRecord721 still derives from Holder Index
+* deployment runbook
+* parameter sheet
+* snapshot runbook
+* reviewer packet
+* external audit package notes
+
+Stamp any old “V2 requires genesisOffset >=333” language as superseded.
+
+5. Verification
+   Run:
+
+* full Foundry suite
+* relevant fuzz tests
+* Slither
+* architect/code review
+* grep scan for stale language:
+
+  * genesisOffset >= 333
+  * V2 requires 333
+  * keep V1 open until 333
+  * Era I V2 unsellable
+  * eraCaps[0] = 0 as final
+  * addrCaps[0] = 0 as final
+  * Genesis = V1-only
+
+6. Output report
+   Return:
+
+A. Files changed
+B. Exact contract change
+C. Exact Era I parameter recommendations
+D. Tests added/updated
+E. Test results
+F. Slither result
+G. Architect review result
+H. Docs updated
+I. Any remaining blockers
+J. Final status:
+
+* READY FOR EXTERNAL AUDIT PACKAGE
+  or
+* NOT READY, with exact blockers
+
+Important:
+This is not a new architecture debate.
+This is the bounded implementation of the founder-ratified Model 2 decision.
+
+No deployment.
+No funds.
+No frontend publish.

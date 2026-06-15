@@ -238,9 +238,14 @@ contract SyndicateSaleV2 is Ownable2Step, Pausable, ReentrancyGuard {
 
     // ------------------------------------------------------------ construct
     /**
-     * @param genesisOffset  Final V1 unique-member count at handoff. MUST be
-     *                       >= 333 so V2 only ever sells Era II+ (Genesis is
-     *                       V1-only). See HUMAN REVIEW item J1.
+     * @param genesisOffset  Final V1 unique-member count at handoff. Any value in
+     *                       [0, FINAL_SEAT). Model 2: V2 CONTINUES Genesis from
+     *                       seat `genesisOffset + 1`; if V1 sealed BELOW the Genesis
+     *                       ceiling (333) the remaining Genesis seats are sold by V2
+     *                       at Era I pricing, and Era II still opens at seat #334.
+     *                       MUST equal the REAL V1 count — the chain cannot verify
+     *                       it, so a too-high value would invent phantom seats. See
+     *                       HUMAN REVIEW item J1.
      * @param v1MemberRoot   Merkle root of the V1 member address set, frozen at
      *                       handoff. Lets V2 recognize V1 members without
      *                       double-counting seats. See HUMAN REVIEW item J12.
@@ -258,9 +263,15 @@ contract SyndicateSaleV2 is Ownable2Step, Pausable, ReentrancyGuard {
      *                       contract must be FUNDED with >= the resulting initial
      *                       reserve or the first buy reverts.
      * @param eraCaps        Per-era SYN sold-caps (18dp), index 0..8 => era 1..9.
-     *                       Era 1 (Genesis) is unused by V2 (may be 0). Each
-     *                       SELLABLE era's cap MUST fit at least one minimum
-     *                       entry; recommended sizing per funding model (J13).
+     *                       eraCaps[0] (Era 1 / Genesis) is IGNORED in BOTH paths —
+     *                       pass 0. When genesisOffset >= 333 Genesis is V1-sealed;
+     *                       under Model 2 (genesisOffset < 333) Genesis is RANGE-
+     *                       bounded (this constructor forces eraSynCap[1] =
+     *                       type(uint256).max), so it advances to Era II only at seat
+     *                       #334, never by aggregate-cap exhaustion — any eraCaps[0]
+     *                       value is accepted and discarded. Each SELLABLE era II-IX
+     *                       cap MUST fit at least one minimum entry; recommended
+     *                       sizing per funding model (J13).
      * @param initialRouter  Optional day-one CommissionRouter (address(0) = launch
      *                       with referral OFF). Granted a max USDC allowance so it
      *                       can PULL the Operations slice during buy(). Later swaps
@@ -290,7 +301,13 @@ contract SyndicateSaleV2 is Ownable2Step, Pausable, ReentrancyGuard {
             usdc == address(0) || syn == address(0) || vault == address(0) ||
             liquidity == address(0) || operations == address(0)
         ) revert ZeroAddress();
-        if (genesisOffset < GENESIS_END || genesisOffset >= FINAL_SEAT) revert BadGenesisOffset();
+        // Model 2: genesisOffset may be ANY real V1 count in [0, FINAL_SEAT). When
+        // it is below the Genesis ceiling (GENESIS_END = 333), V2 continues selling
+        // Genesis seats from `genesisOffset + 1` at Era I pricing (the era-cap loop
+        // below then validates the Era I caps). Only the UPPER bound is enforceable
+        // on-chain — the chain cannot verify the count is real, so a too-high value
+        // (phantom seats) is a deploy-discipline concern, not a contract check. J1.
+        if (genesisOffset >= FINAL_SEAT) revert BadGenesisOffset();
         if (maxUsdcPerTx == 0) revert BadEraCaps();
         // Seat-reserve target must be disabled (0) or a real future seat in
         // (GENESIS_END, FINAL_SEAT]. 10_000 = Era II-IV reserve; 1_000_000 = full.
@@ -320,11 +337,32 @@ contract SyndicateSaleV2 is Ownable2Step, Pausable, ReentrancyGuard {
         // Full sizing is J13 (SYN caps) / J3 (address caps) / J14 (per-tx).
         for (uint16 e = startEra; e <= 9; ++e) {
             (, uint256 minU,) = _eraParams(e);
-            uint256 cap = eraCaps[e - 1];
-            if (cap < _minEntrySyn(e)) revert BadEraCaps();
             if (addrCaps[e - 1] < minU) revert BadEraCaps();
             if (maxUsdcPerTx < minU) revert BadEraCaps();
-            eraSynCap[e] = cap;
+            if (e == 1) {
+                // ---- Genesis (Era 1) under Model 2 continuation ----
+                // Genesis is bounded by the 333-SEAT RANGE, NOT by an aggregate
+                // SYN throttle. The ratified Model 2 invariant is that V2 sells
+                // EVERY remaining Genesis seat at Era I pricing and that Era II
+                // opens at #334. A FINITE eraCaps[0] would break this: repeat /
+                // recognized-V1 buys grow soldInEra[1] WITHOUT advancing
+                // memberCount, so the cap could exhaust and `_syncEra` would
+                // advance to Era II BEFORE seat #334, mispricing Genesis seats.
+                // So the Genesis aggregate cap is set NON-BINDING (max) and
+                // eraCaps[0] is IGNORED (a Model 2 deploy may pass 0). Anti-whale
+                // for Genesis is the per-address cap (addrCaps[0], e.g. $5 = one
+                // seat) + the 333 ceiling + the reserve floor + funded inventory.
+                // (When V2 starts in Era II+, startEra > 1 and this branch never
+                // runs, so the recommended pause-at-333 path is byte-for-byte
+                // unaffected. Eras II-IX keep the per-era SYN throttle below.)
+                eraSynCap[e] = type(uint256).max;
+            } else {
+                // Each SELLABLE era (II-IX) must have a SYN sold-cap that fits at
+                // least one minimum entry (else dead-on-arrival).
+                uint256 cap = eraCaps[e - 1];
+                if (cap < _minEntrySyn(e)) revert BadEraCaps();
+                eraSynCap[e] = cap;
+            }
             maxUsdcPerAddressPerEra[e] = addrCaps[e - 1];
         }
         // Non-sellable lower eras (e < startEra, e.g. Genesis) keep their cap
@@ -690,7 +728,7 @@ contract SyndicateSaleV2 is Ownable2Step, Pausable, ReentrancyGuard {
         pure
         returns (uint64 synPerUsdc, uint256 minUsdc6, uint256 endSeat)
     {
-        if (era == 1) return (100, 5_000_000, 333);       // Genesis (V1-only)
+        if (era == 1) return (100, 5_000_000, 333);       // Genesis
         if (era == 2) return (50, 10_000_000, 1_000);
         if (era == 3) return (40, 10_000_000, 3_333);
         if (era == 4) return (16, 25_000_000, 10_000);
