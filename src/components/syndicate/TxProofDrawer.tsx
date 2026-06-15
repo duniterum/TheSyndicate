@@ -32,12 +32,12 @@ import {
   LP_POOL,
 } from "@/lib/syndicate-config";
 
-const TX_HASH_RE = /^0x[a-fA-F0-9]{64}$/;
-
-export function isValidTxHash(hash: string | undefined | null): hash is Hex {
-  if (!hash || typeof hash !== "string") return false;
-  return TX_HASH_RE.test(hash);
-}
+// The tx-hash guard now lives in a pure lib module (no UI/RPC deps) so the
+// homepage rail and data layer can validate hashes without importing this
+// drawer. Imported for internal use here and re-exported for the existing
+// call sites that import it from TxProofDrawer.
+import { isValidTxHash } from "@/lib/tx-proof";
+export { isValidTxHash };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Action decoder — pure, no RPC, runs on the already-fetched tx.

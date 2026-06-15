@@ -3,7 +3,6 @@ import { useState, useEffect, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { formatUnits, parseUnits } from "viem";
 import { useProtocolTruth, fmtUsd, fmtCount } from "@/lib/protocol-truth";
-import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { useChainTip } from "@/lib/chain-time";
 import { useQuoteSyn } from "@/lib/sale-hooks";
 import { useSynSupply } from "@/lib/treasury-hooks";
@@ -16,16 +15,15 @@ import {
   AVALANCHE_CHAIN_ID,
   USDC_DECIMALS,
   SYN_DECIMALS,
-  txExplorerUrl,
 } from "@/lib/syndicate-config";
 import {
   StatusPill,
   ProgressBar,
   AnimatedNumber,
-  ProofButton,
   type CanonicalStatus,
 } from "./Primitives";
 import { AvalancheMark } from "./HeaderWalletChip";
+import { HeroActivityRail } from "./HeroActivityRail";
 import { track } from "@/lib/analytics";
 
 const HERO_PRESETS = PURCHASE_PRESETS_USDC.slice(0, 5);
@@ -102,7 +100,6 @@ function usePrefersReducedMotion() {
 
 export function ProtocolHero() {
   const t = useProtocolTruth();
-  const pulse = useProtocolPulse();
   const tip = useChainTip();
   const supply = useSynSupply();
 
@@ -160,10 +157,6 @@ export function ProtocolHero() {
       ? `#${fmtCount(t.nextMemberNumber.value)}`
       : "—";
 
-  const latestLabel = pulse.lastBuyTxHash ? "Latest purchase verified" : "Awaiting purchase";
-  const latestAmount =
-    pulse.lastBuyUsdc !== undefined ? fmtUsd(pulse.lastBuyUsdc, 2) : "—";
-
   return (
     <section
       id="top"
@@ -202,26 +195,14 @@ export function ProtocolHero() {
             className="xl:col-start-3 xl:row-start-1"
             members={t.members.value}
             membersStatus={t.members.status}
-            nextSeat={seatLabel}
             synPrice={t.synPriceUsd.value}
             synPriceStatus={t.synPriceUsd.status}
-            routedValue={t.usdcRaised.value}
-            routedStatus={t.usdcRaised.status}
             totalSupply={totalSupply}
             totalSupplyStatus={t.totalSupplySyn.status}
             effectiveSupply={effectiveSupply}
             burnedSyn={burnedSyn}
             burnedStatus={burnedStatus}
             refFdv={refFdv}
-            vault={t.vaultUsdc.value}
-            vaultStatus={t.vaultUsdc.status}
-            liquidity={t.liquidityUsdc.value}
-            liquidityStatus={t.liquidityUsdc.status}
-            operations={t.operationsUsdc.value}
-            operationsStatus={t.operationsUsdc.status}
-            latestLabel={latestLabel}
-            latestAmount={latestAmount}
-            latestTx={pulse.lastBuyTxHash}
           />
 
           <ChapterStrip
@@ -791,53 +772,47 @@ function BurnMonument({
   );
 }
 
+function GroupLabel({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`mono mb-3 text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function statusTone(status: CanonicalStatus) {
+  return status === "LIVE"
+    ? "var(--success)"
+    : status === "DERIVED"
+    ? "var(--verify)"
+    : status === "PARTIAL"
+    ? GOLD
+    : "var(--muted-foreground)";
+}
+
 function HeroRight({
   members,
   membersStatus,
-  nextSeat,
   synPrice,
   synPriceStatus,
-  routedValue,
-  routedStatus,
   totalSupply,
   totalSupplyStatus,
   effectiveSupply,
   burnedSyn,
   burnedStatus,
   refFdv,
-  vault,
-  vaultStatus,
-  liquidity,
-  liquidityStatus,
-  operations,
-  operationsStatus,
-  latestLabel,
-  latestAmount,
-  latestTx,
   className = "",
 }: {
   members: number | undefined;
   membersStatus: CanonicalStatus;
-  nextSeat: string;
   synPrice: number | undefined;
   synPriceStatus: CanonicalStatus;
-  routedValue: number | undefined;
-  routedStatus: CanonicalStatus;
   totalSupply: number | undefined;
   totalSupplyStatus: CanonicalStatus;
   effectiveSupply: number | undefined;
   burnedSyn: number | undefined;
   burnedStatus: CanonicalStatus;
   refFdv: number | undefined;
-  vault: number | undefined;
-  vaultStatus: CanonicalStatus;
-  liquidity: number | undefined;
-  liquidityStatus: CanonicalStatus;
-  operations: number | undefined;
-  operationsStatus: CanonicalStatus;
-  latestLabel: string;
-  latestAmount: string;
-  latestTx: string | undefined;
   className?: string;
 }) {
   return (
@@ -846,15 +821,39 @@ function HeroRight({
         <div className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           Protocol overview
         </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-3 xl:grid-cols-3">
-          <Stat label="Members" value={fmtCount(members)} status={membersStatus} primary />
-          <Stat label="Next seat" value={nextSeat} status={membersStatus} gold primary />
-          <Stat label="SYN price" value={fmtUsd(synPrice, 4)} status={synPriceStatus} />
 
-          <Stat label="USDC routed" value={fmtUsd(routedValue, 2)} status={routedStatus} money primary />
+        <div className="flex items-end justify-between gap-3 border-b border-border/50 pb-4">
+          <div>
+            <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Members
+            </div>
+            <div
+              className="mono mt-1.5 text-[2.7rem] font-bold leading-none tabular-nums"
+              style={{ color: GOLD, textShadow: "0 2px 22px color-mix(in oklab, #E3A92B 30%, transparent)" }}
+            >
+              {fmtCount(members)}
+            </div>
+          </div>
+          <div className="pb-1 text-right">
+            <div className="mono inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="size-1 rounded-full" style={{ background: statusTone(membersStatus) }} />
+              {membersStatus}
+            </div>
+            <div className="mono mt-1 text-[9px] uppercase tracking-[0.14em] text-muted-foreground/70">
+              On-chain seats
+            </div>
+          </div>
+        </div>
+
+        <GroupLabel className="mt-4">Token &amp; valuation</GroupLabel>
+        <div className="grid grid-cols-3 gap-x-4 gap-y-3">
+          <Stat label="SYN price" value={fmtUsd(synPrice, 4)} status={synPriceStatus} />
           <Stat label="Ref. market" value={fmtCompactUsd(refFdv)} status="DERIVED" />
           <Stat label="Ref. FDV" value={fmtCompactUsd(refFdv)} status="DERIVED" />
+        </div>
 
+        <GroupLabel className="mt-4">Supply</GroupLabel>
+        <div className="grid grid-cols-3 gap-x-4 gap-y-3">
           <Stat label="Initial supply" value={fmtCompactSyn(totalSupply)} status={totalSupplyStatus} />
           <Stat
             label="Effective supply"
@@ -862,39 +861,10 @@ function HeroRight({
             status={effectiveSupply !== undefined ? "DERIVED" : "PENDING"}
           />
           <BurnStat value={burnedSyn} status={burnedStatus} />
-
-          <Stat label="Vault holdings" value={fmtUsd(vault, 2)} status={vaultStatus} money primary />
-          <Stat label="Liquidity TVL" value={fmtUsd(liquidity, 2)} status={liquidityStatus} money />
-          <Stat label="Operations" value={fmtUsd(operations, 2)} status={operationsStatus} money />
         </div>
       </div>
 
-      <div className="surface p-5">
-        <div className="mono mb-3 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-          <span>Latest activity</span>
-          <Link
-            to="/activity"
-            className="text-foreground/55 transition-colors hover:text-[var(--verify)]"
-          >
-            View all →
-          </Link>
-        </div>
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <div className="mono text-[13px] text-foreground">{latestLabel}</div>
-            <div className="mt-1.5 mono text-base font-semibold tabular-nums" style={{ color: "var(--success)" }}>
-              {latestAmount}
-            </div>
-          </div>
-          {latestTx ? (
-            <ProofButton href={txExplorerUrl(latestTx)} ariaLabel="Verify latest purchase on-chain">
-              Tx ↗
-            </ProofButton>
-          ) : (
-            <StatusPill status="PENDING" />
-          )}
-        </div>
-      </div>
+      <HeroActivityRail />
     </div>
   );
 }
