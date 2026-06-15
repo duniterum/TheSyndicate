@@ -269,3 +269,9 @@ id = "_WzBE2xE3lLA0CXgNBsfJ"
 uri = "file://docs/proposals/SALE_V2_PROTOCOL_FREEZE_REVIEW.md"
 type = "text"
 title = "Protocol Freeze Review — Sale V2 + CommissionRouter V1"
+
+[[outputs]]
+id = "I5QbGqXfmsuZYH4kOy_GW"
+uri = "file://docs/proposals/SALE_V2_V1_SEAL_SNAPSHOT_SPRINT_REPORT.md"
+type = "text"
+title = "V1 Seal + Snapshot Sprint Report (A–J)"

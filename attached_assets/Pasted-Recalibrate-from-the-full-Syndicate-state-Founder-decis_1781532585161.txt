@@ -1,0 +1,154 @@
+Recalibrate from the full Syndicate state.
+
+Founder decision:
+
+We accept that there is no meaningful live user traffic today, so a temporary pause/dead period is acceptable.
+
+We want to accelerate.
+
+Proceed to the V1 SEAL + SNAPSHOT EXECUTION SPRINT.
+
+Do NOT deploy V2.
+Do NOT move SYN/USDC funds.
+Do NOT publish frontend.
+Do NOT reopen architecture.
+Do NOT change contracts.
+Do NOT change economics.
+Do NOT change referral/identity doctrine.
+
+Goal:
+Freeze V1, generate the real V1 snapshot, generate the real V1_MEMBER_ROOT, validate proofs, and fill deploy parameters as far as possible.
+
+Important:
+Only execute the V1 pause if I provide explicit confirmation that the founder/admin wallet is ready and funded with AVAX.
+
+Execution order:
+
+1. Final pre-pause read
+
+Immediately before pause, read and report:
+
+* paused()
+* totalBuyers()
+* purchaseCount()
+* totalSynSold()
+* totalUsdcRaised()
+* availableSyn()
+* owner()
+* vault/liquidity/operations wallets
+* latest block number
+
+Confirm expected current state:
+
+* V1 not paused
+* totalBuyers currently about 2
+* purchaseCount about 5
+* totalSynSold about 2,500 SYN
+* totalUsdcRaised about $25
+* availableSyn about 997,500 SYN
+* owner = 0xa2E538025B7E100c928c73d4a977Ab9CEaA26e2F
+
+If anything differs materially, STOP and report.
+
+2. Pause / seal V1
+
+Prepare the exact pause command and wait for my explicit go.
+
+After I approve:
+
+* execute pause() only if signer is the verified owner/admin EOA
+* record tx hash
+* record pause block
+* verify paused() == true
+
+If pause fails, STOP.
+
+3. Snapshot
+
+Using the pause block:
+
+* export V1 purchase logs
+* dedupe buyers by first-seen order
+* generate members.json
+* generate members.snapshot.json
+* generate v1-merkle.json
+* generate V1_MEMBER_ROOT
+* validate every proof
+* verify count == totalBuyers()
+* verify members length == genesisOffset
+
+Expected Model 2 result if no new buys:
+
+* genesisOffset = 2
+* first V2 member will be #3
+* V2 continues Genesis #3–#333
+
+If count mismatch or proof validation fails, STOP.
+
+4. Deploy params update
+
+Fill or update deploy-params.json with real snapshot values:
+
+* genesisOffset
+* v1MemberRoot
+* proof artifact path
+
+Then audit deploy-params.json and report all remaining placeholder/zero values.
+
+Specifically verify:
+
+* USDC address
+* SYN address
+* Vault address
+* Liquidity address
+* Operations address
+* eraCaps
+* addrCaps
+* reserveThroughSeat
+* maxUsdcPerTx
+* initialRouter
+* owner/admin EOA
+
+Do NOT deploy.
+
+5. Fork rehearsal preparation
+
+After deploy params are filled, prepare the fork rehearsal command.
+
+If possible, run forked-mainnet rehearsal without touching mainnet.
+
+Rehearsal should prove:
+
+* deploy script works
+* constructor args valid
+* read-back assertions pass
+* genesisOffset matches snapshot
+* V1_MEMBER_ROOT matches generated root
+* owner is correct
+* timelocks are 14 days
+* Era I is active for member #3
+* first simulated V2 buy creates member #3
+* returning V1 buyer with proof does not create a second seat
+
+6. Final report
+
+Return:
+
+A. Pre-pause state
+B. Pause tx hash and block
+C. Snapshot outputs
+D. genesisOffset
+E. V1_MEMBER_ROOT
+F. Proof validation result
+G. deploy-params status
+H. Fork rehearsal result if run
+I. Remaining blockers before real V2 deploy
+J. Remaining blockers before first controlled V2 buy
+
+Important:
+If any required safety check fails, STOP immediately and report.
+
+No deployment.
+No funding.
+No frontend publish.
+Only V1 seal + snapshot + parameter preparation.
