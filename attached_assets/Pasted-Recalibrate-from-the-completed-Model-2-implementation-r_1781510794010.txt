@@ -1,0 +1,182 @@
+Recalibrate from the completed Model 2 implementation report.
+
+The Model 2 sprint result is accepted in principle.
+
+Before we move to external-audit preparation, I want one final protocol-wide identity verification pass.
+
+This is NOT a code sprint.
+
+This is NOT a deployment sprint.
+
+This is NOT a frontend redesign.
+
+This is a protocol-integrity verification.
+
+Goal:
+
+Prove that Model 2 does not silently break any identity, chronology, chapter, milestone, or future SeatRecord assumptions.
+
+Task:
+
+Perform a full Identity & Chapter Continuity Audit.
+
+Verify every place where member numbers are used.
+
+I want explicit verification for:
+
+1. Holder Index
+
+* member numbering
+* founder numbering
+* chronology
+* first-seen ordering
+* V1 + V2 continuity
+* no phantom seats
+* no missing ranges
+
+2. Chapter system
+
+Verify:
+
+Genesis Signal
+First Thousand
+Expansion
+First Ten Thousand
+Open Era
+
+For each chapter:
+
+* start number
+* end number
+* transition logic
+* milestone logic
+* capacity logic
+
+Confirm:
+
+V1 #1–#2
+V2 #3–#333
+V2 #334+
+still produces the exact intended chapter sequence.
+
+3. Milestone system
+
+Verify all milestone surfaces:
+
+* 333
+* 1000
+* 3333
+* 10000
+* future milestones
+
+Confirm they are based on actual member numbers and not assumptions that Genesis was completed on V1 alone.
+
+4. Chronicle
+
+Verify:
+
+* chapter labels
+* chronology labels
+* member references
+* founder references
+* institutional register references
+* archive references
+
+Confirm Model 2 creates no discontinuity.
+
+5. SeatRecord721 (future)
+
+This is critical.
+
+Verify:
+
+* memberNumber source
+* mint assumptions
+* numbering assumptions
+* chapter assumptions
+
+Confirm that a future mint for:
+
+#3
+#50
+#333
+#334
+
+works exactly as intended.
+
+6. Referral / Reputation / Builder Records
+
+Verify they remain address-based and not dependent on Genesis being V1-only.
+
+7. Public wording
+
+Identify every remaining phrase that could become false under Model 2, such as:
+
+* "Genesis members are V1 members"
+* "Genesis completed on V1"
+* "First 333 sold on V1"
+* similar assumptions
+
+Return exact files and exact locations.
+
+8. Hidden assumptions search
+
+Search for any logic that implicitly assumes:
+
+genesisOffset = 333
+
+or
+
+V2 starts at #334
+
+or
+
+Genesis is unsellable in V2
+
+or
+
+Era I is impossible in V2
+
+or
+
+Genesis members are only V1 buyers
+
+Return all findings.
+
+9. Final verdict
+
+Answer:
+
+Does Model 2 preserve:
+
+* identity
+* chronology
+* chapters
+* milestones
+* Holder Index
+* SeatRecord721
+* referral
+* reputation
+* builder records
+
+WITHOUT requiring another contract change?
+
+YES or NO.
+
+If NO:
+
+identify exact remaining issue.
+
+If YES:
+
+state whether the protocol is ready to move from architecture work into external-audit preparation and deployment planning.
+
+Important:
+
+Do not modify contracts.
+
+Do not modify frontend.
+
+Do not deploy.
+
+This is the final continuity audit before external-audit preparation.
