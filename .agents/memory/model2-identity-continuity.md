@@ -49,6 +49,18 @@ derived from the Holder Index first-seen ordering, with NO V1-vs-V2 branch:
 - **Proof must fail CLOSED:** if a connected wallet is in the V1 proof artifact and not yet
   knownMember, the FE must pass `v1Proof` (or force `claimV1Membership` first) or BLOCK the
   buy — never silently buy proof-less (that's the double-seat).
+- **"pending:false" is NOT enough — gate on root MATCH.** Structural readiness (pending:false
+  + non-empty root) does NOT protect the irreversible gate. The real attack vector is an
+  OMISSION: a regenerated snapshot that silently drops a V1 member while still pending:false →
+  that member resolves to a fresh buyer ([] proof) → on-chain firstSeat=true → DUPLICATE seat.
+  The contract CANNOT catch this (empty proof is valid for a genuine new buyer). The only
+  off-chain defense is comparing `artifact.root` to the sealed on-chain `V1_MEMBER_ROOT()`
+  (a cryptographic commitment to the EXACT member set — drop one and the root changes).
+  Bake `V1_MEMBER_ROOT` as a FE constant (confirmed == contract at wiring) and make the buy
+  gate `isArtifactCanonical` = ready && root===constant && count===proofs.length; the buy hook's
+  `ready` must use canonical, not structural. **Why:** an honest publish mistake, not just a
+  pending flag, is what creates the duplicate-seat. **How to apply:** any future re-publish of
+  v1-member-proofs.json must keep root === the on-chain root, or the buy correctly blocks.
 - **Cache migration:** `purchase-events-cache` must bump its schema/version and key on
   chainId + BOTH sale addresses + both deployment blocks; prefer per-source cursors over one
   global cursor, or an old V1-only snapshot silently hides V2 events.

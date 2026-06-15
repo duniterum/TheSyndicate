@@ -20,6 +20,7 @@ import {
   USDC_DECIMALS,
   SYN_DECIMALS,
   AVALANCHE_CHAIN_ID,
+  SALE_V2_LIVE,
   rankForUsdc,
   vaultFlow,
   explorerUrlFor,
@@ -29,14 +30,19 @@ import {
   extrasForAddress,
 } from "@/lib/syndicate-config";
 import { ContractLink, ProofButton } from "./Primitives";
-import { SALE_ABI, ERC20_ABI } from "@/lib/sale-abi";
+import { SALE_ABI, SALE_V2_ABI, ERC20_ABI } from "@/lib/sale-abi";
 import {
+  ACTIVE_SALE,
   useSaleStats,
   useUserBalances,
+  useQuoteSyn,
   fmtUsdc,
   fmtSyn,
   fmtAddress,
+  type SaleStats,
 } from "@/lib/sale-hooks";
+import { useV1Proof, buildV2BuyArgs } from "@/lib/v1-proof";
+import { ERAS } from "@/lib/eras";
 import { track } from "@/lib/analytics";
 import { assertFreshWallet, walletFreshnessMessage } from "@/lib/wallet-freshness";
 import { recordTx } from "@/lib/tx-history";
@@ -47,7 +53,9 @@ import { CANONICAL_ORIGIN } from "@/lib/canonical-origin";
 import { buildReferralShareUrl } from "@/lib/referral-attribution";
 import { ShareActions } from "./ShareActions";
 
-const SALE = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
+// The active self-service sale (V2 when live, else V1) — every approve/buy/
+// persistence path targets this address.
+const SALE = ACTIVE_SALE;
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
 const fmtUsd = (n: number) =>
   n < 100 ? `$${n.toFixed(2).replace(/\.00$/, "")}` : `$${Math.round(n).toLocaleString("en-US")}`;
@@ -92,6 +100,11 @@ export function LivePurchase() {
   }, [synOut]);
   const { current } = rankForUsdc(usdc);
   const flow = vaultFlow(usdc);
+
+  // V2 self-service: on-chain quote (drives minSynOut) + fail-closed V1 proof
+  // gate so a returning V1 member's seat is continued, never duplicated.
+  const quote = useQuoteSyn(usdcRaw);
+  const v1Proof = useV1Proof();
 
   // Write hooks
   const approveTx = useWriteContract();
@@ -249,6 +262,21 @@ export function LivePurchase() {
         }
       },
     };
+  } else if (SALE_V2_LIVE && !v1Proof.ready) {
+    // V2 buys require a CANONICAL V1-membership proof artifact (root === the
+    // sealed on-chain V1_MEMBER_ROOT) so a returning V1 member's seat is
+    // continued (not duplicated) and a new buyer passes `[]`. Fail closed until
+    // a canonical artifact is in hand: only show the transient "Preparing…"
+    // while genuinely loading; an errored or loaded-but-non-canonical artifact
+    // is a hard "unavailable".
+    state = {
+      label:
+        v1Proof.isError || (!v1Proof.isLoading && !v1Proof.ready)
+          ? "Membership data unavailable"
+          : "Preparing…",
+      disabled: true,
+      tone: "muted",
+    };
   } else {
     state = {
       label: buyPending ? "Confirm in Wallet…" : "Buy SYN",
@@ -262,15 +290,48 @@ export function LivePurchase() {
           return;
         }
         try {
-          const hash = await buyTx.writeContractAsync({
-            address: SALE,
-            abi: SALE_ABI,
-            functionName: "buy",
-            account: address,
-            args: [usdcRaw],
-          });
+          let hash: `0x${string}`;
+          if (SALE_V2_LIVE) {
+            // Classify the buyer against the canonical V1 snapshot (fail-closed):
+            // a known V1 member passes THEIR proof so V2 continues their seat; a
+            // fresh buyer passes `[]` and is issued the next seat.
+            const res = v1Proof.resolveForBuy(address!);
+            if (!res.ok) {
+              setWalletGuardError(
+                res.reason === "artifact-pending"
+                  ? "Membership data is still finalizing. Please try again in a moment."
+                  : "Membership data is temporarily unavailable. Refresh and try again.",
+              );
+              setPhase("idle");
+              return;
+            }
+            // minSynOut = on-chain quote when available, else the fixed-rate
+            // off-chain mirror (Era I: 1 SYN = $0.01, no slippage). referrer is
+            // intentionally null (no referral activation in this wiring pass).
+            const minSynOut = quote.data ?? synOutRaw;
+            hash = (await buyTx.writeContractAsync({
+              address: SALE,
+              abi: SALE_V2_ABI,
+              functionName: "buy",
+              account: address,
+              args: buildV2BuyArgs({
+                usdcIn: usdcRaw,
+                minSynOut,
+                v1Proof: res.proof,
+                referrer: null,
+              }),
+            })) as `0x${string}`;
+          } else {
+            hash = (await buyTx.writeContractAsync({
+              address: SALE,
+              abi: SALE_ABI,
+              functionName: "buy",
+              account: address,
+              args: [usdcRaw],
+            })) as `0x${string}`;
+          }
           track("purchase_success", { tx: hash, usdc: Number(usdcInput) || undefined });
-          persisted.setMint(hash as `0x${string}`);
+          persisted.setMint(hash);
           recordTx({ hash, account: address!, chainId: 43114, surface: "live_purchase_buy", label: "SYN sale — buy", contract: SALE });
         } catch (err) {
           track("purchase_error", { reason: err instanceof Error ? err.message.slice(0, 80) : "rejected" });
@@ -335,6 +396,9 @@ export function LivePurchase() {
               availableSyn={stats.availableSyn}
               paused={stats.paused}
             />
+
+            {/* V2 active-sale status (era / next seat / reserve floor / balance) */}
+            {stats.isV2 && <SaleV2StatusStrip stats={stats} />}
 
             {/* Presets */}
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 mb-3 mt-4">
@@ -530,6 +594,43 @@ function WalletBadge({
   );
 }
 
+function SaleV2StatusStrip({ stats }: { stats: SaleStats }) {
+  const era =
+    stats.currentEra !== undefined ? ERAS[stats.currentEra - 1] : undefined;
+  const items: Array<{ label: string; value: string }> = [
+    { label: "Era", value: era ? `${era.roman} · ${era.name}` : "—" },
+    {
+      label: "Next seat",
+      value:
+        stats.nextSeatNumber !== undefined ? `#${stats.nextSeatNumber.toString()}` : "—",
+    },
+    {
+      label: "Reserve floor",
+      value: stats.reserveFloor !== undefined ? `${fmtSyn(stats.reserveFloor)} SYN` : "—",
+    },
+    {
+      label: "Sale balance",
+      value:
+        stats.saleSynBalance !== undefined ? `${fmtSyn(stats.saleSynBalance)} SYN` : "—",
+    },
+  ];
+  return (
+    <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+      {items.map((it) => (
+        <div
+          key={it.label}
+          className="rounded-md border border-border/50 bg-background/40 px-2.5 py-2"
+        >
+          <div className="mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
+            {it.label}
+          </div>
+          <div className="mt-0.5 text-xs font-semibold tabular-nums">{it.value}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SaleInventoryBanner({
   isLoading,
   availableSyn,
@@ -559,7 +660,7 @@ function SaleInventoryBanner({
         Sale contract deployed but waiting for SYN inventory. Live buying will enable once the
         Membership SYN wallet funds the contract.{" "}
         <a
-          href={explorerUrlFor("MEMBERSHIP_SALE_CONTRACT_ADDRESS") ?? "#"}
+          href={explorerUrlForAddress(SALE) ?? "#"}
           target="_blank"
           rel="noopener noreferrer"
           className="underline"
@@ -696,7 +797,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 export function ContractAddresses() {
   const entries: Array<[string, string, string | null]> = [
-    ["Membership Sale", CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, explorerUrlFor("MEMBERSHIP_SALE_CONTRACT_ADDRESS")],
+    ["Membership Sale", SALE, explorerUrlForAddress(SALE)],
     ["USDC",            CONTRACTS.USDC_CONTRACT_ADDRESS,            explorerUrlFor("USDC_CONTRACT_ADDRESS")],
     ["SYN",             CONTRACTS.SYN_CONTRACT_ADDRESS,             explorerUrlFor("SYN_CONTRACT_ADDRESS")],
     ["Vault wallet",      CONTRACTS.VAULT_WALLET,      explorerUrlForAddress(CONTRACTS.VAULT_WALLET)],

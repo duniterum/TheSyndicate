@@ -10,11 +10,13 @@ import { describe, it, expect } from "vitest";
 import {
   parseV1ProofArtifact,
   isArtifactReady,
+  isArtifactCanonical,
   getV1Proof,
   isKnownV1Member,
   resolveV1ProofForBuy,
   buildV2BuyArgs,
   ZERO_ADDRESS,
+  V1_MEMBER_ROOT,
   type V1ProofArtifact,
 } from "../v1-proof";
 
@@ -83,6 +85,24 @@ describe("WS2 · isArtifactReady", () => {
   });
 });
 
+describe("WS2 · isArtifactCanonical (airtight buy gate)", () => {
+  it("true only when structurally ready AND root matches the sealed on-chain root AND count matches proofs", () => {
+    expect(isArtifactCanonical(ready())).toBe(true);
+    expect(ready().root).toBe(V1_MEMBER_ROOT);
+  });
+  it("false when the root differs from the sealed on-chain V1_MEMBER_ROOT (e.g. a regenerated snapshot that dropped a member)", () => {
+    expect(isArtifactCanonical(ready({ root: "0x" + "11".repeat(32) }))).toBe(false);
+  });
+  it("false when declared count disagrees with the number of proofs carried", () => {
+    expect(isArtifactCanonical(ready({ count: 5 }))).toBe(false);
+  });
+  it("false for pending, null, or undefined artifacts", () => {
+    expect(isArtifactCanonical(PENDING)).toBe(false);
+    expect(isArtifactCanonical(null)).toBe(false);
+    expect(isArtifactCanonical(undefined)).toBe(false);
+  });
+});
+
 describe("WS2 · getV1Proof / isKnownV1Member (case-insensitive)", () => {
   it("finds a member's proof regardless of address casing", () => {
     expect(getV1Proof(ready(), MEMBER.toLowerCase())).toEqual(PROOF);
@@ -104,6 +124,12 @@ describe("WS2 · resolveV1ProofForBuy (fail-closed)", () => {
   });
   it("blocks while the artifact is pending", () => {
     expect(resolveV1ProofForBuy(PENDING, MEMBER)).toEqual({ ok: false, reason: "artifact-pending" });
+  });
+  it("blocks (invalid) when the artifact is structurally ready but its root is not canonical", () => {
+    expect(resolveV1ProofForBuy(ready({ root: "0x" + "22".repeat(32) }), MEMBER)).toEqual({
+      ok: false,
+      reason: "artifact-invalid",
+    });
   });
   it("returns a known member's real proof against a ready artifact", () => {
     expect(resolveV1ProofForBuy(ready(), MEMBER)).toEqual({ ok: true, isV1Member: true, proof: PROOF });

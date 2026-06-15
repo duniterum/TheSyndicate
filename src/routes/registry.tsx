@@ -13,11 +13,19 @@ import {
   ARCHIVE_NFT_EXPLORERS,
   VAULT_ALLOCATION,
   LP_POOL,
+  MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
+  SALE_V2_LIVE,
   explorerUrlFor,
   explorerUrlForAddress,
   extrasForAddress,
   txExplorerUrl,
 } from "@/lib/syndicate-config";
+
+// Active membership sale (V2 once live; V1 history stays sealed but verifiable).
+const ACTIVE_SALE_ADDR =
+  SALE_V2_LIVE && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+    ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+    : CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
 
 export const Route = createFileRoute("/registry")({
   head: () => ({
@@ -54,9 +62,11 @@ const CONTRACT_ROWS: ContractRow[] = [
   {
     label: "Membership Sale",
     status: "live",
-    address: CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS,
-    href: explorerUrlFor("MEMBERSHIP_SALE_CONTRACT_ADDRESS"),
-    description: "USDC → SYN. Splits 70/20/10 onchain to Vault, Liquidity, Operations.",
+    address: ACTIVE_SALE_ADDR,
+    href: explorerUrlForAddress(ACTIVE_SALE_ADDR),
+    description: SALE_V2_LIVE
+      ? "USDC → SYN. Splits 70/20/10 onchain to Vault, Liquidity, Operations. Sale V2 (Model 2) — continues member numbering from V1."
+      : "USDC → SYN. Splits 70/20/10 onchain to Vault, Liquidity, Operations.",
   },
   {
     label: "USDC (Avalanche)",

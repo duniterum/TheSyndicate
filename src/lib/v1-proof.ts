@@ -34,6 +34,21 @@ export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as cons
 export const V1_PROOF_ARTIFACT_URL = "/v1-member-proofs.json";
 
 /**
+ * The sealed V1 membership Merkle root — the cryptographic commitment to the
+ * EXACT set of V1 members. It is baked into the deployed Sale V2
+ * (0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48) and re-verified on-chain for
+ * every proof; this constant was confirmed equal to the contract's
+ * `V1_MEMBER_ROOT()` at wiring time. Any proof artifact whose root differs from
+ * this — e.g. a regenerated snapshot that accidentally dropped or added a
+ * member — is NOT the canonical snapshot and MUST NOT be trusted to classify
+ * buyers: a dropped member would otherwise be mis-handled as a fresh buyer and
+ * issued a DUPLICATE seat (the one irreversible identity gate). Lowercase for
+ * case-insensitive comparison.
+ */
+export const V1_MEMBER_ROOT =
+  "0xae75ae2077570c7bd09d95cc142e283cfa73fc9e263c2debf1ba3403457474ff" as const;
+
+/**
  * Shape of the proof artifact. `proofs` maps a member address → its Merkle
  * proof (an array of 32-byte hex sibling hashes). `root` is the Merkle root the
  * proofs were generated against; it must match the on-chain `V1_MEMBER_ROOT`.
@@ -52,6 +67,22 @@ export type V1ProofArtifact = {
 /** A ready artifact is one we can safely classify addresses against. */
 export function isArtifactReady(a: V1ProofArtifact | null | undefined): a is V1ProofArtifact {
   return Boolean(a) && a!.pending === false && typeof a!.root === "string" && a!.root.length > 0;
+}
+
+/**
+ * Stronger-than-structural readiness, used at the BUY boundary. The artifact is
+ * structurally ready AND its root matches the sealed on-chain `V1_MEMBER_ROOT`
+ * AND its declared `count` matches the number of proofs it actually carries.
+ * This is the airtight fail-closed gate: only a byte-for-byte canonical snapshot
+ * may classify a buyer, so a real V1 member can never be silently demoted to a
+ * "fresh buyer" (which would mint them a duplicate seat). Pure.
+ */
+export function isArtifactCanonical(
+  a: V1ProofArtifact | null | undefined,
+): a is V1ProofArtifact {
+  if (!isArtifactReady(a)) return false;
+  if ((a.root ?? "").toLowerCase() !== V1_MEMBER_ROOT) return false;
+  return a.count === Object.keys(a.proofs).length;
 }
 
 /**
@@ -110,12 +141,16 @@ export function isKnownV1Member(artifact: V1ProofArtifact, address: string): boo
  */
 export type V1ProofResolution =
   | { ok: true; isV1Member: boolean; proof: `0x${string}`[] }
-  | { ok: false; reason: "artifact-pending" | "artifact-unavailable" };
+  | { ok: false; reason: "artifact-pending" | "artifact-unavailable" | "artifact-invalid" };
 
 /**
- * Fail-closed resolution. Pure. Only returns ok:true against a READY artifact:
- * a known member gets their proof; anyone else is a new buyer with an empty
- * proof. A pending/unavailable artifact returns ok:false so callers block.
+ * Fail-closed resolution. Pure. Only returns ok:true against a CANONICAL
+ * artifact (structurally ready AND root === sealed on-chain V1_MEMBER_ROOT AND
+ * count integrity): a known member gets their proof; anyone else is a new buyer
+ * with an empty proof. A pending/unavailable artifact blocks ("pending"); a
+ * structurally-ready-but-non-canonical artifact (wrong root / count mismatch —
+ * a publish error) blocks ("invalid"), so a real V1 member is never demoted to
+ * a fresh buyer.
  */
 export function resolveV1ProofForBuy(
   artifact: V1ProofArtifact | null | undefined,
@@ -123,6 +158,7 @@ export function resolveV1ProofForBuy(
 ): V1ProofResolution {
   if (!artifact) return { ok: false, reason: "artifact-unavailable" };
   if (!isArtifactReady(artifact)) return { ok: false, reason: "artifact-pending" };
+  if (!isArtifactCanonical(artifact)) return { ok: false, reason: "artifact-invalid" };
   const proof = getV1Proof(artifact, address);
   if (proof) return { ok: true, isV1Member: true, proof };
   return { ok: true, isV1Member: false, proof: [] };
@@ -173,13 +209,13 @@ export function useV1Proof() {
   });
 
   const artifact = query.data;
-  const ready = isArtifactReady(artifact);
+  const ready = isArtifactCanonical(artifact);
 
   return {
     artifact,
     isLoading: query.isLoading,
     isError: query.isError,
-    /** True only when a real, ready artifact is loaded. */
+    /** True only when a real, CANONICAL artifact is loaded (root matches the sealed on-chain V1_MEMBER_ROOT). */
     ready,
     /** Member count from the artifact (0 until ready). */
     count: artifact?.count ?? 0,

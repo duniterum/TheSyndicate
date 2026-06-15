@@ -1,7 +1,14 @@
 {
-  "pending": true,
-  "root": null,
-  "count": 0,
-  "proofs": {},
-  "note": "PLACEHOLDER — not a real snapshot. The production artifact is generated from a live V1 snapshot via contracts/tools/export-members.mjs -> gen-v1-root.mjs -> validate-snapshot.mjs, and its `root` must equal the V1_MEMBER_ROOT baked into the deployed Sale V2. While `pending` is true the V2 buy flow fails closed (it refuses to build buy args) so no V1 member is ever mis-handled as a new seat."
+  "pending": false,
+  "root": "0xae75ae2077570c7bd09d95cc142e283cfa73fc9e263c2debf1ba3403457474ff",
+  "count": 2,
+  "proofs": {
+    "0x244531C571966f90f4849e03a507543d90f9C721": [
+      "0x3eb58fd16895751acdd571cb5db11df332a3c61a317fe3cdbba62311120dd484"
+    ],
+    "0x3488857b003104e2B08A1D198f8a23BFF28B0045": [
+      "0x2f88566ae4accbe296cd9222269a1eeeb4d56bf2c96a9f4bab14a2a9623e5fe3"
+    ]
+  },
+  "note": "Canonical V1 membership snapshot for Sale V2 recognition. root MUST equal the V1_MEMBER_ROOT baked into the deployed Sale V2 (0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48). Generated from contracts/tools/v1-merkle.json (StandardMerkleTree, leafEncoding [address]). count=2 V1 members. A fresh buyer (not listed) passes an empty proof and receives a new seat; a listed V1 member must pass THEIR proof so V2 continues their identity."
 }

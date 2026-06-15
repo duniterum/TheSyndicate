@@ -1,0 +1,114 @@
+Funding is verified.
+
+The live /join page still says:
+"Sale contract is currently paused. Live purchases are disabled."
+
+That means the frontend is still pointed at paused V1 or still using the old sale pause state.
+
+Proceed now with frontend activation before my $5 buy.
+
+Do NOT change contracts.
+Do NOT deploy another contract.
+Do NOT change economics.
+Do NOT activate referral.
+
+Task:
+
+1. Wire SaleV2 live
+
+Use:
+
+* SaleV2 address:
+  0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48
+
+* deployment block:
+  88095827
+
+* V1:
+  sealed / historical
+
+* V2:
+  live
+
+Update config so /join reads the V2 contract state, not V1 pause state.
+
+2. Publish canonical proof artifact
+
+Update:
+
+public/v1-member-proofs.json
+
+Set:
+
+* pending: false
+* root: 0xae75ae2077570c7bd09d95cc142e283cfa73fc9e263c2debf1ba3403457474ff
+* count: 2
+* proofs for the 2 V1 members
+
+The buy flow must fail closed only if the user is a V1 member without proof. Fresh buyer must be able to buy with empty proof.
+
+3. Update /join
+
+The live purchase box must show:
+
+* V2 live
+* Era I / Genesis
+* next member #3
+* $5 package enabled
+* SYN output = 500 SYN
+* SaleV2 balance = 5,000,000 SYN
+* reserve floor = 4,099,000 SYN
+* no paused V1 warning
+
+Do not show referral UI yet.
+referrer remains address(0).
+
+4. Update live read surfaces
+
+Ensure these use V2 now:
+
+* homepage live metrics
+* /join
+* /my-syndicate
+* /members
+* /member/3 after buy
+* /activity
+* /registry
+* /transparency
+
+V1 must show as sealed/history, not active sale.
+
+5. QA before publish
+
+Run:
+
+* typecheck
+* build
+* route smoke
+* content guard
+* banned wording guard
+* live-read smoke against SaleV2
+* mobile sanity
+
+6. Publish/update frontend
+
+After QA passes, publish/update the site.
+
+7. Report
+
+Return:
+
+A. Files changed
+B. V2 config values
+C. proof artifact status
+D. /join status
+E. tests run
+F. publish status
+G. whether I can now buy the $5 package from the site
+
+Important:
+Execution only.
+No architecture.
+No doctrine.
+No referral activation.
+Goal: let me buy member #3 through the live site.

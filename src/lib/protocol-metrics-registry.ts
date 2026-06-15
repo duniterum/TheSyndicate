@@ -35,9 +35,21 @@ import {
   SYN_EXPLORERS,
   SYN_BURN_ADDRESS,
   PROOF_OF_FIRE_001,
+  MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
+  SALE_V2_LIVE,
   explorerUrlFor,
   explorerUrlForAddress,
 } from "./syndicate-config";
+
+/**
+ * The active membership sale verification target. Once Sale V2 is live every
+ * "Membership Sale contract" verification link points at V2 (where current
+ * routing happens); the sealed V1 history still backs the cumulative totals.
+ */
+const ACTIVE_SALE_ADDR =
+  SALE_V2_LIVE && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+    ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+    : CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
 
 // ─── Taxonomy ──────────────────────────────────────────────────────────────
 
@@ -146,7 +158,7 @@ const links = (...xs: Array<MetricLink | null>): MetricLink[] =>
   xs.filter((x): x is MetricLink => x !== null);
 
 const SYN_HREF = explorerUrlFor("SYN_CONTRACT_ADDRESS");
-const SALE_HREF = explorerUrlFor("MEMBERSHIP_SALE_CONTRACT_ADDRESS");
+const SALE_HREF = explorerUrlForAddress(ACTIVE_SALE_ADDR);
 const PAIR_HREF = explorerUrlForAddress(LP_POOL.pairAddress);
 const VAULT_HREF = explorerUrlForAddress(CONTRACTS.VAULT_WALLET);
 const LIQ_HREF = explorerUrlForAddress(CONTRACTS.LIQUIDITY_WALLET);
@@ -156,7 +168,7 @@ const ARCHIVE_HREF = explorerUrlForAddress(CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRES
 
 const synLink = link(CONTRACTS.SYN_CONTRACT_ADDRESS, "SYN contract");
 const usdcLink = link(CONTRACTS.USDC_CONTRACT_ADDRESS, "USDC contract");
-const saleLink = link(CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS, "Membership Sale contract");
+const saleLink = link(ACTIVE_SALE_ADDR, "Membership Sale contract");
 const avascanLink: MetricLink = { label: "Avascan token", href: SYN_EXPLORERS.avascan };
 
 const REFRESH_PULSE = "Every 60 seconds; cached for 30 seconds.";

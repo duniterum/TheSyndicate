@@ -326,8 +326,9 @@ export const isLiveAddress = (v: string) =>
 // byte-identical. No placeholder strings, no inferred address (truth doctrine).
 // Kept OUTSIDE `CONTRACTS` so the `as const` map / ContractKey / EXPLORER_KIND
 // stay uniform; mirrors how SALE_DEPLOYMENT_BLOCK lives as a standalone export.
-export const MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS: string | null = null;
-export const SALE_V2_DEPLOYMENT_BLOCK: bigint | null = null;
+export const MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS: string | null =
+  "0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48";
+export const SALE_V2_DEPLOYMENT_BLOCK: bigint | null = 88095827n;
 /** True only when BOTH the V2 address and its deploy block are known. */
 export const SALE_V2_LIVE: boolean =
   MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS !== null &&

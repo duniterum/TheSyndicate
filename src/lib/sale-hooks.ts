@@ -2,8 +2,15 @@ import { useEffect, useMemo } from "react";
 import { useAccount, useChainId, useReadContracts, useReadContract } from "wagmi";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatUnits } from "viem";
-import { CONTRACTS, USDC_DECIMALS, SYN_DECIMALS, LP_POOL } from "./syndicate-config";
-import { SALE_ABI, ERC20_ABI, PAIR_ABI } from "./sale-abi";
+import {
+  CONTRACTS,
+  USDC_DECIMALS,
+  SYN_DECIMALS,
+  LP_POOL,
+  MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
+  SALE_V2_LIVE,
+} from "./syndicate-config";
+import { SALE_ABI, SALE_V2_ABI, ERC20_ABI, PAIR_ABI } from "./sale-abi";
 import {
   loadWalletReadsSnapshot,
   readContractsDataToSlots,
@@ -12,44 +19,144 @@ import {
   walletReadsCacheKey,
 } from "./wallet-reads-cache";
 
-const SALE = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
+/** Sealed V1 sale (history). Cumulative V1 totals fold into protocol totals. */
+const SALE_V1 = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
+/** Live V2 sale address, or null while V2 is dormant. */
+const SALE_V2 = (SALE_V2_LIVE && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+  ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+  : null) as `0x${string}` | null;
+/** True once the V2 sale is the active self-service sale. */
+export const ACTIVE_SALE_IS_V2 = SALE_V2 !== null;
+/**
+ * The sale contract self-service buys + active-sale operational reads target.
+ * V2 when live, otherwise the byte-identical V1 flow.
+ */
+export const ACTIVE_SALE = (SALE_V2 ?? SALE_V1) as `0x${string}`;
+
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
 const SYN = CONTRACTS.SYN_CONTRACT_ADDRESS as `0x${string}`;
 const PAIR = LP_POOL.pairAddress as `0x${string}`;
 
+export type SaleStats = {
+  isLoading: boolean;
+  isError: boolean;
+  refetch: () => void;
+  /** Active-sale inventory (V2 when live). */
+  availableSyn?: bigint;
+  /** Protocol-cumulative USDC routed (sealed V1 + live V2). */
+  totalUsdcRaised?: bigint;
+  /** Protocol-cumulative SYN distributed (sealed V1 + live V2). */
+  totalSynSold?: bigint;
+  /** Cumulative unique members across V1+V2. */
+  totalBuyers?: bigint;
+  /** Cumulative purchase count across V1+V2. */
+  purchaseCount?: bigint;
+  /** Active-sale paused flag (V2 when live). */
+  paused?: boolean;
+  /** SYN held by the active sale contract. */
+  saleSynBalance?: bigint;
+  /** V2 only — SYN that must stay locked for already-promised seats. */
+  reserveFloor?: bigint;
+  /** V2 only — the next seat the contract will assign. */
+  nextSeatNumber?: bigint;
+  /** V2 only — the active distribution era (Genesis = Era I). */
+  currentEra?: number;
+  /** V2 only — SYN sellable before the next seat boundary. */
+  sellableSynForNextSeat?: bigint;
+  /** V2 only — on-chain member count (includes the V1 genesis baseline). */
+  memberCount?: bigint;
+  /** True when the active sale is V2. */
+  isV2: boolean;
+};
+
+const okResult = <T,>(r: { status: string; result?: unknown } | undefined): T | undefined =>
+  r && r.status === "success" ? (r.result as T) : undefined;
+
+const sumBig = (a?: bigint, b?: bigint): bigint | undefined =>
+  a === undefined && b === undefined ? undefined : (a ?? 0n) + (b ?? 0n);
+
 /** Aggregate read of public sale stats. Refetches every 60s + on demand via refetch(). */
-export function useSaleStats() {
+export function useSaleStats(): SaleStats {
   const q = useReadContracts({
     allowFailure: true,
-    contracts: [
-      { address: SALE, abi: SALE_ABI, functionName: "availableSyn" },
-      { address: SALE, abi: SALE_ABI, functionName: "totalUsdcRaised" },
-      { address: SALE, abi: SALE_ABI, functionName: "totalSynSold" },
-      { address: SALE, abi: SALE_ABI, functionName: "totalBuyers" },
-      { address: SALE, abi: SALE_ABI, functionName: "purchaseCount" },
-      { address: SALE, abi: SALE_ABI, functionName: "paused" },
-      { address: SYN, abi: ERC20_ABI, functionName: "balanceOf", args: [SALE] },
-    ],
+    contracts: ACTIVE_SALE_IS_V2
+      ? [
+          // Active V2 sale — operational + identity reads.
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "availableSyn" },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "totalUsdcRaised" },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "totalSynSold" },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "memberCount" },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "GENESIS_OFFSET" },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "paused" },
+          { address: SYN, abi: ERC20_ABI, functionName: "balanceOf", args: [ACTIVE_SALE] },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "currentReserveFloor" },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "nextSeatNumber" },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "currentEra" },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "sellableSynForNextSeat" },
+          // Sealed V1 history — folded into protocol-cumulative totals.
+          { address: SALE_V1, abi: SALE_ABI, functionName: "totalUsdcRaised" },
+          { address: SALE_V1, abi: SALE_ABI, functionName: "totalSynSold" },
+          { address: SALE_V1, abi: SALE_ABI, functionName: "purchaseCount" },
+        ]
+      : [
+          { address: SALE_V1, abi: SALE_ABI, functionName: "availableSyn" },
+          { address: SALE_V1, abi: SALE_ABI, functionName: "totalUsdcRaised" },
+          { address: SALE_V1, abi: SALE_ABI, functionName: "totalSynSold" },
+          { address: SALE_V1, abi: SALE_ABI, functionName: "totalBuyers" },
+          { address: SALE_V1, abi: SALE_ABI, functionName: "purchaseCount" },
+          { address: SALE_V1, abi: SALE_ABI, functionName: "paused" },
+          { address: SYN, abi: ERC20_ABI, functionName: "balanceOf", args: [SALE_V1] },
+        ],
     query: { refetchInterval: 60_000, staleTime: 30_000 },
   });
 
-  const [availableSyn, totalUsdcRaised, totalSynSold, totalBuyers, purchaseCount, paused, saleSynBalance] =
-    q.data ?? [];
+  const base = { isLoading: q.isLoading, isError: q.isError, refetch: q.refetch };
 
-  const ok = <T,>(r: { status: string; result?: T } | undefined) =>
-    r && r.status === "success" ? r.result : undefined;
+  if (ACTIVE_SALE_IS_V2) {
+    const d = q.data ?? [];
+    const memberCount = okResult<bigint>(d[3]);
+    const genesisOffset = okResult<bigint>(d[4]);
+    const v1Purchases = okResult<bigint>(d[13]);
+    // V2 memberCount already counts from the V1 baseline (GENESIS_OFFSET), so it
+    // is the cumulative unique-member count. New V2 seats = memberCount − offset.
+    const v2NewSeats =
+      memberCount !== undefined && genesisOffset !== undefined
+        ? memberCount > genesisOffset
+          ? memberCount - genesisOffset
+          : 0n
+        : undefined;
+    return {
+      ...base,
+      availableSyn: okResult<bigint>(d[0]),
+      totalUsdcRaised: sumBig(okResult<bigint>(d[11]), okResult<bigint>(d[1])),
+      totalSynSold: sumBig(okResult<bigint>(d[12]), okResult<bigint>(d[2])),
+      totalBuyers: memberCount,
+      purchaseCount:
+        v1Purchases !== undefined && v2NewSeats !== undefined
+          ? v1Purchases + v2NewSeats
+          : v1Purchases,
+      paused: okResult<boolean>(d[5]),
+      saleSynBalance: okResult<bigint>(d[6]),
+      reserveFloor: okResult<bigint>(d[7]),
+      nextSeatNumber: okResult<bigint>(d[8]),
+      currentEra: okResult<number>(d[9]),
+      sellableSynForNextSeat: okResult<bigint>(d[10]),
+      memberCount,
+      isV2: true,
+    };
+  }
 
+  const d = q.data ?? [];
   return {
-    isLoading: q.isLoading,
-    isError: q.isError,
-    refetch: q.refetch,
-    availableSyn: ok<bigint>(availableSyn),
-    totalUsdcRaised: ok<bigint>(totalUsdcRaised),
-    totalSynSold: ok<bigint>(totalSynSold),
-    totalBuyers: ok<bigint>(totalBuyers),
-    purchaseCount: ok<bigint>(purchaseCount),
-    paused: ok<boolean>(paused),
-    saleSynBalance: ok<bigint>(saleSynBalance),
+    ...base,
+    availableSyn: okResult<bigint>(d[0]),
+    totalUsdcRaised: okResult<bigint>(d[1]),
+    totalSynSold: okResult<bigint>(d[2]),
+    totalBuyers: okResult<bigint>(d[3]),
+    purchaseCount: okResult<bigint>(d[4]),
+    paused: okResult<boolean>(d[5]),
+    saleSynBalance: okResult<bigint>(d[6]),
+    isV2: false,
   };
 }
 
@@ -64,7 +171,7 @@ export function useUserBalances() {
       ? [
           { address: USDC, abi: ERC20_ABI, functionName: "balanceOf", args: [address] },
           { address: SYN, abi: ERC20_ABI, functionName: "balanceOf", args: [address] },
-          { address: USDC, abi: ERC20_ABI, functionName: "allowance", args: [address, SALE] },
+          { address: USDC, abi: ERC20_ABI, functionName: "allowance", args: [address, ACTIVE_SALE] },
         ]
       : [],
     query: { enabled: Boolean(address), refetchInterval: 60_000 },
@@ -125,40 +232,79 @@ export function useUserBalances() {
   };
 }
 
-/** Connected wallet purchase totals read from the sale contract. */
+/**
+ * Connected wallet purchase totals from the active sale contract. V2 exposes a
+ * single `usdcContributed(account)` (no per-buyer SYN total view — that lives in
+ * the holder index), so `buyerSynTotal` is undefined on V2.
+ */
 export function useBuyerPurchaseTotals() {
   const { address } = useAccount();
   const q = useReadContracts({
     allowFailure: true,
     contracts: address
-      ? [
-          { address: SALE, abi: SALE_ABI, functionName: "buyerUsdcTotal", args: [address] },
-          { address: SALE, abi: SALE_ABI, functionName: "buyerSynTotal", args: [address] },
-        ]
+      ? ACTIVE_SALE_IS_V2
+        ? [{ address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "usdcContributed", args: [address] }]
+        : [
+            { address: SALE_V1, abi: SALE_ABI, functionName: "buyerUsdcTotal", args: [address] },
+            { address: SALE_V1, abi: SALE_ABI, functionName: "buyerSynTotal", args: [address] },
+          ]
       : [],
     query: { enabled: Boolean(address), refetchInterval: 60_000, staleTime: 30_000 },
   });
-  const [usdcTotal, synTotal] = q.data ?? [];
-  const ok = <T,>(r: { status: string; result?: T } | undefined) =>
-    r && r.status === "success" ? r.result : undefined;
+  const d = q.data ?? [];
   return {
     address,
     isLoading: q.isLoading,
     refetch: q.refetch,
-    buyerUsdcTotal: ok<bigint>(usdcTotal),
-    buyerSynTotal: ok<bigint>(synTotal),
+    buyerUsdcTotal: okResult<bigint>(d[0]),
+    buyerSynTotal: ACTIVE_SALE_IS_V2 ? undefined : okResult<bigint>(d[1]),
   };
 }
 
-/** On-chain quote for a given USDC amount (raw, USDC-decimals). */
+/**
+ * On-chain SYN quote for a given USDC amount (raw, USDC-decimals). Returns a
+ * stable `{ data: synOut }` shape across V1 (`quoteSyn`) and V2 (`quote` tuple),
+ * plus the V2-only `seatIfFirst`/`quoteEra`/`available` extras when live.
+ */
 export function useQuoteSyn(usdcAmountRaw: bigint | undefined) {
-  return useReadContract({
-    address: SALE,
+  const enabled = Boolean(usdcAmountRaw && usdcAmountRaw > 0n);
+  const v1 = useReadContract({
+    address: SALE_V1,
     abi: SALE_ABI,
     functionName: "quoteSyn",
-    args: usdcAmountRaw && usdcAmountRaw > 0n ? [usdcAmountRaw] : undefined,
-    query: { enabled: Boolean(usdcAmountRaw && usdcAmountRaw > 0n) },
+    args: enabled ? [usdcAmountRaw as bigint] : undefined,
+    query: { enabled: enabled && !ACTIVE_SALE_IS_V2 },
   });
+  const v2 = useReadContract({
+    address: ACTIVE_SALE,
+    abi: SALE_V2_ABI,
+    functionName: "quote",
+    args: enabled ? [usdcAmountRaw as bigint] : undefined,
+    query: { enabled: enabled && ACTIVE_SALE_IS_V2 },
+  });
+  if (ACTIVE_SALE_IS_V2) {
+    const tuple = v2.data as
+      | readonly [bigint, number, bigint, bigint, bigint, bigint]
+      | undefined;
+    return {
+      data: tuple ? tuple[0] : undefined,
+      isLoading: v2.isLoading,
+      isError: v2.isError,
+      refetch: v2.refetch,
+      quoteEra: tuple ? tuple[1] : undefined,
+      seatIfFirst: tuple ? tuple[3] : undefined,
+      available: tuple ? tuple[4] : undefined,
+    };
+  }
+  return {
+    data: v1.data as bigint | undefined,
+    isLoading: v1.isLoading,
+    isError: v1.isError,
+    refetch: v1.refetch,
+    quoteEra: undefined as number | undefined,
+    seatIfFirst: undefined as bigint | undefined,
+    available: undefined as bigint | undefined,
+  };
 }
 
 // ─── Formatting helpers ───
@@ -180,7 +326,7 @@ export const fmtAddress = (a?: string) =>
 
 export function useSaleAddresses() {
   return useMemo(
-    () => ({ sale: SALE, usdc: USDC, syn: SYN, pair: PAIR }),
+    () => ({ sale: ACTIVE_SALE, usdc: USDC, syn: SYN, pair: PAIR }),
     [],
   );
 }

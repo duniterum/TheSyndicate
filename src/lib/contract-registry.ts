@@ -105,9 +105,9 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     "MEMBERSHIP_SALE_V2",
     "Syndicate Membership Sale V2",
     "sale",
-    "PENDING",
+    "LIVE",
     MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
-    "Model 2 continuation sale (per-era SYN caps, V1 recognition, external CommissionRouter). NOT DEPLOYED — address PENDING; indexer/ABI staged dormant. Continues Genesis numbering via the Holder Index, never a new member registry.",
+    "Model 2 continuation sale (per-era SYN caps, V1 recognition, external CommissionRouter). DEPLOYED + funded — the active self-service sale. Continues Genesis numbering via the Holder Index, never a new member registry. Sealed V1 history remains independently verifiable.",
     "src/lib/sale-abi.ts",
   ),
   entry(
