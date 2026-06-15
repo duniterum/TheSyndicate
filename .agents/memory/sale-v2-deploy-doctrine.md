@@ -48,6 +48,22 @@ real pause block.
   config, LivePurchase, holder-index) and WS2's ref→address needs WS1's unified index; build on one
   branch, review once against the combined test matrix.
 
+## Funding floor (deploy vs. fund are SEPARATE)
+- The constructor pulls **NO SYN** — deploy (step 7) and funding (step 9) are distinct txs. So the
+  contract can be deployed **unfunded (0 SYN)** safely; until funded, every `buy()` fails closed
+  (`ReserveFloorViolation`/`InsufficientInventory`) with no fund loss. ⇒ There is **no reason to wait
+  for the full floor before deploying**; the floor is required only before the first buy / before
+  pointing the live frontend at it.
+- Required floor = `currentReserveFloor()` = `_reserveSyn(memberCount)`; for a new buyer the buy-time
+  check uses `_reserveSyn(memberCount+1)`, and the next seat's own-era min exactly bridges the two, so
+  **funding EXACTLY the floor is sufficient for the first minimum buy** (and, because each reserved seat
+  converts to its sale 1:1 at the era min, the floor alone covers the **entire** reserved range
+  3..`RESERVE_THROUGH_SEAT` at era-MIN prices). Headroom **above** the floor is only needed for
+  above-min Era II+ purchases (Era I addr-cap = $5 forces every Genesis seat to exactly 500 SYN) and for
+  seats beyond the reserve target.
+- **Why:** prevents the founder over-sourcing SYN or fearing an unfunded deploy. Verify the live number
+  with a fork read of `currentReserveFloor()` after any param change — do not trust a memorized figure.
+
 ## Where this lives in the docs
 Reviewer packet §7 (mainnet-direct checklist), §7a (deploy blockers), §7b (EOA-vs-multisig risk note);
 `SALE_V2_REFERRAL_LAUNCH_EXECUTION_PLAN.md` (deploy sequence); `contracts/README.md` (status banner +
