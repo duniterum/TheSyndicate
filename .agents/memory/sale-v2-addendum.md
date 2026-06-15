@@ -3,11 +3,17 @@ name: Sale V2 economic/security addendum doctrine
 description: Durable design decisions for the FUTURE Sale V2 contract (per-era caps, timelock, no-oracle, honest "First Million", referral via external CommissionRouter V1). Draft-only; not deployed.
 ---
 
-Sale V2 lives ONLY as a design doc (`docs/proposals/SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md`)
-+ a draft `docs/proposals/drafts/SyndicateSaleV2.draft.sol`. The doc's §L embeds
-the `.sol` **verbatim** — they must stay byte-identical (verify with a fenced-block
-diff before claiming "in sync"). Hard constraints on all Sale V2 work: no deploy,
-no Sale V1 change, no `src/` change, no funds moved.
+Sale V2 lives as a design doc (`docs/proposals/SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md`)
++ a FROZEN draft `docs/proposals/drafts/SyndicateSaleV2.draft.sol` + the PRODUCTION-candidate
+Foundry project `contracts/` (`contracts/src/*.sol` — the thing that actually gets audited).
+The doc's §L embeds the **frozen draft verbatim** — §L and the draft must stay byte-identical.
+**Do NOT re-sync §L to the production source.** Production is allowed to diverge from the frozen
+draft by named hardening AND by the F4 timelock lock: both `RECOVERY_TIMELOCK` and
+`ROUTER_TIMELOCK` = **14 days** in `contracts/src/` (founder ruling F4, 2026-06-15), while the
+frozen draft + §L keep the pre-F4 **7 days**; the doc's prose + a §L callout flag 14 as
+authoritative. **Why:** §L is "embedded verbatim" of the frozen historical draft, so syncing it
+to the evolving production value silently breaks the byte-identity invariant the sprint/reviewer
+records assert. Hard constraints otherwise: no deploy, no Sale V1 change, no funds moved.
 
 ## Per-era SYN sold-cap (the central ruling)
 Cap `soldInEra[e]` against ONE global SYN balance — **not** physical per-era buckets.
@@ -77,7 +83,7 @@ upgrade = router swap, not sale migration; one canonical RAL emitter for read-mo
 - Router unset OR `route` reverts → sale pays the FULL slice to Operations + emits
   `CommissionRouterFallback`; buy NEVER bricks.
 - Router wiring on the SALE side: `initialRouter` ctor (day-one max-approve);
-  add/replace behind a 7-day timelock; **disable is instant** (removing trust is fast).
+  add/replace behind a 14-day timelock (F4); **disable is instant** (removing trust is fast).
 - `retentionRequiredPct` is OFF-CHAIN only — retention isn't on-chain-knowable so it
   NEVER gates a live payout. `attributionMode=1` (buyer-override), `campaign`/`refTag`/
   `splits[4]` protocol slice are all RESERVED (0 in V1).
@@ -170,9 +176,11 @@ numbers recomputed from `eras.ts` + 350M pool + 70/20/10). Durable conclusions:
   first buy (reserve floor `_reserveSyn(genesisOffset)`); you can't truly "tiny
   fund" a buy test — but P1–P5 proof checks need zero funding. Don't let funded SYN
   fall below the live floor while open.
-- **F4 OPEN conflict:** `RECOVERY_TIMELOCK` = `7 days` in code, sim recommends
-  `14 days`. Changing it is a `.sol` edit → requires a full Foundry re-run, so it's
-  OUT of any docs-only sprint. `ROUTER_TIMELOCK` = 7d (hardcoded, final).
+- **F4 RESOLVED (2026-06-15):** founder ruled BOTH `RECOVERY_TIMELOCK` and
+  `ROUTER_TIMELOCK` = `14 days` (no launch multisig → EOA key-risk; a longer
+  pre-announced window to detect/stop a bad pause-and-sweep or router swap).
+  Contract constants changed 7→14; full Foundry suite (59 tests) re-run GREEN.
+  Timelock tests read the dynamic public getters, so no test edits were needed.
 - **Router-unset = NO referral** (not a "flat 5% fallback"): when `router ==
   address(0)` the sale sends the FULL 10% Operations slice to Operations. Tier 0
   (Signal) = 30% of that slice (3% of gross). The legacy flat-5% model is fully

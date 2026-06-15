@@ -41,8 +41,8 @@ NOTHING else changes — economics, referral ladder, era/reserve tables, 70/20/1
   deploy-config check (tested correct in `test_router_integrationReferralPaid`), not a code bug.
 - **M2**: a V1 buyer who omits the proof on `buy()` is issued a fresh seat (double-count) — known
   draft behavior, asserted as-is (`test_buy_v1WithoutProof_getsSeat_M2`).
-- `RECOVERY_TIMELOCK`/`ROUTER_TIMELOCK` are 7 days in code vs 14 days in the param simulation — a
-  deploy-time governance decision.
+- `RECOVERY_TIMELOCK`/`ROUTER_TIMELOCK` are now **14 days** in code (founder F4 ruling, 2026-06-15;
+  were 7 days). Timelock tests use the dynamic public getters, so the value change needed no test edits.
 
 **Why:** these are governance/deploy-config decisions, not contract correctness — fixing them in
 code would exceed the frozen scope or hardcode a governance choice.

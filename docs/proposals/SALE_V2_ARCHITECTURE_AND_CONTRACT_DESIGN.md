@@ -308,7 +308,7 @@ to seat #1,000,000. One must give.
    `InsufficientInventory`. If the dust left is below every era minimum, the sale
    is *economically* over even though `isConcluded()` (seat #1,000,000) is still
    false. To wind down and return dust SYN to the Vault, the founder **pauses**
-   and — after a `RECOVERY_TIMELOCK` (e.g. 7 days) — calls `recoverUnsoldSyn()`
+   and — after a `RECOVERY_TIMELOCK` (14 days) — calls `recoverUnsoldSyn()`
    (Vault-only destination; see §F). The timelock blocks an instant pause+sweep.
    **"First Million" is a *narrative* destination** — if heavy upgrade behavior
    exhausts the allocation early, the sale honestly ends there rather than minting
@@ -396,7 +396,7 @@ the gross-equivalent is `0.10 × commissionPct`).
   `refTag`), so Reputation / Builder-Record projections are never starved and
   need no sale changes.
 - **Replaceability under control.** Governance can swap the router behind a
-  **7-day timelock** (`ROUTER_TIMELOCK`) or **disable it instantly** (removing
+  **14-day timelock** (`ROUTER_TIMELOCK`) or **disable it instantly** (removing
   trust is always safe); the first router may be wired once at construction for
   day-one referral.
 
@@ -482,7 +482,7 @@ canon already places it.
 | Change Vault/Liquidity/Operations wallets | **No (recommended)** | Immutable constructor args. A compromised wallet → deploy V3, don't add a live setter. *(Optional 2-step timelocked rotation is **Human Review J4** if ops demands it.)* |
 | Change seat-reserve, per-era SYN caps, or per-era address caps | **No** | `RESERVE_THROUGH_SEAT`, `eraSynCap[1..9]`, and `maxUsdcPerAddressPerEra[1..9]` are all set once in the constructor with no setter. Sizing is a deploy-time decision (J16/J13/J3), never a live lever. |
 | Withdraw USDC | **No** | USDC is only ever held transiently mid-`buy` and fully routed in the same tx; escrowed referral is claimable by the referrer only. Owner has **no** USDC withdrawal path. |
-| `recoverUnsoldSyn()` | **Yes, constrained + timelocked** | Callable when the sale **concluded**, OR when **paused for ≥ `RECOVERY_TIMELOCK`** (e.g. 7 days) — a deliberate, pre-announced wind-down for inventory dust. The timelock blocks an instant pause+sweep. Destination is the **immutable Vault** only — no path drains SYN to the owner, paused or not. |
+| `recoverUnsoldSyn()` | **Yes, constrained + timelocked** | Callable when the sale **concluded**, OR when **paused for ≥ `RECOVERY_TIMELOCK`** (14 days) — a deliberate, pre-announced wind-down for inventory dust. The timelock blocks an instant pause+sweep. Destination is the **immutable Vault** only — no path drains SYN to the owner, paused or not. |
 | `rescueToken(token)` | **Yes, constrained** | Recovers tokens sent by mistake; **cannot** touch USDC or SYN; destination is the immutable Vault. |
 | `claimV1Membership(proof)` | **Yes, permissionless** | Not an admin power — any V1 member self-registers via Merkle proof. No owner involvement. |
 | `transferOwnership` / `acceptOwnership` | **Yes (2-step)** | Safe handoff to a Safe/multisig (mirrors Archive D1/D6: EOA → Safe ≤ 30 days). |
@@ -507,7 +507,7 @@ pause-and-sweep of unsold inventory.**
 | T6 | Whale accumulation | One actor (or a Sybil swarm) drains a cheap early era | Three layered caps: `MAX_USDC_PER_TX`, the **per-era** `maxUsdcPerAddressPerEra[e]` (sized tiny early → ~$25k late; a single global cap was rejected as it let one wallet drain a tiny early era → `AddressEraCapExceeded`), and the aggregate `eraSynCap[e]` — the last is the only one a Sybil swarm cannot bypass (it bounds *total* per-era sales). See §C / §Q1. |
 | T7 | Self-referral / fake referral | Buyer refers self or a non-member to skim Operations | The **router** re-validates `referrer != 0`, `referrer != buyer`, and `knownMember(referrer)` (via the calling sale's view); else commission = 0 and the full slice goes to Operations. |
 | T8 | Referral griefing | Blacklisted/reverting referrer bricks the buy | Router `try/catch` push → escrow to its `referralOwed`; the Operations remainder is forwarded regardless. If the whole `route` reverts, the sale's `try/catch` pays the full slice to Operations and emits `CommissionRouterFallback`. Buy never reverts; `claimReferral()` (on the router) for withdrawal. |
-| T8b | Malicious / buggy router | A swapped router reverts, drains, or misroutes | Router is governance-set behind a **7-day timelock** (instant **disable** always available); the sale only ever `approve`s and the router only ever **pulls the Operations slice** — Vault/Liquidity are already paid; a reverting router triggers the safe full-slice-to-Operations fallback. |
+| T8b | Malicious / buggy router | A swapped router reverts, drains, or misroutes | Router is governance-set behind a **14-day timelock** (instant **disable** always available); the sale only ever `approve`s and the router only ever **pulls the Operations slice** — Vault/Liquidity are already paid; a reverting router triggers the safe full-slice-to-Operations fallback. |
 | T9 | Routing failure | A destination wallet reverts on receive | Vault/Liquidity/Operations are protocol-owned EOAs; plain USDC `transfer` has no hook. (If ever a contract, same escrow pattern would apply — note for J4.) |
 | T10 | Owner abuse | Owner drains funds or rugs price | No price/split/wallet setters; no USDC withdrawal; SYN recovery destination is Vault-only. Pause cannot move money. |
 | T11 | Pause abuse (griefing) | Owner pauses forever to freeze the sale | Pause cannot *take* anything; worst case is a halted sale, recoverable by unpause or a multisig owner. Accept as residual; mitigate via multisig owner. |
@@ -707,7 +707,7 @@ pause-and-sweep of unsold inventory.**
 | J12 | V1 Merkle root: snapshot timing & frontend proof delivery | Snapshot V1 members at the same instant V1 is paused; ship the proof in the canonical buy/referral UI. | Recognition correctness + T17 residual (V1 member buying without a proof). |
 | J13 | Per-era SYN cap sizing (`eraSynCap[1..9]`) | Size each from the funding model (J2). A defensible floor is `rangeSeats × minEntrySyn` so each era can seat its full range at the minimum; add headroom for upgrades. *(The seat-reserve invariant, J16, uses the same per-era `rangeSeats × minEntrySyn` shape to guarantee seats.)* | Sets how much cheap early-era SYN can ever be sold and where the price steps. Too small = price jumps early; too large = early eras can over-consume. |
 | J14 | `MAX_USDC_PER_TX` value | Set a sane single-tx ceiling. The constructor now **enforces** `maxUsdcPerTx ≥ every sellable era's minimum` (else `BadEraCaps`). Redundant against a Sybil swarm; primary value is UX + fat-finger safety. | Secondary to per-era/per-address caps; cheap to include. |
-| J15 | `RECOVERY_TIMELOCK` duration | 7–14 days suggested; pair with a multisig owner. | Long enough that a pause-and-sweep is visible to members before SYN moves; short enough to wind down real dust. |
+| J15 | `RECOVERY_TIMELOCK` duration | **14 days** (founder F4 ruling; was "7–14 suggested"); pair with a multisig owner. | Long enough that a pause-and-sweep is visible to members before SYN moves; short enough to wind down real dust. |
 | J16 | Seat-reserve target (`RESERVE_THROUGH_SEAT`) | **Now implemented as one immutable parameter** — pick the value at deploy. **Recommended: 10,000** (hard-guarantee Eras II–IV, the cheap early run, with late-era hybrid upgrades unrestricted). Use **1,000,000** for a full contract-level "First Million" guarantee (restricts late-in-era upgrades once inventory tightens); **0** to disable. The contract must be funded ≥ the resulting initial reserve (J2). | Converts "First Million" (or just the early run) from a narrative target into an on-chain guarantee. Uses each remaining seat's **own** era minimum, not a blanket rate. |
 
 ---
@@ -772,6 +772,14 @@ UI never hardcodes a rate and always reads on-chain truth.
 > OpenZeppelin v5 before any compile-for-deploy. Must pass external review →
 > Fuji → independent audit → mainnet (`SOLIDITY_REVIEW_STATE`, D4/D5). Identical
 > copy saved at `docs/proposals/drafts/SyndicateSaleV2.draft.sol`.
+>
+> **F4 production delta (2026-06-15 parameter-lock).** This embedded block is the
+> frozen pre-F4 draft and intentionally shows `RECOVERY_TIMELOCK` /
+> `ROUTER_TIMELOCK` = **7 days** — byte-identical to the saved draft above. Per
+> founder ruling **F4**, the **production source**
+> (`contracts/src/SyndicateSaleV2.sol`) and this document's prose set **both to
+> 14 days**. Treat **14 days** as authoritative; the 7-day value here is a
+> preserved historical snapshot only.
 
 ```solidity
 // SPDX-License-Identifier: UNLICENSED
@@ -1691,7 +1699,7 @@ wallets, 70/20/10, referral 5%) is **unchanged**; these are bounds and clarity.
 - **What admin can do** — `pause`/`unpause`; `recoverUnsoldSyn` (Vault-only, only
   when concluded or paused); `rescueToken` (non-USDC/SYN only, to Vault); 2-step
   `transferOwnership`/`acceptOwnership` (to a multisig); wire the commission router
-  — `proposeCommissionRouter`→`confirmCommissionRouter` (7-day timelock) or
+  — `proposeCommissionRouter`→`confirmCommissionRouter` (14-day timelock) or
   `disableCommissionRouter` (instant; turns referral off → full slice to Operations).
 - **What admin cannot do** — change era rates/boundaries, change the 70/20/10
   split, change any wallet, withdraw USDC, take buyer SYN, or touch escrowed

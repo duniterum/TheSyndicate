@@ -5,6 +5,14 @@ movement, no Sale V1 change, no frontend/contract code edited, no architecture o
 economics reopened.** The only writes this sprint are documentation (Part 1 fixes
 + Parts 2–5 planning artifacts), this report, and agent memory.
 
+> **Amendment — 2026-06-15 parameter-lock (separate, founder-authorized sprint).**
+> The execution-prep sprint described above was docs-only. A *later*,
+> founder-authorized **parameter-lock** sprint then set both timelock constants to
+> **14 days** in `contracts/src/SyndicateSaleV2.sol` (ruling **F4**) and re-ran the
+> full Foundry suite (59 tests GREEN). Every reference below to that contract edit
+> (§6.1 constants, §6.2 B4, §6.3 verdict) reflects that amendment — **not** the
+> original docs-only scope. No other contract/frontend code was touched.
+
 **Date:** 2026-06-15
 
 ---
@@ -16,7 +24,7 @@ economics reopened.** The only writes this sprint are documentation (Part 1 fixe
 - **Addresses** (USDC, SYN, Vault 70%, Liquidity 20%, Operations 10%) — live,
   pinned in `src/lib/syndicate-config.ts`.
 - **Constants** — `GENESIS_END = 333`, `FINAL_SEAT = 1_000_000`,
-  `ROUTER_TIMELOCK = 7 days`, split `70/20/10`.
+  `ROUTER_TIMELOCK = 14 days`, `RECOVERY_TIMELOCK = 14 days`, split `70/20/10`.
 - **Referral ladder** — `_tierFor`: `0/5/20/50/100 → 30/40/55/70/80%` of the
   Operations slice (3–8% of gross), carved **only** from Operations. Ratified and
   encoded in `CommissionRouterV1.sol`.
@@ -24,8 +32,11 @@ economics reopened.** The only writes this sprint are documentation (Part 1 fixe
   member-identity master; `memberCount`/`memberNumberOf` corroborate only.
   Contract behavior matches: V1-proven members get `knownMember` with
   `memberNumberOf == 0` (no seat consumed).
-- **Contract suite** — Foundry tests last GREEN; `slither-report.txt` present. No
-  contract file changed this sprint → **no Foundry re-run required** (sprint rule).
+- **Contract suite** — Foundry tests GREEN. The **2026-06-15 parameter-lock**
+  sprint set both timelock constants to **14 days** in
+  `contracts/src/SyndicateSaleV2.sol` (F4) and **re-ran the full Foundry suite —
+  59 tests GREEN** (21 router + 38 sale); fresh Slither saved at
+  `contracts/audit/slither-report-14day.txt`.
 
 ### 6.2 Open blockers before deploy (owner = founder / handoff)
 
@@ -34,7 +45,7 @@ economics reopened.** The only writes this sprint are documentation (Part 1 fixe
 | B1 | `genesisOffset` + `v1MemberRoot` | Compute from a live V1 snapshot after pausing V1 at #333 | Live data at handoff |
 | B2 | `reserveThroughSeat` (F2) | `10_000` (≈3.93M SYN reserve; guarantees Eras II–IV) | Founder ruling |
 | B3 | Funding model (F3) | Model B (247,916,875 SYN) | Founder ruling |
-| B4 | **`RECOVERY_TIMELOCK` (F4)** | **CONFLICT: code = 7 days, sim recommends 14 days.** 14d = a one-line contract change → **would require a full Foundry re-run** (out of this docs-only sprint) | Founder ruling **+ possible contract change** |
+| B4 | **`RECOVERY_TIMELOCK` / `ROUTER_TIMELOCK` (F4)** | **RESOLVED — founder ruled 14 days (both)** (no launch multisig → EOA key-risk; a longer detect/stop window). Constants changed 7→14; full Foundry suite (59 tests) re-run GREEN. | ✅ Done (2026-06-15 parameter-lock) |
 | B5 | `addrCaps[9]` ramp | Transcribe the 9-value ramp from the treasury sim | Transcription |
 | B6 | Multisig address(es) | One multisig owns both contracts | Founder |
 | B7 | SYN funding ≥ reserve floor | Fund before opening; top-ups never below the live floor | Ops |
@@ -43,8 +54,10 @@ economics reopened.** The only writes this sprint are documentation (Part 1 fixe
 
 **Documentation and execution planning are READY.** Every constructor input is
 either FINAL or has a clear owner + recommendation. The protocol can move to
-deploy as soon as **B1–B7** clear. The **only** item that may force a
-non-docs change is **B4** (14-day recovery timelock) — flagged, not actioned.
+deploy as soon as **B1–B7** clear. **B4** (14-day recovery/router timelock) is
+now **RESOLVED** — constants set in `contracts/src/SyndicateSaleV2.sol` and the
+full Foundry suite (59 tests) re-run GREEN (2026-06-15 parameter-lock); the
+remaining items are live-data / founder rulings / ops, not code.
 Frontend is **not** a blocker except for **TD1** (referral truth migration),
 which is scoped in the Frontend Wiring Readiness Plan.
 
@@ -96,17 +109,23 @@ which is scoped in the Frontend Wiring Readiness Plan.
 - **Zero-funds proof:** P1–P5 validate the entire V1-proof flow with no SYN funded
   and no buyer USDC at risk; funding (≥ reserve floor) only needed from P6.
 
-### 7.4 Scope confirmation (what this sprint did NOT do)
+### 7.4 Scope confirmation (what the *original docs-only* sprint did NOT do)
+
+> Scoped to the original execution-prep sprint. The later **2026-06-15
+> parameter-lock** (see the amendment at the top) is the sole exception: it edited
+> `contracts/src/SyndicateSaleV2.sol` (F4 timelocks → 14 days) and re-ran Foundry.
 
 - Did not deploy, did not move funds, did not touch Sale V1.
-- Did not edit any `.sol`, did not re-run Foundry, did not edit frontend code.
+- Did not edit frontend code. *(The original sprint also edited no `.sol` and
+  re-ran no Foundry; the 2026-06-15 parameter-lock later did both — for F4 only.)*
 - Did not reopen architecture, economics, the 70/20/10 split, or referral doctrine
   (the only doctrine-adjacent edits were SUPERSEDED stamps + identity-source
   clarifications that align docs to already-ratified decisions).
 
 ### 7.5 Recommended next actions (post-handoff, when authorized)
 
-1. Founder rules B2/B3/B4 (note B4 may require a contract change + Foundry re-run).
+1. Founder rules B2/B3 (**B4 timelock is RESOLVED** — 14 days set in
+   `contracts/src/SyndicateSaleV2.sol`, full Foundry suite re-run GREEN).
 2. Pause V1 → snapshot → compute B1 (`genesisOffset`, `v1MemberRoot`) + publish proofs.
 3. Transcribe B5 (`addrCaps`), prepare B6 (multisig).
 4. Execute the Mainnet-Direct Runbook (router → sale → P1–P5 zero-funds proof →

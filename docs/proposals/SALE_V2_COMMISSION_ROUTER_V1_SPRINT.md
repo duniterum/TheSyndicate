@@ -133,7 +133,7 @@ smart-contract referrers (DAOs / smart wallets) that may revert on push.
 - **Day-one wiring:** `initialRouter` constructor param. When set, the sale issues a
   max `approve` to the router so `route`'s `transferFrom` pull works from the first buy.
 - **Swap lifecycle (asymmetric by design):**
-  - Add/replace: `proposeCommissionRouter` → wait `ROUTER_TIMELOCK` (7 days) →
+  - Add/replace: `proposeCommissionRouter` → wait `ROUTER_TIMELOCK` (14 days) →
     `confirmCommissionRouter` (re-approves the new router, zero-approves the old).
     *Adding* authority is slow on purpose.
   - Disable: `disableCommissionRouter` is **instant** (zeroes the router → every buy
@@ -257,7 +257,7 @@ the **data source** (mock → router reads) must change, not the tier numbers.
 
 | # | Risk | Mitigation |
 | --- | --- | --- |
-| R1 | Malicious/buggy router drains or misroutes | Router only ever pulls the **Operations slice** (Vault/Liquidity already paid); governance-set behind a 7-day timelock; instant disable; reverting router → safe full-slice fallback |
+| R1 | Malicious/buggy router drains or misroutes | Router only ever pulls the **Operations slice** (Vault/Liquidity already paid); governance-set behind a 14-day timelock; instant disable; reverting router → safe full-slice fallback |
 | R2 | Reentrancy via callback token | `nonReentrant` + strict CEI; USDC is non-callback; router called last among value moves |
 | R3 | Self / fake referral skims Operations | Router re-validates non-zero / non-self / `knownMember` against the calling sale |
 | R4 | Referral griefing (reverting referrer bricks buy) | `try/catch` push → escrow; remainder always forwarded; whole-`route` revert → sale fallback; buy never reverts |
@@ -279,7 +279,12 @@ the **data source** (mock → router reads) must change, not the tier numbers.
 | `docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_SPRINT.md` | **NEW** — this report |
 
 Both embeds in the architecture doc (§L sale, §R router) are verified **byte-identical**
-to their source `.sol` files. `src/` was not touched.
+to their source `.sol` drafts (and remain so — both keep the frozen **7-day** timelocks).
+At the time of *this* sprint `src/` was not touched. **Amendment (2026-06-15 F4
+parameter-lock):** a later, founder-authorized sprint set both `RECOVERY_TIMELOCK` and
+`ROUTER_TIMELOCK` to **14 days** in the production source
+`contracts/src/SyndicateSaleV2.sol` and re-ran Foundry (59 GREEN); the frozen drafts and
+the §L/§R embeds intentionally stay at 7 days.
 
 ---
 
@@ -292,7 +297,7 @@ to their source `.sol` files. `src/` was not touched.
 | **OD-3** | `attributionMode` buyer-override | Reserved (`attributionMode = 1` defined, not implemented; V1 always last-verified). | Confirm override is deferred. |
 | **OD-4** | `campaign` / `refTag` / `splits[4]` protocol slice | Reserved (0 in V1). | Confirm V1 ships with these zeroed. |
 | **OD-5** | Router owner | `Ownable2Step`; multisig recommended. | Confirm the multisig owner address before any deploy. |
-| **OD-6** | `ROUTER_TIMELOCK` duration | 7 days (add/replace). | Confirm duration. |
+| **OD-6** | `ROUTER_TIMELOCK` duration | 14 days (add/replace) — F4 ruled. | ✅ Resolved (founder F4 ruling). |
 | **OD-7** | Event authority: sale `Routed` vs router `Attribution` for referral splits | Sale `Routed.referral` mirrors the router's returned `splits[2]`; the router's `Attribution` is the canonical RAL emitter. | Decide for implementation: assert `refPaid + opsPaid == opsSlice` before emitting `Routed`, **or** declare the router's `Attribution` authoritative for referral splits and `Routed` non-canonical for that leg (R9). |
 
 (These extend, not replace, the existing §J human-review items in the architecture doc.)

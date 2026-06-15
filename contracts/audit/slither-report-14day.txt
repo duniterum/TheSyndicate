@@ -1,0 +1,129 @@
+'forge clean' running (wd: /home/runner/workspace/contracts)
+'forge config --json' running
+'forge build --build-info --skip ./test/** ./script/** --force' running (wd: /home/runner/workspace/contracts)
+INFO:Detectors:
+Detector: incorrect-equality
+SyndicateSaleV2._send(IERC20,address,uint256) (src/SyndicateSaleV2.sol#757-760) uses a dangerous strict equality:
+	- amount == 0 (src/SyndicateSaleV2.sol#758)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dangerous-strict-equalities
+INFO:Detectors:
+Detector: uninitialized-local
+CommissionRouterV1.route(CommissionRouteInput).tier (src/CommissionRouterV1.sol#227) is a local variable never initialized
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#uninitialized-local-variables
+INFO:Detectors:
+Detector: missing-zero-check
+Ownable2Step.transferOwnership(address).newOwner (lib/openzeppelin-contracts/contracts/access/Ownable2Step.sol#43) lacks a zero-check on :
+		- _pendingOwner = newOwner (lib/openzeppelin-contracts/contracts/access/Ownable2Step.sol#44)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+INFO:Detectors:
+Detector: reentrancy-benign
+Reentrancy in CommissionRouterV1.route(CommissionRouteInput) (src/CommissionRouterV1.sol#209-286):
+	External calls:
+	- this.pushReferral(p.referrer,referrerAmount) (src/CommissionRouterV1.sol#252-258)
+	State variables written after the call(s):
+	- referralOwed[p.referrer] += referrerAmount (src/CommissionRouterV1.sol#255)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+INFO:Detectors:
+Detector: timestamp
+SyndicateSaleV2.confirmCommissionRouter() (src/SyndicateSaleV2.sol#628-640) uses timestamp for comparisons
+	Dangerous comparisons:
+	- block.timestamp < readyAt (src/SyndicateSaleV2.sol#632)
+SyndicateSaleV2.recoverUnsoldSyn() (src/SyndicateSaleV2.sol#663-673) uses timestamp for comparisons
+	Dangerous comparisons:
+	- pausedAt == 0 || block.timestamp < readyAt (src/SyndicateSaleV2.sol#668)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+INFO:Detectors:
+Detector: assembly
+SafeERC20._callOptionalReturn(IERC20,bytes) (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#160-178) uses assembly
+	- INLINE ASM (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#163-173)
+SafeERC20._callOptionalReturnBool(IERC20,bytes) (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#188-198) uses assembly
+	- INLINE ASM (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#192-196)
+Address._revert(bytes) (lib/openzeppelin-contracts/contracts/utils/Address.sol#138-149) uses assembly
+	- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/Address.sol#142-145)
+Hashes._efficientKeccak256(bytes32,bytes32) (lib/openzeppelin-contracts/contracts/utils/cryptography/Hashes.sol#24-30) uses assembly
+	- INLINE ASM (lib/openzeppelin-contracts/contracts/utils/cryptography/Hashes.sol#25-29)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage
+INFO:Detectors:
+Detector: pragma
+2 different versions of Solidity are used:
+	- Version constraint ^0.8.20 is used by:
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/access/Ownable.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/access/Ownable2Step.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Address.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Context.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Errors.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/Hashes.sol#4)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol#5)
+		-^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#4)
+	- Version constraint 0.8.24 is used by:
+		-0.8.24 (src/CommissionRouterV1.sol#53)
+		-0.8.24 (src/SyndicateSaleV2.sol#36)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used
+INFO:Detectors:
+Detector: cyclomatic-complexity
+SyndicateSaleV2.buy(uint256,address,uint256,bytes32[]) (src/SyndicateSaleV2.sol#376-497) has a high cyclomatic complexity (16).
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#cyclomatic-complexity
+INFO:Detectors:
+Detector: solc-version
+Version constraint ^0.8.20 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess.
+It is used by:
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/access/Ownable.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/access/Ownable2Step.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Address.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Context.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Errors.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/Hashes.sol#4)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol#5)
+	- ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#4)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in Address.sendValue(address,uint256) (lib/openzeppelin-contracts/contracts/utils/Address.sol#33-42):
+	- (success,None) = recipient.call{value: amount}() (lib/openzeppelin-contracts/contracts/utils/Address.sol#38)
+Low level call in Address.functionCallWithValue(address,bytes,uint256) (lib/openzeppelin-contracts/contracts/utils/Address.sol#75-81):
+	- (success,returndata) = target.call{value: value}(data) (lib/openzeppelin-contracts/contracts/utils/Address.sol#79)
+Low level call in Address.functionStaticCall(address,bytes) (lib/openzeppelin-contracts/contracts/utils/Address.sol#87-90):
+	- (success,returndata) = target.staticcall(data) (lib/openzeppelin-contracts/contracts/utils/Address.sol#88)
+Low level call in Address.functionDelegateCall(address,bytes) (lib/openzeppelin-contracts/contracts/utils/Address.sol#96-99):
+	- (success,returndata) = target.delegatecall(data) (lib/openzeppelin-contracts/contracts/utils/Address.sol#97)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Detectors:
+Detector: missing-inheritance
+CommissionRouterV1 (src/CommissionRouterV1.sol#93-344) should inherit from ICommissionRouter (src/SyndicateSaleV2.sol#63-67)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-inheritance
+INFO:Detectors:
+Detector: naming-convention
+Variable CommissionRouterV1.USDC (src/CommissionRouterV1.sol#139) is not in mixedCase
+Variable SyndicateSaleV2.USDC (src/SyndicateSaleV2.sol#187) is not in mixedCase
+Variable SyndicateSaleV2.SYN (src/SyndicateSaleV2.sol#188) is not in mixedCase
+Variable SyndicateSaleV2.VAULT (src/SyndicateSaleV2.sol#189) is not in mixedCase
+Variable SyndicateSaleV2.LIQUIDITY (src/SyndicateSaleV2.sol#190) is not in mixedCase
+Variable SyndicateSaleV2.OPERATIONS (src/SyndicateSaleV2.sol#191) is not in mixedCase
+Variable SyndicateSaleV2.GENESIS_OFFSET (src/SyndicateSaleV2.sol#192) is not in mixedCase
+Variable SyndicateSaleV2.V1_MEMBER_ROOT (src/SyndicateSaleV2.sol#193) is not in mixedCase
+Variable SyndicateSaleV2.MAX_USDC_PER_TX (src/SyndicateSaleV2.sol#194) is not in mixedCase
+Variable SyndicateSaleV2.RESERVE_THROUGH_SEAT (src/SyndicateSaleV2.sol#201) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Detectors:
+Detector: unindexed-event-address
+Event Pausable.Paused(address) (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#23) has address parameters but no indexed parameters
+Event Pausable.Unpaused(address) (lib/openzeppelin-contracts/contracts/utils/Pausable.sol#28) has address parameters but no indexed parameters
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unindexed-event-address-parameters
+INFO:Slither:. analyzed (17 contracts with 101 detectors), 30 result(s) found

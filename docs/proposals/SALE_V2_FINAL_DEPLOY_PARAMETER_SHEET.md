@@ -19,7 +19,7 @@ wins** — re-read it at deploy time.
    `initialRouter`). It is `Ownable2Step`.
 2. **`SyndicateSaleV2`** second, passing the router address (or `address(0)` to
    bootstrap with **no referral** — the full Operations slice goes to Operations —
-   and swap the router in later under the 7-day `ROUTER_TIMELOCK`). It is `Ownable2Step`.
+   and swap the router in later under the 14-day `ROUTER_TIMELOCK`). It is `Ownable2Step`.
 3. **`router.addSource(saleV2, sourceId, OPERATIONS)`** so the sale is allow-listed
    to call `route()` and the Operations wallet is registered.
 
@@ -57,7 +57,7 @@ constructor(
 | 9 | `maxUsdcPerTx` | **`25_000_000_000`** ($25,000) | USDC 6dp | **DECISION** (recommended) | sim §7b; `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` J14; must be `>= every sellable era minimum`, else `BadEraCaps` | Founder sign-off |
 | 10 | `reserveThroughSeat` | **`10_000`** (guarantees Eras II–IV; reserves ≈ **3.93M SYN**). Alternatives: `1_000_000` = full "First Million" (≈ **130.9M SYN**); `0` = disabled | seat # | **DECISION (F2)** | `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` J16, §C3, T21/T22; valid range `(GENESIS_END, FINAL_SEAT]` or `0` | Founder sign-off |
 | 11 | `eraCaps[9]` | **Model B** (see §2). `eraCaps[0]` (Era I / Genesis) = **0** (V1-sealed); indices 1–8 = Eras II–IX | SYN 18dp | **DECISION (F3)** (Model B recommended) | sim §7a, §verdict; constructor reverts `BadEraCaps` on malformed caps | Founder sign-off + confirm index↔era mapping |
-| 12 | `initialRouter` | `CommissionRouterV1` deployed address (or `address(0)` to bootstrap with **no referral** — full Operations slice to Operations) | address | **DECISION** | `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` §router; swap later via 7-day `ROUTER_TIMELOCK` | Router deployed first |
+| 12 | `initialRouter` | `CommissionRouterV1` deployed address (or `address(0)` to bootstrap with **no referral** — full Operations slice to Operations) | address | **DECISION** | `SALE_V2_ARCHITECTURE_AND_CONTRACT_DESIGN.md` §router; swap later via 14-day `ROUTER_TIMELOCK` | Router deployed first |
 
 > **Index↔era caution.** `eraCaps` / `addrCaps` are `uint256[9]` indexed era 1..9.
 > Era I is Genesis and is **V1-sealed** — V2's first newcomer is seat #334 (Era II)
@@ -98,8 +98,8 @@ From `docs/proposals/SALE_V2_PARAMETER_AND_TREASURY_SIMULATION.md` §7a (verdict
 | `GENESIS_END` | `333` | **FINAL** | Genesis ceiling |
 | `FINAL_SEAT` | `1_000_000` | **FINAL** | Sale concludes at the millionth seat |
 | `SCALE_6_TO_18` | `1e12` | **FINAL** | USDC(6dp) → SYN(18dp) scaling |
-| `ROUTER_TIMELOCK` | `7 days` | **FINAL** | Delay on swapping the commission router |
-| `RECOVERY_TIMELOCK` | `7 days` | **OPEN (F4)** | **Conflict:** code = 7 days; sim recommends **14 days**. Changing to 14d is a one-line contract edit that **would require a full Foundry re-run** and is OUT of this docs-only sprint's scope. Founder must rule before deploy. |
+| `ROUTER_TIMELOCK` | `14 days` | **FINAL** | Delay on swapping the commission router (F4: raised 7→14) |
+| `RECOVERY_TIMELOCK` | `14 days` | **FINAL (F4 ruled)** | Founder ruled 14 days (no launch multisig → EOA key-risk; a longer, pre-announced window to detect/stop a bad pause-and-sweep). Contract constant changed 7→14; full Foundry suite (59 tests) re-run GREEN. |
 
 ---
 
@@ -150,8 +150,10 @@ diluted). Effective gross % = `opsPct / 10`.
 1. **Live V1 snapshot** at handoff → `genesisOffset` + `v1MemberRoot`
    (pause V1 first; recommend exactly at #333).
 2. **Founder rulings:** F2 `reserveThroughSeat` (rec 10,000), F3 funding model
-   (rec Model B), F4 `RECOVERY_TIMELOCK` (7 vs 14 — 14 needs a contract change +
-   Foundry re-run).
+   (rec Model B). F4 `RECOVERY_TIMELOCK` / `ROUTER_TIMELOCK` — **RESOLVED:
+   founder ruled 14 days (both); constants set in
+   `contracts/src/SyndicateSaleV2.sol`, full Foundry suite (59 tests) re-run
+   GREEN (2026-06-15 parameter-lock).**
 3. **`addrCaps[9]` ramp** transcribed from the treasury sim.
 4. **Multisig address(es)** for both contracts.
 5. **SYN inventory** funded ≥ reserve floor before opening.

@@ -70,7 +70,7 @@ identical on-chain and in `referral.ts`.
 | TD4 | V1 proof-submission flow + real `V1_MEMBER_ROOT` not implemented (M2 double-count) | frontend + deploy config | Medium | Frontend wiring / first V1 re-buy |
 | TD5 | Two Operations destinations: `router.operationsWallet` vs sale `OPERATIONS` not forced equal | deploy config (M1) | Medium | Deploy / first referred buy |
 | TD6 | Solidity stubs (lightweight IERC20, custom mutex, single-hash Merkle) await OZ swap | both drafts (audit L1/L2/L3) | Medium | Pre-deploy |
-| TD7 | `RECOVERY_TIMELOCK` = 7 days in draft vs 14-day recommendation from the treasury sim | `SyndicateSaleV2` const | Low | Param finalization |
+| TD7 | ✅ RESOLVED — `RECOVERY_TIMELOCK` raised 7→14 days in code (founder F4 ruling, matches the treasury sim) | `SyndicateSaleV2` const | Low | Resolved |
 | TD8 | `eras.ts` remains positional-preview; on-chain `_eraParams` is the new authority — keep both labeled, don't let preview imply live rates | `eras.ts` + copy | Low | Ongoing canon hygiene |
 
 None of TD1–TD8 is a blocker to *starting* implementation; TD4–TD6 block mainnet deploy / frontend
@@ -120,7 +120,7 @@ See section D (TD1–TD8). Buckets: **Frontend reconciliation** = TD1, TD2, TD4,
 | F1 | Timing of the off-chain Reputation / Builder-Record / retention layer (gates when high tiers carry weight) | No |
 | F2 | `RESERVE_THROUGH_SEAT` target — 10,000 (Era II–IV) default vs 1,000,000 (full) | Deploy-time |
 | F3 | Funding model — sim recommends Model B (~248M SYN / ~71% of pool) | Deploy-time |
-| F4 | `RECOVERY_TIMELOCK` 7 vs 14 days; ROUTER_TIMELOCK confirm | Deploy-time |
+| F4 | ✅ RESOLVED — founder ruled `RECOVERY_TIMELOCK` = `ROUTER_TIMELOCK` = **14 days**; contract changed + Foundry re-run GREEN | Resolved |
 | F5 | B2B source allow-list activation (which sources, when) — reserved V3 config vote | No (future) |
 | F6 | Architect ($250) vs Steward ($500) rank-order rename (deliberately deferred — governance) | No |
 

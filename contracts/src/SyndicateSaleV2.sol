@@ -203,8 +203,8 @@ contract SyndicateSaleV2 is Ownable2Step, Pausable, ReentrancyGuard {
     uint256 private constant GENESIS_END   = 333;
     uint256 private constant FINAL_SEAT    = 1_000_000;
     uint256 private constant SCALE_6_TO_18 = 1e12;
-    uint256 public  constant RECOVERY_TIMELOCK = 7 days; // delay on the PAUSED recovery path
-    uint256 public  constant ROUTER_TIMELOCK   = 7 days; // delay on SWAPPING the commission router
+    uint256 public  constant RECOVERY_TIMELOCK = 14 days; // delay on the PAUSED recovery path
+    uint256 public  constant ROUTER_TIMELOCK   = 14 days; // delay on SWAPPING the commission router
 
     // ---------------------------------------------------------------- state
     uint64  public pausedAt;          // timestamp of the last false->true pause

@@ -23,9 +23,11 @@ frozen architecture drafts.
 | `tools/gen-v1-root.mjs` | Reproducible `V1_MEMBER_ROOT` (+ per-member proof) generator. |
 
 The **frozen design drafts** remain byte-identical at `docs/proposals/drafts/*.draft.sol` and are NOT
-edited by this project. These `src/` files are NEW; they differ from the drafts ONLY by the
+edited by this project. These `src/` files are NEW; they differ from the drafts by the
 named, frozen-scope hardening (audited OpenZeppelin primitives, double-hashed Merkle leaf, and the
-H4 split-integrity guard). No economics, referral, era, reserve, or doctrine change.
+H4 split-integrity guard) **and by the founder-ratified F4 parameter lock — both
+`RECOVERY_TIMELOCK` and `ROUTER_TIMELOCK` are `14 days` here vs the drafts' `7 days`** (a governance
+delay only). No economics, referral, era, reserve, or doctrine change.
 
 ## Toolchain
 
@@ -63,7 +65,9 @@ cd contracts
 slither .                   # full output saved to audit/slither-report.txt
 ```
 
-Result: **no high/medium severity findings in `src/`.** All results are informational and either
+Result: **no high/medium severity findings in `src/`.** The latest **post-F4** run (both timelocks
+= `14 days`, 2026-06-15 parameter-lock) is saved at `audit/slither-report-14day.txt` — the
+authoritative current artifact; `audit/slither-report.txt` is the prior pre-F4 run. All results are informational and either
 live in vendored OpenZeppelin (the `^0.8.20` pragma notice, `Address` low-level calls in `SafeERC20`,
 unindexed `Pausable` events) or are by-design notes on our code:
 - `buy()` cyclomatic complexity — intentional (dual-bound era engine + caps + reserve in one CEI path).

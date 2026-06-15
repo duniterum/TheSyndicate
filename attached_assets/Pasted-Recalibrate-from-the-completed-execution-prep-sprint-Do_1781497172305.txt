@@ -1,0 +1,85 @@
+Recalibrate from the completed execution-prep sprint.
+
+Do NOT deploy.
+Do NOT touch Sale V1.
+Do NOT touch frontend.
+Do NOT publish.
+Do NOT reopen architecture.
+Do NOT change referral/economics/identity doctrine.
+
+We are now at FINAL PRE-DEPLOY PARAMETER LOCK.
+
+The previous sprint is accepted:
+
+* docs drift fixed
+* identity doctrine corrected
+* flat-5% stale docs superseded
+* final parameter sheet created
+* V1 proof flow plan created
+* mainnet-direct runbook created
+* frontend wiring plan created
+* contracts remain hardened and reviewed
+
+Only unresolved deploy-affecting item:
+F4 — RECOVERY_TIMELOCK / ROUTER_TIMELOCK conflict:
+
+* code currently 7 days
+* simulation/recommendation referenced 14 days
+* launch owner is founder/admin EOA, not multisig
+
+Founder decision:
+Use 14 days for both RECOVERY_TIMELOCK and ROUTER_TIMELOCK unless you find a concrete technical reason not to.
+
+Rationale:
+
+* no multisig at launch
+* EOA owner has higher key risk
+* 14 days gives more time to detect/stop mistakes
+* disable/pausing paths still exist for emergencies
+* safer for mainnet-direct deployment
+
+Task:
+
+1. Verify exactly where RECOVERY_TIMELOCK and ROUTER_TIMELOCK are defined.
+2. If both are 7 days, change both to 14 days.
+3. Update all docs/checklists/parameter sheets to match 14 days.
+4. Rerun full Foundry tests because contract constants changed.
+5. Rerun Slither if needed.
+6. Run architect/code review.
+7. Confirm no other economics changed.
+8. Confirm no frontend changed.
+9. Confirm no deployment happened.
+
+Also do a final scan for any remaining unresolved blocker labels:
+
+* BLOCKER
+* TODO before deploy
+* FIXME
+* flat 5%
+* multisig required
+* Fuji required
+* Transfer recipients as members
+* raw memberNumberOf as identity
+* SeatRecord721 raw sale numbering
+
+Do not fix unrelated things unless they directly contradict frozen doctrine. Report them.
+
+Return:
+
+A. Files changed
+B. Timelock final value
+C. Tests run and results
+D. Slither/static result
+E. Architect review result
+F. Any remaining blocker labels
+G. Final pre-deploy status:
+
+* READY FOR EXTERNAL AUDIT PACKAGE
+* NOT READY, with exact blockers
+
+Important:
+No deployment.
+No frontend wiring.
+No Sale V1 changes.
+No architecture reopening.
+This is the final parameter lock before external audit/deployment preparation.

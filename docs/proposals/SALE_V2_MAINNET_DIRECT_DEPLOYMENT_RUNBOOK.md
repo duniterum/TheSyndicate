@@ -21,8 +21,8 @@ Wiring Readiness Plan · `SALE_V2_PROTOCOL_FREEZE_REVIEW.md`.
 - [ ] Foundry suite GREEN on the exact commit being deployed (`forge test`),
       `slither` report reviewed (`contracts/audit/slither-report.txt`).
 - [ ] All Parameter-Sheet blockers cleared: F2 `reserveThroughSeat`, F3 funding
-      model, **F4 `RECOVERY_TIMELOCK` ruling** (if 14 days is chosen, the contract
-      was changed and re-audited/re-tested — confirm before proceeding).
+      model. **F4 RESOLVED:** founder ruled `RECOVERY_TIMELOCK` = `ROUTER_TIMELOCK`
+      = **14 days**; contract changed 7→14 and the full Foundry suite re-ran GREEN.
 - [ ] `addrCaps[9]` ramp transcribed and double-checked vs the treasury sim.
 - [ ] Multisig address(es) ready for both contracts.
 - [ ] Deployer EOA funded with AVAX for gas; hardware-wallet / multisig signer flow rehearsed.
@@ -93,9 +93,9 @@ Run **P1–P5** from the V1 Proof-Flow Plan §4:
 ## Emergency controls
 
 - **Pause** halts buys instantly.
-- **Recovery-to-Vault** is timelocked (`RECOVERY_TIMELOCK`, currently 7 days) and
+- **Recovery-to-Vault** is timelocked (`RECOVERY_TIMELOCK`, 14 days) and
   only sends unsold SYN to the immutable Vault — never to the owner.
-- **Router swap** is timelocked (`ROUTER_TIMELOCK`, 7 days).
+- **Router swap** is timelocked (`ROUTER_TIMELOCK`, 14 days).
 - Owner has **no** price/split discretion and **no** SYN-to-owner path by design.
 
 ## Post-deploy registry hygiene

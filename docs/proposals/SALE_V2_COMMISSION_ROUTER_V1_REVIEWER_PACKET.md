@@ -30,7 +30,7 @@ no further economics change.
    `transferFrom`, pays the referrer (push, escrow-on-failure), and forwards the remainder to a
    **governance-set** `operationsWallet`. Router unset/revert → Sale V2 pays the **full** slice to
    Operations (`CommissionRouterFallback`); a buy never bricks.
-9. Router wiring: `initialRouter` constructor (day-one); add/replace behind a 7-day timelock;
+9. Router wiring: `initialRouter` constructor (day-one); add/replace behind a 14-day timelock;
    **disable is instant**. Source allow-list is governance-gated (`Ownable2Step`).
 10. Tier ladder (canonical, count-only on-chain — `retentionRequiredPct` is off-chain only):
 
@@ -286,8 +286,8 @@ Each §5 invariant and §6 requirement maps to concrete tests:
 **Open items NOT in scope of this sprint (documented, not fixed):** M1 (router `operationsWallet`
 must be configured == the sale's `OPERATIONS` at deploy — a deploy-config check, covered by a test
 that wires it correctly); M2 (a V1 member who omits the proof on `buy` is issued a fresh seat /
-double-counted — a known draft behavior, asserted as-is); and the `RECOVERY_TIMELOCK` is 7 days in
-code vs 14 days in the parameter simulation (a deploy-time governance decision).
+double-counted — a known draft behavior, asserted as-is); and the `RECOVERY_TIMELOCK` was raised
+from 7 to 14 days in code per the founder F4 ruling (matching the parameter simulation).
 
 ## 10 — `V1_MEMBER_ROOT` generation (reproducible)
 
