@@ -136,7 +136,7 @@ export function LivePulseStrip() {
         </div>
       ) : (
         <SectionHeader
-          eyebrow="Live Protocol Pulse"
+          eyebrow="Protocol vitals"
           title={<>What is happening <span className="text-gradient-gold">right now</span></>}
           description="Seven numbers, all read live from Avalanche. Click any cell to see its hook, on-chain source, and verification links. Deltas show change in the last 24 hours and 7 days."
         />
