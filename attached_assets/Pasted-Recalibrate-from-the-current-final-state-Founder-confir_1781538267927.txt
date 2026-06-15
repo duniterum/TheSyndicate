@@ -1,0 +1,164 @@
+Recalibrate from the current final state.
+
+Founder confirmations:
+
+* V1 is paused.
+* Canonical snapshot is accepted.
+* genesisOffset = 2.
+* V1_MEMBER_ROOT is canonical.
+* deploy-params.json is canonical with provisional=false.
+* Rehearsal passed.
+* Recovered SYN wallet is controlled by founder:
+  0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8
+* Initial V2 funding target is approved:
+  5,000,000 SYN.
+* External professional audit is not a launch blocker for this MVP.
+* We accept this is an experimental mainnet MVP with no promise / no yield / no ROI / no equity wording.
+
+Do NOT deploy yet.
+Do NOT fund yet.
+Do NOT publish frontend yet.
+Do NOT reopen architecture.
+Do NOT change contracts.
+Do NOT change economics.
+
+Task:
+Prepare the final Step 7–10 execution package.
+
+I want the exact mainnet execution sequence from:
+
+1. Deploy V2
+2. Verify deployment
+3. Fund 5,000,000 SYN
+4. Execute first controlled buy
+5. Verify member #3
+6. Prepare frontend switch to live V2
+
+Return one concise but complete execution package.
+
+Include:
+
+A. Exact deploy command
+
+* command
+* signer wallet
+* expected gas
+* expected output
+* where the deployed SaleV2 address appears
+* stop conditions
+
+B. Post-deploy verification
+
+Exact commands/checks for:
+
+* owner
+* memberCount == 2
+* genesisOffset == 2
+* V1_MEMBER_ROOT
+* activeEra == Era I
+* nextSeatNumber == 3
+* currentReserveFloor == 4,099,000 SYN
+* commissionRouter == address(0)
+* timelocks == 14 days
+* all wallets match
+* all caps match
+* sale starts paused or unpaused, whichever contract state actually is
+
+C. Source verification
+
+Prepare exact source-verification path for:
+
+* Snowtrace / Routescan / Sourcify if supported
+* constructor args source
+* files needed
+
+D. Funding transaction
+
+Prepare exact SYN transfer plan:
+
+* amount: 5,000,000 SYN
+* raw uint256 amount
+* source wallet recommendation
+* destination = deployed SaleV2 address
+* verification command:
+  SYN.balanceOf(SaleV2) == 5,000,000 SYN
+* verify currentReserveFloor <= balance
+* verify sellableSynForNextSeat > 0
+
+E. First controlled buy
+
+Prepare:
+
+* buyer wallet requirements
+* AVAX gas requirement
+* USDC requirement
+* approve USDC
+* buy amount recommendation: $5 USDC
+* raw USDC amount
+* minSynOut expected
+* referrer = address(0)
+* v1Proof = []
+* expected result:
+  member #3
+  500 SYN received
+  Genesis Signal
+  Era I
+  no referral payout
+  70/20/10 routing
+  Purchased event emitted
+  Routed event emitted if applicable
+
+F. Post-buy verification
+
+Exact checks:
+
+* memberCount == 3
+* memberNumberOf(buyer) == 3
+* knownMember(buyer) == true
+* activeEra still Era I
+* SYN balance changed correctly
+* Vault / Liquidity / Operations USDC received correct amounts
+* Holder Index sees member #3 once frontend config is flipped
+
+G. Frontend switch preparation
+
+Do NOT publish yet.
+
+Prepare exact values to update later:
+
+* SALE_V2_CONTRACT_ADDRESS
+* SALE_V2_DEPLOYMENT_BLOCK
+* proof artifact path
+* V2 LIVE flag
+* build stamp
+* pages to smoke test
+
+H. Final stop/go checklist
+
+Return:
+
+GO if:
+
+* all params read back correctly
+* source verified or verification path ready
+* V2 funded with 5M SYN
+* first buy succeeds
+* indexer sees events
+
+STOP if:
+
+* any read-back mismatch
+* source verification impossible
+* balance below reserve floor
+* buy reverts
+* routing mismatch
+* member number not #3
+
+Important:
+
+Do not execute.
+Do not deploy.
+Do not fund.
+Do not publish.
+
+Give me the exact commands and expected outputs so I can decide the final “deploy now” step.
