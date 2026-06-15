@@ -69,6 +69,18 @@ real pause block.
   `0x205DdC…f464` (250M SYN) is the alternative. Always `cast call SYN balanceOf` the source before
   recommending it — never repeat the "recovered = 997,500" number.
 
+## Live deployment record (executed 2026-06-15)
+- **SaleV2 is DEPLOYED & verified on mainnet.** Deploy tx `0x5f8929…e743f7`, deployer/owner = founder EOA
+  `0xa2E538…26e2F`, chain 43114. Read-back 28/28 + explicit all match canon (memberCount=2, genesisOffset=2,
+  root `0xae75…74ff`, activeEra=1, nextSeat=3, floor 4,099,000 SYN, router 0x0, paused=false, timelocks
+  1,209,600). Source verified: Sourcify `perfect`, Routescan full source. SYN balance 0 until funded.
+- **GOTCHA — `contracts/broadcast/Deploy.s.sol/43114/run-latest.json` is STALE/dry-run** and points at a
+  DIFFERENT address than the real deploy. NEVER trust the local broadcast artifact for the live address —
+  read it from the actual deploy-tx receipt (`cast receipt <tx> | contractAddress`).
+- **Frontend go-live is single-gated:** `SALE_V2_LIVE` derives purely from `MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS`
+  + `SALE_V2_DEPLOYMENT_BLOCK` being set (no separate flag). Setting them flips the site live → do NOT wire
+  until SYN funding + first buy verify, or the Join flow goes live against a 0-SYN fail-closed contract.
+
 ## Where this lives in the docs
 Reviewer packet §7 (mainnet-direct checklist), §7a (deploy blockers), §7b (EOA-vs-multisig risk note);
 `SALE_V2_REFERRAL_LAUNCH_EXECUTION_PLAN.md` (deploy sequence); `contracts/README.md` (status banner +

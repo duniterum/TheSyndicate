@@ -49,8 +49,8 @@
 
 ## Remaining actions (founder signs every mainnet tx)
 
-1. **Deploy V2** (tx #1) — signer EOA `0xa2E538…26e2F`; deployer becomes owner directly.
-2. **Verify deploy** — run `verify-deploy.mjs` (28/28) + explicit `cast` reads; verify source on Routescan/Sourcify.
+1. ~~**Deploy V2** (tx #1)~~ — **DONE** 2026-06-15. SaleV2 = `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48`, block 88095827, deploy tx `0x5f8929…e743f7`.
+2. ~~**Verify deploy**~~ — **DONE**. `verify-deploy.mjs` 28/28 + explicit reads all match; source verified (Sourcify `perfect`, Routescan).
 3. **Fund 5,000,000 SYN** (tx #2) — from the recovered wallet → deployed Sale V2.
 4. **First controlled buy** (tx #3) — fresh non-V1 wallet, $5 USDC → mints member **#3**.
 5. **Verify member #3** — `memberCount == 3`, `memberNumberOf(buyer) == 3`, 70/20/10 split, `Purchased` + `Routed` events.

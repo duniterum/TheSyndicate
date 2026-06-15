@@ -1,9 +1,12 @@
 # Sale V2 — Mainnet Execution Package (Steps 7–10)
 
-> **Status:** READY TO COPY/PASTE. Read-only handoff archive. Nothing in this file
-> has been executed. The three mainnet signatures (deploy, fund, buy) are the
-> founder's alone. Before any broadcast, re-confirm the exact command + expected
-> output one final time.
+> **DEPLOYED 2026-06-15:** SaleV2 = `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48`
+> (block **88095827**, deploy tx `0x5f8929…e743f7`). Read-back **28/28** + source
+> **verified** (Sourcify `perfect`, Routescan). Remaining mainnet signatures: **fund**, **buy**.
+>
+> **Status:** READY TO COPY/PASTE. The remaining two mainnet signatures (fund, buy)
+> are the founder's alone. Before any broadcast, re-confirm the exact command +
+> expected output one final time.
 >
 > **Doctrine:** Don't trust, verify. Every value below was read from live code or
 > the live chain on **2026-06-15**. Re-read `currentReserveFloor()` and wallet
@@ -15,6 +18,10 @@
 
 | Read | Value | Meaning |
 |---|---|---|
+| Deployed SaleV2 | **`0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48`** | live contract (block 88095827) |
+| `SaleV2` read-back | **28/28 + explicit** | owner/offset/root/era/floor/router/timelocks all match |
+| `SaleV2` source | **verified** | Sourcify `perfect`; Routescan full source |
+| `SYN.balanceOf(SaleV2)` | **0** | not yet funded (buy fails closed until funded) |
 | `SYN.balanceOf(recovered 0x975a…ecec8)` | **349,997,500 SYN** | funding source has ample balance |
 | `SYN.balanceOf(Vault Reserve 0x205DdC…f464)` | **250,000,000 SYN** | alternative funding source |
 | `SYN.balanceOf(V1 0x0020Df…842d)` | **0** | V1 fully drained |

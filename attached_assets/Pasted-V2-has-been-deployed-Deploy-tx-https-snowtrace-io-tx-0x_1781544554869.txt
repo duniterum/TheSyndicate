@@ -1,0 +1,155 @@
+V2 has been deployed.
+
+Deploy tx:
+https://snowtrace.io/tx/0x5f8929b03da6558a6cdcad83d536d804594125090db56380c94ee5e477e743f7
+
+Execution mode now.
+
+Do NOT reopen architecture.
+Do NOT reopen economics.
+Do NOT rewrite doctrine.
+Do NOT redeploy unless a critical defect is proven.
+
+Goal:
+Autonomously complete everything required after deployment so the live site works from real on-chain V2 values.
+
+Tasks:
+
+1. Extract deployed SaleV2 address
+
+From the deploy tx:
+
+* deployed contract address
+* deploy block
+* deployer
+* owner
+* chain id
+
+2. Verify deployed contract
+
+Run all read-back checks:
+
+* owner
+* memberCount == 2
+* GENESIS_OFFSET == 2
+* V1_MEMBER_ROOT
+* activeEra == 1
+* nextSeatNumber == 3
+* currentReserveFloor
+* commissionRouter == address(0)
+* paused()
+* wallets
+* timelocks
+* addrCaps
+* eraCaps
+
+If any mismatch: STOP.
+
+3. Verify source
+
+Complete source verification on:
+
+* Snowtrace / Routescan
+* Sourcify if possible
+
+4. Fund V2
+
+Prepare exact funding tx for 5,000,000 SYN from:
+0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8
+
+Destination:
+deployed SaleV2 address
+
+After founder signs, verify:
+
+* SYN.balanceOf(SaleV2) == 5,000,000 SYN
+* currentReserveFloor <= balance
+* sellableSynForNextSeat > 0
+
+5. First controlled buy
+
+Prepare and execute only after funding:
+
+* $5 USDC
+* referrer = address(0)
+* v1Proof = []
+* expected member #3
+* expected 500 SYN
+* expected 70/20/10 routing
+* no referral payout
+
+After founder signs, verify:
+
+* memberCount == 3
+* memberNumberOf(buyer) == 3
+* knownMember(buyer) == true
+* buyer received 500 SYN
+* Vault/Liquidity/Operations received correct USDC
+* Purchased/Routed events visible
+
+6. Frontend wiring
+
+After first buy is verified, update frontend using real values:
+
+* MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+* SALE_V2_DEPLOYMENT_BLOCK
+* V2 live flag / derived live state
+* public/v1-member-proofs.json with canonical root/proofs, pending:false
+* Holder Index V1+V2
+* /join buy flow
+* /my-syndicate
+* /members
+* /member/3
+* /activity
+* /registry
+* /transparency
+* homepage live metrics
+
+Use real on-chain reads only. No fabricated numbers.
+
+7. UX/design cleanup for MVP launch
+
+Make the public site coherent with V2:
+
+* V1 shown as sealed/history
+* V2 shown as live
+* Genesis continues from #3
+* first controlled member visible
+* no stale “V2 pending” copy
+* no flat referral copy
+* referral remains hidden/noindex until explicitly activated
+* no ROI/yield/equity/promise wording
+
+8. QA
+
+Run:
+
+* typecheck
+* build
+* relevant tests
+* route smoke
+* content guard
+* banned wording guard
+* live read smoke against deployed V2
+* mobile sanity check
+
+9. Final report
+
+Return:
+
+A. Deployed SaleV2 address
+B. Deploy block
+C. Verification status
+D. Funding status
+E. First buy status
+F. Frontend files changed
+G. Live pages updated
+H. Tests run
+I. Remaining blockers
+J. Final status: V2 LIVE / NOT LIVE
+
+Important:
+Work autonomously.
+Do not ask another architecture question.
+Do not create broad reports.
+Finish the post-deploy wiring and bring the MVP live from real on-chain V2 data.
