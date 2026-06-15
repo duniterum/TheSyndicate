@@ -165,7 +165,7 @@ export function ProtocolHero() {
     >
       <HeroAtmosphere />
 
-      <div className="relative w-full px-5 md:px-8 lg:px-12">
+      <div className="relative w-full px-4 sm:px-6 lg:px-8">
         <div className="grid min-h-[calc(100svh-64px)] grid-cols-1 items-start gap-6 py-6 xl:grid-cols-[1.1fr_1.78fr_1.12fr] xl:content-between xl:gap-8">
           <HeroLeft className="xl:col-start-1 xl:row-start-1" />
 

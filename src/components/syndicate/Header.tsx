@@ -63,7 +63,7 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/85 border-b border-border">
-      <div className={`mx-auto flex items-center justify-between gap-3 h-16 ${wide ? "w-full px-5 md:px-8 lg:px-12" : "max-w-7xl px-5 md:px-8"}`}>
+      <div className={`mx-auto flex items-center justify-between gap-3 h-16 ${wide ? "w-full px-4 sm:px-6 lg:px-8" : "max-w-7xl px-5 md:px-8"}`}>
         {/* Logo — gold brand lockup (reference header) */}
         <Logo size="sm" tone="gold" withProtocolLabel withChapter onClick={() => setMobileOpen(false)} />
 
