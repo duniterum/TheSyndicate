@@ -1,0 +1,116 @@
+Accepted.
+
+We are now at the V1 Seal + Snapshot Execution Gate.
+
+Do NOT deploy.
+Do NOT move funds.
+Do NOT publish frontend.
+Do NOT reopen architecture.
+Do NOT create another roadmap.
+
+Goal:
+Prepare the exact operational commands and founder checklist so we can seal V1, generate the real snapshot, and fill the final deploy params.
+
+Task:
+
+1. Pre-seal verification
+
+Read current V1 state one last time:
+
+* paused()
+* totalBuyers()
+* purchaseCount()
+* totalSynSold()
+* totalUsdcRaised()
+* availableSyn()
+* sale owner / pause authority if available
+* current unique buyers from logs if possible
+
+Return:
+
+* current live state
+* whether V1 can be paused by founder/admin EOA
+* exact wallet that must execute pause if known
+
+2. Seal command package
+
+Prepare exact command options:
+
+A. UI/wallet path if easiest
+B. cast command path if available
+
+Include:
+
+* contract address
+* function selector/signature
+* required signer
+* expected gas/AVAX note
+* post-pause verification command
+
+Do NOT execute pause unless I explicitly say.
+
+3. Snapshot command package
+
+Prepare exact commands to run immediately after pause:
+
+* export members
+* generate members.json
+* generate v1MemberRoot
+* generate v1-merkle.json
+* validate proofs
+* verify count consistency
+
+Return expected output files.
+
+4. Deploy params update plan
+
+After snapshot, define exactly which fields in deploy-params.json get filled:
+
+* genesisOffset
+* v1MemberRoot
+* proof artifact path
+* any derived values
+
+Also verify which fields are still placeholders or zero and must be transcribed before fork rehearsal.
+
+5. Fork rehearsal readiness
+
+Can we run forked-mainnet rehearsal immediately after snapshot?
+
+Return:
+
+* yes/no
+* missing values
+* exact command
+* what success means
+
+6. Stop conditions
+
+List conditions where we STOP and do not proceed:
+
+* V1 not paused
+* buyer count mismatch
+* proof validation fails
+* root mismatch
+* deploy params incomplete
+* fork rehearsal fails
+
+7. Final answer
+
+Return a clear checklist:
+
+Founder action:
+1.
+2.
+3.
+
+Replit action after founder approval:
+1.
+2.
+3.
+
+No deployment.
+No funds.
+No frontend publish.
+
+This is the last step before the real V1 seal.
