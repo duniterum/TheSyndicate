@@ -35,6 +35,24 @@ derived from the Holder Index first-seen ordering, with NO V1-vs-V2 branch:
    member double-seats → identity discontinuity. The contract has the mechanism; the FE
    must supply the proof.
 
+## Implementation traps when these gates are built (silent-failure landmines)
+- **Identity-derivation split:** the unified stream feeds TWO things — a contribution/spend
+  view (V1 `TokensPurchased` + ALL V2 `Purchased`) and an identity view (seat-issuing =
+  V1 first-seen + V2 `Purchased(firstSeat=true)`; V2 `firstSeat=false` adds spend/SYN but
+  NEVER a new member#). Never derive identity from raw V2 `memberNumberOf`.
+- **Routed join key:** to recover V2 vault/liquidity/operations/referral splits, join
+  `Purchased`↔`Routed` by **txHash (+ log order / source contract), NOT by memberNumber** —
+  repeat/recognized-V1 buys carry memberNumber 0 or non-unique.
+- **Referral arg type:** existing capture stores `?ref=<memberNumber>` in localStorage, but
+  V2 `buy()` needs a referrer **ADDRESS** — resolve member#→wallet via the Holder Index;
+  reject unresolved / self / zero.
+- **Proof must fail CLOSED:** if a connected wallet is in the V1 proof artifact and not yet
+  knownMember, the FE must pass `v1Proof` (or force `claimV1Membership` first) or BLOCK the
+  buy — never silently buy proof-less (that's the double-seat).
+- **Cache migration:** `purchase-events-cache` must bump its schema/version and key on
+  chainId + BOTH sale addresses + both deployment blocks; prefer per-source cursors over one
+  global cursor, or an old V1-only snapshot silently hides V2 events.
+
 ## Audit ANTI-PATTERN (apply to every future Model 2 continuity pass)
 Pure member-number boundaries — "#1–#333", "Chapter I seals at #333", "Founders #1–#333" —
 remain TRUE under Model 2 and are NOT a wording risk. Do NOT propose editing them. Only
