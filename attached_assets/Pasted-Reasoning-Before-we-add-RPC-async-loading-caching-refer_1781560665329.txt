@@ -1,0 +1,139 @@
+Reasoning
+
+Before we add RPC, async loading, caching, referral data, or any new protocol data layer, we need a factual map of the current system.
+
+Do not implement anything yet.
+
+The goal is to prevent drift, duplicate systems, renamed variables, broken live data, or mixing old doctrine with new doctrine.
+
+We want The Syndicate to become fast, stable, modular, cheap to run, and ready for on-chain referral logic — but first we need to know exactly what already exists.
+
+Prompt
+
+Audit the current The Syndicate codebase and return a structured technical report only. No implementation.
+
+Please identify:
+
+1. Current RPC / provider structure
+
+* Where RPC URLs are defined.
+* Which provider is currently used.
+* Whether there is fallback logic.
+* Whether RPC calls happen client-side, server-side, or both.
+* Whether any public RPC is hardcoded.
+* Whether environment variables are used correctly.
+
+2. Current live data architecture
+
+* Which pages fetch live on-chain data.
+* Which components depend on RPC before rendering.
+* Which data is async after page load.
+* Which data is cached, if any.
+* Which data is static.
+* Which data is derived from events.
+* Which data is direct contract reads.
+
+3. Current protocol data modules
+   Map the existing files/modules for:
+
+* Membership Sale data.
+* SYN token data.
+* Vault / Liquidity / Operations balances.
+* 70 / 20 / 10 routing.
+* Holder Index / member numbers.
+* Rank distribution.
+* Activity feed.
+* Chronicle / Memory / Institutional Register.
+* NFT / Archive1155.
+* My Syndicate dashboard.
+* Referral preview, if any.
+
+4. Current event indexing
+   Explain whether the app currently:
+
+* Reads historical events.
+* Stores derived snapshots.
+* Recomputes from chain on every load.
+* Uses block ranges.
+* Uses transaction receipts.
+* Uses hardcoded fallback data.
+* Has risk of RPC overload.
+
+5. Current referral readiness
+   Do not build referral yet.
+
+Only report:
+
+* What referral-related files already exist.
+* Whether any contract exists.
+* Whether any frontend preview exists.
+* What data model would be needed for on-chain referral later.
+* What must not be changed before referral contract design is finalized.
+
+6. Current performance risks
+   Identify:
+
+* Slow pages.
+* Too many RPC calls.
+* Components blocking first render.
+* Missing multicall opportunities.
+* Missing cache opportunities.
+* Duplicate reads.
+* Fragile public RPC dependencies.
+
+7. Current doctrine / variable risks
+   Check for old or forbidden language:
+
+* contribution
+* raised
+* governance weight
+* member directory
+* Genesis NFT 1,000
+* old 10-member genesis threshold
+
+Confirm current canon is preserved:
+
+* “SYN is the seat. Artifacts are the memory.”
+* Membership minimum $5 USDC.
+* Chapter thresholds: 333 / 1,000 / 3,333 / 10,000.
+* 70% Vault / 20% Liquidity / 10% Operations.
+* Archive1155 is collectible artifacts only.
+* SeatRecord721 is future, separate, not live.
+
+8. Recommended architecture
+   After the audit, propose the safest architecture for:
+
+* Fast static shell.
+* Delayed async live data.
+* Cached protocol snapshot.
+* RPC primary/fallback layer.
+* Multicall batching.
+* Event-derived protocol state.
+* Future on-chain referral module.
+* Graceful degraded mode.
+
+Important rules:
+
+* Do not implement.
+* Do not rename variables.
+* Do not change contract addresses.
+* Do not change copy.
+* Do not redesign UI.
+* Do not reopen unrelated audits.
+* Do not assume anything.
+* If something is unclear, say “unknown” and point to the file that must be checked.
+
+Expected output:
+
+Return a structured report with:
+
+A. Existing architecture map
+B. Current risks
+C. What is already done
+D. What is missing
+E. Recommended implementation order
+F. Files that would likely be touched later
+G. Files that must not be touched
+H. Questions before implementation
+
+This is a planning/report sprint only.

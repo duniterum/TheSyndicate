@@ -30,6 +30,16 @@ drift trap for copy, FAQ, whitepaper, and audits.
   vocabulary** (glossary). Public surface for the live feed is **"Activity"**;
   Chronicle is curated/deep-lore. Activity (raw) ≠ Chronicle (curated/gated).
 
+- **"contribution"** — UNRESOLVED DRIFT, not a collision but a guard gap: the word
+  is NOT in `FORBIDDEN_LANGUAGE` (`protocol-language.ts` bans raised/yield/roi/etc.,
+  NOT contribution), yet it IS rendered in copy across several surfaces (e.g. "Vault
+  Contribution" label in `Sections.tsx`, "the rank your contribution reflects" in
+  `RankHub.tsx`, "custom member contributions" in `syndicate-config.ts` tokenomics,
+  roadmap, referral notes) while `my-syndicate.tsx` carries a comment locally banning
+  it. External audit prompts treat "contribution" as forbidden; the code allows it.
+  **Do NOT auto-edit copy to remove it on an audit's say-so — it needs a founder
+  ruling first** (keep / add to FORBIDDEN_LANGUAGE / formally allow).
+
 **Why:** these recur in every audit and copy pass; conflating them reintroduces
 retired doctrine or implies perks/rights that don't exist.
 

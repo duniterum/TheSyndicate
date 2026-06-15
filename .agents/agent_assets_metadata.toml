@@ -275,3 +275,9 @@ id = "I5QbGqXfmsuZYH4kOy_GW"
 uri = "file://docs/proposals/SALE_V2_V1_SEAL_SNAPSHOT_SPRINT_REPORT.md"
 type = "text"
 title = "V1 Seal + Snapshot Sprint Report (A–J)"
+
+[[outputs]]
+id = "NIrUbIKPlh68dCDi19xNn"
+uri = "file://docs/audits/RPC_LIVE_DATA_REFERRAL_READINESS_AUDIT.md"
+type = "text"
+title = "RPC, Live-Data & Referral-Readiness Audit"
