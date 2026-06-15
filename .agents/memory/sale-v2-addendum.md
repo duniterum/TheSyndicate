@@ -153,3 +153,30 @@ numbers recomputed from `eras.ts` + 350M pool + 70/20/10). Durable conclusions:
   a tiered 30–80% **of that slice** via CommissionRouter V1, not a flat 5% — see the
   router section above; this simulation predates the router and used the flat 5%.)
   **"First Million" stays a TARGET, never "guarantee"** in public copy (Option 1).
+
+## Execution-prep sprint (deploy/proof mechanics from production source)
+
+- **V1 proof path validates with ZERO funds.** `claimV1Membership(bytes32[] proof)`
+  only sets `knownMember` (no SYN moved, no seat consumed → `memberNumberOf == 0`);
+  it's the safe pre-funding mainnet smoke test (idempotent: re-call reverts
+  `AlreadyKnown`; bad/non-member proof reverts `InvalidProof`). `buy(usdcIn,
+  referrer, minSynOut, v1Proof[])` recognizes a V1 member in-tx when proof passes.
+  `_verifyV1` = OZ `MerkleProof.verify` with a STANDARD double-hashed leaf — match
+  `contracts/README.md` leaf scheme exactly or every proof silently fails.
+- **`memberNumberOf` is set ONLY for V2-NEW first seats** → V1-proven members keep
+  identity in the Holder Index (corroborates the identity-hierarchy freeze in code).
+  `memberCount` seeds to `GENESIS_OFFSET`; first newcomer = offset+1.
+- **`reserveThroughSeat = 10_000` forces a ≈3.93M SYN minimum funding** before the
+  first buy (reserve floor `_reserveSyn(genesisOffset)`); you can't truly "tiny
+  fund" a buy test — but P1–P5 proof checks need zero funding. Don't let funded SYN
+  fall below the live floor while open.
+- **F4 OPEN conflict:** `RECOVERY_TIMELOCK` = `7 days` in code, sim recommends
+  `14 days`. Changing it is a `.sol` edit → requires a full Foundry re-run, so it's
+  OUT of any docs-only sprint. `ROUTER_TIMELOCK` = 7d (hardcoded, final).
+- **Router-unset = NO referral** (not a "flat 5% fallback"): when `router ==
+  address(0)` the sale sends the FULL 10% Operations slice to Operations. Tier 0
+  (Signal) = 30% of that slice (3% of gross). The legacy flat-5% model is fully
+  dead — don't reintroduce it as a "fallback rate" in any copy.
+- **Doc fix gotcha:** `DATA_VERIFICATION_REGISTRY.md` `members` row had wrongly said
+  "SYN Transfer event scan"; the runtime mirror `data-verification-registry.ts` was
+  already correct (derives from `MEMBER_DEFINITION`) → that fix was docs-only.

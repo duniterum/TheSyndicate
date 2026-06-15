@@ -1,5 +1,17 @@
 # The Syndicate — Final Sale V2 Referral Launch Execution Plan
 
+> **⚠️ SUPERSEDED — HISTORICAL PLANNING (referral model). Retained for decision-history only.**
+> This document predates the ratified decision that **Sale V2 referral is TIERED from day one**
+> through the external `CommissionRouterV1` (tier axis = verified referred-member count). The old
+> "flat 5%" is **fully superseded** — not a tier and not a fallback: with no router set the sale pays
+> NO referral (the full Operations slice goes to Operations); the lowest tier (Signal) pays 30% of
+> the Operations slice (3% of gross). Any
+> statement below that Sale V2 referral is "flat 5% only," or that tiers are deferred to a later
+> version (V3+), is **no longer current**. Current truth:
+> `docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_REVIEWER_PACKET.md`,
+> `docs/proposals/SALE_V2_PROTOCOL_FREEZE_REVIEW.md` (item 1), and
+> `docs/proposals/SALE_V2_TIERED_REFERRAL_FEASIBILITY_AND_MINIMAL_SAFE_ARCHITECTURE.md`.
+
 **This is the action plan, not archaeology and not new architecture.** It tells us exactly what to do
 next, in order, to launch Sale V2's referral **without losing the long-term tiered / reputation /
 builder-record vision.**

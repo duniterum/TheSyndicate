@@ -1,0 +1,242 @@
+Recalibrate from the full current Syndicate state.
+
+We are moving into Sale V2 Execution Preparation.
+
+Do NOT deploy yet.
+Do NOT touch Sale V1.
+Do NOT move funds.
+Do NOT publish frontend.
+Do NOT reopen architecture.
+Do NOT change economics or referral doctrine unless you find a concrete contradiction.
+
+Founder-ratified state:
+
+* Sale V2 + CommissionRouter V1 architecture is frozen.
+* Referral is tiered from day one through CommissionRouter.
+* Tier axis = verified referred-member count.
+* Commission pays on every eligible referred buy.
+* referredCount increments first-seat only.
+* Full RAL Attribution event is mandatory.
+* Reputation / retention / Builder Records are future off-chain layers reading router events.
+* Holder Index is the master identity source.
+* SeatRecord721 must derive from Holder Index, not raw sale numbering.
+* No Fuji/testnet.
+* Deployment will be mainnet-direct with tiny/no funding first.
+* Owner/admin is founder EOA at launch, Ledger/multisig future hardening.
+* V1 proof flow must preserve one-person-one-seat as much as possible.
+* No flat-only referral.
+* No multisig blocker.
+* No testnet blocker.
+
+Goal:
+Autonomously complete the next execution-prep sprint and return a final report.
+
+Sprint scope:
+
+────────────────────────────
+PART 1 — Final Doctrine Drift Cleanup
+────────────────────────────
+
+Use the latest identity consistency sweep and referral reports.
+
+Find and fix ONLY documentation contradictions already identified, especially:
+
+1. DATA_VERIFICATION_REGISTRY.md
+
+* members verification must use TokensPurchased / Holder Index / first-seen ordering
+* must NOT use SYN Transfer recipients as member verification
+
+2. SeatRecord721 decision doc
+
+* explicitly state member number source = Holder Index
+* explicitly forbid raw SaleV2 memberCount/memberNumberOf as identity source
+
+3. NFT Archive / ERC1155 ID 2 pointer docs
+
+* clarify ID 2 is only a pointer/reference to future SeatRecord721
+* not an identity source
+* not a member key
+
+4. Flat-5% stale docs
+
+* find every doc that still says Sale V2 referral is flat 5%
+* either update to tiered CommissionRouter truth
+* or stamp clearly as SUPERSEDED historical planning
+* do not leave ambiguity
+
+5. Any other hidden doctrine drift you find
+
+* only fix if clearly contradictory to frozen doctrine
+* otherwise list as future note
+
+────────────────────────────
+PART 2 — Final Parameter Ratification Packet
+────────────────────────────
+
+Do not invent new economics.
+
+Using existing parameter reports, prepare one final deploy-parameter sheet with placeholders or final recommended values for:
+
+* Sale V2 address placeholder
+* CommissionRouter address placeholder
+* owner/admin EOA placeholder
+* USDC address
+* SYN address
+* Vault address
+* Liquidity address
+* Operations address
+* genesisOffset
+* V1_MEMBER_ROOT
+* eraCaps
+* addrCaps
+* maxUsdcPerTx
+* reserveThroughSeat
+* recoveryTimelock
+* routerTimelock
+* initial SYN funding amount
+* tiny-mainnet-test funding amount
+* larger funding gate
+
+For each value:
+
+* source
+* current recommendation
+* final? YES/NO
+* blocker if unknown
+
+────────────────────────────
+PART 3 — V1 Proof Flow Plan
+────────────────────────────
+
+Do not implement frontend yet unless it is only a planning artifact.
+
+Create the exact V1 proof flow plan:
+
+* how V1 member list is derived
+* how V1_MEMBER_ROOT is generated
+* where proofs are generated
+* how frontend detects V1 wallet
+* how buy() receives proof
+* what happens if proof missing
+* how /member/N and Holder Index reconcile identity
+* how future SeatRecord721 must avoid raw SaleV2 numbering
+
+Return:
+
+* flow diagram
+* required files later
+* tests required
+* deploy blocker status
+
+────────────────────────────
+PART 4 — Mainnet-Direct Deployment Runbook
+────────────────────────────
+
+Update or create the final runbook for mainnet direct.
+
+Must include:
+
+1. Pre-deploy local/forked-mainnet checks
+2. Compile/test/static analysis
+3. Constructor parameter verification
+4. Deploy CommissionRouter
+5. Deploy Sale V2
+6. Source verify both
+7. Transfer/accept ownership to founder EOA if needed
+8. Configure router source
+9. Verify router.operationsWallet == SaleV2.OPERATIONS
+10. Verify immutables
+11. Fund tiny SYN only
+12. Tiny no-referrer buy
+13. Tiny referred buy
+14. Verify 70/20/10
+15. Verify tier payout
+16. Verify full RAL event
+17. Verify referredCount
+18. Verify fallback/escrow plan
+19. Pause/kill-switch verification
+20. Larger funding gate
+21. Frontend wiring gate
+22. Visual verification gate
+23. Abort procedures
+
+No Fuji/testnet.
+No multisig requirement.
+
+────────────────────────────
+PART 5 — Frontend Wiring Readiness Plan
+────────────────────────────
+
+Do NOT wire frontend yet.
+
+Prepare exact wiring plan for after deployment:
+
+* contracts registry update
+* ABIs
+* /join Sale V2 switch
+* referral link capture
+* CommissionRouter reads
+* tier display
+* My Syndicate referral card
+* /referral live-vs-future sections
+* reputation/leaderboard remain future/simulated
+* V1 proof injection
+* Holder Index union scan V1 + V2
+* event/indexer updates
+* build stamp
+* publish checklist
+* visual QA checklist
+
+Classify:
+
+* must do before frontend publish
+* can do after publish
+* must remain future
+
+────────────────────────────
+PART 6 — Final External Review Readiness
+────────────────────────────
+
+Do one final check:
+
+* contracts compile
+* tests pass
+* Slither report still clean
+* reviewer packet current
+* docs contradictions resolved
+* deployment blockers known
+* frontend blockers known
+
+If anything changed in docs only, no need to rerun full contract tests unless required.
+If any contract file changes, rerun full tests.
+
+────────────────────────────
+PART 7 — Output Final Report
+────────────────────────────
+
+Return:
+
+A. Files changed
+B. Doctrine contradictions fixed
+C. Remaining doctrine risks
+D. Final parameter sheet
+E. V1 proof flow plan
+F. Mainnet-direct runbook
+G. Frontend wiring readiness plan
+H. Tests/checks run
+I. Remaining blockers before deploy
+J. Remaining blockers before frontend publish
+K. Final recommendation:
+
+* READY FOR EXTERNAL REVIEW
+* READY FOR DEPLOYMENT PREP
+* NOT READY
+
+Important:
+Act autonomously within this sprint.
+Do not keep asking small questions unless a value cannot be safely inferred.
+Do not deploy.
+Do not move funds.
+Do not publish.
+No new architecture.
+Only execution preparation and drift cleanup.

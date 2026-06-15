@@ -31,7 +31,7 @@ Anything in this column MUST be imported, never duplicated. Tests in
 | ID | Name                          | Public mint? | Status                  | Price       | Wallet limit | Component |
 |----|-------------------------------|--------------|-------------------------|-------------|--------------|-----------|
 | 1  | The First Signal              | YES — live   | `ACTIVE_MINT_OPEN`      | 0.50 USDC   | 5            | `MintFirstSignal` |
-| 2  | Reserved Seat Record reference | **No** — never in Archive1155 | `RESERVED_DISABLED` | — | — | identity band only |
+| 2  | Reserved Seat Record reference | **No** — never in Archive1155 | `RESERVED_DISABLED` | — | — | disabled pointer / reference to the future `SeatRecord721` — **not** an identity source, **not** a member key (member identity = Holder Index) |
 | 3  | Patron Seal                   | YES — live   | `ACTIVE_MINT_OPEN`      | 5.00 USDC   | 5            | `MintPatronSeal` (qty fixed at 1) |
 | 4  | Heart Signal                  | No — ownerOnly | `ROADMAP` / protocol memory | — | — | gallery card, no CTA |
 | 5  | Genesis Sealed                | No — ownerOnly | `ROADMAP`             | — | — | gallery card, no CTA |

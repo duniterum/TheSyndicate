@@ -1,5 +1,17 @@
 # The Syndicate — Referral Doctrine Recovery Audit
 
+> **⚠️ SUPERSEDED — HISTORICAL PLANNING (referral model). Retained for decision-history only.**
+> This document predates the ratified decision that **Sale V2 referral is TIERED from day one**
+> through the external `CommissionRouterV1` (tier axis = verified referred-member count). The old
+> "flat 5%" is **fully superseded** — not a tier and not a fallback: with no router set the sale pays
+> NO referral (the full Operations slice goes to Operations); the lowest tier (Signal) pays 30% of
+> the Operations slice (3% of gross). Any
+> statement below that Sale V2 referral is "flat 5% only," or that tiers are deferred to a later
+> version (V3+), is **no longer current**. Current truth:
+> `docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_REVIEWER_PACKET.md`,
+> `docs/proposals/SALE_V2_PROTOCOL_FREEZE_REVIEW.md` (item 1), and
+> `docs/proposals/SALE_V2_TIERED_REFERRAL_FEASIBILITY_AND_MINIMAL_SAFE_ARCHITECTURE.md`.
+
 **Purpose:** Recover protocol memory. This is a **decision-archaeology** pass, not a redesign. It
 lists what has **already been decided** about referral / commission / attribution across the project,
 reconstructs how those decisions evolved, and surfaces every contradiction — **without** proposing

@@ -87,13 +87,26 @@ Designed separately, audited separately, deployed separately. Likely
 fields (non-binding sketch — final shape decided when that contract is
 specified):
 
-- member number (unique, monotonic)
+- member number (unique, monotonic) — **BINDING: sourced from the Holder
+  Index (first-seen `TokensPurchased` ordering, de-duplicated by buyer),
+  the master identity record. It MUST NOT be minted from the raw Sale V2
+  `memberCount` / `memberNumberOf` counters, which are a sale-side
+  convenience sequence, not the canonical identity.**
 - original purchasing wallet
 - first purchase tx hash
 - first purchase block height
 - chapter joined
 - timestamp
 - linked-wallet policy (if added) — strict rules, on-chain enforced
+
+**Identity source (binding).** When `SyndicateSeatRecord721` is built, each
+seat's member number is assigned from the **Holder Index** — the same
+first-seen `TokensPurchased` ordering the website already treats as the
+single source of member identity (see `docs/HOLDER_INDEX_ARCHITECTURE.md`
+and `.agents/memory/identity-hierarchy-freeze.md`). Sale V2's on-chain
+`memberCount` / `memberNumberOf` may *corroborate* a seat but is never the
+identity of record; the two must reconcile **to** the Holder Index, not the
+reverse.
 
 No Seat Record minting happens until this contract is designed,
 specified, tested, audited, and deployed separately from
@@ -114,6 +127,10 @@ to display Seat-Record-related state as `PENDING NFT CONTRACT`.
 - `maxSupply == 0` means unlimited.
 - ERC-1155 Seat Record is the final architecture.
 - Front-end eligibility alone is enough for Seat Records.
+- Seat Record member numbers are minted from the raw Sale V2 `memberCount`
+  / `memberNumberOf` (the Holder Index is the identity of record).
+- Token ID 2 in `SyndicateArchive1155` is an identity source or a member
+  key (it is only a disabled pointer / reference to the future ERC-721).
 
 ## 8. Cross-references
 

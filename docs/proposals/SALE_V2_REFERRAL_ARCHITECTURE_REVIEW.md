@@ -1,5 +1,17 @@
 # The Syndicate — Referral Architecture & Revenue Attribution Review
 
+> **⚠️ SUPERSEDED — HISTORICAL PLANNING (referral model). Retained for decision-history only.**
+> This review describes the early inline "flat 5%" (`refAmt = opsSlice / 2`) draft. The protocol
+> subsequently adopted the **external `CommissionRouterV1`** and **tiered referral from day one**
+> (tier axis = verified referred-member count). The old flat 5% is **fully superseded** — not a tier
+> and not a fallback: with no router set the sale pays NO referral (the full Operations slice goes to
+> Operations); the lowest tier (Signal) pays 30% of the Operations slice (3% of gross). Any statement
+> below that Sale V2 referral is "flat 5% only," or that tiers are deferred
+> to a later version (V3+), is **no longer current**. Current truth:
+> `docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_REVIEWER_PACKET.md`,
+> `docs/proposals/SALE_V2_PROTOCOL_FREEZE_REVIEW.md` (item 1), and
+> `docs/proposals/SALE_V2_TIERED_REFERRAL_FEASIBILITY_AND_MINIMAL_SAFE_ARCHITECTURE.md`.
+
 **Phase:** Final architecture review pass, immediately before the line-by-line Solidity review.
 **Status:** READ-ONLY decision report. No Solidity is written, nothing is implemented, Sale V1 and
 the frontend are untouched, nothing is deployed. The objective is to **freeze the referral

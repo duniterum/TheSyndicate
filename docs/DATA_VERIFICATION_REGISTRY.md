@@ -18,7 +18,7 @@ belong on the homepage.
 
 | Key           | Metric          | Hook                                              | Source (on-chain)                                                                                | Status | Refresh |
 |---------------|-----------------|---------------------------------------------------|--------------------------------------------------------------------------------------------------|--------|---------|
-| `members`     | Members         | `useHolderIndex` (via `useProtocolPulse`)         | SYN ERC20 `Transfer` event scan, deduped recipients                                              | LIVE   | 60s     |
+| `members`     | Members         | `useHolderIndex` (via `useProtocolPulse`)         | `TokensPurchased(buyer, …)` event scan, first-seen ordering, de-duplicated by buyer (the Holder Index). SYN ERC20 `Transfer` events are **not** a membership signal. | LIVE   | 60s     |
 | `usdcRaised`  | USDC Raised     | `useSaleStats` (via `useProtocolPulse`)           | `SyndicateMembershipSale.totalRaised()`                                                          | LIVE   | 60s     |
 | `vaultRouted` | Vault Routed    | `useReadContracts` (via `useProtocolPulse`)       | `USDC.balanceOf(VAULT_WALLET)`                                                                   | LIVE   | 60s     |
 | `lpTvl`       | LP TVL          | `useLpStats` (via `useProtocolPulse`)             | Trader Joe v1 SYN/USDC pair `getReserves()`                                                      | LIVE   | 60s     |

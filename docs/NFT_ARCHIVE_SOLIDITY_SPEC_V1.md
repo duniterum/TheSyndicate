@@ -169,7 +169,7 @@ candidates.** All others are owner-mint or `LOCKED` at deployment.
 | ID | Name                  | Category            | Visual family   | Renderer mode (deploy) | Public mint? | Target price (USDC) | Proposed `maxSupply` | Proposed `walletLimit` | Activation gate                                                                                |
 | -- | --------------------- | ------------------- | --------------- | ---------------------- | ------------ | ------------------- | -------------------- | ---------------------- | ---------------------------------------------------------------------------------------------- |
 | 1  | The First Signal      | Chapter Artifact    | Artifact Card   | `ONCHAIN_SVG`          | **Yes — live** | `0.50` (`500_000`)  | `10_000`             | `5`                    | Artifact Definition complete + `freezeArtifactDefinition(1)` called + founder approval + `setDropActive(1, true)` complete. |
-| 2  | Seat Record (reserved pointer) | Identity Certificate (future ERC-721) | Certificate | `NONE` (LOCKED) | **No** in V1 | `0` (n/a)           | `0`                  | `1`                    | **Reserved + disabled in V1.** Seat Records will live in a separate future ERC-721 (`SyndicateSeatRecord721`). `maxSupply == 0` means LOCKED / NOT MINTABLE — `mint(2)` and `adminMint(_,2,_)` both revert. See `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`. |
+| 2  | Seat Record (reserved pointer) | Identity Certificate (future ERC-721) | Certificate | `NONE` (LOCKED) | **No** in V1 | `0` (n/a)           | `0`                  | `1`                    | **Reserved + disabled in V1.** Seat Records will live in a separate future ERC-721 (`SyndicateSeatRecord721`). `maxSupply == 0` means LOCKED / NOT MINTABLE — `mint(2)` and `adminMint(_,2,_)` both revert. ID 2 is only a disabled display **pointer / reference** to the future ERC-721 — never an identity source and never a member key (member identity = the Holder Index). See `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`. |
 | 3  | Patron Seal           | Patron Seal         | Seal            | `ONCHAIN_SVG`          | Yes (later)  | `5.00` (`5_000_000`)| `10_000`             | `5`                    | Artifact Definition complete + frozen + founder approval. **Single flat amount. No tiers. No rank. No wealth-coded status.** |
 | 4  | Heart Signal          | Secret Artifact     | Pixel (secret)  | `ONCHAIN_SVG` or `NONE`| **No**       | `0`                 | `1_000`              | `1`                    | SECRET. Owner-mint only after discovery proof verifier exists. Stays inactive in V1. May ship as `LOCKED` until discovery flow is active. |
 | 5  | Genesis Sealed        | Genesis Founder Mark| Seal (ceremonial)| `ONCHAIN_SVG` or `NONE`| **No**      | `0`                 | `144`                | `1`                    | LOCKED until Genesis closes on-chain. Owner-mint only, distributed to verified Genesis wallets. |
@@ -798,7 +798,10 @@ name `SyndicateSeatRecord721` / `SyndicateSeatRegistry721`) once
 membership eligibility is enforceable on-chain.
 
 Token ID 2 inside `SyndicateArchive1155` stays reserved and disabled
-as a stable pointer to the future ERC-721:
+as a stable pointer / reference to the future ERC-721 — it is **only** a
+pointer. ID 2 is **not** an identity source and **not** a member key;
+member identity is the Holder Index (first-seen `TokensPurchased`
+ordering), and seat numbers will be assigned there, never from ID 2:
 
 - `rendererMode = NONE` · `active = false` · `ownerOnly = true`
   · `maxSupply = 0` · `walletLimit = 1` · `priceUsdc = 0`
