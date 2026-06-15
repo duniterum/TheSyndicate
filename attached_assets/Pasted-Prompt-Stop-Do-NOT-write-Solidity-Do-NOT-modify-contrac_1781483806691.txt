@@ -1,0 +1,228 @@
+Prompt
+
+Stop.
+
+Do NOT write Solidity.
+
+Do NOT modify contracts.
+
+Do NOT modify frontend.
+
+Do NOT deploy.
+
+Do NOT create new features.
+
+This is a FINAL PROTOCOL IDENTITY FREEZE REVIEW.
+
+The referral reconciliation audit identified the last potentially permanent architectural risk:
+
+M2 (V1 continuity) and future SeatRecord721 identity integrity.
+
+I want a founder-level identity review before we freeze architecture and move into execution.
+
+1. Complete Identity Layer Map
+
+Create a complete protocol identity map.
+
+Include:
+
+Sale V1
+Sale V2
+Member Number
+Founder Number
+Holder Index
+Wallet Page
+/member/N
+Referral Layer
+Reputation Layer
+Builder Records
+Chronicle
+Future SeatRecord721
+Future Governance
+Future Marketplace
+Future Signal Chamber
+Future AI Layer
+
+For each layer show:
+
+Source of truth
+Derived from
+Can be regenerated? (YES/NO)
+Permanent? (YES/NO)
+Risk if incorrect
+
+Return as a matrix.
+
+2. Canonical Identity Source
+
+Determine what should be the single canonical identity source for the protocol.
+
+Compare:
+
+Option A
+
+Raw on-chain sale state
+
+Examples:
+
+memberCount
+memberNumberOf
+sale events
+Option B
+
+Protocol Identity Layer
+
+Examples:
+
+Holder Index
+Reconciled chronology
+First-seen member ordering
+Protocol identity registry
+
+For each option show:
+
+Pros
+Cons
+Migration risk
+Chronicle impact
+SeatRecord721 impact
+Governance impact
+Builder Record impact
+
+Then recommend one.
+
+3. M2 Final Resolution
+
+Assume doctrine:
+
+One person = one seat.
+
+Evaluate all flows:
+
+Existing V1 member
+buys in V2
+buys without proof
+buys with proof
+New V2 member
+first purchase
+repeat purchase
+Referred member
+joins through referral
+later upgrades
+
+For each flow explain:
+
+member number outcome
+referral outcome
+reputation outcome
+builder outcome
+chronology outcome
+
+Then recommend the final operational policy.
+
+4. SeatRecord721 Freeze Review
+
+Use existing doctrine:
+
+SYN is the seat.
+
+Artifacts are the memory.
+
+Determine exactly what SeatRecord721 should trust.
+
+Compare:
+
+A
+
+Sale contract member numbering
+
+B
+
+Protocol identity layer
+
+C
+
+Hybrid approach
+
+For each:
+
+Security
+Simplicity
+Future migration risk
+Chronicle compatibility
+Referral compatibility
+Builder Record compatibility
+
+Then recommend one final model.
+
+5. Future Layer Compatibility
+
+Verify compatibility with:
+
+Referral
+Reputation
+Builder Records
+Chronicle
+SeatRecord721
+Governance
+Marketplace
+Signal Chamber
+AI Layer
+
+I want confirmation that all future systems can share the same identity source without migrations.
+
+If not:
+
+identify conflicts now.
+
+6. Architectural Mistake Analysis
+
+Answer:
+
+What is the single most expensive mistake we could still make before deployment?
+
+Not a coding bug.
+
+Not a UI bug.
+
+An architectural mistake.
+
+Explain:
+
+why
+impact
+cost to fix later
+7. Final Founder Recommendation
+
+Answer as:
+
+Founder
+CTO
+Protocol Architect
+Security Reviewer
+
+If you were freezing The Syndicate identity architecture today:
+
+What exact model would you ratify?
+
+I want a final recommendation that future systems can build on for years without rewriting identity.
+
+8. Architecture Freeze Checklist
+
+Return a final checklist:
+
+Frozen
+Needs decision
+Future work
+
+Only include items that truly remain unresolved.
+
+Do NOT repeat already-ratified decisions.
+
+Goal:
+
+Freeze identity architecture permanently before SeatRecord721, Governance, Marketplace, Signal Chamber, Reputation, Builder Records, and future protocol layers are built.
+
+This is a review and reconciliation pass only.
+
+No implementation. No code. No deployment. No new features.
