@@ -37,3 +37,10 @@ Frozen hierarchy: **Wallet Address → Holder Index → Member Number → SeatRe
 
 ## Verdict
 - **SAFE TO FREEZE.** No migration-forcing conflict found; identity is single-source-consistent. Remaining before execution are decisions/spec, not redesigns (ratify the master-source rule + SeatRecord721 mint-source + Signal-Chamber keying; build SeatRecord721/Governance/etc. as consumers).
+
+## Residual doc-consistency gaps (audited, NOT yet corrected — describe-only)
+Repository-wide sweep found the running code single-source-consistent; only three DOC-wording gaps remain (none change runtime behavior):
+- **`docs/DATA_VERIFICATION_REGISTRY.md` `members` row (HIGH, doc-only):** runtime hook is `useHolderIndex` (correct), but the *verification-method* column says "SYN ERC20 `Transfer` event scan, deduped recipients" — a competing identity definition (Transfer recipients ≠ TokensPurchased members; would inflate w/ airdrop/secondary holders). Self-contradicts its own backing doc reference (HOLDER_INDEX_ARCHITECTURE.md). Fix = reword the verify column to a `TokensPurchased` first-seen scan. Code is safe; do NOT "fix" the hook.
+- **`docs/SEAT_RECORD_ARCHITECTURE_DECISION.md` §5 sketch (MEDIUM):** lists field "member number (unique, monotonic)" without naming the Holder Index as its source → a future dev could wire it to raw memberCount. Fix = add "sourced from the Holder Index, never raw sale numbering" to the sketch (it's labeled non-binding, which caps real risk).
+- **`docs/NFT_ARCHIVE_SOLIDITY_SPEC_V1.md` ID2 reserved pointer (LOW):** Archive1155 ID2 reserved as a "stable pointer" to the future SeatRecord721 with no source stated → tiny circular-lookup risk if ID2 is ever used as a member key. Fix = note ID2 is a display pointer only, not an identity source.
+- Draft `docs/proposals/drafts/SyndicateSaleV2.draft.sol` uses `memberCount`/`memberNumberOf` — that is the raw on-chain mechanic, aligned BY ROLE (the design doc §E1 explicitly defers identity to the indexer; memberCount only picks the era). NOT an identity claim; do not "correct" the contract.
