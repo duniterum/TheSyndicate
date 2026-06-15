@@ -1,0 +1,140 @@
+Excellent.
+
+Do NOT build anything.
+
+Do NOT modify contracts.
+
+Do NOT modify frontend.
+
+Do NOT deploy.
+
+This is now a FINAL IDENTITY HIERARCHY RATIFICATION.
+
+The previous review surfaced the most important remaining architectural question:
+
+Wallet Address
+→ Holder Index
+→ Member Number
+→ SeatRecord721
+
+I want to freeze the hierarchy permanently before any future identity-related implementation.
+
+Tasks:
+
+1. Identity hierarchy ratification
+
+Based on all existing doctrine, confirm the exact hierarchy of identity.
+
+Show:
+
+Wallet Address
+↓
+?
+↓
+?
+↓
+SeatRecord721
+
+Explain:
+
+* what is canonical
+* what is derived
+* what is permanent
+* what is rebuildable
+
+2. Master identity source
+
+Answer explicitly:
+
+What is the single master identity source for the protocol?
+
+Not:
+
+* best UI source
+* best display source
+
+The true master source.
+
+Then show:
+
+* what depends on it
+* what must never bypass it
+
+3. Future-layer dependency map
+
+For each:
+
+* Referral
+* Reputation
+* Builder Records
+* Chronicle
+* Governance
+* Marketplace
+* Signal Chamber
+* AI Layer
+* SeatRecord721
+
+Show:
+
+* identity source
+* dependency chain
+* failure mode if the wrong source is used
+
+4. SeatRecord721 freeze rule
+
+Create a permanent rule:
+
+"SeatRecord721 MUST derive identity from ______."
+
+Then explain:
+
+* why
+* what happens if a future developer uses raw sale numbering instead
+
+5. M2 closure
+
+Assume founder preference:
+
+One person = one seat.
+
+Show the exact operational process that preserves this.
+
+Include:
+
+* V1 member
+* V2 member
+* repeat buyer
+* referred buyer
+* future SeatRecord721 holder
+
+6. Identity migration risk
+
+Answer:
+
+If we freeze identity today and build for 5 years:
+
+What future migration risks remain?
+
+List only real risks.
+
+7. Architecture freeze verdict
+
+Answer only:
+
+* SAFE TO FREEZE
+  or
+* NOT SAFE TO FREEZE
+
+If not safe:
+
+list blockers.
+
+If safe:
+
+list exactly what remains before execution.
+
+Goal:
+
+I do not want more design branches.
+
+I want a final ratification that every future module (Referral, Reputation, Builder Records, Chronicle, Governance, Marketplace, Signal Chamber, AI Layer, SeatRecord721) can safely build on the same identity system for years without future rewrites.
