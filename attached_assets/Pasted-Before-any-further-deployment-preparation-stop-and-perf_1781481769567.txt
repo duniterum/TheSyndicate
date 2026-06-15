@@ -1,0 +1,166 @@
+Before any further deployment preparation, stop and perform a final reconciliation pass across ALL existing referral-related work.
+
+Do NOT write new Solidity.
+Do NOT deploy.
+Do NOT modify Sale V1.
+Do NOT modify frontend.
+
+Objective:
+
+Verify that the current Sale V2 + CommissionRouter V1 architecture preserves EVERYTHING we previously designed around:
+
+* Referral system
+* Referral page
+* Reputation layer
+* Builder Record layer
+* Revenue Attribution Layer (RAL)
+* Member identity
+* Chronicle
+* Seat Records
+* Future B2B attribution
+* Future campaigns
+* Future Signal Chamber
+* Future marketplace incentives
+
+I do NOT want months of doctrine work silently overwritten by newer drafts.
+
+Tasks:
+
+1. Referral doctrine reconciliation
+
+Search the entire repository and all proposal/docs files.
+
+Find every place where referral economics, tiers, commissions, reputation, attribution, builder records, retention, campaigns, referral rewards, referral pages, referral leaderboards, or attribution systems were defined.
+
+Return:
+
+* File
+* Status
+
+  * MATCHES CURRENT DESIGN
+  * PARTIAL MISMATCH
+  * CONFLICT
+* Explanation
+
+I want a complete reconciliation matrix.
+
+2. Verify the tiered referral ladder
+
+Do NOT assume flat 5%.
+
+Find the exact referral ladder that currently exists in the repository.
+
+Show:
+
+* tier names
+* thresholds
+* payout percentages
+* source of truth files
+
+Then compare against the current CommissionRouter draft.
+
+Answer:
+
+* identical
+* compatible
+* conflicting
+
+I want proof that we are not overwriting an older approved doctrine.
+
+3. V1 member continuity decision (M2)
+
+This is now a founder-level decision.
+
+Analyze both options:
+
+Option A
+V1 member can buy without proof and receives a new seat.
+
+Option B
+V1 member must provide proof to preserve chronology.
+
+Evaluate through:
+
+* Identity
+* Chronicle
+* Builder Records
+* Reputation
+* SeatRecord721
+* Founder history
+* Public trust
+
+Then give your recommendation.
+
+My current instinct is Option B because one member should have one historical seat identity.
+
+Challenge that assumption if you disagree.
+
+4. Identity integrity audit
+
+Review the entire system and answer:
+
+Can a single person accidentally become:
+
+* Member #2 in V1
+* Member #384 in V2
+* Different referral identity
+* Different builder identity
+
+If yes:
+
+show all paths.
+
+If no:
+
+show the protections.
+
+5. Deployment funding audit
+
+Review all current reports.
+
+Confirm that:
+
+* We will NOT repeat the V1 overfunding mistake.
+* V2 funding follows the parameter model.
+* Inventory is intentionally funded.
+* Unsold inventory can be recovered according to the approved design.
+
+Show the exact risks if inventory is funded incorrectly.
+
+6. Final unresolved founder decisions
+
+Return ONLY the decisions that genuinely remain unresolved.
+
+Do NOT list already-ratified items.
+
+For each unresolved item provide:
+
+* Decision
+* Why it matters
+* Impact
+* Recommended choice
+
+7. Readiness score
+
+Score:
+
+Referral Layer
+Reputation Layer
+Builder Record Layer
+RAL
+Sale V2
+CommissionRouter
+Identity Layer
+SeatRecord721 compatibility
+
+0–100%
+
+Then answer:
+
+"What is the single biggest architectural mistake we could still make before deployment?"
+
+I want the answer as a founder/CTO/economist/security reviewer.
+
+The goal is not to build anything.
+
+The goal is to ensure we are not about to overwrite earlier doctrine, lose identity continuity, or create future migration problems before we freeze the architecture and move toward execution.
