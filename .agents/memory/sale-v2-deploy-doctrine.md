@@ -29,6 +29,11 @@ final addrCaps · final maxUsdcPerTx · final reserveThroughSeat · `router.oper
 SaleV2.OPERATIONS` (M1) · sourceConfig verified · V1 proof-gen flow documented · owner EOA verified ·
 router source verified · SaleV2 source verified.
 
+The `final genesisOffset` / `final V1_MEMBER_ROOT` blockers are now **mechanically
+enforced**: `Deploy.s.sol` fails closed on `deploy-params.json`'s `"provisional"` flag
+(see `fork-rehearsal-env.md`). Set `provisional:false` ONLY after regenerating from the
+real pause block.
+
 ## Compression / sequencing (speed)
 - **Deploy with `router == address(0)`** for the first controlled buy. ADDING a router post-deploy
   costs `ROUTER_TIMELOCK` (14 days); the first buy needs NO referral, so keep referral fully

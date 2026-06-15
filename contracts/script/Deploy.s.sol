@@ -26,6 +26,20 @@ contract Deploy is Script {
     function run() external returns (SyndicateSaleV2 sale) {
         string memory json = vm.readFile("script/deploy-params.json");
 
+        // FAIL-CLOSED deploy guard. deploy-params.json may carry a PROVISIONAL
+        // pre-pause V1 snapshot (genesisOffset / v1MemberRoot). A real mainnet
+        // deploy MUST use the canonical snapshot regenerated from the V1 pause
+        // block. While "provisional" is true the script refuses to run unless
+        // ALLOW_PROVISIONAL_DEPLOY=1 is set explicitly — the forked-mainnet
+        // rehearsal sets it; a mainnet operator must NOT. After regenerating the
+        // snapshot, set "provisional": false in the JSON.
+        bool provisional = vm.parseJsonBool(json, ".provisional");
+        bool allowProvisional = vm.envOr("ALLOW_PROVISIONAL_DEPLOY", false);
+        require(
+            !provisional || allowProvisional,
+            "Deploy: PROVISIONAL snapshot (genesisOffset/v1MemberRoot) - regenerate from the V1 pause block and set provisional=false, or set ALLOW_PROVISIONAL_DEPLOY=1 for a rehearsal"
+        );
+
         address usdc = vm.parseJsonAddress(json, ".usdc");
         address syn = vm.parseJsonAddress(json, ".syn");
         address vault = vm.parseJsonAddress(json, ".vault");

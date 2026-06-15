@@ -17,6 +17,8 @@ remappings = [
     "forge-std/=lib/forge-std/src/",
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
 ]
+# Deploy.s.sol reads constructor params from script/deploy-params.json via vm.readFile.
+fs_permissions = [{ access = "read", path = "./script/deploy-params.json" }]
 
 [fuzz]
 runs = 512
