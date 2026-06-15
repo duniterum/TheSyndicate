@@ -118,6 +118,12 @@ export function LivePurchase() {
   const approveReceipt = useWaitForTransactionReceipt({ hash: effectiveApproveHash });
   const buyReceipt = useWaitForTransactionReceipt({ hash: effectiveBuyHash });
 
+  // Holder index resolves the connected wallet's *verified* seat — the same
+  // source the success receipt uses. Drives step 3 of the purchase tracker: a
+  // seat only counts once it is indexed from the on-chain TokensPurchased event.
+  const idx = useHolderIndex();
+  const myRecord = address ? idx.getByWallet(address) : undefined;
+
   // Refetch balances after confirms
   useEffect(() => {
     if (approveReceipt.isSuccess) {
@@ -236,6 +242,11 @@ export function LivePurchase() {
     state = { label: "Amount exceeds sale inventory", disabled: true, tone: "muted" };
   } else if (insufficientUsdc) {
     state = { label: "Insufficient USDC", disabled: true, tone: "error" };
+  } else if (userBal.usdcAllowance === undefined || userBal.usdcBalance === undefined) {
+    // Allowance/balance still loading — never fall through to a buy/approve
+    // action before we know whether approval is required (allowance undefined
+    // makes needsApprove false, which would otherwise jump straight to buy).
+    state = { label: "Loading wallet state…", disabled: true, tone: "muted" };
   } else if (needsApprove) {
     state = {
       label: approvePending ? "Confirm in Wallet…" : "Approve USDC",
@@ -279,7 +290,7 @@ export function LivePurchase() {
     };
   } else {
     state = {
-      label: buyPending ? "Confirm in Wallet…" : "Buy SYN",
+      label: buyPending ? "Confirm in Wallet…" : "Complete purchase now",
       disabled: buyPending,
       tone: "gold",
       onClick: async () => {
@@ -356,6 +367,55 @@ export function LivePurchase() {
     approveReceipt.error ||
     buyReceipt.error;
   const classifiedTxError = rawTxError ? classifyTxError(rawTxError) : null;
+
+  // ── Two-step (approve → buy) progress ─────────────────────────────────────
+  // The USDC approval and the buy() are TWO separate signatures. Collapsing them
+  // into one relabelling button let a buyer mistake "approval confirmed" for
+  // "purchase complete". Surface both steps explicitly + a recovery banner
+  // whenever the allowance is on-chain but the seat is not.
+  const allowanceSufficient =
+    userBal.usdcAllowance !== undefined && !needsApprove;
+  const purchaseDone = buyReceipt.isSuccess || phase === "success";
+  const approveErrored = Boolean(approveTx.error || approveReceipt.error);
+  const buyErrored = Boolean(buyTx.error || buyReceipt.error);
+  const buyReady = SALE_V2_LIVE ? v1Proof.ready : true;
+  // Wallet reads are tri-state (undefined = still loading). Until BOTH allowance
+  // and balance are known we cannot honestly say approval is/ isn't needed, so
+  // the sale is not yet actionable and the steps stay "Waiting".
+  const walletReady =
+    userBal.usdcAllowance !== undefined && userBal.usdcBalance !== undefined;
+  const saleActionable =
+    isConnected && !wrongChain && walletReady && !isPaused && !noInventory &&
+    !belowMin && !exceedsInventory && !insufficientUsdc;
+
+  const approveStatus: PurchaseStepStatus = approveErrored
+    ? "failed"
+    : approvePending
+      ? "pending"
+      : allowanceSufficient
+        ? "confirmed"
+        : saleActionable
+          ? "active"
+          : "upcoming";
+  const buyStatus: PurchaseStepStatus = purchaseDone
+    ? "confirmed"
+    : buyErrored
+      ? "failed"
+      : buyPending
+        ? "pending"
+        : approveStatus === "confirmed" && saleActionable && buyReady
+          ? "active"
+          : "upcoming";
+  const memberStatus: PurchaseStepStatus = myRecord
+    ? "confirmed"
+    : purchaseDone
+      ? "pending"
+      : "upcoming";
+
+  // Allowance is on-chain but the seat is not → the buy is the *only* remaining
+  // action. This is exactly the "approved but not purchased" recovery state.
+  const showBuyGuidance = buyStatus === "active";
+  const approveJustConfirmed = approveReceipt.isSuccess && !purchaseDone;
 
   return (
     <section
@@ -474,6 +534,20 @@ export function LivePurchase() {
                 <BalCell label="Your SYN" value={fmtSyn(userBal.synBalance)} />
                 <BalCell label="Allowance" value={fmtUsdc(userBal.usdcAllowance)} />
               </div>
+            )}
+
+            {/* Two-step purchase tracker — approve and buy are SEPARATE signatures */}
+            {isConnected && !wrongChain && (
+              <PurchaseStepper
+                approve={approveStatus}
+                buy={buyStatus}
+                member={memberStatus}
+              />
+            )}
+
+            {/* Recovery / post-approve guidance: allowance is on-chain, seat is not */}
+            {showBuyGuidance && (
+              <BuyStepGuidance justConfirmed={approveJustConfirmed} isMember={Boolean(myRecord)} />
             )}
 
             <button
@@ -820,6 +894,117 @@ export function ContractAddresses() {
       <p className="mt-3 text-[11px] text-muted-foreground leading-snug">
         Fixed supply: 1,000,000,000 SYN · no mint function · 1,000 SYN permanently sent to the dead address.
       </p>
+    </div>
+  );
+}
+
+// ─── Two-step purchase tracker ────────────────────────────────────────────
+// Approve USDC and buy() are two separate signatures. This makes that explicit
+// so a confirmed approval is never mistaken for a completed purchase.
+export type PurchaseStepStatus = "upcoming" | "active" | "pending" | "confirmed" | "failed";
+
+function stepNote(status: PurchaseStepStatus, step: "approve" | "buy" | "member"): string {
+  if (status === "failed") return "Failed — retry";
+  if (status === "pending") return step === "member" ? "Indexing…" : "Confirming…";
+  if (status === "confirmed") return step === "member" ? "Verified ✓" : "Confirmed ✓";
+  if (status === "active") return step === "approve" ? "Sign approval" : "Sign buy now";
+  return step === "member" ? "After buy" : "Waiting";
+}
+
+function PurchaseStepDot({ status, number }: { status: PurchaseStepStatus; number: number }) {
+  const isConfirmed = status === "confirmed";
+  const isActive = status === "active" || status === "pending";
+  const isFailed = status === "failed";
+  return (
+    <div className="relative flex items-center justify-center">
+      <div
+        className={`flex items-center justify-center size-7 rounded-full border text-[10px] font-semibold transition-all duration-300 ${
+          isFailed
+            ? "border-red-500/60 bg-red-500/10 text-red-500"
+            : isConfirmed
+              ? "border-[var(--success)] bg-[var(--success)]/10 text-[var(--success)]"
+              : isActive
+                ? "border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)]"
+                : "border-border bg-background/50 text-muted-foreground"
+        }`}
+      >
+        {isConfirmed ? (
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 8.5L7 11.5L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        ) : isFailed ? (
+          <span className="mono">!</span>
+        ) : (
+          <span className="mono">{number}</span>
+        )}
+      </div>
+      {status === "active" && (
+        <span className="absolute -inset-1 rounded-full border border-[var(--gold)]/30 animate-ping opacity-40" aria-hidden="true" />
+      )}
+    </div>
+  );
+}
+
+function PurchaseStepper({
+  approve,
+  buy,
+  member,
+}: {
+  approve: PurchaseStepStatus;
+  buy: PurchaseStepStatus;
+  member: PurchaseStepStatus;
+}) {
+  const steps: Array<{ n: number; label: string; status: PurchaseStepStatus; kind: "approve" | "buy" | "member" }> = [
+    { n: 1, label: "Approve USDC", status: approve, kind: "approve" },
+    { n: 2, label: "Buy membership", status: buy, kind: "buy" },
+    { n: 3, label: "Verified member", status: member, kind: "member" },
+  ];
+  return (
+    <nav aria-label="Purchase progress" className="mt-4 rounded-lg border border-border/50 bg-background/60 p-3">
+      <ol className="flex items-start justify-between gap-1">
+        {steps.map((s) => (
+          <li key={s.n} className="flex flex-1 flex-col items-center gap-1 text-center min-w-0">
+            <PurchaseStepDot status={s.status} number={s.n} />
+            <span
+              className={`mono text-[9px] sm:text-[10px] uppercase tracking-[0.12em] leading-tight ${
+                s.status === "failed"
+                  ? "text-red-500"
+                  : s.status === "confirmed"
+                    ? "text-[var(--success)]"
+                    : s.status === "active" || s.status === "pending"
+                      ? "text-[var(--gold)]"
+                      : "text-muted-foreground/60"
+              }`}
+            >
+              {s.label}
+            </span>
+            <span className="mono text-[8px] sm:text-[9px] uppercase tracking-[0.1em] text-muted-foreground/80 leading-tight">
+              {stepNote(s.status, s.kind)}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+function BuyStepGuidance({ justConfirmed, isMember }: { justConfirmed: boolean; isMember: boolean }) {
+  // An existing member already holds a seat — never tell them their seat/purchase
+  // is incomplete. They are simply buying more, so the only honest message is
+  // "this second transaction completes it".
+  const headline = justConfirmed
+    ? "Approval confirmed. Now sign the Buy transaction."
+    : isMember
+      ? "USDC approved for another purchase. Not completed yet."
+      : "USDC approved. Purchase not completed yet.";
+  return (
+    <div className="mt-3 rounded-lg border border-[var(--gold)]/40 bg-[var(--gold)]/5 p-3">
+      <p className="text-sm font-semibold text-foreground">{headline}</p>
+      <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground leading-relaxed list-disc pl-4">
+        <li>This second transaction completes the purchase.</li>
+        {!isMember && <li>Approval alone does not create a seat.</li>}
+        {!isMember && <li>Your member number appears only after Buy confirms.</li>}
+      </ul>
     </div>
   );
 }

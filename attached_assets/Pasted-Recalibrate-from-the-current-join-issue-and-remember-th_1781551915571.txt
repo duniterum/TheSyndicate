@@ -1,0 +1,135 @@
+Recalibrate from the current /join issue and remember the previous times we had this exact problem: transaction confirmed in the wallet, but the next action did not execute / the UI did not clearly advance to the real buy transaction.
+
+Current state:
+
+* Approve tx succeeded:
+  0x611c092a4504f619732f8f23274ef1c3299c62da2ca31222e97f20838698ed6e
+* It approved 5 USDC to SaleV2.
+* Allowance is still unspent.
+* Buyer nonce is still 1.
+* No buy() tx has been broadcast.
+* SaleV2 still memberCount=2, nextSeat=3.
+* User experience problem: founder saw transaction confirmed and believed the buy was done.
+
+Do NOT reopen architecture.
+Do NOT change contracts.
+Do NOT change economics.
+Do NOT activate referral.
+
+Task:
+Fix /join UX so this cannot confuse users again.
+
+1. Analyze the approve → buy flow
+
+Find why after approve confirmation the UI does not force or clearly guide the user into the second transaction.
+
+Check:
+
+* allowance refresh timing
+* button label/state after approve
+* pending transaction state
+* wallet confirmation state
+* whether UI still says approved but does not show “Now sign buy”
+* whether user must click a second button manually
+* whether there is a stale allowance cache
+* whether the buy button becomes disabled because of loading/state mismatch
+* whether Ledger/MetaMask requires a second prompt but UI does not surface it
+
+2. Implement UX fix
+
+After approve succeeds, the UI must clearly show:
+
+“Approval confirmed. Now sign the Buy transaction.”
+
+Then show a strong primary button:
+
+“Sign Buy Transaction”
+
+Or automatically trigger the buy step if safe and wallet UX supports it.
+
+The user must not think approval = purchase.
+
+3. Add transaction-step tracker
+
+Show three explicit states:
+
+Step 1 — Approve USDC
+Step 2 — Buy membership
+Step 3 — Verified member
+
+For each state show:
+
+* pending
+* confirmed
+* failed
+* retry
+
+4. Add safety copy
+
+Before buy confirmation:
+
+* “This second transaction completes the purchase.”
+* “Approval alone does not create a seat.”
+* “Your member number appears only after Buy confirms.”
+
+5. Add post-approve recovery state
+
+If allowance exists but no seat exists:
+
+Show:
+
+“USDC approved. Purchase not completed yet.”
+
+Button:
+
+“Complete purchase now”
+
+This is exactly our current situation.
+
+6. Do not change the contract call
+
+The actual buy call remains:
+
+buy(
+5000000,
+address(0),
+500000000000000000000,
+[]
+)
+
+7. Verify with live state
+
+Use current buyer:
+
+* allowance = 5 USDC
+* memberNumberOf = 0
+* knownMember = false
+* memberCount = 2
+
+The UI should now skip approval and present only:
+
+“Complete purchase now”
+
+8. QA
+
+Run:
+
+* typecheck
+* build
+* route smoke
+* live-read smoke
+* mobile sanity
+
+9. Final report
+
+Return:
+
+A. Cause of confusion
+B. Files changed
+C. New approve/buy state machine
+D. Current live buyer state
+E. Whether the user can now complete the buy from /join
+F. Tests run
+
+Goal:
+Founder should open /join, see that approval is already done, click one clear “Complete purchase now” button, sign buy(), and become member #3.
