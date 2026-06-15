@@ -1,0 +1,110 @@
+Recalibrate from the Final V2 Deployment Readiness Inventory.
+
+Do NOT reopen architecture.
+Do NOT write new doctrine.
+Do NOT modify contracts.
+Do NOT modify frontend.
+Do NOT deploy.
+Do NOT move funds.
+
+We are now in Founder Decision Closure, not design.
+
+Goal:
+Give me the smallest final decision sheet needed before V2 execution can begin.
+
+Return ONLY founder decisions that can still materially change deployment, economics, UX, or launch risk.
+
+Focus on:
+
+1. V1 snapshot timing
+
+* when to pause V1
+* target genesisOffset
+* exact V1_MEMBER_ROOT generation step
+* risk if delayed
+
+2. Final cap parameters
+
+* eraCaps
+* addrCaps[9]
+* maxUsdcPerTx
+* reserveThroughSeat
+* recommended values
+* why
+
+3. Initial SYN funding strategy
+   Compare:
+
+* minimum reserve-only funding
+* controlled early funding
+* full Model B funding
+  For each:
+* SYN amount
+* operational risk
+* user experience
+* upside/downside
+
+4. Ownership/admin model
+   Founder EOA at launch, Ledger/multisig future.
+   Confirm:
+
+* exact risk
+* exact checklist
+* whether any deploy blocker remains
+
+5. Referral activation timing
+   Compare:
+
+* deploy router now but leave referral OFF
+* enable tiered referral immediately
+* enable referral after legal/copy update
+  Recommend one.
+
+6. Frontend launch scope
+   Define:
+
+* minimum V2 sale frontend
+* V1 proof flow
+* referral hidden/simulated/live
+* what must not be published yet
+
+7. SYN brand/logo readiness
+   Include:
+
+* whether missing logo blocks deploy
+* whether it blocks public launch credibility
+* exact asset sprint needed later
+
+8. Final launch path
+   Return three paths:
+
+* fastest acceptable
+* recommended
+* safest
+
+For each:
+
+* steps
+* risks
+* what is deferred
+
+9. Final decision table
+
+Return:
+
+Decision | Recommended choice | Founder must approve? | Blocks deploy? | Blocks frontend? | Risk if wrong
+
+10. Final answer
+
+At the end answer:
+
+Are we ready to move from planning to execution once these founder decisions are approved?
+
+YES / NO
+
+If NO, list only true blockers.
+
+No new architecture.
+No new audits.
+No new broad reports.
+This is the founder decision closure sheet before execution.
