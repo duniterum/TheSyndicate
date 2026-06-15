@@ -25,9 +25,10 @@ export function PageShell({
   /** When true, suppress the default editorial header (used by routes that
    *  own their own full-bleed hero, e.g. /nft Chapter I hero). */
   hideHeader?: boolean;
-  /** When true, widen the global header container to match the homepage hero
-   *  (max-w-[1480px]) so the header and hero share one continuous edge
-   *  alignment. Only the homepage sets this; every other page stays max-w-7xl. */
+  /** When true, drop the global header's max-width so it spans full-bleed
+   *  (edge-to-edge) and shares one continuous edge alignment with the homepage
+   *  full-screen hero. Only the homepage sets this; every other page stays
+   *  max-w-7xl. */
   headerWide?: boolean;
   /** When true, suppress the global Protocol Intelligence ticker. The homepage
    *  sets this because its hero already renders the full protocol overview —
