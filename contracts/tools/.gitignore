@@ -5,4 +5,7 @@ node_modules/
 members.json
 members.txt
 members.snapshot.json
+members-merged.json
+members-merged.snapshot.json
 v1-merkle.json
+v2b-merkle.json

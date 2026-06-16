@@ -1,0 +1,39 @@
+{
+  "_README": "REHEARSAL constructor parameters for SyndicateSaleV2 (V2b). Same shape as deploy-params.json, read by Deploy.s.sol. initialRouter is intentionally NOT read here — Deploy.s.sol forces address(0) (day-one no referral; wire the CommissionRouter post-deploy via the timelocked path). All numeric values are JSON strings so big SYN caps (18dp) survive parsing.",
+  "_REHEARSAL": "PROVISIONAL — FORK/LOCAL REHEARSAL ONLY. NOT FOR MAINNET. provisional=true makes Deploy.s.sol fail-closed unless ALLOW_PROVISIONAL_DEPLOY=1 (fork only). This file exists to rehearse the V2b parameter set that REPLACES the live, unaudited V2a (0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48). Only THREE values differ from the live deploy-params.json: (1) provisional true, (2) addrCaps[0] 5000000 -> 25000000000 (Era I / Genesis per-address cap $5 -> $25,000; fixes the V2a $5 defect and unlocks high-conviction Genesis buys up to the $10k = 1,000,000 SYN package), (3) genesisOffset 2 -> 5 and v1MemberRoot re-snapshotted over V1 UNION V2a. Everything else (token addresses, treasury split, addrCaps[1..8], maxUsdcPerTx, reserveThroughSeat, eraCaps, initialRouter) is byte-identical to deploy-params.json.",
+  "_CANONICAL": "genesisOffset and v1MemberRoot are re-derived from a MERGED snapshot of V1 (0x0020Df30C127306f0F5B44E6a6E4368D2855842d, TokensPurchased) UNION V2a (0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48, Purchased) so EVERY current member is recognized by V2b and NO seat is re-issued. Pipeline: export-members-merged.mjs (REHEARSAL snapshotBlock=88162414, current head; V1 cutoff 88087947, V2a from 88095827) -> 5 distinct members in first-seen order [#1 0x244531C571966f90f4849e03a507543d90f9C721 (V1), #2 0x3488857b003104e2B08A1D198f8a23BFF28B0045 (V1), #3 0x03E99f09f0FC8D04864466bc37fd73Dd7ba3C6d0 (V2a), #4 0x3b1396B1ff61b79C742751CfB6f0f04eAc25Ec6a (V2a), #5 0x5734C19D1907857d1e54F95D12300e2fc7B0C2cD (V2a)] -> genesisOffset=5; gen-v1-root.mjs -> root 0xa1f2ed106c6d87372d99256765fcbad8c150441913d7bf0ea51908665f718c49; validate-snapshot.mjs OK (root re-derived, 5 proofs replayed, no duplicates). Cross-checked: distinct count == on-chain V2a memberCount (5) at the SAME block; every V2a firstSeat=true memberNumber equals its derived first-seen number; every firstSeat=false buyer has a strictly-earlier first-seen. snapshotBlock 88162414 is CURRENT HEAD — the FINAL (deploy) snapshot MUST be re-run pinned to the real V2a PAUSE block before any mainnet deploy.",
+  "_PLACEHOLDER_FIELDS": [],
+  "provisional": true,
+  "usdc": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+  "syn": "0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
+  "vault": "0x205DdC8921A4C60106930eE35e1F395c8D13f464",
+  "liquidity": "0xa9b072db8DcDbb470235204B69D37275d74a2e25",
+  "operations": "0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80",
+  "genesisOffset": "5",
+  "v1MemberRoot": "0xa1f2ed106c6d87372d99256765fcbad8c150441913d7bf0ea51908665f718c49",
+  "addrCaps": [
+    "25000000000",
+    "1000000000",
+    "2500000000",
+    "5000000000",
+    "10000000000",
+    "15000000000",
+    "20000000000",
+    "25000000000",
+    "25000000000"
+  ],
+  "maxUsdcPerTx": "25000000000",
+  "reserveThroughSeat": "10000",
+  "eraCaps": [
+    "0",
+    "416875000000000000000000",
+    "1166500000000000000000000",
+    "3333500000000000000000000",
+    "6750000000000000000000000",
+    "11250000000000000000000000",
+    "15000000000000000000000000",
+    "60000000000000000000000000",
+    "150000000000000000000000000"
+  ],
+  "initialRouter": "0x0000000000000000000000000000000000000000"
+}

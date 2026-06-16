@@ -281,3 +281,9 @@ id = "NIrUbIKPlh68dCDi19xNn"
 uri = "file://docs/audits/RPC_LIVE_DATA_REFERRAL_READINESS_AUDIT.md"
 type = "text"
 title = "RPC, Live-Data & Referral-Readiness Audit"
+
+[[outputs]]
+id = "HcRwNHYVofcId--TZTs5M"
+uri = "file://docs/audits/V2B_SNAPSHOT_PARAMETER_REHEARSAL_REPORT.md"
+type = "text"
+title = "V2b Snapshot + Parameter Rehearsal — Founder Report (F1–F14)"

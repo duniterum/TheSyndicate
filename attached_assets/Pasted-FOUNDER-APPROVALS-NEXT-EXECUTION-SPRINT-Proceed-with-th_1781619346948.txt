@@ -1,0 +1,241 @@
+FOUNDER APPROVALS + NEXT EXECUTION SPRINT
+
+Proceed with the approved direction below.
+
+Do not deploy mainnet yet.
+
+Do not change unrelated modules.
+
+Approved founder decisions
+
+Decision 1 — Public Chapters
+
+APPROVED: 9 public Chapters aligned 1:1 with the 9 internal economic Eras.
+
+Public language:
+
+* users see Chapter
+* Era remains internal economics/code language
+
+Use the proposed chapter model:
+
+I — Genesis
+II — First Thousand
+III — The Expansion
+IV — First Ten Thousand
+V — The Open Gate
+VI — The Commons
+VII — Hundred Thousand
+VIII — Quarter Million
+IX — First Million
+
+If you have a better name suggestion later, it can be frontend-only, but the 9-Chapter structure is approved.
+
+Decision 2 — Genesis Cap
+
+APPROVED: corrected Genesis cap = $25,000.
+
+Set addrCaps[0] = 25000000000 USDC 6dp.
+
+Reason:
+
+* $5 is the minimum entry, not the max wallet purchase.
+* high-conviction buyers must be able to buy larger packages.
+* one-seat identity remains separate.
+
+Decision 3 — Package Model
+
+APPROVED: packages are amount presets, not ranks.
+
+Use amount-led presets.
+
+Initial approved purchase presets:
+
+* $5
+* $25
+* $100
+* $500
+* $2,500
+* $10,000
+
+Do not use rank names as package names.
+
+Rank remains cumulative recognition only.
+
+Decision 4 — Chapter / Era Language
+
+APPROVED:
+
+* public UI says Chapter
+* internal code/contracts may use Era
+* do not show both publicly unless needed for technical verification
+
+Decision 5 — Funding
+
+APPROVED DIRECTION:
+Fund V2b enough to support the largest advertised Genesis package.
+
+Because $10,000 at Genesis rate needs 1,000,000 SYN, fund above reserve floor with at least enough sellable inventory for the advertised $10,000 package plus buffer.
+
+Before final mainnet deploy, calculate exact reserve floor + sellable inventory required.
+
+Critical correction
+
+Do NOT reuse V2a deploy-params.json as-is.
+
+Do NOT reuse:
+
+* genesisOffset = 2
+* V1-only member root
+
+V2b must snapshot:
+
+V1 + V2a members
+
+at the V2a pause block.
+
+The export/snapshot pipeline must be updated or verified to union V1 and V2a Purchased events, dedupe wallets, preserve first-seen order, and compute:
+
+* genesisOffset = distinct member count at pause
+* merged member root = V1 ∪ V2a members
+
+This is mandatory.
+
+Goal of next sprint
+
+Prepare V2b safely for rehearsal.
+
+This is not mainnet deployment yet.
+
+Sprint:
+
+V2B SNAPSHOT + PARAMETER REHEARSAL PREP
+
+A. Update / verify snapshot pipeline
+
+Current concern:
+export-members.mjs may scan V1 only.
+
+Fix or confirm pipeline can scan:
+
+* V1 sealed sale
+* V2a active sale
+* all Purchased / TokensPurchased events required by Holder Index
+
+Requirements:
+
+* union V1 + V2a members
+* dedupe wallets
+* preserve first-seen order
+* compute member count
+* compute merged member root
+* output a snapshot artifact
+* include tx/block provenance
+* include member numbers / first seen source
+* fail loudly if duplicate numbering risk exists
+
+Do not guess.
+
+B. Generate V2b deploy params for rehearsal
+
+Create a rehearsal deploy-params file, not mainnet final yet.
+
+Values:
+
+* same USDC
+* same SYN
+* same Vault / Liquidity / Operations
+* same router = 0x0
+* same maxUsdcPerTx = $25,000
+* same reserveThroughSeat = 10,000
+* same addrCaps[1..8]
+* same eraCaps
+* addrCaps[0] = 25000000000
+* genesisOffset = snapshot distinct member count
+* v1MemberRoot = merged V1+V2a member root
+
+Mark file clearly as V2b rehearsal / not yet deployed if needed.
+
+C. Re-verify V2a on-chain before snapshot
+
+Before generating the snapshot, re-read:
+
+* V2a address
+* paused status
+* current memberCount
+* currentEra
+* totalUsdcRaised
+* totalSynSold
+* maxUsdcPerAddressPerEra[1]
+* commissionRouter
+* SYN inventory
+* reserve floor / sellable inventory if available
+
+D. Fork rehearsal plan
+
+Prepare, and if approved by tools, run fork-mainnet rehearsal:
+
+1. pause V2a on fork
+2. snapshot V1 + V2a members
+3. compute genesisOffset
+4. compute merged member root
+5. deploy V2b on fork
+6. fund V2b
+7. verify params
+8. simulate $5 / $25 / $100 / $1,000 / $10,000 purchases
+9. simulate repeat purchase from same wallet
+10. confirm no second seat
+11. confirm cumulative recognition still works
+12. confirm 70/20/10 routing
+13. confirm CommissionRouter remains unset
+14. confirm old V2a sealed/history behavior
+15. confirm frontend config changes needed
+
+Do not run mainnet deployment.
+
+E. Parallel frontend cleanup plan
+
+Prepare but do not implement unless clearly safe:
+
+* packages become amount presets
+* packages no longer derive from ranks
+* remove false “self-service wallet checkout” perk
+* public UI uses Chapter, not Era
+* rank remains cumulative recognition
+* update tests that pin package=rank fusion
+* preserve live-era quote correctness
+* preserve cap guard
+
+F. Report
+
+Return:
+
+1. Snapshot pipeline status
+2. Files inspected/changed
+3. V1 + V2a member snapshot result
+4. genesisOffset result
+5. merged member root result
+6. V2b rehearsal deploy params
+7. On-chain V2a verification
+8. Fork rehearsal result if run
+9. Purchase simulations
+10. Repeat-purchase / no-second-seat verification
+11. Funding requirement
+12. Frontend changes required before public relaunch
+13. Remaining blockers before mainnet
+14. Rollback plan
+
+Important constraints
+
+* Do not deploy mainnet.
+* Do not change referral.
+* Do not change NFT / Archive.
+* Do not change journey.
+* Do not change wallet providers.
+* Do not introduce package/rank confusion again.
+* Do not assume docs are current if code says otherwise.
+* Expose conflicts before resolving them.
+
+Most important principle
+
+V2b must preserve all current members and unlock high-conviction buys without creating duplicate seats or another hidden inconsistency.
