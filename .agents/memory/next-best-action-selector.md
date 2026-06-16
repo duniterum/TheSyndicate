@@ -40,7 +40,21 @@ decided here; labels/destinations come from `protocol-actions.ts` at render time
   so a mis-authored journey constant can never leak a non-emittable id.
 - **Not rendered yet.** Nothing imports it → rollback = delete the 2 files, zero runtime impact.
 
-## Next sprint (wiring) gotcha
-Build ONE adapter that maps cockpit hooks → `NextActionContext` (`isConnected`, `identityLoading`,
-`isMember`, `cumulativeUsdc`, `ownsArtifacts`) so each surface doesn't re-interpret member/collector/
-loading state. Then refactor `CockpitNextMove` (and later Header/RouteFinalCTA) to consume the plan.
+## Adapter (DONE — Foundation V2) + next-consumer gotchas
+The canonical adapter now exists and `CockpitNextMove` is its FIRST and ONLY consumer:
+- **Pure builder** `buildNextActionContext(inputs)` in `src/lib/next-action-context.ts` (no React) is THE single
+  place that interprets the dimensions: `isMember = record != null`, `cumulativeUsdc = record?.cumulativeUsdc ?? 0`.
+  Hook `useNextActionContext({includeCollector?})` in `src/lib/use-next-action-context.ts` gathers reads and delegates.
+- **Collector is OPT-IN.** Default `includeCollector:false` passes an EMPTY id list to `useCockpitArchiveBalances`,
+  which keeps `useArchiveBalances` disabled (`enabled = address && ids.length>0`) → **NO new chain read**. A future
+  consumer that needs the collector overlay MUST pass `includeCollector:true` (and ideally already do an archive read).
+- **Adapter reads through the DEV cockpit fixture wrappers** (`useCockpitAccount/HolderIndex/ArchiveBalances`), so it
+  inherits the SSR mounted-gate + `?cockpit=` preview. **Why:** byte-identical behavior for the cockpit consumer.
+  Gap: a non-cockpit consumer (Header/RouteFinalCTA) may want raw hooks instead — split only when a 2nd consumer proves it.
+- **Equivalence map (frozen):** primary step `if(plan.state==="identity-loading") / else if(plan.state!=="member") /
+  else if(next) / else` == old `isConnected&&loading / !record / next / else`; `ctaLabel` from `plan.joinIntent`
+  (none→"Reading seat…", buy-more→"Buy More SYN", join→"Join The Syndicate"); Chronicle card uses `ctx.isMember`.
+- **CockpitNextMove's onward-move grids are editorial nav cards (NOT selector-driven)** — they have no matching
+  `ProtocolActionId` (Recognition→/ranks, Package→/join, Artifacts→#my-artifacts, Chronicle→#memory). Tier-name/delta
+  copy stays render-coupled (selector emits state, not labels). The consumer never renders `plan.actions`/`isCollector`.
+- Rollback = revert CockpitNextMove + delete the 2 lib files + the adapter test; selector untouched.

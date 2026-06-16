@@ -17,14 +17,12 @@
 
 import { type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  useCockpitAccount,
-  useCockpitHolderIndex,
-} from "@/lib/dev/cockpit-fixtures";
 import { StatusPill, type CanonicalStatus } from "@/components/syndicate/Primitives";
 import { rankForUsdc } from "@/lib/syndicate-config";
 import { nextSeatPackage } from "@/lib/package-catalog";
 import { currentEra, nextEra } from "@/lib/eras";
+import { useNextActionContext } from "@/lib/use-next-action-context";
+import { selectNextActions } from "@/lib/next-best-action";
 
 const fmtUsd = (n: number) =>
   `$${n.toLocaleString("en-US", { maximumFractionDigits: n % 1 === 0 ? 0 : 2 })}`;
@@ -38,12 +36,14 @@ type Move = {
 };
 
 export function CockpitNextMove() {
-  const { address, isConnected } = useCockpitAccount();
-  const idx = useCockpitHolderIndex();
-  const record = address ? idx.getByWallet(address) : undefined;
-  const loading = idx.isLoading;
+  // Journey decision (Identity State → Next Best Action) now comes from the
+  // canonical adapter + pure selector instead of inline ternaries. Tier names,
+  // copy and onward-card navigation stay here — the selector emits state, not
+  // labels — so the rendered surface is byte-identical to before.
+  const ctx = useNextActionContext();
+  const plan = selectNextActions(ctx);
 
-  const cumulativeUsdc = record?.cumulativeUsdc ?? 0;
+  const cumulativeUsdc = ctx.cumulativeUsdc;
   const { next } = rankForUsdc(cumulativeUsdc);
   const onwardPackage = nextSeatPackage(cumulativeUsdc);
   const delta = next ? Math.max(0, next.usdc - cumulativeUsdc) : 0;
@@ -52,13 +52,16 @@ export function CockpitNextMove() {
   const upcomingEra = nextEra(era);
 
   // ── Primary recommended step ───────────────────────────────────────────
+  // plan.state is the membership axis (visitor / identity-loading /
+  // connected-non-member / member). Within `member`, `next` (the further tier,
+  // if any) chooses Reach-vs-Buy-More — equivalent to !plan.atTopRank.
   let primary: { label: string; detail: string };
-  if (isConnected && loading) {
+  if (plan.state === "identity-loading") {
     primary = {
       label: "Reading your seat…",
       detail: "Loading your on-chain record.",
     };
-  } else if (!record) {
+  } else if (plan.state !== "member") {
     primary = {
       label: "Take your seat",
       detail: "Buy SYN with USDC and claim your permanent member number.",
@@ -104,10 +107,10 @@ export function CockpitNextMove() {
     },
     {
       label: "Chronicle",
-      detail: record
+      detail: ctx.isMember
         ? "Your block-anchored on-chain record"
         : "Your record begins at your first purchase",
-      status: record ? "LIVE" : "PENDING",
+      status: ctx.isMember ? "LIVE" : "PENDING",
       href: "#memory",
     },
   ];
@@ -142,11 +145,12 @@ export function CockpitNextMove() {
   ];
 
   // CTA label must never read "Join The Syndicate" for a connected member whose
-  // record is still loading (record is briefly undefined during idx.isLoading).
+  // record is still loading: joinIntent is "none" ONLY in the identity-loading
+  // state, "buy-more" for members, and "join" for visitors / non-members.
   const ctaLabel =
-    isConnected && loading
+    plan.joinIntent === "none"
       ? "Reading seat…"
-      : record
+      : plan.joinIntent === "buy-more"
         ? "Buy More SYN"
         : "Join The Syndicate";
 

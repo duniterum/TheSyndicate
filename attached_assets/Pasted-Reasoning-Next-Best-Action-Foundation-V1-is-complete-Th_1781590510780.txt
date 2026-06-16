@@ -1,0 +1,227 @@
+Reasoning
+
+Next Best Action Foundation V1 is complete.
+
+The protocol now has:
+
+Identity State
+→ Next Best Action selector
+→ Protocol Actions
+
+This is the first time the journey logic exists as a reusable system instead of being trapped inside UI components.
+
+Do not expand it aggressively.
+
+The next sprint should prove the architecture by migrating exactly one live consumer.
+
+Goal:
+
+Use the selector in one place, validate the architecture, and discover missing pieces before touching the rest of the site.
+
+Prompt
+
+Proceed with:
+
+NEXT BEST ACTION FOUNDATION V2
+
+Objective
+
+Create the canonical NextActionContext adapter and migrate exactly one live consumer.
+
+Do not wire the whole site.
+
+Do not redesign.
+
+Do not touch contracts.
+
+Do not touch referral.
+
+Do not touch wallet providers.
+
+Do not touch Sale V2 flow.
+
+Current architecture
+
+Identity State
+→ NextActionContext
+→ next-best-action selector
+→ protocol actions
+→ UI
+
+The missing piece is:
+
+NextActionContext
+
+The selector currently expects already-computed state.
+
+We need one canonical adapter that gathers that state from existing protocol sources.
+
+A. Create NextActionContext adapter
+
+Build the canonical adapter.
+
+Requirements:
+
+Pure protocol adapter.
+
+No UI.
+
+No rendering.
+
+No duplicate state interpretation.
+
+Purpose:
+
+Translate existing protocol state into the exact selector input.
+
+Sources should come from existing proven logic only:
+
+* holder index
+* member state
+* wallet state
+* rank state
+* archive ownership state
+* activity state if already available
+
+Do not invent new state.
+
+Do not add new chain reads.
+
+Do not duplicate existing calculations.
+
+The adapter should become the single source of truth for:
+
+visitor
+identity-loading
+connected-non-member
+member
+collector
+higher-rank member
+
+B. Migrate exactly one consumer
+
+Consumer:
+
+CockpitNextMove
+
+Reason:
+
+It already contains the hardcoded journey logic.
+
+Replace its internal decision tree with:
+
+NextActionContext
+→ next-best-action selector
+→ existing rendering
+
+Rules:
+
+Keep visible behavior identical.
+
+Keep labels identical.
+
+Keep destinations identical.
+
+Keep current copy identical.
+
+Do not redesign.
+
+Do not improve styling.
+
+Do not add actions.
+
+Do not remove actions.
+
+The goal is architectural migration only.
+
+C. Preserve current journey
+
+The rendered journey should remain functionally identical.
+
+Current logic is the source of truth.
+
+The selector should prove that it can reproduce it.
+
+If exact reproduction is impossible, stop and report.
+
+Do not silently change behavior.
+
+D. Do not touch other consumers
+
+Do NOT migrate:
+
+* RouteFinalCTA
+* HomeProgressionTeaser
+* Header
+* MobileJoinBar
+* Join page
+* Archive onboarding
+* NFT pages
+* SuccessReceipt
+
+yet.
+
+One consumer only.
+
+E. Discover architecture gaps
+
+While migrating CockpitNextMove, report:
+
+* state the selector still cannot express
+* duplicated logic remaining
+* places where labels are coupled to state
+* places where actions are coupled to rendering
+* any missing protocol action ids
+* any mismatch between selector output and current UI assumptions
+
+Do not solve them yet.
+
+Only report.
+
+F. Validation
+
+Run:
+
+* next-best-action tests
+* wording guard
+* cold Vite compile
+* architect review
+
+Manual verification:
+
+Compare old vs new CockpitNextMove behavior.
+
+Confirm:
+
+* same actions
+* same order
+* same destinations
+* same labels
+* same eligibility
+
+No visible regression.
+
+G. Report
+
+Return:
+
+1. Files created
+2. Files modified
+3. Adapter architecture
+4. State sources used
+5. Consumer migrated
+6. Behavior preserved
+7. Gaps discovered
+8. Remaining duplicated guidance systems
+9. Recommended next consumer after CockpitNextMove
+10. Tests run
+11. Architect review
+12. Rollback plan
+
+Important principle
+
+Do not expand the system faster than it is proven.
+
+We are validating the architecture one live consumer at a time.
+
+The goal is to remove duplicated journey logic without changing what members see.
