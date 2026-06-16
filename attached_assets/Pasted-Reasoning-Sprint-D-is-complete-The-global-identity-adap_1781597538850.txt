@@ -1,0 +1,296 @@
+Reasoning
+
+Sprint D is complete.
+
+The global identity adapter now lets Header, MobileJoinBar, WalletDropdown, and Cockpit speak the same user-state language:
+
+visitor
+connected non-member
+member
+loading / unknown
+
+This unlocks the next logical sprint:
+
+Navigation / Information Architecture Truth Pass.
+
+Do not redesign yet.
+
+The problem is not visual polish yet. The problem is that the navigation must reflect the real product spine:
+
+Identity
+Membership
+Artifacts
+Verification
+Activity
+Story / Chronicle
+Transparency
+
+We must resolve the known IA issues before CTA architecture, NFT redesign, referral, or full-site redesign.
+
+Prompt
+
+Proceed with:
+
+NAVIGATION / INFORMATION ARCHITECTURE TRUTH PASS V1
+
+Goal
+
+Make the global navigation conceptually truthful and aligned with the current product spine.
+
+This is a planning + minimal-safe-implementation sprint.
+
+Inspect first. Then implement only low-risk label/placement changes if they are clearly safe.
+
+Do not redesign.
+
+Do not touch contracts.
+
+Do not touch sale/mint logic.
+
+Do not touch referral.
+
+Do not touch wallet providers.
+
+Do not add fake modules.
+
+Current truths
+
+Preserve:
+
+* Global identity adapter is live.
+* Visitor / connected non-member / member states are now globally understood.
+* User can connect before becoming a member.
+* User becomes a Syndicate Member only by buying through Sale V2 and receiving SYN.
+* Sale V2 is live-but-unaudited / early.
+* V1 is sealed/history.
+* CommissionRouter is unset / referral pending.
+* Archive1155 is artifacts only.
+* SeatRecord721 is future.
+* Web2 + Web3 onboarding is future.
+* Current wallet remains injected/wagmi.
+
+A. Inspect current navigation
+
+Map current navigation exactly:
+
+* Header primary nav
+* More menu
+* Mobile drawer
+* MobileJoinBar
+* Wallet dropdown
+* Footer links
+* IdentityRibbon links
+
+For each item:
+
+* label
+* route / external target
+* status: LIVE / PREVIEW / PENDING / SEALED
+* whether it is visitor-critical
+* whether it is member-critical
+* whether it is story/trust-critical
+* whether it creates confusion
+
+B. Resolve known IA issues
+
+Evaluate and recommend:
+
+1. NFT / Archive conflict
+
+Current issue:
+“NFT / Archive” routes to `/nft`, while “Archive” routes to `/archive`.
+
+Decide the best canon:
+
+Possible model:
+
+* “Artifacts” → `/nft` or the mint/ownership surface
+* “Archive” → `/archive` as the collective museum / protocol memory surface
+* “NFT” becomes explanatory language, not the main nav label
+
+Do not implement until you confirm exact route roles.
+
+2. My Syndicate visibility
+
+Now that global identity exists, decide where “My Syndicate” belongs:
+
+* primary nav for members?
+* wallet dropdown for connected users?
+* mobile bar for members?
+* More menu?
+* always visible or state-aware?
+
+Preserve current behavior unless change is clearly safe.
+
+3. Chronicle / Institutional Register / Knowledge Map discoverability
+
+These are core story/protocol-memory layers but not clearly discoverable.
+
+Decide whether they should appear under:
+
+* Record
+* Chronicle
+* Story
+* Protocol Memory
+* More menu group
+
+Do not promote them to primary nav unless truth/status supports it.
+
+4. Vault truth posture
+
+If `/vault` still has quarantined mock/partial data, decide whether it deserves primary nav.
+
+Options:
+
+* keep primary if fully truth-safe
+* demote to More
+* relabel as preview/partial
+* keep but add status clarity
+
+Do not hide real trust data, but do not over-promote partial/mock surfaces.
+
+5. Referral preview
+
+Referral is pending and CommissionRouter unset.
+
+Decide whether `/referral` should remain in More as PREVIEW, or be hidden/demoted until contract activation.
+
+Do not make referral feel live.
+
+6. Token / Liquidity
+
+Preserve:
+
+* Token page as info/trust route.
+* Liquidity page as info/trust route.
+* Trade/Add Liquidity direct external actions remain separate from nav.
+
+C. Recommend final nav IA
+
+Return a proposed final nav structure for:
+
+1. Visitor desktop
+2. Connected non-member desktop
+3. Member desktop
+4. Mobile visitor
+5. Mobile member
+6. Wallet dropdown
+7. More menu
+
+Use the current product spine:
+
+* Activity / proof
+* Artifacts / collection
+* Members / social proof
+* Token / liquidity trust
+* Verify / transparency
+* My Syndicate / cockpit
+* Chronicle / record / story
+* Join / Become Member / Buy More SYN
+
+D. Minimal implementation scope
+
+If safe, implement only low-risk navigation truth changes.
+
+Examples of allowed changes:
+
+* Rename confusing nav labels without changing routes.
+* Move an item from primary to More if truth/status demands it.
+* Add My Syndicate visibility where the global identity adapter already makes it safe.
+* Add clear PREVIEW/PENDING wording only if needed and already canon.
+* Remove duplicate/confusing labels.
+
+Examples of NOT allowed changes:
+
+* No redesign.
+* No route rewrites.
+* No new pages.
+* No contract changes.
+* No referral activation.
+* No vault data changes.
+* No NFT page redesign yet.
+* No Chronicle redesign.
+* No fake statuses.
+* No invented metrics.
+* No hidden registration flow.
+
+E. Stop conditions
+
+Stop and report before editing if:
+
+* a nav change would alter user flow significantly
+* a route role is unclear
+* `/vault` truth status cannot be determined
+* `/nft` vs `/archive` roles conflict in code
+* story-layer status is unclear
+* a change would require visual redesign
+* a change would affect sale/mint/referral logic
+
+F. Validation
+
+Run feasible checks:
+
+* wording guard
+* nav/route tests if any
+* protocol-actions guard
+* global identity tests
+* cold Vite compile
+* render checks:
+
+  * /
+  * /join
+  * /my-syndicate
+  * /nft
+  * /archive
+  * /chronicle
+  * /institutional-register
+  * /knowledge-map
+  * /vault
+  * /token
+  * /liquidity
+  * /transparency
+  * /referral
+
+Manual checks:
+
+* no duplicate NFT/Archive confusion
+* My Syndicate behavior correct by state
+* referral not presented as live
+* Vault not over-presented if partial/mock
+* Chronicle/story layer discoverable but not overpromised
+* Join/Become/Buy More SYN still state-aware
+* no forbidden language introduced
+
+G. Report
+
+Return:
+
+1. Current nav map
+2. IA issues found
+3. Decisions made
+4. Files changed
+5. Labels changed
+6. Items moved / not moved
+7. Status of NFT vs Archive naming
+8. Status of Chronicle/Register discoverability
+9. Status of Vault truth posture
+10. Tests/checks run
+11. Render checks
+12. Remaining IA debt
+13. Recommended next sprint
+14. Rollback plan
+
+Most important principle
+
+The navigation must tell the truth of the protocol.
+
+Do not optimize for decoration.
+
+Optimize for:
+
+clarity
+trust
+conversion
+member identity
+story discoverability
+future scalability

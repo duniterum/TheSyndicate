@@ -31,8 +31,10 @@ const ENTRIES: SitemapEntry[] = [
   { path: "/members",      changefreq: "weekly",  priority: "0.6" },
   { path: "/founders",     changefreq: "weekly",  priority: "0.6" },
   // /episodes retired — now 302s to /chapters; excluded from sitemap.
-  // /nft is the public-facing NFT Archive route (canonical).
-  // /archive and /nfts render the same experience and canonicalize to /nft.
+  // /nft is the public-facing mint/ownership route for The First Signal (canonical SEO route).
+  // /nfts is an ALIAS of /nft (renders the same NftPage); canonicalizes to /nft.
+  // /archive is a DISTINCT museum / protocol-memory route (renders ArchivePage), but
+  // canonicalizes to /nft for SEO consolidation.
   { path: "/nft",          changefreq: "weekly",  priority: "0.8" },
   { path: "/archive",      changefreq: "weekly",  priority: "0.6" },
   { path: "/my-syndicate", changefreq: "weekly",  priority: "0.6" },

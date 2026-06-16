@@ -16,7 +16,7 @@ type Group = { label: string; items: Item[] };
 const PRIMARY: Item[] = [
   { label: "Activity", to: "/activity", hint: "Onchain events stream" },
   { label: "Vault", to: "/vault", hint: "70% routing destination" },
-  { label: "NFT / Archive", to: "/nft", hint: "The First Signal · Chapter I mint open" },
+  { label: "Artifacts", to: "/nft", hint: "First Signal & Patron Seal mints" },
   { label: "Verify", to: "/transparency", hint: "Verify every claim" },
   { label: "Members", to: "/members", hint: "Who is joining" },
   { label: "Token (SYN)", to: "/token", hint: "SYN contract & spec" },
@@ -26,7 +26,7 @@ const GROUPS: Group[] = [
   {
     label: "More",
     items: [
-      { label: "Archive", to: "/archive", hint: "Collector artifacts & seals" },
+      { label: "Archive", to: "/archive", hint: "Museum · every Artifact & seal" },
       { label: "Roadmap", to: "/roadmap", hint: "Live · Next · Pending · Future" },
       { label: "Referral · Preview", to: "/referral", hint: "Simulated future model" },
       { label: "Tokenomics", to: "/tokenomics", hint: "Allocation & supply" },

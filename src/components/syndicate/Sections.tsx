@@ -1121,6 +1121,14 @@ export function Footer() {
       ],
     },
     {
+      label: "Record",
+      links: [
+        { label: "Chronicle", href: "/chronicle" },
+        { label: "Institutional Register", href: "/institutional-register" },
+        { label: "Knowledge Map", href: "/knowledge-map" },
+      ],
+    },
+    {
       label: "Legal",
       links: [
         { label: "Risk Notice", href: "/risk" },
@@ -1155,7 +1163,7 @@ export function Footer() {
       </div>
 
       <div className="mx-auto max-w-7xl px-5 md:px-8 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-8 mb-12">
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
               <BrandMark size="sm" />
