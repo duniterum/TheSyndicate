@@ -1,0 +1,348 @@
+Reasoning
+
+We have enough information now.
+
+Do not jump to CTA Architecture.
+Do not jump to wallet providers.
+Do not jump to redesign.
+
+The codebase already contains the protocol journey logic, but it is trapped inside UI components and duplicated across surfaces.
+
+The next safest step is to extract the decision logic into a pure, reusable foundation.
+
+This creates the backbone for:
+
+* CTA architecture
+* dashboard guidance
+* onboarding
+* future Web2 + Web3 onboarding
+* future referral flows
+* future marketplace flows
+* future SeatRecord721
+* future redesign
+
+without changing any working behavior.
+
+This is a foundation sprint only.
+
+Prompt
+
+Proceed with the next implementation sprint:
+
+NEXT BEST ACTION FOUNDATION V1
+
+Goal
+
+Extract the existing journey/progression logic into a reusable protocol layer without changing any visible behavior.
+
+Important:
+
+This is not a UI sprint.
+This is not a redesign sprint.
+This is not a wallet-provider sprint.
+This is not a referral sprint.
+
+We are only extracting and formalizing existing decision logic.
+
+Current truths
+
+Preserve all existing truths:
+
+* Sale V2 is deployed/funded/active and used by the frontend, but UNAUDITED / early.
+* Sale V1 is sealed/closed/history.
+* CommissionRouter is unset.
+* Referral remains pending.
+* Archive1155 is artifacts only.
+* SeatRecord721 is future.
+* Current wallet flow remains injected/wagmi.
+* No Web2 login yet.
+* No wallet provider changes.
+* No route changes.
+* No contract changes.
+* No address changes.
+* No CTA behavior changes.
+* No visible UI changes.
+
+Important architecture decision
+
+The protocol journey backbone is:
+
+Identity State
+→ Next Best Action
+→ Protocol Actions
+→ CTA/UI
+
+NOT:
+
+Protocol Actions
+→ CTA
+→ later guidance
+
+The selector must become the reusable source of journey logic.
+
+A. Build a pure selector
+
+Create:
+
+src/lib/next-best-action.ts
+
+Requirements:
+
+* Pure TypeScript.
+* No React.
+* No hooks.
+* No chain reads.
+* No JSX.
+* No rendering.
+* No side effects.
+
+Input:
+
+A typed state object built from already-existing protocol state.
+
+Output:
+
+Ordered protocol action ids.
+
+The selector should only consume already-computed state.
+
+Never fetch data itself.
+
+B. Use existing proven logic
+
+Do not invent a new journey.
+
+Start from the existing logic inside:
+
+* CockpitNextMove
+* CockpitProgression
+* current member progression logic
+* rank progression logic
+* holder-index identity logic
+
+The goal is extraction and normalization.
+
+Not redesign.
+
+Not reinvention.
+
+C. Identity state model
+
+Implement only states that are reliably detectable today.
+
+Visitor
+
+* wallet disconnected
+
+Connected non-member
+
+* connected
+* no holder-index member record
+
+Member
+
+* holder-index member exists
+
+Collector
+
+* owns Archive1155 artifact(s)
+
+Higher-rank member
+
+* deterministic rank state
+
+Do not implement:
+
+* liquidity participant
+* referrer
+* claim eligible
+* campaign participant
+* merch participant
+
+Those remain future states until reliable protocol data exists.
+
+D. Output rules
+
+The selector may only emit actions that are:
+
+LIVE
+or
+LIVE-UNAUDITED
+
+Never emit:
+
+PENDING
+PREVIEW
+SEALED
+
+Meaning:
+
+No referral actions.
+No campaign rewards.
+No merch rewards.
+No SeatRecord721.
+No marketplace actions.
+
+The selector must respect protocol-actions.ts.
+
+Output must always be a subset of live registry actions.
+
+E. Example journey
+
+Visitor
+
+Connect
+(identity layer)
+
+↓
+
+Join The Syndicate
+
+Connected non-member
+
+Join The Syndicate
+
+↓
+
+My Syndicate
+
+↓
+
+Verify
+
+Member
+
+My Syndicate
+
+↓
+
+Buy More SYN
+
+↓
+
+Mint First Signal
+
+↓
+
+Verify
+
+↓
+
+Add Liquidity
+
+Collector
+
+My Archive
+
+↓
+
+Next available artifact
+
+↓
+
+Chronicle context
+
+Do not hardcode text labels into the selector.
+
+The selector returns action ids only.
+
+Labels come from protocol-actions.ts.
+
+F. Tests
+
+Create:
+
+src/lib/**tests**/next-best-action.test.ts
+
+Test:
+
+Visitor
+
+Connected non-member
+
+Member
+
+Collector
+
+Higher-rank member
+
+Assertions:
+
+* output only contains live actions
+* output never contains pending actions
+* output never contains sealed actions
+* output subset of registry actions
+* non-member never gets Buy More SYN
+* member never gets Become a Member
+* collector receives collector path
+* output ordering deterministic
+
+G. Do not render yet
+
+Critical:
+
+Do NOT connect this selector to:
+
+* CockpitNextMove
+* RouteFinalCTA
+* Header
+* Homepage
+* Archive
+* Join page
+
+yet.
+
+This sprint creates the foundation only.
+
+Nothing should visibly change.
+
+H. Discover existing guidance debt
+
+While implementing, report:
+
+* duplicated next-action systems
+* duplicated progression systems
+* orphan guidance components
+* guidance components that should later consume the selector
+* anything already superseded
+
+But do not delete anything yet.
+
+I. Validation
+
+Run:
+
+* isolated selector tests
+* wording guard
+* cold Vite compile
+* architect review
+
+If environment prevents full tsc/vitest, state clearly.
+
+Do not claim tests passed if they did not run.
+
+J. Report
+
+Return:
+
+1. Files created
+2. Files modified
+3. Selector architecture
+4. Identity states implemented
+5. Actions emitted per state
+6. Tests added
+7. Validation results
+8. Existing duplicated guidance surfaces
+9. Future consumers of selector
+10. Risks
+11. Rollback plan
+
+Most important principle
+
+Do not touch anything that already works.
+
+We are extracting the protocol's existing journey intelligence into a reusable foundation.
+
+The protocol already knows what users should do next.
+
+This sprint simply makes that knowledge reusable.
