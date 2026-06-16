@@ -1,0 +1,267 @@
+Reasoning
+
+We discovered that the next problem is bigger than CTA labels.
+
+The Syndicate already has many action and guidance fragments:
+
+* wallet gate
+* protocol action registry
+* guard layer
+* cockpit next move
+* cockpit progression
+* cockpit memory
+* since-you-were-away surfaces
+* route final CTAs
+* homepage progression teaser
+* rank/milestone prompts
+* archive onboarding
+* member/non-member states
+
+The risk is that we wire CTAs before understanding the user journey system.
+
+The Syndicate is not only a sale page. It is a membership, identity, story, artifact, and progression protocol.
+
+So before implementing CTA Architecture V1, check whether the correct next backbone is:
+
+Identity State
+→ Next Best Action
+→ Protocol Actions
+→ CTAs
+
+rather than:
+
+Protocol Actions
+→ CTAs
+→ later guidance
+
+This is a focused architecture-fit task, not a broad audit.
+
+Prompt
+
+Pause implementation.
+
+Use the current codebase, Full Protocol View, and existing docs.
+
+Do not run a broad audit.
+
+Do not implement yet unless the answer is obvious and very low-risk; first report your recommendation.
+
+Goal:
+Decide the best next architecture move for The Syndicate without forgetting existing modules or creating technical debt.
+
+Important context:
+
+We confirmed:
+
+* `joinMembership` should stay as the internal action id.
+* “Become a Syndicate Member” is a label/state-specific CTA, not necessarily a new id.
+* Enter/connect/login is NOT membership.
+* A user may connect/login and view My Syndicate before becoming a member.
+* A user becomes a Syndicate Member only by buying membership through active Sale V2 and receiving SYN.
+* `nextBestAction` is not itself an action; it is a selector/engine over protocol actions.
+* Current guidance is fragmented across several components.
+* CTA registry wiring may be premature if guidance/state logic is not unified.
+
+Current truths to preserve:
+
+* Sale V2 is deployed/funded/active and used by the frontend, but UNAUDITED / early.
+* Sale V1 is sealed/closed/history.
+* CommissionRouter is unset; referral remains pending.
+* Archive1155 is artifacts only.
+* SeatRecord721 is future.
+* Web2 + Web3 onboarding is future, not implemented now.
+* Current wallet flow remains injected/wagmi.
+* Referral claims / campaign rewards / merch eligibility are future PENDING concepts only.
+* No fake live actions.
+* No new promises.
+* No extra steps before purchase.
+* No friction added.
+
+Question to answer:
+
+Given the actual codebase, should the next sprint be:
+
+Option A — Canonical CTA Architecture V1
+Add `enterSyndicate`, settle canonical labels/destinations, update guard conformance, then wire CTAs later.
+
+Option B — Next Best Action Foundation V1
+Create a pure selector/state model that maps user state to the best next action, then let CTA architecture consume it later.
+
+Option C — Hybrid
+Add only the minimum registry truth needed now, but start the Next Best Action foundation before wiring CTAs.
+
+Do not guess. Check the current system and recommend the best fit.
+
+A. Existing system check
+
+Map what already exists for guidance/progression:
+
+* CockpitNextMove
+* CockpitProgression
+* CockpitMemory
+* SinceLastVisitStory
+* SinceYourLastVisit
+* WhatChangedForYou
+* RouteFinalCTA
+* HomeProgressionTeaser
+* MilestoneApproachingTile
+* ArchiveOnboardingPanel
+* JoinPackages / SeatPackageCard
+* any other “what next” or journey component
+
+For each:
+
+* LIVE / PARTIAL / PREVIEW / PENDING / ORPHAN
+* rendered where
+* input data used
+* whether it is hardcoded or data-driven
+* whether it overlaps with another component
+* whether it should be preserved, merged, or retired later
+
+B. Identity state model
+
+Recommend the minimum canonical user states needed for the next architecture.
+
+Candidate states:
+
+* visitor
+* connected non-member
+* member
+* collector
+* higher-rank member
+* liquidity participant
+* future referrer
+* future claim-eligible user
+
+For each state:
+
+* how current code can detect it
+* whether detection is reliable today
+* what action should be recommended first
+* what action must not be shown
+* what data is missing, if any
+
+C. Next Best Action concept
+
+If you recommend a Next Best Action foundation, define it as:
+
+* pure selector, no React, no chain reads
+* input: user/protocol state already computed elsewhere
+* output: ordered protocol action ids
+* never emits pending/sealed actions
+* never invents eligibility
+* respects LIVE / PREVIEW / PENDING / SEALED
+* uses protocol-actions.ts for labels/targets/status
+
+Example target:
+
+Visitor:
+connect / view context
+→ become member
+
+Connected non-member:
+become member
+→ go to My Syndicate
+→ verify
+
+Member:
+go to My Syndicate
+→ buy more SYN / next rank
+→ mint available artifact
+→ verify
+→ add liquidity
+
+Collector:
+view archive
+→ mint next available artifact if live
+→ read Chronicle context
+
+Future referral:
+only if CommissionRouter active later
+→ automatic referral path
+→ claim only if escrow/campaign/merch module actually exists
+
+D. CTA architecture relationship
+
+Explain how CTA architecture should consume the Next Best Action system later.
+
+Clarify:
+
+* What remains in protocol-actions.ts
+* What belongs in next-best-action selector
+* What belongs in UI components
+* What belongs in wallet/identity layer
+* What must not be mixed
+
+E. Recommendation
+
+Choose:
+
+Option A, B, or C.
+
+Justify based on:
+
+* least risk
+* least technical debt
+* lowest user friction
+* fastest path to promotion
+* future Web2 + Web3 onboarding compatibility
+* preserving current working sale/mint flows
+
+F. If implementation is recommended, propose the smallest safe sprint
+
+If you recommend implementation, propose only one small sprint.
+
+It must be:
+
+* non-rendering or minimal rendering
+* testable
+* rollbackable
+* no behavior drift
+* no UI redesign
+* no contract changes
+* no referral activation
+* no wallet provider installation
+
+Possible smallest sprint:
+
+* add `next-best-action.ts` as pure selector
+* define typed input/output only
+* write guard tests
+* do not render it yet
+
+or another better fit if you see one.
+
+G. Stop conditions
+
+Stop if:
+
+* implementing would change existing CTA behavior
+* user flow would gain an extra step
+* purchase/mint flows would be touched
+* pending actions would become visible
+* data sources are unreliable
+* the current system already has a better equivalent
+
+Return:
+
+1. Recommendation: A / B / C
+2. Why
+3. Existing guidance map
+4. Minimum identity state model
+5. Proposed Next Best Action architecture, if applicable
+6. Relationship to protocol-actions.ts
+7. Smallest safe sprint
+8. Files likely touched
+9. What must not be touched
+10. Rollback plan
+
+Most important principle:
+
+Do not make the protocol more complicated for the user.
+
+The user can enter/connect before membership.
+
+But the user becomes a Syndicate Member only by buying membership through Sale V2.
+
+Everything else should guide them to the best next action without adding friction.
