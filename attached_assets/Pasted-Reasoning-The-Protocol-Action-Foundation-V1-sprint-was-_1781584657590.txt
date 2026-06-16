@@ -1,0 +1,250 @@
+Reasoning
+
+The Protocol Action Foundation V1 sprint was good: it centralized WalletGate and created the first shared primitives without changing contracts, economics, referral, or redesign.
+
+Now we need to continue carefully. The goal is not to rewrite the app. The goal is to progressively wire the new primitives into the current working flows, reduce duplication, and prepare for Web2 + Web3 onboarding later.
+
+Do not jump to Privy/Dynamic/thirdweb yet. Do not redesign. Do not touch referral contracts. Do not break the current working Sale V2 and NFT mint flows.
+
+Work as sequenced micro-sprints. After each sprint, stop and report before continuing if risk increases.
+
+Prompt
+
+Continue The Syndicate action architecture work in safe, ordered micro-sprints.
+
+Current truth:
+
+* Sale V2 is deployed/funded/active and used by the frontend, but UNAUDITED / early.
+* Sale V1 is sealed/closed/history.
+* CommissionRouter is unset; referral remains pending.
+* Archive1155 is artifacts only.
+* ID 1 First Signal and ID 3 Patron Seal mint flows exist.
+* SeatRecord721 is future.
+* Web2 + Web3 wallet onboarding is future.
+* Current live wallet flow is injected/wagmi only.
+* Protocol Action Foundation V1 shipped:
+
+  * useWalletGate.ts
+  * WalletGate.tsx
+  * transaction-state.ts
+  * protocol-actions.ts
+  * SuccessReceipt.tsx
+  * LivePurchase / MintFirstSignal / MintPatronSeal migrated to useWalletGate()
+
+Goal:
+
+Finish the action foundation enough that the site has one clean, scalable action architecture before wallet-provider selection, full redesign, referral, or promotion.
+
+Rules:
+
+* No contract changes.
+* No address changes.
+* No referral activation.
+* No CommissionRouter changes.
+* No Privy/Dynamic/thirdweb implementation yet.
+* No Web2 login implementation yet.
+* No redesign.
+* No economics changes.
+* No invented data, claims, rewards, or statuses.
+* Do not merge risky flows in one large refactor.
+* Preserve all current routes and working behavior.
+* If a step is risky, stop and report before implementing.
+
+Micro-sprint 1 — Action map truth check
+
+Before coding, quickly map current action usage from the codebase.
+
+Return only a concise table:
+
+* action id
+* current files/components
+* status: LIVE / PREVIEW / PENDING / SEALED
+* whether it uses useWalletGate
+* whether it uses SuccessReceipt
+* whether it uses protocol-actions.ts
+* duplicated logic remaining
+* risk level
+
+Include at least:
+
+* joinMembership
+* mintFirstSignal
+* mintPatronSeal
+* verifyProtocol
+* tradeSyn
+* addLiquidity
+* openMySyndicate
+* future claimEscrowedCommission
+* future claimCampaignReward
+* future claimMerchEligibility
+* future mintSeatRecord721
+* future marketplaceAction
+
+Do not implement anything in this step.
+
+Micro-sprint 2 — Wire protocol action registry only where safe
+
+If Micro-sprint 1 confirms it is safe:
+
+* Use protocol-actions.ts as the canonical source for action metadata where it does not change behavior.
+* Do not change route destinations.
+* Do not change labels unless they already come from existing constants.
+* Do not make pending actions visible as live CTAs.
+* Do not add fake buttons.
+* Keep future claim/reward/merch actions PENDING and non-rendered unless currently already shown as pending.
+
+Target:
+Start with low-risk navigation actions only:
+
+* openMySyndicate
+* verifyProtocol
+* tradeSyn
+* addLiquidity
+
+Do not touch approve/buy or approve/mint state machines in this micro-sprint.
+
+Micro-sprint 3 — SuccessReceipt adoption
+
+If safe after Micro-sprint 2:
+
+Adopt SuccessReceipt only where it can preserve existing behavior and copy.
+
+Candidate flows:
+
+* membership purchase success
+* First Signal mint success
+* Patron Seal mint success
+
+Rules:
+
+* Keep the same transaction hash / explorer link behavior.
+* Keep same next destination behavior.
+* Do not invent member number if not already known.
+* Do not invent NFT ownership if not confirmed.
+* Do not change contract logic.
+* If existing success UI contains important doctrine/copy, preserve it.
+
+If SuccessReceipt cannot be adopted without changing visible behavior, stop and explain instead of forcing it.
+
+Micro-sprint 4 — CTA consistency check and minimal cleanup
+
+After SuccessReceipt:
+
+Check whether CTA labels and destinations are now consistent.
+
+Look for:
+
+* hardcoded Join / Buy Membership labels
+* hardcoded href="/join"
+* hardcoded href="/my-syndicate"
+* duplicated wallet CTA wording
+* outdated Sale V1/V2 wording
+* MetaMask-only wording
+* package/buy labels that do not route to the canonical join flow
+
+Do not redesign.
+
+Only apply minimal consistency cleanup if:
+
+* behavior stays identical
+* route stays identical
+* wording is already canon
+* no doctrine changes are required
+
+Otherwise report the patchwork and wait.
+
+Micro-sprint 5 — Package / membership purchase flow planning only
+
+Do not implement yet.
+
+After the action foundation is cleaner, propose the smallest safe plan for a canonical MembershipPurchaseFlow / PackageSelector.
+
+The future target flow is:
+
+Select package
+→ connect/login
+→ switch Avalanche if needed
+→ preflight AVAX gas + USDC balance + allowance
+→ approve if needed
+→ buy
+→ receipt
+→ My Syndicate
+
+Important:
+This is for both future Web3 and Web2 users.
+
+Web3:
+MetaMask / Rabby / Coinbase / WalletConnect later.
+
+Web2:
+Google / email / passkey / embedded wallet later.
+
+But do not implement Web2 + Web3 onboarding yet. Only keep the architecture compatible.
+
+Micro-sprint 6 — Stop before wallet-provider decision
+
+Do not choose or install Privy/Dynamic/thirdweb in this sprint.
+
+After the current action system is cleaner, return a separate recommendation later for:
+
+* Privy
+* Dynamic
+* thirdweb
+* injected-only continuation
+* WalletConnect
+* embedded wallets
+* session persistence
+* mobile behavior
+* funding/on-ramp problem
+* gas sponsorship possibility
+
+Validation after each coding micro-sprint:
+
+Run feasible checks:
+
+* clean Vite compile / cold restart
+* wording guard
+* targeted render checks:
+
+  * /
+  * /join
+  * /nft
+  * /archive
+  * /my-syndicate
+* if tsc/vitest hangs due to environment, state clearly and do not pretend they passed
+* architect review after final implementation step
+
+Manual behavior checks:
+
+* disconnected user still sees correct wallet action
+* wrong-network user still gets Avalanche switch
+* connected user can still reach existing buy/mint logic
+* no pending/future action appears live
+* no fake reward/claim/merch action appears live
+* no MetaMask-only wording where generic wallet wording is required
+* no forbidden language introduced
+
+Final report format:
+
+1. Micro-sprints completed
+2. Files changed
+3. What is now centralized
+4. What remains duplicated
+5. What behavior changed
+6. What behavior stayed identical
+7. Tests/checks run
+8. Blocked checks, if any
+9. Architect review result
+10. Rollback plan
+11. Recommended next step
+
+Most important principle:
+
+Do not make a beautiful abstraction by breaking a working sale.
+
+The goal is progressive hardening:
+working flows first,
+shared primitives second,
+canonical action system third,
+wallet-provider decision later,
+redesign after the product spine is clean.
