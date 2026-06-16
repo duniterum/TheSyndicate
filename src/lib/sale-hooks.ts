@@ -233,6 +233,49 @@ export function useUserBalances() {
 }
 
 /**
+ * Connected wallet's LIVE anti-whale headroom for the ACTIVE V2 era. Reads the
+ * per-era per-address cumulative USDC cap (`maxUsdcPerAddressPerEra[era]`) and
+ * how much this wallet has already contributed in that era
+ * (`usdcByAddressEra[wallet][era]`). The buy UI uses this to block amounts that
+ * are GUARANTEED to revert on-chain (`AddressEraCapExceeded`) before any funds
+ * move — no burned gas. Read LIVE, so a future corrected redeploy with a higher
+ * cap needs zero UI changes. V2-only; all-undefined on V1 (no per-era cap).
+ */
+export function useWalletEraCap(era: number | undefined, address?: `0x${string}`) {
+  const enabled = ACTIVE_SALE_IS_V2 && era !== undefined && Boolean(address);
+  const q = useReadContracts({
+    allowFailure: true,
+    contracts: enabled
+      ? [
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "maxUsdcPerAddressPerEra", args: [era as number] },
+          { address: ACTIVE_SALE, abi: SALE_V2_ABI, functionName: "usdcByAddressEra", args: [address as `0x${string}`, era as number] },
+        ]
+      : [],
+    query: { enabled, refetchInterval: 60_000, staleTime: 30_000 },
+  });
+  const d = q.data ?? [];
+  const capRaw = okResult<bigint>(d[0]);
+  const spentRaw = okResult<bigint>(d[1]);
+  const remainingRaw =
+    capRaw !== undefined && spentRaw !== undefined
+      ? capRaw > spentRaw
+        ? capRaw - spentRaw
+        : 0n
+      : undefined;
+  return {
+    isLoading: q.isLoading,
+    refetch: q.refetch,
+    /** Per-era per-address cumulative USDC cap (raw, USDC decimals). */
+    capRaw,
+    /** USDC this wallet has already contributed in the active era (raw). */
+    spentRaw,
+    /** Remaining headroom before the on-chain cap reverts (raw); 0n when spent out. */
+    remainingRaw,
+    isV2: ACTIVE_SALE_IS_V2,
+  };
+}
+
+/**
  * Connected wallet purchase totals from the active sale contract. V2 exposes a
  * single `usdcContributed(account)` (no per-buyer SYN total view — that lives in
  * the holder index), so `buyerSynTotal` is undefined on V2.

@@ -93,6 +93,7 @@ export const SALE_V2_ABI = [
   { type: "function", name: "RESERVE_THROUGH_SEAT", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
   { type: "function", name: "eraSynCap", stateMutability: "view", inputs: [{ name: "era", type: "uint16" }], outputs: [{ type: "uint256" }] },
   { type: "function", name: "maxUsdcPerAddressPerEra", stateMutability: "view", inputs: [{ name: "era", type: "uint16" }], outputs: [{ type: "uint256" }] },
+  { type: "function", name: "usdcByAddressEra", stateMutability: "view", inputs: [{ name: "account", type: "address" }, { name: "era", type: "uint16" }], outputs: [{ type: "uint256" }] },
   { type: "function", name: "activeEra", stateMutability: "view", inputs: [], outputs: [{ type: "uint16" }] },
   // ── router / governance views ──
   { type: "function", name: "commissionRouter", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] },

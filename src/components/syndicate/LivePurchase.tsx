@@ -30,6 +30,7 @@ import {
   ACTIVE_SALE,
   useSaleStats,
   useUserBalances,
+  useWalletEraCap,
   useQuoteSyn,
   fmtUsdc,
   fmtSyn,
@@ -71,6 +72,8 @@ export function LivePurchase() {
 
   const stats = useSaleStats();
   const userBal = useUserBalances();
+  // Live anti-whale headroom for the connected wallet in the active era.
+  const eraCap = useWalletEraCap(stats.currentEra, address);
 
   const usdcRaw = useMemo(() => {
     try {
@@ -126,6 +129,10 @@ export function LivePurchase() {
     if (buyReceipt.isSuccess) {
       userBal.refetch();
       stats.refetch();
+      // Re-read the per-wallet era headroom now: a buy consumes it, so an
+      // immediate 2nd purchase in the same session must be blocked without
+      // waiting for the 60s refetch interval (otherwise it wastes an approval).
+      eraCap.refetch();
       setPhase("success");
       // Reset write hashes so the button derives fresh state from new allowance/balances.
       approveTx.reset();
@@ -172,6 +179,17 @@ export function LivePurchase() {
     stats.availableSyn > 0n &&
     synOutRaw > stats.availableSyn;
   const isPaused = stats.paused === true;
+
+  // ── On-chain per-wallet per-era cumulative cap (anti-whale) ──────────────
+  // A buy whose USDC amount exceeds this wallet's remaining era headroom reverts
+  // with AddressEraCapExceeded BEFORE any funds move. Block it here (no burned
+  // gas) instead of letting the user submit a guaranteed-revert tx. The cap is
+  // read LIVE from chain, so a corrected redeploy with a higher cap surfaces
+  // automatically — this guard encodes no policy of its own. Only blocks when
+  // the remaining headroom is KNOWN (never over-blocks a valid buy on a read miss).
+  const eraCapRemaining = eraCap.remainingRaw;
+  const exceedsEraCap =
+    eraCapRemaining !== undefined && usdcRaw > eraCapRemaining;
 
   const approvePending = approveTx.isPending || approveReceipt.isLoading;
   const buyPending = buyTx.isPending || buyReceipt.isLoading;
@@ -223,6 +241,8 @@ export function LivePurchase() {
     state = { label: `Minimum ${SALE_MIN_USDC} USDC`, disabled: true, tone: "muted" };
   } else if (exceedsInventory) {
     state = { label: "Amount exceeds sale inventory", disabled: true, tone: "muted" };
+  } else if (exceedsEraCap) {
+    state = { label: "Exceeds wallet limit for this chapter", disabled: true, tone: "muted" };
   } else if (insufficientUsdc) {
     state = { label: "Insufficient USDC", disabled: true, tone: "error" };
   } else if (userBal.usdcAllowance === undefined || userBal.usdcBalance === undefined) {
@@ -369,7 +389,7 @@ export function LivePurchase() {
     userBal.usdcAllowance !== undefined && userBal.usdcBalance !== undefined;
   const saleActionable =
     isConnected && !wrongChain && walletReady && !isPaused && !noInventory &&
-    !belowMin && !exceedsInventory && !insufficientUsdc;
+    !belowMin && !exceedsInventory && !exceedsEraCap && !insufficientUsdc;
 
   const approveStatus: PurchaseStepStatus = approveErrored
     ? "failed"
@@ -531,6 +551,19 @@ export function LivePurchase() {
             {/* Recovery / post-approve guidance: allowance is on-chain, seat is not */}
             {showBuyGuidance && (
               <BuyStepGuidance justConfirmed={approveJustConfirmed} isMember={Boolean(myRecord)} />
+            )}
+
+            {exceedsEraCap && (
+              <p className="mt-3 rounded-md border border-amber-500/40 bg-amber-500/5 p-2 text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                This wallet&rsquo;s current on-chain limit for this chapter is{" "}
+                <span className="font-semibold">${fmtUsdc(eraCap.capRaw)} USDC</span>
+                {eraCap.spentRaw !== undefined && eraCap.spentRaw > 0n
+                  ? ` (${`$${fmtUsdc(eraCap.remainingRaw)}`} remaining after your prior purchase)`
+                  : ""}
+                . Larger amounts would revert on-chain, so they&rsquo;re blocked here to
+                protect your gas. This is a temporary cap on the live sale &mdash; not the
+                final membership model.
+              </p>
             )}
 
             <button

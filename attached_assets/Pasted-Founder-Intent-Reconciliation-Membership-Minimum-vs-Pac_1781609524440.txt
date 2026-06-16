@@ -1,0 +1,174 @@
+Founder Intent Reconciliation — Membership Minimum vs Package Size
+
+Stop before implementing Path A as final doctrine.
+
+The intended model is:
+
+Chapter / Era membership price = minimum entry price.
+
+Package size = how deep someone wants to buy.
+
+They are not the same thing.
+
+Founder intent
+
+Chapter I / Genesis:
+
+* membership entry minimum = $5
+* once someone buys, they becomes a member / takes one seat
+* they may also buy $25, $100, $500, $2,500, $10,000 packages if they want
+* one wallet should not receive multiple seats
+* but one wallet should be able to accumulate more SYN / higher recognition
+
+Future chapter example:
+
+* Chapter II membership entry minimum may become $10
+* but buyers should still be able to buy larger packages
+* Chapter III membership entry minimum may become $15
+* same logic
+
+So:
+
+One seat per wallet = identity doctrine.
+
+$5 Genesis minimum = entry doctrine.
+
+$25 / $100 / $500 / $2,500 / $10,000 packages = conviction / recognition / treasury growth.
+
+Do not collapse minimum entry into maximum purchase.
+
+The current deployed behavior appears wrong for this product model because maxUsdcPerAddressPerEra[Genesis] = $5, which makes $5 both the minimum and maximum.
+
+The package UI shown on /join clearly communicates that larger packages are part of the live membership experience, not only a far-future Era II concept.
+
+Task
+
+Please reconcile the intended product model against the current Sale V2 deployment.
+
+Answer clearly:
+
+A. Does current deployed Sale V2 support:
+
+1. one seat per wallet?
+2. minimum chapter entry price?
+3. repeat purchases by the same member?
+4. larger package purchases in the same chapter?
+5. rank/recognition increasing from cumulative purchases?
+
+B. Which of those are blocked only because the Genesis cap was deployed as $5?
+
+C. Is the current Genesis cap likely a parameter mistake caused by assuming V2 would start after seat #333?
+
+Specifically check:
+
+* deploy docs saying addrCaps[0] unused when genesisOffset ≥ 333
+* actual live genesisOffset
+* current member count
+* era logic
+* rank/package UI
+* founder/product docs
+* package-catalog / rank config
+* Sale V2 constructor parameters
+
+D. What is the correct final architecture?
+
+Desired:
+
+* minUsdcPerEra controls entry minimum
+* maxUsdcPerAddressPerEra controls anti-whale ceiling, not normal package buying
+* knownMember / first purchase controls one seat per wallet
+* cumulative purchases control recognition/rank
+* packages are live as long as they are under the anti-whale cap
+
+E. What are the exact technical options?
+
+1. Emergency UI honesty fix
+   Purpose:
+   stop failed transactions immediately.
+
+But it should be framed as temporary if it contradicts intended founder model.
+
+2. Corrected Sale V2 redeploy with same code, corrected params
+   Purpose:
+   set Genesis cap high enough for packages while preserving one-seat identity.
+
+3. Sale V3
+   Only if same-code redeploy is not enough.
+
+4. Do nothing
+   Explain why this is unacceptable if it blocks high-conviction buyers.
+
+F. For the recommended redeploy path, provide a precise migration plan:
+
+* pause current V2 at cutover
+* snapshot current members / purchases
+* set correct genesisOffset
+* decide corrected Genesis cap
+* fund new sale with enough SYN
+* preserve Holder Index continuity
+* update contract registry
+* update frontend config
+* update scan/indexer contract list
+* update docs/disclosure
+* verify old V2 remains sealed/history
+* verify users keep seats/ranks
+* verify prior purchases count toward cumulative recognition
+* verify $5, $25, $100, $500, $2,500, $10,000 work if under cap
+* verify repeat purchases do not mint extra seats
+* verify routing 70/20/10 still works
+* verify CommissionRouter remains unset
+
+G. Recommend an immediate action
+
+Choose one:
+
+1. emergency UI honesty fix only
+2. emergency UI honesty fix + redeploy plan
+3. pause current sale immediately + redeploy plan
+4. other
+
+My preference:
+Stop failed transactions immediately, but do not make the $5-only cap the final doctrine if it contradicts founder intent.
+
+H. Important constraints
+
+Do not implement yet unless you are only preventing guaranteed reverts safely.
+
+Do not touch referral.
+
+Do not touch NFT/Archive.
+
+Do not touch journey/redesign.
+
+Do not add new promises.
+
+Do not change doctrine silently.
+
+Do not let users keep burning gas on packages that revert.
+
+Return:
+
+1. Founder intent vs deployed reality
+2. Exact mismatch
+3. Whether current contract code is adequate
+4. Whether current deployed params are wrong
+5. Recommended immediate fix
+6. Recommended final fix
+7. Full redeploy/migration checklist if needed
+8. Risks
+9. What to do with current 5 members / 8 purchases
+10. Whether current sale should stay open, be capped in UI, or paused
+
+Most important principle:
+
+The protocol should allow:
+
+cheap entry
++
+high-conviction buying
++
+one seat per wallet
++
+cumulative recognition
+
+all at the same time.
