@@ -1,0 +1,236 @@
+Reasoning
+
+We have successfully completed several foundation sprints without breaking production:
+
+* RPC resilience layer.
+* Sale V2 truth reconciliation.
+* Protocol Action Foundation V1.
+* WalletGate centralization.
+* Protocol action registry shell.
+* Guard layer protecting against accidental CTA wiring.
+
+The next step is not implementation.
+
+The next step is a canon decision pass.
+
+The registry cannot become the source of truth until we decide what each action actually represents from a product, UX, protocol, and conversion perspective.
+
+This is a Founder + Product + UX + Protocol Architecture decision.
+
+The goal is to make one set of decisions now so we stop revisiting them later.
+
+Prompt
+
+Use the current codebase, Full Protocol View, and everything already implemented.
+
+Do not implement.
+
+Do not audit again.
+
+Do not redesign.
+
+Do not change contracts.
+
+Do not touch referral.
+
+Do not touch wallet providers.
+
+This is a canon decision pass only.
+
+Current situation
+
+The protocol action registry exists.
+
+The guard layer exists.
+
+The registry is intentionally not wired into live CTAs because drift was discovered:
+
+* "Open My Syndicate" vs "My Syndicate"
+* Trade SYN registry target differs from live Trader Joe flow
+* Add Liquidity registry target differs from live Trader Joe flow
+
+Before any future wiring, redesign, or onboarding work, I want a final action canon.
+
+Task
+
+Think as:
+
+* Founder
+* CTO
+* Product Lead
+* UX Lead
+* Growth Lead
+* First-time Visitor
+* Existing Member
+
+Return the final recommended action canon.
+
+A. What is the protocol's primary action?
+
+Choose and justify:
+
+1. Join The Syndicate
+2. Become a Member
+3. Buy Membership
+4. Something else
+
+Remember:
+
+The product is not a token.
+
+The product is not an NFT.
+
+The product is membership, identity, story, and participation.
+
+B. Canonical action list
+
+For each action below:
+
+* canonical label
+* action type
+* status
+* primary destination
+* secondary destination if needed
+* purpose
+
+Actions:
+
+* joinMembership
+* openMySyndicate
+* verifyProtocol
+* mintFirstSignal
+* mintPatronSeal
+* tradeSyn
+* addLiquidity
+
+Future:
+
+* claimEscrowedCommission
+* claimCampaignReward
+* claimMerchEligibility
+* mintSeatRecord721
+* marketplaceAction
+
+C. Destination philosophy
+
+Decide the correct architecture:
+
+Option A
+
+Trade SYN
+→ Trader Joe directly
+
+Add Liquidity
+→ Trader Joe directly
+
+Option B
+
+Trade SYN
+→ /token
+→ then Trader Joe
+
+Add Liquidity
+→ /liquidity
+→ then Trader Joe
+
+Option C
+
+Registry supports:
+
+* primaryTarget
+* infoRoute
+
+Explain which is best and why.
+
+Important:
+
+Optimize for:
+
+* trust
+* conversion
+* lowest friction
+* future scalability
+
+D. Canonical navigation language
+
+Resolve:
+
+* My Syndicate vs Open My Syndicate
+* Verify vs Verify Protocol vs Verify Everything
+* Join vs Become a Member vs Buy Membership
+
+Choose one canon language set.
+
+E. Future action architecture
+
+Should future actions be grouped into:
+
+Identity
+Membership
+Assets
+Verification
+Rewards
+Marketplace
+
+or another structure?
+
+Explain.
+
+F. Final architecture map
+
+Based on the current project state:
+
+How many major layers do you believe now exist?
+
+Examples only:
+
+Identity
+Wallet
+Membership
+Protocol Actions
+Assets
+Story
+Chronicle
+Institutional Register
+Transparency
+Referral
+Marketplace
+AI/B2B
+
+Return your actual architecture map.
+
+G. Next implementation recommendation
+
+After this decision pass only:
+
+What is the safest next implementation sprint?
+
+Choose only one:
+
+1. Canonical CTA architecture
+2. Canonical MembershipPurchaseFlow
+3. SuccessReceipt adoption
+4. Wallet provider evaluation (Privy / Dynamic / thirdweb)
+5. Something else
+
+Explain why.
+
+Rules
+
+* No implementation.
+* No contract changes.
+* No referral activation.
+* No redesign.
+* No invented data.
+* No new doctrine.
+* Preserve:
+
+  * Sale V2 = live-but-unaudited / early.
+  * V1 = sealed/history.
+  * CommissionRouter = unset.
+  * Archive1155 = artifacts only.
+  * SeatRecord721 = future.
+
+Goal:
+
+Make the action canon decisions once, correctly, and stop revisiting them in future sprints.
