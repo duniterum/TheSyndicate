@@ -1,0 +1,86 @@
+Reasoning
+
+We do not want another broad audit. We already have the RPC / live-data / referral-readiness report.
+
+The goal now is to avoid assumptions, avoid duplicated systems, avoid invented data, avoid variable drift, and ask Replit to suggest the safest implementation path from its actual codebase knowledge.
+
+Use the project’s existing “Full Protocol View” / internal docs / current source of truth before proposing anything.
+
+Prompt
+
+Use the current codebase, existing MD docs, and your internal “Full Protocol View” of The Syndicate.
+
+Do not run another broad audit unless absolutely necessary.
+
+We already know from the last report that:
+
+* RPC fallback already exists.
+* Current RPCs are hardcoded public endpoints.
+* Live protocol data is mostly client-side wagmi/viem.
+* The app uses event-derived holder index / purchase events.
+* One canonical scan feeds many protocol surfaces.
+* There is localStorage caching for purchase events and wallet reads.
+* Referral is preview/reserved only.
+* SaleV2 exists with router disabled.
+* CommissionRouterV1 exists as an unaudited draft.
+* The biggest risks are cold event scans, duplicate per-tab scans, missing multicall batching, hardcoded public RPC URLs, and doctrine/copy drift around “contribution.”
+
+Do not invent terms, numbers, amounts, addresses, member counts, metrics, rewards, or future promises.
+
+Do not rename variables unless necessary.
+
+Do not change contract addresses.
+
+Do not change doctrine.
+
+Do not build referral yet.
+
+Do not redesign UI.
+
+Do not touch CommissionRouterV1 or SyndicateSaleV2 before referral architecture is finalized.
+
+Task:
+
+Give me a practical implementation recommendation for the next small sprint.
+
+Base it only on what is actually already built.
+
+I want the safest path to make The Syndicate:
+
+* faster
+* cheaper to run
+* less dependent on public RPC limits
+* modular
+* async-friendly
+* referral-ready later
+* stable enough that we can leave it quiet for some time
+
+Please answer with:
+
+A. What is already done and should be preserved
+B. What should NOT be touched
+C. The single best next sprint
+D. Exact files likely touched
+E. Exact behavior changes expected
+F. Risks / rollback plan
+G. What should wait until later
+
+Important:
+
+Prefer small implementation over more reporting.
+
+If you need to inspect one thing, use the existing “Full Protocol View” / MD docs / code references, not a new broad audit.
+
+Recommended bias:
+
+First improve performance and resilience without changing product logic:
+
+1. Multicall batching where safe.
+2. Env-overridable RPC endpoints with current public RPCs as default fallback.
+3. Optional Chainstack primary only via env variable, not hardcoded.
+4. Cross-tab scan coordination if low-risk.
+5. No referral implementation yet.
+
+Return the implementation plan first.
+
+Only after that, if the plan is safe, we will ask you to implement.
