@@ -1,0 +1,62 @@
+URGENT — stop the journey/salvage pass.
+
+I just tested the live purchase flow from 4 different wallets. The $25 package / buy membership transaction reverted.
+
+Screenshot state:
+- USDC amount: $25
+- SYN received: 2,500 SYN
+- Rank reflected: Operator
+- Approve USDC confirmed
+- Buy Membership failed / reverted
+- Error shown: “Transaction reverted. The transaction was submitted but reverted on-chain. No funds were moved beyond gas.”
+
+Priority now:
+Debug the live Sale V2 purchase/package flow before any journey, IA, redesign, or docs work.
+
+Do not implement new features.
+
+Task:
+1. Check whether the current deployed/public site is updated to the latest code.
+2. Confirm whether Replit preview and production are running the same build.
+3. Check all package buttons/amounts:
+   - minimum/default package
+   - $5
+   - $10
+   - $25
+   - $50
+   - $75
+   - any custom amount
+4. Verify each amount maps correctly to:
+   - USDC decimals
+   - quoteSyn
+   - minSynOut
+   - allowance
+   - buy() call arguments
+   - Sale V2 limits
+   - available SYN inventory
+   - pause/concluded state
+5. Simulate/read why $25 reverted:
+   - contract revert reason if available
+   - transaction calldata
+   - receipt/status
+   - whether allowance was enough
+   - whether USDC balance was enough
+   - whether AVAX gas was enough
+   - whether amount exceeds configured/package constraints
+   - whether frontend is calling old build / wrong contract / wrong ABI / wrong Sale V1/V2
+6. Check if $5 purchases still work.
+7. Check if $25 specifically fails because of package/rank/quote/minSynOut logic.
+8. Check if production was not updated/published after recent fixes.
+9. Do not touch referral, journey, NFT redesign, CTA architecture, or new features.
+10. Return:
+   - root cause
+   - affected packages
+   - whether production is stale
+   - exact files involved
+   - minimal fix
+   - tests/simulations run
+   - whether user funds are safe
+   - whether the buy flow should be temporarily disabled until fixed
+
+Most important:
+The membership sale is the core conversion flow. Fix this before anything else.
