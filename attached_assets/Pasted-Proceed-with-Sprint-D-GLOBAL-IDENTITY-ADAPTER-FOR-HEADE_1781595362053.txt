@@ -1,0 +1,194 @@
+Proceed with Sprint D:
+
+GLOBAL IDENTITY ADAPTER FOR HEADER / MOBILEBAR
+
+Goal
+
+Create a safe global identity adapter and use it only where needed to make the global entry CTAs state-aware.
+
+This sprint should fix the current problem:
+
+Connect ≠ membership.
+
+A user can connect/open context before becoming a member.
+
+A user becomes a Syndicate Member only by buying through Sale V2 and receiving SYN.
+
+Current truths to preserve
+
+Sale V2 is live-but-unaudited / early.
+Sale V1 is sealed/history.
+CommissionRouter is unset / referral pending.
+Archive1155 is artifacts only.
+SeatRecord721 is future.
+Web2 + Web3 onboarding is future.
+Current wallet remains injected/wagmi.
+No contract changes.
+No route changes.
+No sale/mint/referral logic changes.
+No full redesign.
+No invented data or rewards.
+
+A. Build global identity adapter
+
+Create the safest adapter, likely:
+
+src/lib/use-global-identity.ts
+
+Use existing proven sources only:
+
+wallet/session state
+holder index
+mounted/SSR-safe gate
+existing member detection logic
+existing identity loading logic
+
+Do not add new chain reads if the same holder-index query is already shared.
+
+Adapter must expose:
+
+isConnected
+isLoadingIdentity
+isMember
+isConnectedNonMember
+address if available
+primaryMembershipLabel
+dashboardLabel
+shouldShowMySyndicate
+shouldShowBuyMoreSyn
+shouldShowBecomeMember
+
+State rules:
+
+Disconnected visitor:
+
+Connect = wallet action
+Join The Syndicate = membership purchase route
+
+Identity loading:
+
+neutral fallback
+do not flash Become Member or Buy More SYN incorrectly
+
+Connected non-member:
+
+dashboard may be accessible
+membership CTA = Become a Syndicate Member
+
+Member:
+
+dashboard CTA = My Syndicate
+membership continuation CTA = Buy More SYN
+
+B. Apply to only three global surfaces
+
+Use the adapter only in:
+
+Header.tsx
+MobileJoinBar.tsx
+HeaderWalletChip.tsx
+
+Do not touch other surfaces yet.
+
+Expected behavior:
+
+Header:
+
+disconnected: Connect + Join
+connected non-member: wallet chip + Become a Syndicate Member
+member: wallet chip + My Syndicate + Buy More SYN where layout allows
+
+MobileJoinBar:
+
+disconnected/non-member: Join / Become Member
+member: My Syndicate / Buy More SYN
+Verify remains available
+
+Wallet dropdown:
+
+add My Syndicate for connected users
+keep wallet page
+keep switch network
+keep disconnect
+do not add fake referral/reward actions
+
+C. Preserve destinations
+
+Join / Become a Syndicate Member / Buy More SYN all route to /join
+My Syndicate routes to /my-syndicate
+Verify routes to /transparency
+Connect triggers wallet connect only
+
+Do not change purchase mechanics.
+
+D. Do not force next-best-action into header yet
+
+Use the global identity adapter for state-aware labels.
+
+Do not use the full next-best-action selector in Header unless it is obviously safe and behavior-neutral.
+
+Header should stay simple.
+
+E. Stop conditions
+
+Stop and report before editing if:
+
+adapter requires new expensive chain reads
+identity state cannot be resolved without CTA flashing
+SSR hydration risk appears
+header changes would affect sale/mint logic
+member-aware labels would change destinations
+global adapter conflicts with cockpit adapter
+
+F. Validation
+
+Run:
+
+next-best-action tests
+next-action-context tests
+protocol-actions guard
+wording guard
+cold Vite compile
+render checks:
+/
+/join
+/my-syndicate
+/nft
+/token
+/liquidity
+/transparency
+
+Manual checks:
+
+disconnected user does not see member-only Buy More SYN
+connected non-member does not see Buy More SYN
+member does not see Become a Syndicate Member
+loading state does not flash wrong CTA
+My Syndicate is accessible for connected/member states
+Connect does not imply membership
+no MetaMask-only wording returns
+no forbidden language introduced
+
+G. Report
+
+Return:
+
+Files created
+Files changed
+Adapter source logic
+Header behavior by state
+Mobile bar behavior by state
+Wallet dropdown behavior by state
+Tests/checks run
+Render checks
+Any deferred nav/IA decisions
+Rollback plan
+Recommended next sprint
+
+Important principle
+
+This sprint is not a redesign.
+
+It is the identity foundation for global navigation.
+
+After this, the next sprint should likely be NFT / Archive naming cleanup and navigation IA.

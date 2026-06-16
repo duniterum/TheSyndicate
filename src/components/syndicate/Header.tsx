@@ -6,6 +6,7 @@ import { HeaderWalletChip, AvalancheNetworkPill } from "./HeaderWalletChip";
 import { NotificationBell } from "./NotificationBell";
 import { ThemeToggle } from "./ThemeToggle";
 import { track } from "@/lib/analytics";
+import { useGlobalIdentity } from "@/lib/use-global-identity";
 
 type Item = { label: string; to: string; hint?: string };
 type Group = { label: string; items: Item[] };
@@ -49,6 +50,7 @@ const NAV_ACTIVE = "text-[color:var(--accent)]";
 export function Header({ wide = false }: { wide?: boolean } = {}) {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const id = useGlobalIdentity();
 
   useEffect(() => {
     const close = () => setOpenGroup(null);
@@ -128,17 +130,30 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
           <AvalancheNetworkPill />
           <ThemeToggle variant="icon" className="hidden md:inline-flex" />
           <HeaderWalletChip />
+          {id.shouldShowMySyndicate && id.isMember && (
+            <Link
+              to="/my-syndicate"
+              className="hidden 2xl:inline-flex mono items-center gap-1.5 rounded-[3px] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--accent)] hover:brightness-110 transition-[filter] whitespace-nowrap"
+            >
+              My Syndicate
+            </Link>
+          )}
           <Link
             to="/join"
-            onClick={() => track("join_cta_click", { surface: "header" })}
-            className="mono inline-flex items-center gap-2 rounded-[3px] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-[filter] hover:brightness-110"
+            onClick={() =>
+              track("join_cta_click", {
+                surface: "header",
+                cta: id.isMember ? "buy_more" : id.shouldShowBecomeMember ? "become_member" : "join",
+              })
+            }
+            className="mono inline-flex items-center gap-2 rounded-[3px] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-[filter] hover:brightness-110 whitespace-nowrap"
             style={{
               background: "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%)",
               color: "#15110A",
               boxShadow: "0 10px 30px -12px color-mix(in oklab, #E3A92B 60%, transparent)",
             }}
           >
-            Join
+            {id.isMember ? "Buy More SYN" : id.shouldShowBecomeMember ? "Become a Syndicate Member" : "Join"}
           </Link>
           <button
             className="xl:hidden inline-flex items-center justify-center size-9 rounded-[3px] border border-border text-foreground hover:border-[color:var(--accent)] transition-colors"
@@ -157,11 +172,11 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
           <div className="mx-auto max-w-7xl px-5 py-6 space-y-6">
             <Link
               to="/join"
-              onClick={() => { setMobileOpen(false); track("join_cta_click", { surface: "header_mobile" }); }}
+              onClick={() => { setMobileOpen(false); track("join_cta_click", { surface: "header_mobile", cta: id.isMember ? "buy_more" : id.shouldShowBecomeMember ? "become_member" : "join" }); }}
               className="mono flex w-full items-center justify-center gap-2 rounded-[3px] px-4 py-3 text-[12px] font-bold uppercase tracking-[0.18em]"
               style={{ background: "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%)", color: "#15110A", boxShadow: "0 10px 30px -12px color-mix(in oklab, #E3A92B 60%, transparent)" }}
             >
-              Join The Syndicate →
+              {id.isMember ? "Buy More SYN →" : id.shouldShowBecomeMember ? "Become a Syndicate Member →" : "Join The Syndicate →"}
             </Link>
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">

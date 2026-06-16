@@ -15,6 +15,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { SALE_MIN_USDC } from "@/lib/syndicate-config";
 import { track } from "@/lib/analytics";
+import { useGlobalIdentity } from "@/lib/use-global-identity";
 import { ThemeToggle } from "./ThemeToggle";
 
 type BarConfig = {
@@ -54,12 +55,28 @@ export function MobileJoinBar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const cfg = configForRoute(path);
   const p = useProtocolPulse();
+  const id = useGlobalIdentity();
   if (!cfg) return null;
   const next = p.nextMemberNumber;
 
+  // Membership-aware override — ONLY for routes whose primary IS the Join CTA.
+  // The /nft Mint action stays open to everyone (member or not). Members are
+  // sent to their dashboard; connected non-members are nudged to become a
+  // member; disconnected / still-loading keep the neutral "Join" → /join.
+  let primaryLabel = cfg.primaryLabel;
+  let primaryHref = cfg.primaryHref;
+  if (cfg.primaryHref === "/join") {
+    if (id.isMember) {
+      primaryLabel = id.dashboardLabel;
+      primaryHref = "/my-syndicate";
+    } else if (id.shouldShowBecomeMember) {
+      primaryLabel = id.primaryMembershipLabelShort;
+    }
+  }
+
   return (
     <div
-      aria-label={`${cfg.primaryLabel} The Syndicate`}
+      aria-label="Syndicate quick actions"
       className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
@@ -81,12 +98,12 @@ export function MobileJoinBar() {
           Verify
         </Link>
         <Link
-          to={cfg.primaryHref}
-          onClick={() => track("join_cta_click", { surface: cfg.primarySurface, cta: cfg.primaryLabel })}
+          to={primaryHref}
+          onClick={() => track("join_cta_click", { surface: cfg.primarySurface, cta: primaryLabel })}
           className="mono rounded-[3px] px-3.5 py-2 text-[12px] font-bold uppercase tracking-[0.14em]"
           style={{ background: "var(--accent)", color: "var(--accent-foreground)", boxShadow: "var(--shadow-glow-gold)" }}
         >
-          {cfg.primaryLabel}
+          {primaryLabel}
         </Link>
       </div>
     </div>

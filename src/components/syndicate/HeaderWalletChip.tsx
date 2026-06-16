@@ -10,6 +10,7 @@ import {
 } from "wagmi";
 import { AVALANCHE_CHAIN_ID } from "@/lib/syndicate-config";
 import { fmtAddress } from "@/lib/sale-hooks";
+import { useGlobalIdentity } from "@/lib/use-global-identity";
 
 // Avalanche red — reserved for the official Avalanche mark ONLY (semantic-color doctrine).
 const AVALANCHE_RED = "#E84142";
@@ -105,6 +106,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
   const { connect, connectors, isPending: connectPending } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChainAsync, isPending: switchPending } = useSwitchChain();
+  const id = useGlobalIdentity();
 
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -245,6 +247,12 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Link
+            to="/my-syndicate"
+            className="col-span-2 mono text-[10px] uppercase tracking-[0.16em] rounded-md border border-[color:var(--accent)]/40 text-[color:var(--accent)] px-3 py-2 text-center hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] min-h-11"
+          >
+            My Syndicate
+          </Link>
+          <Link
             to="/wallet/$address"
             params={{ address: address! }}
             className="mono text-[10px] uppercase tracking-[0.16em] rounded-md border border-border px-3 py-2 text-center hover:border-[var(--gold)]/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] min-h-11"
@@ -264,7 +272,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
               to="/join"
               className="mono text-[10px] uppercase tracking-[0.16em] rounded-md border border-border px-3 py-2 text-center hover:border-[var(--gold)]/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] min-h-11"
             >
-              Join page
+              {id.isMember ? "Buy More SYN" : id.shouldShowBecomeMember ? "Become Member" : "Join page"}
             </Link>
           )}
           <button
@@ -339,6 +347,17 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
             )}
             <Link
               role="menuitem"
+              to="/my-syndicate"
+              onClick={() => setOpen(false)}
+              className="block rounded-md px-3 py-2 text-xs hover:bg-muted/50 focus:outline-none focus-visible:bg-muted/60 focus-visible:ring-2 focus-visible:ring-[var(--gold)]"
+            >
+              <div className="font-medium text-foreground">My Syndicate</div>
+              <div className="mt-0.5 text-[10px] text-muted-foreground">
+                Your member dashboard
+              </div>
+            </Link>
+            <Link
+              role="menuitem"
               to="/wallet/$address"
               params={{ address: address! }}
               onClick={() => setOpen(false)}
@@ -355,7 +374,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
               onClick={() => setOpen(false)}
               className="block rounded-md px-3 py-2 text-xs hover:bg-muted/50 focus:outline-none focus-visible:bg-muted/60 focus-visible:ring-2 focus-visible:ring-[var(--gold)]"
             >
-              <div className="font-medium text-foreground">Join page</div>
+              <div className="font-medium text-foreground">{id.isMember ? "Buy More SYN" : id.shouldShowBecomeMember ? "Become a Syndicate Member" : "Join page"}</div>
               <div className="mt-0.5 text-[10px] text-muted-foreground">
                 Buy SYN with USDC
               </div>
