@@ -7,6 +7,7 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getAndRecordLastVisit, type SinceLastVisit } from "@/lib/last-visit.functions";
+import { computeProtocolDeltas } from "@/lib/protocol-deltas";
 import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { GlassCard } from "./Primitives";
 import { SourceTag } from "./SourceTag";
@@ -99,17 +100,16 @@ export function SinceLastVisitStory() {
 
   const prev = state.previous;
   const cur = state.current ?? prev;
-  const diff = (a?: number, b?: number) =>
-    a === undefined || b === undefined ? undefined : a - b;
+  const deltas = computeProtocolDeltas(cur, prev);
 
   const lines: { key: string; text: string; tone: "pos" | "neutral" }[] = [];
-  const dm = diff(cur.members, prev.members);
+  const dm = deltas.members;
   if (dm !== undefined && dm !== 0) lines.push({ key: "members", text: `${fmtPlus(dm)} members joined`, tone: dm > 0 ? "pos" : "neutral" });
-  const du = diff(cur.usdcRaised, prev.usdcRaised);
+  const du = deltas.usdcRaised;
   if (du !== undefined && du !== 0) lines.push({ key: "usdc", text: `${fmtPlusUsd(du)} routed through the sale`, tone: du > 0 ? "pos" : "neutral" });
-  const dp = diff(cur.purchases, prev.purchases);
+  const dp = deltas.purchases;
   if (dp !== undefined && dp !== 0) lines.push({ key: "purchases", text: `${fmtPlus(dp)} on-chain purchases`, tone: dp > 0 ? "pos" : "neutral" });
-  const dv = diff(cur.vaultUsdc, prev.vaultUsdc);
+  const dv = deltas.vaultUsdc;
   if (dv !== undefined && Math.abs(dv) >= 1) lines.push({ key: "vault", text: `Vault USDC ${fmtPlusUsd(dv)}`, tone: dv > 0 ? "pos" : "neutral" });
 
   return (

@@ -1,0 +1,267 @@
+Reasoning
+
+The mapping confirmed that The Syndicate already has most of the human journey pieces live.
+
+The issue is not missing functionality.
+
+The issue is fragmentation.
+
+The user journey already exists across:
+
+* IdentityRibbon
+* HomeProgressionTeaser
+* MilestoneApproachingTile
+* CockpitProgression
+* CockpitMemory
+* CockpitNextMove
+* SinceLastVisitStory
+* SinceYourLastVisit
+* WhatChangedForYou
+* Activity
+* Ranks
+* Artifacts
+* Chronicle
+* Institutional Register
+* Knowledge Map
+
+The next sprint should reduce complexity, not add another layer.
+
+Therefore the correct order is:
+
+1. Clean duplicated progression/change surfaces.
+2. Then assemble the member journey visually using existing pieces.
+
+Do not invent new systems.
+
+Do not redesign the full site.
+
+Do not touch contracts.
+
+Prompt
+
+Proceed with a planning-first implementation sprint:
+
+PROGRESSION CLEANUP → JOURNEY ASSEMBLY V1
+
+Goal
+
+Turn the existing fragmented journey surfaces into a more coherent experience while reducing duplication.
+
+Do not create a new product layer if existing components can be reused.
+
+Do not make the site more complex.
+
+Current truth
+
+The existing components already cover roughly 80%+ of the journey.
+
+Remaining problem:
+
+* duplicated “what changed” surfaces
+* scattered achievement/progression signals
+* no single clear “where am I in the journey?” view
+* shareability foundation exists but is not yet the bottleneck
+
+A. Inspect before editing
+
+Use the latest code.
+
+Do not rely on stale docs.
+
+Confirm current usage of:
+
+* SinceLastVisitStory
+* SinceYourLastVisit
+* WhatChangedForYou
+* CockpitMemory
+* CockpitProgression
+* CockpitNextMove
+* HomeProgressionTeaser
+* MilestoneApproachingTile
+* labs MemberJourney
+* any journey/progression test pins
+
+Classify each as:
+
+* KEEP
+* MERGE
+* RETIRE
+* LABS ONLY
+* UNKNOWN
+
+Do not delete if UNKNOWN.
+
+B. Dedupe “what changed” first
+
+The current finding:
+
+* SinceLastVisitStory
+* SinceYourLastVisit
+* WhatChangedForYou
+
+overlap.
+
+But WhatChangedForYou is distinct because it is personal / since-joined.
+
+Target doctrine:
+
+1. Protocol-wide changes
+   One canonical system.
+
+2. Personal member changes
+   Keep separate.
+
+Recommended direction:
+
+* merge or unify SinceLastVisitStory + SinceYourLastVisit if safe
+* preserve WhatChangedForYou as the personal arc
+* avoid changing visible behavior unless proven safe
+* do not remove meaningful copy/story
+
+If full merge is risky:
+
+* create a shared data/helper layer first
+* keep UI surfaces intact
+* report remaining duplication
+
+C. Journey Assembly
+
+After dedupe is safe, evaluate the existing labs MemberJourney map.
+
+Question:
+
+Can it be graduated or adapted into a live journey view using existing data?
+
+Target purpose:
+
+Show the user:
+
+* where they are
+* what they have done
+* what changed
+* what is next
+* why to come back
+
+Stages can be:
+
+* Observer / Explorer
+* Connected visitor
+* Member
+* Collector
+* Builder / recognition
+* Long-term participant
+
+But do not invent fake states.
+
+Use only detectable or truthful states.
+
+If “Builder” is only recognition/rank today, label it honestly.
+
+If “Protocol Figure” is not built, do not surface it as live.
+
+D. Visual surface decision
+
+Recommend where the journey view belongs first:
+
+Options:
+
+1. My Syndicate only
+2. Homepage teaser + My Syndicate deep view
+3. Ranks page
+4. New Member Journey page
+5. Keep labs only for now
+
+Choose the safest option.
+
+Bias:
+
+Prefer My Syndicate first because it is member-contextual and less risky than adding a public page.
+
+E. Shareability check
+
+Do not build share features yet.
+
+Only report whether the journey view should later expose:
+
+* member number
+* rank
+* artifact ownership
+* milestone witnessed
+* activity event
+* Chronicle / Register entry
+* referral builder record later
+
+Keep future referral/share/reward items PENDING.
+
+F. Non-scope
+
+Do not:
+
+* touch Sale V2 purchase logic
+* touch NFT mint logic
+* touch contracts
+* activate referral
+* add wallet providers
+* redesign the full site
+* add fake public profiles
+* add fake rewards
+* add member directory claims
+* add leaderboard promises
+* add social-feed behavior
+* change Chronicle doctrine
+* change Institutional Register doctrine
+
+G. Validation
+
+Run feasible checks:
+
+* tests for touched progression components
+* next-best-action tests
+* next-action-context tests
+* global identity tests
+* wording guard
+* cold Vite compile
+* render checks:
+
+  * /
+  * /my-syndicate
+  * /activity
+  * /ranks
+  * /nft
+  * /chronicle
+
+Run architect review.
+
+H. Report
+
+Return:
+
+1. Components inspected
+2. Classification: KEEP / MERGE / RETIRE / LABS ONLY / UNKNOWN
+3. What was deduped
+4. What was preserved
+5. What was not touched and why
+6. Whether labs MemberJourney can graduate
+7. Recommended first live journey surface
+8. Files changed
+9. Behavior changed, if any
+10. Tests/checks run
+11. Remaining journey fragmentation
+12. Recommended next sprint
+13. Rollback plan
+
+Most important principle
+
+We are not adding a new layer.
+
+We are assembling what already exists.
+
+The user should feel:
+
+I entered.
+I became a member.
+I have a place.
+I collected something.
+I saw what changed.
+I know what to do next.
+I have a reason to return.

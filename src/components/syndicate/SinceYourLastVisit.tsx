@@ -9,6 +9,7 @@ import { Link } from "@tanstack/react-router";
 import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { useHolderIndex } from "@/lib/holder-index";
 import { useVisitorMemory } from "@/lib/visitor-memory";
+import { computeProtocolDeltas } from "@/lib/protocol-deltas";
 import { formatRelative } from "@/lib/chain-time";
 
 const milestoneTargets = [
@@ -54,10 +55,19 @@ export function SinceYourLastVisit() {
 
   if (!ready || !previous) return null;
 
-  const dMembers = diff(p.buyers, previous.members);
-  const dUsdc = diff(p.usdcRaised, previous.usdcRaised);
-  const dPurchases = diff(idx.totals.purchaseCount, previous.purchases);
-  const dVault = diff(p.vaultUsdc, previous.vaultUsdc);
+  const deltas = computeProtocolDeltas(
+    {
+      members: p.buyers,
+      usdcRaised: p.usdcRaised,
+      purchases: idx.totals.purchaseCount,
+      vaultUsdc: p.vaultUsdc,
+    },
+    previous,
+  );
+  const dMembers = deltas.members;
+  const dUsdc = deltas.usdcRaised;
+  const dPurchases = deltas.purchases;
+  const dVault = deltas.vaultUsdc;
   const newMilestones = currentMilestones.filter((id) => !previous.milestonesReached.includes(id));
 
   // Hide if nothing changed.
@@ -136,9 +146,4 @@ export function SinceYourLastVisit() {
       </div>
     </section>
   );
-}
-
-function diff(now: number | undefined, then: number | undefined): number | undefined {
-  if (now === undefined || then === undefined) return undefined;
-  return now - then;
 }
