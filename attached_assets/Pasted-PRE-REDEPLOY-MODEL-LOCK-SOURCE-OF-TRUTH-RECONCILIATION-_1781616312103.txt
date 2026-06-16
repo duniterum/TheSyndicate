@@ -1,0 +1,325 @@
+PRE-REDEPLOY MODEL LOCK — SOURCE-OF-TRUTH RECONCILIATION
+
+Do not implement.
+
+Do not deploy.
+
+Do not edit contracts.
+
+Do not edit frontend.
+
+This is a final source-of-truth reconciliation before any Sale V2b / corrected sale deployment.
+
+Important instruction
+
+Do not obey the prompt blindly if it conflicts with the current codebase, docs, deployed contracts, or prior ratified architecture.
+
+Your job is to reconcile:
+
+* founder intent
+* current code
+* deployed contract behavior
+* docs / memory
+* UI reality
+* protocol doctrine
+
+If there is a conflict, stop and report it.
+
+Do not silently choose one.
+
+Context
+
+We already had mistakes caused by concepts being mixed or assumptions being followed too literally.
+
+Example risks:
+
+* package amount was mixed with recognition rank
+* chapter was mixed with era
+* minimum entry was mixed with max wallet cap
+* referral logic could be oversimplified if someone says “flat 5%” while the system may already model it differently
+* frontend showed package options the deployed contract could not support
+
+The purpose now is to prevent this class of error before redeploy.
+
+Founder intent to reconcile
+
+The intended model is:
+
+Seat
+
+* one wallet = one seat
+* first qualifying purchase creates the seat
+* later purchases do not create extra seats
+
+Era
+
+* controls economics
+* current minimum purchase
+* SYN per USDC rate
+* anti-abuse cap
+
+Chapter
+
+* controls story / cohort / visual identity
+* may align with an era early on
+* must not be assumed identical to era forever
+
+Package
+
+* suggested purchase amount
+* not a membership tier
+* not the same object as rank
+* must be >= current era minimum
+* must be <= anti-abuse cap
+
+Recognition Rank
+
+* derived from cumulative purchases
+* can change over time
+* not created by a single package
+* confers no financial rights, governance rights, yield, dividends, or guarantees
+
+Artifact
+
+* collectible memory layer
+* Archive1155 only
+* separate from seat identity
+
+Referral
+
+* future growth layer
+* CommissionRouter currently unset
+* do not simplify or change referral model unless current code/docs support it
+
+A. Source-of-truth hierarchy
+
+Before recommendations, state which source controls each topic:
+
+1. Deployed contract truth
+2. Current Solidity source
+3. Deploy params
+4. Frontend config
+5. Holder Index / scan logic
+6. Docs / MD files
+7. Memory notes
+8. Founder intent from this prompt
+
+For each concept below, identify the controlling source:
+
+* seat
+* era
+* chapter
+* package
+* rank
+* artifact
+* referral
+* routing 70/20/10
+* Sale V1/V2/V2b
+* UI package display
+* purchase receipt wording
+
+B. Conflict matrix
+
+Create a table:
+
+Concept | Founder intent | Current code | Deployed behavior | UI behavior | Docs/memory | Conflict? | Action needed
+
+Include at least:
+
+* Seat
+* Era
+* Chapter
+* Package
+* Rank
+* Artifact
+* Referral
+* 70/20/10 purchase routing
+* Sale V2 cap
+* Package cards
+* Rank ladder
+* Member cockpit
+* My Syndicate
+* Holder Index
+* Archive1155
+* SeatRecord721 future
+
+C. Package vs rank separation
+
+You found:
+
+SEAT_PACKAGES = RANKS_V2.map(...)
+
+This is likely wrong for final product.
+
+Please decide:
+
+* should package presets become their own list?
+* should recognition ranks remain cumulative?
+* what names should packages use?
+* what names should ranks use?
+* what UI copy must change?
+* what must not change?
+
+Do not implement.
+
+Return a recommended model.
+
+D. Chapter vs Era separation
+
+You found:
+
+Chapter ≠ Era.
+
+Please define the final rule:
+
+* Era = economics
+* Chapter = story
+
+Confirm:
+
+* where they currently align
+* where they diverge
+* what UI copy must avoid
+* what deploy params must respect
+* what must be true before Sale V2b
+
+E. Membership vs token sale language
+
+Check product/legal-language risk.
+
+Do not give legal advice.
+
+But identify wording that could confuse:
+
+* membership purchase
+* token purchase
+* seat
+* rank
+* routing
+* recognition
+* package
+* contribution
+* investment
+* yield
+* reward
+* referral commission
+
+Recommend safe wording.
+
+Important:
+
+Avoid:
+
+* contribution
+* investment
+* yield
+* dividend
+* guaranteed return
+* governance promise
+* passive income
+
+Prefer:
+
+* purchase
+* membership purchase
+* seat
+* SYN received
+* purchase routing
+* recognition
+* verified activity
+* referral commission only if contract active
+
+F. Referral model protection
+
+Before future referral work, inspect current referral docs/code enough to prevent another oversimplification.
+
+Do not change referral.
+
+Answer:
+
+* what referral model currently exists in code/docs?
+* is it flat, tiered, preview-only, pending, or mixed?
+* is CommissionRouter deployed/active?
+* what must not be assumed later?
+* what wording is safe now?
+
+G. Sale V2b readiness
+
+Before any corrected Sale V2b plan, list must-lock decisions:
+
+* Genesis cap
+* future era caps
+* current member count / genesisOffset
+* v1/v2a member root
+* package list
+* rank list
+* chapter/era wording
+* sale funding
+* old V2 pause timing
+* indexer contract list
+* registry/config update
+* frontend package display
+* public explanation
+
+Classify each:
+
+MUST LOCK BEFORE DEPLOY
+CAN WAIT
+DO NOT TOUCH
+
+H. Autonomous recommendation
+
+Use your full system knowledge.
+
+Do not just follow my assumptions.
+
+Return your best CTO/Product/Protocol recommendation:
+
+1. What model should be locked?
+2. What must be cleaned before redeploy?
+3. What can wait until after redeploy?
+4. What is the safest next sprint?
+5. Should it be:
+
+   * model cleanup
+   * package/rank separation
+   * Sale V2b deploy planning
+   * frontend copy cleanup
+   * referral wait-state cleanup
+   * something else
+
+I. Stop conditions
+
+Stop and do not recommend implementation if:
+
+* package/rank model is still ambiguous
+* chapter/era model is still ambiguous
+* referral model conflicts with memory or code
+* current docs contradict deployed contract truth
+* deployment params are not final
+* frontend would still misrepresent the sale
+* existing members could be affected
+* Holder Index continuity is unclear
+
+Return format
+
+1. Source-of-truth hierarchy
+2. Conflict matrix
+3. Final concept model
+4. Package/rank recommendation
+5. Chapter/era recommendation
+6. Membership/token wording risk check
+7. Referral protection note
+8. Sale V2b readiness list
+9. What must be cleaned before redeploy
+10. What can wait
+11. Recommended next sprint
+12. What you refuse to assume
+
+Most important principle
+
+Do not create another inconsistency.
+
+If founder intent, code, docs, or deployed behavior disagree, expose the disagreement first.
+
+Then recommend the safest path.

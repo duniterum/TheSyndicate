@@ -188,3 +188,13 @@ numbers recomputed from `eras.ts` + 350M pool + 70/20/10). Durable conclusions:
 - **Doc fix gotcha:** `DATA_VERIFICATION_REGISTRY.md` `members` row had wrongly said
   "SYN Transfer event scan"; the runtime mirror `data-verification-registry.ts` was
   already correct (derives from `MEMBER_DEFINITION`) → that fix was docs-only.
+- **Docs LAG code on referral (cross-source staleness — reconcile, don't trust docs):**
+  `PRODUCT_ARCHITECTURE_MAP.md` ("Referral | PENDING | not exposed | Banned scope"),
+  `MVP_ECOSYSTEM_ROADMAP.md` ("Referral Architecture — DOC ONLY, no code, no contract")
+  and `SYNDICATE_OPERATING_SYSTEM.md` ("NEXT") all assert referral is doc-only with no
+  code. FALSE: `CommissionRouterV1.sol` is a fully-built (unaudited) production-candidate,
+  SaleV2 `buy()` is wired to route the Ops slice through it, and `src/components/preview/`
+  has ReferralPreview/ReputationLeaderboardPreview. Reconciliation: referral is NOT LIVE
+  (router unset, contract unaudited/undeployed, UI preview-gated) so docs are right in
+  SPIRIT but stale on "no code." Future agents: verify referral status from the contract +
+  deployed sale's `commissionRouter` state, never from these MD files.
