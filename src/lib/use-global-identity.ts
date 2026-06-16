@@ -40,7 +40,8 @@ const LABEL = {
 export interface GlobalIdentity {
   /** True only after client mount + a connected wallet with an address. */
   isConnected: boolean;
-  /** True until mount completes, and (when connected) until the index resolves. */
+  /** True until mount completes, and (when connected) until the index cleanly
+   *  resolves. A holder-index ERROR also keeps this true (truth unknown → neutral). */
   isLoadingIdentity: boolean;
   /** Wallet is recorded in the Holder Index (joined via a sale contract). */
   isMember: boolean;
@@ -73,6 +74,8 @@ export interface GlobalIdentityInput {
   address: `0x${string}` | null;
   /** Holder index is still resolving. */
   idxLoading: boolean;
+  /** Holder index resolved to an ERROR (RPC / scan failure) — truth is unknown. */
+  idxError: boolean;
   /** A holder-index record exists for this address (only meaningful once resolved). */
   hasRecord: boolean;
 }
@@ -86,11 +89,18 @@ export function resolveGlobalIdentity(input: GlobalIdentityInput): GlobalIdentit
   const connected = input.mounted && input.isConnected && !!input.address;
   const address = connected ? input.address : null;
 
-  // Loading until mounted, and (while connected) until the index resolves.
-  const isLoadingIdentity = !input.mounted || (connected && input.idxLoading);
+  // Holder-index truth is "unresolved" while it is loading OR if it errored. An
+  // RPC/scan failure means we CANNOT trust an empty record — a real member would
+  // otherwise look like a non-member and get the wrong CTA. Either way: stay neutral.
+  const idxUnresolved = connected && (input.idxLoading || input.idxError);
 
-  // Membership is only asserted once connected AND resolved — never during load.
-  const isMember = connected && !input.idxLoading && input.hasRecord;
+  // Loading until mounted, and (while connected) until the index resolves.
+  const isLoadingIdentity = !input.mounted || idxUnresolved;
+
+  // Membership is only asserted once connected AND cleanly resolved — never during
+  // load, and never while the index is in an error state.
+  const isMember =
+    connected && !input.idxLoading && !input.idxError && input.hasRecord;
   const isConnectedNonMember = connected && !isLoadingIdentity && !isMember;
 
   let primaryMembershipLabel: string = LABEL.joinFull;
@@ -140,8 +150,9 @@ export function useGlobalIdentity(): GlobalIdentity {
         isConnected: session.isConnected,
         address,
         idxLoading: idx.isLoading,
+        idxError: idx.isError,
         hasRecord: !!record,
       }),
-    [mounted, session.isConnected, address, idx.isLoading, record],
+    [mounted, session.isConnected, address, idx.isLoading, idx.isError, record],
   );
 }

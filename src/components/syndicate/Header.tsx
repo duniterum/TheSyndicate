@@ -153,6 +153,12 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
               boxShadow: "0 10px 30px -12px color-mix(in oklab, #E3A92B 60%, transparent)",
             }}
           >
+            {/* Compact "Join" for the disconnected default is intentional: this
+                button co-exists with the Connect button (no wallet chip yet), so
+                the neutral label stays short to protect the 1280 header width
+                budget. The full "Join The Syndicate" renders in the mobile drawer
+                + MobileJoinBar where there is room; connected states swap Connect
+                for the compact wallet chip, leaving room for the longer labels. */}
             {id.isMember ? "Buy More SYN" : id.shouldShowBecomeMember ? "Become a Syndicate Member" : "Join"}
           </Link>
           <button

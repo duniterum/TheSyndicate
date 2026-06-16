@@ -12,6 +12,7 @@ function base(overrides: Partial<GlobalIdentityInput> = {}): GlobalIdentityInput
     isConnected: false,
     address: null,
     idxLoading: false,
+    idxError: false,
     hasRecord: false,
     ...overrides,
   };
@@ -79,6 +80,28 @@ describe("resolveGlobalIdentity — global identity state machine", () => {
     expect(r.shouldShowMySyndicate).toBe(true);
     expect(r.primaryMembershipLabel).toBe("Buy More SYN");
     expect(r.primaryMembershipLabelShort).toBe("Buy More SYN");
+  });
+
+  it("connected + index ERROR → neutral fallback, NO non-member flash (truth unknown)", () => {
+    const r = resolveGlobalIdentity(base({ isConnected: true, address: ADDR, idxLoading: false, idxError: true, hasRecord: false }));
+    expect(r.isConnected).toBe(true);
+    expect(r.isLoadingIdentity).toBe(true);
+    expect(r.isMember).toBe(false);
+    expect(r.isConnectedNonMember).toBe(false);
+    // dashboard is still reachable (a destination, not a membership claim)
+    expect(r.shouldShowMySyndicate).toBe(true);
+    // neither membership claim may render when index truth is unavailable
+    expect(r.shouldShowBuyMoreSyn).toBe(false);
+    expect(r.shouldShowBecomeMember).toBe(false);
+    expect(r.primaryMembershipLabel).toBe("Join The Syndicate");
+  });
+
+  it("INVARIANT: an index error never lets a member-with-record assert membership", () => {
+    const r = resolveGlobalIdentity(base({ isConnected: true, address: ADDR, idxLoading: false, idxError: true, hasRecord: true }));
+    expect(r.isMember).toBe(false);
+    expect(r.shouldShowBuyMoreSyn).toBe(false);
+    expect(r.shouldShowBecomeMember).toBe(false);
+    expect(r.primaryMembershipLabel).toBe("Join The Syndicate");
   });
 
   it("connected but no address yet → treated as not connected (neutral)", () => {

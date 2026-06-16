@@ -353,7 +353,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
             >
               <div className="font-medium text-foreground">My Syndicate</div>
               <div className="mt-0.5 text-[10px] text-muted-foreground">
-                Your member dashboard
+                {id.isMember ? "Your member dashboard" : "Your identity & activity"}
               </div>
             </Link>
             <Link
@@ -365,7 +365,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
             >
               <div className="font-medium text-foreground">My wallet page</div>
               <div className="mt-0.5 text-[10px] text-muted-foreground">
-                Member identity & history
+                {id.isMember ? "Member identity & history" : "Wallet identity & history"}
               </div>
             </Link>
             <Link
