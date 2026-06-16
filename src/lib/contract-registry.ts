@@ -98,7 +98,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     "sale",
     "LIVE",
     CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS,
-    "USDC → SYN sale, 70/20/10 split enforced on-chain.",
+    "USDC → SYN sale, 70/20/10 split enforced on-chain. SEALED / sale closed — on-chain paused with 0 inventory; kept for history & independent verification (status LIVE = contract verifiable, not currently selling). Active sale is V2.",
     "src/lib/sale-abi.ts",
   ),
   entry(
@@ -107,7 +107,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     "sale",
     "LIVE",
     MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
-    "Model 2 continuation sale (per-era SYN caps, V1 recognition, external CommissionRouter). DEPLOYED + funded — the active self-service sale. Continues Genesis numbering via the Holder Index, never a new member registry. Sealed V1 history remains independently verifiable.",
+    "Model 2 continuation sale (per-era SYN caps, V1 recognition; external CommissionRouter currently UNSET — referral pending). DEPLOYED + funded + active self-service sale, but the V2 contract is UNAUDITED — treat as live-but-unaudited / early. Continues Genesis numbering via the Holder Index, never a new member registry. Sealed V1 history remains independently verifiable.",
     "src/lib/sale-abi.ts",
   ),
   entry(

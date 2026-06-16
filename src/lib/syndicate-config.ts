@@ -320,10 +320,11 @@ const EXPLORER_KIND: Record<ContractKey, "token" | "address"> = {
 export const isLiveAddress = (v: string) =>
   v !== "PENDING" && /^0x[a-fA-F0-9]{40}$/.test(v);
 
-// ── Sale V2 (Model 2 continuation) — PENDING until a real deployment exists ──
-// Both the address and the deploy block stay null until V2 is deployed. While
-// null, ALL V2 indexing + buy paths are dormant and the live V1 flow is
-// byte-identical. No placeholder strings, no inferred address (truth doctrine).
+// ── Sale V2 (Model 2 continuation) — DEPLOYED & LIVE on Avalanche mainnet ──
+// The address + deploy block below are real and known, so SALE_V2_LIVE is true
+// and V2 is the ACTIVE self-service sale (V1 is sealed/paused, kept for history).
+// NOTE: the V2 contract is UNAUDITED — describe it as live-but-unaudited / early,
+// never as audited. No placeholder strings, no inferred address (truth doctrine).
 // Kept OUTSIDE `CONTRACTS` so the `as const` map / ContractKey / EXPLORER_KIND
 // stay uniform; mirrors how SALE_DEPLOYMENT_BLOCK lives as a standalone export.
 export const MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS: string | null =
