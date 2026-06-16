@@ -100,10 +100,16 @@ change if any V2a purchase lands before pause. Today's values are a rehearsal, n
   `DEPLOY_PARAMS` path for non-provisional). It's a NEW guard, not a hardening of the existing one; mandatory
   `EXPECT_*` already makes a stale deploy loud not silent. Residual: guard can't prove the operator's EXPECT_*
   values ARE the pause-block snapshot — only that the file matches them; closed procedurally by the checklist.
-- **Funding reality:** deployer/owner EOA `0xa2E538…26e2F` held **0 SYN** (block 88,179,800, 2026-06-16) →
-  funding is a HARD prerequisite; STAGE INDEPENDENTLY before pausing. **V2a SYN is NOT a funding source**
-  (recoverUnsoldSyn = timelock→Vault, AND its ~4.998M < the 6.597M floor anyway). Rate 100 SYN/$; through-seat
-  reserve (RESERVE_THROUGH_SEAT=10,000) ≈ **4.097M SYN** at offset=5 (recompute after finalize). One $10k buy
-  needs ≈5.097M; one $25k buy needs ≈6.597M; **recommend ≥6.597M (round 7M)**. Smoke = fund FULLY first, THEN
-  one $5 real buy (an underfunded contract can revert the reserve check even on $5 → false "broken" signal).
+- **Funding reality (CORRECTED — do NOT route funding through the deployer EOA):** the sale is funded by an
+  ERC20 `transfer` from the **Membership Distribution** allocation wallet `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8`
+  (35%/350M slice, canonical purpose "website membership purchases") → the sale contract address, **after** deploy.
+  Live balance **344,997,500 SYN** (2026-06-16) — ~52× the launch floor; V2a's 4,998,500 SYN inventory traces to
+  this same wallet (350M→344.9975M), so the path is already proven. **The deployer/owner EOA never needs to hold
+  SYN** — it only deploys + owns and needs AVAX for gas; its 0-SYN balance is expected, NOT a blocker. Funding from
+  Vault Reserve/Founder/Liquidity/etc. would VIOLATE the allocation map — Membership Distribution is the ONLY lawful
+  source. V2a's own SYN is irrelevant (recoverUnsoldSyn = timelock→Vault, not a funding lever). **Why:** an earlier
+  draft wrongly said "stage SYN in the deployer EOA / funding unavailable" — the deployer is not the funding wallet.
+  Rate 100 SYN/$; reserve (RESERVE_THROUGH_SEAT=10,000) ≈ **4.097M SYN** at offset=5 (recompute after finalize);
+  $10k buy needs ≈5.097M, $25k ≈6.597M; **recommend ≥6.597M (round 7M)**. Smoke = fund FULLY first, THEN one $5
+  real buy (underfunded contract can revert the reserve check even on $5 → false "broken" signal).
 - Full executable pause→deploy chain lives in `docs/audits/V2B_FINAL_EXECUTION_CHAIN.md` (16 steps + stop conds).

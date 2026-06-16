@@ -2,10 +2,10 @@
 
 **Scope:** turn the proven plan into the exact, unambiguous execution chain. **Read-only on doctrine/architecture.** No broadening: referral/NFT/Archive/journey/wallet-providers/redesign untouched; router stays `0x0`; EOA owner; no external audit; package/rank/chapter cleanup is public-relaunch work, not deploy work.
 
-**Status at authoring (block 88,179,800, 2026-06-16):** V2a `paused()=false`, `memberCount=5`. Deployer/owner `0xa2E538…26e2F` **holds 0 SYN → funding NOT staged.** **Do not pause yet. Do not broadcast yet.**
+**Status at authoring (block 88,179,800, 2026-06-16):** V2a `paused()=false`, `memberCount=5`. Deployer/owner `0xa2E538…26e2F` holds 0 SYN — **by design; it never needs to hold SYN** (see §D, Q6). **Launch funding IS available:** the **Membership Distribution** wallet `0x975a…ECec8` holds **344,997,500 SYN** (verified on-chain) — ~52× the recommended launch amount. Funding is a **post-deploy transfer** from that wallet to the new V2b address (step 12), not a pre-pause blocker. **Do not pause yet. Do not broadcast yet.**
 
 The only remaining deployment blockers are exactly these six gates — every step below maps to closing one:
-1. V2a not paused · 2. final snapshot not generated from pause block · 3. final params not validated · 4. final rehearsal not re-pinned · 5. funding not confirmed · 6. deploy dry-run / read-backs not green.
+1. V2a not paused · 2. final snapshot not generated from pause block · 3. final params not validated · 4. final rehearsal not re-pinned · 5. **funding transfer not yet executed + verified** (post-deploy; the source wallet is already funded) · 6. deploy dry-run / read-backs not green.
 
 ---
 
@@ -20,9 +20,10 @@ The only remaining deployment blockers are exactly these six gates — every ste
 | Vault (70%) | `0x205DdC8921A4C60106930eE35e1F395c8D13f464` |
 | Liquidity (20%) | `0xa9b072db8DcDbb470235204B69D37275d74a2e25` |
 | Operations (10%) | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` |
-| Deployer / owner EOA | `0xa2E538025B7E100c928c73d4a977Ab9CEaA26e2F` |
+| **Membership Distribution (SYN funding source, 35% / 350M slice)** | `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8` |
+| Deployer / owner EOA (deploys + owns; needs AVAX gas only, no SYN) | `0xa2E538025B7E100c928c73d4a977Ab9CEaA26e2F` |
 
-**Placeholders used below:** `<RPC>` mainnet RPC · `<SIGNER>` `--ledger` or `--private-key $PK` · `<PAUSE_TX>` pause tx hash · `<V2A_PAUSE_BLOCK>` block of the pause tx · `<FINAL_OFFSET>` finalized genesisOffset · `<FINAL_ROOT>` finalized v1MemberRoot · `<V2B_ADDR>` deployed V2b · `<ARCHIVE_RPC>` archive-node RPC for the fork.
+**Placeholders used below:** `<RPC>` mainnet RPC · `<SIGNER>` deployer/owner signer (`--ledger` or `--private-key $PK`) · `<DIST_SIGNER>` signer for the **Membership Distribution** funding wallet `0x975a…ECec8` (used ONLY for the step-12 funding transfer) · `<PAUSE_TX>` pause tx hash · `<V2A_PAUSE_BLOCK>` block of the pause tx · `<FINAL_OFFSET>` finalized genesisOffset · `<FINAL_ROOT>` finalized v1MemberRoot · `<V2B_ADDR>` deployed V2b · `<ARCHIVE_RPC>` archive-node RPC for the fork.
 
 ---
 
@@ -35,7 +36,8 @@ The only remaining deployment blockers are exactly these six gates — every ste
 cast call 0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48 "paused()(bool)"        --rpc-url <RPC>   # expect false
 cast call 0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48 "memberCount()(uint256)" --rpc-url <RPC>  # expect 5 (record)
 cast call 0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48 "owner()(address)"        --rpc-url <RPC>  # expect 0xa2E538…26e2F
-cast call 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 "balanceOf(address)(uint256)" 0xa2E538025B7E100c928c73d4a977Ab9CEaA26e2F --rpc-url <RPC>  # deployer SYN — FUNDING GATE (currently 0)
+cast call 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 "balanceOf(address)(uint256)" 0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8 --rpc-url <RPC>  # Membership Distribution SYN — FUNDING SOURCE (≈344,997,500e18; must be ≥ <FUNDING_WEI>)
+cast balance 0xa2E538025B7E100c928c73d4a977Ab9CEaA26e2F --rpc-url <RPC>   # deployer AVAX for gas (deployer needs AVAX only, NOT SYN)
 cast block-number --rpc-url <RPC>   # record pre-pause head
 ```
 
@@ -103,10 +105,9 @@ forge script script/Deploy.s.sol:Deploy --rpc-url <RPC> <SIGNER> --broadcast --v
 ```
 Production compile profile = **paris / optimizer_runs=200** (default `foundry.toml`), **not** the cancun rehearsal profile.
 
-**12 — Fund V2b** (gate 5) — separate tx; constructor pulls no SYN
+**12 — Fund V2b** (gate 5) — separate tx, **after** deploy; the constructor pulls no SYN. **Source = Membership Distribution wallet `0x975a…ECec8`** (holds ≈344,997,500 SYN — see §D); sign with **that wallet's key (`<DIST_SIGNER>`), NOT the deployer**. `<FUNDING_WEI>` = `6597000000000000000000000` (6,597,000e18) minimum; `7000000000000000000000000` (7,000,000e18) recommended.
 ```
-# PREREQUISITE: deployer holds the SYN (currently 0 — see §D). <FUNDING_WEI> = 6,597,000e18 minimum.
-cast send 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 "transfer(address,uint256)" <V2B_ADDR> <FUNDING_WEI> --rpc-url <RPC> <SIGNER>
+cast send 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 "transfer(address,uint256)" <V2B_ADDR> <FUNDING_WEI> --rpc-url <RPC> <DIST_SIGNER>
 ```
 
 **13 — Verify funding + reserve/headroom**
@@ -150,14 +151,19 @@ Any mismatch → **STOP**, do not fund/switch (redeploy from corrected params).
 
 **Safer = keep readable constants + the new fail-closed cross-check (implemented), NOT full JSON-proof parameterization.** Reading per-member `bytes32[][]` proofs from JSON inside Solidity is fiddly and would add parsing complexity to the verification harness immediately before a mainnet deploy — a bug there could *mask* a real failure. The cross-check gives single-source-of-truth enforcement (the test's root/offset/Genesis-cap must equal the deploy file) without that risk; per-member proofs remain validated exhaustively and independently by `validate-snapshot.mjs`. Post-pause, update `ROOT`/`GENESIS_OFFSET`/proofs from the finalized snapshot (step 8); the guard enforces lockstep. Full parameterization is a reasonable *future* hardening, not a pre-deploy change.
 
-## D. Funding requirement and availability — **STOP: funding must be prepared first**
+## D. Funding requirement and availability — **AVAILABLE; transfer executes after deploy**
 
-- **Genesis rate:** 100 SYN per USDC. **Through-seat reserve** (`RESERVE_THROUGH_SEAT = 10,000`) ≈ **4,097,000 SYN** at `offset = 5` (re-confirm after finalize — it shifts with the offset).
-- **Minimum to support one $10,000 buy:** ≈ **5,097,000 SYN** (≈ 4,097,000 reserve + 1,000,000 delivered).
-- **Minimum to support one $25,000 buy:** ≈ **6,597,000 SYN** (≈ 4,097,000 reserve + 2,500,000 delivered).
-- **Recommended launch funding:** **≥ 6,597,000 SYN** (round to **7,000,000** for headroom) so the full Genesis ladder up to the $25k cap is sellable on day one.
-- **Availability:** deployer `0xa2E538…26e2F` holds **0 SYN** (block 88,179,800). **Funding is NOT available → STOP and stage funding first.**
-- **Do not assume V2a's SYN can fund V2b.** V2a holds ~4,998,500 SYN, but it is reachable only via `recoverUnsoldSyn` (timelocked → Vault, not the deployer), **and** 4,998,500 < 6,597,000 — insufficient for a full $25k Genesis buy regardless. Stage independent SYN in the deployer EOA.
+> Correction to a prior draft: funding is **not** a pre-pause blocker, and the deployer EOA's 0-SYN balance is irrelevant. The seven questions, answered from live on-chain reads (block ~88.18M):
+
+- **Q1 — Who holds the Membership Distribution allocation?** The **Membership Distribution** wallet `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8` — the 35% / 350,000,000 SYN slice (`TOKENOMICS_ALLOCATION` / `ALLOCATION_WALLETS`), canonical purpose: *"Pool used for website membership purchases, small entries, and custom member contributions."*
+- **Q2 — Which wallet funds the sale contract?** The same Membership Distribution wallet. **Verified pattern:** V2a's current **4,998,500 SYN** inventory traces to it — the slice has fallen `350,000,000 → 344,997,500`, and the ~5,002,500 delta = V2a's funded inventory (4,998,500) + seats already sold (~4,000). So "Membership Distribution → sale contract" is the **already-proven** funding path, not a new mechanism.
+- **Q3 — How much is available now?** **344,997,500 SYN** in `0x975a…ECec8` (live `balanceOf`). That is **~52× the recommended launch funding** — no acquisition or purchase is required.
+- **Q4 — Does funding from this wallet respect allocation doctrine?** **Yes — and it's the *only* doctrinally-valid source.** The Membership Distribution slice exists precisely to back membership sales. Funding the sale from Vault Reserve, Founder, Liquidity, Partnerships, Contributors, or Future Ecosystem would **violate** the allocation map and must not be done.
+- **Q5 — Which wallet should send launch funding to V2b?** `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8` (Membership Distribution), signed with that wallet's key (`<DIST_SIGNER>`), as a plain ERC20 `transfer` to `<V2B_ADDR>` (step 12).
+- **Q6 — Does the deployer EOA need to hold SYN?** **No.** It only **deploys** V2b and is its `owner`; it needs **AVAX for gas only**. The contract dispenses SYN from *its own* balance, so funding is a transfer into the contract that can only happen **after** deploy (the address must exist first). The deployer holding 0 SYN is **expected and correct**.
+- **Q7 — sizing (unchanged):** Genesis rate 100 SYN/USDC. **Through-seat reserve** (`RESERVE_THROUGH_SEAT = 10,000`) ≈ **4,097,000 SYN** at `offset = 5` (re-confirm after finalize — shifts with the offset). One **$10,000** buy needs ≈ **5,097,000 SYN**; one **$25,000** buy needs ≈ **6,597,000 SYN**. **Recommended launch funding ≥ 6,597,000 SYN (round to 7,000,000 for headroom)** so the full Genesis ladder to the $25k cap is sellable day one. The source wallet covers this ~52×.
+
+**Reclassified blocker:** *not* "funding unavailable." The remaining action is **"funding transfer must be executed after deploy"** — transfer ≥ 6,597,000 SYN from `0x975a…ECec8` → `<V2B_ADDR>` (step 12) and verify (step 13). (V2a's own SYN is irrelevant: `recoverUnsoldSyn` is timelocked → Vault, and the Membership Distribution wallet is the proper source anyway.)
 
 ## E. Live smoke-test recommendation
 
@@ -171,11 +177,11 @@ Any mismatch → **STOP**, do not fund/switch (redeploy from corrected params).
 - `EXPECT_*` dry-run reverts (guard or stale-mismatch).
 - Final fork rehearsal fails (constant guard or full flow).
 - Any V2b getter read-back mismatches (§14).
-- Funding insufficient (< 6,597,000 SYN) or not actually transferred into `<V2B_ADDR>`.
+- Funding transfer skipped or under-sized: < 6,597,000 SYN actually delivered to `<V2B_ADDR>` (step 12/13). The source wallet `0x975a…ECec8` holds ~344.9M SYN, so this is an execution risk on the transfer step, not an availability problem.
 - Frontend/indexer cutover plan not ready (blocks *public relaunch*, not the deploy).
 - Any path by which the stale `deploy-params.json` could still be read (always pass `DEPLOY_PARAMS=…final.template.json`).
 
 ## G. Founder action required next
-1. **Stage SYN funding first.** Acquire/transfer **≥ 6,597,000 SYN (recommend 7,000,000)** into the deployer EOA `0xa2E538…26e2F`. This is the current hard blocker — the wallet holds 0 SYN. **Until this is done, do not pause.**
+1. **Funding is available — no acquisition needed; nothing to stage before pausing.** The Membership Distribution wallet `0x975a…ECec8` holds **344,997,500 SYN** (~52× the recommended 7,000,000). Funding is a **post-deploy transfer** from that wallet (step 12), signed with `<DIST_SIGNER>` — *not* the deployer. The deployer EOA needs **AVAX for gas only** and never holds SYN. Confirm you control `<DIST_SIGNER>` and have AVAX in the deployer; that is the entire funding prerequisite.
 2. **Provision an archive-node RPC** (`<ARCHIVE_RPC>`) for the pause-block fork rehearsal (step 9).
 3. Then execute §A in order. The code-level guards (§B) are already in place; deploy is justified the moment gates 1–6 are green and funding is confirmed. **Do not switch the public site** until §15 conditions hold (relaunch phase).
