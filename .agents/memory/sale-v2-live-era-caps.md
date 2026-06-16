@@ -25,6 +25,22 @@ never reads `maxUsdcPerAddressPerEra` / `usdcByAddressEra`, so it lets users pic
 amounts guaranteed to revert during Genesis. `sale-hooks.ts` doesn't surface
 those reads either.
 
+**Doctrine vs mismatch (reconciliation):** the $5 value is NOT a random
+placeholder — it is the ratified anti-whale param for a Model-2 (sub-333) deploy
+("flat one-seat Genesis = tightest anti-whale", FINAL_DEPLOY_PARAMETER_SHEET §8).
+The RECOMMENDED path was pause-V1-at-#333 / `genesisOffset=333`, where V2 starts
+at Era II and `addrCaps[0]` is UNUSED — there the package/rank menu ($10–$1k)
+works because Era II's addr cap is $1,000. The LIVE deploy used `genesisOffset=2`
+(Model 2), which makes $5 binding for the whole Genesis-continuation (#3–333).
+FOUNDER_DECISION_REPORT: "Genesis … sits at $5/500 SYN and is NOT part of any V2
+decision" — the package/rank economics are an **Eras II–IX** feature (addr caps
+$1k→$25k). The app's OWN doctrine (`eras.ts`) already says only Era I is LIVE and
+Eras II+ are "PROPOSED FUTURE … not live." So the real defect is **sequencing**:
+the buy UI presents the Eras-II+ package/rank menu as purchasable during Era I.
+Contract is correct; UI is out of sequence. Making >$5 buyable NOW in Genesis
+requires a REDEPLOY (new addr cap) — no setter, frontend can't raise it, and the
+contract only auto-advances to Era II organically at seat #334.
+
 **Why this matters / how to apply:**
 - There is **NO setter** for the cap (only constructor). Raising the Genesis cap
   ⇒ **redeploy a new Sale V2** (+ re-fund SYN, re-snapshot V1, re-point the
