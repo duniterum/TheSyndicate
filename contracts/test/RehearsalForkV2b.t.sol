@@ -17,18 +17,22 @@ interface IERC20Like {
 ///           - genesisOffset = 5  (V1 ∪ V2a merged snapshot)
 ///           - v1MemberRoot  = 0xa1f2ed10…718c49  (recognizes ALL 5 prior members)
 ///           - addrCaps[0]   = $25,000  (Era I / Genesis cap; $5 V2a defect fixed)
-///         and exercises:
+///         and proves, end-to-end:
 ///           A. constructor read-back (offset 5 ⇒ memberCount 5, next seat #6,
-///              $25k Era I cap echoed, router=0, merged root)
+///              $25k Era I cap echoed, router=0, merged root, eraSynCap[1]=max)
 ///           B. a V2a member (merged #3) recognized via claimV1Membership ⇒ NO seat
-///           C. a fresh newcomer's first buy mints member #6
+///           C. a fresh newcomer's first buy mints member #6 ($5)
 ///           D. a returning merged member (V1 #1) with a valid proof mints NO seat
-///           E. HEADLINE: a $10,000 Genesis buy clears the new $25k cap and yields
-///              1,000,000 SYN (the largest Genesis package) — the capability the
-///              V2a $5 cap blocked.
+///           E. amount ladder $25/$100/$1,000/$10,000 all succeed ⇒ seats #7..#10,
+///              each paying usdcIn * 100 SYN (Genesis rate)
+///           F. 70/20/10 routing: a $1,000 buy moves +700/+200/+100 USDC to
+///              Vault/Liquidity/Operations (CommissionRouter unset ⇒ full ops slice)
+///           G. repeat purchase by an existing member adds SYN + cumulative USDC
+///              recognition but mints NO second seat
+///           H. CommissionRouter stays address(0) throughout
 ///
 ///         Skips cleanly when AVAX_RPC is unset so the default `forge test` (no
-///         network) is unaffected. Run:
+///         network) is unaffected. Run (cancun matches the live chain spec):
 ///           AVAX_RPC=<rpc> forge test --match-contract RehearsalForkV2b -vv --evm-version cancun
 contract RehearsalForkV2bTest is Test {
     // --- real mainnet addresses (must match deploy-params.v2b.rehearsal.json) ---
@@ -50,10 +54,18 @@ contract RehearsalForkV2bTest is Test {
     uint256 constant GENESIS_OFFSET  = 5;
     uint256 constant MAX_USDC_PER_TX = 25_000_000_000;   // $25,000 (6dp)
     uint256 constant RESERVE_THROUGH = 10_000;
-    uint256 constant ERA_I_MIN_USDC  = 5_000_000;        // $5 (6dp)
-    uint256 constant ERA_I_SYN_OUT   = 500 ether;        // $5 * 100 SYN/USDC
-    uint256 constant WHALE_USDC      = 10_000_000_000;   // $10,000 (6dp)
-    uint256 constant WHALE_SYN_OUT   = 1_000_000 ether;  // $10,000 * 100 = largest Genesis package
+
+    // Genesis amount ladder (6dp USDC) and the SYN each yields at 100 SYN/USDC.
+    uint256 constant USDC_5      = 5_000_000;             // $5
+    uint256 constant USDC_25     = 25_000_000;            // $25
+    uint256 constant USDC_100    = 100_000_000;           // $100
+    uint256 constant USDC_1K     = 1_000_000_000;         // $1,000
+    uint256 constant USDC_10K    = 10_000_000_000;        // $10,000
+    uint256 constant SYN_5       = 500 ether;             // $5    * 100
+    uint256 constant SYN_25      = 2_500 ether;           // $25   * 100
+    uint256 constant SYN_100     = 10_000 ether;          // $100  * 100
+    uint256 constant SYN_1K      = 100_000 ether;         // $1k   * 100
+    uint256 constant SYN_10K     = 1_000_000 ether;       // $10k  * 100 (largest Genesis package)
 
     function _proofM1() internal pure returns (bytes32[] memory p) {
         p = new bytes32[](2);
@@ -92,6 +104,21 @@ contract RehearsalForkV2bTest is Test {
         c[8] = 150_000_000 ether; // Era IX
     }
 
+    SyndicateSaleV2 internal sale;
+
+    /// @dev fund `who` with USDC, max-approve the sale, buy `usdcIn` (no proof,
+    ///      no referrer), return the SYN minted to `who` by this buy.
+    function _buy(address who, uint256 usdcIn) internal returns (uint256 synDelta) {
+        bytes32[] memory noProof = new bytes32[](0);
+        uint256 before = IERC20Like(SYN).balanceOf(who);
+        deal(USDC, who, usdcIn);
+        vm.startPrank(who);
+        IERC20Like(USDC).approve(address(sale), type(uint256).max);
+        sale.buy(usdcIn, address(0), 0, noProof);
+        vm.stopPrank();
+        synDelta = IERC20Like(SYN).balanceOf(who) - before;
+    }
+
     function test_forkRehearsalV2b_fullFlow() public {
         string memory rpc = vm.envOr("AVAX_RPC", string(""));
         if (bytes(rpc).length == 0) {
@@ -107,7 +134,7 @@ contract RehearsalForkV2bTest is Test {
         }
 
         // -------------------------------------------------- deploy (this == owner)
-        SyndicateSaleV2 sale = new SyndicateSaleV2(
+        sale = new SyndicateSaleV2(
             USDC, SYN, VAULT, LIQ, OPS,
             GENESIS_OFFSET, ROOT,
             _addrCaps(), MAX_USDC_PER_TX, RESERVE_THROUGH, _eraCaps(),
@@ -119,14 +146,14 @@ contract RehearsalForkV2bTest is Test {
         assertEq(sale.owner(), address(this), "owner == deployer");
         assertEq(sale.GENESIS_OFFSET(), GENESIS_OFFSET, "GENESIS_OFFSET == 5");
         assertEq(sale.memberCount(), GENESIS_OFFSET, "memberCount == 5 (all prior members)");
-        assertEq(sale.commissionRouter(), address(0), "router disarmed");
+        assertEq(sale.commissionRouter(), address(0), "router disarmed at deploy");
         assertEq(sale.V1_MEMBER_ROOT(), ROOT, "merged v1 root");
         assertEq(sale.MAX_USDC_PER_TX(), MAX_USDC_PER_TX, "maxUsdcPerTx $25k");
         assertEq(sale.RESERVE_THROUGH_SEAT(), RESERVE_THROUGH, "reserveThroughSeat");
         assertEq(sale.maxUsdcPerAddressPerEra(1), 25_000_000_000, "Era I addr cap == $25,000 (V2a $5 defect fixed)");
         assertEq(sale.eraSynCap(1), type(uint256).max, "eraSynCap[1] forced to max (Model 2)");
 
-        // -------------------------------------------------- B. Era I active for #6
+        // -------------------------------------------------- A'. Era I active for #6
         assertEq(sale.activeEra(), 1, "activeEra == 1 (Genesis)");
         assertEq(sale.currentEra(), 1, "currentEra == 1");
         assertEq(sale.nextSeatNumber(), 6, "next seat #6 (offset 5)");
@@ -134,47 +161,75 @@ contract RehearsalForkV2bTest is Test {
         // fund the contract with SYN (separate post-deploy step in production)
         deal(SYN, address(sale), 50_000_000 ether);
 
-        // -------------------------------------------------- B'. recognize V2a member #3
+        // -------------------------------------------------- B. recognize V2a member #3
         vm.prank(M3_V2A);
         sale.claimV1Membership(_proofM3());
         assertTrue(sale.knownMember(M3_V2A), "V2a member #3 recognized via merged root");
         assertEq(sale.memberCount(), 5, "recognition mints NO seat");
 
-        // -------------------------------------------------- C. fresh newcomer -> #6
+        // -------------------------------------------------- C. fresh newcomer -> #6 ($5)
         address newcomer = makeAddr("v2b-newcomer");
-        deal(USDC, newcomer, 1_000_000_000); // $1,000
-        bytes32[] memory noProof = new bytes32[](0);
-        vm.startPrank(newcomer);
-        IERC20Like(USDC).approve(address(sale), type(uint256).max);
-        sale.buy(ERA_I_MIN_USDC, address(0), 0, noProof);
-        vm.stopPrank();
+        uint256 d6 = _buy(newcomer, USDC_5);
         assertEq(sale.memberCount(), 6, "fresh buy -> memberCount 6");
         assertEq(sale.memberNumberOf(newcomer), 6, "newcomer is member #6");
-        assertEq(IERC20Like(SYN).balanceOf(newcomer), ERA_I_SYN_OUT, "newcomer got 500 SYN");
+        assertEq(d6, SYN_5, "newcomer got 500 SYN");
+        assertEq(sale.usdcContributed(newcomer), USDC_5, "newcomer cumulative USDC == $5");
 
         // -------------------------------------------------- D. returning merged member -> NO 2nd seat
-        uint256 m1SynBefore = IERC20Like(SYN).balanceOf(M1_V1);
-        deal(USDC, M1_V1, 1_000_000_000);
+        uint256 m1Before = IERC20Like(SYN).balanceOf(M1_V1);
+        deal(USDC, M1_V1, USDC_5);
         vm.startPrank(M1_V1);
         IERC20Like(USDC).approve(address(sale), type(uint256).max);
-        sale.buy(ERA_I_MIN_USDC, address(0), 0, _proofM1());
+        sale.buy(USDC_5, address(0), 0, _proofM1());
         vm.stopPrank();
         assertEq(sale.memberCount(), 6, "returning member mints NO second seat");
         assertEq(sale.memberNumberOf(M1_V1), 0, "merged member has no NEW V2b seat number");
         assertTrue(sale.knownMember(M1_V1), "merged member recognized");
-        assertEq(IERC20Like(SYN).balanceOf(M1_V1) - m1SynBefore, ERA_I_SYN_OUT, "merged member still received SYN (delta)");
+        assertEq(IERC20Like(SYN).balanceOf(M1_V1) - m1Before, SYN_5, "merged member still received SYN");
 
-        // -------------------------------------------------- E. HEADLINE: $10,000 Genesis buy
+        // -------------------------------------------------- E. amount ladder $25/$100/$1,000 -> #7,#8,#9
+        address b25  = makeAddr("v2b-buy-25");
+        address b100 = makeAddr("v2b-buy-100");
+        assertEq(_buy(b25, USDC_25), SYN_25, "$25 -> 2,500 SYN");
+        assertEq(sale.memberNumberOf(b25), 7, "$25 buyer is seat #7");
+        assertEq(_buy(b100, USDC_100), SYN_100, "$100 -> 10,000 SYN");
+        assertEq(sale.memberNumberOf(b100), 8, "$100 buyer is seat #8");
+
+        // -------------------------------------------------- F. 70/20/10 routing on a $1,000 buy -> #9
+        address b1k = makeAddr("v2b-buy-1k");
+        uint256 vBefore = IERC20Like(USDC).balanceOf(VAULT);
+        uint256 lBefore = IERC20Like(USDC).balanceOf(LIQ);
+        uint256 oBefore = IERC20Like(USDC).balanceOf(OPS);
+        assertEq(_buy(b1k, USDC_1K), SYN_1K, "$1,000 -> 100,000 SYN");
+        assertEq(sale.memberNumberOf(b1k), 9, "$1,000 buyer is seat #9");
+        assertEq(IERC20Like(USDC).balanceOf(VAULT) - vBefore, (USDC_1K * 70) / 100, "Vault +70% ($700)");
+        assertEq(IERC20Like(USDC).balanceOf(LIQ)   - lBefore, (USDC_1K * 20) / 100, "Liquidity +20% ($200)");
+        assertEq(IERC20Like(USDC).balanceOf(OPS)   - oBefore, USDC_1K - (USDC_1K * 70) / 100 - (USDC_1K * 20) / 100, "Operations +10% ($100)");
+        assertEq(sale.commissionRouter(), address(0), "router STILL unset after routed buy");
+
+        // -------------------------------------------------- G. HEADLINE: $10,000 Genesis buy -> #10
         address whale = makeAddr("v2b-genesis-whale");
-        deal(USDC, whale, WHALE_USDC);
-        vm.startPrank(whale);
-        IERC20Like(USDC).approve(address(sale), type(uint256).max);
-        sale.buy(WHALE_USDC, address(0), 0, noProof); // $10,000 — would REVERT under V2a's $5 cap
-        vm.stopPrank();
-        assertEq(sale.memberCount(), 7, "whale buy -> memberCount 7");
-        assertEq(sale.memberNumberOf(whale), 7, "whale is member #7");
-        assertEq(IERC20Like(SYN).balanceOf(whale), WHALE_SYN_OUT, "whale got 1,000,000 SYN (largest Genesis package)");
+        assertEq(_buy(whale, USDC_10K), SYN_10K, "$10,000 -> 1,000,000 SYN (largest Genesis package)");
+        assertEq(sale.memberCount(), 10, "whale buy -> memberCount 10");
+        assertEq(sale.memberNumberOf(whale), 10, "whale is member #10");
 
-        console2.log("V2b FORK REHEARSAL OK: 5 prior members preserved, no duplicate seats, $10k Genesis buy = 1,000,000 SYN");
+        // -------------------------------------------------- H. repeat purchase: SYN + recognition, NO new seat
+        uint256 mcBefore = sale.memberCount();
+        uint256 synBefore = IERC20Like(SYN).balanceOf(newcomer);
+        uint256 cumBefore = sale.usdcContributed(newcomer);
+        uint256 dRepeat = _buy(newcomer, USDC_25); // member #6 buys again
+        assertEq(sale.memberCount(), mcBefore, "repeat buy mints NO second seat");
+        assertEq(sale.memberNumberOf(newcomer), 6, "repeat buyer keeps seat #6");
+        assertEq(IERC20Like(SYN).balanceOf(newcomer) - synBefore, SYN_25, "repeat buy still pays SYN (+2,500)");
+        assertEq(dRepeat, SYN_25, "repeat synDelta == 2,500");
+        assertEq(sale.usdcContributed(newcomer) - cumBefore, USDC_25, "repeat buy grows cumulative recognition (+$25)");
+        assertEq(sale.usdcContributed(newcomer), USDC_5 + USDC_25, "newcomer cumulative USDC == $30");
+
+        // -------------------------------------------------- final invariants
+        assertEq(sale.commissionRouter(), address(0), "CommissionRouter remained UNSET for the whole rehearsal");
+        assertEq(sale.activeEra(), 1, "still Era I (Genesis) -- all 5 new seats <= #333");
+
+        console2.log("V2b FORK REHEARSAL OK: 5 prior members preserved, no duplicate seats,");
+        console2.log("  ladder $5/$25/$100/$1k/$10k all funded, 70/20/10 routed, router unset.");
     }
 }

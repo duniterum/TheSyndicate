@@ -1,0 +1,64 @@
+Continue exactly as scoped.
+
+Do not mainnet deploy.
+
+Next sprint:
+
+V2B FORK REHEARSAL EXECUTION
+
+Goal
+
+Run the V2b rehearsal in a higher-memory Foundry environment and prove the corrected Sale V2b flow before any mainnet action.
+
+Approved for rehearsal:
+
+* V2b uses same Sale V2 code.
+* addrCaps[0] = $25,000.
+* initialRouter = 0x0.
+* V1 + V2a member snapshot must be unioned and deduped.
+* genesisOffset must equal distinct member count at V2a pause/snapshot block.
+* old V2a must later be paused before final snapshot/mainnet deploy.
+
+Important
+
+Current snapshot is PROVISIONAL.
+
+Do not treat genesisOffset = 5 or root 0xa1f2... as final mainnet values unless no V2a purchase happens before pause.
+
+Tasks
+
+1. Run the fork rehearsal test in a high-memory environment.
+2. Prove:
+
+   * V2b deploys with corrected params.
+   * Existing V1 + V2a members are recognized.
+   * Existing members do not receive duplicate seats.
+   * Fresh buyer receives next seat.
+   * $5, $25, $100, $1,000, $10,000 buys succeed if funded.
+   * repeat purchase increases SYN/cumulative recognition but creates no second seat.
+   * 70/20/10 routing works.
+   * CommissionRouter remains unset.
+3. Verify the deploy-params path footgun:
+
+   * Deploy.s.sol currently reads script/deploy-params.json.
+   * Make rehearsal path explicit or fail-safe so stale V1-only params cannot be used accidentally.
+4. Report exact funding required for:
+
+   * $10k advertised package
+   * $25k maximum package
+   * reserve floor + sellable inventory buffer
+5. Do not implement package/rank or 9-chapter frontend changes yet.
+6. Do not touch referral, NFT, Archive, journey, wallet providers.
+
+Return:
+
+1. Fork rehearsal result
+2. Exact command/environment used
+3. Tests passed/failed
+4. Param read-back
+5. Snapshot validation
+6. Buy simulations
+7. Funding requirement
+8. Deploy script footgun fix/recommendation
+9. Remaining blockers before mainnet
+10. Whether mainnet deployment is safe or still blocked

@@ -24,11 +24,19 @@ import {SyndicateSaleV2} from "../src/SyndicateSaleV2.sol";
 ///           forge script script/Deploy.s.sol:Deploy --rpc-url $RPC --broadcast --verify
 contract Deploy is Script {
     function run() external returns (SyndicateSaleV2 sale) {
-        string memory json = vm.readFile("script/deploy-params.json");
+        // PATH FOOTGUN GUARD. The params file is EXPLICIT via the DEPLOY_PARAMS
+        // env var (default: the canonical script/deploy-params.json). A rehearsal
+        // MUST point this at script/deploy-params.v2b.rehearsal.json so the stale
+        // V1-only snapshot in deploy-params.json can NEVER be used by accident:
+        //   DEPLOY_PARAMS=script/deploy-params.v2b.rehearsal.json forge script ...
+        // (foundry.toml fs_permissions grants read to the whole ./script dir.)
+        string memory paramsPath = vm.envOr("DEPLOY_PARAMS", string("script/deploy-params.json"));
+        console2.log("deploy params file:", paramsPath);
+        string memory json = vm.readFile(paramsPath);
 
-        // FAIL-CLOSED deploy guard. deploy-params.json may carry a PROVISIONAL
-        // pre-pause V1 snapshot (genesisOffset / v1MemberRoot). A real mainnet
-        // deploy MUST use the canonical snapshot regenerated from the V1 pause
+        // FAIL-CLOSED deploy guard. The params file may carry a PROVISIONAL
+        // pre-pause snapshot (genesisOffset / v1MemberRoot). A real mainnet
+        // deploy MUST use the canonical snapshot regenerated from the V2a pause
         // block. While "provisional" is true the script refuses to run unless
         // ALLOW_PROVISIONAL_DEPLOY=1 is set explicitly — the forked-mainnet
         // rehearsal sets it; a mainnet operator must NOT. After regenerating the
@@ -37,7 +45,7 @@ contract Deploy is Script {
         bool allowProvisional = vm.envOr("ALLOW_PROVISIONAL_DEPLOY", false);
         require(
             !provisional || allowProvisional,
-            "Deploy: PROVISIONAL snapshot (genesisOffset/v1MemberRoot) - regenerate from the V1 pause block and set provisional=false, or set ALLOW_PROVISIONAL_DEPLOY=1 for a rehearsal"
+            "Deploy: PROVISIONAL snapshot (genesisOffset/v1MemberRoot) - regenerate from the V2a pause block and set provisional=false, or set ALLOW_PROVISIONAL_DEPLOY=1 for a rehearsal"
         );
 
         address usdc = vm.parseJsonAddress(json, ".usdc");
@@ -50,6 +58,20 @@ contract Deploy is Script {
         bytes32 v1MemberRoot = vm.parseJsonBytes32(json, ".v1MemberRoot");
         uint256 maxUsdcPerTx = vm.parseJsonUint(json, ".maxUsdcPerTx");
         uint256 reserveThroughSeat = vm.parseJsonUint(json, ".reserveThroughSeat");
+
+        // DOUBLE-ENTRY STALE-SNAPSHOT GUARD (optional but recommended). The
+        // operator independently declares the expected snapshot; a mismatch with
+        // the file means the WRONG (e.g. stale V1-only offset=2/old-root) params
+        // were selected, and the deploy reverts before any broadcast. Skipped
+        // when the env vars are unset (0 / 0x0).
+        uint256 expectOffset = vm.envOr("EXPECT_GENESIS_OFFSET", uint256(0));
+        if (expectOffset != 0) {
+            require(genesisOffset == expectOffset, "Deploy: genesisOffset != EXPECT_GENESIS_OFFSET (stale snapshot?)");
+        }
+        bytes32 expectRoot = vm.envOr("EXPECT_V1_ROOT", bytes32(0));
+        if (expectRoot != bytes32(0)) {
+            require(v1MemberRoot == expectRoot, "Deploy: v1MemberRoot != EXPECT_V1_ROOT (stale snapshot?)");
+        }
 
         uint256[9] memory addrCaps = _toFixed9(vm.parseJsonUintArray(json, ".addrCaps"));
         uint256[9] memory eraCaps = _toFixed9(vm.parseJsonUintArray(json, ".eraCaps"));

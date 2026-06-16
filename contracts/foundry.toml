@@ -17,8 +17,10 @@ remappings = [
     "forge-std/=lib/forge-std/src/",
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
 ]
-# Deploy.s.sol reads constructor params from script/deploy-params.json via vm.readFile.
-fs_permissions = [{ access = "read", path = "./script/deploy-params.json" }]
+# Deploy.s.sol reads constructor params via vm.readFile from a DEPLOY_PARAMS path
+# (default script/deploy-params.json; rehearsal uses deploy-params.v2b.rehearsal.json).
+# Grant read to the whole ./script dir so the explicit path override is honored.
+fs_permissions = [{ access = "read", path = "./script" }]
 
 [fuzz]
 runs = 512

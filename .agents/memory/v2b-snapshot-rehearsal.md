@@ -1,6 +1,6 @@
 ---
 name: V2b snapshot + parameter rehearsal
-description: V2b replaces live unaudited V2a — merged-snapshot identity rule, the live V2a $5 Genesis-cap defect, and the Foundry via_ir OOM that blocks fork rehearsal in-container.
+description: V2b replaces live unaudited V2a — merged-snapshot identity rule, the live V2a $5 Genesis-cap defect, the executed forked-mainnet rehearsal recipe (cancun REQUIRED + runs=1), and the SYN funding gap.
 ---
 
 # V2b snapshot + parameter rehearsal
@@ -29,15 +29,41 @@ seat in one tx). The V2b rehearsal params differ from canonical `deploy-params.j
 3 fields** (`addrCaps[0]`, `genesisOffset`, `v1MemberRoot`) **+ the `provisional` flag** —
 everything else byte-identical.
 
-## Foundry via_ir OOM blocks fork rehearsal in this container
-`forge build` (via_ir, required for `buy()`'s stack) **OOM-kills in this container** — no error,
-no log, no done-marker, the forge process just vanishes (same cgroup-OOM ceiling as vite build).
-So `RehearsalForkV2b.t.sol` is **written and ready but cannot be executed here**; run it in a
-higher-memory Foundry env. Gotchas: passing `--evm-version cancun` on the CLI **overrides
-foundry.toml `paris` → forces a full rebuild** (invalidates the cache, makes it worse — only add
-cancun if a fork actually rejects paris opcodes). `Deploy.s.sol` hardcodes
-`vm.readFile("script/deploy-params.json")` and `fs_permissions` only allows that one path, so a
-rehearsal params file is **not consumed** unless deliberately copied over it.
+## Fork rehearsal EXECUTED — in-container recipe (cancun REQUIRED + runs=1)
+`RehearsalForkV2b.t.sol` now runs **green in this container** (1 passed/0 failed). Recipe:
+```
+cd contracts
+FOUNDRY_OPTIMIZER_RUNS=1 forge build --evm-version cancun        # ~67s warm
+AVAX_RPC="https://avalanche-c-chain-rpc.publicnode.com" \
+  FOUNDRY_OPTIMIZER_RUNS=1 forge test --match-contract RehearsalForkV2b -vv --evm-version cancun
+```
+- **`--evm-version cancun` is REQUIRED, not optional** (corrects the earlier note): under `paris`
+  the forked **SYN** token bytecode (PUSH0) reverts `EvmError: NotActivated` on the first
+  `balanceOf`. Constructor read-backs pass under paris; execution against the real tokens does not.
+- **`FOUNDRY_OPTIMIZER_RUNS=1` dodges the cgroup OOM:** the cold cancun via_ir compile at the
+  production `runs=200` is OOM-killed (no error/marker — same ceiling as vite build). `runs=1`
+  compiles (~67s) with identical runtime semantics. This is a **behavior** rehearsal, **NOT**
+  production-bytecode equivalence (production stays `paris`/`runs=200`).
+- The fork samples **one V1 + one V2a proof**; "all 5 preserved" rests on `offset=5` read-back
+  (`memberCount==5`) + the offline merged-snapshot validation, not an on-fork replay of all five.
+
+## Deploy.s.sol param-path footgun — FIXED (but EXPECT_* is opt-in)
+`Deploy.s.sol` no longer hardcodes `vm.readFile("script/deploy-params.json")`. It reads an explicit
+`DEPLOY_PARAMS` path (default unchanged), **logs the path it loaded**, and a double-entry
+`EXPECT_GENESIS_OFFSET`/`EXPECT_V1_ROOT` guard **reverts** on a stale/mismatched file
+(`genesisOffset != EXPECT_GENESIS_OFFSET (stale snapshot?)`); `fs_permissions` now reads `./script`.
+**Gotcha:** the guard only fires if the operator SETS `EXPECT_*` — so treat both as **mandatory**
+deploy gates; that human-discipline step is the only residual. Proven by 3 `forge script` dry-runs
+(happy path → SIMULATION COMPLETE; wrong EXPECT → revert; default stale file + EXPECT=5 → revert).
+`provisional=true` still fail-closes unless `ALLOW_PROVISIONAL_DEPLOY=1`.
+
+## SYN funding gap (carry-over deploy blocker)
+`buy()` gates on `_reserveSyn` (each remaining reservable seat #m+1..10000 at its own era min):
+`_reserveSyn(5)=4,097,500 SYN` (deploy floor), `_reserveSyn(6)=4,097,000`. A fresh **$10k** Genesis
+buy needs **≥ 5,097,000 SYN** (1,000,000 + reserve); a full **$25k** buy needs **≥ 6,597,000 SYN**.
+V2a holds only **4,998,500 SYN** → a like-for-like balance transfer to V2b **cannot** honor even one
+$10k package (only ≈ $9,015 sellable above the floor). **V2b MUST be funded ABOVE the V2a balance**
+before opening; the constructor pulls no SYN (fork test `deal`s 50M to sidestep this).
 
 ## Final-deploy caveat
 The rehearsal snapshot is pinned to the **rolling head** (`snapshotBlock` = current). The FINAL

@@ -8,6 +8,10 @@
 >
 > **Generated:** 2026-06-16 · Chain: Avalanche C-Chain (43114) · Snapshot is **PROVISIONAL**
 > (rehearsal head `88162414`, not the final pause block).
+>
+> **Rehearsal status: EXECUTED — ✅ PASS.** The forked-mainnet test `RehearsalForkV2b` ran
+> **green** on an Avalanche C-Chain fork (`--evm-version cancun`; `1 passed / 0 failed`), and the
+> `Deploy.s.sol` param-path footgun is now **fixed and proven by simulation** (see F7 / F8).
 
 ---
 
@@ -127,49 +131,126 @@ rate-limited a cold scan). Generated outputs (`members-merged.json`, `members-me
 
 **Architect-confirmed:** no address, `maxUsdcPerTx`, `reserveThroughSeat`, router, or `eraCap` drift.
 
-> ⚠️ **Operator footgun:** `Deploy.s.sol` **hardcodes** `vm.readFile("script/deploy-params.json")`
-> and `foundry.toml` `fs_permissions` only grants read to that one path. The rehearsal file is
-> therefore **not consumed** unless it is explicitly copied/renamed to `deploy-params.json` (or the
-> script/runbook is adjusted). This is intentional friction for a rehearsal-only artifact — see F8.
+> ✅ **Operator footgun — FIXED (proven in F8.2).** `Deploy.s.sol` previously hardcoded
+> `vm.readFile("script/deploy-params.json")`, so the rehearsal file could only be consumed by
+> **overwriting** the canonical file (a stale-file hazard). It now (1) reads an **explicit,
+> env-selected path** `DEPLOY_PARAMS` (default `script/deploy-params.json`), (2) **logs the path it
+> actually loaded**, and (3) enforces a **double-entry guard** — if `EXPECT_GENESIS_OFFSET` /
+> `EXPECT_V1_ROOT` are set and don't match the loaded file, the script **reverts**
+> (`Deploy: genesisOffset != EXPECT_GENESIS_OFFSET (stale snapshot?)`). `foundry.toml`
+> `fs_permissions` now grants read to `./script` (the directory, not a single hardcoded file).
+> `provisional=true` still **fail-closes** unless `ALLOW_PROVISIONAL_DEPLOY=1` (fork only).
+>
+> ⚠️ **Operational rule (mandatory):** the `EXPECT_*` guard only protects you if it is **set** — an
+> operator who omits `EXPECT_GENESIS_OFFSET` / `EXPECT_V1_ROOT` can still load the default file
+> unguarded. Treat **both `EXPECT_*` values as REQUIRED** at every rehearsal/deploy (F13 #4); the
+> residual risk in F10 is exactly this human-discipline step.
 
 ---
 
-## F8 — Fork rehearsal: 15-step runbook + run status
+## F8 — Fork rehearsal: EXECUTED ✅ (forked mainnet, cancun)
 
-**Test written:** `contracts/test/RehearsalForkV2b.t.sol` (sibling of the V2a `RehearsalFork.t.sol`).
-It deploys the **production** `SyndicateSaleV2` on an Avalanche C-Chain fork with the exact V2b
-values and asserts:
-- constructor read-back: `memberCount == 5`, next seat **#6**, Era I active, **$25k** Era I addr cap echoed, `eraSynCap[1] == max`, router `0x0`, merged root;
-- a merged member recognized via `claimV1Membership` mints **NO** seat;
-- a fresh buy mints **#6** (500 SYN at $5);
-- a returning merged member with a valid proof mints **NO 2nd seat** (asserts the SYN **delta**);
-- **HEADLINE:** a **$10,000 Genesis buy** clears the new $25k cap and yields **exactly 1,000,000 SYN** (member #7) — the capability the V2a $5 cap blocked.
+**Test:** `contracts/test/RehearsalForkV2b.t.sol` deploys the **production `SyndicateSaleV2` source**
+(same semantics — see the compile caveat below; this is a behavior rehearsal, **not** production-bytecode
+equivalence) on an Avalanche C-Chain fork using the exact `deploy-params.v2b.rehearsal.json` values and
+proves the full member lifecycle (A–H). It self-skips when `AVAX_RPC` is unset, so the default
+`forge test` is unaffected. **Scope note:** the fork samples **one V1 proof (member #1) + one V2a proof
+(member #3)**; full "all 5 prior members preserved" rests on the `offset=5` constructor read-back
+(`memberCount==5`) **plus** the offline merged-snapshot validation (F3–F5), not an on-fork replay of all
+five proofs.
 
-**Run status: BLOCKED in this environment (run-if-feasible → not feasible here).**
-The Foundry **`via_ir` compile is OOM-killed** in this container (no error, no marker, process
-vanished — the documented build-OOM ceiling). The test is **ready to run** in a higher-memory
-Foundry environment; it self-skips when `AVAX_RPC` is unset, so it never breaks `forge test`.
+**Result:** `Suite result: ok. 1 passed; 0 failed; 0 skipped` — fork test **green in 3.35s** (warm cache).
 
-**15-step fork-rehearsal runbook (for a higher-memory machine):**
-1. `cd contracts` (isolated Foundry harness; `via_ir = true` is required for `buy()`).
-2. Ensure libs present: `lib/forge-std`, `lib/openzeppelin-contracts`.
-3. `forge build` once (warm the `via_ir` cache) — expect minutes; needs > this container's RAM.
-4. Export an Avalanche **full/archive** RPC: `export AVAX_RPC=<rpc>`.
-5. (Optional) pin a fork block: `export AVAX_FORK_BLOCK=88162414` (else forks at head).
-6. Dry-compile the test: `forge test --match-contract RehearsalForkV2b --no-match-test x -vv` (compile only).
-7. Run it: `forge test --match-contract RehearsalForkV2b -vv` (add `--evm-version cancun` if the fork rejects `paris` opcodes).
-8. Confirm constructor read-back assertions (offset 5, seat #6, $25k cap, root) pass.
-9. Confirm `claimV1Membership` recognizes a merged member with **no** `memberCount` change.
-10. Confirm a fresh buy mints **#6** and pays 500 SYN.
-11. Confirm a returning merged member (proof) mints **no** 2nd seat (SYN delta = 500).
-12. Confirm the **$10,000** buy mints **#7** and pays **1,000,000 SYN** (the headline).
-13. **Deploy-script rehearsal (separate):** copy `deploy-params.v2b.rehearsal.json` → `deploy-params.json` in a **scratch checkout**, then `ALLOW_PROVISIONAL_DEPLOY=1 forge script script/Deploy.s.sol --fork-url $AVAX_RPC`.
-14. Verify the deployed fork instance's getters match F7; then **restore** the canonical `deploy-params.json`.
-15. Record gas + the deployed address; tear down the fork. **No broadcast — fork only.**
+```
+[PASS] test_forkRehearsalV2b_fullFlow()
+deployed V2b SyndicateSaleV2 at: 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
+V2b FORK REHEARSAL OK: 5 prior members preserved, no duplicate seats,
+  ladder $5/$25/$100/$1k/$10k all funded, 70/20/10 routed, router unset.
+```
 
-**Evidence base while the fork run is pending:** the offline guarantees already hold — merged
-snapshot + root + `validate-snapshot` OK, on-chain cross-check (count == 5), and the architect's
-static verification of the constructor/`buy()` semantics against the assertions.
+**Exact command + environment (reproducible):**
+```bash
+cd contracts
+# 1) warm the cancun cache once — full via_ir compile (~67s); runs=1 fits container RAM
+FOUNDRY_OPTIMIZER_RUNS=1 forge build --evm-version cancun
+# 2) run the fork test against a public Avalanche RPC
+AVAX_RPC="https://avalanche-c-chain-rpc.publicnode.com" \
+  FOUNDRY_OPTIMIZER_RUNS=1 \
+  forge test --match-contract RehearsalForkV2b -vv --evm-version cancun
+```
+
+- **`--evm-version cancun` is REQUIRED.** Under the default `paris` spec the forked **SYN** token
+  bytecode (PUSH0) reverts `EvmError: NotActivated` on the first `balanceOf`. Cancun matches the
+  live chain spec. (Section A constructor read-backs pass under paris; execution against the real
+  tokens does not.)
+- **`FOUNDRY_OPTIMIZER_RUNS=1` is an ENVIRONMENT workaround, not a behavior change.** The cold
+  `cancun` via_ir compile at the production `runs=200` is **OOM-killed** in this 16 GiB container
+  (the documented build-OOM ceiling). `runs=1` cuts via_ir Yul-optimizer memory enough to compile
+  (~67s) with **identical runtime semantics** for a behavior rehearsal. Production bytecode is still
+  built at the canonical `paris` / `runs=200`.
+- `AVAX_FORK_BLOCK` is optional (defaults to chain head). RPC: `publicnode` (api.avax.network also
+  works; ankr now needs an API key).
+
+**Lifecycle assertions — all PASS:**
+
+| § | Proof | Result |
+|---|---|---|
+| A | constructor read-back | `memberCount==5`, next seat **#6**, Era I active, Era I addr cap **$25,000**, `eraSynCap[1]==max`, router `0x0`, merged root ✅ |
+| B | V2a member #3 recognized via `claimV1Membership` | `knownMember==true`, `memberCount` stays **5** (no seat) ✅ |
+| C | fresh newcomer first buy ($5) | mints **#6**, **+500 SYN**, cumulative USDC `$5` ✅ |
+| D | returning V1 member #1 (valid proof, $5) | **no 2nd seat** (`memberCount` stays 6, `memberNumberOf==0`), still **+500 SYN** ✅ |
+| E | amount ladder $25 / $100 | **#7 (+2,500 SYN)**, **#8 (+10,000 SYN)** ✅ |
+| F | 70/20/10 routing on $1,000 → **#9** | Vault **+$700**, Liquidity **+$200**, Operations **+$100**; router still `0x0` ✅ |
+| G | **HEADLINE** $10,000 Genesis → **#10** | **+1,000,000 SYN** — the package the V2a $5 cap blocked ✅ |
+| H | repeat buy by member #6 ($25) | **no 2nd seat**, **+2,500 SYN**, cumulative USDC → **$30** ✅ |
+| — | final invariants | `commissionRouter==0x0` throughout; still Era I (all new seats ≤ #333) ✅ |
+
+**Buy simulations (deliverable):**
+
+| Buy | USDC (6dp) | SYN out (×100/USDC) | Seat | Routing (Vault / Liq / Ops) |
+|---|---|---|---|---|
+| $5 newcomer | 5,000,000 | 500 | **#6** (new) | 70/20/10 |
+| $5 returning V1 #1 | 5,000,000 | 500 | — (recognized, no seat) | 70/20/10 |
+| $25 | 25,000,000 | 2,500 | **#7** (new) | 70/20/10 |
+| $100 | 100,000,000 | 10,000 | **#8** (new) | 70/20/10 |
+| $1,000 | 1,000,000,000 | 100,000 | **#9** (new) | **$700 / $200 / $100 (asserted)** |
+| $10,000 | 10,000,000,000 | 1,000,000 | **#10** (new) | 70/20/10 |
+| $25 repeat (by #6) | 25,000,000 | 2,500 | — (keeps #6) | 70/20/10 |
+
+Every ladder amount clears the new **$25,000** Era I per-address cap; the $10,000 buy is the largest
+Genesis package and directly confirms the C3 fix the V2a `$5` cap blocked.
+
+### F8.1 — SYN funding requirement (production)
+
+`buy()` mints only if enough SYN **remains** to seat every reservable seat (`m+1 … 10,000`) at each
+seat's own era minimum (`_reserveSyn`, O(9) over the era table). Computed from the live schedule
+(Era I 100 SYN/USDC·min $5 → #333; II 50·$10 → #1,000; III 40·$10 → #3,333; IV 16·$25 → #10,000):
+
+| Quantity | SYN (18dp) | Derivation |
+|---|---|---|
+| Reserve floor at deploy (`_reserveSyn(5)`, seats #6–#10,000) | **4,097,500** | (333−5)·500 + 667·500 + 2333·400 + 6667·400 |
+| Largest single Genesis package ($10,000 × 100) | **1,000,000** | headline buy |
+| Full max-per-tx Genesis buy ($25,000 × 100) | **2,500,000** | `MAX_USDC_PER_TX` × 100 |
+| **Fund to honor one fresh $10k buy (seat #6)** | **≥ 5,097,000** | 1,000,000 + `_reserveSyn(6)` 4,097,000 |
+| **Fund to honor one full $25k buy (seat #6)** | **≥ 6,597,000** | 2,500,000 + `_reserveSyn(6)` 4,097,000 |
+
+> ⚠️ **Funding gap (carry-over blocker).** V2a currently holds **4,998,500 SYN** (F2). A like-for-like
+> balance transfer to V2b would **not** fund even one full $10,000 Genesis package — only ≈ **$9,015**
+> of Genesis SYN is sellable above the reserve floor. **V2b must be funded ABOVE the V2a balance**
+> (≥ 5,097,000 SYN to open $10k buys; ≥ 6,597,000 SYN for a full $25k buy) before opening. The fork
+> test sidesteps this by `deal`-ing 50,000,000 SYN to the contract; production needs a real funding tx
+> (the constructor pulls no SYN).
+
+### F8.2 — Deploy-script footgun fix: proven by simulation
+
+Three `forge script script/Deploy.s.sol:Deploy --rpc-url <avax> --evm-version cancun` dry-runs (no
+broadcast) prove the fix end-to-end:
+
+| Case | Inputs | Outcome |
+|---|---|---|
+| 1 — happy path | `DEPLOY_PARAMS=…rehearsal.json`, `EXPECT_GENESIS_OFFSET=5`, `EXPECT_V1_ROOT=0xa1f2…18c49`, `ALLOW_PROVISIONAL_DEPLOY=1` | **SIMULATION COMPLETE** — `memberCount=5`, `activeEra=1`, `commissionRouter=0x0` |
+| 2 — stale double-entry | rehearsal file but `EXPECT_GENESIS_OFFSET=2` | **REVERT** `Deploy: genesisOffset != EXPECT_GENESIS_OFFSET (stale snapshot?)` |
+| 3 — the footgun (default stale file) | default `deploy-params.json` (offset 2) but operator `EXPECT_GENESIS_OFFSET=5` | **REVERT** + logs `deploy params file: script/deploy-params.json` (operator sees the file used) |
 
 ---
 
@@ -211,7 +292,7 @@ implementation** — it changes a pervasively-used coordinate system, not just a
 | V2a member re-issued a new seat (duplicate identity) | **Critical if wrong** | Merged root + offset 5 + 3 fail-loud cross-checks; `buy()` recognizes a proof-bearing returning member and mints no seat | **Low** — proven for the rehearsal snapshot |
 | Exporter diverges from frontend Holder Index | High impact | Exporter mirrors `useLivePurchaseEvents` exactly; identity sourced from `Purchased`/`TokensPurchased` (architect-confirmed equivalent; frontend's extra `Routed` join is money-split only, not identity) | **Low** |
 | Snapshot taken at the wrong block | Medium | snapshotBlock recorded (`88162414`, current head) and **flagged PROVISIONAL** everywhere | **Open** — final must pin the V2a **pause** block (F13) |
-| Wrong deploy-params consumed | Medium | `provisional=true` fail-closes; `Deploy.s.sol` reads only `deploy-params.json` | **Open** — operator must copy file deliberately (F7 footgun) |
+| Wrong deploy-params consumed | Medium | `provisional=true` fail-closes; `Deploy.s.sol` now reads an **explicit `DEPLOY_PARAMS` path**, **logs it**, and a **double-entry `EXPECT_GENESIS_OFFSET`/`EXPECT_V1_ROOT` guard reverts on a stale/mismatched file** (proven F8.2) | **Closed** for the path footgun; residual = human discipline to pass the `EXPECT_*` values |
 
 ---
 
@@ -224,24 +305,34 @@ implementation** — it changes a pervasively-used coordinate system, not just a
 - ❌ No protocol-truth / canon-doc edits. ✅
 - ✅ Only new/changed files: `contracts/tools/export-members-merged.mjs`,
   `contracts/script/deploy-params.v2b.rehearsal.json`, `contracts/test/RehearsalForkV2b.t.sol`,
-  `contracts/tools/.gitignore` (ignore generated outputs), and this report.
+  `contracts/script/Deploy.s.sol` (explicit `DEPLOY_PARAMS` path + `EXPECT_*` guard — F7/F8.2),
+  `contracts/foundry.toml` (`fs_permissions` read `./script`), `contracts/tools/.gitignore`
+  (ignore generated outputs), and this report. **No `contracts/src/` (contract) change.**
 
 ---
 
 ## F12 — Architect review outcome (`evaluate_task`)
 
-**Verdict: PASS for rehearsal-prep / static review — no observed irreversible-gate defect.**
-- Exporter matches the Holder Index identity rule; the only difference (reads `Purchased` directly
-  vs the frontend's `Purchased`⋈`Routed` money-split join) is **safe** because identity is sourced
-  from `Purchased` and successful buys emit both.
-- Params semantic diff = **exactly** the four intended fields; no drift.
-- Fork-test assertions are correct against `SyndicateSaleV2` semantics; `$10,000 × 100 × 1e12 =
-  1,000,000 SYN`; `deal(SYN, 50,000,000)` comfortably exceeds the reserve-through-10,000 floor
-  (~4.1M SYN after offset 5) plus the tested buys.
+**Verdict: PASS for the executed rehearsal — no observed irreversible-gate or correctness defect.**
+- **Funding math confirmed:** `_reserveSyn(5)=4,097,500`, `_reserveSyn(6)=4,097,000`; fresh $10k buy
+  needs **≥ 5,097,000 SYN**, full $25k needs **≥ 6,597,000 SYN**; V2a's 4,998,500 SYN leaves only
+  ≈ **$9,015** of headroom for the next fresh seat — the funding gap is real (F8.1).
+- **Env workaround sound:** `FOUNDRY_OPTIMIZER_RUNS=1` does not change Solidity semantics (absent a
+  compiler bug) and `cancun` is required to execute forked live-token bytecode. **Caveat:** this is a
+  **same-source behavior rehearsal, NOT production-bytecode equivalence** (production is `paris`/`runs=200`).
+- **Test proves the core properties:** constructor read-back, `claimV1Membership` recognition with no
+  `memberCount` change, V1-proof buy with no 2nd seat, fresh seats #6–#10, $10k → 1,000,000 SYN,
+  repeat buy with no 2nd seat, and the 70/20/10 deltas with router unset. **Caveat:** the fork samples
+  **one V1 + one V2a proof**; full "all 5 preserved" rests on the `offset=5` read-back + offline
+  snapshot validation, not an on-fork replay of all five proofs.
+- **Deploy guard safe:** `provisional=true` still requires `ALLOW_PROVISIONAL_DEPLOY=1`; the path
+  override + logging + `EXPECT_*` guard are correct. **Residual:** the `EXPECT_*` guard is only
+  effective if operators **set it** — so it must be a **mandatory** deploy gate (now stated in F7/F13),
+  not optional.
 - Caveat: the final **pause-block** re-snapshot can change `genesisOffset` and root if any V2a
   purchase lands before pause — current values are **not final**.
 
-Recommended next actions (folded into F13).
+Recommended next actions (folded into F7 / F13). Severe issues: none.
 
 ---
 
@@ -251,13 +342,16 @@ Recommended next actions (folded into F13).
 2. **Re-run `export-members-merged.mjs` pinned to the V2a pause block** → regenerate
    `genesisOffset`, merged root, proofs, and a **non-provisional** params file. Re-run
    `validate-snapshot.mjs` and the cross-checks.
-3. **Execute `RehearsalForkV2b`** in a higher-memory Foundry environment (F8 runbook) — must be green.
-4. Make the **deploy-script param path explicit** (rename to `deploy-params.json` deliberately, or
-   parametrize the path) so an operator cannot accidentally run the stale V1-only file.
-5. Confirm V2b **SYN funding** plan covers at least the $10k = 1,000,000 SYN package + the
-   reserve-through floor.
+3. ✅ **`RehearsalForkV2b` executed green** (F8) under `--evm-version cancun` + `FOUNDRY_OPTIMIZER_RUNS=1`.
+   **Re-run after the pause-block re-snapshot** (offset/root may change) before broadcast.
+4. ✅ **Deploy-script param path made explicit** — `Deploy.s.sol` reads `DEPLOY_PARAMS`
+   (default `script/deploy-params.json`), logs the path, and an `EXPECT_GENESIS_OFFSET`/`EXPECT_V1_ROOT`
+   double-entry guard reverts on a stale file (F7 / F8.2). Operators **must pass the `EXPECT_*` values** at deploy.
+5. ⚠️ **Fund V2b ABOVE the V2a balance.** Need **≥ 5,097,000 SYN** to honor one $10k Genesis buy
+   (1,000,000 + reserve 4,097,000) or **≥ 6,597,000 SYN** for a full $25k buy. V2a holds only
+   **4,998,500 SYN** → a like-for-like transfer is **insufficient** (F8.1).
 6. Independent **audit** of the V2a→V2b replacement before broadcast (V2a is *unaudited*).
-7. Only then: mainnet deploy + post-deploy getter verification against the final params.
+7. Only then: mainnet deploy + post-deploy getter verification (`verify-deploy.mjs`) against the final params.
 
 ---
 
@@ -277,4 +371,9 @@ Two things remain genuinely consequential and should **not** be rushed:
   explicit founder decision on their own, separate from this rehearsal.
 
 Held to the doctrine — *code outranks docs, every claim maps to an on-chain read, don't trust,
-verify* — V2b is **ready to rehearse** and **not yet ready to deploy**, exactly as intended.
+verify* — the V2b rehearsal is now **executed and green on a forked mainnet** (every prior member
+preserved, no duplicate seats, the full $5–$10k ladder funded, 70/20/10 routed, router unset), and
+the deploy-script footgun is closed. V2b nonetheless remains **not yet deployable**: the snapshot is
+still **provisional** (final must pin the V2a pause block), V2b must be **funded above the V2a
+balance** (F8.1), and the V2a→V2b replacement is **unaudited**. **Rehearsed and proven — not yet
+deployable**, exactly as intended.
