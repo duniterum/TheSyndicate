@@ -1,0 +1,155 @@
+Proceed with the next critical sprint:
+
+LIVE-ERA PURCHASE UI CORRECTNESS V1
+
+Goal
+
+Make the Join / purchase UI derive purchase amounts, rate labels, minimums, and package outputs from the live Sale V2 era/rate truth instead of hardcoded Genesis assumptions.
+
+This must happen before any corrected Sale V2 redeploy, because otherwise the UI will keep showing wrong package outputs when eras change.
+
+Current confirmed truths
+
+Contract truth:
+
+* Sale V2 already has automatic era logic.
+* currentEra changes automatically by seat count / cap condition.
+* each era has its own minUsdc6.
+* each era has its own synPerUsdc.
+* quote() uses the live era and rate.
+* buy() uses the same live era and rate.
+* one-seat identity is already separate from repeat purchases.
+* repeat purchases add SYN / recognition but do not create extra seats.
+* deployed Genesis cap is the parameter mismatch, not the contract architecture.
+
+Frontend truth:
+
+* package display is still hardcoded to Genesis rate.
+* LivePurchase uses `usdc * 100` for displayed SYN.
+* package cards say “at Genesis rate.”
+* package/rank cards are static.
+* minSynOut fallback is unsafe for later eras because it falls back to Genesis rate.
+* SALE_MIN_USDC is hardcoded $5.
+* UI does not yet fully derive era/rate/minimum from chain.
+
+A. Fix live quote display in LivePurchase
+
+Update LivePurchase so:
+
+* displayed SYN received uses live quote() result when available
+* no displayed package amount relies on `usdc * 100` if quote is available
+* `minSynOut` is never allowed to fallback to a stale Genesis-rate amount in later eras
+* if quote is unavailable, block submit or show neutral “quote unavailable” instead of using unsafe fallback
+* current error/preflight logic remains intact
+* the already-shipped era-cap guard remains intact
+
+B. Make rate/minimum labels era-aware
+
+Use the live sale stats / quote result where possible.
+
+Display:
+
+* current era/chapter
+* current SYN per USDC
+* current minimum entry
+* current wallet remaining cap
+* if data unavailable, show neutral loading/verification state
+
+Do not show “Genesis rate” if the value is not guaranteed by live currentEra.
+
+C. Package cards / package-catalog truth
+
+Inspect all package/rank surfaces:
+
+* JoinPackages
+* SeatPackageCard
+* package-catalog
+* RankHub
+* Sections
+* any “SYN at Genesis rate” copy
+
+Do not do a full redesign.
+
+Make the minimum safe truth change:
+
+* If package cards remain static, mark them clearly as current-rate preview only if accurate.
+* Prefer deriving displayed SYN from live current era/rate.
+* If deriving all package cards live is too large, stop and report before changing them.
+* Do not let package cards promise $25 → 2,500 SYN if current era rate would deliver less.
+
+D. Per-era minimum
+
+If the contract does not expose minUsdc6 directly:
+
+* confirm whether quote() or another read can provide enough data
+* if not, recommend the smallest safe frontend mirror from eras.ts, verified against contract table
+* do not add contract changes in this sprint unless absolutely required
+* do not lie with SALE_MIN_USDC if current era minimum changes
+
+E. Preserve current safety
+
+Do not touch:
+
+* contracts
+* deploy params
+* referral
+* NFT / Archive
+* journey
+* wallet providers
+* redesign
+* routing split
+* cap guard
+* sale address
+* ABI except read-only getters if needed
+
+F. Validation
+
+Run:
+
+* typecheck
+* purchase / sale hook tests
+* global read tests
+* protocol action guard if affected
+* wording guard
+* cold Vite compile
+* render /join
+
+Manual / simulation checks:
+
+* $5 in current Genesis shows correct live quote
+* $25 shows correct live quote if allowed by cap
+* if cap blocks $25, UI blocks before submit
+* if quote unavailable, submit is blocked rather than using hardcoded Genesis fallback
+* displayed SYN equals quote() result
+* minSynOut equals quote() result or is safely unavailable
+* no misleading “Genesis rate” labels if not accurate
+* no forbidden language
+
+G. Report
+
+Return:
+
+1. Files changed
+2. What was hardcoded before
+3. What is now live-derived
+4. How quote unavailable state behaves
+5. How minSynOut is protected
+6. Package-card status
+7. Per-era minimum handling
+8. Tests/checks run
+9. Render checks
+10. Remaining frontend truth gaps
+11. Whether UI is now safe for corrected Sale V2 redeploy
+12. Rollback plan
+
+Important principle
+
+The purchase UI must never promise a SYN amount that the contract will not deliver.
+
+The purchase UI must never submit with a stale Genesis-rate fallback.
+
+The UI must be safe for both:
+
+current capped Genesis deployment
+and
+future corrected Sale V2 redeploy.

@@ -9,6 +9,8 @@ import {
   synForUsdcInEra,
   nextEra,
   getEraById,
+  eraByIndex,
+  eraMinUsdc,
 } from "@/lib/eras";
 import {
   SEAT_PACKAGES,
@@ -124,6 +126,33 @@ describe("eras — schedule integrity", () => {
   it("nextEra walks the schedule and stops at the end", () => {
     expect(nextEra(ERAS[0])?.id).toBe("first-thousand");
     expect(nextEra(ERAS[ERAS.length - 1])).toBeNull();
+  });
+
+  it("eraByIndex maps the 1-indexed on-chain era position, guarding out-of-range", () => {
+    expect(eraByIndex(1)?.id).toBe("genesis");
+    expect(eraByIndex(9)?.id).toBe("first-million");
+    ERAS.forEach((e, i) => expect(eraByIndex(i + 1)).toBe(e));
+    // Out-of-range / unknown → undefined (callers degrade to neutral, never guess).
+    expect(eraByIndex(0)).toBeUndefined();
+    expect(eraByIndex(10)).toBeUndefined();
+    expect(eraByIndex(undefined)).toBeUndefined();
+    expect(eraByIndex(1.5)).toBeUndefined();
+  });
+
+  it("eraMinUsdc mirrors the on-chain SyndicateSaleV2 _eraParams minUsdc6 table", () => {
+    // VERIFIED against contracts/src/SyndicateSaleV2.sol `_eraParams(...).minUsdc6`
+    // (USDC has 6 decimals → these are the $-denominated minimums). The contract
+    // has no per-era minimum getter, so this mirror keyed by the live chain era
+    // is the UI's only safe source. If `entryUsdc` ever drifts from these, the
+    // purchase UI minimum would silently diverge from the contract — fail loudly.
+    const ON_CHAIN_MIN_USDC = [5, 10, 10, 25, 25, 50, 50, 100, 100];
+    ON_CHAIN_MIN_USDC.forEach((min, i) => {
+      expect(eraMinUsdc(i + 1)).toBe(min);
+      expect(ERAS[i].entryUsdc).toBe(min);
+    });
+    expect(eraMinUsdc(undefined)).toBeUndefined();
+    expect(eraMinUsdc(0)).toBeUndefined();
+    expect(eraMinUsdc(10)).toBeUndefined();
   });
 });
 

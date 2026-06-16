@@ -6,6 +6,7 @@
 
 import type { SeatPackage } from "@/lib/package-catalog";
 import { CTAButton } from "./Primitives";
+import { currentEra } from "@/lib/eras";
 
 const fmtUsd = (n: number) => `$${n.toLocaleString("en-US")}`;
 const fmtInt = (n: number) => n.toLocaleString("en-US");
@@ -21,6 +22,12 @@ export function SeatPackageCard({
 }) {
   const { rank, usdc, synAtGenesis, tagline, forWhom, recommended, highConviction } =
     pkg;
+
+  // Only present the absolute Genesis-rate SYN figure while Genesis is actually
+  // the live era. On any later live era it would overstate what checkout
+  // delivers, so we show a neutral live-rate statement instead — the on-chain
+  // quote governs the real amount at checkout. Pure config read (no chain).
+  const genesisRateLive = currentEra().id === "genesis";
 
   const badge = recommended ? "Start here" : highConviction ? "High-conviction" : null;
 
@@ -62,8 +69,18 @@ export function SeatPackageCard({
         {fmtUsd(usdc)}
       </div>
       <div className="mono text-xs text-foreground/80 tabular-nums">
-        {fmtInt(synAtGenesis)} SYN{" "}
-        <span className="text-muted-foreground">at Genesis rate</span>
+        {genesisRateLive ? (
+          <>
+            {fmtInt(synAtGenesis)} SYN{" "}
+            <span className="text-muted-foreground">
+              at the Era&nbsp;I (Genesis) rate · live rate confirmed at checkout
+            </span>
+          </>
+        ) : (
+          <span className="text-muted-foreground">
+            SYN amount set by the live Era rate · confirmed at checkout
+          </span>
+        )}
       </div>
 
       {/* recognition meaning */}

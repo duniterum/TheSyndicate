@@ -257,3 +257,34 @@ export function nextEra(era: Era): Era | null {
 export function getEraById(id: EraId): Era {
   return ERAS.find((e) => e.id === id) ?? FALLBACK_ERA;
 }
+
+/**
+ * The era at a 1-indexed schedule position — the exact shape of the on-chain
+ * `currentEra()` getter (1 = Genesis … 9 = First Million). Returns undefined
+ * for an out-of-range / unknown index so callers degrade to a neutral state
+ * instead of guessing a rate. Pure; no chain read.
+ */
+export function eraByIndex(index: number | undefined): Era | undefined {
+  if (
+    index === undefined ||
+    !Number.isInteger(index) ||
+    index < 1 ||
+    index > ERAS.length
+  ) {
+    return undefined;
+  }
+  return ERAS[index - 1];
+}
+
+/**
+ * Minimum USDC entry for a 1-indexed era position. This is a VERIFIED mirror of
+ * the immutable on-chain `_eraParams(...).minUsdc6` table in SyndicateSaleV2
+ * (`entryUsdc` per era equals `minUsdc6` exactly for all nine eras — pinned by
+ * eras-and-packages.test.ts). The contract does not expose a per-era minimum
+ * getter (`quote()` returns the rate but not the minimum), so this mirror keyed
+ * by the LIVE chain era is the smallest safe source for the UI minimum.
+ * Returns undefined for an unknown era so callers can show a neutral state.
+ */
+export function eraMinUsdc(index: number | undefined): number | undefined {
+  return eraByIndex(index)?.entryUsdc;
+}

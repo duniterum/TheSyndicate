@@ -333,8 +333,19 @@ export function useQuoteSyn(usdcAmountRaw: bigint | undefined) {
       data: tuple ? tuple[0] : undefined,
       isLoading: v2.isLoading,
       isError: v2.isError,
-      refetch: v2.refetch,
+      // refetch resolves to the SELECTED synOut (tuple[0]) so a caller can
+      // re-quote at submit time and read a fresh floor without decoding the
+      // raw V2 tuple. (V1's refetch already yields the bigint directly.)
+      refetch: async () => {
+        const r = await v2.refetch();
+        const t = r.data as
+          | readonly [bigint, number, bigint, bigint, bigint, bigint]
+          | undefined;
+        return { ...r, data: t ? t[0] : undefined };
+      },
       quoteEra: tuple ? tuple[1] : undefined,
+      /** SYN delivered per 1 USDC at the LIVE era (uint64, integer SYN/$). */
+      quoteSynPerUsdc: tuple ? tuple[2] : undefined,
       seatIfFirst: tuple ? tuple[3] : undefined,
       available: tuple ? tuple[4] : undefined,
     };
@@ -345,6 +356,7 @@ export function useQuoteSyn(usdcAmountRaw: bigint | undefined) {
     isError: v1.isError,
     refetch: v1.refetch,
     quoteEra: undefined as number | undefined,
+    quoteSynPerUsdc: undefined as bigint | undefined,
     seatIfFirst: undefined as bigint | undefined,
     available: undefined as bigint | undefined,
   };

@@ -7,9 +7,8 @@ import {
   useWaitForTransactionReceipt,
 } from "wagmi";
 import { useWalletGate } from "@/lib/useWalletGate";
-import { parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import {
-  ACCESS_RATE_LABEL,
   CONTRACTS,
   PURCHASE_PRESETS_USDC,
   SALE_MIN_USDC,
@@ -38,7 +37,7 @@ import {
   type SaleStats,
 } from "@/lib/sale-hooks";
 import { useV1Proof, buildV2BuyArgs } from "@/lib/v1-proof";
-import { ERAS } from "@/lib/eras";
+import { eraByIndex, eraMinUsdc, eraSynPerUsdc } from "@/lib/eras";
 import { track } from "@/lib/analytics";
 import { assertFreshWallet, walletFreshnessMessage } from "@/lib/wallet-freshness";
 import { recordTx } from "@/lib/tx-history";
@@ -83,22 +82,47 @@ export function LivePurchase() {
     }
   }, [usdc]);
 
-  // Calculator math (off-chain mirror at fixed rate; quote on-chain on demand later).
-  const synOut = usdc * 100;
-  const synOutRaw = useMemo(() => {
-    try {
-      return parseUnits(String(Number.isFinite(synOut) ? synOut : 0), SYN_DECIMALS);
-    } catch {
-      return 0n;
-    }
-  }, [synOut]);
   const { current } = rankForUsdc(usdc);
   const flow = vaultFlow(usdc);
 
-  // V2 self-service: on-chain quote (drives minSynOut) + fail-closed V1 proof
-  // gate so a returning V1 member's seat is continued, never duplicated.
+  // V2 self-service: the on-chain quote is the ONLY rate truth this UI ever
+  // displays or submits. It prices at the LIVE era (V2) / single rate (V1) and
+  // drives BOTH the SYN-received figure and the minSynOut floor. We NEVER fall
+  // back to a hardcoded Genesis-rate mirror: a missing quote is "unknown"
+  // (neutral UI + blocked submit), never zero and never a guess.
   const quote = useQuoteSyn(usdcRaw);
   const v1Proof = useV1Proof();
+
+  // Live, era-correct SYN output (raw, 18dp) straight from the contract.
+  // Undefined while loading or on a read miss — callers MUST treat undefined as
+  // "unknown", never as zero or a Genesis-rate estimate.
+  const quotedSynRaw = quote.data;
+  const quotedSyn =
+    quotedSynRaw !== undefined
+      ? Number(formatUnits(quotedSynRaw, SYN_DECIMALS))
+      : undefined;
+  // Live, on-chain SYN-per-USDC rate (V2 quote tuple[2]). Preferred over the
+  // local era mirror for any DISPLAYED rate; undefined on V1 / loading / miss.
+  const liveRatePerUsdc = quote.quoteSynPerUsdc;
+  // Quote lifecycle flags for button + preview gating.
+  const quoteEnabled = usdcRaw > 0n;
+  const quoteReady = quotedSynRaw !== undefined;
+  const quoteLoading = quoteEnabled && quote.isLoading && !quoteReady;
+  // Settled with a positive amount but still no quote = RPC miss / sale
+  // concluded / revert. We must not price or submit against it.
+  const quoteUnavailable = quoteEnabled && !quote.isLoading && !quoteReady;
+
+  // The exact SYN floor committed at submit time, captured so the success
+  // receipt reports what was actually purchased (not a re-quote of new input).
+  const [purchasedSynRaw, setPurchasedSynRaw] = useState<bigint | undefined>(
+    undefined,
+  );
+
+  // Live, era-correct minimum entry — a VERIFIED mirror of the on-chain per-era
+  // minUsdc6, keyed by the LIVE chain era. Falls back to the V1 floor only when
+  // the era is unknown (loading / non-V2), never to a wrong value.
+  const liveMinUsdc = eraMinUsdc(stats.currentEra) ?? SALE_MIN_USDC;
+  const liveEra = eraByIndex(stats.currentEra);
 
   // Write hooks
   const approveTx = useWriteContract();
@@ -157,6 +181,7 @@ export function LivePurchase() {
   useEffect(() => {
     setPhase("idle");
     setWalletGuardError(null);
+    setPurchasedSynRaw(undefined);
     approveTx.reset();
     buyTx.reset();
     userBal.refetch();
@@ -164,7 +189,7 @@ export function LivePurchase() {
   }, [address]);
 
   // Derive button state
-  const belowMin = usdc < SALE_MIN_USDC;
+  const belowMin = usdc < liveMinUsdc;
   const insufficientUsdc =
     userBal.usdcBalance !== undefined && userBal.usdcBalance < usdcRaw;
   const needsApprove =
@@ -177,7 +202,8 @@ export function LivePurchase() {
   const exceedsInventory =
     stats.availableSyn !== undefined &&
     stats.availableSyn > 0n &&
-    synOutRaw > stats.availableSyn;
+    quotedSynRaw !== undefined &&
+    quotedSynRaw > stats.availableSyn;
   const isPaused = stats.paused === true;
 
   // ── On-chain per-wallet per-era cumulative cap (anti-whale) ──────────────
@@ -238,7 +264,18 @@ export function LivePurchase() {
   } else if (noInventory) {
     state = { label: "Waiting for SYN Inventory", disabled: true, tone: "muted" };
   } else if (belowMin) {
-    state = { label: `Minimum ${SALE_MIN_USDC} USDC`, disabled: true, tone: "muted" };
+    state = { label: `Minimum ${liveMinUsdc} USDC`, disabled: true, tone: "muted" };
+  } else if (quoteLoading) {
+    state = { label: "Fetching live quote…", disabled: true, tone: "muted" };
+  } else if (quoteUnavailable) {
+    // Settled with no quote — we cannot price or submit honestly. Offer a
+    // manual retry rather than letting the buy proceed on a stale guess.
+    state = {
+      label: "Quote unavailable — retry",
+      disabled: false,
+      tone: "muted",
+      onClick: () => void quote.refetch(),
+    };
   } else if (exceedsInventory) {
     state = { label: "Amount exceeds sale inventory", disabled: true, tone: "muted" };
   } else if (exceedsEraCap) {
@@ -319,10 +356,22 @@ export function LivePurchase() {
               setPhase("idle");
               return;
             }
-            // minSynOut = on-chain quote when available, else the fixed-rate
-            // off-chain mirror (Era I: 1 SYN = $0.01, no slippage). referrer is
-            // intentionally null (no referral activation in this wiring pass).
-            const minSynOut = quote.data ?? synOutRaw;
+            // minSynOut is the LIVE on-chain quote — NEVER a hardcoded Genesis
+            // mirror. We re-quote at the moment of signing so an era boundary
+            // that moved between render and submit cannot lock in a stale floor,
+            // and abort if the fresh quote is unavailable rather than sign a
+            // guessed amount. referrer is null (no referral activation here).
+            const fresh = await quote.refetch();
+            const freshSynRaw = fresh.data as bigint | undefined;
+            if (freshSynRaw === undefined) {
+              setWalletGuardError(
+                "Live quote unavailable. Please retry before purchasing.",
+              );
+              setPhase("idle");
+              return;
+            }
+            const minSynOut = freshSynRaw;
+            setPurchasedSynRaw(minSynOut);
             hash = (await buyTx.writeContractAsync({
               address: SALE,
               abi: SALE_V2_ABI,
@@ -389,7 +438,7 @@ export function LivePurchase() {
     userBal.usdcAllowance !== undefined && userBal.usdcBalance !== undefined;
   const saleActionable =
     isConnected && !wrongChain && walletReady && !isPaused && !noInventory &&
-    !belowMin && !exceedsInventory && !exceedsEraCap && !insufficientUsdc;
+    !belowMin && quoteReady && !exceedsInventory && !exceedsEraCap && !insufficientUsdc;
 
   const approveStatus: PurchaseStepStatus = approveErrored
     ? "failed"
@@ -435,8 +484,11 @@ export function LivePurchase() {
             Buy SYN with USDC
           </h2>
           <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl">
-            {ACCESS_RATE_LABEL}. USDC routes automatically 70% Vault · 20% Liquidity · 10%
-            Operations through the Membership Sale contract. Minimum {SALE_MIN_USDC} USDC.
+            {liveEra
+              ? `Era ${liveEra.roman} (${liveEra.name}) is live: 1 USDC = ${liveRatePerUsdc !== undefined ? liveRatePerUsdc.toString() : eraSynPerUsdc(liveEra)} SYN. `
+              : "The live access rate is confirmed on-chain at checkout. "}
+            USDC routes automatically 70% Vault · 20% Liquidity · 10% Operations
+            through the Membership Sale contract. Minimum {liveMinUsdc} USDC.
           </p>
         </header>
 
@@ -460,8 +512,16 @@ export function LivePurchase() {
               paused={stats.paused}
             />
 
-            {/* V2 active-sale status (era / next seat / reserve floor / balance) */}
-            {stats.isV2 && <SaleV2StatusStrip stats={stats} />}
+            {/* V2 active-sale status (era / live rate / min / your cap / next seat / reserve / balance) */}
+            {stats.isV2 && (
+              <SaleV2StatusStrip
+                stats={stats}
+                ratePerUsdc={quote.quoteSynPerUsdc}
+                remainingCapRaw={eraCap.remainingRaw}
+                capLoading={eraCap.isLoading}
+                connected={isConnected}
+              />
+            )}
 
             {/* Presets */}
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 mb-3 mt-4">
@@ -506,11 +566,11 @@ export function LivePurchase() {
                     }
                   }}
                   onBlur={() => {
-                    if (usdcInput.trim() === "" || Number(usdcInput) < SALE_MIN_USDC) {
-                      setUsdcInput(String(SALE_MIN_USDC));
+                    if (usdcInput.trim() === "" || Number(usdcInput) < liveMinUsdc) {
+                      setUsdcInput(String(liveMinUsdc));
                     }
                   }}
-                  placeholder={String(SALE_MIN_USDC)}
+                  placeholder={String(liveMinUsdc)}
                   className="w-full rounded-md border border-border/60 bg-background pl-7 pr-3 py-2.5 mono text-base font-semibold focus:outline-none focus:border-[var(--gold)]"
                 />
               </div>
@@ -518,7 +578,19 @@ export function LivePurchase() {
 
             <div className="rounded-lg border border-border/50 bg-background/60 p-4 space-y-2">
               <Row label="USDC amount" value={fmtUsd(usdc)} />
-              <Row label="SYN received" value={`${synOut.toLocaleString("en-US")} SYN`} accent />
+              <Row
+                label="SYN received"
+                value={
+                  quotedSynRaw !== undefined
+                    ? `${fmtSyn(quotedSynRaw)} SYN`
+                    : quoteLoading
+                      ? "Fetching live quote…"
+                      : quoteEnabled
+                        ? "Quote unavailable"
+                        : "—"
+                }
+                accent
+              />
               <Row label="Rank reflected" value={current?.name ?? "Below Citizen"} />
               <Row
                 label="Recognition"
@@ -591,7 +663,7 @@ export function LivePurchase() {
             {(phase === "success" || (buyReceipt.isSuccess && effectiveBuyHash)) && effectiveBuyHash && (
               <SuccessReceipt
                 usdc={usdc}
-                synOut={synOut}
+                synRaw={purchasedSynRaw ?? quotedSynRaw}
                 flow={flow}
                 hash={effectiveBuyHash}
                 rank={current?.name}
@@ -684,11 +756,42 @@ function WalletBadge({
   );
 }
 
-function SaleV2StatusStrip({ stats }: { stats: SaleStats }) {
-  const era =
-    stats.currentEra !== undefined ? ERAS[stats.currentEra - 1] : undefined;
+function SaleV2StatusStrip({
+  stats,
+  ratePerUsdc,
+  remainingCapRaw,
+  capLoading,
+  connected,
+}: {
+  stats: SaleStats;
+  ratePerUsdc?: bigint;
+  remainingCapRaw?: bigint;
+  capLoading?: boolean;
+  connected?: boolean;
+}) {
+  const era = eraByIndex(stats.currentEra);
+  // Per-wallet remaining era headroom (anti-whale). Only meaningful once a
+  // wallet is connected; never imply a cap value before then.
+  const capValue = !connected
+    ? "Connect to view"
+    : remainingCapRaw !== undefined
+      ? `$${fmtUsdc(remainingCapRaw)}`
+      : capLoading
+        ? "…"
+        : "—";
   const items: Array<{ label: string; value: string }> = [
     { label: "Era", value: era ? `${era.roman} · ${era.name}` : "—" },
+    {
+      label: "Rate",
+      value:
+        ratePerUsdc !== undefined
+          ? `${ratePerUsdc.toString()} SYN / $1`
+          : era
+            ? `${eraSynPerUsdc(era)} SYN / $1`
+            : "—",
+    },
+    { label: "Min entry", value: era ? `$${era.entryUsdc}` : "—" },
+    { label: "Your cap left", value: capValue },
     {
       label: "Next seat",
       value:
@@ -772,14 +875,15 @@ function SaleInventoryBanner({
 
 function SuccessReceipt({
   usdc,
-  synOut,
+  synRaw,
   flow,
   hash,
   rank,
   onReset,
 }: {
   usdc: number;
-  synOut: number;
+  /** Raw SYN actually committed at purchase (minSynOut floor). */
+  synRaw?: bigint;
   flow: { vault: number; lp: number; ops: number };
   hash: `0x${string}`;
   rank?: string;
@@ -841,7 +945,7 @@ function SuccessReceipt({
 
       <dl className="space-y-1 text-xs">
         <Row label="USDC paid" value={fmtUsd(usdc)} />
-        <Row label="SYN received" value={`${synOut.toLocaleString("en-US")} SYN`} accent />
+        <Row label="SYN received" value={`${fmtSyn(synRaw)} SYN`} accent />
         {rank && <Row label="Rank reflected" value={rank} />}
         <Row label="→ Vault" value={fmtUsd(flow.vault)} />
         <Row label="→ Liquidity" value={fmtUsd(flow.lp)} />

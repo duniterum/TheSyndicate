@@ -29,6 +29,7 @@ const fmtInt = (n: number) => n.toLocaleString("en-US");
 export function SeatPackages() {
   const pkgs = featuredPackages();
   const era = currentEra();
+  const genesisLive = era.id === "genesis";
 
   return (
     <Section id="packages">
@@ -39,7 +40,11 @@ export function SeatPackages() {
             Pick a <span className="text-gradient-gold">seat package</span>
           </>
         }
-        description="A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier and the SYN you receive at the live Genesis access rate (1 SYN = $0.01 USDC). Recognition only — no payout, no rate change, no better rate, no entitlement. Every tier is self-service: taken online through your own wallet at the same fixed rate."
+        description={
+          genesisLive
+            ? "A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier; the SYN shown is the current Era I (Genesis) access rate (1 SYN = $0.01 USDC), and the live rate is always confirmed in your wallet at checkout. Recognition only — no payout, no rate change, no better rate, no entitlement. Every tier is self-service: taken online through your own wallet."
+            : "A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier; the SYN you receive is set by the live access rate and always confirmed in your wallet at checkout. Recognition only — no payout, no rate change, no better rate, no entitlement. Every tier is self-service: taken online through your own wallet."
+        }
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
