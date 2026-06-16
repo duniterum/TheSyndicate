@@ -1,0 +1,291 @@
+Reasoning
+
+The latest reconciliation revealed something more important than the Genesis cap.
+
+The contract model is mostly correct.
+
+The product model is not.
+
+The biggest issue is:
+
+SEAT_PACKAGES = RANKS_V2.map(...)
+
+meaning:
+
+# package amount
+
+recognition rank
+
+These are two different concepts.
+
+If we redeploy Sale V2b without fixing this, we risk another round of redesign, copy changes, and confusion immediately after launch.
+
+Before any redeploy, we must lock the final:
+
+* membership model
+* package model
+* recognition model
+* chapter model
+
+so we do not redeploy again in a few days.
+
+Prompt
+
+Continue the reconciliation.
+
+Do not implement yet.
+
+Do not redeploy.
+
+Do not touch contracts.
+
+Do not change frontend.
+
+Goal
+
+Finish the membership / package / recognition model separation before Sale V2b.
+
+Latest finding
+
+You confirmed:
+
+SEAT_PACKAGES = RANKS_V2.map(...)
+
+So package amounts and recognition ranks are currently the same object.
+
+The contract/data model is clean.
+
+The UI/product model is not.
+
+We need to separate:
+
+* seat
+* chapter
+* package amount
+* recognition rank
+* artifact
+
+before redeploy.
+
+A. Finish the analysis
+
+Continue from the reconciliation report.
+
+Show the complete map.
+
+For each concept:
+
+Seat
+Chapter
+Package
+Recognition Rank
+Artifact
+Referral (future)
+
+Return:
+
+* purpose
+* current implementation
+* where it appears
+* what it controls
+* whether it is mixed with another concept
+* whether it should be separated
+
+B. Founder model test
+
+Test this proposed model.
+
+Seat
+
+* one wallet
+* one seat
+* created by first qualifying purchase
+* never created again
+
+Chapter
+
+* defines minimum purchase amount
+* defines SYN rate
+* defines chapter identity/story
+* may define seat visual identity
+
+Package
+
+* suggested purchase amount
+* does not create a rank
+* does not create a second seat
+* only affects cumulative purchases
+
+Recognition Rank
+
+* derived from cumulative purchases
+* can change over time
+* not tied to a specific package
+* not tied to a specific chapter
+
+Artifact
+
+* collectible memory layer
+* independent from rank
+* independent from package
+
+Referral
+
+* future growth layer
+* independent from seat/rank/artifact
+
+Question:
+
+Does this model fit the current codebase?
+
+If not, where are the conflicts?
+
+C. Package philosophy
+
+Current problem:
+
+$25 Operator
+$100 Vanguard
+etc.
+
+implies:
+
+# buy package
+
+become rank
+
+I want you to evaluate whether packages should instead be:
+
+Option A
+
+Neutral purchase presets
+
+Starter
+Supporter
+Backer
+Patron
+Major Patron
+Cornerstone
+
+Option B
+
+No names at all
+
+$5
+$25
+$100
+$500
+$2,500
+$10,000
+
+Option C
+
+Another model you believe is superior.
+
+Do not implement.
+
+Recommend.
+
+D. Chapter minimum behavior
+
+You confirmed the contract enforces the current chapter minimum on every buy.
+
+Evaluate:
+
+Is that desirable?
+
+Example:
+
+Chapter I minimum = $5
+
+Chapter II minimum = $10
+
+Chapter III minimum = $25
+
+Should an existing member be allowed to buy:
+
+$5
+
+during Chapter III?
+
+Or should every purchase respect the current chapter minimum?
+
+Recommend the cleanest product rule.
+
+Explain why.
+
+E. Recognition model
+
+Evaluate whether rank should remain:
+
+Citizen
+Operator
+Vanguard
+Steward
+Keystone
+Cornerstone
+
+or whether those names should evolve.
+
+Important:
+
+Do not redesign.
+
+Do not change code.
+
+Just evaluate whether rank names and package names can coexist without confusion.
+
+F. Redeploy readiness
+
+Before V2b:
+
+List every remaining unresolved product decision.
+
+Classify:
+
+MUST DECIDE BEFORE REDEPLOY
+CAN DECIDE AFTER REDEPLOY
+
+Examples:
+
+* Genesis cap
+* package naming
+* rank naming
+* chapter minimum rule
+* package availability rule
+* seat visual identity
+* chapter visual identity
+* referral wording
+* artifact wording
+
+Anything else you find.
+
+G. Recommendation
+
+Return:
+
+1. Concept map
+2. Current concept mixing
+3. Final recommended model
+4. Package recommendation
+5. Chapter minimum recommendation
+6. Recognition recommendation
+7. Must-decide-before-redeploy list
+8. Can-wait-until-later list
+9. Risks if we redeploy before resolving these
+10. Recommended next sprint
+
+Important principle
+
+Do not optimize around current UI.
+
+Optimize around the model that will still make sense:
+
+* after Genesis
+* after Chapter II
+* after Chapter III
+* after referral
+* after artifacts
+* after growth
+
+The next Sale V2 deployment should survive the next 6–12 months without forcing another conceptual redesign.
