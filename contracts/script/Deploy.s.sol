@@ -59,16 +59,33 @@ contract Deploy is Script {
         uint256 maxUsdcPerTx = vm.parseJsonUint(json, ".maxUsdcPerTx");
         uint256 reserveThroughSeat = vm.parseJsonUint(json, ".reserveThroughSeat");
 
-        // DOUBLE-ENTRY STALE-SNAPSHOT GUARD (optional but recommended). The
-        // operator independently declares the expected snapshot; a mismatch with
-        // the file means the WRONG (e.g. stale V1-only offset=2/old-root) params
-        // were selected, and the deploy reverts before any broadcast. Skipped
-        // when the env vars are unset (0 / 0x0).
+        // DOUBLE-ENTRY STALE-SNAPSHOT GUARD. The operator independently declares
+        // the expected snapshot; a mismatch with the file means the WRONG (e.g.
+        // stale V1-only offset=2/old-root) params were selected, and the deploy
+        // reverts before any broadcast.
+        //
+        // HARD GUARD (the residual flagged in the launch-risk memo): for a real,
+        // NON-provisional deploy the declaration is now MANDATORY — both
+        // EXPECT_GENESIS_OFFSET and EXPECT_V1_ROOT must be set, or the script
+        // refuses to run. This makes it impossible to silently broadcast the
+        // stale default deploy-params.json without independently re-declaring the
+        // snapshot. Provisional rehearsals (ALLOW_PROVISIONAL_DEPLOY=1) are
+        // exempt, so the forked-mainnet rehearsal flow is unchanged.
         uint256 expectOffset = vm.envOr("EXPECT_GENESIS_OFFSET", uint256(0));
+        bytes32 expectRoot = vm.envOr("EXPECT_V1_ROOT", bytes32(0));
+        if (!provisional) {
+            require(
+                expectOffset != 0,
+                "Deploy: EXPECT_GENESIS_OFFSET is REQUIRED for a non-provisional (mainnet) deploy"
+            );
+            require(
+                expectRoot != bytes32(0),
+                "Deploy: EXPECT_V1_ROOT is REQUIRED for a non-provisional (mainnet) deploy"
+            );
+        }
         if (expectOffset != 0) {
             require(genesisOffset == expectOffset, "Deploy: genesisOffset != EXPECT_GENESIS_OFFSET (stale snapshot?)");
         }
-        bytes32 expectRoot = vm.envOr("EXPECT_V1_ROOT", bytes32(0));
         if (expectRoot != bytes32(0)) {
             require(v1MemberRoot == expectRoot, "Deploy: v1MemberRoot != EXPECT_V1_ROOT (stale snapshot?)");
         }

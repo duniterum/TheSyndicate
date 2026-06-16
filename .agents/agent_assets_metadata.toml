@@ -293,3 +293,9 @@ id = "SgNKZ5PME7pcbl5EDIXSj"
 uri = "file://docs/audits/V2B_MAINNET_CUTOVER_PREP_REPORT.md"
 type = "text"
 title = "V2b Mainnet Cutover — Prep Package (NO BROADCAST)"
+
+[[outputs]]
+id = "UBEHsBu5dhWVRIHLsEVSg"
+uri = "file://docs/audits/V2B_FINAL_EXECUTION_CHAIN.md"
+type = "text"
+title = "V2b Final Execution Chain — Pause → Deploy (NO BROADCAST)"

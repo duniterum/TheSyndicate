@@ -1,0 +1,133 @@
+V2B FINAL EXECUTION CHAIN — NO BROADENING
+
+Continue from the launch risk memo.
+
+Do not add new architecture.
+
+Do not add governance.
+
+Do not touch referral, NFT, Archive, journey, wallet providers, or redesign.
+
+We accept:
+
+* EOA owner for now
+* no external audit
+* V2b same-source replacement
+* router remains 0x0
+* package/rank/chapter cleanup is public-relaunch work, not deploy work
+
+Goal
+
+Prepare the exact final execution chain from pause to deploy, with no ambiguity.
+
+The only remaining deployment blockers are:
+
+1. V2a not paused
+2. final snapshot not generated from pause block
+3. final params not validated
+4. final rehearsal not re-pinned
+5. funding not confirmed
+6. deploy dry-run/readbacks not green
+
+A. Convert the risk memo into an executable checklist
+
+Create a numbered checklist with exact commands/placeholders for:
+
+1. pre-pause live read
+2. pause V2a
+3. record pause tx and block
+4. verify paused=true
+5. generate pause-block snapshot
+6. validate snapshot
+7. finalize deploy params
+8. update RehearsalForkV2b constants or parameterize it
+9. re-run final fork rehearsal
+10. run EXPECT_* guarded deploy dry-run
+11. deploy V2b mainnet only if all previous gates pass
+12. fund V2b
+13. verify funding and reserve/headroom
+14. verify V2b getters
+15. keep frontend pointed safely until config/indexer cutover
+16. rollback path if any step fails
+
+B. Make hard guards where possible
+
+You identified the biggest risk:
+
+EXPECT_* is optional.
+
+If safe and scoped, make the deploy script fail if EXPECT_GENESIS_OFFSET and EXPECT_V1_ROOT are missing for non-provisional/mainnet deployment.
+
+Do not create new architecture.
+
+Only harden the existing guard.
+
+If changing the deploy script now is risky, stop and report.
+
+C. Final rehearsal correctness
+
+Do not let RehearsalForkV2b pass against stale constants.
+
+Either:
+
+* update its constants from the pause-block snapshot, or
+* parameterize it to read the final params/proofs, if safer.
+
+Return which approach is safer.
+
+D. Funding clarity
+
+Before deploy, state exactly:
+
+* minimum SYN required to support one $10k buy
+* minimum SYN required to support one $25k buy
+* recommended launch funding
+* whether funding is already available in the deployer wallet
+* if not, stop and say funding must be prepared first
+
+Do not assume V2a recoverable SYN can fund V2b.
+
+E. Live smoke test policy
+
+Define the safest live smoke test sequence.
+
+Question:
+
+Should the first live buy happen only after V2b is fully funded?
+
+Or can a $5 smoke happen before full funding without risk?
+
+Recommend the safest option.
+
+F. Stop conditions
+
+Stop if:
+
+* V2a pause fails
+* paused=true cannot be verified
+* snapshot count != V2a memberCount at pause block
+* validate-snapshot fails
+* EXPECT_* dry-run fails
+* final rehearsal fails
+* V2b getter readback mismatches
+* funding is insufficient
+* frontend/indexer cutover plan is not ready
+* any stale deploy-params file could still be used accidentally
+
+G. Return
+
+1. Executable checklist
+2. Any code/script guard changes needed
+3. Final rehearsal method
+4. Funding requirement and availability status
+5. Live smoke test recommendation
+6. Stop conditions
+7. Founder action required next
+
+Important
+
+Do not pause yet.
+
+Do not broadcast yet.
+
+We are turning the proven plan into the exact final execution checklist.

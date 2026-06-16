@@ -86,3 +86,24 @@ change if any V2a purchase lands before pause. Today's values are a rehearsal, n
 - The fork test deploys a **fresh V2b in isolation (no V1/V2a touch)** → it does **NOT** assert "old V2a
   sealed". Verify that operationally by reading live `paused()==true` on the V2a address after the pause;
   don't claim the fork covers it.
+
+## Deploy-guard hardening + funding (the decision, not the diff)
+- **Deploy.s.sol `EXPECT_*` is now MANDATORY when `provisional==false`** (real deploy reverts unless BOTH
+  `EXPECT_GENESIS_OFFSET` and `EXPECT_V1_ROOT` are set). Provisional rehearsals (`ALLOW_PROVISIONAL_DEPLOY=1`)
+  stay exempt → fork flow unchanged. **Why safe:** NO test invokes `Deploy.run()` (both rehearsal tests do
+  `new SyndicateSaleV2(...)` directly) and NO CI/script runs `forge script Deploy` — so nothing automated breaks.
+- **RehearsalForkV2b has a fork-free fail-closed cross-check** (`test_rehearsalConstantsMatchDeployParams`):
+  asserts the test's `ROOT`/`GENESIS_OFFSET`/`addrCaps[0]` == the `DEPLOY_PARAMS` file, so the rehearsal can't
+  pass against stale constants after re-pinning. Chosen OVER full JSON-proof parameterization (parsing
+  `bytes32[][]` in Solidity adds harness-bug risk that could MASK a real failure — higher risk pre-deploy).
+- **Scope ruling (NO BROADENING):** rejected the architect's optional extra guard (reject default
+  `DEPLOY_PARAMS` path for non-provisional). It's a NEW guard, not a hardening of the existing one; mandatory
+  `EXPECT_*` already makes a stale deploy loud not silent. Residual: guard can't prove the operator's EXPECT_*
+  values ARE the pause-block snapshot — only that the file matches them; closed procedurally by the checklist.
+- **Funding reality:** deployer/owner EOA `0xa2E538…26e2F` held **0 SYN** (block 88,179,800, 2026-06-16) →
+  funding is a HARD prerequisite; STAGE INDEPENDENTLY before pausing. **V2a SYN is NOT a funding source**
+  (recoverUnsoldSyn = timelock→Vault, AND its ~4.998M < the 6.597M floor anyway). Rate 100 SYN/$; through-seat
+  reserve (RESERVE_THROUGH_SEAT=10,000) ≈ **4.097M SYN** at offset=5 (recompute after finalize). One $10k buy
+  needs ≈5.097M; one $25k buy needs ≈6.597M; **recommend ≥6.597M (round 7M)**. Smoke = fund FULLY first, THEN
+  one $5 real buy (an underfunded contract can revert the reserve check even on $5 → false "broken" signal).
+- Full executable pause→deploy chain lives in `docs/audits/V2B_FINAL_EXECUTION_CHAIN.md` (16 steps + stop conds).

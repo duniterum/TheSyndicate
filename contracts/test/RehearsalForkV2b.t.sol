@@ -119,7 +119,30 @@ contract RehearsalForkV2bTest is Test {
         synDelta = IERC20Like(SYN).balanceOf(who) - before;
     }
 
+    /// @dev FAIL-CLOSED CONSTANT GUARD (runs with NO fork, so it executes on every
+    ///      plain `forge test`). The merged-snapshot values below are mirrored in
+    ///      the deploy params file Deploy.s.sol will use; assert they MATCH so this
+    ///      rehearsal can NEVER pass against stale constants once the snapshot is
+    ///      re-pinned to the V2a pause block. Point DEPLOY_PARAMS at the FINAL file
+    ///      when rehearsing the final params; if ROOT/offset/Genesis-cap here drift
+    ///      from that file the test reverts before any fork work, forcing the
+    ///      operator to update these constants (and the proofs below) in lockstep.
+    function test_rehearsalConstantsMatchDeployParams() public view {
+        string memory paramsPath =
+            vm.envOr("DEPLOY_PARAMS", string("script/deploy-params.v2b.rehearsal.json"));
+        string memory pj = vm.readFile(paramsPath);
+        assertEq(vm.parseJsonBytes32(pj, ".v1MemberRoot"), ROOT, "ROOT != params v1MemberRoot (stale constant?)");
+        assertEq(vm.parseJsonUint(pj, ".genesisOffset"), GENESIS_OFFSET, "GENESIS_OFFSET != params (stale constant?)");
+        uint256[] memory caps = vm.parseJsonUintArray(pj, ".addrCaps");
+        uint256[9] memory expectedCaps = _addrCaps();
+        assertEq(caps[0], expectedCaps[0], "addrCaps[0] != params (Genesis $25k cap drift?)");
+    }
+
     function test_forkRehearsalV2b_fullFlow() public {
+        // Re-assert the constant guard inside the fork path too, so a fork run can
+        // never deploy from constants that drift from the deploy params file.
+        test_rehearsalConstantsMatchDeployParams();
+
         string memory rpc = vm.envOr("AVAX_RPC", string(""));
         if (bytes(rpc).length == 0) {
             emit log("AVAX_RPC unset -> skipping V2b forked-mainnet rehearsal");
