@@ -6,7 +6,7 @@
 //   • If a value is unknown, surface "Not indexed yet" — never invent.
 //   • No yield / reward / wealth language.
 import { Link as RouterLink } from "@tanstack/react-router";
-import { useAccount, useBalance, useReadContract } from "wagmi";
+import { useAccount, useBalance, useReadContracts } from "wagmi";
 
 import { formatUnits } from "viem";
 import {
@@ -41,37 +41,38 @@ export function MemberWalletDashboard() {
   // Native AVAX balance.
   const avax = useBalance({ address, query: { enabled: Boolean(address), refetchInterval: 60_000 } });
 
-  // ERC20 balances.
-  const usdc = useReadContract({
-    address: USDC,
-    abi: ERC20_ABI,
-    functionName: "balanceOf",
-    args: address ? [address] : undefined,
-    query: { enabled: Boolean(address), refetchInterval: 60_000 },
-  });
-  const syn = useReadContract({
-    address: SYN,
-    abi: ERC20_ABI,
-    functionName: "balanceOf",
-    args: address ? [address] : undefined,
+  // Token balances in a SINGLE multicall (Multicall3): USDC + SYN (ERC20) and
+  // Archive1155 IDs 1 (First Signal) + 3 (Patron Seal). Native AVAX stays
+  // separate above (eth_getBalance is not multicall-able). `allowFailure` keeps
+  // one reverting read from poisoning the whole panel.
+  const balances = useReadContracts({
+    allowFailure: true,
+    contracts: address
+      ? [
+          { address: USDC, abi: ERC20_ABI, functionName: "balanceOf", args: [address] },
+          { address: SYN, abi: ERC20_ABI, functionName: "balanceOf", args: [address] },
+          { address: ARCHIVE, abi: ARCHIVE_NFT_ABI, functionName: "balanceOf", args: [address, 1n] },
+          { address: ARCHIVE, abi: ARCHIVE_NFT_ABI, functionName: "balanceOf", args: [address, 3n] },
+        ]
+      : [],
     query: { enabled: Boolean(address), refetchInterval: 60_000 },
   });
 
-  // Archive1155 balances for IDs 1 + 3.
-  const firstSignal = useReadContract({
-    address: ARCHIVE,
-    abi: ARCHIVE_NFT_ABI,
-    functionName: "balanceOf",
-    args: address ? [address, 1n] : undefined,
-    query: { enabled: Boolean(address), refetchInterval: 60_000 },
-  });
-  const patronSeal = useReadContract({
-    address: ARCHIVE,
-    abi: ARCHIVE_NFT_ABI,
-    functionName: "balanceOf",
-    args: address ? [address, 3n] : undefined,
-    query: { enabled: Boolean(address), refetchInterval: 60_000 },
-  });
+  // Per-token adapters preserve the existing call sites
+  // (.data / .isLoading / .isError / .refetch) so nothing downstream changes.
+  const balanceCell = (i: number) => {
+    const c = balances.data?.[i];
+    return {
+      data: c && c.status === "success" ? (c.result as unknown as bigint) : undefined,
+      isLoading: balances.isLoading,
+      isError: balances.isError || c?.status === "failure",
+      refetch: balances.refetch,
+    };
+  };
+  const usdc = balanceCell(0);
+  const syn = balanceCell(1);
+  const firstSignal = balanceCell(2);
+  const patronSeal = balanceCell(3);
 
   if (!wallet.isConnected || !address) {
     return (
