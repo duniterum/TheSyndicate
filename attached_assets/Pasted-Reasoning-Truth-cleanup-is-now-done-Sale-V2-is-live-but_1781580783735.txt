@@ -1,0 +1,181 @@
+Reasoning
+
+Truth cleanup is now done: Sale V2 is live-but-unaudited, V1 is sealed/history, CommissionRouter is unset, referral pending.
+
+Before redesign or promotion, we must make sure the product has one Grade AAA action architecture: one wallet/login entry, one Join/Buy CTA system, one membership payment flow, one NFT mint flow, and a clear unfinished-work map.
+
+Do not implement yet. Do not run another broad audit. Use the existing codebase, Full Protocol View, and current docs.
+
+Prompt
+
+Recalibrate as Founder + CTO + Product + UX + Protocol Architect.
+
+Goal:
+Prepare The Syndicate for fast completion without leaving technical debt, duplicated flows, hardcoded CTAs, or unfinished modules hidden behind the redesign.
+
+We just completed:
+
+* RPC env override + one safe multicall sprint.
+* Sale truth cleanup: V2 is deployed/funded/active/used-by-frontend but UNAUDITED / early.
+* V1 is deployed/verifiable but paused/closed, kept for history.
+* CommissionRouter is unset.
+* Referral remains pending.
+
+Now produce a focused Grade AAA integration plan. No implementation yet.
+
+Please inspect only what is needed to answer these points. Do not create another broad audit.
+
+A. Unified action architecture
+
+Check whether the site currently has:
+
+* One canonical Join / Buy Membership CTA.
+* One canonical membership purchase flow.
+* One canonical wallet/connect/switch-network gate.
+* One canonical transaction state component.
+* One canonical success path after purchase.
+* One canonical route after joining.
+* Separate but aligned NFT mint flow.
+
+Identify whether each is:
+
+DONE / PARTIAL / DUPLICATED / HARDCODED / MISSING
+
+List exact files/components involved.
+
+B. Hardcoded CTA and payment-flow risks
+
+Search for hardcoded or duplicated:
+
+* Join buttons
+* Buy Membership buttons
+* Connect Wallet labels
+* MetaMask-only wording
+* href="/join"
+* href="/my-syndicate"
+* direct purchase actions outside the canonical flow
+* duplicated approve → buy logic
+* duplicated approve → mint logic
+* Sale V1/V2 assumptions
+* old labels or outdated sale wording
+
+Do not change them yet. Report exact files and risk level.
+
+C. Wallet onboarding architecture
+
+Given the current wagmi/viem/TanStack architecture, recommend the safest wallet strategy for both Web3 and Web2 users.
+
+Compare:
+
+1. Keep injected-only wallet flow
+2. Privy
+3. Dynamic
+4. thirdweb
+
+For each, evaluate:
+
+* Fit with current wagmi/viem architecture
+* Avalanche C-Chain support
+* Google/email/passkey onboarding
+* Embedded wallet creation/restoration
+* Session persistence
+* Active wallet selection
+* Mobile behavior
+* Export/recovery
+* Security/trust implications
+* Cost/lock-in
+* Files likely touched
+* Rollback risk
+
+Important:
+We previously had difficulty with thirdweb. Do not recommend it unless it is clearly the safest fit now.
+
+Recommendation bias:
+Prefer a provider that lets us keep wagmi for chain reads/writes and only replaces/extends wallet onboarding.
+
+D. Best user flow
+
+Design the target user flow without implementation:
+
+Web3 user:
+Connect wallet → switch Avalanche → buy membership → receive SYN → go to My Syndicate → optionally mint NFT.
+
+Web2 user:
+Continue with Google/email/passkey → embedded wallet created/restored → fund wallet or pay path explained → buy membership → receive SYN → go to My Syndicate → learn how to export/recover wallet.
+
+Clarify:
+
+* Where USDC comes from.
+* Whether fiat/on-ramp is in scope now or later.
+* What the user sees if they have no AVAX for gas.
+* What the user sees if they have no USDC.
+* What the user sees after purchase.
+* What happens on mobile.
+
+E. Unfinished module map
+
+Return the current unfinished-work map, but only in practical build terms:
+
+* Referral / CommissionRouter
+* Wallet onboarding
+* Membership purchase flow
+* NFT mint flow
+* SeatRecord721
+* Archive artifacts IDs 2 and 4–9
+* My Syndicate pending modules
+* Registry / transparency / activity gaps
+* Chronicle / Institutional Register pipeline
+* Performance/debug/compression/headers
+* Full-site redesign
+* Promotion readiness
+
+For each mark:
+DONE / LIVE-BUT-UNAUDITED / PREVIEW / PENDING / SEALED / WAIT
+
+F. Fastest safe implementation order
+
+Give the fastest safe order from now to promotion.
+
+Use this priority:
+
+1. Fix action architecture / CTA / wallet flow foundations.
+2. Finish or explicitly seal unfinished modules.
+3. Clean truth/copy across the full site.
+4. Full-site redesign.
+5. Debug/performance/security.
+6. Promotion checklist.
+
+Do not put referral before wallet/onboarding unless there is a strong reason.
+
+G. Smallest next sprint
+
+Recommend the single next implementation sprint.
+
+It should be small, safe, rollbackable, and reduce technical debt.
+
+Expected answer format:
+
+1. Current state summary
+2. What is Grade AAA already
+3. What is patchwork / duplicated / hardcoded
+4. What must be unified before redesign
+5. Wallet provider recommendation
+6. Unfinished-work map
+7. Fastest safe build order
+8. Exact next sprint proposal
+9. Files likely touched
+10. Risks and rollback
+
+Rules:
+
+* No implementation.
+* No contract changes.
+* No referral activation.
+* No redesign yet.
+* No invented data, metrics, rewards, claims, or amounts.
+* No new doctrine.
+* Preserve Sale V2 truth: live-but-unaudited / early.
+* Preserve V1 truth: sealed / closed / history.
+* Preserve CommissionRouter truth: unset / referral pending.
+* Preserve Archive doctrine: Archive1155 artifacts only; SeatRecord721 later.
+* If something is unknown, say UNKNOWN and name the file/doc to inspect.
