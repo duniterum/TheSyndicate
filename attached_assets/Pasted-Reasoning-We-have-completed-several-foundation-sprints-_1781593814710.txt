@@ -1,0 +1,182 @@
+Reasoning
+
+We have completed several foundation sprints safely:
+
+* RPC resilience
+* Sale V2 truth cleanup
+* WalletGate foundation
+* Protocol action registry shell
+* Protocol action guard
+* Next Best Action selector
+* NextActionContext adapter
+* CockpitNextMove migration
+* Guidance orphan cleanup
+* Header label cleanup
+
+Now we need a global product-architecture pass before continuing.
+
+The question is not only “fix the header.”
+
+The question is:
+
+Does the full navigation, header, mobile bar, action system, dashboard entry, NFT/archive naming, and next-action flow match the final Syndicate product vision?
+
+The site should feel like one coherent protocol, not patched pages.
+
+Prompt
+
+Recalibrate using the current codebase, Full Protocol View, docs, and recent completed sprints.
+
+Do not implement first.
+
+Give me the current global work list and the safest next execution order.
+
+Important vision:
+
+The Syndicate is not just a token sale.
+
+It is:
+
+* membership
+* identity
+* seat
+* story
+* artifacts
+* Chronicle
+* transparency
+* protocol actions
+* progression
+* future referral / marketplace / AI modules
+
+Current truths:
+
+* User can connect/open context before becoming a member.
+* Connecting is not membership.
+* User becomes a Syndicate Member only by buying through Sale V2 and receiving SYN.
+* Sale V2 is live-but-unaudited / early.
+* V1 is sealed/history.
+* CommissionRouter is unset / referral pending.
+* Archive1155 is artifacts only.
+* SeatRecord721 is future.
+* Web2 + Web3 onboarding is future.
+* Current wallet is injected/wagmi only.
+
+Questions to answer:
+
+A. Global work list
+
+List all remaining work, grouped by:
+
+1. Navigation / header / mobile bar
+2. Global identity adapter
+3. CTA architecture
+4. Membership purchase flow
+5. NFT / Archive naming and navigation
+6. My Syndicate / dashboard guidance
+7. Next Best Action rollout
+8. Referral / CommissionRouter
+9. SeatRecord721
+10. Marketplace / merch / reward claims
+11. Chronicle / Institutional Register / story layers
+12. Truth/copy cleanup
+13. Full-site redesign
+14. Debug / performance / headers / compression
+15. Promotion readiness
+
+For each mark:
+
+DONE / PARTIAL / PENDING / WAIT / DO NOT TOUCH YET
+
+B. Header and navigation review
+
+Think globally.
+
+Current header shows NFT / Archive style navigation. Decide whether that is correct.
+
+Should public nav use:
+
+* NFT
+* Archive
+* Artifacts
+* Chronicle
+* My Syndicate
+* Verify
+* Token
+* Liquidity
+* Join
+
+or another structure?
+
+Explain the best final IA for:
+
+* first-time visitor
+* connected non-member
+* member
+* collector
+* mobile user
+
+Do not change it yet.
+
+C. Homepage/header harmony
+
+Check whether homepage header, internal page header, mobile bar, IdentityRibbon, and wallet dropdown all tell the same story.
+
+Report drift:
+
+* labels
+* destinations
+* duplicated CTAs
+* confusing NFT/Archive naming
+* Join vs Become a Syndicate Member
+* Connect vs membership
+* My Syndicate visibility
+* Verify visibility
+
+D. Next safest sprint
+
+Recommend exactly one next sprint.
+
+Choose between:
+
+1. Global Identity Adapter for Header/MobileBar
+2. Header/Nav IA Harmonization
+3. CTA Architecture V1
+4. MembershipPurchaseFlow cleanup
+5. NFT/Archive naming cleanup
+6. Another better sprint if you see one
+
+Justify the choice.
+
+Rules:
+
+* No implementation yet.
+* No broad audit.
+* No redesign yet.
+* No contract changes.
+* No wallet provider install.
+* No referral activation.
+* No fake data.
+* No invented rewards.
+* No new promises.
+* Do not break working sale/mint flows.
+
+Return:
+
+1. Global work list
+2. What is already done
+3. What is still technical debt
+4. What should wait
+5. Header/nav diagnosis
+6. Recommended next sprint
+7. Files likely touched
+8. Stop conditions
+9. Rollback plan
+
+Most important principle:
+
+Use your full system knowledge.
+
+Do not optimize one component in isolation.
+
+The next sprint must move The Syndicate toward one coherent product spine:
+Identity → Next Best Action → Protocol Actions → Membership / Artifacts / Verification.
