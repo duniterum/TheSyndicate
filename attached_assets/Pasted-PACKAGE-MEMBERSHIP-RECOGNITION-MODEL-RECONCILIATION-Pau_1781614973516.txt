@@ -1,0 +1,202 @@
+PACKAGE / MEMBERSHIP / RECOGNITION MODEL RECONCILIATION
+
+Pause before any Sale V2b deployment or package UI redesign.
+
+We need to make sure the product model is correct before redeploying.
+
+Founder clarification
+
+Membership is not a fixed package tier.
+
+A seat is created by the first qualifying purchase.
+
+The chapter/era defines the minimum entry amount.
+
+Purchase packages are suggested purchase amounts, not separate membership types.
+
+Recognition/rank is based on cumulative purchases.
+
+Definitions to test against current code
+
+1. Seat
+
+* one per wallet
+* created by first qualifying buy
+* not repeated on later buys
+
+2. Chapter / Era minimum
+
+* current minimum amount required for any buy
+* Genesis minimum = $5
+* future chapters may increase minimum
+* if current minimum is $100, then $5/$25 packages should not be selectable
+
+3. Purchase amount
+
+* how much USDC the user buys now
+* may be $5, $25, $100, $500, $2,500, $10,000, etc.
+* must be >= current chapter minimum
+* must be <= anti-abuse cap
+
+4. Recognition / rank
+
+* derived from cumulative USDC/SYN purchases
+* not the same as one purchase package
+* buying $25 twice should count as $50 cumulative recognition
+* buying $5 first then $25 later should count as $30 cumulative recognition
+* buying $10,000 first should create one seat and high recognition immediately
+
+5. Package labels
+   Current names like Citizen / Operator / Vanguard may be confusing if they imply permanent membership tiers.
+
+Consider neutral purchase labels:
+
+* Starter
+* Builder
+* Supporter
+* Backer
+* Major Supporter
+* Cornerstone
+
+Or another better naming system.
+
+But recognition/rank can remain separate.
+
+Questions
+
+A. Does the current code already separate:
+
+* seat
+* chapter/era minimum
+* package amount
+* cumulative rank/recognition
+* artifacts
+
+or are these concepts currently mixed in UI/config?
+
+B. Where exactly are they mixed?
+
+Check:
+
+* syndicate-config.ts
+* package-catalog.ts
+* RANKS_V2
+* JoinPackages
+* SeatPackageCard
+* RankHub
+* My Syndicate
+* CockpitProgression
+* Holder Index
+* LivePurchase
+* eras.ts
+* any copy that says membership tier/package/rank
+
+C. What should the final model be?
+
+Recommend the cleanest product model:
+
+* Seat = identity
+* Chapter = minimum + rate + visual mark
+* Package = suggested buy amount
+* Recognition = cumulative rank
+* Artifact = collectible memory
+* Referral = future growth layer
+
+Improve this if your codebase suggests a better model.
+
+D. How should package availability work by chapter?
+
+Example:
+
+Chapter I minimum = $5:
+
+* $5, $25, $100, $500, $2,500, $10,000 available if under cap
+
+Later chapter minimum = $100:
+
+* $5 and $25 unavailable
+* $100+ available
+
+Existing members:
+
+* should they also respect current minimum for additional buys?
+* or should top-ups below the minimum be allowed?
+* What does the current contract enforce?
+
+E. How should first purchase work?
+
+Confirm intended behavior:
+
+* If user buys $25 first in Genesis, they get one seat + $25 cumulative recognition.
+* If user buys $10,000 first, they get one seat + $10,000 cumulative recognition.
+* If user later buys again, no second seat, only cumulative recognition increases.
+
+F. How should UI copy change?
+
+Current risk:
+
+* package names may look like fixed membership tiers
+* rank names may look like package names
+* future chapter minimums could make low packages invalid
+* user may think buying Operator twice is weird
+
+Recommend:
+
+* labels
+* section title
+* package card copy
+* rank copy
+* receipt copy
+
+Use safe language:
+
+* purchase
+* membership purchase
+* seat
+* recognition
+* routing
+* cumulative
+
+Avoid:
+
+* contribution
+* investment
+* yield
+* dividend
+* guaranteed return
+
+G. Legal/product risk check
+
+Do not give legal advice.
+
+But think as Product + Protocol Architect:
+
+Does “membership sale” + “token received” + “purchase packages” create wording confusion?
+
+Recommend safer language.
+
+H. Recommendation before redeploy
+
+Return:
+
+1. Current concept map
+2. Concept mixing found
+3. Final recommended model
+4. Package availability rule by chapter
+5. Existing-member top-up rule
+6. First-purchase rule
+7. Recognition/rank rule
+8. UI naming recommendation
+9. Files likely to change
+10. What must be fixed before Sale V2b
+11. What can wait until redesign
+
+Do not implement yet.
+
+Do not deploy.
+
+Do not change contracts.
+
+Goal:
+
+Before we redeploy Sale V2b, the membership/package/rank model must be clear enough that we do not need to redesign or redeploy again in 3–6 days.
