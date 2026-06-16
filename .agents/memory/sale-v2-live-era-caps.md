@@ -114,3 +114,20 @@ so a corrected redeploy (call it V2b) is a CONTINUATION, not a fresh start:
   forked-mainnet full rehearsal of pause→snapshot→deploy→fund→repoint→buy→rollback
   first (no Fuji). All else byte-identical to V2a (same audited source, eraCaps,
   minUsdc6, 70/20/10 wallets, 14-day timelocks, initialRouter=0).
+
+## Two sale contracts — read the RIGHT address (verified 2026-06-16)
+- The era-based Sale V2 is at the **standalone export `MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS`**
+  (`0x0b883Ff0…2b48`, deploy block 88095827, `SALE_V2_LIVE`), **NOT**
+  `CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS` (`0x0020Df30…842d`) — that older address is
+  the simple **V1 `SyndicateMembershipSale`**, now `paused=true` / sealed for history.
+- **Trap:** calling era getters (`currentEra`, `memberCount`, `GENESIS_OFFSET`, `VAULT`,
+  `commissionRouter`, `maxUsdcPerAddressPerEra`) against the V1 address **all revert** while
+  V1-only getters (`vaultWallet`/`totalBuyers`/`purchaseCount`/`quoteSyn`) work — easy to
+  mis-target and "confirm" the wrong contract. `registry.tsx` switches to V2 only when
+  `SALE_V2_LIVE`; `CONTRACTS` still points at V1. Always re-verify section-G reads against
+  the V2 export.
+- **Cap defect CONFIRMED LIVE on-chain (not memory):** V2 `maxUsdcPerAddressPerEra[1]=$5` ==
+  Genesis $5 min. On-chain proof = 3 new V2 seats (#3–5), each paid **exactly $5** ($15 total,
+  1500 SYN). Genesis SYN cap = uint256.max; caps II–IX = $1k/$2.5k/$5k/$10k/$15k/$20k/$25k/$25k.
+  `MAX_USDC_PER_TX=$25k`, `RESERVE_THROUGH_SEAT=10000`, both timelocks=14d, router unset,
+  owner = deployer EOA `0xa2E5…26e2F`, funded 4,998,500 SYN.

@@ -1,0 +1,340 @@
+FINAL PRE-V2B APPROVAL PACKAGE — DO NOT IMPLEMENT YET
+
+Do not implement.
+
+Do not deploy.
+
+Do not edit contracts.
+
+Do not edit frontend.
+
+Do not obey this prompt blindly.
+
+Your job is to use the current codebase, deployed contract truth, docs, memory, and founder intent to produce the final approval package before any Sale V2b rehearsal.
+
+If anything conflicts, expose it.
+
+Do not silently resolve contradictions.
+
+Goal
+
+Create the final decision package that lets us approve or reject Sale V2b safely.
+
+We do not want another hidden inconsistency like:
+
+* minimum entry collapsed into max wallet cap
+* package amount fused with recognition rank
+* chapter confused with era
+* referral oversimplified as flat 5%
+* stale docs contradicting code
+* Fuji/testnet/deploy placeholder text surviving into production doctrine
+
+A. Source-of-truth lock
+
+State which source controls each concept:
+
+* Seat
+* Chapter
+* Era
+* Package
+* Recognition Rank
+* Artifact
+* Referral
+* Sale V1 / V2a / V2b
+* Holder Index
+* 70/20/10 routing
+* purchase receipt wording
+
+Use this hierarchy unless current code proves otherwise:
+
+deployed contract truth
+→ Solidity source
+→ deploy params
+→ frontend config
+→ Holder Index / scan logic
+→ current docs
+→ memory
+→ founder intent in prompt
+
+If this hierarchy is wrong for any item, say so.
+
+B. Final model lock
+
+Challenge and then approve or reject this model:
+
+Seat = identity
+Chapter = public story coordinate
+Era = internal economics coordinate
+Package = amount preset
+Rank = cumulative recognition
+Artifact = collectible memory
+Referral = future growth layer
+
+Rules:
+
+* public users should see Chapter, not Era
+* Era can remain internal to contracts/economics
+* one wallet gets one seat
+* first qualifying buy creates the seat
+* later buys do not create extra seats
+* packages are purchase amounts
+* ranks are cumulative recognition
+* artifacts are separate collectibles
+* referral remains pending until CommissionRouter is active
+
+C. Chapters / Eras decision
+
+Evaluate the final model:
+
+9 public Chapters aligned 1:1 with the 9 economic Eras.
+
+Public UI says:
+
+Chapter I
+Chapter II
+Chapter III
+etc.
+
+Internal code/contracts may still use Era.
+
+For each Chapter, produce a table:
+
+* Roman numeral
+* name
+* member range
+* minimum entry
+* SYN per USDC
+* status LIVE / FUTURE
+* story meaning
+* where it appears
+
+Challenge these proposed names and improve if needed:
+
+I — Genesis
+II — First Thousand
+III — The Expansion
+IV — First Ten Thousand
+V — The Open Gate
+VI — The Commons
+VII — Hundred Thousand
+VIII — Quarter Million
+IX — First Million
+
+Names must fit The Syndicate vision:
+
+* identity
+* seat
+* signal
+* vault
+* archive
+* builders
+* protocol memory
+* expansion
+* open economy
+
+Avoid random fantasy names.
+
+D. Package / Rank separation
+
+You found:
+
+SEAT_PACKAGES = RANKS_V2.map(...)
+
+This must be treated as a product-model defect unless you prove otherwise.
+
+Create a final decision:
+
+Package = purchase amount
+Rank = cumulative recognition
+
+Explain:
+
+* what a package is
+* what a rank is
+* why they must not be the same object
+* what happens when a wallet buys $25 twice
+* what happens when a wallet buys $10,000 first
+* whether current recognition calculation is already correct
+* whether the issue is frontend-only or contract-level
+
+Recommend final package style:
+
+Option A — amount-only presets:
+$5 / $25 / $100 / $500 / $2,500 / $10,000
+
+Option B — amount-led with neutral descriptors:
+Entry / Standard / Strong / Deep / Major / Maximum
+
+Option C — current rank-named packages
+
+Choose one.
+
+Do not reuse rank names as package names unless you strongly justify it.
+
+E. Rank system lock
+
+Explain the current rank system:
+
+* rank names
+* thresholds
+* groups
+* where they appear
+* what they give
+* what they do not give
+
+Confirm:
+
+* recognition-only
+* no rights
+* no yield
+* no dividends
+* no governance
+* no guaranteed benefit
+* no package identity
+
+Flag copy that must be removed, especially any false perk such as “self-service wallet checkout.”
+
+F. Sale V2b parameter sheet
+
+Create the exact immutable Sale V2b parameter approval sheet.
+
+Include:
+
+* corrected Genesis addrCaps[0]
+* addrCaps[1..8]
+* full min/rate schedule
+* era caps
+* per-tx max
+* reserveThroughSeat
+* genesisOffset rule
+* V1 + V2a member root rule
+* funding requirement
+* router setting
+* old V2a pause timing
+* snapshot cutoff
+* current member continuity plan
+
+Use exact units:
+
+* USDC 6 decimals
+* SYN 18 decimals
+* member ranges
+* seat boundaries
+
+Mark every value:
+
+APPROVE
+REJECT
+FOUNDER APPROVAL REQUIRED
+
+G. Re-verify live V2a before final sheet
+
+Before final recommendation, re-read on-chain:
+
+* live V2a address
+* currentEra
+* memberCount
+* maxUsdcPerAddressPerEra for Genesis
+* genesisOffset if exposed / infer from state
+* paused / concluded
+* SYN inventory
+* reserve floor if available
+* commissionRouter
+* total sold / routed if relevant
+
+Do not rely on previous memory for live numbers.
+
+H. Referral protection
+
+Do not change referral.
+
+But lock the current truth:
+
+* CommissionRouter unset
+* referral pending
+* not flat 5%
+* not gross payout
+* not live
+* router swap timelocked
+* docs may lag code
+
+Expose any docs that still contradict current referral code.
+
+I. Legal / product language risk
+
+Do not give legal advice.
+
+But identify wording risks.
+
+Safe:
+
+* purchase
+* membership purchase
+* seat
+* SYN received
+* purchase routing
+* recognition
+* verified activity
+* referral commission only if active
+
+Avoid:
+
+* contribution
+* investment
+* yield
+* dividend
+* guaranteed return
+* passive income
+* governance promise
+* pay-to-unlock rights
+
+J. Rehearsal plan
+
+If and only if the model and parameter sheet are clear, provide the rehearsal plan:
+
+1. pause old V2a
+2. snapshot V1 + V2a members
+3. compute genesisOffset
+4. compute member root
+5. deploy V2b on fork / rehearsal
+6. fund V2b
+7. verify params
+8. update registry/config in rehearsal
+9. update indexer sale list in rehearsal
+10. test $5 / $25 / $100 / $1,000 / $10,000
+11. test repeat buy creates no extra seat
+12. test cumulative rank updates
+13. test 70/20/10 routing
+14. verify CommissionRouter remains unset
+15. verify old V2a sealed/history behavior
+16. rollback plan
+
+K. Return exactly
+
+1. Source-of-truth lock
+2. Final concept model
+3. 9-Chapter recommendation
+4. Package vs Rank decision
+5. Rank system lock
+6. Sale V2b parameter sheet
+7. Live V2a re-verification
+8. Referral protection note
+9. Wording risk list
+10. Rehearsal plan
+11. Decisions requiring founder approval
+12. What you refuse to assume
+13. Recommended next sprint
+
+Most important principle
+
+Do not create another inconsistency.
+
+Do not deploy until:
+
+* model is locked
+* parameters are locked
+* live V2a is re-verified
+* package/rank separation is understood
+* chapter/era public language is approved
+* referral assumptions are protected
+* existing members remain continuous
