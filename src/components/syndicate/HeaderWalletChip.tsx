@@ -178,7 +178,6 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
   // ── Disconnected ──────────────────────────────────────────────────────────
   if (!isConnected) {
     const c = connectors[0];
-    const label = connectPending ? "Connecting…" : "Connect";
     if (variant === "mobile") {
       return (
         <button
@@ -187,7 +186,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
           aria-label="Connect wallet"
           className="w-full mono inline-flex items-center justify-center gap-2 rounded-md border border-border px-3 py-2.5 text-[11px] uppercase tracking-[0.18em] text-foreground hover:border-[var(--gold)]/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          {label} Wallet
+          {connectPending ? "Connecting…" : "Connect Wallet"}
         </button>
       );
     }

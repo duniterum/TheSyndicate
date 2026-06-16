@@ -1,0 +1,239 @@
+Reasoning
+
+Next Best Action V2 is complete and proven on CockpitNextMove.
+
+Now we should not redesign the full site yet.
+
+The next best execution sprint is Header / Navigation / Entry CTA Harmonization V1 because the header is the global doorway for every user state:
+
+visitor
+connected non-member
+member
+future Web2/Web3 user
+
+The header must become consistent before we expand CTA architecture across the whole site.
+
+Prompt
+
+Proceed with:
+
+HEADER / NAVIGATION / ENTRY CTA HARMONIZATION V1
+
+Goal
+
+Make the global header and entry actions consistent, state-aware, and aligned with the new identity/action model.
+
+This sprint is about structure and consistency only.
+
+No redesign.
+No wallet provider change.
+No contract change.
+No referral change.
+No sale/mint logic change.
+
+Current truths
+
+Preserve:
+
+* Sale V2 = live-but-unaudited / early.
+* Sale V1 = sealed/history.
+* CommissionRouter = unset / referral pending.
+* Archive1155 = artifacts only.
+* SeatRecord721 = future.
+* Current wallet = injected/wagmi only.
+* Web2 + Web3 onboarding = future.
+* User can connect/open context before becoming a member.
+* User becomes a Syndicate Member only by buying through Sale V2 and receiving SYN.
+
+Important model
+
+Connect / Enter ≠ Membership.
+
+Header actions must separate:
+
+1. Connect
+   Meaning:
+   connect wallet / future login.
+   Not membership.
+
+2. My Syndicate
+   Meaning:
+   open dashboard/cockpit.
+   Not membership by itself.
+
+3. Join The Syndicate / Become a Syndicate Member
+   Meaning:
+   go to Sale V2 membership purchase flow.
+
+4. Buy More SYN
+   Meaning:
+   member-only continuation of same Sale V2 action.
+
+A. Inspect current header/navigation first
+
+Before editing, map current header variants:
+
+* homepage header
+* other page headers
+* mobile header
+* sticky/mobile join bar if any
+* connected state
+* disconnected state
+* wrong-network state
+* My Syndicate link
+* Join CTA
+* Verify link
+* More menu
+* Connect button / wallet chip
+
+Report if there are multiple header implementations or duplicated logic.
+
+Do not run a broad audit.
+
+B. Fix obvious header label duplication
+
+If confirmed in code, fix duplicated visible labels such as:
+
+* “Connect Connect Wallet”
+* duplicated Join wording
+* inconsistent My Syndicate / Open My Syndicate wording
+* inconsistent Verify / Verify Protocol / Verify Everything wording
+
+Use canon:
+
+* Connect
+* My Syndicate
+* Join The Syndicate
+* Become a Syndicate Member
+* Buy More SYN
+* Verify
+
+Do not invent new labels.
+
+C. Make header state-aware only where already safe
+
+Header logic should be:
+
+Disconnected visitor:
+
+* primary wallet action: Connect
+* membership action: Join The Syndicate
+* dashboard link may remain My Syndicate only if current route behavior is already safe
+
+Connected non-member:
+
+* wallet chip / connected state
+* primary membership CTA: Become a Syndicate Member
+* dashboard: My Syndicate
+
+Member:
+
+* wallet chip / connected state
+* dashboard: My Syndicate
+* membership continuation: Buy More SYN
+
+Identity loading:
+
+* do not flash wrong member/non-member CTA
+* use neutral fallback or preserve current safe behavior
+
+Do not add new wallet provider or login method.
+
+D. Use existing foundations where safe
+
+Use:
+
+* useWalletGate if appropriate
+* useNextActionContext only if safe in global/non-cockpit context
+* next-best-action selector only if it does not add new reads or fixture coupling
+
+Important:
+
+If current useNextActionContext is cockpit-coupled and not safe for global Header, do not force it.
+
+In that case:
+
+* preserve existing header logic
+* only fix labels/duplication
+* report the need for a future global adapter
+
+E. Do not touch working flows
+
+Do not touch:
+
+* LivePurchase
+* MintFirstSignal
+* MintPatronSeal
+* approve/buy
+* approve/mint
+* Sale V2 contract calls
+* Archive contract calls
+* referral
+* protocol-actions registry wiring beyond label constants if safe
+
+F. Validation
+
+Run feasible checks:
+
+* wording guard
+* next-best-action tests
+* next-action-context tests
+* protocol-actions guard
+* cold Vite compile
+* render checks:
+
+  * /
+  * /join
+  * /my-syndicate
+  * /nft
+  * /token
+  * /liquidity
+  * /transparency
+
+Manual checks:
+
+* header has no duplicated text
+* Connect does not imply membership
+* Join routes to existing purchase flow
+* My Syndicate opens dashboard
+* Verify opens transparency
+* no pending action appears live
+* no MetaMask-only wording reintroduced
+* no forbidden language introduced
+
+G. Stop conditions
+
+Stop and report before editing if:
+
+* there are multiple incompatible header systems
+* header state requires new chain reads
+* global adapter is needed before safe state-awareness
+* fixing label drift would change behavior
+* any route/destination would change
+* any purchase/mint/referral logic would be touched
+
+H. Final report
+
+Return:
+
+1. Header systems found
+2. Files changed
+3. Labels fixed
+4. State-awareness added or deliberately deferred
+5. Whether global NextActionContext adapter is needed later
+6. Behavior preserved
+7. Tests/checks run
+8. Render checks
+9. Remaining header/navigation debt
+10. Rollback plan
+11. Recommended next sprint
+
+Most important principle
+
+The header must not add friction.
+
+Connect is only entry.
+
+Membership happens only through the Sale V2 purchase flow.
+
+The global navigation must make the next action obvious without confusing login, dashboard, and membership.

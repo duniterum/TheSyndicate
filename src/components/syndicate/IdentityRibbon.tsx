@@ -152,7 +152,7 @@ export function IdentityRibbon() {
           to="/my-syndicate"
           className="ml-auto mono text-[10px] uppercase tracking-[0.22em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline"
         >
-          Your archive →
+          My Syndicate →
         </Link>
       </div>
     </div>
