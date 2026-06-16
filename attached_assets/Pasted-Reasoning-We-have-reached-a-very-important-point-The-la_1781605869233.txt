@@ -1,0 +1,297 @@
+Reasoning
+
+We have reached a very important point.
+
+The last successful sprints did not add features.
+
+They reduced duplication, centralized logic, clarified identity, clarified navigation, and extracted existing intelligence from the protocol.
+
+That pattern is working.
+
+The biggest risk now is not missing functionality.
+
+The biggest risk is accidentally creating a second journey system when the codebase already contains most of the journey.
+
+Before implementing Journey Assembly V2, we need one final salvage/reconciliation pass.
+
+The goal is to determine:
+
+* what already exists
+* what should survive
+* what should be upgraded
+* what should be retired
+* what is truly missing
+
+without inventing a parallel system.
+
+Prompt
+
+Use the current codebase, Full Protocol View, completed sprint history, and current live implementation.
+
+Do not implement.
+
+Do not redesign.
+
+Do not run a broad audit.
+
+Do not create new journey systems.
+
+Goal
+
+Determine whether the existing journey/progression components can be assembled into the final Syndicate journey experience.
+
+Important principle
+
+Prefer:
+
+reuse
+unify
+simplify
+
+over:
+
+invent
+duplicate
+replace
+
+A. Journey Assembly Salvage Pass
+
+Map the current journey-related components and determine:
+
+1. What survives unchanged
+2. What survives with updates
+3. What should be merged
+4. What should be retired
+5. What is genuinely missing
+
+Check at least:
+
+* IdentityRibbon
+* HomeProgressionTeaser
+* MilestoneApproachingTile
+* CockpitProgression
+* CockpitMemory
+* CockpitNextMove
+* SinceLastVisitStory
+* SinceYourLastVisit
+* WhatChangedForYou
+* Activity
+* Ranks
+* Artifacts
+* Chronicle
+* Institutional Register
+* Knowledge Map
+* labs MemberJourney
+* Next Best Action selector
+* Global Identity Adapter
+
+For each:
+
+* current purpose
+* current status
+* stage served
+* survives unchanged?
+* survives with modification?
+* should merge?
+* should retire?
+* why?
+
+B. Existing MemberJourney evaluation
+
+Focus specifically on labs MemberJourney.
+
+Question:
+
+Can it be salvaged?
+
+Identify:
+
+* what is already correct
+* what vocabulary is outdated
+* what doctrine changed
+* what identity source is wrong
+* what would need updating
+* what should remain
+* what should be removed
+
+Important:
+
+Do not build a new journey if the existing one can be fixed.
+
+Return:
+
+SALVAGEABLE
+PARTIALLY SALVAGEABLE
+NOT WORTH SAVING
+
+and explain why.
+
+C. Journey stage reconciliation
+
+Current runtime states:
+
+* visitor
+* identity-loading
+* connected non-member
+* member
+* collector overlay
+
+Current human journey idea:
+
+* Observer
+* Explorer
+* Connected visitor
+* Member
+* Collector
+* Builder
+* Long-term participant
+
+Map them together.
+
+For each stage:
+
+* code support today
+* UI support today
+* progression support today
+* recognition support today
+* what is missing
+
+Mark:
+
+DONE
+PARTIAL
+MISSING
+
+D. Progression system audit
+
+Without inventing anything:
+
+What already tells users:
+
+* what changed
+* what is next
+* what they achieved
+* where they are
+* why they should return
+
+Use current live surfaces only.
+
+Classify:
+
+DONE
+PARTIAL
+MISSING
+
+Explain whether assembly alone solves the gap.
+
+E. Chronicle / Activity / Record integration
+
+The Syndicate must not become:
+
+* a social feed
+* a leaderboard
+* a member directory
+
+Confirm whether current Chronicle, Activity, Institutional Register, and Knowledge Map support the intended doctrine.
+
+Identify:
+
+* overlaps
+* gaps
+* underused surfaces
+* hidden value
+
+Explain how they fit into the journey.
+
+F. Shareability reality check
+
+Using only existing functionality:
+
+What is already shareable?
+
+Examples:
+
+* seat/member number
+* rank
+* artifacts
+* milestone pages
+* activity events
+* institutional register entries
+* wallet page
+
+Classify:
+
+LIVE
+PARTIAL
+PENDING
+
+Do not invent new share systems.
+
+G. Final assembly recommendation
+
+Answer one question:
+
+Can The Syndicate's journey be completed mostly by assembling and reconciling existing components?
+
+or
+
+Is a major new system actually required?
+
+Explain why.
+
+H. Recommended next implementation sprint
+
+Choose exactly one:
+
+1. Journey Assembly V2
+2. MemberJourney Salvage
+3. Progression Cleanup Phase 2
+4. Shareability Foundation
+5. NFT / Archive experience planning
+6. Something else
+
+Justify the choice.
+
+Rules
+
+* No implementation.
+* No redesign.
+* No contract changes.
+* No referral activation.
+* No wallet provider changes.
+* No fake metrics.
+* No invented rewards.
+* No new doctrine.
+* No second journey system.
+
+Current truths must remain:
+
+* Sale V2 = live-but-unaudited / early.
+* Sale V1 = sealed/history.
+* CommissionRouter = unset.
+* Archive1155 = artifacts only.
+* SeatRecord721 = future.
+* Global identity adapter is live.
+* Next Best Action exists.
+* Navigation truth pass is complete.
+
+Return:
+
+1. Salvage map
+2. What survives
+3. What changes
+4. What retires
+5. Runtime states vs human journey
+6. Progression audit
+7. Chronicle/Record integration
+8. Shareability map
+9. Assembly recommendation
+10. Recommended next sprint
+11. Files likely touched later
+12. What must not be touched
+
+Most important principle
+
+Do not create a second journey system.
+
+The best outcome is to reveal and unify the journey that already exists inside the protocol.

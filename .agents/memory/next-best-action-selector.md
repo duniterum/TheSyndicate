@@ -38,7 +38,7 @@ decided here; labels/destinations come from `protocol-actions.ts` at render time
   covers `src/components` + `src/routes`). So importing `PROTOCOL_ACTIONS`/`rankForUsdc` here is SAFE.
 - Pure: no React/hooks/chain reads/JSX/side-effects. Final output is `dedupe(...).filter(isEmittableAction)`
   so a mis-authored journey constant can never leak a non-emittable id.
-- **Not rendered yet.** Nothing imports it → rollback = delete the 2 files, zero runtime impact.
+- **NOW LIVE / rendered.** `CockpitNextMove` consumes it via `useNextActionContext()` + `selectNextActions()` (see Adapter section) — it is the live journey engine behind the cockpit "Your next move". (Superseded the earlier "not rendered yet" note.) Rollback = revert CockpitNextMove + delete the lib/adapter files.
 
 ## Adapter (DONE — Foundation V2) + next-consumer gotchas
 The canonical adapter now exists and `CockpitNextMove` is its FIRST and ONLY consumer:
