@@ -1,0 +1,157 @@
+Reasoning
+
+The protocol architecture is now much stronger:
+
+* Global identity exists.
+* Next Best Action exists.
+* Guidance duplication has been reduced.
+* Navigation is cleaner.
+* Artifacts vs Archive is clearer.
+
+I do not want to create new doctrine layers if the current system already contains most of what we need.
+
+The next question is:
+
+Can the existing components already express the Member Journey and Progression system we have been describing?
+
+If yes, we should assemble and unify them rather than inventing new systems.
+
+Prompt
+
+Use the current codebase, Full Protocol View, and the latest completed work.
+
+Do not implement yet.
+
+Do not run a broad audit.
+
+Goal:
+
+Determine whether the Member Journey / Progression experience can be assembled mostly from existing components.
+
+Important:
+
+Do not think in terms of code architecture first.
+
+Think in terms of what the user experiences.
+
+The desired experience is:
+
+Observer
+→ Explorer
+→ Connected visitor
+→ Member
+→ Collector
+→ Builder
+→ Long-term participant
+
+Question:
+
+How much of this already exists?
+
+A. Existing journey surfaces
+
+Map the current components that already contribute to the journey:
+
+* HomeProgressionTeaser
+* MilestoneApproachingTile
+* IdentityRibbon
+* CockpitProgression
+* CockpitMemory
+* CockpitNextMove
+* SinceLastVisitStory
+* SinceYourLastVisit
+* WhatChangedForYou
+* Activity
+* Ranks
+* Artifacts
+* Chronicle
+* Institutional Register
+* Knowledge Map
+
+For each:
+
+* purpose
+* current status
+* what stage it serves
+* whether it is live
+* whether it is duplicated
+* whether it is underused
+* whether it should remain separate
+
+B. Can the journey already be expressed?
+
+Using only existing live components:
+
+Can the protocol already tell a coherent story from:
+
+visitor
+→ member
+→ collector
+→ long-term participant
+
+If not:
+
+What specific gaps remain?
+
+Do not invent new modules.
+
+Only identify missing pieces.
+
+C. Missing progression pieces
+
+Specifically identify:
+
+* what tells users what changed?
+* what tells users what is next?
+* what tells users why they should return?
+* what tells users what they achieved?
+* what tells users where they are in the protocol?
+
+Mark each:
+
+DONE
+PARTIAL
+MISSING
+
+D. Shareability
+
+Using current surfaces only:
+
+What achievements or protocol facts are already naturally shareable?
+
+Examples:
+
+* member number
+* rank
+* artifact ownership
+* purchase receipt
+* Chronicle mention
+* protocol milestone
+* activity event
+
+Do not invent new share features.
+
+Only identify what already exists.
+
+E. Recommendation
+
+Choose one:
+
+1. Existing components already cover 80%+ of the journey.
+2. Existing components cover about half.
+3. Existing components are still fragmented.
+
+Then explain:
+
+Should the next sprint be:
+
+* Journey Assembly
+* Progression Cleanup
+* Shareability Foundation
+* Something else
+
+Most important principle:
+
+Prefer assembling existing pieces over creating new ones.
+
+I want to reduce complexity, not increase it.
