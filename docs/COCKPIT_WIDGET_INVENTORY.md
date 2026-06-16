@@ -73,7 +73,7 @@ These docs already contain product-approved structure. Phase C should align to t
 | File · Component | Status | What to merge | Data | Into section |
 |---|---|---|---|---|
 | `labs/MemberCockpitCandidate.tsx` · `MemberCockpitCandidate` (+`MySeatPrimary`,`MyChapterContext`,`ProtocolWatchCompact`,`MyMemoryRow`,`MyFutureRow`,`Tile`) | labs-prototype | **Adopt as the structural SPINE**: Seat → Chapter → Memory → Future. "State over explanation." | `useHolderIndex`/`useProtocolTruth`/`useProtocolEvents` (LIVE/cached) | whole page skeleton |
-| `syndicate/SinceLastVisitStory.tsx` · same | rendered (via MemberWalletDashboard) | narrative delta line | `useVisitorMemory` LIVE | Since-you-were-away |
+| `syndicate/SinceLastVisitStory.tsx` · same | rendered (via CockpitMemory) | narrative delta line | `useVisitorMemory` LIVE | Since-you-were-away |
 | `syndicate/ActivityMilestones.tsx` · same | rendered (/activity) | completed/upcoming milestone columns | LIVE | What's sealing next |
 | `syndicate/MythologyWall.tsx` · same | rendered (/archive,/nft) | 9-slot artifact status grid | LIVE/cached | Holdings/artifacts (compact strip) |
 | `labs/RankIntelligence.tsx` · same | labs | rank distribution + "closest to next rank" social proof | `useMembersLeaderboard` LIVE/cached | Progression |
@@ -98,7 +98,7 @@ These docs already contain product-approved structure. Phase C should align to t
 | Item | Reason |
 |---|---|
 | `Sections.tsx` · `MeasuredFomo` | pressure/false-scarcity layout conflicts with "no countdowns, no last-N-slots" doctrine |
-| `syndicate/MemberWalletDashboard.tsx` (v1 cockpit shell) | superseded by new cockpit; **salvage** `SinceLastVisitStory`/`NextAction` logic, then retire the shell (don't render two cockpits) |
+| `syndicate/MemberWalletDashboard.tsx` (v1 cockpit shell) — **REMOVED** | superseded by new cockpit; `SinceLastVisitStory` now rendered via `CockpitMemory`; shell retired in guidance-debt cleanup |
 | Any fabricated constants (`PREVIEW_REFERRAL_DATA`, fake mint totals, fake score arrays) | never copy — live read or PENDING |
 
 ---

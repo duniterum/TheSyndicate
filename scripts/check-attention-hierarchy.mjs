@@ -5,7 +5,6 @@
 //   1. Homepage renders LivePulseStrip BEFORE any explanatory section.
 //   2. Homepage CTA block has exactly one gold (primary) CTA in the
 //      compressed near-hero block.
-//   3. /my-syndicate renders the MemberWalletDashboard.
 //   4. /nft renders the RecentCollectorsRail.
 //   5. /registry renders the RegistryTrustOpener at the top.
 //   6. No banned wealth/yield/governance words anywhere in the new components.
@@ -32,10 +31,6 @@ if (pulseIdx > 0 && (pulseIdx > flywheelIdx || pulseIdx > storyIdx || pulseIdx >
 
 // 2. Activity tape on homepage
 if (!home.includes("<HomeActivityTape")) FAIL.push("index.tsx: <HomeActivityTape /> missing");
-
-// 3. My Syndicate dashboard
-const my = read("src/routes/my-syndicate.tsx");
-if (!my.includes("<MemberWalletDashboard")) FAIL.push("my-syndicate.tsx: <MemberWalletDashboard /> missing");
 
 // 4. NFT recent collectors
 const nft = read("src/routes/nft.tsx");
@@ -65,7 +60,6 @@ const BANNED = [
 const SCAN = [
   "src/components/syndicate/HomeActivityTape.tsx",
   "src/components/syndicate/RecentCollectorsRail.tsx",
-  "src/components/syndicate/MemberWalletDashboard.tsx",
   "src/components/syndicate/RegistryTrustOpener.tsx",
 ];
 for (const f of SCAN) {
@@ -82,7 +76,7 @@ for (const f of SCAN) {
 }
 
 if (FAIL.length === 0) {
-  console.log("✓ attention-hierarchy: all checks passed (6/6)");
+  console.log("✓ attention-hierarchy: all checks passed");
   process.exit(0);
 } else {
   console.error("✗ attention-hierarchy checks failed:");

@@ -1,0 +1,154 @@
+Reasoning
+
+Next Best Action Foundation V2 is complete and successful.
+
+The selector is now proven on one real live surface: CockpitNextMove.
+
+Before expanding to Header, CTAs, wallet providers, or redesign, we should reduce known guidance technical debt safely.
+
+Replit identified three legacy/duplicate guidance surfaces:
+
+* MemberWalletDashboard.tsx — orphan / rendered nowhere
+* CommandStrip.tsx — orphan / rendered nowhere
+* YourNextAction.tsx — labs preview duplicate of CockpitNextMove
+
+The safest next sprint is not new features.
+
+It is a dead/duplicate guidance cleanup verification sprint.
+
+Prompt
+
+Proceed with a focused cleanup verification sprint:
+
+GUIDANCE DEBT CLEANUP V1
+
+Goal
+
+Confirm and safely remove or quarantine dead/duplicate guidance surfaces without changing live behavior.
+
+This sprint should reduce technical debt before we expand the Next Best Action system.
+
+Do not touch live purchase, mint, CTA, wallet, referral, contracts, or redesign.
+
+A. Verify before deleting
+
+Before removing anything, prove whether each candidate is truly unused.
+
+Check:
+
+1. MemberWalletDashboard.tsx
+2. CommandStrip.tsx
+3. YourNextAction.tsx
+4. Any related labs-only duplicate if directly tied to YourNextAction
+
+For each file/component:
+
+* Is it imported anywhere?
+* Is it rendered anywhere?
+* Is it used by tests?
+* Is it referenced by docs?
+* Is it part of a labs route only?
+* Is it needed for fixture/dev preview?
+* Is it superseded by MemberCockpit / CockpitNextMove / NextBestAction selector?
+
+Classify each:
+
+* DELETE SAFE
+* KEEP
+* QUARANTINE / LABS ONLY
+* UNKNOWN
+
+Do not delete if UNKNOWN.
+
+B. Remove only if safe
+
+If a component is proven unused and not needed:
+
+* delete it
+* remove dead imports
+* remove stale exports if any
+* update tests only if they referenced dead code incorrectly
+* do not change live routes
+
+If a component is labs-only but useful as historical reference:
+
+* do not delete production code blindly
+* quarantine under labs only or leave with clear status
+* do not let it compete with canonical live guidance
+
+C. Preserve live guidance
+
+Do not alter:
+
+* CockpitNextMove
+* next-best-action selector
+* use-next-action-context
+* CockpitProgression
+* CockpitMemory
+* RouteFinalCTA
+* HomeProgressionTeaser
+* SinceLastVisitStory
+* SinceYourLastVisit
+* WhatChangedForYou
+
+unless there is a direct dead import from removed files.
+
+D. Current truths to preserve
+
+* Sale V2 live-but-unaudited / early.
+* V1 sealed/history.
+* CommissionRouter unset / referral pending.
+* Archive1155 artifacts only.
+* SeatRecord721 future.
+* Current wallet remains injected/wagmi.
+* No Web2/Web3 wallet provider changes.
+* No contract changes.
+* No address changes.
+* No CTA behavior changes.
+* No visible UI changes.
+* No route changes.
+* No redesign.
+
+E. Validation
+
+Run feasible checks:
+
+* grep/import checks proving files are unused
+* next-best-action tests
+* next-action-context tests
+* protocol-actions guard tests
+* wording guard
+* cold Vite compile
+* render checks:
+
+  * /
+  * /my-syndicate
+  * /join
+  * /nft
+
+Run architect review.
+
+If full tsc/vitest hangs, say so clearly and do not pretend it passed.
+
+F. Report
+
+Return:
+
+1. Files inspected
+2. Classification per candidate
+3. Files deleted or quarantined
+4. Imports/exports removed
+5. Tests/checks run
+6. Live behavior confirmation
+7. Any component kept and why
+8. Remaining guidance duplication
+9. Recommended next sprint
+10. Rollback plan
+
+Most important principle
+
+Do not delete anything that still serves a real purpose.
+
+But do not keep dead guidance systems forever.
+
+The goal is to reduce technical debt before expanding the Next Best Action system.
