@@ -1,0 +1,160 @@
+FINAL MEMBERSHIP MODEL RECONCILIATION
+
+Pause before finalizing any Sale V2b deployment plan.
+
+The latest analysis identified the parameter mismatch correctly.
+
+However, before any migration plan, I want to lock the final membership model.
+
+Reason:
+
+The distinction between:
+
+* membership entry
+* seat identity
+* package size
+* cumulative purchases
+* recognition/rank
+
+must be explicit.
+
+I do not want to redeploy and discover 2 weeks later that the model itself was not aligned.
+
+Current founder intent
+
+Please use this as the reference model and verify whether it is internally consistent.
+
+Membership / seat
+
+* One wallet receives one seat.
+* The first qualifying purchase creates the seat.
+* The first purchase does not need to equal the minimum exactly.
+* If Genesis minimum is $5 and someone buys $25 first, they become a member and receive one seat.
+* If someone buys $5 first, they become a member and can later buy more.
+* Additional purchases do not create additional seats.
+
+Membership entry
+
+* Each chapter/era has a minimum entry amount.
+* Genesis minimum = $5.
+* Later chapters may increase the minimum.
+* The minimum is an entry threshold, not a cumulative wallet cap.
+
+Packages
+
+* Packages represent conviction size.
+* Packages should be available if under the anti-abuse ceiling.
+* Packages should not require waiting for a later chapter if that contradicts the intended model.
+* Packages should increase cumulative SYN and cumulative recognition.
+
+Recognition
+
+* Rank derives from cumulative purchases.
+* Rank is recognition, not ownership rights.
+* Rank should persist across purchases and sale migrations.
+
+Chapter / Era
+
+* Chapter controls minimum entry and SYN rate.
+* Chapter may also influence membership-card identity/color/story.
+* Chapter should not necessarily block larger purchases.
+
+Question set
+
+A. Is this model internally consistent?
+
+If not:
+
+* identify contradictions
+* identify doctrine conflicts
+* identify technical conflicts
+
+B. Does the current Sale V2 code already support this model?
+
+Separate:
+
+* code architecture
+* deployed parameters
+* frontend behavior
+
+C. What is the cleanest final architecture?
+
+Explain the relationship between:
+
+* seat
+* membership
+* package
+* chapter
+* rank
+* artifact
+
+Example:
+
+Seat = identity
+Package = conviction
+Rank = recognition
+Artifact = collection
+
+or another better model if you see one.
+
+D. Legal / product review
+
+Think as:
+
+* Product Lead
+* Protocol Architect
+* Growth Lead
+
+Does this model create any obvious confusion between:
+
+membership
+token purchase
+recognition
+
+If yes, identify it.
+
+Do not give legal advice.
+
+Just identify product-language risks.
+
+E. Before redeploy
+
+List every assumption that must be explicitly approved before deployment.
+
+Examples:
+
+* Genesis cap
+* Package availability
+* Chapter minimums
+* Rank thresholds
+* Recognition model
+* Seat continuity
+* GenesisOffset
+* Funding amount
+
+Anything else you think is critical.
+
+F. Final recommendation
+
+Return:
+
+1. Founder model summary
+2. Consistency check
+3. What the code already supports
+4. What the deployment broke
+5. What the frontend broke
+6. What must be approved before V2b
+7. Recommended final architecture
+8. Recommended deployment path
+
+Important:
+
+Do not implement.
+
+Do not deploy.
+
+Do not modify docs.
+
+Do not assume the current package ladder or Genesis cap is correct just because it is deployed.
+
+The goal is to lock the final membership model before any migration.
