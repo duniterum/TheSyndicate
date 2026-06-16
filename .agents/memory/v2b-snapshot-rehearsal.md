@@ -64,8 +64,25 @@ buy needs **≥ 5,097,000 SYN** (1,000,000 + reserve); a full **$25k** buy needs
 V2a holds only **4,998,500 SYN** → a like-for-like balance transfer to V2b **cannot** honor even one
 $10k package (only ≈ $9,015 sellable above the floor). **V2b MUST be funded ABOVE the V2a balance**
 before opening; the constructor pulls no SYN (fork test `deal`s 50M to sidestep this).
+**The "gap vs V2a balance" is INFORMATIONAL, not a transfer plan:** V2b starts at 0 SYN and cannot
+draw on V2a; V2a SYN moves only via `recoverUnsoldSyn()` (requires *concluded* OR *paused ≥ 14d*
+`RECOVERY_TIMELOCK`) and it sends to the **Vault**, never to V2b. So day-one V2b funding is
+**externally sourced**; recovered V2a SYN is a later, timelocked top-up at best.
 
 ## Final-deploy caveat
 The rehearsal snapshot is pinned to the **rolling head** (`snapshotBlock` = current). The FINAL
 (deploy) snapshot MUST be re-run pinned to the real **V2a pause block** — `genesisOffset` and root
 change if any V2a purchase lands before pause. Today's values are a rehearsal, not a deploy artifact.
+
+## Finalization tooling footguns (cost 2 architect FAILs)
+- **`gen-v1-root.mjs` ALWAYS writes `v1-merkle.json`** (hardcoded, no output arg) even when fed the
+  MERGED `members-merged.json`. The distinctly-named `v2b-merkle.json` only exists via an explicit
+  `cp v1-merkle.json v2b-merkle.json`. **All three tools write relative to CWD** → run export/gen/
+  validate from **`contracts/tools/`** (one cwd) or `cp` copies a stale artifact. `validate-snapshot.mjs`
+  args = `[members.json] [merkle.json] [expectedRoot]`; it's the ONLY thing that replays EVERY proof.
+- **`RehearsalForkV2b.t.sol` HARDCODES `ROOT`/offset(next-seat #6)/`_proofM1`/`_proofM3`** — re-running
+  the same `forge test` after pause validates the STALE rehearsal root, NOT the final params. The final
+  rehearsal needs those constants repointed (or the test parameterized) first.
+- The fork test deploys a **fresh V2b in isolation (no V1/V2a touch)** → it does **NOT** assert "old V2a
+  sealed". Verify that operationally by reading live `paused()==true` on the V2a address after the pause;
+  don't claim the fork covers it.

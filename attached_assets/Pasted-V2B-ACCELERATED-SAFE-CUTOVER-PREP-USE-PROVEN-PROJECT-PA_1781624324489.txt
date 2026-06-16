@@ -1,0 +1,219 @@
+V2B ACCELERATED SAFE CUTOVER PREP — USE PROVEN PROJECT PATTERN ONLY
+
+Continue from the successful V2b fork rehearsal.
+
+Do not introduce new architecture.
+
+Do not introduce new governance ideas.
+
+Do not propose multisig, new timelocks, upgradeable contracts, or new owner policy unless current code already requires it.
+
+Use the exact pattern already proven in this project:
+
+* inspect current truth
+* expose conflicts first
+* make a checkpoint
+* generate exact params
+* rehearse on fork
+* run guards
+* architect review
+* report
+* only then move to the next step
+
+Goal
+
+Accelerate without breaking.
+
+We already know the problem:
+
+* V2a Genesis cap is wrong for founder intent.
+* V2b rehearsal passed.
+* V2b must preserve V1 + V2a members.
+* Snapshot must be final at V2a pause block.
+* V2b must be funded above V2a balance.
+* No mainnet deployment yet unless all gates pass.
+
+Next sprint
+
+Prepare the final mainnet cutover package, but do not broadcast.
+
+A. Reconfirm current live state
+
+Before touching anything, re-read live V2a:
+
+* address
+* paused
+* current block
+* memberCount
+* currentEra
+* next seat
+* Genesis cap
+* SYN balance
+* reserve floor
+* sellable headroom
+* commissionRouter
+* total sold
+* total USDC routed
+
+If anything changed since the rehearsal, report first.
+
+B. Final pause-block plan
+
+Prepare the exact pause procedure.
+
+Do not pause yet unless explicitly asked.
+
+Return:
+
+* who must click pause
+* which contract address
+* which explorer/write method
+* what to record
+* what block becomes the snapshot block
+* what events must be scanned after pause
+* how to prove no further V2a purchases can happen after pause
+
+C. Final snapshot generation plan
+
+Prepare the final snapshot workflow from the pause block:
+
+* scan V1
+* scan V2a until pause block
+* union members
+* dedupe by first seen
+* preserve member numbering
+* compute genesisOffset
+* compute merged root
+* validate proofs
+* fail if on-chain V2a memberCount does not match snapshot count
+* fail if any duplicate seat risk exists
+
+Do not reuse provisional root unless pause block equals rehearsal block.
+
+D. Final deploy params package
+
+Prepare the final deploy params template.
+
+Keep placeholders where values depend on the final pause block.
+
+Include:
+
+* addrCaps[0] = 25000000000
+* addrCaps[1..8] unchanged
+* maxUsdcPerTx unchanged
+* reserveThroughSeat unchanged
+* eraCaps unchanged
+* initialRouter = 0x0
+* genesisOffset = final snapshot count
+* v1MemberRoot = final merged root
+* provisional flag handling
+* EXPECT_GENESIS_OFFSET
+* EXPECT_V1_ROOT
+
+Make it impossible to accidentally use stale V1-only params.
+
+E. Funding requirement
+
+Compute exact minimum SYN funding for V2b.
+
+At least show:
+
+* reserve floor
+* amount required to support one $10k Genesis buy
+* amount required to support one $25k max Genesis buy
+* current V2a sellable headroom
+* funding gap
+* recommended funding amount
+
+Do not assume V2a balance is enough.
+
+F. Final fork rehearsal after pause-block snapshot
+
+Prepare command sequence for the final rehearsal after real pause:
+
+* regenerate snapshot
+* regenerate params
+* run fork rehearsal
+* verify $5, $25, $100, $1k, $10k
+* verify repeat purchase
+* verify no duplicate seat
+* verify 70/20/10
+* verify router unset
+* verify old V2a sealed/history
+
+G. Frontend public relaunch blocker list
+
+Do not implement frontend now.
+
+But return the exact blocker list:
+
+* package/rank separation
+* amount presets
+* remove false checkout perk
+* public Chapter vs internal Era wording
+* live quote display
+* cap guard
+* funding-aware package display if needed
+* registry/config update after V2b
+* indexer sale list update
+
+Classify:
+
+MUST BEFORE MAINNET
+MUST BEFORE PUBLIC RELAUNCH
+CAN AFTER
+
+H. Mainnet cutover readiness
+
+Return a yes/no gate.
+
+Mainnet deploy is allowed only if:
+
+* V2a paused
+* pause block recorded
+* final snapshot generated
+* snapshot validated
+* params generated from final snapshot
+* EXPECT guards pass
+* fork rehearsal passes with final params
+* funding is ready
+* frontend config/indexer update plan ready
+* rollback plan ready
+
+I. Report format
+
+Return:
+
+1. Current V2a live state
+2. Final pause procedure
+3. Final snapshot procedure
+4. Final deploy params template
+5. Funding requirement
+6. Final rehearsal command list
+7. Frontend relaunch blockers
+8. Mainnet readiness gate
+9. What changed since last rehearsal
+10. What remains blocked
+11. Exact next action for founder
+
+Hard rules
+
+* No mainnet deploy.
+* No pause unless founder explicitly says pause.
+* No new architecture.
+* No new governance.
+* No referral changes.
+* No NFT / Archive changes.
+* No journey work.
+* No wallet-provider work.
+* No frontend implementation unless explicitly approved.
+* Do not invent new concepts.
+* Do not assume docs are current when code/on-chain state says otherwise.
+
+Most important principle
+
+Use the proven pattern.
+
+Move fast only where the gates are already proven.
+
+Expose any mismatch before acting.

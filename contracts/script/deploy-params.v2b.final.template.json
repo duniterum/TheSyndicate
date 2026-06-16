@@ -1,0 +1,39 @@
+{
+  "_README": "FINAL (mainnet) constructor parameters TEMPLATE for SyndicateSaleV2 (V2b) — read by Deploy.s.sol. This file REPLACES the live, unaudited V2a (0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48). It is a TEMPLATE: it ships with provisional=true AND non-numeric placeholders in the two pause-block-dependent fields (genesisOffset, v1MemberRoot) so it FAILS CLOSED two ways if used by accident (Deploy.s.sol refuses provisional, and vm.parseJsonUint/parseJsonBytes32 revert on the placeholder text). initialRouter is NOT read here — Deploy.s.sol forces address(0). All numeric values are JSON strings so 18dp SYN caps survive parsing.",
+  "_HOW_TO_FINALIZE": "DO NOT hand-edit genesisOffset/v1MemberRoot from memory. The export/gen/validate tools all write outputs RELATIVE TO THE CURRENT DIRECTORY, so run them all from contracts/tools/ (one cwd). After the V2a PAUSE block is recorded, from contracts/tools/: (1) SNAPSHOT_BLOCK=<V2a_PAUSE_BLOCK> node export-members-merged.mjs  -> members-merged.json + members-merged.snapshot.json (count + genesisOffset); (2) node gen-v1-root.mjs members-merged.json  -> prints root, ALWAYS writes v1-merkle.json (hardcoded name); (2b) cp v1-merkle.json v2b-merkle.json  (gen-v1-root always writes v1-merkle.json; name the MERGED artifact distinctly); (3) node validate-snapshot.mjs members-merged.json v2b-merkle.json <root>  (must print OK, count, N proofs verified); (4) copy count -> genesisOffset, root -> v1MemberRoot here, set provisional=false; (5) from contracts/, deploy ONLY with the double-entry guard: EXPECT_GENESIS_OFFSET=<count> EXPECT_V1_ROOT=<root> DEPLOY_PARAMS=script/deploy-params.v2b.final.template.json forge script script/Deploy.s.sol:Deploy --rpc-url $RPC (add --broadcast --verify only after ALL gates pass). NOTE: deploy-params.json (stale V1-only $5/offset=2) is the script DEFAULT path — every command MUST pass DEPLOY_PARAMS=...final.template.json or the stale file is read.",
+  "_DIFF_FROM_CANONICAL": "vs the V1-only deploy-params.json: addrCaps[0] 5000000 -> 25000000000 (Genesis per-address cap $5 -> $25,000; fixes the live V2a $5 defect), and genesisOffset/v1MemberRoot are re-derived over V1 UNION V2a at the PAUSE block (not V1-only). Everything else (token + treasury addresses, addrCaps[1..8], maxUsdcPerTx, reserveThroughSeat, eraCaps, initialRouter) is byte-identical to deploy-params.json.",
+  "_PLACEHOLDER_FIELDS": ["genesisOffset", "v1MemberRoot"],
+  "provisional": true,
+  "usdc": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+  "syn": "0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
+  "vault": "0x205DdC8921A4C60106930eE35e1F395c8D13f464",
+  "liquidity": "0xa9b072db8DcDbb470235204B69D37275d74a2e25",
+  "operations": "0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80",
+  "genesisOffset": "FILL_FROM_PAUSE_BLOCK_SNAPSHOT_count",
+  "v1MemberRoot": "0xFILL_FROM_PAUSE_BLOCK_SNAPSHOT_merged_root",
+  "addrCaps": [
+    "25000000000",
+    "1000000000",
+    "2500000000",
+    "5000000000",
+    "10000000000",
+    "15000000000",
+    "20000000000",
+    "25000000000",
+    "25000000000"
+  ],
+  "maxUsdcPerTx": "25000000000",
+  "reserveThroughSeat": "10000",
+  "eraCaps": [
+    "0",
+    "416875000000000000000000",
+    "1166500000000000000000000",
+    "3333500000000000000000000",
+    "6750000000000000000000000",
+    "11250000000000000000000000",
+    "15000000000000000000000000",
+    "60000000000000000000000000",
+    "150000000000000000000000000"
+  ],
+  "initialRouter": "0x0000000000000000000000000000000000000000"
+}

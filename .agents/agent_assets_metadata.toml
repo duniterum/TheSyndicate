@@ -287,3 +287,9 @@ id = "HcRwNHYVofcId--TZTs5M"
 uri = "file://docs/audits/V2B_SNAPSHOT_PARAMETER_REHEARSAL_REPORT.md"
 type = "text"
 title = "V2b Snapshot + Parameter Rehearsal — Founder Report (EXECUTED PASS)"
+
+[[outputs]]
+id = "SgNKZ5PME7pcbl5EDIXSj"
+uri = "file://docs/audits/V2B_MAINNET_CUTOVER_PREP_REPORT.md"
+type = "text"
+title = "V2b Mainnet Cutover — Prep Package (NO BROADCAST)"
