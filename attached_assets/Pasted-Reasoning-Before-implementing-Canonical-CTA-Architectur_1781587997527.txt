@@ -1,0 +1,230 @@
+Reasoning
+
+Before implementing Canonical CTA Architecture V1, we need one final alignment pass because a critical product nuance changed:
+
+Entering / logging in / connecting is not the same as becoming a member.
+
+A user may connect/login and view My Syndicate first, but they only become a Syndicate Member by buying membership through the active Sale V2 flow and receiving SYN.
+
+Also, The Syndicate should not only ask “what actions exist?” It should guide users toward the best next action after each step. We previously discussed this as a Do Next rail / guided journey / progression system / onboarding path. Before building more CTA architecture, show what already exists in the codebase for this.
+
+This is not a broad audit. It is a focused alignment + current-system map before implementation.
+
+Prompt
+
+Pause implementation.
+
+Use the current codebase, Full Protocol View, and existing docs.
+
+Do not code yet.
+
+Do not run a broad audit.
+
+We need one final Founder + CTO + Product + UX + Growth alignment before Canonical CTA Architecture V1.
+
+Important correction:
+
+“Enter / Login / Connect” is NOT membership.
+
+“Become a Syndicate Member” means:
+buy membership with USDC through active Sale V2
+→ receive SYN
+→ become a member / take a seat
+→ history starts / member record begins
+→ go to My Syndicate.
+
+Do not create a separate registration step.
+Do not add friction.
+Do not confuse login with membership.
+
+A. Clarify the action model
+
+Confirm the correct action separation:
+
+1. `enterSyndicate`
+   Meaning:
+   connect wallet / future Web2+Web3 login / open user context.
+
+Status:
+future-compatible, current injected wallet only.
+
+Purpose:
+let a user see dashboard state, wallet state, owned assets, and whether they are already a member.
+
+2. `openMySyndicate`
+   Meaning:
+   open the cockpit/dashboard.
+
+Purpose:
+show identity, assets, activity, next actions, member status.
+
+3. `becomeSyndicateMember` or `joinMembership`
+   Meaning:
+   buy membership through Sale V2 with USDC and receive SYN.
+
+Purpose:
+this is the actual membership event.
+
+Question:
+Should the action id stay `joinMembership` for continuity, or should it become `becomeSyndicateMember` while preserving existing behavior?
+
+Do not rename anything yet. Recommend only.
+
+B. Canonical labels
+
+Recommend final labels for:
+
+* visitor primary CTA on homepage
+* header login/connect action
+* header dashboard action
+* dashboard non-member CTA
+* dashboard member action
+* post-purchase success CTA
+
+Candidate language:
+
+* “Become a Syndicate Member”
+* “Enter”
+* “Connect”
+* “My Syndicate”
+* “Buy More SYN”
+* “Go to My Syndicate”
+
+Explain which should be used where.
+
+Important:
+Do not make “Enter” sound like membership.
+Do not make “Buy More SYN” appear for non-members.
+Do not make “Join” feel like a separate step before buying.
+
+C. Current guidance / progression system
+
+Find what already exists in the codebase for:
+
+* Do Next rail
+* Action Dock
+* Guided journey
+* Onboarding steps
+* Progression engine
+* Member milestones
+* Rank progression
+* “what to do next”
+* “since you were away”
+* Chronicle / artifact / rank recommendations
+* dashboard next-action prompts
+
+Use exact file/component names.
+
+For each, mark:
+
+* LIVE
+* PARTIAL
+* PREVIEW
+* PENDING
+* DUPLICATED
+* UNKNOWN
+
+D. Recommend the future “Next Best Action” architecture
+
+The protocol should guide users after each action.
+
+Examples:
+
+Visitor:
+Enter / connect
+→ see status
+→ Become a Syndicate Member
+
+Connected non-member:
+Become a Syndicate Member
+→ Go to My Syndicate
+→ Mint First Signal if appropriate
+→ Verify transaction
+
+Member:
+View My Syndicate
+→ Buy More SYN / reach next rank
+→ Mint artifact
+→ Add liquidity
+→ Read Chronicle
+→ Verify protocol
+
+Collector:
+Mint next available artifact
+→ View My Archive
+→ See Chronicle context
+
+Future referral:
+Share link / invite
+→ automatic commission if contract active
+→ claim only if escrow/campaign/merch future module exists
+
+Design the architecture conceptually only:
+
+* what data determines the next action
+* where it should live
+* how it connects to protocol-actions.ts
+* how it avoids fake/invented actions
+* how it respects LIVE / PREVIEW / PENDING / SEALED
+
+E. Canonical CTA architecture implications
+
+Before coding, tell me how Canonical CTA Architecture V1 should change based on this correction.
+
+Should it include:
+
+* `enterSyndicate`
+* `openMySyndicate`
+* `becomeSyndicateMember` / `joinMembership`
+* `nextBestAction`
+
+or should some remain outside the registry?
+
+F. Do not implement yet
+
+Return only:
+
+1. Corrected action model
+2. Recommended canonical labels by location
+3. Existing guidance/progression components already in code
+4. Missing or duplicated guidance components
+5. Recommended Next Best Action architecture
+6. Whether CTA Architecture V1 should proceed or be adjusted
+7. Exact smallest safe implementation sprint after this
+8. Files likely touched later
+9. What must not be touched
+
+Current truths to preserve:
+
+* Sale V2 is deployed/funded/active and used by the frontend, but UNAUDITED / early.
+* Sale V1 is sealed/closed/history.
+* CommissionRouter is unset; referral remains pending.
+* Archive1155 is artifacts only.
+* SeatRecord721 is future.
+* Web2 + Web3 onboarding is future, not implemented now.
+* Current wallet flow remains injected/wagmi.
+* Referral claims / campaign rewards / merch eligibility are future PENDING concepts only.
+* No fake live actions.
+* No new promises.
+* No extra steps before purchase.
+* No friction added.
+
+Rules:
+
+* No implementation.
+* No redesign.
+* No contracts.
+* No wallet provider installation.
+* No referral activation.
+* No address changes.
+* No route changes.
+* No hidden registration flow.
+* No invented metrics, rewards, member numbers, or claims.
+
+Most important principle:
+
+The user may enter before becoming a member.
+
+But the user becomes a Syndicate Member only by buying membership through Sale V2.
+
+The action system must make that clear and frictionless.
