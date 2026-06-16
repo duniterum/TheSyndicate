@@ -1,0 +1,289 @@
+Reasoning
+
+The technical architecture is now much cleaner:
+
+* global identity exists
+* member/non-member state is global
+* Next Best Action exists
+* navigation is cleaner
+* Artifacts vs Archive is clearer
+* Record layer is discoverable
+
+But The Syndicate must not feel like only:
+
+wallet → buy → dashboard
+
+It must feel like:
+
+observer → explorer → member → collector → builder → protocol figure
+
+We need to check what already exists in the code/docs for this human journey, what is live, what is partial, what is hidden, and what is missing.
+
+This is not an implementation sprint yet.
+
+Prompt
+
+Recalibrate using the current codebase, Full Protocol View, current docs, and the latest completed sprints.
+
+Do not implement.
+
+Do not run another broad audit.
+
+Use the latest source of truth only. If an old MD file conflicts with current code, mark it stale and trust the current code.
+
+Goal
+
+Map The Syndicate’s human experience journey and compare it to what already exists.
+
+The protocol should not only answer:
+
+“What can I click?”
+
+It should answer:
+
+* Who am I here?
+* What stage am I in?
+* What did I just do?
+* What changed because of it?
+* What should I do next?
+* Why should I come back?
+* What can I share?
+* What mark did I leave?
+
+A. Human journey model
+
+Map the intended human journey:
+
+1. Observer
+   Someone discovering the protocol.
+
+2. Explorer
+   Someone browsing proof, activity, artifacts, members, token, liquidity, Chronicle/Record.
+
+3. Connected visitor
+   Wallet connected, identity known, not yet a member.
+
+4. Member
+   Bought through Sale V2, received SYN, appears in Holder Index.
+
+5. Collector
+   Owns Archive1155 artifact(s).
+
+6. Builder
+   Recognized through protocol participation/growth, but without financial-return framing.
+
+7. Protocol Figure / Witness
+   High-recognition member whose activity, artifacts, referrals, Chronicle moments, or records make them visible in protocol history.
+
+For each stage, define:
+
+* meaning
+* how the code can detect it today
+* whether it is LIVE / PARTIAL / PREVIEW / PENDING / NOT BUILT
+* what page/surface currently expresses it
+* what the user should see
+* what the next best action should be
+* what should be shareable
+* what must not be implied
+
+B. Existing files/surfaces
+
+Find what already exists for this journey.
+
+Check at least:
+
+* Homepage
+* Header / MobileJoinBar / WalletDropdown
+* IdentityRibbon
+* My Syndicate / MemberCockpit
+* CockpitNextMove
+* CockpitProgression
+* CockpitMemory
+* SinceLastVisitStory
+* SinceYourLastVisit
+* WhatChangedForYou
+* HomeProgressionTeaser
+* MilestoneApproachingTile
+* Activity
+* Chronicle
+* Institutional Register
+* Knowledge Map
+* Artifacts / NFT page
+* Archive page
+* Ranks
+* Members
+* Referral preview
+* Protocol action registry
+* Next Best Action selector
+* Global Identity adapter
+
+For each, report:
+
+* purpose
+* current status
+* which human stage it serves
+* whether it is live, hidden, duplicated, orphaned, or underused
+* whether it should stay, merge, move, or wait
+
+C. Progression vs action
+
+Separate clearly:
+
+Protocol Action:
+A thing the user can do now.
+
+Examples:
+
+* buy membership
+* mint artifact
+* verify
+* trade
+* add liquidity
+
+Progression:
+The user’s evolving story.
+
+Examples:
+
+* became member
+* joined Chapter I
+* reached a rank
+* collected artifact
+* witnessed milestone
+* appeared in record
+* invited members later
+* returned after protocol changed
+
+Explain where the current code supports progression and where it only supports action.
+
+D. Shareability layer
+
+Map what is already shareable or could become shareable later:
+
+* member number / seat
+* rank
+* artifacts
+* purchase receipt
+* 70/20/10 routing receipt
+* Chronicle entry
+* Institutional Register entry
+* activity event
+* milestone
+* referral builder record later
+* profile / My Syndicate public card later
+
+Classify each:
+
+LIVE / PARTIAL / PENDING / FUTURE
+
+Do not add fake sharing buttons yet.
+
+E. Chronicle / Activity / Record language
+
+Clarify the language doctrine:
+
+Activity:
+protocol events and verifiable actions.
+
+Chronicle:
+curated protocol memory, not a social feed.
+
+Institutional Register:
+formal record layer, not a member directory.
+
+Knowledge Map:
+educational / structural map, not a marketing page.
+
+Check if current surfaces respect this.
+
+Report any drift.
+
+F. Referral as future growth engine
+
+Map future referral correctly, but do not implement.
+
+Referral should eventually feel like:
+
+* invite members
+* copy link
+* share link
+* QR code
+* mobile share
+* verified invited members
+* automatic commission if contract active
+* escrow/claim only for failed payouts or future campaigns
+* builder record / reputation
+* no yield / passive income / guaranteed reward language
+
+Report what already exists and what is missing.
+
+Keep it PENDING because CommissionRouter is unset.
+
+G. Recommended product spine
+
+After mapping everything, recommend the final experience spine:
+
+Observer
+→ Explorer
+→ Connected visitor
+→ Member
+→ Collector
+→ Builder
+→ Protocol Figure
+
+or improve this model if the code suggests a better one.
+
+H. Recommended next sprint
+
+After this mapping, recommend the single safest next implementation sprint.
+
+Possible options:
+
+1. Member Journey visual map / on-site journey section
+2. My Syndicate progression cleanup
+3. Shareability foundation
+4. Chronicle / Record discoverability
+5. Artifact / Archive experience redesign planning
+6. Static CTA architecture
+7. Membership purchase flow polish
+
+Choose one and justify.
+
+Rules
+
+* No implementation.
+* No redesign.
+* No contract changes.
+* No referral activation.
+* No wallet provider install.
+* No fake data.
+* No invented rewards.
+* No new promises.
+* No hidden registration flow.
+* Preserve Sale V2 as live-but-unaudited / early.
+* Preserve V1 as sealed/history.
+* Preserve CommissionRouter as unset / referral pending.
+* Preserve Archive1155 as artifacts only.
+* Preserve SeatRecord721 as future.
+
+Return:
+
+1. Human journey map
+2. Existing surfaces by journey stage
+3. What is live
+4. What is partial
+5. What is missing
+6. What is duplicated or underused
+7. Shareability map
+8. Activity / Chronicle / Record language check
+9. Referral future map
+10. Recommended final product spine
+11. Recommended next sprint
+12. Files likely touched later
+13. What must not be touched
+
+Most important principle
+
+The Syndicate must not feel like a token dashboard.
+
+It must feel like a living protocol where a person enters, becomes a member, leaves a record, collects artifacts, progresses through chapters, and eventually helps the protocol grow.
