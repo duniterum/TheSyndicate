@@ -22,15 +22,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  useAccount,
-  useChainId,
-  useConnect,
-  useReconnect,
-  useSwitchChain,
   useWriteContract,
   useWaitForTransactionReceipt,
   useReadContracts,
 } from "wagmi";
+import { useWalletGate } from "@/lib/useWalletGate";
 import { Pill } from "@/components/syndicate/Primitives";
 import { ARCHIVE_NFT_ABI } from "@/lib/archive-nft-abi";
 import { ERC20_ABI } from "@/lib/sale-abi";
@@ -38,7 +34,6 @@ import {
   ARCHIVE_NFT_CONTRACT_ADDRESS,
   ARCHIVE_NFT_EXPLORERS,
   CONTRACTS,
-  AVALANCHE_CHAIN_ID,
   USDC_DECIMALS,
   txExplorerUrls,
 } from "@/lib/syndicate-config";
@@ -156,11 +151,8 @@ export function MintFirstSignal({
   refetchArtifact: () => void;
   compact?: boolean;
 }) {
-  const { address, isConnected } = useAccount();
-  const chainId = useChainId();
-  const { connect, connectors, isPending: connectPending } = useConnect();
-  const { reconnect, connectors: reconnectConnectors } = useReconnect();
-  const { switchChainAsync, isPending: switchPending } = useSwitchChain();
+  const gate = useWalletGate();
+  const { address, isConnected, connectPending, switchPending, wrongChain } = gate;
   const queryClient = useQueryClient();
   const [walletGuardError, setWalletGuardError] = useState<string | null>(null);
 
@@ -280,7 +272,7 @@ export function MintFirstSignal({
     const message = walletFreshnessMessage(freshness);
     if (message) {
       setWalletGuardError(message);
-      reconnect({ connectors: reconnectConnectors });
+      gate.reconnect();
       void userQ.refetch();
       void queryClient.invalidateQueries();
       track("wallet_account_resync", { surface });
@@ -312,7 +304,6 @@ export function MintFirstSignal({
     supplyRemaining > 0n &&
     !hasReadErrors;
 
-  const wrongChain = isConnected && chainId !== AVALANCHE_CHAIN_ID;
   const approvePending = approveTx.isPending || approveReceipt.isLoading;
   const mintPending = mintTx.isPending || mintReceipt.isLoading;
   const needsApprove =
@@ -395,11 +386,10 @@ export function MintFirstSignal({
     s = {
       phase: "needs-wallet",
       label: connectPending ? "Connecting…" : "Connect wallet to mint The First Signal",
-      disabled: connectPending || connectors.length === 0,
+      disabled: connectPending || !gate.canConnect,
       tone: "gold",
       onClick: () => {
-        const c = connectors[0];
-        if (c) connect({ connector: c });
+        gate.connectWallet();
         track("archive_mint_connect_click", { id: 1 });
       },
     };
@@ -410,13 +400,7 @@ export function MintFirstSignal({
       disabled: switchPending,
       tone: "gold",
       help: "Wrong chain. Switch this wallet to Avalanche C-Chain (43114).",
-      onClick: async () => {
-        try {
-          await switchChainAsync({ chainId: AVALANCHE_CHAIN_ID });
-        } catch {
-          /* user rejected */
-        }
-      },
+      onClick: () => void gate.switchToAvalanche(),
     };
   } else if (userReadError) {
     s = {
@@ -467,7 +451,7 @@ export function MintFirstSignal({
           ? "Approval confirmed — refreshing allowance…"
           : "Approval confirmed — allowance still low"
         : approveTx.isPending
-          ? "Waiting for MetaMask signature…"
+          ? "Waiting for wallet signature…"
           : approveReceipt.isLoading
             ? "Waiting for confirmation…"
             : approveTx.data
@@ -478,7 +462,7 @@ export function MintFirstSignal({
       help: approvalConfirmedButAllowanceLow
         ? `Approval confirmed, but the latest allowance read is still below ${expectedAllowanceText}. Retry allowance refresh before minting.`
         : approveTx.isPending
-          ? "Open MetaMask to confirm the approval. Approval lets the Archive contract spend exactly 0.50 USDC for this mint."
+          ? "Open your wallet to confirm the approval. Approval lets the Archive contract spend exactly 0.50 USDC for this mint."
           : approveReceipt.isLoading || approveTx.data
             ? "Waiting for confirmation on Avalanche. Do not submit a second approval."
             : "Approval lets the Archive contract spend exactly 0.50 USDC for this mint.",
@@ -504,7 +488,7 @@ export function MintFirstSignal({
     s = {
       phase: mintPending ? "minting" : approveReceipt.isSuccess ? "approval-confirmed" : "ready",
       label: mintTx.isPending
-        ? "Waiting for MetaMask signature…"
+        ? "Waiting for wallet signature…"
         : mintReceipt.isLoading
           ? "Mint submitted — waiting confirmation…"
           : approveReceipt.isSuccess
@@ -513,7 +497,7 @@ export function MintFirstSignal({
       disabled: mintPending,
       tone: "gold",
       help: mintTx.isPending
-        ? "Open MetaMask to confirm the mint. This calls Archive1155.mint(1, 1)."
+        ? "Open your wallet to confirm the mint. This calls Archive1155.mint(1, 1)."
         : mintReceipt.isLoading
           ? "Waiting for Avalanche confirmation, then ownership and supply will refresh."
           : "Mint calls Archive1155.mint(1, 1).",
@@ -844,13 +828,7 @@ export function MintFirstSignal({
               persisted.setMint(undefined);
               void s.onClick?.();
             }}
-            onSwitchChain={async () => {
-              try {
-                await switchChainAsync({ chainId: AVALANCHE_CHAIN_ID });
-              } catch {
-                /* user rejected */
-              }
-            }}
+            onSwitchChain={() => void gate.switchToAvalanche()}
             txHash={effectiveMintHash ?? effectiveApproveHash}
           />
         </div>

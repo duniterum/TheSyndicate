@@ -3,14 +3,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CHAIN_TIP_QUERY_KEY } from "@/lib/chain-time";
 import {
   useAccount,
-  useChainId,
-  useConnect,
-  useDisconnect,
-  useReconnect,
-  useSwitchChain,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
+import { useWalletGate } from "@/lib/useWalletGate";
 import { parseUnits } from "viem";
 import {
   ACCESS_RATE_LABEL,
@@ -19,7 +15,6 @@ import {
   SALE_MIN_USDC,
   USDC_DECIMALS,
   SYN_DECIMALS,
-  AVALANCHE_CHAIN_ID,
   SALE_V2_LIVE,
   rankForUsdc,
   vaultFlow,
@@ -71,12 +66,8 @@ export function LivePurchase() {
   const [walletGuardError, setWalletGuardError] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
-  const { address, isConnected } = useAccount();
-  const chainId = useChainId();
-  const { connect, connectors, isPending: connectPending } = useConnect();
-  const { reconnect, connectors: reconnectConnectors } = useReconnect();
-  const { disconnect } = useDisconnect();
-  const { switchChainAsync, isPending: switchPending } = useSwitchChain();
+  const gate = useWalletGate();
+  const { address, isConnected, connectPending, switchPending, wrongChain } = gate;
 
   const stats = useSaleStats();
   const userBal = useUserBalances();
@@ -110,7 +101,7 @@ export function LivePurchase() {
   const approveTx = useWriteContract();
   const buyTx = useWriteContract();
   // Persist approve+buy tx hashes per (wallet, sale contract) so that a page
-  // refresh or MetaMask account switch does not erase the success panel /
+  // refresh or wallet account switch does not erase the success panel /
   // explorer link / receipt tracker. Same proven pattern as ID 1 + ID 3.
   const persisted = useMintHashPersistence(address, SALE, "syn-sale");
   const effectiveApproveHash = (approveTx.data ?? persisted.approve) as `0x${string}` | undefined;
@@ -166,7 +157,6 @@ export function LivePurchase() {
   }, [address]);
 
   // Derive button state
-  const wrongChain = isConnected && chainId !== AVALANCHE_CHAIN_ID;
   const belowMin = usdc < SALE_MIN_USDC;
   const insufficientUsdc =
     userBal.usdcBalance !== undefined && userBal.usdcBalance < usdcRaw;
@@ -191,7 +181,7 @@ export function LivePurchase() {
     const message = walletFreshnessMessage(freshness);
     if (message) {
       setWalletGuardError(message);
-      reconnect({ connectors: reconnectConnectors });
+      gate.reconnect();
       userBal.refetch();
       void queryClient.invalidateQueries();
       track("wallet_account_resync", { surface });
@@ -211,12 +201,11 @@ export function LivePurchase() {
   if (!isConnected) {
     state = {
       label: connectPending ? "Connecting…" : "Connect Wallet",
-      disabled: connectPending || connectors.length === 0,
+      disabled: connectPending || !gate.canConnect,
       tone: "gold",
       onClick: () => {
         track("wallet_connect_click", { surface: "live_purchase" });
-        const c = connectors[0];
-        if (c) connect({ connector: c });
+        gate.connectWallet();
       },
     };
   } else if (wrongChain) {
@@ -224,13 +213,7 @@ export function LivePurchase() {
       label: switchPending ? "Switching…" : "Switch to Avalanche",
       disabled: switchPending,
       tone: "gold",
-      onClick: async () => {
-        try {
-          await switchChainAsync({ chainId: AVALANCHE_CHAIN_ID });
-        } catch {
-          /* user rejected */
-        }
-      },
+      onClick: () => void gate.switchToAvalanche(),
     };
   } else if (isPaused) {
     state = { label: "Sale Paused", disabled: true, tone: "muted" };
@@ -446,7 +429,7 @@ export function LivePurchase() {
                 address={address}
                 isConnected={isConnected}
                 wrongChain={wrongChain}
-                onDisconnect={() => disconnect()}
+                onDisconnect={() => gate.disconnect()}
               />
             </div>
 

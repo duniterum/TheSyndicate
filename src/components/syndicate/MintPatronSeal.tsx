@@ -19,22 +19,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  useAccount,
-  useChainId,
-  useConnect,
-  useReconnect,
-  useSwitchChain,
   useReadContracts,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useWalletGate } from "@/lib/useWalletGate";
 import { Pill } from "@/components/syndicate/Primitives";
 import { ARCHIVE_NFT_ABI } from "@/lib/archive-nft-abi";
 import { ERC20_ABI } from "@/lib/sale-abi";
 import {
   ARCHIVE_NFT_CONTRACT_ADDRESS,
   CONTRACTS,
-  AVALANCHE_CHAIN_ID,
   USDC_DECIMALS,
 } from "@/lib/syndicate-config";
 import { archiveTxUrl } from "@/lib/explorer-guard";
@@ -122,11 +117,8 @@ export function MintPatronSeal({
   /** Global Pausable.paused() flag — `true` blocks all writes. */
   paused?: boolean | undefined;
 }) {
-  const { address, isConnected } = useAccount();
-  const chainId = useChainId();
-  const { connect, connectors, isPending: connectPending } = useConnect();
-  const { reconnect, connectors: reconnectConnectors } = useReconnect();
-  const { switchChainAsync, isPending: switchPending } = useSwitchChain();
+  const gate = useWalletGate();
+  const { address, isConnected, connectPending, switchPending, wrongChain } = gate;
   const queryClient = useQueryClient();
   const [walletGuardError, setWalletGuardError] = useState<string | null>(null);
 
@@ -203,7 +195,7 @@ export function MintPatronSeal({
     const message = walletFreshnessMessage(freshness);
     if (message) {
       setWalletGuardError(message);
-      reconnect({ connectors: reconnectConnectors });
+      gate.reconnect();
       void userQ.refetch();
       void queryClient.invalidateQueries();
       track("wallet_account_resync", { surface });
@@ -254,7 +246,6 @@ export function MintPatronSeal({
     supplyRemaining > 0n &&
     isMintableConnected === true;
 
-  const wrongChain = isConnected && chainId !== AVALANCHE_CHAIN_ID;
   const approvePending = approveTx.isPending || approveReceipt.isLoading;
   const mintPending = mintTx.isPending || mintReceipt.isLoading;
   const needsApprove =
@@ -304,11 +295,10 @@ export function MintPatronSeal({
     s = {
       phase: "needs-wallet",
       label: connectPending ? "Connecting wallet…" : "Connect wallet to mint",
-      disabled: connectPending || connectors.length === 0,
+      disabled: connectPending || !gate.canConnect,
       help: "Connect a wallet on Avalanche C-Chain to mint Patron Seal.",
       onClick: () => {
-        const c = connectors[0];
-        if (c) connect({ connector: c });
+        gate.connectWallet();
         track("patron_seal_connect_click", { id: 3 });
       },
     };
@@ -317,13 +307,7 @@ export function MintPatronSeal({
       phase: "wrong-chain",
       label: switchPending ? "Switching…" : PHASE_LABEL["wrong-chain"],
       disabled: switchPending,
-      onClick: async () => {
-        try {
-          await switchChainAsync({ chainId: AVALANCHE_CHAIN_ID });
-        } catch {
-          /* user rejected */
-        }
-      },
+      onClick: () => void gate.switchToAvalanche(),
     };
   } else if (supplyRemaining !== undefined && supplyRemaining === 0n) {
     s = {

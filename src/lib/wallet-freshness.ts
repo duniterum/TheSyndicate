@@ -96,13 +96,13 @@ export async function assertFreshWallet(expected: string | undefined | null): Pr
 export function walletFreshnessMessage(result: WalletFreshnessResult): string | null {
   if (result.ok) return null;
   if (result.code === "wallet-switched") {
-    return "MetaMask is on a different wallet than the app. The page is syncing before minting so the NFT cannot go to the wrong address.";
+    return "Your wallet is on a different account than the app. The page is syncing before minting so the NFT cannot go to the wrong address.";
   }
   if (result.code === "wallet-unavailable") {
-    return "MetaMask did not return an active wallet. Reconnect MetaMask, then mint again.";
+    return "Your wallet did not return an active account. Reconnect your wallet, then mint again.";
   }
   if (result.code === "no-injected-provider") {
-    return "No injected wallet was available. Open this page in a browser with MetaMask enabled.";
+    return "No injected wallet was available. Open this page in a browser with a wallet extension enabled.";
   }
   return "Connect a wallet before minting.";
 }

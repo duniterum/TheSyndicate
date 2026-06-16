@@ -1,0 +1,198 @@
+Reasoning
+
+Your plan confirms the key architectural issue: the money flows work, but wallet gates, network switching, transaction states, CTAs, and mint flows are duplicated instead of centralized.
+
+Before final redesign, Web2 login, referral, or promotion, we need one Grade AAA action foundation.
+
+Do not implement referral. Do not add Privy/Dynamic yet. Do not redesign. First centralize the current Web3 action primitives so every future action can plug into the same structure.
+
+Prompt
+
+Proceed with one small implementation sprint: Protocol Action Foundation V1.
+
+Goal:
+Create the shared foundation for all current and future protocol actions without changing product logic.
+
+This sprint should reduce technical debt and prepare the site for:
+
+* membership purchase
+* NFT minting
+* future Web2 login
+* future referral commission / claim / escrow
+* future SeatRecord721
+* future marketplace / merch / reward claims
+* future AI / B2B actions
+
+Scope:
+Implement shared primitives only, then migrate the safest current duplicated pieces.
+
+A. Create canonical shared action primitives
+
+Add shared components/hooks/types for:
+
+1. WalletGate
+   One reusable gate for:
+
+* disconnected wallet
+* connected wallet
+* wrong network
+* switch to Avalanche
+* unsupported wallet / injected unavailable
+* future Web2 login placeholder
+* mobile wallet caveat if already present
+
+It must not mention only MetaMask unless the actual condition is specifically MetaMask.
+
+2. TransactionState model
+   Create a shared transaction status model covering:
+
+* idle
+* checking
+* needsNetwork
+* needsApproval
+* approving
+* ready
+* submitting
+* confirming
+* success
+* failed
+* rejected
+* rpcDegraded
+
+Do not force all flows to use every state yet; create the canonical vocabulary.
+
+3. ProtocolAction types / registry shell
+   Create a typed action shape, not a full product registry yet:
+
+* id
+* label
+* kind
+* status
+* requiresWallet
+* requiresAvalanche
+* requiresUsdc
+* requiresAvaxGas
+* route/modal target
+* success destination
+* future eligibility hook placeholder
+
+Current actions to represent:
+
+* joinMembership
+* mintFirstSignal
+* mintPatronSeal
+* verifyProtocol
+* tradeSyn
+* addLiquidity
+* openMySyndicate
+
+Future placeholders only:
+
+* claimEscrowedCommission
+* claimCampaignReward
+* claimMerchEligibility
+* mintSeatRecord721
+* marketplaceAction
+
+Future actions must be marked PENDING / not rendered as live CTAs unless already live.
+
+4. SuccessReceipt pattern
+   Create a shared receipt shell for successful actions:
+
+* transaction hash
+* explorer link
+* action type
+* amount / token if available
+* next recommended action
+* route to My Syndicate / My Archive where appropriate
+
+Do not change existing success copy yet unless needed to use the component.
+
+B. Migrate only low-risk duplicated logic
+
+Migrate only the safest duplication first:
+
+1. Replace duplicated wallet connect / switch-network gate logic in:
+
+* LivePurchase.tsx
+* MintFirstSignal.tsx
+* MintPatronSeal.tsx
+
+with the shared WalletGate where safe.
+
+2. Do NOT rewrite the approve → buy or approve → mint state machines yet unless the shared gate makes it trivial.
+
+3. Do NOT merge MintFirstSignal and MintPatronSeal yet. They can remain separate until the shared foundation proves stable.
+
+4. Replace MetaMask-only wording only where it is objectively wrong for generic injected wallets. Use “wallet” or “connected wallet” unless the condition is specifically MetaMask.
+
+C. Preserve current behavior
+
+Must remain unchanged:
+
+* Sale V2 is the active membership sale, live-but-unaudited / early.
+* V1 is sealed/closed/history.
+* CommissionRouter is unset; referral pending.
+* Archive1155 remains artifacts only.
+* ID 1 and ID 3 mint flows remain live if currently live.
+* Existing routes remain the same.
+* Existing CTAs still navigate to the same destinations.
+* No new claims, rewards, amounts, or statuses.
+
+D. Explicit non-scope
+
+Do not:
+
+* Add Privy/Dynamic/thirdweb yet.
+* Add WalletConnect yet unless already present and trivial.
+* Add Web2 login yet.
+* Activate referral.
+* Touch CommissionRouter or Sale contracts.
+* Touch SeatRecord721.
+* Redesign UI.
+* Change contract addresses.
+* Change sale/mint economics.
+* Add fake claim buttons.
+* Add merch/reward claims as live UI.
+
+E. Validation
+
+Run what is feasible:
+
+* TypeScript check if environment permits.
+* Focused tests touching action/wallet/doctrine.
+* Existing wording guard.
+* Manual render of:
+
+  * /
+  * /join
+  * /nft
+  * /archive
+  * /my-syndicate
+
+Manual behavior checks:
+
+* Disconnected state still shows the correct CTA.
+* Wrong-network state still offers Avalanche switch.
+* Connected state still reaches existing buy/mint logic.
+* No MetaMask-only wording where generic wallet wording is required.
+* No forbidden language introduced.
+
+F. Report back
+
+Return:
+
+1. Files changed.
+2. New shared primitives created.
+3. Which components were migrated.
+4. What behavior changed, if any.
+5. What behavior stayed identical.
+6. Tests run / tests blocked by environment.
+7. Any remaining duplicated action logic.
+8. Recommended next sprint after this.
+9. Rollback plan.
+
+Important principle:
+
+This sprint is not about making the site prettier.
+It is about making every future user action plug into one clean protocol action foundation.
