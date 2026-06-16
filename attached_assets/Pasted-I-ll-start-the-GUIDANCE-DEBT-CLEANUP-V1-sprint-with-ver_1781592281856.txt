@@ -1,0 +1,104 @@
+I'll start the GUIDANCE DEBT CLEANUP V1 sprint with verification. Let me locate the three candidate files and grep for every reference across the codebase, tests, and docs in parallel.
+
+
+2 actions
+Clear signal already. Let me dig into the specifics: the two tests that read YourNextAction/MemberWalletDashboard source, the stale script check-attention-hierarchy.mjs, whether it's wired into CI, and where MemberCockpitCandidate (the labs consumer of YourNextAction) is rendered.
+
+
+4 actions
+Now I understand the dependency graph. Key facts:
+
+YourNextAction is imported/rendered by MemberCockpitCandidate (labs, classified ARCHIVE) and has active source-asserting tests (protocol-awareness.test.ts, proof-drawer-and-timeline.test.ts) → KEEP.
+CommandStrip has zero references anywhere → likely DELETE SAFE.
+MemberWalletDashboard has no source imports/renders and no active test assertions (only a comment), but is referenced by the stale check-attention-hierarchy.mjs script and historical docs.
+Let me verify whether check-attention-hierarchy.mjs is wired into CI, read it fully, and confirm MemberCockpitCandidate's render status.
+
+
+4 actions
+Critical pre-deletion check: MemberWalletDashboard imports SinceLastVisitStory (a component in the preserve list). I must confirm SinceLastVisitStory is still rendered elsewhere — otherwise deleting the shell would orphan a surface I'm told to preserve. Also confirming no barrel re-exports and no .replit/workflow references.
+
+
+2 actions
+Confirmed the critical safety point: SinceLastVisitStory is rendered by CockpitMemory.tsx (line 64) — the live canonical surface in the preserve list. So deleting MemberWalletDashboard does not orphan it. Full coupling is now mapped:
+
+CommandStrip → zero references (DELETE SAFE)
+MemberWalletDashboard → orphan; only code coupling is the stale, un-wired check-attention-hierarchy.mjs decoy (DELETE SAFE)
+YourNextAction → labs-rendered + 7 active test assertions (KEEP)
+MemberCockpitCandidate → labs ARCHIVE museum piece (KEEP)
+Executing the safe deletions + surgical cleanup of the stale script's dead references, and reading the inventory doc region for an accurate status update.
+
+
+7 actions
+Now updating the two stale inventory lines to reflect reality (SinceLastVisitStory now renders via CockpitMemory; the shell is removed).
+
+
+3 actions
+Validation. Running the affected test files (the YourNextAction source-asserting tests must still pass, plus the guard tests). Per memory, vitest runs alone to avoid OOM, so I'll run it first, then the wording guard.
+
+
+2 actions
+All 73 tests pass across the 5 files (including the 7 YourNextAction source assertions). Now the wording guard, then a cold Vite restart to confirm clean compile.
+
+
+3 actions
+Wording guard passes (390 files — down from 392, confirming the 2 deletions). Let me confirm the cold compile is clean and run the render checks on the four routes.
+
+
+2 actions
+Cold Vite restart compiled clean (ready in 2.0s, no compile errors). The "Invalid hook call" is the known DEV-only wallet_account_resync noise — zero prod impact, unrelated to deletions. Now the four required render checks.
+
+
+5 actions
+All four routes render cleanly with zero visible impact from the deletions:
+
+/ — hero + radial throne + Protocol Overview intact ✓
+/my-syndicate — visitor cockpit "Your seat awaits" renders correctly ✓
+/join — "Live USDC → SYN purchase" intact ✓
+/nft — "Chapter I has begun" + First Signal artifact intact ✓
+Now the required architect review. Let me confirm the call signature from the skill, then run it.
+
+
+2 actions
+Now the required architect review, using the git diff to evaluate the cleanup against the sprint's safety constraints.
+
+
+3 actions
+Architect returned PASS — safe and correctly scoped, no severe issues. Two non-blocker notes: the attached_assets/Pasted-Reasoning…txt is the user's own attached prompt (system-placed, not mine to delete — leaving it), and the stale (6/6) count in the script I edited. I'll fix that count since I already touched the file, then do the architect's final-grep check.
+
+
+3 actions
+Both files are confirmed deleted; the only remaining MemberWalletDashboard mention is a harmless historical comment in a test (architect explicitly said historical comments may stay). All validation green and architect PASS.
+
+Let me record the one durable, non-obvious gotcha (YourNextAction looks like a deletable duplicate but isn't), then deliver the report.
+
+
+3 actions
+GUIDANCE DEBT CLEANUP V1 is complete — architect PASS, all validation green. Here is the Section F report.
+
+GUIDANCE DEBT CLEANUP V1 — Final Report
+1. Files inspected. CommandStrip.tsx, MemberWalletDashboard.tsx, YourNextAction.tsx, the labs duplicate MemberCockpitCandidate.tsx, plus all coupling: scripts/check-attention-hierarchy.mjs, scripts/check-release.mjs, package.json, .replit, labs/registry.ts, museum-inventory.ts, cockpit/CockpitMemory.tsx, and the two source-asserting test files.
+
+2. Classification per candidate.
+
+Candidate	Verdict	Evidence
+CommandStrip.tsx	DELETE SAFE	Zero references anywhere (no import/JSX/test/doc/script)
+MemberWalletDashboard.tsx	DELETE SAFE	No source import/render; no active test (only a comment); SinceLastVisitStory child lives independently in CockpitMemory; only coupling = stale un-CI script
+YourNextAction.tsx	KEEP / QUARANTINE-LABS	Rendered by labs MemberCockpitCandidate and pinned by 7 source-asserting test assertions
+MemberCockpitCandidate.tsx (#4)	KEEP / QUARANTINE-LABS	Labs ARCHIVE museum piece; rendered by no route but registered + holds the v1 cockpit pattern
+3. Files deleted / quarantined. Deleted: src/components/syndicate/CommandStrip.tsx, src/components/syndicate/MemberWalletDashboard.tsx. Quarantined (unchanged): YourNextAction.tsx, MemberCockpitCandidate.tsx.
+
+4. Imports / exports / refs removed. No production import needed removing (both files were orphans). Pruned the 3 dead MemberWalletDashboard references from the stale check-attention-hierarchy.mjs (header comment, the /my-syndicate assertion block, the banned-word SCAN entry) and fixed its now-inaccurate (6/6) output. Updated 2 stale lines in docs/COCKPIT_WIDGET_INVENTORY.md (marked shell REMOVED; SinceLastVisitStory now via CockpitMemory).
+
+5. Tests / checks run. 73 tests pass across protocol-awareness, proof-drawer-and-timeline, protocol-actions-guard, next-best-action, next-action-context. check-ownership-wording OK (390 files, down from 392 = the 2 deletions). Cold Vite restart compiled clean (no errors). Render checks of /, /my-syndicate, /join, /nft all render correctly. Architect review: PASS, no severe issues.
+
+6. Live behavior confirmation. No change to purchase, mint, CTA, wallet, referral, contracts, addresses, routes, or visible UI. The diff touches only 2 deleted orphans, 1 un-wired dev script, and 1 inventory doc. All four live routes verified visually unchanged.
+
+7. Components kept and why. YourNextAction.tsx — deleting it would break the labs MemberCockpitCandidate import and 7 active source-grep test assertions. MemberCockpitCandidate.tsx — deliberate labs ARCHIVE reference for the v1 cockpit pattern (the salvage target the inventory doc points to).
+
+8. Remaining guidance duplication. None live. YourNextAction ↔ CockpitNextMove overlap is now cleanly isolated to labs (quarantined, not competing on any route). One harmless historical comment in protocol-awareness.test.ts:123 still names MemberWalletDashboard (documents a long-removed check — left intact). Two point-in-time audit snapshots (docs/audits/RPC_*) reference the old file as historical records — correctly left untouched.
+
+9. Recommended next sprint. With debt reduced, resume Next Best Action expansion: migrate the next consumer (Header CTA or RouteFinalCTA) onto useNextActionContext — note (per memory) those are non-cockpit surfaces, so decide whether to split the adapter to read raw wagmi hooks vs. the cockpit fixture wrappers before wiring.
+
+10. Rollback plan. git revert the cleanup commit (or git checkout <prev> the 4 paths): restores CommandStrip.tsx + MemberWalletDashboard.tsx, the original check-attention-hierarchy.mjs, and the inventory doc. Zero schema/route/contract impact, so rollback is purely file-restore. Memory updated (guidance-surface-deletability.md).
+
+No deviations from scope; nothing else was modified.
