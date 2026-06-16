@@ -41,6 +41,21 @@ Contract is correct; UI is out of sequence. Making >$5 buyable NOW in Genesis
 requires a REDEPLOY (new addr cap) — no setter, frontend can't raise it, and the
 contract only auto-advances to Era II organically at seat #334.
 
+**Corrected founder intent (ratified) + contract already supports it:** intent =
+Era sets the MINIMUM entry ($5 Genesis), but a member may then buy MORE/larger
+packages anytime; "one seat per wallet" is IDENTITY only, NOT "$5 total per
+wallet"; high-conviction buys wanted NOW, not gated to seat #334. The V2 code
+ALREADY separates these into independent mechanisms: minimum = `minUsdc6`
+(`BelowEraMinimum`); cumulative ceiling = `maxUsdcPerAddressPerEra`
+(`AddressEraCapExceeded`); per-tx = `MAX_USDC_PER_TX`; and one-seat identity =
+`firstSeat = !knownMember[sender]` (repeat buys deliver SYN + raise
+usdcContributed/rank but issue NO new seat). So the defect is PURELY that Era I's
+`addrCaps[0]` was sized == the $5 minimum, collapsing min and max. Fix = redeploy
+a corrected Sale V2 (SAME audited code) with `addrCaps[0]` high/non-binding
+(e.g. = MAX_USDC_PER_TX $25k); **no Sale V3 needed** — the min/cap/identity split
+already exists. Anti-abuse for Genesis = one-seat (knownMember) + per-tx +
+funded-inventory/reserve floor; dollar volume is DESIRED, not throttled. PRACTICAL:
+large Genesis buys need SYN funded ABOVE the reserve floor (top-ups allowed).
 **Why this matters / how to apply:**
 - There is **NO setter** for the cap (only constructor). Raising the Genesis cap
   ⇒ **redeploy a new Sale V2** (+ re-fund SYN, re-snapshot V1, re-point the

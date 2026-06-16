@@ -1,0 +1,79 @@
+Recalibration — Founder Intent Correction
+
+Pause before shipping the “Genesis one $5 seat per wallet” UI as final doctrine.
+
+I need to correct the intended product model.
+
+My intended model was:
+
+* Chapter / Era defines the minimum entry price.
+* In Genesis, the minimum entry membership is $5.
+* In the next chapter/era, the minimum entry membership may become $10.
+* Later it can become $15, etc.
+* But after someone becomes a member, they should be able to buy more SYN / larger packages whenever they want.
+* A person who wants to buy $25, $50, $100, or $1,000 early should be able to do it.
+* We need early money and conviction; we should not block high-conviction buyers.
+* Packages/ranks are meant to encourage larger purchases, not wait until seat #334.
+
+So please reconcile the contract against this corrected founder intent:
+
+Desired behavior:
+
+1. Non-member must buy at least the current chapter minimum to become a member.
+2. Member can buy additional packages / amounts above the minimum.
+3. Per-wallet cap should prevent extreme abuse if needed, but should not lock Genesis to only $5 per wallet.
+4. The rank/package system should be live now, not only future-era if that contradicts product intent.
+5. “One seat per wallet” is identity doctrine, not “only $5 total per wallet.”
+
+Question:
+
+Does the current Sale V2 contract support this intended behavior as deployed?
+
+If not:
+
+* Is this because `maxUsdcPerAddressPerEra` is acting as a hard cumulative cap?
+* Is there any existing contract path to allow members to buy more after the first $5?
+* Is there any admin setter or era transition mechanism that can fix it?
+* Can we split “minimum membership price” from “maximum cumulative wallet purchase” in the current contract?
+* Or does this require a new deployment / Sale V3 / corrected Sale V2?
+
+Do not implement yet.
+
+I need a CTO/Product/Protocol recommendation.
+
+Please return:
+
+A. Current deployed behavior
+B. Corrected founder-intended behavior
+C. Exact mismatch
+D. Whether current contract can support the intended behavior
+E. If frontend-only fix is impossible, say clearly
+F. Best technical path:
+
+* temporary UI honesty fix
+* new Sale deployment
+* Sale V3
+* new cap model
+* or other
+  G. Risks of each path
+  H. Recommended immediate action
+  I. Recommended final architecture
+  J. What to do with the current 5 members / 8 purchases
+  K. Whether to pause current Sale V2 until resolved
+
+Important:
+
+Do not optimize around the accidental cap if it contradicts product intent.
+
+The business goal is:
+early members can enter cheaply,
+but high-conviction buyers can buy more.
+
+The UX goal is:
+no failed transactions,
+no hidden cap surprises,
+no ugly admin-console purchase flow.
+
+The contract goal is:
+one identity seat per wallet,
+but flexible ongoing purchase capacity.
