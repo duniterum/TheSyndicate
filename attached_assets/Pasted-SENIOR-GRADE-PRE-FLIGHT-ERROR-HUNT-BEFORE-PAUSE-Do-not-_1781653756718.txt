@@ -1,0 +1,180 @@
+SENIOR-GRADE PRE-FLIGHT ERROR HUNT — BEFORE PAUSE
+
+Do not pause yet.
+
+Do not deploy.
+
+Do not broadcast.
+
+Do not change unrelated modules.
+
+Goal
+
+Before I pause V2a, I want a senior-grade pre-flight error hunt.
+
+Assume we are close to execution, so the task is not more architecture.
+
+The task is to find avoidable mistakes.
+
+Think like:
+
+* CTO
+* smart contract reviewer
+* deployment operator
+* protocol architect
+* product owner
+* paranoid incident responder
+
+Use the current codebase, scripts, params, generated artifacts, reports, and live on-chain reads.
+
+Do not trust docs blindly.
+
+Do not trust memory blindly.
+
+Do not trust previous reports blindly.
+
+Re-read what matters.
+
+A. Pre-pause fatal checklist
+
+Find anything that could make pause → snapshot → deploy fail.
+
+Check:
+
+* wrong V2a address
+* wrong owner
+* wrong signer
+* wrong RPC
+* wrong chain id
+* wrong pause function
+* wrong pause block
+* wrong snapshot range
+* wrong event names
+* wrong event ordering
+* duplicate buyers
+* repeat buyers
+* firstSeat logic
+* V1/V2a union logic
+* memberCount mismatch
+* root mismatch
+* stale provisional artifact
+* stale deploy params
+* wrong DEPLOY_PARAMS path
+* missing EXPECT_GENESIS_OFFSET
+* missing EXPECT_V1_ROOT
+* wrong RehearsalForkV2b constants
+* wrong funding source wallet
+* wrong funding signer
+* wrong SYN amount 18dp
+* wrong sale address after deploy
+* wrong frontend registry/indexer plan
+
+Return every possible fatal mistake and whether a guard already catches it.
+
+B. Script and artifact consistency
+
+Verify consistency between:
+
+* deploy-params.v2b.final.template.json
+* deploy-params.v2b.rehearsal.json
+* Deploy.s.sol
+* RehearsalForkV2b.t.sol
+* export-members-merged.mjs
+* gen-v1-root.mjs
+* validate-snapshot.mjs
+* .gitignore generated outputs
+* any generated members/root/proof files
+* final report instructions
+
+For each:
+
+* what it does
+* whether it is current
+* whether it can still use stale data
+* whether it fails closed
+* what human step remains dangerous
+
+C. Funding transfer risk
+
+Funding is available in the Membership Distribution wallet.
+
+Verify again:
+
+* Membership Distribution address
+* balance
+* authority/signing ability assumption
+* exact recommended funding amount
+* 18dp amount
+* whether V2b can receive plain ERC20 transfer
+* whether the transfer should happen before or after getter verification
+* whether funding from this wallet respects allocation doctrine
+* whether any allowance/approve is needed
+
+D. Frontend / indexer cutover risk
+
+Do not implement frontend now.
+
+But identify what will break if deployment succeeds and frontend/indexer is not updated immediately.
+
+Check:
+
+* active sale address
+* sale ABI
+* deployment block
+* holder index contract list
+* activity scans
+* package UI cap/rate handling
+* V2a sealed/history wording
+* V2b live wording
+* old V2a paused state
+* production publish/update risk
+
+Classify:
+
+* must be ready before deploy
+* must be ready before public relaunch
+* can wait
+
+E. Pause timing risk
+
+If I pause V2a, the sale is frozen.
+
+Tell me:
+
+* what exactly can still be rolled back
+* what cannot be rolled back
+* how long the site can safely be in paused/migrating state
+* what user-visible message should be ready if pause happens before frontend cutover
+* whether unpause is safe if something blocks deploy
+
+F. Independent senior review
+
+After checking all of the above, return:
+
+1. PASS / FAIL for pause readiness
+2. PASS / FAIL for deploy readiness
+3. PASS / FAIL for public relaunch readiness
+4. Top 10 avoidable mistakes ranked by severity
+5. Which mistakes are already guarded
+6. Which mistakes still depend on human discipline
+7. Exact founder action next
+8. If you were the CTO, would you pause now?
+
+Hard rules
+
+* No broad audit.
+* No new architecture.
+* No new governance.
+* No referral changes.
+* No NFT / Archive changes.
+* No journey work.
+* No wallet-provider work.
+* No frontend implementation.
+* No mainnet broadcast.
+* No pause.
+
+Most important principle
+
+Before the pause, find the avoidable errors.
+
+After the pause, the clock starts.
