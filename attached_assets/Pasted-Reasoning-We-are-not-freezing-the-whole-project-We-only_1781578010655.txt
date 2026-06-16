@@ -1,0 +1,86 @@
+Reasoning
+
+We are not freezing the whole project. We only froze the RPC sprint.
+
+My real priority is to finish the full protocol product as quickly as possible, then clean, redesign, debug, and promote.
+
+Do not start random performance work yet unless there is a simple obvious hosting/config fix. The correct order is: finish modules first, then clean the full site, then redesign, then debug/performance hardening, then promotion.
+
+Prompt
+
+Clarify the current production roadmap for The Syndicate.
+
+Use the existing codebase and Full Protocol View. Do not invent data, modules, claims, numbers, or future promises.
+
+I want the fastest safe path to finish the project enough to promote it.
+
+Please return a practical roadmap in this order:
+
+1. Core unfinished modules
+   List what is still unfinished or preview-only:
+
+* Referral / on-chain commission routing
+* NFT / Archive1155 mint flow and remaining smart-contract work
+* Any other smart-contract/module still pending
+* Any dashboard / My Syndicate missing pieces
+* Any registry / transparency / activity gaps
+
+2. Finish-first implementation order
+   Give the safest order to complete these modules without redesigning yet.
+
+3. Truth cleanup
+   After modules are done, identify where the site must be cleaned so it shows only correct live/pending information:
+
+* No fake metrics
+* No invented rewards
+* No old doctrine
+* No forbidden words
+* No outdated copy
+* No duplicated/confusing sections
+
+4. Full-site redesign phase
+   Only after the content/module truth is correct:
+
+* Harmonize all pages
+* Header/footer/layout consistency
+* Mobile-first UX
+* One clear CTA per viewport
+* Better hierarchy
+* Better crypto-native visual design
+* Keep all live verification and protocol trust surfaces
+
+5. Debug and performance phase
+   After redesign:
+
+* Test all pages
+* Fix broken routes
+* Fix console errors
+* Check gzip/compression/cache headers
+* Check image optimization
+* Check bundle size
+* Check async loading
+* Check RPC degradation
+* Check canonical https/www redirects
+* Test Pingdom/PageSpeed/WebPageTest using https://thesyndicate.money/
+
+6. Promotion readiness
+   Define the exact checklist before I start sharing the site publicly.
+
+Important rules:
+
+* Do not start another broad audit.
+* Do not change current frozen RPC sprint.
+* Do not touch referral contracts until architecture/audit is ready.
+* Do not redesign before unfinished modules and truth cleanup.
+* Do not invent terms, data, amounts, rewards, or claims.
+* If something is already done, mark it DONE.
+* If something is preview-only, mark PREVIEW.
+* If something is pending, mark PENDING.
+* If something is unknown, mark UNKNOWN and name the file/doc that must be checked.
+
+Return a concise but complete roadmap with:
+A. What is done
+B. What is not done
+C. Fastest safe build order
+D. What waits
+E. Final promotion checklist
