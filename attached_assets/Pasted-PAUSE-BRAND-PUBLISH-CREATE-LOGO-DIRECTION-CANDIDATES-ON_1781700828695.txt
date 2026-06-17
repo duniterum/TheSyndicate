@@ -1,0 +1,93 @@
+PAUSE BRAND PUBLISH — CREATE LOGO DIRECTION CANDIDATES ON CANVAS FIRST
+
+Do not publish.
+Do not rollback.
+Do not delete Sprint 0B files yet.
+Do not wire the new node/hex emblem further.
+Do not replace Header/Logo/nav.
+
+The current generated node/hex emblem is technically clean, but it does not yet feel like the final Syndicate identity. It reads too much like generic network / AI / infrastructure.
+
+Before any production-facing brand publish, use Canvas as the visual comparison surface.
+
+Create a founder-review logo board with 4 directions:
+
+DIRECTION A — Current live mark
+Use the current existing site mark/logo exactly as-is.
+
+DIRECTION B — Sprint 0B node/hex emblem
+Show the generated six-node/central-seat emblem exactly as-is.
+
+DIRECTION C — Founder-preferred rounded interconnected Syndicate mark
+Create a candidate based on the founder reference:
+rounded, chain-like, interconnected “S” / Syndicate mark.
+Premium.
+Token-ready.
+Favicon-ready.
+App-icon-ready.
+Not generic network.
+Not generic AI node.
+Not generic validator.
+
+DIRECTION D — Hybrid
+Blend the strongest parts:
+
+* rounded interconnected Syndicate mark
+* seat / membership idea
+* chain-link structure
+* simple enough for favicon
+* strong enough for token logo
+* premium enough for press kit
+
+For each direction, show the same asset applications:
+
+1. favicon 32×32
+2. app icon 512×512
+3. token coin
+4. social avatar
+5. dark logo lockup
+6. light logo lockup
+7. dashboard header mark
+8. exchange listing preview
+9. OG/social card
+
+Important design rules:
+
+Gold = identity / brand / seat / token.
+Cyan = live data / verification / protocol activity.
+Green = live/success only.
+Red = risk/error only.
+
+Use the fintech dashboard reference only for layout discipline, not style.
+
+Do not copy generic fintech colors.
+Do not make it look like FastPay.
+Do not make it look like a bank app.
+
+Target brand feeling:
+
+Premium obsidian crypto cockpit.
+Luxury membership protocol.
+Seat identity.
+Live protocol economy.
+Artifacts as memory.
+Proof as support.
+
+Deliverables:
+
+1. Canvas logo comparison board
+2. Asset preview for A/B/C/D
+3. Your recommendation, but do not decide alone
+4. Pros/cons for each direction
+5. Which direction is safest for:
+
+   * favicon
+   * token logo
+   * app icon
+   * social avatar
+   * website header
+   * exchange listings
+6. Confirmation nothing was published
+7. Confirmation no production-facing asset was changed further
+
+Only after founder approves one direction should we wire final brand assets into production.
