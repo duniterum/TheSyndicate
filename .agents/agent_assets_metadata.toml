@@ -335,3 +335,9 @@ id = "ceZ802Uw296Xg7-Yo7oNz"
 uri = "file://docs/handoffs/DESIRE_LAYER_PRODUCT_REASONING_2026-06-17.md"
 type = "text"
 title = "The Desire Layer — Product-Desire Architecture for the Crypto-Native Visitor"
+
+[[outputs]]
+id = "spchpFZaR967fwFBGHwaI"
+uri = "file://docs/handoffs/WHOLE_SITE_PRODUCT_DASHBOARD_ARCHITECTURE_2026-06-17.md"
+type = "text"
+title = "Whole-Site Product-Desire + Dashboard Architecture Pass"

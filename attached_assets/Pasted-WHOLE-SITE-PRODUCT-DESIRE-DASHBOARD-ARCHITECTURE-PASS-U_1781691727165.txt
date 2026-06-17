@@ -1,0 +1,257 @@
+WHOLE-SITE PRODUCT DESIRE + DASHBOARD ARCHITECTURE PASS
+
+Use the master ledger, canonical source extraction, and Desire Layer report as baseline.
+
+Do not implement yet.
+Do not rewrite copy yet.
+Do not rename concepts yet.
+Do not reopen protocol correctness.
+
+The last report correctly identified the hero issue:
+
+The site is built like a courtroom exhibit when it needs to read like a living economy.
+
+Now extend that reasoning to the whole site.
+
+Goal:
+
+Audit the full site as one crypto-native product system:
+
+* homepage
+* /join
+* /my-syndicate
+* /ranks
+* /chapters
+* /nft
+* /archive
+* /vault
+* /liquidity
+* /tokenomics
+* /transparency
+* /registry
+* /activity
+* /faq
+* /referral
+
+Question:
+
+Does the whole site make Alice feel she has entered a live crypto protocol economy with dashboards, progression, wallet identity, ranking, activity, and future earning/action loops?
+
+Or does it still feel like scattered legal/proof pages?
+
+Analyze as:
+
+1. Global product narrative
+
+What is the full journey today?
+
+Does Alice move naturally from:
+Alive protocol → Join → Seat → Dashboard → Progression → Story → Actions → Share?
+
+Or does she get lost between proof pages, glossary pages, archive pages, and technical pages?
+
+2. Homepage role
+
+Should the homepage be:
+
+* only a landing page
+* a crypto cockpit
+* a protocol overview dashboard
+* a funnel into join
+* or a hybrid?
+
+Check whether homepage currently gives enough:
+
+* ticker
+* live metrics
+* protocol engines
+* seat availability
+* member count
+* vault
+* LP
+* burn
+* NFT mints
+* recent activity
+* join CTA
+
+3. Global ticker / intelligence bar
+
+The Desire Layer report found the homepage suppresses the intelligence bar with hideIntelligenceBar.
+
+Analyze whether the whole site should have a persistent crypto-style ticker / protocol intelligence bar showing:
+
+* Members
+* Next seat
+* Total USDC routed
+* Vault balance
+* LP depth
+* Burned SYN
+* SYN price/access rate
+* Last action
+* Current chapter
+* Active sale status
+* NFT mint status
+
+Should this ticker appear:
+
+* globally?
+* only on public pages?
+* hidden on checkout?
+* integrated into dashboards?
+
+Do not implement; just decide product logic.
+
+4. Public dashboard architecture
+
+Which pages should feel like dashboards?
+
+Analyze whether these should be redesigned as crypto dashboards:
+
+* homepage = public protocol cockpit
+* /transparency = proof dashboard
+* /vault = treasury/vault dashboard
+* /liquidity = market/liquidity dashboard
+* /tokenomics = supply/economy dashboard
+* /activity = live event feed
+* /registry = contract/source-of-truth dashboard
+* /ranks = progression dashboard
+* /chapters = story/progression dashboard
+* /nft = artifact mint dashboard
+
+For each page, return:
+
+* current role
+* ideal role
+* key live metrics
+* primary CTA
+* secondary CTA
+* what Alice should feel
+* what confusion currently exists
+
+5. Member dashboard / cockpit
+
+Analyze /my-syndicate as the member OS.
+
+Should it become the main addictive dashboard after joining?
+
+Evaluate whether it should include:
+
+* wallet identity
+* seat number
+* SYN balance
+* rank
+* chapter
+* receipts
+* owned artifacts
+* referral status
+* next best action
+* since-you-were-away
+* recent protocol actions
+* my actions
+* share card
+* buy more package
+* mint artifact
+* invite/referral future
+* settings
+
+Return what is currently present, missing, confusing, or too weak.
+
+6. Progression system
+
+Analyze the site-wide progression loop.
+
+Alice should understand:
+
+* buy membership → receive SYN
+* more SYN / cumulative purchase → stronger recognition
+* member number → chapter
+* actions → story trail
+* artifacts → memory
+* future referral → commission/action loop when live
+
+Where is this progression currently strong?
+Where is it broken?
+Where does it look like legal disclaimers instead of game/protocol progression?
+
+7. Page hierarchy / navigation
+
+Analyze the current nav and route hierarchy.
+
+Which pages are primary?
+Which are secondary?
+Which are proof/support?
+Which are future/preview?
+Which are too prominent?
+Which are hidden but important?
+
+Create a recommended information hierarchy only, no implementation.
+
+8. LIVE / PREVIEW / FUTURE state system
+
+Apply the Desire Layer state model across the full site.
+
+For every page, identify where LIVE / PREVIEW / FUTURE / PENDING / DERIVED are currently used correctly or incorrectly.
+
+Especially check:
+
+* referral
+* treasury ledger
+* LP fees
+* marketplace
+* SeatRecord721
+* Eras II–IX
+* NFT IDs
+* burn
+* vault
+* member count
+* Holder Index
+
+9. Crypto-native visual direction
+
+Do not design final UI.
+
+But analyze whether the site should move more toward:
+
+* trading dashboard
+* protocol cockpit
+* game progression
+* treasury transparency terminal
+* NFT collection page
+* member OS
+
+Or a balanced combination.
+
+Return the visual/product archetype for each major route.
+
+10. Minimum whole-site implementation direction
+
+Do not code.
+
+Return only the next sprint direction:
+
+* which pages to touch first
+* which pages to leave alone
+* which components to reuse
+* which components should become global
+* which dashboards should be unified
+* which metrics must become first-class
+* which legal guardrails must remain untouched
+
+Important constraints:
+
+* No ROI / yield / dividend / return / equity / profit promise.
+* Do not imply members own the vault.
+* Do not imply rank gives rights.
+* Do not imply referral is live.
+* Do not imply NFT = membership.
+* Do not make Eras II–IX feel live.
+* Keep Holder Index as identity truth.
+* Keep SYN as the seat.
+* Keep artifacts as memory.
+* Keep 70/20/10 only for membership sale routing.
+
+Target feeling:
+
+Alice should feel:
+
+“I entered a live crypto protocol cockpit. I can see the economy, the treasury flows, the market, the members, the ranks, the chapters, the artifacts, and my own dashboard. I understand what is live, what is future, and where I belong. I want to take a seat and come back.”
