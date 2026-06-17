@@ -1,0 +1,133 @@
+URGENT LIVE BUY-FLOW DIAGNOSIS — DO NOT ASSUME IT IS DONE
+
+I published and tested the live site.
+
+Production is V2b, funded, and connected wallet shows:
+
+* USDC balance available
+* SYN balance available
+* allowance = 25
+* Approve USDC = confirmed
+* Buy Membership = waiting
+* Verified Member = after buy
+* screen shows: “Membership data unavailable”
+
+This looks like the old problem where the system treats approval as success but the actual buy does not complete.
+
+Do not redesign.
+
+Do not do founder model reconciliation yet.
+
+Do not work on package/rank/chapter cleanup.
+
+Focus only on why the live buy is blocked after approval.
+
+A. Reproduce from production state
+
+Inspect the live /join flow and current code.
+
+Determine whether the buy button is blocked by:
+
+* missing membership data
+* proof artifact not loaded
+* proof gate failing
+* holder-index loading state
+* connected wallet treated as existing recognized member
+* missing/corrupt v1 proof
+* allowance state not refreshing
+* quote/minSynOut missing
+* cap/headroom read missing
+* RPC/cache failure
+* disabled button condition
+* state machine stuck after approval
+* V2b contract read failure
+* wrong production artifact path
+* any other guard
+
+B. Explain the screenshot state
+
+Explain exactly what state produces:
+
+“Membership data unavailable”
+
+and whether that state disables buy.
+
+Find the exact component/condition responsible.
+
+C. Confirm transaction reality
+
+Check whether any buy transaction was actually submitted.
+
+Differentiate:
+
+* USDC approval succeeded
+* buy transaction not submitted
+* buy transaction submitted and reverted
+* buy transaction pending
+* UI failed to refresh after approval
+
+D. Fix only the blocking issue
+
+If the user already has allowance and the quote is valid, the flow must allow:
+
+Buy Membership
+
+Do not require unrelated membership data to be available for a new buyer.
+
+For new buyer:
+
+* proof can be []
+* first valid buy creates seat
+* membership data should not block checkout if it is only needed after buy
+
+If existing recognized member:
+
+* proof must load and verify before buy
+* if proof missing, show exact error, not vague “membership data unavailable”
+
+E. UX/state clarity
+
+Replace vague blocked states with clear messages:
+
+* “Approval confirmed. Ready to buy.”
+* “Loading membership proof…”
+* “Proof unavailable — cannot continue safely.”
+* “Quote unavailable — retry.”
+* “Wallet already approved. Continue to buy.”
+
+F. Validate
+
+Run focused validation:
+
+* production artifact root/count loads
+* V2b quote works
+* allowance refreshes after approval
+* with allowance >= amount, buy button becomes enabled
+* fresh buyer path uses empty proof []
+* existing member path uses verified proof
+* no duplicate-seat risk
+* no V2a active buy path
+* /join?amount=25 prefill still works
+* custom amount still works
+
+G. Return
+
+Return:
+
+1. exact cause of the stuck state
+2. exact file/component/condition responsible
+3. whether buy tx was submitted or only approval
+4. files changed
+5. proof behavior for fresh buyer
+6. proof behavior for existing member
+7. validation results
+8. whether I can retry live buy
+9. exact retry steps
+
+Important:
+
+This is a live transaction-state bug.
+
+Do not broaden scope.
+
+Do not mark done until the UI allows the actual buy after approval.

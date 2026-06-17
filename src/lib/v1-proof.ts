@@ -76,6 +76,22 @@ export const RECOGNIZED_MEMBERS: ReadonlySet<string> = new Set([
 export const EXPECTED_MEMBER_COUNT = RECOGNIZED_MEMBERS.size;
 
 /**
+ * Is `address` one of the bundle-baked recognized members the sealed
+ * `V1_MEMBER_ROOT` commits to? This set is COMPLETE — no member lives outside it
+ * — so a wallet that is NOT recognized is, provably and WITHOUT any network
+ * fetch, a brand-new buyer for whom an EMPTY proof `[]` is the correct and safe
+ * argument. The proof ARTIFACT is therefore only ever needed to construct the
+ * Merkle proof for one of these recognized members; a fresh buyer must never be
+ * blocked on it. This is the line between "data needed to AVOID a duplicate seat"
+ * (recognized members only) and "data the buyer does not need at all" (everyone
+ * else). Pure; lowercases for case-insensitive comparison; false for no address.
+ */
+export function isRecognizedMember(address: string | null | undefined): boolean {
+  if (!address) return false;
+  return RECOGNIZED_MEMBERS.has(address.toLowerCase());
+}
+
+/**
  * Shape of the proof artifact. `proofs` maps a member address → its Merkle
  * proof (an array of 32-byte hex sibling hashes). `root` is the Merkle root the
  * proofs were generated against; it must match the on-chain `V1_MEMBER_ROOT`.
@@ -253,6 +269,27 @@ export function resolveV1ProofForBuy(
   return { ok: true, isV1Member: false, proof: [] };
 }
 
+/**
+ * Address-aware, fail-closed buy resolution that NEVER over-blocks a fresh buyer.
+ * A wallet OUTSIDE the root-committed recognized set is, by definition, a new
+ * buyer: `[]` is provably correct for it and needs no artifact, so it resolves
+ * ok:true EVEN IF the proof artifact failed to load. Only a RECOGNIZED member
+ * still requires the canonical artifact (to carry their real proof) and falls
+ * through to the strict `resolveV1ProofForBuy` gate. This preserves the one
+ * irreversible protection — a real member is never silently demoted to a fresh
+ * buyer (which would mint them a DUPLICATE seat) — while ensuring an artifact
+ * hiccup can never block a brand-new buyer who does not need it. Pure.
+ */
+export function resolveV1ProofForBuySafe(
+  artifact: V1ProofArtifact | null | undefined,
+  address: string,
+): V1ProofResolution {
+  if (!isRecognizedMember(address)) {
+    return { ok: true, isV1Member: false, proof: [] };
+  }
+  return resolveV1ProofForBuy(artifact, address);
+}
+
 /** Strongly-typed argument tuple for the V2 `buy(usdcIn, referrer, minSynOut, v1Proof)` call. */
 export type V2BuyArgs = readonly [bigint, `0x${string}`, bigint, readonly `0x${string}`[]];
 
@@ -275,7 +312,16 @@ export function buildV2BuyArgs(params: {
 
 /** SSR-safe async loader. Throws on network/parse failure (so TanStack Query marks isError). */
 export async function loadV1ProofArtifact(): Promise<V1ProofArtifact> {
-  const res = await fetch(V1_PROOF_ARTIFACT_URL, { headers: { accept: "application/json" } });
+  // Resolve to an ABSOLUTE URL in the browser. The artifact is a same-origin
+  // static file, so a bare relative path works on the client today — but a bare
+  // path THROWS ("Failed to parse URL") in any non-document context, so anchor it
+  // to the page origin defensively. Same resolved target on the live page; no
+  // behaviour change for a normal browser load.
+  const url =
+    typeof window !== "undefined" && window.location?.origin
+      ? new URL(V1_PROOF_ARTIFACT_URL, window.location.origin).toString()
+      : V1_PROOF_ARTIFACT_URL;
+  const res = await fetch(url, { headers: { accept: "application/json" } });
   if (!res.ok) throw new Error(`v1-proof artifact HTTP ${res.status}`);
   const parsed = parseV1ProofArtifact(await res.json());
   if (!parsed) throw new Error("v1-proof artifact malformed");
@@ -294,7 +340,7 @@ export function useV1Proof() {
     queryFn: loadV1ProofArtifact,
     staleTime: Infinity,
     gcTime: Infinity,
-    retry: 1,
+    retry: 2,
   });
 
   const artifact = query.data;
@@ -304,12 +350,24 @@ export function useV1Proof() {
     artifact,
     isLoading: query.isLoading,
     isError: query.isError,
+    /** Manually re-attempt the artifact load — drives the one-tap "retry" affordance so a transient miss is never a dead end. */
+    refetch: query.refetch,
     /** True only when a real, CANONICAL artifact is loaded (root matches the sealed on-chain V1_MEMBER_ROOT). */
     ready,
+    /**
+     * Per-wallet buy readiness. A fresh buyer (not a recognized member) is ALWAYS
+     * ready: they pass `[]` and never need the artifact, so an artifact hiccup must
+     * not block them. Only a recognized member requires the canonical artifact.
+     * Returns false without an address (nothing to buy until a wallet connects).
+     */
+    readyForBuy: (address: string | null | undefined) =>
+      address ? (!isRecognizedMember(address) || ready) : false,
     /** Member count from the artifact (0 until ready). */
     count: artifact?.count ?? 0,
     getProof: (address: string) => (artifact ? getV1Proof(artifact, address) : null),
     isKnownMember: (address: string) => (artifact ? isKnownV1Member(artifact, address) : false),
     resolveForBuy: (address: string) => resolveV1ProofForBuy(artifact, address),
+    /** Address-aware fail-closed resolution: fresh buyers resolve to `[]` without the artifact; recognized members stay strictly gated. */
+    resolveForBuySafe: (address: string) => resolveV1ProofForBuySafe(artifact, address),
   };
 }

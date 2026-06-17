@@ -36,7 +36,7 @@ import {
   fmtAddress,
   type SaleStats,
 } from "@/lib/sale-hooks";
-import { useV1Proof, buildV2BuyArgs } from "@/lib/v1-proof";
+import { useV1Proof, buildV2BuyArgs, isRecognizedMember } from "@/lib/v1-proof";
 import { eraByIndex, eraMinUsdc, eraSynPerUsdc } from "@/lib/eras";
 import { track } from "@/lib/analytics";
 import { assertFreshWallet, walletFreshnessMessage } from "@/lib/wallet-freshness";
@@ -239,6 +239,15 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
   const approvePending = approveTx.isPending || approveReceipt.isLoading;
   const buyPending = buyTx.isPending || buyReceipt.isLoading;
 
+  // Only a RECOGNIZED member (one in the root-committed V1∪V2a snapshot) must
+  // have their canonical proof artifact loaded BEFORE buying — they carry a real
+  // Merkle proof so V2 continues their seat instead of minting a duplicate. A
+  // wallet outside that set is, provably, a brand-new buyer: it passes `[]` and
+  // needs no artifact, so it must NEVER be blocked on one. `memberProofPending`
+  // is therefore the ONLY case where artifact readiness gates the buy.
+  const isReturningMember = isRecognizedMember(address);
+  const memberProofPending = isReturningMember && !v1Proof.ready;
+
   const verifyFreshWallet = async (surface: string) => {
     const freshness = await assertFreshWallet(address);
     const message = walletFreshnessMessage(freshness);
@@ -332,21 +341,23 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
         }
       },
     };
-  } else if (SALE_V2_LIVE && !v1Proof.ready) {
-    // V2 buys require a CANONICAL V1-membership proof artifact (root === the
-    // sealed on-chain V1_MEMBER_ROOT) so a returning V1 member's seat is
-    // continued (not duplicated) and a new buyer passes `[]`. Fail closed until
-    // a canonical artifact is in hand: only show the transient "Preparing…"
-    // while genuinely loading; an errored or loaded-but-non-canonical artifact
-    // is a hard "unavailable".
-    state = {
-      label:
-        v1Proof.isError || (!v1Proof.isLoading && !v1Proof.ready)
-          ? "Membership data unavailable"
-          : "Preparing…",
-      disabled: true,
-      tone: "muted",
-    };
+  } else if (SALE_V2_LIVE && memberProofPending) {
+    // ONLY a recognized member reaches here: their canonical proof artifact must
+    // be in hand before buying, or V2 would mint them a DUPLICATE seat. A fresh
+    // buyer never blocks on the artifact (it isn't theirs to need). Keep the
+    // member moving: show a transient status while the record is genuinely
+    // loading; if it failed, offer a one-tap retry instead of a dead end.
+    const stillLoading = v1Proof.isLoading && !v1Proof.isError;
+    state = stillLoading
+      ? { label: "Verifying membership…", disabled: true, tone: "muted" }
+      : {
+          label: "Membership records unavailable — retry",
+          disabled: false,
+          tone: "muted",
+          onClick: () => {
+            void v1Proof.refetch();
+          },
+        };
   } else {
     state = {
       label: buyPending ? "Confirm in Wallet…" : "Complete purchase now",
@@ -363,9 +374,11 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
           let hash: `0x${string}`;
           if (SALE_V2_LIVE) {
             // Classify the buyer against the canonical V1 snapshot (fail-closed):
-            // a known V1 member passes THEIR proof so V2 continues their seat; a
-            // fresh buyer passes `[]` and is issued the next seat.
-            const res = v1Proof.resolveForBuy(address!);
+            // a recognized member passes THEIR proof so V2 continues their seat; a
+            // fresh buyer (not in the root-committed set) passes `[]` and is issued
+            // the next seat WITHOUT needing the artifact. `resolveForBuySafe` keeps
+            // recognized members strictly gated while never blocking a new buyer.
+            const res = v1Proof.resolveForBuySafe(address!);
             if (!res.ok) {
               setWalletGuardError(
                 res.reason === "artifact-pending"
@@ -449,7 +462,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
   const purchaseDone = buyReceipt.isSuccess || phase === "success";
   const approveErrored = Boolean(approveTx.error || approveReceipt.error);
   const buyErrored = Boolean(buyTx.error || buyReceipt.error);
-  const buyReady = SALE_V2_LIVE ? v1Proof.ready : true;
+  const buyReady = SALE_V2_LIVE ? v1Proof.readyForBuy(address) : true;
   // Wallet reads are tri-state (undefined = still loading). Until BOTH allowance
   // and balance are known we cannot honestly say approval is/ isn't needed, so
   // the sale is not yet actionable and the steps stay "Waiting".

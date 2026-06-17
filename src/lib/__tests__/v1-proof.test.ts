@@ -13,7 +13,9 @@ import {
   isArtifactCanonical,
   getV1Proof,
   isKnownV1Member,
+  isRecognizedMember,
   resolveV1ProofForBuy,
+  resolveV1ProofForBuySafe,
   buildV2BuyArgs,
   verifyV1MerkleProof,
   ZERO_ADDRESS,
@@ -238,6 +240,47 @@ describe("WS2 · resolveV1ProofForBuy (fail-closed)", () => {
   });
   it("returns an empty proof (new buyer) for a stranger against a ready artifact", () => {
     expect(resolveV1ProofForBuy(ready(), STRANGER)).toEqual({ ok: true, isV1Member: false, proof: [] });
+  });
+});
+
+describe("WS2 · isRecognizedMember (bundle-baked, no artifact needed)", () => {
+  it("true for a recognized member (case-insensitive), false for a stranger", () => {
+    expect(isRecognizedMember(MEMBER)).toBe(true);
+    expect(isRecognizedMember(MEMBER.toLowerCase())).toBe(true);
+    expect(isRecognizedMember(MEMBER.toUpperCase())).toBe(true);
+    expect(isRecognizedMember(STRANGER)).toBe(false);
+  });
+  it("false for a missing address (no wallet connected)", () => {
+    expect(isRecognizedMember(null)).toBe(false);
+    expect(isRecognizedMember(undefined)).toBe(false);
+    expect(isRecognizedMember("")).toBe(false);
+  });
+});
+
+describe("WS2 · resolveV1ProofForBuySafe (fresh buyer never over-blocked; member still fail-closed)", () => {
+  it("a fresh buyer resolves to an empty proof WITHOUT any artifact (missing/null/pending)", () => {
+    // A wallet outside the root-committed set is provably new: `[]` is correct and
+    // safe even if the artifact never loaded, so an artifact hiccup must not block.
+    expect(resolveV1ProofForBuySafe(undefined, STRANGER)).toEqual({ ok: true, isV1Member: false, proof: [] });
+    expect(resolveV1ProofForBuySafe(null, STRANGER)).toEqual({ ok: true, isV1Member: false, proof: [] });
+    expect(resolveV1ProofForBuySafe(PENDING, STRANGER)).toEqual({ ok: true, isV1Member: false, proof: [] });
+  });
+  it("a fresh buyer resolves to an empty proof against a ready artifact too", () => {
+    expect(resolveV1ProofForBuySafe(ready(), STRANGER)).toEqual({ ok: true, isV1Member: false, proof: [] });
+  });
+  it("a RECOGNIZED member stays fail-closed: blocked when the artifact is missing/pending/non-canonical", () => {
+    // The duplicate-seat protection is preserved — a real member is NEVER waved
+    // through with `[]`; they must carry their proof or the buy stays blocked.
+    expect(resolveV1ProofForBuySafe(undefined, MEMBER)).toEqual({ ok: false, reason: "artifact-unavailable" });
+    expect(resolveV1ProofForBuySafe(null, MEMBER)).toEqual({ ok: false, reason: "artifact-unavailable" });
+    expect(resolveV1ProofForBuySafe(PENDING, MEMBER)).toEqual({ ok: false, reason: "artifact-pending" });
+    expect(resolveV1ProofForBuySafe(ready({ root: "0x" + "22".repeat(32) }), MEMBER)).toEqual({
+      ok: false,
+      reason: "artifact-invalid",
+    });
+  });
+  it("a recognized member gets THEIR real proof against a canonical artifact", () => {
+    expect(resolveV1ProofForBuySafe(ready(), MEMBER)).toEqual({ ok: true, isV1Member: true, proof: PROOF });
   });
 });
 
