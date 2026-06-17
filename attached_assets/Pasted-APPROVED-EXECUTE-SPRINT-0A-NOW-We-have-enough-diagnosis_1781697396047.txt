@@ -1,0 +1,130 @@
+APPROVED — EXECUTE SPRINT 0A NOW
+
+We have enough diagnosis.
+
+Do not produce another strategy report.
+Do not create another board section.
+Do not ask for another approval layer.
+Do not redesign homepage yet.
+Do not touch /join buy logic.
+Do not touch contracts, Holder Index, routing, NFT truth, referral logic, or production protocol behavior.
+
+Execute Sprint 0A only:
+
+DESIGN FOUNDATION LAYER — CANONICALIZE EXISTING PRIMITIVES
+
+Founder-approved decisions:
+
+1. Center of gravity:
+   Seat / Member Identity.
+
+2. Anchor screen:
+   Member OS (/my-syndicate).
+
+3. Homepage role:
+   Trailer that makes Alice want a seat.
+
+4. Systems model:
+   Identity → Economy → Memory → Proof → Future.
+
+5. Brand direction:
+   Rounded interconnected Syndicate mark.
+   Gold = identity / brand / seat / token.
+   Cyan = live data / verification / protocol activity.
+
+6. Refactor strategy:
+   Finish + canonicalize what already exists.
+   Do not build a second design system.
+
+Scope of this sprint:
+
+A. Update existing primitive foundation only:
+
+* src/styles.css
+* src/components/syndicate/Primitives.tsx
+* src/components/ui/button.tsx if needed
+
+Add or standardize only these primitives:
+
+* StatusPill
+* Stat / Metric
+* Button / CTA
+* Panel / Card
+* SectionShell / SectionHeader
+* Eyebrow / MonoLabel
+
+Also standardize:
+
+* spacing scale
+* label tracking scale
+* icon sizing scale
+* flame / burn token if needed
+* gold identity token
+* cyan live-data token
+
+B. Replace only the most obvious bypasses if safe:
+
+* RevenueStreams local StatusPill → canonical StatusPill
+* obvious repeated pill styles → canonical StatusPill
+* ProtocolHero hardcoded gold/flame constants → tokens only if safe
+* do not restructure ProtocolHero yet
+
+C. Create a small visual primitive preview if possible:
+
+Either:
+
+* a lightweight internal component preview
+* or a board/gallery screenshot
+* or a simple route only if one already exists for previews
+
+Show:
+
+* LIVE / PARTIAL / PENDING / FUTURE / DERIVED pills
+* metric cells
+* CTA variants
+* panel variants
+* eyebrow labels
+
+Do not create a new major lab route.
+
+D. Validation:
+
+Run:
+
+* TypeScript check
+* relevant tests
+* doctrine / wording guards if available
+* screenshot or dev preview check
+
+Important:
+
+No copy rewrites.
+No homepage redesign.
+No /join checkout refactor.
+No nav changes.
+No page deletes.
+No route moves.
+No concept renames.
+No new protocol claims.
+No ROI / yield / dividend / return / equity / profit language.
+No vault ownership implication.
+No NFT = membership implication.
+No referral live implication.
+
+Return:
+
+1. Files changed
+2. Primitives finalized
+3. Tokens added / standardized
+4. Bypasses migrated
+5. What remains bypassed for later sprints
+6. Preview screenshots or visual notes
+7. Tests run and results
+8. Confirmation no protocol logic changed
+9. Recommended next sprint: Homepage Cockpit or Brand Assets, based on what you see after Sprint 0A
+
+Goal:
+
+Finish the foundation enough that future homepage, cockpit, and join redesigns do not drift again.
+
+This is execution now, not more diagnosis.

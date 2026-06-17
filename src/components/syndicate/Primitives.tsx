@@ -296,15 +296,17 @@ export function Pill({
  *   DERIVED · computed deterministically from on-chain reads (e.g. market cap from price × supply)
  *   PARTIAL · live data, partial coverage (e.g. counted onchain, leaderboard pending)
  *   PENDING · contract / module not yet deployed
+ *   FUTURE  · planned module on the roadmap — designed, not yet built
  *   DEMO    · illustrative preview, behind a clearly labeled demo surface
  */
-export type CanonicalStatus = "LIVE" | "DERIVED" | "PARTIAL" | "PENDING" | "DEMO";
+export type CanonicalStatus = "LIVE" | "DERIVED" | "PARTIAL" | "PENDING" | "FUTURE" | "DEMO";
 
 const STATUS_TONE: Record<CanonicalStatus, "success" | "warning" | "muted" | "navy"> = {
   LIVE: "success",
   DERIVED: "navy",
   PARTIAL: "warning",
   PENDING: "muted",
+  FUTURE: "navy",
   DEMO: "navy",
 };
 
@@ -313,6 +315,7 @@ const STATUS_HINT: Record<CanonicalStatus, string> = {
   DERIVED: "Computed deterministically from on-chain reads.",
   PARTIAL: "Live data, partial coverage today.",
   PENDING: "Contract or module not yet deployed.",
+  FUTURE: "Planned module on the roadmap — not yet built.",
   DEMO: "Illustrative preview, not live data.",
 };
 
@@ -740,5 +743,154 @@ export function ActionPanel({
     </div>
   );
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ *  SPRINT 0A · FOUNDATION ATOMS (additive — nothing above changed shape)
+ *  Canonical micro-primitives. Use these instead of re-rolling
+ *  `mono uppercase tracking-[…]` labels, ad-hoc stat cells, or one-off
+ *  `bg-card border` panels. They consume the design tokens added in styles.css.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Eyebrow / MonoLabel (P6) — the canonical micro-label atom.
+ * Replaces the 8 tracking values × 5 font-sizes of ad-hoc
+ * `mono uppercase tracking-[…]` labels with ONE 2-size scale:
+ *   size "xs" → 10px / 0.18em   ·   size "sm" → 12px / 0.22em
+ * tone "muted" (default) · "identity" (gold) · "live" (cyan) · "foreground".
+ */
+export function Eyebrow({
+  children,
+  size = "xs",
+  tone = "muted",
+  as = "div",
+  className = "",
+}: {
+  children: ReactNode;
+  size?: "xs" | "sm";
+  tone?: "muted" | "identity" | "live" | "foreground";
+  as?: "div" | "span";
+  className?: string;
+}) {
+  const sizeCls =
+    size === "sm" ? "text-[12px] tracking-[0.22em]" : "text-[10px] tracking-[0.18em]";
+  const toneCls =
+    tone === "identity"
+      ? "text-[color:var(--identity)]"
+      : tone === "live"
+      ? "text-[color:var(--live)]"
+      : tone === "foreground"
+      ? "text-foreground"
+      : "text-muted-foreground";
+  const Tag = as;
+  return <Tag className={`mono uppercase ${sizeCls} ${toneCls} ${className}`}>{children}</Tag>;
+}
+
+/** MonoLabel — Eyebrow for inline (non-eyebrow) mono labels; defaults to a <span>. */
+export function MonoLabel(props: Parameters<typeof Eyebrow>[0]) {
+  return <Eyebrow as="span" {...props} />;
+}
+
+/**
+ * Stat (P2) — the canonical metric cell: a micro-label over a mono tabular value,
+ * status-aware. Extracted from the intelligence-bar `BarCell` pattern so the
+ * ticker, hero facts, overview panel and cockpit all share one shape.
+ */
+export function Stat({
+  label,
+  value,
+  status,
+  title,
+  align = "left",
+  size = "md",
+  className = "",
+}: {
+  label: ReactNode;
+  value: ReactNode;
+  status?: CanonicalStatus;
+  title?: string;
+  align?: "left" | "right" | "center";
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}) {
+  const valueCls = size === "lg" ? "text-[15px]" : size === "sm" ? "text-[11px]" : "text-[12px]";
+  const alignCls =
+    align === "right"
+      ? "items-end text-right"
+      : align === "center"
+      ? "items-center text-center"
+      : "items-start";
+  return (
+    <div title={title} className={`flex flex-col justify-center gap-0.5 ${alignCls} ${className}`}>
+      <div className="inline-flex items-center gap-1.5">
+        <Eyebrow as="span">{label}</Eyebrow>
+        {status && <StatusPill status={status} />}
+      </div>
+      <span className={`mono font-semibold tabular-nums text-foreground whitespace-nowrap ${valueCls}`}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
+/**
+ * Panel (P4) — the canonical card surface. Consolidates GlassCard + the
+ * `surface` / `panel` / `glass-card` CSS utilities + ad-hoc `bg-card border`
+ * blocks behind one component with an optional header slot.
+ *   variant "glass" (default) · "surface" · "flat"
+ *   padding uses the --space-card / --space-card-sm tokens.
+ */
+export function Panel({
+  children,
+  variant = "glass",
+  header,
+  glow,
+  padding = "md",
+  className = "",
+}: {
+  children: ReactNode;
+  variant?: "glass" | "surface" | "flat";
+  header?: { eyebrow?: ReactNode; title?: ReactNode; aside?: ReactNode };
+  glow?: "identity" | "navy" | "verify";
+  padding?: "md" | "sm" | "none";
+  className?: string;
+}) {
+  const variantCls =
+    variant === "surface" ? "surface" : variant === "flat" ? "panel" : "glass-card";
+  const glowCls =
+    glow === "identity"
+      ? "glow-border-identity"
+      : glow === "navy"
+      ? "glow-border-navy"
+      : glow === "verify"
+      ? "glow-border-verify"
+      : "";
+  const padCls =
+    padding === "none" ? "" : padding === "sm" ? "p-[var(--space-card-sm)]" : "p-[var(--space-card)]";
+  return (
+    <div className={`${variantCls} ${glowCls} ${padCls} ${className}`}>
+      {header && (
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-1">
+            {header.eyebrow && <Eyebrow>{header.eyebrow}</Eyebrow>}
+            {header.title && (
+              <div className="font-serif text-lg font-semibold tracking-tight text-foreground">
+                {header.title}
+              </div>
+            )}
+          </div>
+          {header.aside && <div className="shrink-0">{header.aside}</div>}
+        </div>
+      )}
+      {children}
+    </div>
+  );
+}
+
+/**
+ * SectionShell (P5) — canonical section rhythm. Alias of <Section> so the
+ * approved primitive name resolves to the single existing implementation
+ * (fixed max-width + py-16→24 rhythm). Pair with <SectionHeader>.
+ */
+export const SectionShell = Section;
 
 

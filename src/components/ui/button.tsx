@@ -16,6 +16,12 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Sprint 0A — token-backed brand variants. gold = identity/brand CTA
+        // (stays gold in both themes via --identity); verify = cyan live-data
+        // outline (--live). Opacity via color-mix, not /NN on arbitrary vars.
+        gold: "bg-[color:var(--identity)] text-[color:var(--identity-foreground)] shadow hover:brightness-110",
+        verify:
+          "border border-[color:color-mix(in_oklab,var(--live)_40%,transparent)] text-[color:var(--live)] shadow-sm hover:bg-[color:color-mix(in_oklab,var(--live)_10%,transparent)]",
       },
       size: {
         default: "h-9 px-4 py-2",

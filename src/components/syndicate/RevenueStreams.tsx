@@ -6,26 +6,11 @@
 // live; an unreadable address degrades to PENDING — never fabricated. LP fees
 // carry no on-chain amount read, so they are surfaced as destination + PENDING,
 // never a computed figure.
-import { GlassCard, Section, SectionHeader, ProofButton } from "@/components/syndicate/Primitives";
+import { GlassCard, Section, SectionHeader, ProofButton, StatusPill } from "@/components/syndicate/Primitives";
 import { REVENUE_STREAMS } from "@/lib/revenue-streams";
 import { explorerUrlFor, explorerUrlForAddress } from "@/lib/syndicate-config";
 import { labelForAddress } from "@/lib/known-addresses";
 import { useArchiveOwnership } from "@/lib/archive-nft-hooks";
-
-function StatusPill({ status }: { status: "live" | "pending" }) {
-  const live = status === "live";
-  return (
-    <span
-      className={`mono text-[10px] uppercase tracking-[0.18em] px-2 py-0.5 rounded-full border ${
-        live
-          ? "text-emerald-300 border-emerald-400/30"
-          : "text-amber-300 border-amber-400/30"
-      }`}
-    >
-      {live ? "LIVE" : "PENDING"}
-    </span>
-  );
-}
 
 export function RevenueStreams() {
   const ownership = useArchiveOwnership();
@@ -49,7 +34,7 @@ export function RevenueStreams() {
               <div className="mono text-[11px] uppercase tracking-[0.22em] text-[color:oklch(0.5_0.13_75)]">
                 {s.label}
               </div>
-              <StatusPill status={s.amountStatus} />
+              <StatusPill status={s.amountStatus === "live" ? "LIVE" : "PENDING"} />
             </div>
             <div className="text-sm text-foreground/85">{s.source}</div>
             <div className="text-sm text-foreground/70">{s.destination}</div>

@@ -3,6 +3,7 @@
 - [Design refactor constraints](design-refactor-constraints.md) — past passes missed bc NO shared primitive/token layer under ~140 ad-hoc components; Sprint 0 = brand + minimal primitives (NOT homepage); design vs prod truth not dev blanks; reskin /join shell only.
 - [presentArtifact artifactId for canvas](canvas-presentartifact-artifactid.md) — plain canvas shapes still need an EXISTING artifactId (here `artifacts/mockup-sandbox`); shapeIds drive nav; bogus id error lists valid ones.
 - [Tailwind v4 arbitrary colors](tailwind-v4-arbitrary-colors.md) — color-mix arbitrary values compile; `/opacity` on arbitrary var() colors is unreliable — use color-mix or inline style.
+- [Design foundation tokens](design-foundation-tokens.md) — Gold=identity/Cyan=live; dark flips --gold→cyan ON PURPOSE; use always-gold --identity/.glow-border-identity for brand-gold; ProtocolHero stays gold.
 - [Mockup preview false-blank](mockup-preview-screenshot-blank.md) — pure-white external_url screenshot of a /__mockup/ preview is a capture timing/cache race, not a bug; bust with `?cb=`, trust the live canvas iframe.
 - [Obsidian Cockpit theme doctrine](obsidian-cockpit-doctrine.md) — accent is cyan in DARK (default) only; light theme intentionally stays gold/ivory. Serif (Fraunces) only inside `.editorial-serif`.
 - [Syndicate copy canon](syndicate-copy-canon.md) — canonical CTA/status/identity vocabulary; "Join The Syndicate"/"Buy More SYN", LIVE/PARTIAL/PENDING, Member≠Holder≠Collector, Seat≠Seat Record.
