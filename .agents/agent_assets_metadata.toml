@@ -317,3 +317,9 @@ id = "zOBbAt7UP-1OEPM3dPyyY"
 uri = "file://docs/handoffs/MASTER_LEDGER_2026-06-17.md"
 type = "text"
 title = "The Syndicate — Master Ledger (Handoff, 2026-06-17)"
+
+[[outputs]]
+id = "6vSLLM5ZgnwdTJhZxgHJC"
+uri = "file://docs/handoffs/IDENTITY_RECONCILIATION_2026-06-17.md"
+type = "text"
+title = "Identity-Layer Reconciliation — Seat/Package/Rank/Chapter/Era/Artifact (2026-06-17)"
