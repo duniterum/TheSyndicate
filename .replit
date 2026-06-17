@@ -53,3 +53,7 @@ externalPort = 3000
 deploymentTarget = "autoscale"
 run = ["node", ".output/server/index.mjs"]
 build = ["npm", "run", "build"]
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 120000
