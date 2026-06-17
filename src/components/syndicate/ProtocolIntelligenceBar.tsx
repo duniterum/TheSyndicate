@@ -61,7 +61,17 @@ type Cell = {
   title?: string;
 };
 
-export function ProtocolIntelligenceBar({ className = "" }: { className?: string }) {
+export function ProtocolIntelligenceBar({
+  className = "",
+  cells,
+  mobilePriority,
+}: {
+  className?: string;
+  /** Curate AND order the visible cells by key. Omit to render every cell. */
+  cells?: string[];
+  /** Hide cells at/after this index below the `sm` breakpoint. */
+  mobilePriority?: number;
+}) {
   const t = useProtocolTruth();
   const supply = useSynSupply();
   const circ = useCirculatingSupply();
@@ -83,17 +93,38 @@ export function ProtocolIntelligenceBar({ className = "" }: { className?: string
 
   const cp = t.chapterProgress.value;
 
-  // Aggregate trust status — never blanket "LIVE". Every cell is on-chain or
-  // labeled honestly: LIVE only when every displayed read resolves, PENDING
-  // when none have, PARTIAL while filling in (or on a degraded read).
-  const liveReads = [
-    vault, liquidity, operations,
-    t.lpTvlUsd.value, t.synSold.value, t.usdcRaised.value, t.members.value,
-    circulating, totalSupply, burned, cp,
-  ];
-  const present = liveReads.filter((v) => v !== undefined).length;
+  // Aggregate trust status — never blanket "LIVE". LIVE only when every DISPLAYED
+  // read resolves, PENDING when none have, PARTIAL while filling in (or on a
+  // degraded read). When the bar is curated via `cells`, the status reflects ONLY
+  // the displayed cells, so unresolved hidden global metrics can never make the
+  // visible cockpit ticker look degraded; with no `cells` it reflects the full set.
+  const statusValueByKey: Record<string, unknown> = {
+    price: REFERENCE_PRICE,
+    refMktCap,
+    fdv,
+    totalSupply,
+    circulating,
+    burned,
+    protocolWallets,
+    vault,
+    liquidity,
+    operations,
+    lpTvl: t.lpTvlUsd.value,
+    synSold: t.synSold.value,
+    usdcRouted: t.usdcRaised.value,
+    members: t.members.value,
+    chapter: cp,
+  };
+  const statusReads: unknown[] = cells
+    ? cells.map((k) => statusValueByKey[k])
+    : [
+        vault, liquidity, operations,
+        t.lpTvlUsd.value, t.synSold.value, t.usdcRaised.value, t.members.value,
+        circulating, totalSupply, burned, cp,
+      ];
+  const present = statusReads.filter((v) => v !== undefined).length;
   const barStatus: CanonicalStatus =
-    t.isError || (present > 0 && present < liveReads.length)
+    t.isError || (present > 0 && present < statusReads.length)
       ? "PARTIAL"
       : present === 0
         ? "PENDING"
@@ -190,6 +221,23 @@ export function ProtocolIntelligenceBar({ className = "" }: { className?: string
     },
   ];
 
+  // Unified, ordered render list. When `cells` is provided it curates AND orders
+  // by key; with no prop every item renders in canonical order — byte-identical
+  // to the global ticker. `mobilePriority` hides items at/after that index below
+  // the `sm` breakpoint so the curated homepage ticker stays scannable on phones.
+  type RenderItem =
+    | { key: string; kind: "cell"; cell: Cell }
+    | { key: "burned"; kind: "burned"; value: string };
+  const allItems: RenderItem[] = [
+    ...lead.map((c): RenderItem => ({ key: c.key, kind: "cell", cell: c })),
+    { key: "burned", kind: "burned", value: fmtSynExact(burned) },
+    ...tail.map((c): RenderItem => ({ key: c.key, kind: "cell", cell: c })),
+  ];
+  const order = cells ?? allItems.map((it) => it.key);
+  const ordered = order
+    .map((k) => allItems.find((it) => it.key === k))
+    .filter((it): it is RenderItem => it !== undefined);
+
   return (
     <div
       role="region"
@@ -211,27 +259,26 @@ export function ProtocolIntelligenceBar({ className = "" }: { className?: string
             <StatusPill status={barStatus} />
           </div>
 
-          {lead.map((c) => (
-            <BarCell key={c.key} cell={c} />
-          ))}
-
-          {/* Burned Supply — carries the Proof of Burn badge (Founder Burn) */}
-          <BurnedCell value={fmtSynExact(burned)} />
-
-          {tail.map((c) => (
-            <BarCell key={c.key} cell={c} />
-          ))}
+          {ordered.map((it, i) => {
+            const hideOnMobile = mobilePriority !== undefined && i >= mobilePriority;
+            return it.kind === "burned" ? (
+              // Burned Supply — carries the Proof of Burn badge (Founder Burn)
+              <BurnedCell key={it.key} value={it.value} hideOnMobile={hideOnMobile} />
+            ) : (
+              <BarCell key={it.key} cell={it.cell} hideOnMobile={hideOnMobile} />
+            );
+          })}
         </div>
       </div>
     </div>
   );
 }
 
-function BarCell({ cell }: { cell: Cell }) {
+function BarCell({ cell, hideOnMobile = false }: { cell: Cell; hideOnMobile?: boolean }) {
   return (
     <div
       title={cell.title}
-      className="flex shrink-0 flex-col justify-center gap-0.5 border-l border-border/40 px-4"
+      className={`${hideOnMobile ? "hidden sm:flex" : "flex"} shrink-0 flex-col justify-center gap-0.5 border-l border-border/40 px-4`}
     >
       <span className="mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap">
         {cell.label}
@@ -243,13 +290,13 @@ function BarCell({ cell }: { cell: Cell }) {
   );
 }
 
-function BurnedCell({ value }: { value: string }) {
+function BurnedCell({ value, hideOnMobile = false }: { value: string; hideOnMobile?: boolean }) {
   return (
     <Link
       to="/activity"
       title={`${PROOF_OF_FIRE_001.label} · ${PROOF_OF_FIRE_001.category} · verified supply reduction`}
       aria-label={`Burned supply ${value} — ${PROOF_OF_FIRE_001.label}, ${PROOF_OF_FIRE_001.category}`}
-      className="group flex shrink-0 flex-col justify-center gap-0.5 border-l border-border/40 px-4 transition-colors"
+      className={`group ${hideOnMobile ? "hidden sm:flex" : "flex"} shrink-0 flex-col justify-center gap-0.5 border-l border-border/40 px-4 transition-colors`}
     >
       <span className="mono inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap">
         {requireMetric("burnedSupply").label}

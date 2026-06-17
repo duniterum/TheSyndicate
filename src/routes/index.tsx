@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
+import { ProtocolIntelligenceBar } from "@/components/syndicate/ProtocolIntelligenceBar";
 import { ProtocolHero } from "@/components/syndicate/ProtocolHero";
+import { HomeKpiGrid } from "@/components/syndicate/HomeKpiGrid";
+import { ProtocolEnginesPanel } from "@/components/syndicate/ProtocolEnginesPanel";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
 import { HomeActivityTape } from "@/components/syndicate/HomeActivityTape";
 import { Flywheel } from "@/components/syndicate/Flywheel";
@@ -66,65 +69,55 @@ export const Route = createFileRoute("/")({
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// The homepage is ONE journey told in five acts. Every surface below is an
-// EXISTING protocol system, reordered so a first-time visitor moves through:
-//   01 What is this · 02 Why join · 03 Why now · 04 What happens after · 05 Verify
-// Consolidation pass: no new data, no new cards. Duplicated story/proof surfaces
-// (StorySoFar, ProtocolMoments, LiveProofStrip, HomeArchiveTeaser, the LP card,
-// and the second SinceYourLastVisit — already mounted inside IdentityZone) were
-// removed from the homepage to keep the line of meaning unbroken.
+// The homepage is a public COCKPIT. It leads with proof-of-life — a curated live
+// ticker, the hero seat identity, a KPI grid, an engine status board, and the
+// raised live heartbeat — then DEMOTES the prose into two clearly-labeled bands
+// ("How it works", then "Verify"). Every surface is an EXISTING protocol system;
+// nothing was deleted — gated narrative surfaces (ProtocolStorySoFar, Flywheel,
+// StoryTimeline, MilestoneApproachingTile) are kept and relocated. No new claims,
+// no new data sources, no new routes. Live brand stays the current frozen one.
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Curated top ticker: seat / economy cells only (the full global ticker stays
+// suppressed via hideIntelligenceBar). mobilePriority keeps the first four cells
+// visible on phones; the rest reveal at the `sm` breakpoint.
+const HOME_TICKER_CELLS = ["members", "usdcRouted", "protocolWallets", "lpTvl", "burned", "chapter"];
+
 function Index() {
   return (
     <PageShell title="" hideHeader headerWide hideIntelligenceBar hideDemoBanner hideIdentityRibbon>
-      {/* ── ACT 01 · WHAT IS THIS? ──────────────────────────────────────────
-          A living protocol on Avalanche. SYN is the seat. */}
+      {/* ── COCKPIT ── proof-of-life first: ticker → hero → KPIs → engines → heartbeat.
+          Each panel self-labels via its own SectionHeader; no act markers up here. */}
+      <ProtocolIntelligenceBar cells={HOME_TICKER_CELLS} mobilePriority={4} />
       <ProtocolHero />
-      <ActMarker
-        n="01"
-        kicker="What this is"
-        title="A living protocol on Avalanche — not a promise. Here is its state, right now."
-      />
-      <ProtocolStorySoFar />
+      <HomeKpiGrid />
+      <ProtocolEnginesPanel />
 
-      {/* ── ACT 02 · WHY JOIN? ──────────────────────────────────────────────
-          A permanent on-chain seat, and the identity it carries. */}
-      <ActMarker
-        n="02"
-        kicker="Why join"
-        title="A seat is a permanent, numbered place in the archive. It cannot be reassigned — by anyone, ever."
-      />
-      <WhyJoinSimple />
-      <IdentityZone />
-      <HomeProgressionTeaser />
-
-      {/* ── ACT 03 · WHY NOW? ───────────────────────────────────────────────
-          Current chapter, seats, nearest milestone, live movement. */}
-      <ActMarker
-        n="03"
-        kicker="Why now"
-        title="The chapter is open and the next seat is waiting. The earliest members are sealed in first."
-      />
+      {/* Raised live heartbeat — nearest milestone, vitals, and the activity tape.
+          Honest empty / PARTIAL states come from the components themselves. */}
       <MilestoneApproachingTile />
       <LivePulseStrip />
       <HomeActivityTape />
 
-      {/* ── ACT 04 · WHAT HAPPENS AFTER YOU JOIN? ───────────────────────────
-          USDC → Sale → SYN → 70/20/10 → Chronicle → Archive → identity. */}
+      {/* ── HOW IT WORKS ── prose, demoted into one compressed band below the
+          cockpit. Gated narrative surfaces (Flywheel, ProtocolStorySoFar) live here. */}
       <ActMarker
-        n="04"
-        kicker="What happens next"
-        title="Your USDC routes on-chain, your SYN arrives, and the archive records the moment."
+        n="01"
+        kicker="How it works"
+        title="What a seat is, how you take one, and what changes after — in brief. Verify every claim on-chain."
       />
+      <WhyJoinSimple />
       <HowToJoinSteps />
       <WhatChangesAfterJoining />
+      <IdentityZone />
+      <HomeProgressionTeaser />
       <Flywheel />
+      <ProtocolStorySoFar />
 
-      {/* ── ACT 05 · HOW TO VERIFY? ─────────────────────────────────────────
-          Memory, proof, and the routes that let you check every claim. */}
+      {/* ── VERIFY ── a quieter support band: the timeline + transparency snapshot. */}
       <ActMarker
-        n="05"
-        kicker="How to verify"
+        n="02"
+        kicker="Verify"
         title="Don't trust — verify. Every public claim maps to an on-chain read."
       />
       <StoryTimeline />
@@ -162,7 +155,7 @@ function Index() {
 }
 
 // Minimal narrative scaffolding — orients the visitor without adding protocol
-// data or cards. One labeled rule per act so the five-part journey is legible.
+// data or cards. Two labeled rules demote the prose beneath the live cockpit.
 function ActMarker({ n, kicker, title }: { n: string; kicker: string; title: string }) {
   return (
     <div className="mx-auto max-w-7xl px-5 md:px-8 pt-12 md:pt-16">
