@@ -196,6 +196,22 @@ describe("ARCHIVE_ID_REGISTRY", () => {
   it("publicMintIds() returns exactly [1, 3]", () => {
     expect(publicMintIds().sort()).toEqual([1, 3]);
   });
+
+  it("ID 1 (First Signal) declares the on-chain hard cap of 10,000 — never null/uncapped", () => {
+    expect(archiveIdEntry(1)!.maxSupply).toBe(10_000);
+  });
+
+  // GUARD: a LIVE_PUBLIC_MINT artifact must always carry an explicit positive
+  // hard cap. A null maxSupply renders as "uncapped / open edition" — a truth
+  // defect (every deployed public-mint id has an on-chain maxSupply). This
+  // prevents "uncapped" from silently returning to a public-mint entry later.
+  it("every LIVE_PUBLIC_MINT entry has a non-null, positive integer maxSupply", () => {
+    for (const e of ARCHIVE_ID_REGISTRY.filter((x) => x.activation === "LIVE_PUBLIC_MINT")) {
+      expect(e.maxSupply, `id ${e.id} maxSupply`).not.toBeNull();
+      expect(Number.isInteger(e.maxSupply), `id ${e.id} maxSupply integer`).toBe(true);
+      expect(e.maxSupply as number, `id ${e.id} maxSupply > 0`).toBeGreaterThan(0);
+    }
+  });
 });
 
 // ─── Source-tree duplication guards ───────────────────────────────────────

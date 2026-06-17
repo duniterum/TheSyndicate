@@ -81,7 +81,7 @@ export const TOKEN_SPEC = {
 // Tokenomics allocation — 1,000,000,000 SYN total.
 export type AllocationSlice = { label: string; pct: number; syn: number; description: string };
 export const TOKENOMICS_ALLOCATION: AllocationSlice[] = [
-  { label: "Membership Distribution", pct: 35, syn: 350_000_000, description: "Pool used for website membership purchases, small entries, and custom member contributions." },
+  { label: "Membership Distribution", pct: 35, syn: 350_000_000, description: "Pool used for website membership purchases, small entries, and custom member purchases." },
   { label: "Vault Reserve",            pct: 25, syn: 250_000_000, description: "Long-term Vault reserve. Any future movement must be public and verifiable before it is reflected here." },
   { label: "Founder",                                pct: 12, syn: 120_000_000, description: "12-month cliff, then 36-month monthly vesting. Public wallet, no hidden unlocks." },
   { label: "Liquidity",                              pct: 10, syn: 100_000_000, description: "Reserved for DEX liquidity provisioning and depth reinforcement." },

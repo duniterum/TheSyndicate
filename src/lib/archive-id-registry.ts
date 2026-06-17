@@ -53,9 +53,9 @@ export const ARCHIVE_ID_REGISTRY: ArchiveIdEntry[] = [
     publicMintAllowed: true,
     priceUsdc: 0.5,
     walletLimit: 5,
-    maxSupply: null,
+    maxSupply: 10_000,
     frozen: true,
-    notes: "Chapter I (Genesis Signal · Members #1 – #333). Public mint OPEN.",
+    notes: "Chapter I (Genesis Signal · Members #1 – #333). Public mint OPEN. Hard cap 10,000 (on-chain maxSupply) — a fixed edition, NOT uncapped.",
   },
   {
     id: 2,

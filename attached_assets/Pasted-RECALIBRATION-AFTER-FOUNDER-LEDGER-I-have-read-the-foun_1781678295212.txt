@@ -1,0 +1,145 @@
+RECALIBRATION AFTER FOUNDER LEDGER
+
+I have read the founder ledger.
+
+The project is now in a different phase.
+
+Do not run another broad audit.
+
+Do not redesign.
+
+Do not reopen architecture.
+
+Do not reopen package/rank/chapter redesign.
+
+Treat the founder ledger as the current baseline.
+
+Goal:
+
+Close the remaining truth-parity items and verify the only irreversible path.
+
+A. Publish parity
+
+Verify whether the committed First Signal cockpit fix is now live.
+
+Specifically:
+
+* cockpit no longer says "Uncapped supply"
+* cockpit reflects Edition of 10,000
+* /nft page and cockpit tell the same truth
+* production bundle matches latest commit
+
+If not live:
+
+publish/update and verify.
+
+B. Archive registry parity
+
+Founder ledger identified:
+
+archive-id-registry.ts
+
+still carrying:
+
+maxSupply = null
+
+while on-chain truth is:
+
+maxSupply = 10000
+
+Inspect this carefully.
+
+If it is genuinely a stale truth source:
+
+bring it into parity with chain truth and add the minimum guard needed so "uncapped" cannot silently return later.
+
+Do not redesign.
+
+Do not touch contracts.
+
+C. Carried-member path verification
+
+This is the one irreversible path.
+
+Verify the current state of:
+
+members #1–#5
+
+Determine:
+
+* whether one real carried-member live buy is still required
+* whether current cryptographic verification is already sufficient
+* whether there is any remaining practical duplicate-seat risk
+
+Do not implement new systems.
+
+Give a CTO-level recommendation.
+
+D. Custody transparency
+
+Founder ledger flagged:
+
+owner
+treasury
+admin EOA
+
+Verify whether these are already surfaced publicly.
+
+If not:
+
+recommend the smallest truth-preserving transparency improvement.
+
+No redesign.
+
+No new pages unless truly necessary.
+
+E. Internal terminology drift
+
+Founder ledger flagged:
+
+"custom member contributions"
+
+inside config.
+
+Search for remaining internal/public occurrences of:
+
+contribution
+contributed
+raised
+investor
+yield
+return
+
+after the recent wording cleanup.
+
+Return:
+
+* public occurrences
+* internal occurrences
+* technical ABI occurrences
+
+Do not re-run the whole wording audit.
+
+Just close remaining loose ends.
+
+F. Return
+
+Return:
+
+1. Founder ledger items now resolved
+2. Founder ledger items still open
+3. Items requiring publish only
+4. Items requiring code change
+5. Items requiring founder decision
+6. Whether MVP is promotion-ready
+7. Your single recommended next sprint
+
+Most important:
+
+Do not create new work.
+
+Close existing work.
+
+Use chain + production + code as source of truth.
+
+We are in final parity and promotion preparation mode now.
