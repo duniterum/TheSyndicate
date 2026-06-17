@@ -1,0 +1,134 @@
+Founder account verification pass.
+
+After the previous report, I executed two founder-account purchases (2 × $25) on the live V2b site.
+
+Do a deeper verification pass.
+
+Do not redesign.
+
+Do not implement new features.
+
+Do not touch contracts.
+
+Goal:
+
+Use these founder transactions to verify every part of the live production system that can now be tested.
+
+A. Verify both transactions
+
+Identify both founder-account purchases.
+
+For each tx:
+
+* tx hash
+* block
+* USDC paid
+* SYN received
+* route split
+* firstSeat true/false
+* proof used or not used
+* memberCount effect
+* holder-index effect
+
+B. Repeat-buy path
+
+The important thing is not the purchase itself.
+
+Verify that:
+
+* founder seat remained the same
+* no duplicate seat created
+* cumulative USDC updated correctly
+* cumulative SYN updated correctly
+* recognition/rank updated correctly
+* My Syndicate reflects cumulative state correctly
+
+C. Holder-index consistency
+
+Verify:
+
+* canonical member number
+* first purchase
+* last purchase
+* purchase count
+* cumulative USDC
+* cumulative SYN
+* chapter assignment
+* rank assignment
+
+Make sure all public surfaces derive the same values.
+
+D. Receipt / activity / transparency
+
+Use these two transactions as a truth test.
+
+Verify:
+
+* receipt values
+* activity feed values
+* transparency metrics
+* registry values
+* cockpit values
+* member page values
+
+all reconcile to chain truth.
+
+No mismatches.
+
+E. Routing verification
+
+For both purchases:
+
+verify actual:
+
+* Vault USDC
+* Liquidity USDC
+* Operations USDC
+
+Confirm 70/20/10 is exact.
+
+F. NFT relationship
+
+Using the same founder wallet:
+
+verify:
+
+* owned First Signal count
+* owned Patron Seal count
+* NFT ownership shown correctly
+* NFTs remain separate from seat identity
+* NFT count does not affect rank or member number
+
+G. Existing-member path confidence
+
+Use these transactions as evidence.
+
+Determine:
+
+* whether repeat-buy path is now sufficiently proven
+* whether any further carried-member testing is still required
+* whether duplicate-seat risk remains
+* whether MVP can rely on current verification level
+
+H. Return
+
+Return:
+
+1. both tx summaries
+2. founder identity summary
+3. holder-index summary
+4. repeat-buy verification
+5. routing verification
+6. cockpit verification
+7. NFT ownership verification
+8. inconsistencies found
+9. remaining risks
+10. what this verification allows us to stop worrying about
+
+Important:
+
+Use these transactions as a system-wide integrity test.
+
+Not just a transaction check.
+
+Tell me what parts of the protocol are now proven by real production usage.
