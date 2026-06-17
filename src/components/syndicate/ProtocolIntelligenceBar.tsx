@@ -61,6 +61,69 @@ type Cell = {
   title?: string;
 };
 
+// ─── Pure, testable contract helpers ─────────────────────────────────────────
+// These hold the bar's three behavioural invariants so a future refactor cannot
+// silently change them (locked by ProtocolIntelligenceBar.test.ts):
+//   1. canonical cell order (lead → burned → tail),
+//   2. how `mobilePriority` hides cells below the `sm` breakpoint,
+//   3. how the aggregate status is computed (and scoped to displayed cells).
+
+/** Cells rendered before the special Burned cell. */
+const LEAD_KEYS = ["price", "refMktCap", "fdv", "totalSupply", "circulating"] as const;
+/** Cells rendered after the special Burned cell. */
+const TAIL_KEYS = [
+  "protocolWallets", "vault", "liquidity", "operations",
+  "lpTvl", "synSold", "usdcRouted", "members", "chapter",
+] as const;
+
+/** Canonical key order of every ticker cell: lead → burned → tail. The
+ *  prop-less (global) bar always renders exactly this set in this order. */
+export const CANONICAL_TICKER_ORDER: string[] = [...LEAD_KEYS, "burned", ...TAIL_KEYS];
+
+/** Status keys evaluated for the prop-less (global) bar — the real on-chain
+ *  reads (constant/derived cells like the fixed access price are excluded so a
+ *  cell that is always present can never alone force the bar to "LIVE"). */
+export const DEFAULT_STATUS_KEYS: string[] = [
+  "vault", "liquidity", "operations", "lpTvl", "synSold", "usdcRouted",
+  "members", "circulating", "totalSupply", "burned", "chapter",
+];
+
+/** Resolve the ordered render keys: curated `cells` (in the requested order)
+ *  filtered to known keys, or the full canonical order when omitted. */
+export function resolveTickerOrder(
+  cells: readonly string[] | undefined,
+  available: readonly string[] = CANONICAL_TICKER_ORDER,
+): string[] {
+  return (cells ?? available).filter((k) => available.includes(k));
+}
+
+/** A cell is hidden below the `sm` breakpoint when its index is at/after the
+ *  `mobilePriority` cut. With no `mobilePriority`, nothing is hidden. */
+export function tickerHideOnMobile(index: number, mobilePriority?: number): boolean {
+  return mobilePriority !== undefined && index >= mobilePriority;
+}
+
+/** Select the status reads — only the displayed `cells` when curated, else the
+ *  default global key set. Scoping to `cells` means an unresolved hidden global
+ *  metric can never make a curated bar look degraded. */
+export function selectTickerStatusReads(
+  byKey: Record<string, unknown>,
+  cells: readonly string[] | undefined,
+  defaultKeys: readonly string[] = DEFAULT_STATUS_KEYS,
+): unknown[] {
+  return (cells ?? defaultKeys).map((k) => byKey[k]);
+}
+
+/** Aggregate trust status — never blanket "LIVE": LIVE only when every read
+ *  resolves, PENDING when none have, PARTIAL while filling in or on a degraded
+ *  (isError) read. */
+export function computeTickerStatus(reads: readonly unknown[], isError: boolean): CanonicalStatus {
+  const present = reads.filter((v) => v !== undefined).length;
+  if (isError || (present > 0 && present < reads.length)) return "PARTIAL";
+  if (present === 0) return "PENDING";
+  return "LIVE";
+}
+
 export function ProtocolIntelligenceBar({
   className = "",
   cells,
@@ -115,20 +178,8 @@ export function ProtocolIntelligenceBar({
     members: t.members.value,
     chapter: cp,
   };
-  const statusReads: unknown[] = cells
-    ? cells.map((k) => statusValueByKey[k])
-    : [
-        vault, liquidity, operations,
-        t.lpTvlUsd.value, t.synSold.value, t.usdcRaised.value, t.members.value,
-        circulating, totalSupply, burned, cp,
-      ];
-  const present = statusReads.filter((v) => v !== undefined).length;
-  const barStatus: CanonicalStatus =
-    t.isError || (present > 0 && present < statusReads.length)
-      ? "PARTIAL"
-      : present === 0
-        ? "PENDING"
-        : "LIVE";
+  const statusReads = selectTickerStatusReads(statusValueByKey, cells, DEFAULT_STATUS_KEYS);
+  const barStatus = computeTickerStatus(statusReads, t.isError);
 
   // Cells before/after the special Burned cell (which carries the badge).
   const lead: Cell[] = [
@@ -228,14 +279,15 @@ export function ProtocolIntelligenceBar({
   type RenderItem =
     | { key: string; kind: "cell"; cell: Cell }
     | { key: "burned"; kind: "burned"; value: string };
-  const allItems: RenderItem[] = [
-    ...lead.map((c): RenderItem => ({ key: c.key, kind: "cell", cell: c })),
-    { key: "burned", kind: "burned", value: fmtSynExact(burned) },
-    ...tail.map((c): RenderItem => ({ key: c.key, kind: "cell", cell: c })),
-  ];
-  const order = cells ?? allItems.map((it) => it.key);
-  const ordered = order
-    .map((k) => allItems.find((it) => it.key === k))
+  const itemsByKey = new Map<string, RenderItem>();
+  for (const c of lead) itemsByKey.set(c.key, { key: c.key, kind: "cell", cell: c });
+  itemsByKey.set("burned", { key: "burned", kind: "burned", value: fmtSynExact(burned) });
+  for (const c of tail) itemsByKey.set(c.key, { key: c.key, kind: "cell", cell: c });
+
+  // CANONICAL_TICKER_ORDER is the single source of cell order; resolveTickerOrder
+  // curates+orders by `cells` (filtered to known keys) or returns the full order.
+  const ordered = resolveTickerOrder(cells, CANONICAL_TICKER_ORDER)
+    .map((k) => itemsByKey.get(k))
     .filter((it): it is RenderItem => it !== undefined);
 
   return (
@@ -260,7 +312,7 @@ export function ProtocolIntelligenceBar({
           </div>
 
           {ordered.map((it, i) => {
-            const hideOnMobile = mobilePriority !== undefined && i >= mobilePriority;
+            const hideOnMobile = tickerHideOnMobile(i, mobilePriority);
             return it.kind === "burned" ? (
               // Burned Supply — carries the Proof of Burn badge (Founder Burn)
               <BurnedCell key={it.key} value={it.value} hideOnMobile={hideOnMobile} />
