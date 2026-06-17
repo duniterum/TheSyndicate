@@ -304,6 +304,41 @@ export function BrandBoard() {
           </div>
         </div>
 
+        {/* Store / distribution */}
+        <div className="mt-8">
+          <Eyebrow>Store &amp; distribution — token logos · splash · press</Eyebrow>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-lg border border-border bg-card p-4">
+              <Tile bg={OBSIDIAN}>
+                <img src={`${V2}/syn-coingecko-200.svg`} alt="CoinGecko / CMC token logo" className="size-28" />
+              </Tile>
+              <div className="mt-3 text-sm font-medium">CoinGecko / CMC</div>
+              <div className="mono mt-0.5 text-[11px] text-muted-foreground">syn-coingecko-200 · 200×200</div>
+            </div>
+            <div className="rounded-lg border border-border bg-card p-4">
+              <Tile bg={OBSIDIAN}>
+                <img src={`${V2}/syn-dexscreener-256.svg`} alt="DexScreener pair icon" className="size-28" />
+              </Tile>
+              <div className="mt-3 text-sm font-medium">DexScreener</div>
+              <div className="mono mt-0.5 text-[11px] text-muted-foreground">syn-dexscreener-256 · 256×256</div>
+            </div>
+            <div className="rounded-lg border border-border bg-card p-4">
+              <Tile bg={OBSIDIAN}>
+                <img src={`${V2}/syn-splash.svg`} alt="Mobile splash screen" className="h-44 w-auto max-w-full rounded-md" />
+              </Tile>
+              <div className="mt-3 text-sm font-medium">Mobile splash</div>
+              <div className="mono mt-0.5 text-[11px] text-muted-foreground">syn-splash · 1170×2532</div>
+            </div>
+            <div className="rounded-lg border border-border bg-card p-4">
+              <Tile bg={OBSIDIAN}>
+                <img src={`${V2}/syn-press-hero.svg`} alt="Press-kit hero banner" className="w-full max-w-full rounded-md" />
+              </Tile>
+              <div className="mt-3 text-sm font-medium">Press-kit hero</div>
+              <div className="mono mt-0.5 text-[11px] text-muted-foreground">syn-press-hero · 2400×1260</div>
+            </div>
+          </div>
+        </div>
+
         {/* Color role rule */}
         <div className="mt-8">
           <Eyebrow>Color roles (founder rule)</Eyebrow>
@@ -378,6 +413,7 @@ export function BrandBoard() {
                   ["Coins", "syn-coin-gold · syn-coin-silver (.svg + .png)"],
                   ["Lockups", "syn-lockup-light · -dark · -obsidian · -stacked (.svg + .png)"],
                   ["Social / listing", "syn-og · syn-listing · exchange-preview (.svg + .png)"],
+                  ["Store / distribution", "syn-coingecko-200 · syn-dexscreener-256 · syn-splash · syn-press-hero (.svg + .png)"],
                 ].map(([k, v]) => (
                   <tr key={k} className="border-b border-border/60 last:border-0">
                     <td className="whitespace-nowrap p-2 align-top text-foreground/80">{k}</td>

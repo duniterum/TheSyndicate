@@ -198,6 +198,41 @@ lockupHorizontal("syn-lockup-obsidian", {
   writeSvg("exchange-preview", svg(`0 0 ${W} ${H}`, body));
 }
 
+// ── 7 · Store / distribution assets ────────────────────────────────────────
+// CoinGecko / CMC token logo — circular coin, transparent corners (200×200 spec)
+writeSvg("syn-coingecko-200", coin("cf", "cr", goldCoinFace + goldCoinRim));
+// DexScreener pair icon — circular coin, transparent corners (256×256 spec)
+writeSvg("syn-dexscreener-256", coin("cf", "cr", goldCoinFace + goldCoinRim));
+
+// Mobile splash — centered mark on obsidian (portrait 1170×2532)
+{
+  const W = 1170, H = 2532, cx = W / 2;
+  const body = `<defs>${obsidianGrad}</defs>
+    <rect width="${W}" height="${H}" fill="url(#ob)"/>
+    <rect x="40" y="40" width="${W - 80}" height="${H - 80}" rx="36" fill="none" stroke="${GOLD}" stroke-opacity="0.18" stroke-width="2"/>
+    ${markAt(cx, 1120, 560, GOLD)}
+    <line x1="${cx - 180}" y1="1360" x2="${cx + 180}" y2="1360" stroke="${GOLD}" stroke-width="3"/>
+    ${text(cx, 1470, WORD, { size: 84, fill: IVORY, ls: 12, anchor: "middle" })}
+    ${text(cx, 1530, DESC, { size: 28, fill: MUTED, ls: 9, anchor: "middle" })}
+    ${text(cx, 2360, "MEMBERSHIP · SIGNAL · LEGACY", { size: 34, fill: GOLD, ls: 12, anchor: "middle" })}`;
+  writeSvg("syn-splash", svg(`0 0 ${W} ${H}`, body));
+}
+
+// Press-kit hero banner — wide branded image (2400×1260)
+{
+  const W = 2400, H = 1260, cx = W / 2;
+  const body = `<defs>${obsidianGrad}</defs>
+    <rect width="${W}" height="${H}" fill="url(#ob)"/>
+    <rect x="48" y="48" width="${W - 96}" height="${H - 96}" rx="20" fill="none" stroke="${GOLD}" stroke-opacity="0.22" stroke-width="2"/>
+    ${markAt(cx, 430, 460, GOLD)}
+    <line x1="${cx - 260}" y1="640" x2="${cx + 260}" y2="640" stroke="${GOLD}" stroke-width="3"/>
+    ${text(cx, 800, WORD, { size: 150, fill: IVORY, ls: 22, anchor: "middle" })}
+    ${text(cx, 872, DESC, { size: 40, fill: MUTED, ls: 14, anchor: "middle" })}
+    ${text(cx, 1000, "MEMBERSHIP · SIGNAL · LEGACY", { size: 46, fill: GOLD, ls: 16, anchor: "middle" })}
+    ${text(cx, 1150, "Avalanche C-Chain · 43114", { size: 30, fill: MUTED, ls: 8, anchor: "middle" })}`;
+  writeSvg("syn-press-hero", svg(`0 0 ${W} ${H}`, body));
+}
+
 console.log("SVGs written to", OUT);
 
 // ── Rasterize ──────────────────────────────────────────────────────────────
@@ -221,5 +256,10 @@ for (const n of ["syn-lockup-light", "syn-lockup-dark", "syn-lockup-obsidian", "
 pngBG("syn-og", 192, 1200, 630);
 png("syn-listing", "-density 192");
 pngBG("exchange-preview", 192, 800, 800);
+// store / distribution
+pngBG("syn-coingecko-200", 384, 200, 200);
+pngBG("syn-dexscreener-256", 384, 256, 256);
+pngBG("syn-splash", 130, 1170, 2532);
+pngBG("syn-press-hero", 120, 2400, 1260);
 
 console.log("PNGs + favicon.ico rasterized. Done.");

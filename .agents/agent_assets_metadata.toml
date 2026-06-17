@@ -382,7 +382,7 @@ title = "Current state — /join (LIVE pill, stat cells, cards, seat badge)"
 id = "1WGVIEzWvr0kAAzMVA9SH"
 uri = "file://attached_assets/_verify/CONTACT_SHEET.png"
 type = "image"
-title = "Interlock — master contact sheet (marks, icons, coins, lockups, social)"
+title = "Interlock — complete contact sheet (now incl. store/distribution)"
 
 [[outputs]]
 id = "Tnv1_JDUqJK9GllsLwNk6"
@@ -395,3 +395,27 @@ id = "dGKqsr1YLzod9cpmYhe43"
 uri = "file://public/brand-v2-syndicate-interlock/syn-lockup-dark.png"
 type = "image"
 title = "Interlock — primary lockup (dark)"
+
+[[outputs]]
+id = "298NR-VlpEsWYc-DpY8Sl"
+uri = "file://public/brand-v2-syndicate-interlock/syn-press-hero.png"
+type = "image"
+title = "Press-kit hero banner (2400×1260)"
+
+[[outputs]]
+id = "dCjgAKg2CDvuUXFwG4iCz"
+uri = "file://public/brand-v2-syndicate-interlock/syn-splash.png"
+type = "image"
+title = "Mobile splash screen (1170×2532)"
+
+[[outputs]]
+id = "lLdkArQxZcohl66blc-rx"
+uri = "file://public/brand-v2-syndicate-interlock/syn-coingecko-200.png"
+type = "image"
+title = "CoinGecko / CMC token logo (200×200)"
+
+[[outputs]]
+id = "ZAbtkHdd9cYYJaPdtFKbH"
+uri = "file://public/brand-v2-syndicate-interlock/syn-dexscreener-256.png"
+type = "image"
+title = "DexScreener pair icon (256×256)"
