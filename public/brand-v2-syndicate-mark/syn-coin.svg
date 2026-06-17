@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <radialGradient id="coin" cx="38%" cy="30%" r="82%">
+      <stop offset="0%" stop-color="#F7D98B"/>
+      <stop offset="46%" stop-color="#E3A92B"/>
+      <stop offset="100%" stop-color="#A9761A"/>
+    </radialGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F7D98B"/>
+      <stop offset="100%" stop-color="#946312"/>
+    </linearGradient>
+  </defs>
+  <circle cx="128" cy="128" r="124" fill="url(#rim)"/>
+  <circle cx="128" cy="128" r="115" fill="url(#coin)"/>
+  <circle cx="128" cy="128" r="115" fill="none" stroke="#6f4d10" stroke-opacity="0.35" stroke-width="2"/>
+  <g transform="translate(128,112) scale(2.75) translate(-32,-32)" fill="none" stroke="#0A0B0D" stroke-linecap="round">
+    <path d="M45 19 A11.5 11.5 0 1 0 32 32 A11.5 11.5 0 1 1 19 45" stroke-width="7.5"/>
+    <circle cx="32" cy="32" r="5.6" fill="url(#coin)" stroke-width="3.2"/>
+  </g>
+  <text x="128" y="210" text-anchor="middle" font-family="'DejaVu Sans Mono','Space Mono',monospace" font-weight="700" font-size="30" letter-spacing="5" fill="#0A0B0D">SYN</text>
+</svg>

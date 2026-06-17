@@ -1,18 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="14" fill="#0A0B0D"/>
-  <g transform="translate(7 7) scale(0.78)">
-    <g stroke="#E3A92B" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M32 11 L50.19 21.5 L50.19 42.5 L32 53 L13.81 42.5 L13.81 21.5 Z"/>
-      <path d="M32 32 L32 11 M32 32 L50.19 21.5 M32 32 L50.19 42.5 M32 32 L32 53 M32 32 L13.81 42.5 M32 32 L13.81 21.5"/>
-    </g>
-    <g fill="#E3A92B">
-      <circle cx="32" cy="11" r="3.8"/>
-      <circle cx="50.19" cy="21.5" r="3.8"/>
-      <circle cx="50.19" cy="42.5" r="3.8"/>
-      <circle cx="32" cy="53" r="3.8"/>
-      <circle cx="13.81" cy="42.5" r="3.8"/>
-      <circle cx="13.81" cy="21.5" r="3.8"/>
-      <circle cx="32" cy="32" r="6"/>
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#090A0C"/>
+  <rect x="7" y="7" width="50" height="50" rx="3" fill="#070809" stroke="#2BE8E8" stroke-width="2.5"/>
+  <text x="32" y="44" text-anchor="middle" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" font-size="32" letter-spacing="-1" fill="#2BE8E8">S</text>
 </svg>

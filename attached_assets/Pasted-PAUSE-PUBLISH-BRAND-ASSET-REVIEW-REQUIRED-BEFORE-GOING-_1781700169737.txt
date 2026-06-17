@@ -1,0 +1,103 @@
+PAUSE PUBLISH — BRAND ASSET REVIEW REQUIRED BEFORE GOING LIVE
+
+Do not publish yet.
+
+Sprint 0B is technically complete, but founder visual approval is not complete.
+
+The generated hex/node emblem is clean, but it may not match the preferred rounded interconnected Syndicate mark direction. It currently risks reading as a generic network / node / AI / infrastructure symbol rather than The Syndicate membership-seat identity.
+
+Before any publish:
+
+1. Freeze production deployment.
+2. Do not replace live favicon/logo/OG assets yet.
+3. Do not wire the new emblem into Header/Logo/nav.
+4. Do not remove the generated files yet.
+5. Prepare a brand review package.
+
+Return:
+
+A. Asset inventory
+
+List every generated file and path:
+
+* SVG
+* PNG
+* ICO
+* manifest
+* OG image
+* React emblem
+* BrandBoard
+* docs/brand/BRAND_GUIDELINES.md
+* root head/meta changes
+
+B. Production-facing impact
+
+Tell me exactly what would change on next publish:
+
+* favicon
+* app icon
+* apple touch icon
+* manifest
+* OG image
+* social preview
+* any visible page
+* /labs/component-index brand board
+
+C. Visual review board
+
+Show side-by-side:
+
+1. Current existing site mark
+2. Generated hex/node emblem
+3. Preferred founder reference mark direction: rounded interconnected Syndicate mark / chain-like S mark
+4. Token coin treatment
+5. App icon treatment
+6. Social avatar treatment
+7. OG card treatment
+
+D. Alternative asset set
+
+Create an alternate v2 asset set based on the founder-preferred rounded interconnected Syndicate mark / chain-like S direction, not the generic node/hex emblem.
+
+Do not delete v1.
+
+Use naming like:
+
+* brand-v1-node/
+* brand-v2-syndicate-mark/
+
+or another clear separation.
+
+The v2 mark should feel:
+
+* premium
+* memorable
+* token-ready
+* favicon-ready
+* membership identity
+* seat / syndicate / chain-linked
+* not generic infrastructure
+* not generic AI network
+
+E. Founder decision required
+
+Do not decide alone.
+
+Return the choice:
+
+Option A — keep current live mark
+Option B — use v1 node/hex emblem
+Option C — use v2 rounded interconnected Syndicate mark
+Option D — hybrid
+
+F. Safety
+
+Run the same validation, but do not publish until founder approves the final mark.
+
+Important:
+
+This is a brand identity decision, not a code correctness decision.
+
+Technically passing tests is not enough.
+
+The symbol must be emotionally correct before production.
