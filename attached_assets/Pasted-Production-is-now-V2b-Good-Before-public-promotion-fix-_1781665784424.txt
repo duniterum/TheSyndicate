@@ -1,0 +1,89 @@
+Production is now V2b. Good.
+
+Before public promotion, fix the live buying experience.
+
+Problem observed:
+
+* Package cards show paths like $5 / $25 / $100 / $500 / $2,500 / $10,000.
+* Join widget still shows separate presets $5 / $10 / $25 / $50 / $75 / $100 / $250 / $500 / $1000 + custom.
+* Clicking “Take your seat” sends me to /join, then I must scroll and choose again.
+* This is confusing.
+* Custom amount is good, but the user must understand what it means.
+
+Clarify the model:
+
+A user gets one seat on first valid buy.
+
+If a new user buys $7:
+
+* they receive one seat
+* they receive SYN at the live era rate
+* it is not a separate “$7 package”
+* recognition should derive from cumulative membership purchase volume, not from package name
+
+Do not redesign the whole site.
+
+Do not change contracts.
+
+Do not touch referral/NFT/Archive/journey.
+
+Tasks:
+
+1. Inspect current live buy flow.
+2. Verify why my test “did not work” before changing anything.
+3. Confirm whether failure was:
+
+   * UI still wrong
+   * wallet/network issue
+   * approve issue
+   * buy revert
+   * proof issue
+   * minSynOut/quote issue
+   * insufficient USDC/allowance
+4. Make package-card CTAs deep-link into /join with selected amount prefilled.
+   Example:
+
+   * $5 card opens join with $5 selected
+   * $25 card opens join with $25 selected
+   * $100 card opens join with $100 selected
+5. On /join, when arriving from a package card:
+
+   * auto-select the amount
+   * scroll directly to the purchase widget
+   * do not force the user to choose again
+6. Keep custom amount, but explain clearly:
+   “Custom amount still creates one seat if this is your first membership purchase. SYN received follows the live era rate.”
+7. Harmonize the two amount systems:
+
+   * package cards are suggested paths
+   * checkout presets/custom are payment inputs
+   * recognition is derived from cumulative USDC/SYN, not manually assigned by package label
+8. Do not solve package/rank/chapter naming fully now.
+   Leave deeper package/rank separation for post-MVP cleanup.
+9. Validate:
+
+   * clicking each card lands on /join with correct amount selected
+   * custom amount works
+   * quote uses V2b
+   * approve spender is V2b
+   * buy target is V2b
+   * $5 smoke test path works
+   * no V2a active buy path remains
+
+Return:
+
+1. what caused my failed test
+2. files changed
+3. how seat works for custom amounts
+4. how package-card → checkout works now
+5. validation results
+6. whether I can retry live buy
+7. exact retry steps
+
+Important:
+
+Think product-first and protocol-safe.
+
+Do not invent new doctrine.
+
+Make the current V2b buying experience simple, coherent, and testable.

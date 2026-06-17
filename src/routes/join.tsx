@@ -12,6 +12,22 @@ import { ReferralAttributionNote } from "@/components/syndicate/ReferralAttribut
 import { SeatPackages, EraSchedulePreview } from "@/components/syndicate/JoinPackages";
 
 export const Route = createFileRoute("/join")({
+  // Package / preset cards deep-link here with a prefilled amount, e.g. a $25
+  // card → /join?amount=25. The amount is auto-selected in the purchase widget
+  // and the page scrolls straight to it. Validated to a positive number; any
+  // junk or absent value simply falls through to the normal /join experience.
+  validateSearch: (search): { amount?: number } => {
+    const raw = (search as Record<string, unknown>).amount;
+    const n =
+      typeof raw === "string" || typeof raw === "number" ? Number(raw) : NaN;
+    if (!Number.isFinite(n) || n <= 0) return {};
+    // Clamp to a sane checkout range and snap to USDC (6-decimal) precision so the
+    // prefill can never stringify to exponent notation (which would make the
+    // widget's parseUnits fall back to 0n). The purchase widget still enforces the
+    // live minimum, the era per-address cap and remaining inventory on top of this.
+    const amount = Math.round(Math.min(n, 1_000_000) * 1e6) / 1e6;
+    return amount > 0 ? { amount } : {};
+  },
   head: () => ({
     meta: [
       { title: "Buy SYN with USDC — Live Membership Sale | The Syndicate" },
@@ -22,7 +38,12 @@ export const Route = createFileRoute("/join")({
     ],
     links: [{ rel: "canonical", href: "https://thesyndicate.money/join" }],
   }),
-  component: () => (
+  component: JoinPage,
+});
+
+function JoinPage() {
+  const { amount } = Route.useSearch();
+  return (
     <PageShell
       eyebrow="Buy SYN"
       title="Live USDC → SYN purchase"
@@ -39,9 +60,11 @@ export const Route = createFileRoute("/join")({
         <MemberCard />
       </Section>
       {/* Action lifted directly under member identity — buy first, explain the
-          split right after (identity → action → proof) */}
-      <div id="buy">
-        <LivePurchase />
+          split right after (identity → action → proof). The purchase section
+          itself carries id="buy" and self-scrolls when a deep-linked amount is
+          present (e.g. /join?amount=25 from a package card). */}
+      <div>
+        <LivePurchase initialAmount={amount} />
       </div>
       <SeatPackages />
       <Section id="split-visualizer">
@@ -60,5 +83,5 @@ export const Route = createFileRoute("/join")({
       <PaymentStrategy />
     <RouteFinalCTA preset="mint" />
     </PageShell>
-  ),
-});
+  );
+}

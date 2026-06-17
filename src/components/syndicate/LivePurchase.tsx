@@ -57,14 +57,21 @@ const fmtUsd = (n: number) =>
 
 type Phase = "idle" | "approving" | "buying" | "success";
 
-export function LivePurchase() {
+export function LivePurchase({ initialAmount }: { initialAmount?: number } = {}) {
   // Controlled as STRING so user can clear/type freely; numeric value derived below.
-  const [usdcInput, setUsdcInput] = useState<string>(String(SALE_MIN_USDC));
+  // Seeds from a deep-link amount (e.g. a package/preset card → /join?amount=25)
+  // so the buyer lands with their chosen amount already selected; otherwise the
+  // live minimum. A package label never changes the rate — only this amount.
+  const [usdcInput, setUsdcInput] = useState<string>(
+    initialAmount && initialAmount > 0 ? String(initialAmount) : String(SALE_MIN_USDC),
+  );
   const usdc = usdcInput.trim() === "" ? 0 : Math.max(0, Number(usdcInput) || 0);
   const setUsdc = (v: number) => setUsdcInput(String(v));
   const [phase, setPhase] = useState<Phase>("idle");
   const [walletGuardError, setWalletGuardError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  // The purchase section, so a deep-linked amount can scroll itself into view.
+  const buyRef = useRef<HTMLElement | null>(null);
 
   const gate = useWalletGate();
   const { address, isConnected, connectPending, switchPending, wrongChain } = gate;
@@ -187,6 +194,18 @@ export function LivePurchase() {
     userBal.refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
+
+  // Deep-link: opened with a prefilled amount (package/preset card →
+  // /join?amount=N) → bring the buyer straight to the purchase widget. Runs once
+  // on mount; a normal /join visit (no amount) never auto-scrolls.
+  useEffect(() => {
+    if (!initialAmount || initialAmount <= 0) return;
+    const id = window.setTimeout(() => {
+      buyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Derive button state
   const belowMin = usdc < liveMinUsdc;
@@ -471,6 +490,7 @@ export function LivePurchase() {
 
   return (
     <section
+      ref={buyRef}
       id="buy"
       aria-labelledby="buy-heading"
       className="border-t border-border/40 bg-background"
@@ -575,6 +595,19 @@ export function LivePurchase() {
                 />
               </div>
             </label>
+
+            {/* Harmonize the three entry points (packages, presets, custom) and
+                make the seat / rate / recognition rules explicit for ANY amount. */}
+            <p className="-mt-1 mb-4 text-[11px] text-muted-foreground leading-relaxed">
+              Any amount at or above the {liveMinUsdc} USDC minimum works. A
+              custom amount still creates exactly{" "}
+              <span className="text-foreground">one permanent seat</span> on your
+              first purchase; the SYN you receive follows the live era rate
+              (shown below) and your rank reflects your{" "}
+              <span className="text-foreground">cumulative USDC</span> — not the
+              figure you type here. Packages and presets are simply shortcuts
+              that prefill this amount.
+            </p>
 
             <div className="rounded-lg border border-border/50 bg-background/60 p-4 space-y-2">
               <Row label="USDC amount" value={fmtUsd(usdc)} />

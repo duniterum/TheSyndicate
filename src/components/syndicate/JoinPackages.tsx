@@ -53,7 +53,7 @@ export function SeatPackages() {
             key={p.id}
             pkg={p}
             ctaLabel={p.recommended ? "Take this seat" : "Choose this path"}
-            ctaHref="#buy"
+            ctaHref={`/join?amount=${p.usdc}`}
           />
         ))}
       </div>

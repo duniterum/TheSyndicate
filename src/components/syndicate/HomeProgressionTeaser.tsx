@@ -96,7 +96,7 @@ export function HomeProgressionTeaser() {
             key={p.id}
             pkg={p}
             ctaLabel={p.recommended ? "Take your seat" : "Choose this path"}
-            ctaHref="/join"
+            ctaHref={`/join?amount=${p.usdc}`}
           />
         ))}
       </div>
