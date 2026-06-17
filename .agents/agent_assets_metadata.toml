@@ -323,3 +323,9 @@ id = "6vSLLM5ZgnwdTJhZxgHJC"
 uri = "file://docs/handoffs/IDENTITY_RECONCILIATION_2026-06-17.md"
 type = "text"
 title = "Identity-Layer Reconciliation — Seat/Package/Rank/Chapter/Era/Artifact (2026-06-17)"
+
+[[outputs]]
+id = "8SbcAivbXYnNZxtAAyUDT"
+uri = "file://docs/handoffs/CANONICAL_SOURCE_EXTRACTION_2026-06-17.md"
+type = "text"
+title = "Canonical Source Extraction — Package / Rank / Chapter / Era / Seat / Artifact / Member"

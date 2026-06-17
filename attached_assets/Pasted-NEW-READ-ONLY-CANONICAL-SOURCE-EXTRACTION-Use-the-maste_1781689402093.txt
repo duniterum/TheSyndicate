@@ -1,0 +1,277 @@
+NEW READ-ONLY CANONICAL SOURCE EXTRACTION
+
+Use the master ledger as baseline.
+
+Do not implement.
+Do not redesign.
+Do not propose solutions yet.
+Do not rely on memory.
+Do not summarize from assumptions.
+
+Goal:
+
+Before we decide anything about Package / Rank / Chapter / Era / Seat / Artifact / Member, extract the exact canonical truth from the repo, docs, contracts, config, and production surfaces.
+
+For each item below, return:
+
+1. Canonical definition
+2. Exact source file path(s)
+3. Exact exported constants / functions / components / docs section names
+4. Current public-facing wording
+5. Current on-chain state if relevant
+6. Current production route(s) where users see it
+7. Whether it is LIVE / INDEXED / LOCAL / PREVIEW / PENDING / DISABLED
+8. Any conflicting source or stale wording
+9. Severity if user-facing confusion exists
+
+Scope:
+
+A. Seat
+
+Find the exact canonical meaning of “seat.”
+
+Answer:
+
+* Is the seat SYN ownership?
+* Is it Holder Index identity?
+* Is it member number?
+* Is it NFT?
+* Is it transferable or permanent?
+* Where does the site currently say “seat”?
+* Where could a user think seat = NFT / package / rank?
+
+B. Member
+
+Find the exact canonical meaning of “member.”
+
+Answer:
+
+* What makes someone a member?
+* Is member = SYN holder?
+* Is member = Holder Index entry?
+* Is member = buyer?
+* Is member = current holder after transfer?
+* How do V1 / V2a / V2b carried members work?
+* Where is member identity computed?
+* Where is member identity displayed?
+
+C. Holder Index
+
+Extract the exact identity truth.
+
+Answer:
+
+* Which file builds the Holder Index?
+* Which contracts are unioned?
+* What does first-seen mean?
+* How are carried members handled?
+* Why must raw memberNumberOf not be used?
+* Where does production use Holder Index?
+* Where could old on-chain memberNumberOf still confuse the UI?
+
+D. Package
+
+Extract the exact package model.
+
+Answer:
+
+* Which file defines packages?
+* What are the exact package names?
+* What are the exact USDC amounts?
+* Do packages map to ranks?
+* Are packages only suggested purchase paths?
+* Do packages confer anything?
+* Where does /join?amount use them?
+* Where could package look like a paid tier / plan?
+
+E. Rank
+
+Extract the exact rank model.
+
+Answer:
+
+* Which file defines ranks?
+* What are the exact rank names?
+* What are the exact thresholds?
+* Is rank based on SYN held, cumulative USDC, USDC routed, or Holder Index data?
+* Does rank confer rights, perks, yield, governance, pricing, or benefits?
+* Where is rank displayed?
+* Where is rank explained?
+* Where is rank basis inconsistent?
+
+F. Chapter
+
+Extract the exact chapter model.
+
+Answer:
+
+* Which file defines chapters?
+* What are the exact chapter names?
+* What are the exact member-number ranges?
+* Is chapter based on member number, purchase date, SYN amount, or era?
+* Is chapter story cohort only?
+* Where is chapter displayed?
+* Where does “Genesis” appear as chapter language?
+
+G. Era
+
+Extract the exact era model.
+
+Answer:
+
+* Which file defines eras?
+* What are the exact Era I–IX names if present?
+* What is currentEra on-chain?
+* Is only Era I live?
+* Are later eras preview/proposed only?
+* Does era affect rate, minimum, supply, pricing, or inventory?
+* Is “Era” approved public vocabulary or internal infrastructure?
+* Where does Era overlap with Chapter?
+* Where does “Genesis” appear as era language?
+
+H. Artifact / NFT / Archive
+
+Extract the exact artifact model.
+
+Answer:
+
+* Which contract and config define Archive1155?
+* What are current ID 1 / ID 2 / ID 3 states?
+* Exact supply, max supply, price, wallet limit, live/disabled status
+* Is First Signal membership?
+* Is Patron Seal membership?
+* Is SeatRecord ID 2 disabled?
+* Is SeatRecord721 built?
+* Where could a user think joining gives an NFT?
+* Where does NFT language overpower membership language?
+
+I. SeatRecord721
+
+Extract current truth only.
+
+Answer:
+
+* Is it built?
+* Is it deployed?
+* Is it only future doctrine?
+* Which docs define the intended rule?
+* Must it mint from Holder Index?
+* Why must it never mint from raw memberNumberOf?
+* Where is SeatRecord shown publicly as pending?
+
+J. Referral / CommissionRouter
+
+Extract current truth only.
+
+Answer:
+
+* Is CommissionRouter deployed?
+* What is commissionRouter on V2b?
+* Is referral live on-chain?
+* Which surfaces are preview/simulated?
+* Where must referral remain clearly future?
+* Any current public wording risk?
+
+K. Treasury / routing / ledger
+
+Extract current truth only.
+
+Answer:
+
+* Exact 70 / 20 / 10 routing source
+* Which wallets receive Vault / Liquidity / Operations?
+* What is live versus simulated preview?
+* Where are “USDC routed” / “Membership Sale Volume” labels used?
+* Any stale “raised / contribution” wording left?
+
+L. Custody
+
+Extract current truth only.
+
+Answer:
+
+* Who owns V2b?
+* Who owns Archive1155?
+* Is owner a single EOA?
+* Is Safe/multisig implemented?
+* Where is custody transparency surfaced?
+* What docs mention custody hardening?
+
+M. Public vocabulary / forbidden words
+
+Extract exact vocabulary doctrine.
+
+Answer:
+
+* Which docs define approved public words?
+* Which docs/tests define banned words?
+* Which words are forbidden?
+* Which words are approved?
+* Is “Era” approved public vocabulary?
+* Are “Package,” “Rank,” “Seat,” “Artifact,” “Member,” “Chapter” approved?
+* Where does current UI violate or stretch vocabulary doctrine?
+
+N. Production first-touch routes
+
+For each route below, list which of the six/seven concepts are visible above the fold or in the first major sections:
+
+* /
+* /join
+* /my-syndicate
+* /nft
+* /chapters
+* /ranks
+* /registry
+* /transparency
+* /faq
+* /referral
+
+Return format:
+
+Create a markdown report with this structure:
+
+# Canonical Source Extraction — Package / Rank / Chapter / Era / Seat / Artifact / Member
+
+## 1. Executive truth table
+
+Columns:
+Concept | Actual protocol meaning | Source of truth | Public state | User confusion risk
+
+## 2. Source map
+
+Columns:
+Concept | File path | Export / function / component / doc section | Route(s)
+
+## 3. Exact current values
+
+Include exact names, thresholds, amounts, supplies, states, addresses, and labels.
+
+## 4. Contradictions / stale sources
+
+List only real conflicts found in files, code, docs, contracts, or production.
+
+## 5. First-touch user confusion map
+
+For each concept:
+
+* what the user likely thinks
+* what the protocol actually means
+* why the misunderstanding happens
+* where it happens
+
+## 6. No-solution diagnosis
+
+End with:
+
+* where understanding breaks
+* which break is highest severity
+* which concepts must be reconciled before traffic
+
+Important:
+
+Do not solve yet.
+Do not rename yet.
+Do not rewrite copy yet.
+Do not change code yet.
+Do not propose UI.
+First give us the exact canonical evidence so we can decide from truth, not memory.
