@@ -1,0 +1,92 @@
+Approved.
+
+Proceed with the next small sprint:
+
+PUBLISH + VERIFY + OPTIONAL REGISTRY CUSTODY TRANSPARENCY
+
+Scope:
+
+1. Publish the latest committed fixes.
+2. Verify production after publish.
+3. If safe and small, add the custody transparency improvement to /registry.
+4. Do not add new features.
+5. Do not redesign.
+6. Do not touch contracts.
+
+A. Publish and verify
+
+After publish, verify production directly:
+
+* /my-syndicate cockpit no longer contains “Uncapped supply”
+* /my-syndicate cockpit no longer contains “Open edition”
+* cockpit shows First Signal as Edition of 10,000
+* /nft and cockpit agree with Archive1155 on-chain truth
+* /join still targets V2b
+* proof artifact still matches V2b root/count
+* V2a appears only as sealed/history source
+* no unsafe contribution/raised wording regressed
+
+B. Optional Registry custody transparency
+
+If this can be done safely as a small truth-only addition, implement it.
+
+On /registry, surface live on-chain custody facts:
+
+* active Sale V2b owner/admin
+* Archive1155 owner/admin
+* Archive1155 treasury
+* clearly distinguish these from:
+
+  * Vault wallet
+  * Operations wallet
+  * Liquidity wallet
+  * Founder allocation wallet
+  * Membership Distribution wallet
+
+Labels must be neutral:
+
+* “Owner / admin”
+* “Archive treasury”
+* “Live on-chain read”
+* “Verifiable on explorer”
+
+Do not imply ownership rights for members.
+
+Do not imply investor protection.
+
+Do not imply multisig if it is not multisig.
+
+If live reads are unreliable, use verified static addresses with explorer links and label them clearly.
+
+C. Validation
+
+Run:
+
+* typecheck
+* relevant tests
+* wording guard
+* production bundle probe
+* /registry render
+* /my-syndicate render
+* /nft render
+* /join active sale probe
+
+D. Return
+
+Return:
+
+1. publish status
+2. production verification results
+3. registry custody improvement done or deferred
+4. files changed
+5. validation results
+6. whether MVP is promotion-ready
+7. remaining blockers, if any
+
+Important:
+
+This is final parity mode.
+
+Close existing truth gaps only.
+
+Do not create new scope.

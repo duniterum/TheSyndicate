@@ -3,6 +3,7 @@ import { PageShell } from "@/components/syndicate/PageShell";
 import { RegistryTrustOpener } from "@/components/syndicate/RegistryTrustOpener";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import { ContractDossiers } from "@/components/syndicate/ContractDossiers";
+import { RegistryCustody } from "@/components/syndicate/RegistryCustody";
 import { ContractLink, GlassCard, Pill, Section, SectionHeader, StatusPill as CanonicalStatusPill } from "@/components/syndicate/Primitives";
 import {
   CONTRACTS,
@@ -268,6 +269,9 @@ function RegistryPage() {
           <ExplorerCard href={SYN_EXPLORERS.snowtrace} label="SnowTrace" />
         </div>
       </Section>
+
+      {/* Custody & admin keys — live on-chain reads */}
+      <RegistryCustody />
 
       {/* Cross-links */}
       <Section id="more">
