@@ -72,6 +72,21 @@ export type PurchaseEvent = {
 };
 
 /**
+ * Human label for a purchase row. `purchaseId` is a real per-purchase counter
+ * only for V1; for V2 it is the seat/member number — authoritative only on the
+ * seat-issuing buy and 0 for recognized-V1 / repeat buyers. So we never render a
+ * bare "Purchase #{n}" for V2: a seat-issuing buy reads as "Seat #N" and any
+ * later buy reads as "Repeat purchase", which avoids the misleading "Purchase #0".
+ * Render-only — identity is always the Holder Index, never this field.
+ */
+export function purchaseLabel(ev: PurchaseEvent): string {
+  if (ev.source === "v2") {
+    return ev.firstSeat ? `Seat #${ev.purchaseId.toString()}` : "Repeat purchase";
+  }
+  return `Purchase #${ev.purchaseId.toString()}`;
+}
+
+/**
  * Canonical cross-source purchase shape. Alias of `PurchaseEvent`, kept as a
  * distinct name so multi-source call sites read intentionally (V1 + V2 unified).
  */

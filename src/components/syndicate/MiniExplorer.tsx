@@ -11,7 +11,7 @@ import {
   txExplorerUrl,
 } from "@/lib/syndicate-config";
 import { EmptyState } from "./EmptyState";
-import { useLivePurchaseEvents } from "@/lib/activity-hooks";
+import { useLivePurchaseEvents, purchaseLabel } from "@/lib/activity-hooks";
 import {
   useUsdcFlows,
   useLpSwaps,
@@ -92,7 +92,7 @@ function PurchasesTab() {
           <li key={`${ev.txHash}-${ev.logIndex}`} className="py-3 grid grid-cols-12 gap-3 text-sm items-start">
             <div className="col-span-12 md:col-span-3 min-w-0">
               <div className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-1">
-                Purchase #{ev.purchaseId.toString()}
+                {purchaseLabel(ev)}
               </div>
               <ContractLink address={ev.buyer} explorerHref={explorerUrlForAddress(ev.buyer)} />
             </div>

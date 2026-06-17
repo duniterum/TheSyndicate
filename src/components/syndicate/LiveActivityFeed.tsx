@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link as RouterLink } from "@tanstack/react-router";
-import { useLivePurchaseEvents, type PurchaseEvent } from "@/lib/activity-hooks";
+import { useLivePurchaseEvents, purchaseLabel, type PurchaseEvent } from "@/lib/activity-hooks";
 import { CONTRACTS, extrasForAddress, SALE_DEPLOYMENT_BLOCK, txExplorerUrl, explorerUrlForAddress } from "@/lib/syndicate-config";
 import { fmtSyn, fmtUsdc, useBuyerPurchaseTotals, useSaleStats } from "@/lib/sale-hooks";
 import { ContractLink, GlassCard, Pill, Section, SectionHeader, StatusPill } from "./Primitives";
@@ -211,7 +211,7 @@ function PurchaseRow({ ev }: { ev: PurchaseEvent }) {
   return (
     <li className="py-4 grid grid-cols-12 gap-3 items-start text-sm">
       <div className="col-span-12 lg:col-span-3 min-w-0">
-        <div className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-1">Purchase #{ev.purchaseId.toString()}</div>
+        <div className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-1">{purchaseLabel(ev)}</div>
         <div className="flex items-center gap-2 flex-wrap">
           <RouterLink
             to="/wallet/$address"
