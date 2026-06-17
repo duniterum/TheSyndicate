@@ -11,6 +11,7 @@
 // This panel does NOT wire the protocol-actions shell; it makes no new claim.
 
 import { Section, SectionHeader } from "./Primitives";
+import { PROTOCOL_STATUS } from "@/lib/syndicate-config";
 
 type EngineStatus = "LIVE" | "PREVIEW" | "FUTURE";
 
@@ -20,6 +21,13 @@ type Engine = {
   status: EngineStatus;
   blurb: string;
   href?: string;
+  // Canonical backing: the `key` of a PROTOCOL_STATUS item whose on-chain
+  // status this engine's LIVE claim depends on. A LIVE engine MUST be backed
+  // by a live registry item (enforced by validateEngineStatuses + its guard
+  // test) so a contract flipping to pending can never silently contradict the
+  // panel. PREVIEW / FUTURE concepts (Burn, Referral, Marketplace) have no
+  // contract-status entry in the registries today, so they carry no backing.
+  backing?: string;
 };
 
 const ENGINES: Engine[] = [
@@ -29,13 +37,20 @@ const ENGINES: Engine[] = [
     status: "LIVE",
     blurb: "USDC → SYN, routed 70 / 20 / 10 on-chain.",
     href: "/transparency",
+    backing: "sale",
   },
   {
+    // Deliberately backed by the live Membership Sale (the 70% routing happens
+    // inside the sale contract), NOT the pending "vault" programmatic contract.
+    // This is why the engine is "Vault Wallet" (live wallet) and not the Vault
+    // Contract (pending). Re-pointing this to "vault" would correctly trip the
+    // guard, since that contract is not deployed.
     key: "vault",
     label: "Vault Wallet",
     status: "LIVE",
     blurb: "70% of every purchase routes to a public on-chain wallet.",
     href: "/vault",
+    backing: "sale",
   },
   {
     key: "liquidity",
@@ -43,8 +58,11 @@ const ENGINES: Engine[] = [
     status: "LIVE",
     blurb: "20% deepens the SYN / USDC pool on Trader Joe.",
     href: "/liquidity",
+    backing: "lp",
   },
   {
+    // On-chain transfer-burn (Proof of Burn #001) — a real fact, but it has no
+    // contract-status entry in the registries, so it carries no backing.
     key: "burn",
     label: "Burn",
     status: "LIVE",
@@ -57,6 +75,7 @@ const ENGINES: Engine[] = [
     status: "LIVE",
     blurb: "Archive artifacts minted on-chain.",
     href: "/nft",
+    backing: "archive",
   },
   {
     key: "referral",
@@ -71,6 +90,37 @@ const ENGINES: Engine[] = [
     blurb: "Secondary identity surfaces — direction, not deployed.",
   },
 ];
+
+// ─── Sync guard: engine LIVE claims must agree with the canonical registry ───
+// PROTOCOL_STATUS (src/lib/syndicate-config.ts) is the single source of truth
+// for contract status. An engine that asserts LIVE while its backing registry
+// item is pending (or names a non-existent key) is a drift bug. Pure + exported
+// so the guard test can assert it stays empty.
+export type EngineStatusViolation = {
+  engine: string;
+  backing?: string;
+  reason: "unknown-backing" | "live-but-backing-pending";
+};
+
+export function validateEngineStatuses(
+  engines: Engine[] = ENGINES,
+): EngineStatusViolation[] {
+  const violations: EngineStatusViolation[] = [];
+  for (const e of engines) {
+    if (!e.backing) continue;
+    const item = PROTOCOL_STATUS.find((p) => p.key === e.backing);
+    if (!item) {
+      violations.push({ engine: e.key, backing: e.backing, reason: "unknown-backing" });
+      continue;
+    }
+    if (e.status === "LIVE" && item.status !== "live") {
+      violations.push({ engine: e.key, backing: e.backing, reason: "live-but-backing-pending" });
+    }
+  }
+  return violations;
+}
+
+export { ENGINES };
 
 const STATUS_STYLE: Record<EngineStatus, { dot: string; chip: string }> = {
   LIVE: {
