@@ -545,3 +545,33 @@ id = "k8cqUWoxt6wXEb7YClk27"
 uri = "file://screenshots/sprint1b/fold-after-sprint1b.png"
 type = "image"
 title = "Fold · After Sprint 1B (compact hero, cockpit at the fold)"
+
+[[outputs]]
+id = "hgFrdbTW8kIaEiZVlhkXe"
+uri = "file://attached_assets/screenshots/thesyndicate_money.png"
+type = "image"
+title = "Production · Desktop above the fold (live)"
+
+[[outputs]]
+id = "zzuD5N4s20gdKXmxgeCJF"
+uri = "file://screenshots/prod-sprint1b/desktop-kpi.png"
+type = "image"
+title = "Production · Desktop KPI grid (The numbers, read live)"
+
+[[outputs]]
+id = "kMGoGcA31P0cX4xE4sXiz"
+uri = "file://screenshots/prod-sprint1b/desktop-engines.png"
+type = "image"
+title = "Production · Desktop Protocol Engines (gated surfaces intact)"
+
+[[outputs]]
+id = "BvejhJ-JuPINpuWIVwrWt"
+uri = "file://screenshots/prod-sprint1b/mobile-1-above-fold.png"
+type = "image"
+title = "Production · Mobile above the fold"
+
+[[outputs]]
+id = "zxqf7vLDkvjC4of0d6Z5C"
+uri = "file://screenshots/prod-sprint1b/mobile-full.png"
+type = "image"
+title = "Production · Mobile full page"
