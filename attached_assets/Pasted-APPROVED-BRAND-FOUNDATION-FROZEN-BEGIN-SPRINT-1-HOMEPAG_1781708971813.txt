@@ -1,0 +1,161 @@
+APPROVED — BRAND FOUNDATION FROZEN. BEGIN SPRINT 1 HOMEPAGE COCKPIT PLANNING ONLY
+
+Brand foundation is approved and frozen.
+
+No more logo exploration.
+No more symbol alternatives.
+No more node/hex direction.
+No more extra brand assets unless required by a real listing/platform.
+
+Sprint 0A and Sprint 0B are complete.
+
+Do not publish brand assets yet.
+Do not wire Header/Logo/nav yet unless explicitly approved later.
+Do not touch contracts.
+Do not touch buy logic.
+Do not touch Holder Index.
+Do not touch routing.
+Do not touch NFT truth.
+Do not touch referral logic.
+
+Now move to Sprint 1:
+
+Homepage Cockpit.
+
+But first, give a concise implementation plan before coding.
+
+Use the completed foundation:
+
+* canonical primitives
+* identity gold
+* cyan live-data
+* Interlock brand assets
+* existing ProtocolIntelligenceBar
+* existing LivePulseStrip
+* existing RevenueStreams / protocol engines
+* existing activity data
+* existing /vault, /liquidity, /tokenomics data sources
+
+Goal:
+
+The homepage becomes the public trailer for the Seat / Member Identity.
+
+Target feeling:
+
+Alice lands and instantly sees:
+
+* the protocol is alive
+* the economy is real
+* seats are being taken
+* the vault/LP/burn/activity are visible
+* she can join
+* she can verify
+* she wants a seat
+
+Do not make it a generic fintech app.
+Use the fintech dashboard references only for:
+
+* dashboard discipline
+* KPI layout
+* clear actions
+* modular panels
+* visible status
+* less prose
+
+Homepage structure proposal should include:
+
+1. Top ticker / intelligence bar
+
+* should it be unhidden?
+* where placed?
+* which cells show?
+
+2. Hero cockpit
+
+* seat identity
+* next seat
+* current chapter
+* Join CTA
+* Verify CTA
+* wallet/connect state if useful
+
+3. KPI cards
+   Use first-class live metrics:
+
+* Members
+* Next Seat
+* USDC Routed
+* Vault Balance
+* LP TVL
+* Burned SYN
+* Last Action
+
+4. Protocol engines panel
+   Show:
+
+* Membership Sale — LIVE
+* Vault — LIVE
+* Liquidity — LIVE depth / fees pending if needed
+* Burn — LIVE
+* NFT / Artifacts — LIVE
+* Referral — FUTURE / PREVIEW
+* Marketplace — FUTURE
+
+5. Recent activity
+   Bring heartbeat higher.
+   No fake activity.
+
+6. Proof / verification
+   Present as support layer, not the hero.
+
+7. Prose cleanup
+   Which current homepage sections should be:
+
+* kept
+* compressed
+* moved lower
+* collapsed
+* removed later
+
+8. Risk / QA
+   List:
+
+* files likely touched
+* components reused
+* tests/guards to run
+* gated homepage components that must not be deleted
+* production-vs-dev data caveats
+
+Important constraints:
+
+No copy-heavy report page.
+No new protocol claims.
+No ROI.
+No yield.
+No dividend.
+No return.
+No equity.
+No vault ownership.
+No NFT = membership.
+No referral live claim.
+No fake metrics.
+No page-by-page redesign.
+No nav changes yet.
+No /join refactor yet.
+
+Return:
+
+1. Proposed homepage section order
+2. Components reused
+3. Components newly created if absolutely needed
+4. Data sources used
+5. What will visibly change
+6. What will remain unchanged
+7. QA plan
+8. Exact implementation scope
+9. Whether you recommend wiring Interlock brand into homepage now or keeping it staged until final brand publish
+10. Then wait for founder approval before coding Sprint 1
+
+This is not another broad audit.
+
+This is the Sprint 1 implementation plan only.
