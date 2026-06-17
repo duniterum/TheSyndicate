@@ -329,3 +329,9 @@ id = "8SbcAivbXYnNZxtAAyUDT"
 uri = "file://docs/handoffs/CANONICAL_SOURCE_EXTRACTION_2026-06-17.md"
 type = "text"
 title = "Canonical Source Extraction — Package / Rank / Chapter / Era / Seat / Artifact / Member"
+
+[[outputs]]
+id = "ceZ802Uw296Xg7-Yo7oNz"
+uri = "file://docs/handoffs/DESIRE_LAYER_PRODUCT_REASONING_2026-06-17.md"
+type = "text"
+title = "The Desire Layer — Product-Desire Architecture for the Crypto-Native Visitor"

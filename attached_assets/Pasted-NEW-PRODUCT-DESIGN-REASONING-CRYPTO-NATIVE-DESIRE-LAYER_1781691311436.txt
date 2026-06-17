@@ -1,0 +1,83 @@
+NEW PRODUCT DESIGN REASONING — CRYPTO-NATIVE DESIRE LAYER
+
+Use the master ledger and canonical extraction as baseline.
+
+Do not implement yet.
+Do not rewrite the full site yet.
+Do not reopen protocol correctness.
+
+We are now moving from “legal safe wording” to “crypto-native product desire.”
+
+Important founder clarification:
+
+The problem is not only banned words.
+
+The current design may be too defensive and not seductive enough for crypto users.
+
+A new visitor, Alice, should land on thesyndicate.money and immediately understand:
+
+1. This is a live transparent protocol.
+2. Membership gives her SYN tokens.
+3. Her purchase routes USDC transparently.
+4. The vault grows as members join.
+5. Supply/circulation changes through chapters/eras.
+6. Burns, LP, NFTs, memberships, referrals, and future marketplace are protocol activity streams.
+7. Her actions become part of her story.
+8. She can belong early without us promising yield, ROI, equity, dividends, or guaranteed profit.
+
+We need a founder-grade product/design reasoning pass.
+
+Not implementation yet.
+
+Question:
+
+How should the site make Alice WANT to join before she reads everything?
+
+Analyze the current design from this lens:
+
+* Is the hero section strong enough for a crypto-native user?
+* Does it show the full protocol economy or only membership sale volume?
+* Does it visually communicate live money flows?
+* Does it show Vault, LP, Burn, SYN, Membership, NFT minting, and future referral/marketplace as one ecosystem?
+* Does it make the protocol feel alive?
+* Does it make Alice feel “I want to belong to this”?
+* Does it explain what she gets clearly: membership + SYN tokens + indexed identity + future story trail, while artifacts are separate?
+* Does it show progression without implying guaranteed profit?
+* Does it show protocol revenue/activity streams without using unsafe investment language?
+
+Use Alice as the visitor model:
+
+Alice lands on the site.
+She sees a crypto cockpit hero.
+She sees live metrics.
+She sees membership, vault, LP, burn, NFT minting, and future referral/marketplace as protocol engines.
+She understands she can buy membership packages because they give her more SYN and stronger recognition/progression, not legal rights or promised returns.
+She understands each action becomes part of her protocol story.
+She understands referral will later allow immediate smart-contract commissions when live, but today it is not live.
+
+Return:
+
+1. What the current site communicates emotionally
+2. What a crypto-native visitor wants to see first
+3. What live metrics should be hero-level
+4. What protocol economy streams should be grouped together
+5. What should be LIVE vs PREVIEW vs FUTURE
+6. Where the current design is too defensive
+7. Where the current design is not exciting enough
+8. Where legal safety is blocking desire unnecessarily
+9. What must remain legally safe
+10. What minimum product/design direction should guide the next implementation sprint
+
+Important:
+
+Do not propose final copy yet.
+Do not implement.
+Do not rename concepts yet.
+Do not make profit promises.
+Do not use ROI / yield / dividend / return / equity language.
+
+We need the product-desire architecture first.
+
+The target feeling:
+
+“Alice sees a transparent crypto protocol economy forming live, understands the flows, sees her place in it, and wants to take a seat early.”
