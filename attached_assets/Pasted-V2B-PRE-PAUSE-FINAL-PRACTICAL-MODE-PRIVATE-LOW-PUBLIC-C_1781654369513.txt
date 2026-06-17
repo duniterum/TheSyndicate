@@ -1,0 +1,125 @@
+V2B PRE-PAUSE FINAL PRACTICAL MODE — PRIVATE/LOW-PUBLIC CONTEXT
+
+Continue from the senior pre-flight error hunt.
+
+Important context:
+
+The current buyers/accounts are mine or controlled by me.
+
+The site is not yet meaningfully public.
+
+So we can soften public-migration concerns, but not technical correctness.
+
+Do not reduce any technical guard.
+
+Do not skip:
+
+* pause-block snapshot
+* memberCount cross-check
+* validate-snapshot
+* EXPECT_* deploy guard
+* final fork rehearsal
+* getter read-backs
+* funding verification
+* no duplicate seat proof
+
+But we may treat the public paused/migrating window as lower risk because current real users are controlled.
+
+Goal
+
+Tell me the fastest safe execution path under this context.
+
+A. Reclassify risks
+
+Reclassify the remaining risks into:
+
+1. Technical irreversible risks — never soften
+2. Operational risks — can be managed
+3. Public/user-experience risks — softer because current accounts are controlled
+4. Later relaunch risks — must fix before public marketing
+
+B. Decide if we can pause now
+
+Given:
+
+* current members are controlled
+* funding source is available
+* V2b rehearsal passed
+* deploy guards exist
+* frontend public risk is lower
+
+Answer clearly:
+
+Would you pause now?
+
+YES / NO
+
+If NO, state the exact blocker.
+
+If YES, give the exact immediate sequence.
+
+C. Minimal pre-pause checks only
+
+Before pause, require only the checks that truly matter:
+
+* confirm V2a owner/signing key
+* confirm Membership Distribution signer access
+* confirm archive RPC available
+* confirm V2a live memberCount
+* confirm no new uncontrolled buyer risk
+* confirm deploy params guard exists
+* confirm current head dry-run/snapshot still clean if needed
+
+Do not require frontend redesign or public banner before pause if technically unnecessary.
+
+D. Execute after pause
+
+Once paused:
+
+1. record pause block
+2. generate final snapshot
+3. validate snapshot
+4. finalize params
+5. update rehearsal constants
+6. run final fork rehearsal
+7. run EXPECT_* dry-run
+8. deploy V2b
+9. verify getters
+10. fund V2b from Membership Distribution
+11. verify balance
+12. perform one small real buy smoke test only after funding
+13. update frontend/indexer
+14. publish
+
+E. Frontend/indexer stance
+
+Because public exposure is low, frontend cleanup can be staged after V2b deploy but before public relaunch.
+
+However, these are still mandatory before relaunch:
+
+* V2b sale address
+* V2b deployment block
+* V1 + V2a + V2b holder index union
+* V2a sealed/history
+* live quote/cap/rate display
+* package/rank separation
+* remove false checkout perk
+
+F. Return
+
+Return:
+
+1. Fastest safe path
+2. What is still non-negotiable
+3. What can be softened because current users are controlled
+4. Whether to pause now
+5. Exact next founder action
+6. Exact next Replit action after pause
+
+Do not add architecture.
+
+Do not add governance.
+
+Do not add referral/NFT/journey work.
+
+Focus only on safe acceleration.
