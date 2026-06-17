@@ -1,0 +1,199 @@
+SPRINT 1B — HERO COCKPIT RECOMPOSITION
+
+Do not publish.
+Do not rollback.
+Do not start Sprint 2.
+Do not touch /join.
+Do not touch contracts, buy logic, Holder Index, routing, NFT truth, referral logic, or brand wiring.
+
+Sprint 1 technically succeeded, but the founder review shows the first impression still feels like the old homepage.
+
+Reason:
+
+The new KPI Grid, Protocol Engines, and Heartbeat exist, but they start below the fold.
+The dominant above-the-fold hero is still essentially unchanged.
+
+Goal:
+
+Recompose the homepage so the cockpit starts above the fold.
+
+This is not a new feature sprint.
+This is a hero experience correction.
+
+Keep:
+
+* existing ProtocolHero assets where useful
+* radial throne / live flow visual if still valuable
+* KPI Grid
+* Protocol Engines Panel
+* raised Heartbeat
+* calm ticker
+* all gated narrative surfaces
+* all QA guardrails
+
+But change the first impression.
+
+Target above-the-fold feeling:
+
+Alice lands and instantly sees:
+
+1. This is a live protocol.
+2. Seat # is available.
+3. Members are joining.
+4. USDC is routing.
+5. Vault / LP / burn are visible.
+6. Join is obvious.
+7. Verify is available.
+8. She wants a seat.
+
+Hero hierarchy:
+
+Level 1:
+Seat identity + Join CTA.
+
+Level 2:
+Live protocol proof-of-life metrics.
+
+Level 3:
+Protocol economy visual.
+
+Level 4:
+Verification support.
+
+Not:
+
+Huge prose hero first, cockpit two screens later.
+
+Required changes:
+
+1. Compress the current hero height.
+
+The hero must not consume the entire first impression while hiding the new cockpit sections.
+
+2. Bring KPI proof into the hero zone.
+
+Either:
+
+* integrate 4–6 KPI cells inside the hero, or
+* move the KPI Grid directly adjacent to the hero within the first viewport.
+
+Priority KPIs:
+Members
+Next Seat
+USDC Routed
+Vault
+LP TVL
+Burned SYN
+Last Action
+
+3. Keep ticker calm.
+
+Ticker remains ambient, not dominant.
+No aggressive marquee.
+No competing with Join CTA.
+
+4. Make Join visually dominant.
+
+Primary CTA:
+Join / Take a Seat
+
+Secondary CTA:
+Verify Live Flows
+
+The user must not hunt for Join.
+
+5. Make the hero seat-centered.
+
+The hero should not feel like:
+“Own the economy.”
+
+It should feel like:
+“Take a seat in a live membership protocol.”
+
+Use legally safe language.
+
+Possible direction:
+
+* “Take a seat in a live protocol.”
+* “Your seat. The protocol, live.”
+* “Membership, visible on-chain.”
+* “SYN is your seat. Every action is verified.”
+
+Do not use:
+
+* profit
+* ROI
+* yield
+* dividend
+* return
+* equity
+* vault ownership
+* guaranteed future value
+
+6. Protocol Engines should move higher.
+
+The Engines Panel must be visible sooner, ideally immediately after the hero/KPI block.
+
+7. Activity / heartbeat should be visible earlier.
+
+Activity is proof of life.
+Do not bury it.
+
+8. Reduce mountain/visual dead space if needed.
+
+The mountain/fire visual is beautiful, but if it pushes real cockpit content below the fold, compress or crop it.
+
+9. Mobile first.
+
+On mobile, the first screen must show:
+
+* Seat available
+* Join CTA
+* 2–3 live metrics
+* Verify option
+  without scrolling forever.
+
+10. Keep all Sprint 1 work.
+
+Do not delete KPI Grid, Engines Panel, or Heartbeat.
+Reposition and integrate them.
+
+Important diagnosis to respect:
+
+Sprint 1 added the cockpit below the fold.
+Sprint 1B must make the cockpit visible in the first impression.
+
+Return after implementation:
+
+1. Desktop above-the-fold screenshot.
+2. Desktop screenshot showing hero + KPI placement.
+3. Desktop screenshot showing Engines position.
+4. Mobile above-the-fold screenshot.
+5. Mobile KPI/ticker screenshot.
+6. Before/after fold comparison.
+7. Files changed.
+8. Tests/guards run.
+9. Confirmation no protocol logic changed.
+10. Confirmation production is still unpublished.
+
+QA:
+
+Run:
+
+* wording guards
+* homepage content guard
+* relevant gated vitest suites
+* dev render
+* screenshot review
+
+Do not publish until founder approves screenshots.
+
+Success test:
+
+If the founder opens the correct dev URL, he should immediately say:
+
+“Now I see the cockpit.”
+
+Not:
+
+“It looks the same.”

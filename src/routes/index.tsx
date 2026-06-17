@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { ProtocolIntelligenceBar } from "@/components/syndicate/ProtocolIntelligenceBar";
-import { ProtocolHero } from "@/components/syndicate/ProtocolHero";
+import { ProtocolHero, HeroEntryStrip } from "@/components/syndicate/ProtocolHero";
 import { HomeKpiGrid } from "@/components/syndicate/HomeKpiGrid";
 import { ProtocolEnginesPanel } from "@/components/syndicate/ProtocolEnginesPanel";
 import { LivePulseStrip } from "@/components/syndicate/LivePulseStrip";
@@ -98,6 +98,7 @@ function Index() {
       <MilestoneApproachingTile />
       <LivePulseStrip />
       <HomeActivityTape />
+      <HeroEntryStrip />
 
       {/* ── HOW IT WORKS ── prose, demoted into one compressed band below the
           cockpit. Gated narrative surfaces (Flywheel, ProtocolStorySoFar) live here. */}

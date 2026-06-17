@@ -20,6 +20,7 @@ import {
   StatusPill,
   ProgressBar,
   AnimatedNumber,
+  Section,
   type CanonicalStatus,
 } from "./Primitives";
 import { AvalancheMark } from "./HeaderWalletChip";
@@ -103,19 +104,6 @@ export function ProtocolHero() {
   const tip = useChainTip();
   const supply = useSynSupply();
 
-  const [amount, setAmount] = useState<number>(SALE_MIN_USDC);
-  const amountRaw = parseUnits(String(amount), USDC_DECIMALS);
-  const quote = useQuoteSyn(amountRaw);
-
-  const liveSyn =
-    quote.data !== undefined
-      ? Number(formatUnits(quote.data as bigint, SYN_DECIMALS))
-      : undefined;
-
-  const synEstimate = liveSyn ?? amount / ACCESS_RATE_USDC_PER_SYN;
-  const synStatus: CanonicalStatus = liveSyn !== undefined ? "LIVE" : "DERIVED";
-
-  const chapter = t.chapterProgress.value;
   const blockNo = tip.data?.number;
   const reducedMotion = usePrefersReducedMotion();
   const chainLive = blockNo !== undefined && !reducedMotion;
@@ -160,22 +148,22 @@ export function ProtocolHero() {
   return (
     <section
       id="top"
-      className="relative min-h-[calc(100svh-64px)] overflow-hidden border-b border-border/60"
+      className="relative overflow-hidden border-b border-border/60"
       style={{ background: "var(--background)" }}
     >
       <HeroAtmosphere />
 
       <div className="relative w-full px-4 sm:px-6 lg:px-8">
-        {/* Immersive full-screen cover — identity · capital engine · live protocol */}
-        <div className="grid min-h-[calc(100svh-64px)] grid-cols-1 items-start gap-6 py-6 xl:grid-cols-[1.1fr_1.78fr_1.12fr] xl:gap-8">
+        {/* Compact cockpit cover — identity · capital engine · live protocol.
+            Mobile order: identity + Join → live proof metrics → economy visual;
+            xl reconstructs Left | Engine | Right via order utilities. */}
+        <div className="grid grid-cols-1 items-start gap-6 py-5 sm:py-6 xl:grid-cols-[1.1fr_1.78fr_1.12fr] xl:gap-8 xl:py-8">
           <HeroLeft />
 
           <HeroEngine
-            amount={amount}
+            className="order-3 xl:order-2"
             routedValue={routedValue}
             routedStatus={t.usdcRaised.status}
-            synEstimate={synEstimate}
-            synStatus={synStatus}
             seatLabel={seatLabel}
             lanes={lanes}
             chainLive={chainLive}
@@ -184,6 +172,7 @@ export function ProtocolHero() {
           />
 
           <HeroRight
+            className="order-2 xl:order-3"
             members={t.members.value}
             membersStatus={t.members.status}
             synPrice={t.synPriceUsd.value}
@@ -196,52 +185,50 @@ export function ProtocolHero() {
             refFdv={refFdv}
           />
         </div>
-
-        {/* Below the cover — entry (buy box first for conversion) · chapter progression · facts */}
-        <div className="grid grid-cols-1 gap-6 pb-2 xl:pt-2">
-          <EntryRail
-            amount={amount}
-            setAmount={setAmount}
-            synEstimate={synEstimate}
-            synStatus={synStatus}
-          />
-
-          <ChapterStrip chapter={chapter} />
-        </div>
-
-        <BottomFacts
-          members={t.members.value}
-          membersStatus={t.members.status}
-          routed={t.usdcRaised.value}
-          routedStatus={t.usdcRaised.status}
-          vault={t.vaultUsdc.value}
-          vaultStatus={t.vaultUsdc.status}
-          liquidity={t.liquidityUsdc.value}
-          liquidityStatus={t.liquidityUsdc.status}
-          operations={t.operationsUsdc.value}
-          operationsStatus={t.operationsUsdc.status}
-          synPrice={t.synPriceUsd.value}
-          synPriceStatus={t.synPriceUsd.status}
-          totalSupply={totalSupply}
-          totalSupplyStatus={t.totalSupplySyn.status}
-          burnedSyn={burnedSyn}
-          burnedStatus={burnedStatus}
-          chapterLabel={chapter?.label}
-        />
       </div>
     </section>
+  );
+}
+
+// Below-cockpit conversion + chapter bridge. Pulled OUT of the immersive cover
+// so the homepage cockpit (KPIs · engines · heartbeat) lands in the first
+// impression. Owns its own amount state + quote derivation (cheap, deduped
+// React-Query reads) so ProtocolHero stays cover-only.
+export function HeroEntryStrip() {
+  const t = useProtocolTruth();
+  const [amount, setAmount] = useState<number>(SALE_MIN_USDC);
+  const amountRaw = parseUnits(String(amount), USDC_DECIMALS);
+  const quote = useQuoteSyn(amountRaw);
+  const liveSyn =
+    quote.data !== undefined
+      ? Number(formatUnits(quote.data as bigint, SYN_DECIMALS))
+      : undefined;
+  const synEstimate = liveSyn ?? amount / ACCESS_RATE_USDC_PER_SYN;
+  const synStatus: CanonicalStatus = liveSyn !== undefined ? "LIVE" : "DERIVED";
+  const chapter = t.chapterProgress.value;
+
+  return (
+    <Section id="hero-entry-strip">
+      <div className="grid grid-cols-1 gap-6">
+        <EntryRail
+          amount={amount}
+          setAmount={setAmount}
+          synEstimate={synEstimate}
+          synStatus={synStatus}
+        />
+        <ChapterStrip chapter={chapter} />
+      </div>
+    </Section>
   );
 }
 
 function HeroLeft({ className = "" }: { className?: string }) {
   return (
     <div className={`relative z-10 max-w-xl lg:pb-10 ${className}`}>
-      <h1 className="font-serif text-[clamp(3.2rem,2.15rem+3.2vw,5.75rem)] font-normal leading-[0.98] tracking-[-0.045em] text-foreground">
-        Own the
+      <h1 className="font-serif text-[clamp(2.6rem,1.8rem+2.6vw,4.25rem)] font-normal leading-[1.0] tracking-[-0.04em] text-foreground">
+        Take your seat
         <br />
-        economy.
-        <br />
-        Secure the{" "}
+        in a living{" "}
         <span
           className="inline-block"
           style={{
@@ -249,16 +236,12 @@ function HeroLeft({ className = "" }: { className?: string }) {
             textShadow: "0 0 34px color-mix(in oklab, #E3A92B 25%, transparent)",
           }}
         >
-          future.
+          protocol.
         </span>
       </h1>
 
-      <p className="mt-7 max-w-md text-[1.05rem] leading-relaxed text-foreground/82 md:text-lg">
-        SYN is your seat.
-        <br />
-        Every dollar routes. Every action is verified.
-        <br />
-        Artifacts are the memory.
+      <p className="mt-6 max-w-md text-[1.05rem] leading-relaxed text-foreground/82 md:text-lg">
+        Your seat is on-chain. Every USDC route is verifiable. Artifacts carry the memory.
       </p>
 
       <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -273,7 +256,7 @@ function HeroLeft({ className = "" }: { className?: string }) {
           }}
         >
           <CrownIcon />
-          Join the protocol
+          Join The Syndicate
         </Link>
 
         <Link
@@ -305,11 +288,8 @@ function HeroLeft({ className = "" }: { className?: string }) {
 }
 
 function HeroEngine({
-  amount,
   routedValue,
   routedStatus,
-  synEstimate,
-  synStatus,
   seatLabel,
   lanes,
   chainLive,
@@ -317,11 +297,8 @@ function HeroEngine({
   burnedStatus,
   className = "",
 }: {
-  amount: number;
   routedValue: number | undefined;
   routedStatus: CanonicalStatus;
-  synEstimate: number;
-  synStatus: CanonicalStatus;
   seatLabel: string;
   lanes: Array<{
     key: string;
@@ -341,7 +318,7 @@ function HeroEngine({
   const operationsLane = lanes.find((l) => l.key === "OPERATIONS_WALLET");
 
   return (
-    <div className={`relative mx-auto w-full max-w-[640px] py-2 lg:self-start ${className}`}>
+    <div className={`relative mx-auto w-full max-w-[460px] py-2 sm:max-w-[500px] lg:self-start xl:max-w-[520px] ${className}`}>
       <div
         aria-hidden
         className="absolute inset-[-8%] rounded-full blur-3xl"
@@ -1088,74 +1065,6 @@ function EntryRail({
   );
 }
 
-function BottomFacts({
-  members,
-  membersStatus,
-  routed,
-  routedStatus,
-  vault,
-  vaultStatus,
-  liquidity,
-  liquidityStatus,
-  operations,
-  operationsStatus,
-  synPrice,
-  synPriceStatus,
-  totalSupply,
-  totalSupplyStatus,
-  burnedSyn,
-  burnedStatus,
-  chapterLabel,
-}: {
-  members: number | undefined;
-  membersStatus: CanonicalStatus;
-  routed: number | undefined;
-  routedStatus: CanonicalStatus;
-  vault: number | undefined;
-  vaultStatus: CanonicalStatus;
-  liquidity: number | undefined;
-  liquidityStatus: CanonicalStatus;
-  operations: number | undefined;
-  operationsStatus: CanonicalStatus;
-  synPrice: number | undefined;
-  synPriceStatus: CanonicalStatus;
-  totalSupply: number | undefined;
-  totalSupplyStatus: CanonicalStatus;
-  burnedSyn: number | undefined;
-  burnedStatus: CanonicalStatus;
-  chapterLabel: string | undefined;
-}) {
-  return (
-    <div className="relative z-10 mb-8 mt-2 grid grid-cols-2 gap-0 overflow-hidden rounded-xl border border-border/70 bg-card/42 backdrop-blur-xl sm:grid-cols-3 lg:grid-cols-8">
-      <Fact icon={<PersonIcon />} label="Members" value={fmtCount(members)} status={membersStatus} />
-      <Fact icon={<DollarIcon />} label="USDC routed" value={fmtUsd(routed, 2)} status={routedStatus} money />
-      <Fact icon={<VaultIcon />} label="Vault" value={fmtUsd(vault, 2)} status={vaultStatus} money />
-      <Fact icon={<DropIcon />} label="Liquidity TVL" value={fmtUsd(liquidity, 2)} status={liquidityStatus} money />
-      <Fact icon={<GearIcon />} label="Operations" value={fmtUsd(operations, 2)} status={operationsStatus} money />
-      <Fact icon={<DollarIcon />} label="SYN price" value={fmtUsd(synPrice, 4)} status={synPriceStatus} />
-      <Fact icon={<SupplyIcon />} label="Initial supply" value={fmtCompactSyn(totalSupply)} status={totalSupplyStatus} />
-      <Fact
-        icon={<FlameIcon />}
-        label="Burned"
-        value={burnedSyn !== undefined ? `${fmtCount(burnedSyn)} SYN` : "—"}
-        status={burnedStatus}
-        flame
-      />
-      <div className="col-span-2 border-t border-border/60 p-4 sm:col-span-3 lg:col-span-8">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            SYN is the seat. Artifacts are the memory.
-          </div>
-          <div className="mono flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            <BookIcon />
-            {chapterLabel ?? "Chapter syncing"}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function RadialStage({
   lanes,
   chainLive,
@@ -1356,68 +1265,12 @@ function Stat({
   );
 }
 
-function Fact({
-  icon,
-  label,
-  value,
-  status,
-  money,
-  flame,
-}: {
-  icon: ReactNode;
-  label: string;
-  value: string;
-  status: CanonicalStatus;
-  money?: boolean;
-  flame?: boolean;
-}) {
-  return (
-    <div className="border-b border-r border-border/50 p-4">
-      <div className="flex items-center gap-3">
-        <span style={{ color: flame ? FLAME : money ? "var(--success)" : "var(--foreground)" }}>
-          {icon}
-        </span>
-        <div>
-          <div className="mono text-xl font-semibold tabular-nums text-foreground">{value}</div>
-          <div className="mono mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-            {label}
-          </div>
-        </div>
-      </div>
-      <div className="mt-3">
-        {flame && status !== "PENDING" ? (
-          <span
-            className="mono inline-flex items-center gap-1 rounded-[3px] border px-2 py-0.5 text-[9px] uppercase tracking-[0.12em]"
-            style={{ color: FLAME, borderColor: `color-mix(in oklab, ${FLAME} 42%, transparent)`, background: FLAME_SOFT }}
-          >
-            <span className="size-1 rounded-full" style={{ background: FLAME }} />
-            Proof of Burn
-          </span>
-        ) : (
-          <StatusPill status={status} />
-        )}
-      </div>
-    </div>
-  );
-}
-
 /* Icons */
 
 function CrownIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M5 18h14l1-10-5.2 3.8L12 5 9.2 11.8 4 8l1 10Zm0 2h14v2H5v-2Z" />
-    </svg>
-  );
-}
-
-function FlameIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M13.5 2.5c.6 4.2-3.8 5.7-3.8 9 0 1.3.7 2.3 1.8 2.9-.2-2.2 1.8-3.3 2.2-5.4 2.7 2.1 4.3 4.6 4.3 7.1 0 3.3-2.7 5.9-6 5.9s-6-2.6-6-5.9c0-4.6 4.1-6.1 4.1-10.8 1.6.7 2.6 1.8 3.4 3.2.6-1.7.7-3.5 0-6Z"
-        fill={FLAME}
-      />
     </svg>
   );
 }
@@ -1476,45 +1329,10 @@ function GearIcon({ color = "currentColor" }: { color?: string }) {
   );
 }
 
-function BookIcon() {
-  return (
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z" />
-    </svg>
-  );
-}
-
 function JoinIcon() {
   return (
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M7 17 17 7M9 7h8v8" />
-    </svg>
-  );
-}
-
-function PersonIcon() {
-  return (
-    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 22a8 8 0 0 1 16 0" />
-    </svg>
-  );
-}
-
-function DollarIcon() {
-  return (
-    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" />
-    </svg>
-  );
-}
-
-function SupplyIcon() {
-  return (
-    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 2 3 7l9 5 9-5-9-5Z" />
-      <path d="M3 12l9 5 9-5M3 17l9 5 9-5" />
     </svg>
   );
 }
