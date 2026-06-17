@@ -388,13 +388,13 @@ title = "Interlock — complete contact sheet (now incl. store/distribution)"
 id = "Tnv1_JDUqJK9GllsLwNk6"
 uri = "file://public/brand-v2-syndicate-interlock/syn-og.png"
 type = "image"
-title = "Interlock — social / OG card (1200×630)"
+title = "Homepage social / OG card (1200×630)"
 
 [[outputs]]
 id = "dGKqsr1YLzod9cpmYhe43"
 uri = "file://public/brand-v2-syndicate-interlock/syn-lockup-dark.png"
 type = "image"
-title = "Interlock — primary lockup (dark)"
+title = "Header lockup — reference only (deferred header pass)"
 
 [[outputs]]
 id = "298NR-VlpEsWYc-DpY8Sl"
@@ -575,3 +575,15 @@ id = "zxqf7vLDkvjC4of0d6Z5C"
 uri = "file://screenshots/prod-sprint1b/mobile-full.png"
 type = "image"
 title = "Production · Mobile full page"
+
+[[outputs]]
+id = "LwrluJb3dI9uhAJAiI2cA"
+uri = "file://public/apple-touch-icon.png"
+type = "image"
+title = "App / Apple-touch icon (512×512)"
+
+[[outputs]]
+id = "m-CXru5e9U4O0rI75cDJi"
+uri = "file://public/favicon.svg"
+type = "image"
+title = "Browser-tab favicon (SVG)"
