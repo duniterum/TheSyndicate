@@ -1,0 +1,158 @@
+MASTER LEDGER REQUEST — BEFORE NEW CHAT
+
+Recalibrate from current production truth.
+
+Do not implement.
+
+Do not audit broadly again.
+
+Do not redesign.
+
+The protocol slice (V2b / buy flow / proofs / routing / NFT truth / wording cleanup / identity layer) is now considered complete unless you identify a real blocker.
+
+Goal:
+
+Create the definitive master ledger for the next chat.
+
+I want one source of truth showing:
+
+DONE
+PARTLY DONE
+NOT DONE
+DEFERRED
+FOUNDER DECISION REQUIRED
+
+Use:
+
+* production state
+* deployed contracts
+* chain reads
+* current repo
+* docs
+* memory files
+* completed audits
+
+Do not rely on old assumptions.
+
+A. DONE
+
+List everything that is truly complete and verified.
+
+Examples:
+
+* V2b deployment
+* V2b funding
+* V2b verification
+* proof system
+* holder index
+* carried-member path
+* fresh-member path
+* repeat-buy path
+* routing
+* NFT truth corrections
+* wording cleanup
+* custody transparency
+* Purchase #0 fix
+
+Include why it is considered finished.
+
+B. PARTLY DONE
+
+List items where:
+
+* architecture exists
+* implementation exists
+* but reconciliation, polish, onboarding, UX, docs, or founder decisions remain
+
+Examples to evaluate:
+
+* package system
+* rank system
+* chapter system
+* era system
+* onboarding
+* storytelling
+* receipts
+* share flows
+* member cockpit
+* FAQ
+* transparency
+
+Do not assume they belong here — verify.
+
+C. NOT DONE
+
+List items that genuinely have not been built.
+
+Examples:
+
+* SeatRecord721
+* referral activation
+* governance
+* marketplace
+* etc.
+
+Verify before classifying.
+
+D. DEFERRED POST-MVP
+
+List items intentionally postponed.
+
+Include the reason.
+
+E. FOUNDER DECISION REQUIRED
+
+List decisions where code is waiting for product direction.
+
+Examples:
+
+* package/rank separation
+* chapter/era public model
+* future referral model
+* custody model
+* SeatRecord721 behavior
+
+Only include real unresolved decisions.
+
+F. NEXT 5 SPRINTS
+
+Based on current reality, propose:
+
+Sprint 1
+Sprint 2
+Sprint 3
+Sprint 4
+Sprint 5
+
+Small, logical, high-leverage.
+
+No giant rewrites.
+
+No broad audits.
+
+G. Promotion readiness
+
+Answer:
+
+* Is MVP promotion-ready?
+* What would you personally fix before spending money on traffic?
+* What would you intentionally leave for post-MVP?
+
+Return:
+
+1. DONE
+2. PARTLY DONE
+3. NOT DONE
+4. DEFERRED
+5. FOUNDER DECISIONS
+6. NEXT 5 SPRINTS
+7. PROMOTION READINESS
+8. BIGGEST REMAINING RISKS
+
+This document will become the handoff into the next chat.
+
+Be strict.
+
+Use chain + production + code as truth.
+
+Not memory.

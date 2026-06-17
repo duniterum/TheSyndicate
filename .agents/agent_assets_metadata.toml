@@ -311,3 +311,9 @@ id = "nLb4khhkCRzf-5om0-DLz"
 uri = "file://docs/audits/FINAL_PRE_PROMOTION_HARDENING_SPRINT_REPORT.md"
 type = "text"
 title = "Final Pre-Promotion Hardening Sprint — Founder Report (16 points)"
+
+[[outputs]]
+id = "zOBbAt7UP-1OEPM3dPyyY"
+uri = "file://docs/handoffs/MASTER_LEDGER_2026-06-17.md"
+type = "text"
+title = "The Syndicate — Master Ledger (Handoff, 2026-06-17)"
