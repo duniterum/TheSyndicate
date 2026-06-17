@@ -25,6 +25,16 @@ artifact) and was a dead end (no retry; `useV1Proof` had `retry:1` +
 **Why:** duplicate-seat risk only exists for the recognized set; gating everyone
 on a client fetch turns a transient miss into a permanent buy block.
 
+**Duplicate-seat window is the FIRST V2b action only.** On-chain `buy()` sets
+`firstSeat = !knownMember[sender]`; a returning member's valid proof flips
+`knownMember=true` (so `firstSeat=false`, no new seat). The contract does NOT
+revert on an empty/bad proof — it falls through and mints a FRESH seat. So a
+carried member (#1–#5) is at duplicate-seat risk ONLY on their first V2b buy
+(while `knownMember=false`). After ONE V2b buy/claim they are `knownMember=true`
+on-chain and even `[]` is safe forever. The proof artifact is therefore
+load-bearing only until each carried member's first V2b action. Native-V2b
+members (#6+) are protected purely on-chain (they took a seat → knownMember).
+
 **How to apply:** gate buy on `isRecognizedMember(address) && !ready`
 (`memberProofPending`), not on `!ready` alone; resolve the buy with an
 address-aware `resolveForBuySafe` (fresh → `[]` without artifact; recognized →
