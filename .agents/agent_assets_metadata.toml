@@ -586,4 +586,16 @@ title = "App / Apple-touch icon (512×512)"
 id = "m-CXru5e9U4O0rI75cDJi"
 uri = "file://public/favicon.svg"
 type = "image"
-title = "Browser-tab favicon (SVG)"
+title = "Tab favicon — same artwork now in the header"
+
+[[outputs]]
+id = "qDIL3oOAr3-uT8Mzf4Ji5"
+uri = "file://screenshots/header-interlock-home.jpg"
+type = "image"
+title = "Header — Home (gold Interlock mark, was cyan-S)"
+
+[[outputs]]
+id = "_Pv2Z8p0A3jVHybzPvSth"
+uri = "file://screenshots/header-interlock-transparency.jpg"
+type = "image"
+title = "Header + PageShell hero — /transparency (unified mark)"

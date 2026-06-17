@@ -1,9 +1,10 @@
 // Logo system — the single source of truth for The Syndicate brand mark.
 //
-// Obsidian Cockpit identity: a sharp black square plate with a cyan border +
-// glow and a monospace cyan "S" — the protocol's instrument badge. The wordmark
-// is monochrome Space Grotesk (no gold gradient). Used by the Header, Footer,
-// PageShell hero, and mobile bar so the brand reads identically everywhere.
+// Identity badge: the approved gold Interlock mark on an obsidian plate —
+// the SAME artwork as the browser-tab favicon (/favicon.svg), so the Header,
+// Footer, PageShell hero, and mobile bar read the same identity as the
+// tab / app / social surfaces. The wordmark is monochrome Space Grotesk with a
+// gold PROTOCOL sub-line. Gold = identity (color-role doctrine).
 
 import { Link } from "@tanstack/react-router";
 import { SYNDICATE_CONFIG } from "@/lib/syndicate-config";
@@ -22,7 +23,9 @@ const MARK: Record<MarkSize, { box: string; text: string }> = {
   xl: { box: "size-12", text: "text-xl" },
 };
 
-/** The square protocol plate. Tone "accent" = cyan token (default); "gold" = brand gold. */
+/** The Interlock identity badge — gold mark on an obsidian plate, the same artwork
+ *  as the browser-tab favicon. `tone` is retained for API compatibility; the brand
+ *  mark is always gold (Gold = identity, per the color-role doctrine). */
 export function BrandMark({
   size = "md",
   tone = "accent",
@@ -33,22 +36,21 @@ export function BrandMark({
   className?: string;
 }) {
   const s = MARK[size];
-  const color = tone === "gold" ? BRAND_GOLD : "var(--accent)";
+  void tone;
   return (
     <span
       aria-hidden
-      className={`relative grid place-items-center shrink-0 rounded-[3px] bg-black ${s.box} ${className}`}
+      className={`relative block shrink-0 rounded-[22%] ${s.box} ${className}`}
       style={{
-        border: `1px solid color-mix(in oklab, ${color} 75%, transparent)`,
-        boxShadow: `inset 0 0 12px -6px color-mix(in oklab, ${color} 80%, transparent), 0 0 16px -4px color-mix(in oklab, ${color} 65%, transparent)`,
+        boxShadow: `0 0 16px -5px color-mix(in oklab, ${BRAND_GOLD} 55%, transparent)`,
       }}
     >
-      <span
-        className={`mono font-bold leading-none ${s.text}`}
-        style={{ color }}
-      >
-        S
-      </span>
+      <img
+        src="/favicon.svg"
+        alt=""
+        className="block size-full rounded-[22%]"
+        draggable={false}
+      />
     </span>
   );
 }

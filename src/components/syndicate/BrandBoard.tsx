@@ -133,13 +133,13 @@ export function BrandBoard() {
             <div className="rounded-lg border border-border bg-card p-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-foreground">Current</span>
-                <StatusPill tone="current">Live · frozen</StatusPill>
+                <StatusPill tone="current">Live</StatusPill>
               </div>
               <Tile bg={OBSIDIAN} className="mt-3 min-h-[150px]">
                 <BrandMark size="xl" tone="gold" className="scale-[2.4]" />
               </Tile>
               <p className="mono mt-3 text-[11px] text-muted-foreground">
-                Live Header/nav mark — Logo.tsx (frozen)
+                Live Header/nav mark — Logo.tsx (Interlock)
               </p>
             </div>
             {/* REJECTED */}
@@ -379,9 +379,9 @@ export function BrandBoard() {
             <table className="w-full border-collapse text-sm">
               <tbody className="text-[12px]">
                 {[
-                  ["Current (live)", "Logo.tsx BrandMark + /favicon.svg", "Frozen — unchanged, still served"],
+                  ["Current (live)", "Logo.tsx BrandMark → /favicon.svg", "Live — Interlock mark in header/nav"],
                   ["Node / hex (rejected)", `${V1}/`, "Preserved, namespaced — not wired or referenced by production surfaces"],
-                  ["Interlock (approved)", `${V2}/`, "Staged — not wired, not published"],
+                  ["Interlock (approved)", `${V2}/`, "Wired — header/nav mark + chrome (favicon/app/manifest/OG); pending publish"],
                   ["Earlier mark draft", "public/brand-v2-syndicate-mark/", "Superseded — kept for history"],
                 ].map(([k, path, status]) => (
                   <tr key={k} className="border-b border-border/60 last:border-0">
