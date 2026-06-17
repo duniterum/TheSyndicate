@@ -299,3 +299,9 @@ id = "UBEHsBu5dhWVRIHLsEVSg"
 uri = "file://docs/audits/V2B_FINAL_EXECUTION_CHAIN.md"
 type = "text"
 title = "V2b Final Execution Chain — funding corrected (source = Membership Distribution wallet)"
+
+[[outputs]]
+id = "RXIhbsplhm2t8wNSJ0yC0"
+uri = "file://contracts/SyndicateSaleV2.verify.standard-input.json"
+type = "unspecified"
+title = "SyndicateSaleV2 — Standard-JSON-Input (Snowtrace/Avascan verification)"
