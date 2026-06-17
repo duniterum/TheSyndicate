@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="The Syndicate social avatar">
+  <title>The Syndicate social avatar</title>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="44%" r="58%">
+      <stop offset="0%" stop-color="#E3A92B" stop-opacity="0.20"/>
+      <stop offset="65%" stop-color="#E3A92B" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#E3A92B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="#0A0B0D"/>
+  <rect width="512" height="512" fill="url(#glow)"/>
+  <circle cx="256" cy="256" r="236" fill="none" stroke="#E3A92B" stroke-opacity="0.18" stroke-width="3"/>
+  <g transform="translate(106 106) scale(4.6875)">
+    <g stroke="#E3A92B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M32 11 L50.19 21.5 L50.19 42.5 L32 53 L13.81 42.5 L13.81 21.5 Z"/>
+      <path d="M32 32 L32 11 M32 32 L50.19 21.5 M32 32 L50.19 42.5 M32 32 L32 53 M32 32 L13.81 42.5 M32 32 L13.81 21.5"/>
+    </g>
+    <g fill="#E3A92B">
+      <circle cx="32" cy="11" r="3.4"/>
+      <circle cx="50.19" cy="21.5" r="3.4"/>
+      <circle cx="50.19" cy="42.5" r="3.4"/>
+      <circle cx="32" cy="53" r="3.4"/>
+      <circle cx="13.81" cy="42.5" r="3.4"/>
+      <circle cx="13.81" cy="21.5" r="3.4"/>
+      <circle cx="32" cy="32" r="5.6"/>
+    </g>
+  </g>
+</svg>

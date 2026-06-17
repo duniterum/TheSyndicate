@@ -84,6 +84,7 @@ function LabsIndex() {
           <Link to="/labs/knowledge-map" className="underline hover:no-underline">→ Protocol knowledge map (layer inspection)</Link>
           <Link to="/labs/design-museum" className="underline hover:no-underline">→ Visual design museum</Link>
           <Link to="/labs/component-index" className="underline hover:no-underline">→ Technical component index</Link>
+          <Link to="/labs/component-index" hash="brand-foundation" className="underline hover:no-underline">→ Brand foundation (Sprint 0B)</Link>
           <Link to="/labs/design-archive" className="underline hover:no-underline">→ Design archive (docs)</Link>
           <Link to="/labs/invariants" className="underline hover:no-underline">→ Sale-flow invariants</Link>
         </nav>

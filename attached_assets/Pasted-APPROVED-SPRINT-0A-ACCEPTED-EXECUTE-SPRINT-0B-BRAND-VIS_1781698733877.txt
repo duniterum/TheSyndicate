@@ -1,0 +1,133 @@
+APPROVED — SPRINT 0A ACCEPTED. EXECUTE SPRINT 0B BRAND + VISUAL DIRECTION
+
+Sprint 0A is accepted.
+
+You correctly did not rebuild the design system.
+You canonicalized the existing foundation.
+You preserved protocol logic.
+You preserved the hero gold identity.
+You created always-gold identity tokens and kept cyan for live-data accents.
+
+Now execute Sprint 0B only.
+
+Do not redesign homepage yet.
+Do not refactor /join yet.
+Do not touch buy logic.
+Do not touch contracts.
+Do not touch Holder Index.
+Do not touch routing.
+Do not touch NFT truth.
+Do not touch referral logic.
+Do not change nav yet.
+Do not create another lab.
+
+SPRINT 0B GOAL
+
+Create the official brand asset foundation and align it with the dashboard visual direction before Sprint 1.
+
+Founder-approved visual rule:
+
+Gold = identity / brand / seat / token.
+Cyan = live data / verification / protocol activity.
+Green = live/success only.
+Red = risk/error only.
+
+Brand direction:
+
+Use the preferred rounded interconnected Syndicate mark as the canonical direction.
+
+Create or prepare:
+
+1. Favicon set
+2. App icon
+3. Social avatar
+4. Token logo / SYN coin mark
+5. Dashboard mark
+6. Press-kit asset area
+7. Light/dark logo variants
+8. Exchange listing preview assets
+9. Usage rules
+10. Brand preview section/page if a suitable existing preview surface exists
+
+Important visual reference:
+
+Use the provided fintech dashboard screenshots only for layout discipline, not style copying.
+
+Extract:
+
+* clean dashboard shell
+* clear top status area
+* KPI card discipline
+* strong action button placement
+* table/filter/search discipline
+* modular panels
+* generous spacing
+* minimal prose
+* one obvious primary action per screen
+
+Reject:
+
+* generic banking look
+* generic blue fintech colors
+* white SaaS feeling
+* payment-app language
+* template feeling
+
+The Syndicate target remains:
+
+Premium obsidian crypto cockpit.
+Luxury identity.
+Live protocol economy.
+Member seat as center of gravity.
+
+Do not make it look like FastPay.
+Do not copy the screenshots.
+Use them as structure inspiration only.
+
+Apply this mindset to future Sprint 1:
+
+Homepage = protocol cockpit trailer.
+Member OS = product home.
+Join = focused checkout.
+Proof pages = terminal/support layer.
+
+Sprint 0B deliverables:
+
+1. Files changed
+2. Brand assets created
+3. Asset paths
+4. Which mark variant is canonical
+5. Favicon/app/social/token assets preview
+6. Light/dark preview
+7. Exchange listing preview
+8. Confirmation gold identity / cyan live-data rule is preserved
+9. Confirmation no protocol logic changed
+10. Recommended Sprint 1 plan for homepage cockpit using the new foundation
+
+Validation:
+
+Run relevant type/check/tests if files touch app code.
+Confirm no wording guardrails are broken.
+Confirm no protocol behavior changed.
+
+Guardrails:
+
+No ROI.
+No yield.
+No dividend.
+No return.
+No equity.
+No profit promise.
+No vault ownership claim.
+No NFT = membership claim.
+No referral live claim.
+No fake metrics.
+No new protocol claims.
+
+Core doctrine:
+
+SYN is the seat.
+Holder Index is identity truth.
+Artifacts are memory.
+Homepage is the trailer.
+Member OS is the home.

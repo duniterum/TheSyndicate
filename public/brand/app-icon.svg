@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="The Syndicate app icon">
+  <title>The Syndicate app icon</title>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#E3A92B" stop-opacity="0.22"/>
+      <stop offset="60%" stop-color="#E3A92B" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#E3A92B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="114" fill="#0A0B0D"/>
+  <rect x="8" y="8" width="496" height="496" rx="106" fill="none" stroke="#E3A92B" stroke-opacity="0.14" stroke-width="2"/>
+  <rect width="512" height="512" rx="114" fill="url(#glow)"/>
+  <g transform="translate(106 106) scale(4.6875)">
+    <g stroke="#E3A92B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M32 11 L50.19 21.5 L50.19 42.5 L32 53 L13.81 42.5 L13.81 21.5 Z"/>
+      <path d="M32 32 L32 11 M32 32 L50.19 21.5 M32 32 L50.19 42.5 M32 32 L32 53 M32 32 L13.81 42.5 M32 32 L13.81 21.5"/>
+    </g>
+    <g fill="#E3A92B">
+      <circle cx="32" cy="11" r="3.4"/>
+      <circle cx="50.19" cy="21.5" r="3.4"/>
+      <circle cx="50.19" cy="42.5" r="3.4"/>
+      <circle cx="32" cy="53" r="3.4"/>
+      <circle cx="13.81" cy="42.5" r="3.4"/>
+      <circle cx="13.81" cy="21.5" r="3.4"/>
+      <circle cx="32" cy="32" r="5.6"/>
+    </g>
+  </g>
+</svg>

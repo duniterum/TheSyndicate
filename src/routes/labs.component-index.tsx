@@ -18,6 +18,7 @@ import {
   type IndexBucket,
   type MuseumWidget,
 } from "@/labs/museum-inventory";
+import { BrandBoard } from "@/components/syndicate/BrandBoard";
 
 export const Route = createFileRoute("/labs/component-index")({
   head: () => ({
@@ -134,8 +135,8 @@ function ComponentIndex() {
           Internal · Labs · Not production
         </div>
         <p className="mt-1 text-xs">
-          Technical lifecycle index of catalogued components. Documents only — nothing here is
-          mounted. Not linked from public navigation, <code>noindex</code>, blocked by{" "}
+          Technical lifecycle index of catalogued components, plus the Sprint 0B brand foundation
+          preview. Not linked from public navigation, <code>noindex</code>, blocked by{" "}
           <code>/labs</code> in robots.txt.
         </p>
       </div>
@@ -178,8 +179,13 @@ function ComponentIndex() {
           <Link to="/labs" className="underline hover:no-underline">
             → Labs index
           </Link>
+          <a href="#brand-foundation" className="underline hover:no-underline">
+            → Brand foundation
+          </a>
         </nav>
       </header>
+
+      <BrandBoard />
 
       {INDEX_BUCKETS.map((b) => (
         <BucketSection key={b} bucket={b} />

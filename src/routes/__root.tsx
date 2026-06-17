@@ -90,6 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "theme-color", content: "#0A0B0D" },
       { title: "The Syndicate (SYN) — Experimental Utility Membership Token on Avalanche" },
       { name: "description", content: "The Syndicate is a transparent experimental utility membership system powered by SYN, a fixed-supply ERC20 token live on Avalanche C-Chain." },
       { name: "author", content: "The Syndicate" },
@@ -100,11 +101,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "The Syndicate (SYN) — Live on Avalanche" },
       { name: "twitter:description", content: "Transparent experimental utility membership token. Fixed supply. Live on Avalanche C-Chain." },
+      { property: "og:image", content: "https://thesyndicate.money/og/og-brand.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "The Syndicate — experimental utility membership protocol on Avalanche C-Chain" },
+      { name: "twitter:image", content: "https://thesyndicate.money/og/og-brand.png" },
+      { name: "twitter:image:alt", content: "The Syndicate — experimental utility membership protocol on Avalanche C-Chain" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-      { rel: "apple-touch-icon", href: "/favicon.svg" },
+      { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

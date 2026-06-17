@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="The Syndicate emblem">
+  <title>The Syndicate emblem</title>
+  <g stroke="#E3A92B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 11 L50.19 21.5 L50.19 42.5 L32 53 L13.81 42.5 L13.81 21.5 Z"/>
+    <path d="M32 32 L32 11 M32 32 L50.19 21.5 M32 32 L50.19 42.5 M32 32 L32 53 M32 32 L13.81 42.5 M32 32 L13.81 21.5"/>
+  </g>
+  <g fill="#E3A92B">
+    <circle cx="32" cy="11" r="3.4"/>
+    <circle cx="50.19" cy="21.5" r="3.4"/>
+    <circle cx="50.19" cy="42.5" r="3.4"/>
+    <circle cx="32" cy="53" r="3.4"/>
+    <circle cx="13.81" cy="42.5" r="3.4"/>
+    <circle cx="13.81" cy="21.5" r="3.4"/>
+    <circle cx="32" cy="32" r="5.6"/>
+  </g>
+</svg>
