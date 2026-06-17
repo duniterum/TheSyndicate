@@ -21,7 +21,7 @@
 import { Link } from "@tanstack/react-router";
 import { Flame } from "lucide-react";
 import { StatusPill, type CanonicalStatus } from "./Primitives";
-import { useProtocolTruth } from "@/lib/protocol-truth";
+import { useProtocolTruth, type ChapterProgress } from "@/lib/protocol-truth";
 import { useSynSupply, useCirculatingSupply } from "@/lib/treasury-hooks";
 import { ACCESS_RATE_USDC_PER_SYN, PROOF_OF_FIRE_001 } from "@/lib/syndicate-config";
 import { requireMetric } from "@/lib/protocol-metrics-registry";
@@ -59,6 +59,32 @@ type Cell = {
   value: string;
   /** Native title attribute — exact value / formula clarification. */
   title?: string;
+};
+
+/** A single rendered ticker entry, keyed by its canonical cell key. */
+type RenderItem =
+  | { key: string; kind: "cell"; cell: Cell }
+  | { key: "burned"; kind: "burned"; value: string };
+
+/** Every value input the bar's cells render from. The component resolves these
+ *  from its hooks and hands them to the pure builders below, so the rendered
+ *  cell/status maps and the contract test agree on exactly which keys exist. */
+type TickerValues = {
+  referencePrice: number;
+  refMktCap?: number;
+  fdv?: number;
+  totalSupply?: number;
+  circulating?: number;
+  burned?: number;
+  protocolWallets?: number;
+  vault?: number;
+  liquidity?: number;
+  operations?: number;
+  lpTvl?: number;
+  synSold?: number;
+  usdcRouted?: number;
+  members?: number;
+  chapter?: ChapterProgress;
 };
 
 // ─── Pure, testable contract helpers ─────────────────────────────────────────
@@ -124,6 +150,140 @@ export function computeTickerStatus(reads: readonly unknown[], isError: boolean)
   return "LIVE";
 }
 
+// ─── Pure cell + status builders ─────────────────────────────────────────────
+// The component resolves its live values into a TickerValues bag and hands it to
+// these two builders. Exporting them lets the contract test assert that EVERY
+// key in CANONICAL_TICKER_ORDER actually produces a render item (no canonical
+// key can silently render to nothing) and that EVERY key in
+// CANONICAL_TICKER_ORDER ∪ DEFAULT_STATUS_KEYS has a status read (a curated bar
+// can never reference a missing status entry).
+
+/** Build the keyed render items (lead → burned → tail) from resolved values.
+ *  This is the SINGLE source of which keys produce a cell; the component renders
+ *  straight from it, so a canonical key with no entry here would also vanish on
+ *  screen — which the contract test forbids. */
+export function buildTickerItemsByKey(v: TickerValues): Map<string, RenderItem> {
+  const lead: Cell[] = [
+    {
+      key: "price",
+      label: barLabel("referencePrice"),
+      value: `$${v.referencePrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`,
+      title: "Fixed access rate · 1 SYN = $0.01 USDC (protocol-set rate, not a market price)",
+    },
+    {
+      key: "refMktCap",
+      label: barLabel("referenceMarketCap"),
+      value: fmtUsdCompact(v.refMktCap),
+      title: `Reference price × circulating supply = ${fmtUsdExact(v.refMktCap)}`,
+    },
+    {
+      key: "fdv",
+      label: barLabel("fdv"),
+      value: fmtUsdCompact(v.fdv),
+      title: `Reference price × total supply = ${fmtUsdExact(v.fdv)}`,
+    },
+    {
+      key: "totalSupply",
+      label: barLabel("totalSupply"),
+      value: fmtSynCompact(v.totalSupply),
+      title: v.totalSupply !== undefined ? `${fmtSynExact(v.totalSupply)} · fixed, no mint function` : undefined,
+    },
+    {
+      key: "circulating",
+      label: barLabel("circulatingSupply"),
+      value: fmtSynCompact(v.circulating),
+      title: v.circulating !== undefined ? `${fmtSynExact(v.circulating)} · in public hands` : undefined,
+    },
+  ];
+
+  const tail: Cell[] = [
+    {
+      key: "protocolWallets",
+      label: barLabel("protocolWalletsTotal"),
+      value: fmtUsdCompact(v.protocolWallets),
+      title: `Vault + Liquidity + Operations (USDC) = ${fmtUsdExact(v.protocolWallets)}`,
+    },
+    {
+      key: "vault",
+      label: barLabel("vaultWalletUsdc"),
+      value: fmtUsdCompact(v.vault),
+      title: `Vault routing wallet · USDC = ${fmtUsdExact(v.vault)}`,
+    },
+    {
+      key: "liquidity",
+      label: barLabel("liquidityWalletUsdc"),
+      value: fmtUsdCompact(v.liquidity),
+      title: `Liquidity routing wallet · USDC = ${fmtUsdExact(v.liquidity)}`,
+    },
+    {
+      key: "operations",
+      label: barLabel("operationsWalletUsdc"),
+      value: fmtUsdCompact(v.operations),
+      title: `Operations routing wallet · USDC = ${fmtUsdExact(v.operations)}`,
+    },
+    {
+      key: "lpTvl",
+      label: barLabel("lpTvl"),
+      value: fmtUsdCompact(v.lpTvl),
+      title: `SYN/USDC pool total value locked = ${fmtUsdExact(v.lpTvl)}`,
+    },
+    {
+      key: "synSold",
+      label: barLabel("synSold"),
+      value: fmtSynCompact(v.synSold),
+      title: v.synSold !== undefined ? `${fmtSynExact(v.synSold)} distributed by the sale contract` : undefined,
+    },
+    {
+      key: "usdcRouted",
+      label: barLabel("usdcRouted"),
+      value: fmtUsdCompact(v.usdcRouted),
+      title: `Cumulative USDC routed through the sale = ${fmtUsdExact(v.usdcRouted)}`,
+    },
+    {
+      key: "members",
+      label: barLabel("members"),
+      value: fmtCount(v.members),
+      title: "Unique buyers recorded on-chain",
+    },
+    {
+      key: "chapter",
+      label: barLabel("chapterProgress"),
+      value: v.chapter ? `${v.chapter.label} · ${fmtCount(v.chapter.taken)}/${fmtCount(v.chapter.capacity)}` : "—",
+      title: v.chapter ? `${v.chapter.progressPct}% filled · ${fmtCount(v.chapter.remaining)} seats remain` : undefined,
+    },
+  ];
+
+  const itemsByKey = new Map<string, RenderItem>();
+  for (const c of lead) itemsByKey.set(c.key, { key: c.key, kind: "cell", cell: c });
+  itemsByKey.set("burned", { key: "burned", kind: "burned", value: fmtSynExact(v.burned) });
+  for (const c of tail) itemsByKey.set(c.key, { key: c.key, kind: "cell", cell: c });
+  return itemsByKey;
+}
+
+/** Build the status read for every key — the SINGLE source of which keys have a
+ *  trust read. A curated bar reads status by key from this map, so a key absent
+ *  here would silently read `undefined`; the contract test forbids any
+ *  CANONICAL_TICKER_ORDER ∪ DEFAULT_STATUS_KEYS key from being missing. */
+export function buildTickerStatusValues(v: TickerValues): Record<string, unknown> {
+  return {
+    price: v.referencePrice,
+    refMktCap: v.refMktCap,
+    fdv: v.fdv,
+    totalSupply: v.totalSupply,
+    circulating: v.circulating,
+    burned: v.burned,
+    protocolWallets: v.protocolWallets,
+    vault: v.vault,
+    liquidity: v.liquidity,
+    operations: v.operations,
+    lpTvl: v.lpTvl,
+    synSold: v.synSold,
+    usdcRouted: v.usdcRouted,
+    members: v.members,
+    chapter: v.chapter,
+  };
+}
+
 export function ProtocolIntelligenceBar({
   className = "",
   cells,
@@ -156,13 +316,12 @@ export function ProtocolIntelligenceBar({
 
   const cp = t.chapterProgress.value;
 
-  // Aggregate trust status — never blanket "LIVE". LIVE only when every DISPLAYED
-  // read resolves, PENDING when none have, PARTIAL while filling in (or on a
-  // degraded read). When the bar is curated via `cells`, the status reflects ONLY
-  // the displayed cells, so unresolved hidden global metrics can never make the
-  // visible cockpit ticker look degraded; with no `cells` it reflects the full set.
-  const statusValueByKey: Record<string, unknown> = {
-    price: REFERENCE_PRICE,
+  // Resolve every live value once into a single bag, then hand it to the pure
+  // builders. This guarantees the rendered cells and the status reads cover
+  // EXACTLY the same key set — a key can never appear in one map but not the
+  // other (each gap is locked by ProtocolIntelligenceBar.test.ts).
+  const values: TickerValues = {
+    referencePrice: REFERENCE_PRICE,
     refMktCap,
     fdv,
     totalSupply,
@@ -178,111 +337,21 @@ export function ProtocolIntelligenceBar({
     members: t.members.value,
     chapter: cp,
   };
+
+  // Aggregate trust status — never blanket "LIVE". LIVE only when every DISPLAYED
+  // read resolves, PENDING when none have, PARTIAL while filling in (or on a
+  // degraded read). When the bar is curated via `cells`, the status reflects ONLY
+  // the displayed cells, so unresolved hidden global metrics can never make the
+  // visible cockpit ticker look degraded; with no `cells` it reflects the full set.
+  const statusValueByKey = buildTickerStatusValues(values);
   const statusReads = selectTickerStatusReads(statusValueByKey, cells, DEFAULT_STATUS_KEYS);
   const barStatus = computeTickerStatus(statusReads, t.isError);
 
-  // Cells before/after the special Burned cell (which carries the badge).
-  const lead: Cell[] = [
-    {
-      key: "price",
-      label: barLabel("referencePrice"),
-      value: `$${REFERENCE_PRICE.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`,
-      title: "Fixed access rate · 1 SYN = $0.01 USDC (protocol-set rate, not a market price)",
-    },
-    {
-      key: "refMktCap",
-      label: barLabel("referenceMarketCap"),
-      value: fmtUsdCompact(refMktCap),
-      title: `Reference price × circulating supply = ${fmtUsdExact(refMktCap)}`,
-    },
-    {
-      key: "fdv",
-      label: barLabel("fdv"),
-      value: fmtUsdCompact(fdv),
-      title: `Reference price × total supply = ${fmtUsdExact(fdv)}`,
-    },
-    {
-      key: "totalSupply",
-      label: barLabel("totalSupply"),
-      value: fmtSynCompact(totalSupply),
-      title: totalSupply !== undefined ? `${fmtSynExact(totalSupply)} · fixed, no mint function` : undefined,
-    },
-    {
-      key: "circulating",
-      label: barLabel("circulatingSupply"),
-      value: fmtSynCompact(circulating),
-      title: circulating !== undefined ? `${fmtSynExact(circulating)} · in public hands` : undefined,
-    },
-  ];
-
-  const tail: Cell[] = [
-    {
-      key: "protocolWallets",
-      label: barLabel("protocolWalletsTotal"),
-      value: fmtUsdCompact(protocolWallets),
-      title: `Vault + Liquidity + Operations (USDC) = ${fmtUsdExact(protocolWallets)}`,
-    },
-    {
-      key: "vault",
-      label: barLabel("vaultWalletUsdc"),
-      value: fmtUsdCompact(vault),
-      title: `Vault routing wallet · USDC = ${fmtUsdExact(vault)}`,
-    },
-    {
-      key: "liquidity",
-      label: barLabel("liquidityWalletUsdc"),
-      value: fmtUsdCompact(liquidity),
-      title: `Liquidity routing wallet · USDC = ${fmtUsdExact(liquidity)}`,
-    },
-    {
-      key: "operations",
-      label: barLabel("operationsWalletUsdc"),
-      value: fmtUsdCompact(operations),
-      title: `Operations routing wallet · USDC = ${fmtUsdExact(operations)}`,
-    },
-    {
-      key: "lpTvl",
-      label: barLabel("lpTvl"),
-      value: fmtUsdCompact(t.lpTvlUsd.value),
-      title: `SYN/USDC pool total value locked = ${fmtUsdExact(t.lpTvlUsd.value)}`,
-    },
-    {
-      key: "synSold",
-      label: barLabel("synSold"),
-      value: fmtSynCompact(t.synSold.value),
-      title: t.synSold.value !== undefined ? `${fmtSynExact(t.synSold.value)} distributed by the sale contract` : undefined,
-    },
-    {
-      key: "usdcRouted",
-      label: barLabel("usdcRouted"),
-      value: fmtUsdCompact(t.usdcRaised.value),
-      title: `Cumulative USDC routed through the sale = ${fmtUsdExact(t.usdcRaised.value)}`,
-    },
-    {
-      key: "members",
-      label: barLabel("members"),
-      value: fmtCount(t.members.value),
-      title: "Unique buyers recorded on-chain",
-    },
-    {
-      key: "chapter",
-      label: barLabel("chapterProgress"),
-      value: cp ? `${cp.label} · ${fmtCount(cp.taken)}/${fmtCount(cp.capacity)}` : "—",
-      title: cp ? `${cp.progressPct}% filled · ${fmtCount(cp.remaining)} seats remain` : undefined,
-    },
-  ];
-
-  // Unified, ordered render list. When `cells` is provided it curates AND orders
-  // by key; with no prop every item renders in canonical order — byte-identical
-  // to the global ticker. `mobilePriority` hides items at/after that index below
-  // the `sm` breakpoint so the curated homepage ticker stays scannable on phones.
-  type RenderItem =
-    | { key: string; kind: "cell"; cell: Cell }
-    | { key: "burned"; kind: "burned"; value: string };
-  const itemsByKey = new Map<string, RenderItem>();
-  for (const c of lead) itemsByKey.set(c.key, { key: c.key, kind: "cell", cell: c });
-  itemsByKey.set("burned", { key: "burned", kind: "burned", value: fmtSynExact(burned) });
-  for (const c of tail) itemsByKey.set(c.key, { key: c.key, kind: "cell", cell: c });
+  // Keyed render items (lead → burned → tail). When `cells` is provided it curates
+  // AND orders by key; with no prop every item renders in canonical order —
+  // byte-identical to the global ticker. `mobilePriority` hides items at/after that
+  // index below the `sm` breakpoint so the curated ticker stays scannable on phones.
+  const itemsByKey = buildTickerItemsByKey(values);
 
   // CANONICAL_TICKER_ORDER is the single source of cell order; resolveTickerOrder
   // curates+orders by `cells` (filtered to known keys) or returns the full order.

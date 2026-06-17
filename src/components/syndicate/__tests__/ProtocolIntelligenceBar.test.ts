@@ -21,6 +21,8 @@ import {
   tickerHideOnMobile,
   selectTickerStatusReads,
   computeTickerStatus,
+  buildTickerItemsByKey,
+  buildTickerStatusValues,
 } from "../ProtocolIntelligenceBar";
 
 const root = process.cwd();
@@ -83,6 +85,85 @@ describe("ProtocolIntelligenceBar · curated cells", () => {
     }
     // mobilePriority={4} keeps the first four cells on phones.
     expect(/mobilePriority=\{4\}/.test(src)).toBe(true);
+  });
+});
+
+describe("ProtocolIntelligenceBar · no canonical key renders to nothing", () => {
+  // A fully-populated value bag: the cell builder produces a cell regardless of
+  // value, so this exercises the key set, not the formatting.
+  const items = buildTickerItemsByKey({
+    referencePrice: 0.01,
+    refMktCap: 1,
+    fdv: 1,
+    totalSupply: 1,
+    circulating: 1,
+    burned: 1,
+    protocolWallets: 1,
+    vault: 1,
+    liquidity: 1,
+    operations: 1,
+    lpTvl: 1,
+    synSold: 1,
+    usdcRouted: 1,
+    members: 1,
+    chapter: { id: "genesis", label: "Genesis", capacity: 333, taken: 1, remaining: 332, progressPct: 0 },
+  });
+
+  it("every CANONICAL_TICKER_ORDER key produces a render item", () => {
+    for (const key of CANONICAL_TICKER_ORDER) {
+      expect(items.has(key), `missing render item for cell key "${key}"`).toBe(true);
+    }
+  });
+
+  it("the builder produces exactly the canonical key set (no extra, no missing)", () => {
+    // Sorting makes the assertion order-independent — order itself is pinned by
+    // the canonical-order describe block above.
+    expect([...items.keys()].sort()).toEqual([...CANONICAL_TICKER_ORDER].sort());
+  });
+
+  it("a curated bar can never reference a cell key the builder cannot produce", () => {
+    // resolveTickerOrder only admits keys in CANONICAL_TICKER_ORDER, and every
+    // such key has a render item — so resolve+lookup never drops a curated cell.
+    const resolved = resolveTickerOrder(CANONICAL_TICKER_ORDER, CANONICAL_TICKER_ORDER);
+    const rendered = resolved.map((k) => items.get(k)).filter((it) => it !== undefined);
+    expect(rendered).toHaveLength(CANONICAL_TICKER_ORDER.length);
+  });
+});
+
+describe("ProtocolIntelligenceBar · no status read can go missing", () => {
+  const statusValues = buildTickerStatusValues({
+    referencePrice: 0.01,
+    refMktCap: 1,
+    fdv: 1,
+    totalSupply: 1,
+    circulating: 1,
+    burned: 1,
+    protocolWallets: 1,
+    vault: 1,
+    liquidity: 1,
+    operations: 1,
+    lpTvl: 1,
+    synSold: 1,
+    usdcRouted: 1,
+    members: 1,
+    chapter: { id: "genesis", label: "Genesis", capacity: 333, taken: 1, remaining: 332, progressPct: 0 },
+  });
+
+  it("every CANONICAL_TICKER_ORDER + DEFAULT_STATUS_KEYS key has a status entry", () => {
+    const keys = new Set([...CANONICAL_TICKER_ORDER, ...DEFAULT_STATUS_KEYS]);
+    for (const key of keys) {
+      // `in` proves the key is present even if its resolved value is undefined,
+      // so selectTickerStatusReads can never silently read a missing read.
+      expect(key in statusValues, `missing status read for key "${key}"`).toBe(true);
+    }
+  });
+
+  it("selecting status for the full canonical order yields no missing reads", () => {
+    // Every read resolves in this fully-populated bag, so a gap would surface as
+    // an undefined entry here (which would also wrongly degrade the bar status).
+    const reads = selectTickerStatusReads(statusValues, CANONICAL_TICKER_ORDER, DEFAULT_STATUS_KEYS);
+    expect(reads).toHaveLength(CANONICAL_TICKER_ORDER.length);
+    expect(reads.every((v) => v !== undefined)).toBe(true);
   });
 });
 
