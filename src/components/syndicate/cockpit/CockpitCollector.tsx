@@ -8,8 +8,9 @@
 //
 // Truth doctrine (hard rules):
 //   • No fake supply / minted / scarcity. Supply bars render ONLY from a live
-//     on-chain maxSupply + minted read. The First Signal is uncapped, so it
-//     NEVER shows a supply progress bar.
+//     on-chain maxSupply + minted read. The First Signal is a fixed edition of
+//     10,000 (on-chain maxSupply) shown as edition size + remaining — never a
+//     scarcity progress bar.
 //   • No "Genesis NFT", no false 1,000 supply, no "Mint Genesis NFT".
 //   • Seat Record is a future ERC-721 (SyndicateSeatRecord721) — never shown as
 //     mintable, never conflated with Archive1155.
@@ -41,7 +42,7 @@ const fmtInt = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits:
 // ── canonical collector catalog ─────────────────────────────────────────────
 // Token-id → canonical config id mapping. Prices are looked up from
 // ARCHIVE_ARTIFACTS (the single source of truth), never inlined.
-type SupplyMode = "uncapped" | "capped" | "pending";
+type SupplyMode = "fixed-edition" | "capped" | "pending";
 type CollectItem = {
   id: number;
   configId: string;
@@ -51,8 +52,8 @@ type CollectItem = {
   status: "ACTIVE_MINT_OPEN" | "PENDING_CONTRACT";
   supplyMode: SupplyMode;
   /** Catalog (reference) supply target — used ONLY as a clearly-labeled
-   *  fallback denominator for capped artifacts when the live maxSupply read
-   *  is unavailable. Never used for uncapped artifacts. */
+   *  fallback for capped / fixed-edition artifacts when the live maxSupply
+   *  read is unavailable. Always rendered as "catalog" until live confirms. */
   catalogMaxSupply?: number;
   /** Catalog wallet-limit fallback (doctrine), shown labeled when not live. */
   catalogWalletLimit: number;
@@ -65,9 +66,10 @@ const COLLECT: CollectItem[] = [
     name: "The First Signal",
     chapter: "Chapter I — Genesis Signal",
     meaning:
-      "The Genesis Chapter Artifact — the first public signal of the Archive. Uncapped during the open chapter.",
+      "The Genesis Chapter Artifact — a collectible Chapter I edition. Hold up to 5 per wallet. The memory of your membership, not the seat.",
     status: "ACTIVE_MINT_OPEN",
-    supplyMode: "uncapped",
+    supplyMode: "fixed-edition",
+    catalogMaxSupply: 10_000,
     catalogWalletLimit: 5,
   },
   {
@@ -172,7 +174,7 @@ type ArtifactMemoryConfig = {
   tokenId: number;
   name: string;
   tag: string;
-  /** Honest collectible descriptor: uncapped = open, capped = limited. */
+  /** Honest collectible descriptor, e.g. "Edition of 10,000" / "Limited edition". */
   edition: string;
   emblem: "signal" | "seal";
   /** Theme accent var — distinct per artifact. */
@@ -186,7 +188,7 @@ const MEMORY_ARTIFACTS: ArtifactMemoryConfig[] = [
     tokenId: 1,
     name: "The First Signal",
     tag: "Chapter I · Genesis Signal",
-    edition: "Open edition",
+    edition: "Edition of 10,000",
     emblem: "signal",
     accent: "var(--gold)",
     ownedMeaning:
@@ -404,16 +406,36 @@ function MintProgress({
 
   const minted = art?.totalMinted !== undefined ? Number(art.totalMinted) : undefined;
 
-  // Uncapped (The First Signal) — NEVER a supply bar. Show the live minted
-  // count if available (informational only — not scarcity), otherwise just
-  // the uncapped status.
-  if (item.supplyMode === "uncapped") {
+  // Fixed edition (The First Signal) — a real on-chain cap, but shown as
+  // edition size + remaining rather than a scarcity progress bar (NEVER a bar).
+  // Edition size prefers the live maxSupply read; the catalog target is a
+  // clearly-labeled fallback. Remaining is live-only.
+  if (item.supplyMode === "fixed-edition") {
+    const liveMax =
+      art?.maxSupply !== undefined && art.maxSupply > 0n ? Number(art.maxSupply) : undefined;
+    const editionSize = liveMax ?? item.catalogMaxSupply;
+    const remaining = remainingSupply !== undefined ? Number(remainingSupply) : undefined;
     return (
       <div className="flex items-center gap-2">
         <span className="mono text-[10px] uppercase tracking-[0.14em] text-foreground">
-          Uncapped supply
+          {editionSize !== undefined ? `Edition of ${fmtInt(editionSize)}` : "Fixed edition"}
+          {editionSize !== undefined && (
+            <span
+              className={
+                liveMax !== undefined ? "text-[var(--success)]" : "text-muted-foreground/70"
+              }
+            >
+              {" "}
+              {liveMax !== undefined ? "live" : "catalog"}
+            </span>
+          )}
         </span>
-        {minted !== undefined ? (
+        {remaining !== undefined ? (
+          <span className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            · {fmtInt(remaining)} remaining
+            <span className="text-[var(--success)]"> live</span>
+          </span>
+        ) : minted !== undefined ? (
           <span className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
             · {fmtInt(minted)} minted
             <span className="text-[var(--success)]"> live</span>
@@ -422,7 +444,7 @@ function MintProgress({
           <span className="mono text-[10px] text-destructive">read error</span>
         ) : (
           <span className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">
-            · minted read pending
+            · supply read pending
           </span>
         )}
       </div>

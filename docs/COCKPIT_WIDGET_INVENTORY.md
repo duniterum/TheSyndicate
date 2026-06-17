@@ -6,7 +6,7 @@ numbers are flagged and must NOT be copied. Dead components are mined for *struc
 resurrected blindly.
 
 Doctrine guardrails applied throughout:
-- The First Signal (ID 1) = **uncapped**, LIVE, 0.50 USDC. Patron Seal (ID 3) = **10,000**, LIVE, 5.00 USDC. Seat Record (ID 2) = **future ERC-721, PENDING**. Never conflate them. Never "Genesis NFT 1,000 supply".
+- The First Signal (ID 1) = **edition of 10,000** (on-chain maxSupply; wallet limit 5 — corrected 2026-06-17 from the earlier "uncapped" note), LIVE, 0.50 USDC. Patron Seal (ID 3) = **10,000**, LIVE, 5.00 USDC. Seat Record (ID 2) = **future ERC-721, PENDING**. Never conflate them. Never "Genesis NFT 1,000 supply".
 - Status vocabulary = **LIVE / PARTIAL / PENDING** only. Every number is a live read or marked PENDING.
 - Banlist: investment, ROI, yield, dividend, share, commission, passive income.
 - No countdowns, no "last N slots" urgency. OS reflex: Identity → Holdings → Activity.
@@ -59,7 +59,7 @@ These docs already contain product-approved structure. Phase C should align to t
 
 | File · Component | Status | Structure worth keeping | Current data | Rewrite plan | Risk of using | Risk of ignoring |
 |---|---|---|---|---|---|---|
-| `Sections.tsx` · `GenesisNFTProgress` | dead | mint-progress card: big counter + % bar + Supply/Minted/Remaining | FAKE "Minted 0 / Total 1,000" | Rebuild as "Collect next" for **Patron Seal (10,000)** & artifacts via `useArchiveArtifactReads` (live remaining). First Signal = uncapped (no bar) | reusing "1,000" = doctrine breach | best capped-mint layout lost |
+| `Sections.tsx` · `GenesisNFTProgress` | dead | mint-progress card: big counter + % bar + Supply/Minted/Remaining | FAKE "Minted 0 / Total 1,000" | Rebuild as "Collect next" for **Patron Seal (10,000)** & artifacts via `useArchiveArtifactReads` (live remaining). First Signal = fixed edition of 10,000 (edition + remaining, no scarcity bar) | reusing "1,000" = doctrine breach | best capped-mint layout lost |
 | `Sections.tsx` · `WhyComeBackTomorrow` | dead | 4-up retention grid (deltas + reasons) | static/fabricated | Fold reasons into "Since you were away" using live deltas only | false scarcity if copied | lose retention framing |
 | `Sections.tsx` · `VaultGrowthChart` | dead | SVG sparkline / area trend from baseline | FAKE day array | Only if indexed vault time-series exists; else → Preserve | implies fabricated history | — |
 | `Sections.tsx` · `SyndicateIndex` | dead | composite score gauge (hero number + input breakdown) | FAKE component scores | Only if every input is a live read; else → Preserve as PENDING | composite invites fabrication | — |
@@ -114,7 +114,7 @@ Seat-first story spine (from `MemberCockpitCandidate` + ratified blueprint), ass
 4. **My holdings & artifacts** — SYN/USDC tiles + owned Archive1155 (First Signal/Patron Seal) verify links + compact artifact strip · LIVE → *what I own*
 5. **My chapter & progression** — chapter rail (sealed/forming/ghosted, my tick), rank progress to next, closest-to-next · LIVE/cached/derived → *what chapter I'm in*
 6. **What's sealing next** — Soon/Next/Far on-chain thresholds (no clocks) + milestone-approaching · LIVE → *what's approaching*
-7. **Collect next** — mintable now: First Signal (uncapped, live price), Patron Seal (10,000, live remaining) + eligibility; Seat Record PENDING · LIVE + PENDING → *what I can collect*
+7. **Collect next** — mintable now: First Signal (edition of 10,000, live price/remaining), Patron Seal (10,000, live remaining) + eligibility; Seat Record PENDING · LIVE + PENDING → *what I can collect*
 8. **Do next** — action rail: Join/Buy More SYN, Trade, Add LP, Share/Export identity · LIVE → *what I can do*
 9. **My memory timeline** — unified vertical spine: my purchases + witnessed moments + pinned origin (Chronicle Entry 1), each → tx · LIVE/cached → *proof + history*
 10. **Verify & context** — claims→on-chain table + tx proof drawer + contract rails + transparency/health/ledger links · LIVE → *what I can verify*

@@ -60,7 +60,7 @@ type PresetConfig = {
   archive: Record<number, bigint>;
 };
 
-// First Signal = id 1 (uncapped), Patron Seal = id 3 (capped). See CockpitCollector.
+// First Signal = id 1 (fixed edition of 10,000), Patron Seal = id 3 (capped). See CockpitCollector.
 const PRESETS: Record<CockpitPreset, PresetConfig> = {
   // First seat in the archive: no seat before you, First Signal held (lit),
   // Patron Seal not yet kept (dim).

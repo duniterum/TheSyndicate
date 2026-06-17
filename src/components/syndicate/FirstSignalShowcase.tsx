@@ -198,6 +198,16 @@ export function FirstSignalShowcase() {
               />
             </div>
 
+            {/* ─── Truth note — collectible edition, not the seat ──── */}
+            <p className="mt-3 max-w-[46ch] text-[12px] text-muted-foreground leading-relaxed">
+              Collectible Chapter I edition. You can hold up to 5. This is the
+              memory of your membership, not the seat.
+            </p>
+            <p className="mt-1 mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+              Record-only. No equity, governance, revenue share, or financial
+              rights.
+            </p>
+
             {/* Live supply line */}
             <div className="mt-3 flex items-center justify-between mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">

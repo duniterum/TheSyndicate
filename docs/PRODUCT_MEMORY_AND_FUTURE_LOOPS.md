@@ -13,7 +13,7 @@ renders."
 
 ## Doctrine reminders (the non-negotiable facts)
 - **Archive1155 is LIVE.**
-- **The First Signal is LIVE.** It is **NOT** "Genesis NFT". It is **uncapped**.
+- **The First Signal is LIVE.** It is **NOT** "Genesis NFT". It is an **edition of 10,000** (on-chain maxSupply, wallet limit 5; earlier "uncapped" was inaccurate — corrected 2026-06-17).
 - **Patron Seal is LIVE.** Supply is **10,000**.
 - **Seat Record is a FUTURE ERC-721 (PENDING).** It is **not** Archive1155.
 - **SYN is the seat. Artifacts are the memory.**
@@ -47,7 +47,7 @@ renders."
 - **Future home:** Archive / NFT.
 - **Status:** **Rewrite later.**
 - **Original source:** `Sections.tsx` → `GenesisNFTProgress`.
-- **CRITICAL:** Never use the false "Genesis NFT 1,000 supply" idea again. The First Signal is **uncapped**; Patron Seal is **10,000**; Seat Record is a **future** ERC-721. Wire to real Archive1155 supply; if `MintProgressTracker` already covers it, merge there.
+- **CRITICAL:** Never use the false "Genesis NFT 1,000 supply" idea again. The First Signal is an **edition of 10,000**; Patron Seal is **10,000**; Seat Record is a **future** ERC-721. Wire to real Archive1155 supply; if `MintProgressTracker` already covers it, merge there.
 
 ### 4. Constitution
 - **Purpose:** Protocol doctrine / immutable rules.

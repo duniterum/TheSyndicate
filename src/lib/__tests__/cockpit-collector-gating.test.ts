@@ -9,7 +9,8 @@
  *     contract explicitly reports active === true AND paused === false.
  *   • An unknown pause state (paused undefined + pausedError) must degrade to an
  *     honest "unverifiable" state — it must NEVER imply mint-open.
- *   • The First Signal is uncapped → it NEVER renders a supply progress bar.
+ *   • The First Signal is a fixed edition of 10,000 (on-chain maxSupply) →
+ *     shown as edition size + remaining, NEVER a scarcity progress bar.
  *   • The Patron Seal renders a progress bar ONLY when a live minted count and
  *     denominator are derivable; otherwise availability-only, no fabricated bar.
  *   • The Seat Record is a pending future ERC-721 — never mintable, no Collect.
@@ -111,28 +112,30 @@ describe("CockpitCollector — Seat Record (pending future ERC-721)", () => {
   });
 });
 
-describe("CockpitCollector — supply bar truth (uncapped vs capped)", () => {
-  it("The First Signal (id 1) is uncapped and never carries a catalog max supply", () => {
+describe("CockpitCollector — supply bar truth (fixed-edition vs capped)", () => {
+  it("The First Signal (id 1) is a fixed edition of 10,000 (on-chain cap), not uncapped", () => {
     expect(src).toMatch(
-      /id: 1,\s*configId: "first-signal",[\s\S]{0,400}supplyMode: "uncapped",/,
+      /id: 1,\s*configId: "first-signal",[\s\S]{0,400}supplyMode: "fixed-edition",\s*catalogMaxSupply: 10_000,/,
     );
-    // Uncapped item must NOT declare a catalogMaxSupply (no fallback denominator).
+    // The stale "uncapped" claim must be gone for the First Signal.
     expect(src).not.toMatch(
-      /configId: "first-signal",[\s\S]{0,400}catalogMaxSupply/,
+      /configId: "first-signal",[\s\S]{0,400}supplyMode: "uncapped"/,
     );
+    // No public-facing "Uncapped supply" label may survive anywhere.
+    expect(src).not.toContain("Uncapped supply");
   });
 
-  it("uncapped artifacts return BEFORE any bar math — no progress bar path", () => {
-    const uncappedIdx = src.indexOf('if (item.supplyMode === "uncapped")');
-    const uncappedLabelIdx = src.indexOf("Uncapped supply");
+  it("fixed-edition artifacts return BEFORE any bar math — no progress bar path", () => {
+    const fixedIdx = src.indexOf('if (item.supplyMode === "fixed-edition")');
+    const editionLabelIdx = src.indexOf("Edition of ");
     // The pct-based bar (width style) is the only progress bar; it must live
-    // AFTER the uncapped early return, so uncapped can never reach it.
+    // AFTER the fixed-edition early return, so a fixed edition can never reach it.
     const barIdx = src.indexOf("width: `${pct * 100}%`");
-    expect(uncappedIdx).toBeGreaterThan(-1);
-    expect(uncappedLabelIdx).toBeGreaterThan(-1);
+    expect(fixedIdx).toBeGreaterThan(-1);
+    expect(editionLabelIdx).toBeGreaterThan(-1);
     expect(barIdx).toBeGreaterThan(-1);
-    expect(uncappedIdx).toBeLessThan(barIdx);
-    expect(uncappedLabelIdx).toBeLessThan(barIdx);
+    expect(fixedIdx).toBeLessThan(barIdx);
+    expect(editionLabelIdx).toBeLessThan(barIdx);
   });
 
   it("Patron Seal (id 3) is capped with a clearly-labeled catalog fallback denominator", () => {

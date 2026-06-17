@@ -7,7 +7,7 @@ imported by any route and not rendered internally (confirmed dead/unrendered), p
 live-but-imprecise data block (`VERIFY_ENTITIES`).
 
 ## Protocol-fact baseline used for the audit
-- **LIVE:** Archive1155 contract; The First Signal (ID 1, 0.50 USDC, wallet-limit 5, **uncapped** supply); Patron Seal (ID 3, 5.00 USDC, **10,000** supply); SYN token; Membership Sale; LP Pool; USDC Routing (70% Vault / 20% Liquidity / 10% Operations).
+- **LIVE:** Archive1155 contract; The First Signal (ID 1, 0.50 USDC, wallet-limit 5, **edition of 10,000** supply — corrected 2026-06-17 from the earlier "uncapped" note); Patron Seal (ID 3, 5.00 USDC, **10,000** supply); SYN token; Membership Sale; LP Pool; USDC Routing (70% Vault / 20% Liquidity / 10% Operations).
 - **PENDING:** Seat Record (future ERC-721 `SeatRecord721`, ID 2 reserved/disabled); Vault Contract; Governance; AI Layer.
 - **Chapters:** Genesis Signal (seals at Member #333) · First Thousand · The Expansion · First Ten Thousand · Open Era.
 - **Status vocab:** strictly LIVE / PARTIAL / PENDING. "Mock", "Coming Soon", "Planned", hardcoded supply/member/$ values = factual violations.
@@ -121,7 +121,7 @@ into a live surface or is an accurate concept worth surfacing.
 
 ### 9. GenesisNFTProgress — `Sections.tsx:1625`
 - **Status:** Dead/unrendered.
-- **Factually wrong:** **MAJOR — entity conflation + false supply.** Treats a “Genesis NFT” as a **1,000-supply** mint. Baseline: First Signal is **uncapped**, Patron Seal is **10,000**, Seat Record is a **future** ERC-721. Also hardcodes `minted = 0` and uses non-canonical “Pending Contract” wording.
+- **Factually wrong:** **MAJOR — entity conflation + false supply.** Treats a “Genesis NFT” as a **1,000-supply** mint. Baseline: First Signal is an **edition of 10,000**, Patron Seal is **10,000**, Seat Record is a **future** ERC-721. Also hardcodes `minted = 0` and uses non-canonical “Pending Contract” wording.
 - **Product idea:** A mint-progress / supply-tracker artifact module (progress bar toward a milestone). **Explicitly called out as valuable** despite wrong data.
 - **Verdict:** **REWRITE & REUSE** (do NOT delete the idea). Rebuild against **live Archive1155 reads** for a real artifact (First Signal count, or Patron Seal toward 10,000). If `MintProgressTracker` already covers this, MERGE into it.
 - **Reuse home:** `/archive` or `/nft`, reading live supply; or merge into `MintProgressTracker`.
