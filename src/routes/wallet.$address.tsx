@@ -397,7 +397,7 @@ function HolderView({
             A <strong className="text-foreground">holder</strong> can acquire SYN
             via transfer or a swap on the public LP. That is fine, but it does
             not produce a founder number, a rank, or a chapter — and it does not
-            route capital to the Vault.
+            route USDC to the Vault.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link

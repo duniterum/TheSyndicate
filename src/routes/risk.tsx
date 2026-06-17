@@ -101,7 +101,7 @@ function RiskPage() {
             <ul className="grid gap-3 text-sm text-muted-foreground">
               <li className="rounded-md border border-border/40 p-3">
                 <span className="text-foreground font-medium">Total loss possible</span>
-                <p className="mt-1">Token price can move to zero. Smart contracts may contain bugs. LP positions can suffer impermanent loss. Only contribute what you are willing to lose.</p>
+                <p className="mt-1">Token price can move to zero. Smart contracts may contain bugs. LP positions can suffer impermanent loss. Only spend what you are willing to lose.</p>
               </li>
               <li className="rounded-md border border-border/40 p-3">
                 <span className="text-foreground font-medium">Smart-contract risk</span>

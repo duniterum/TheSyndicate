@@ -96,7 +96,7 @@ const BUCKETS: Bucket[] = [
       { title: "Named chapters of protocol history", what: "Chapters of the protocol named at the moment of sealing, anchored to real on-chain events.", why: "The history members witnessed becomes a permanent, named part of the archive — recognizable years later.", dep: "Indexer + identity layer" },
       { title: "Protocol intelligence for members", what: "Read-only treasury, liquidity, and activity summaries built on verified on-chain data.", why: "Members get clearer signal about protocol health without anyone taking custody or making promises.", dep: "Stable data pipeline" },
       { title: "Reach without fragmenting trust", what: "SYN representation on additional chains, only if members vote it serves them.", why: "Wider access without splitting the protocol's verifiability across silos.", dep: "Governance approval" },
-      { title: "Identity compounds over time", what: "Public on-chain badges, witnessed-event records, and contribution archive.", why: "The longer you've been a member and the more events you've witnessed, the more your seat reflects it — earned, never granted.", dep: "Identity contract + indexer" },
+      { title: "Identity compounds over time", what: "Public on-chain badges, witnessed-event records, and participation archive.", why: "The longer you've been a member and the more events you've witnessed, the more your seat reflects it — earned, never granted.", dep: "Identity contract + indexer" },
     ],
   },
   {
@@ -108,7 +108,7 @@ const BUCKETS: Bucket[] = [
       { title: "Yield product or dividend program", what: "SYN is not equity, not debt, not a yield-bearing instrument.", why: "Protects members and matches every contract on-chain." },
       { title: "Custodial vault", what: "Members never deposit assets into a Syndicate-controlled custody contract.", why: "Non-custodial is a hard line." },
       { title: "Hidden admin keys / upgradeable token", what: "SYN has no owner, no mint, no pause, no blacklist.", why: "The token's guarantees are immutable." },
-      { title: "Pay-to-rank bonus tokens", what: "Larger contributions never receive a better SYN price.", why: "Same rate for everyone: 1 SYN = $0.01 USDC." },
+      { title: "Pay-to-rank bonus tokens", what: "Larger purchases never receive a better SYN price.", why: "Same rate for everyone: 1 SYN = $0.01 USDC." },
     ],
   },
 ];

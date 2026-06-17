@@ -110,10 +110,10 @@ function WhitepaperPage() {
       </Section>
 
       <Section id="mission">
-        <SectionHeader eyebrow="01 — Mission" title="A transparent onchain compounding experiment" />
+        <SectionHeader eyebrow="01 — Mission" title="A transparent onchain membership experiment" />
         <p className="text-base text-muted-foreground leading-relaxed max-w-3xl">
-          The Syndicate is a public protocol designed to compound discipline, capital,
-          reputation, and opportunity over decades. SYN is its membership and coordination
+          The Syndicate is a public protocol designed to build discipline, reputation,
+          and belonging over decades. SYN is its membership and coordination
           token. Every contract, every wallet, every status is public.
         </p>
       </Section>

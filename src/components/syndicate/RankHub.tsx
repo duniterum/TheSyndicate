@@ -83,7 +83,7 @@ function YourRank({ record, nextMemberNumber, hasData }: {
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">No wallet connected</span>
         </div>
         <p className="text-sm text-muted-foreground">
-          Connect a wallet to see the rank your contribution reflects. Rank is recognition only — no payout, no entitlement. The ranks below are public — nothing requires connection to read.
+          Connect a wallet to see the rank your cumulative USDC reflects. Rank is recognition only — no payout, no entitlement. The ranks below are public — nothing requires connection to read.
         </p>
       </GlassCard>
     );

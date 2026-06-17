@@ -305,3 +305,9 @@ id = "RXIhbsplhm2t8wNSJ0yC0"
 uri = "file://contracts/SyndicateSaleV2.verify.standard-input.json"
 type = "unspecified"
 title = "SyndicateSaleV2 — Standard-JSON-Input (Snowtrace/Avascan verification)"
+
+[[outputs]]
+id = "nLb4khhkCRzf-5om0-DLz"
+uri = "file://docs/audits/FINAL_PRE_PROMOTION_HARDENING_SPRINT_REPORT.md"
+type = "text"
+title = "Final Pre-Promotion Hardening Sprint — Founder Report (16 points)"

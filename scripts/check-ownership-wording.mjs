@@ -62,6 +62,13 @@ const BANNED = [
   /\byield\b/i,
   /\bUSDC Raised\b/,
   /\bTotal Raised\b/,
+  // investment-frame phrases (capital that "compounds" / "routes" / "flows" reads
+  // as a return-bearing instrument). USDC routing copy must say "USDC", not "capital".
+  /\bcompounding experiment\b/i,
+  /\bcapital flow\b/i,
+  /\broute[sd]? capital\b/i,
+  /\bcapital rout(es?|ing)\b/i,
+  /\bcompound[a-z]*\b[^.]{0,40}\bcapital\b/i,
 ];
 
 // allow-list: lines that explicitly deny / disclaim the concept are fine

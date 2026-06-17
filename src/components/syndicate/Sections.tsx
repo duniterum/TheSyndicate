@@ -46,7 +46,7 @@ export function IdeaSection() {
     <Section id="idea">
       <SectionHeader
         eyebrow="01 — The Idea"
-        title={<>Not another token. <span className="text-gradient-gold">A real-life compounding experiment.</span></>}
+        title={<>Not another token. <span className="text-gradient-gold">A real-life membership experiment.</span></>}
         description="The Syndicate turns spectators into participants. Members join with USDC, receive utility tokens, earn rank recognition, and follow a public Vault wallet verifiable onchain."
       />
       <GlassCard className="p-8 md:p-12" glow="gold">
@@ -54,8 +54,8 @@ export function IdeaSection() {
           Mission Question
         </div>
         <p className="text-2xl md:text-4xl font-medium leading-snug tracking-tight text-foreground">
-          “Can a transparent group of long-term thinkers compound{" "}
-          <span className="text-gradient-gold">discipline, capital, reputation, and opportunity</span>{" "}
+          “Can a transparent group of long-term thinkers build{" "}
+          <span className="text-gradient-gold">discipline, reputation, and belonging</span>{" "}
           over decades?”
         </p>
       </GlassCard>
@@ -534,7 +534,7 @@ const RULES = [
   "No hidden private unlocks.",
   "Major ecosystem decisions require public explanation.",
   "SYN is for access, status, and participation.",
-  "The mission is long-term compounding, not short-term hype.",
+  "The mission is long-term membership, not short-term hype.",
   "Reputation matters more than short-term speculation.",
   "The first chapter remains permanently archived.",
 ];
@@ -749,7 +749,7 @@ export function MembershipCalculator() {
               </div>
             </div>
             <div className="surface p-4">
-              <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Vault Contribution</div>
+              <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Vault Routing</div>
               <div className="mono text-2xl font-semibold text-gradient-gold mt-1">{fmtUsd(calc.vault)}</div>
               <div className="mono text-[10px] text-muted-foreground mt-1">70% of payment</div>
             </div>
@@ -1238,7 +1238,7 @@ export function Footer() {
 const FAQS: Array<{ q: string; a: string }> = [
   { q: "What is The Syndicate?", a: "A transparent public experiment in onchain membership, archive identity, and shared Vault monitoring. Members join with USDC and receive SYN utility tokens." },
   { q: "Is this an investment?", a: "No. SYN is not equity, debt, dividends, or Vault ownership. It is utility access for rank, archive identity, and participation." },
-  { q: "Can I lose money?", a: "Yes. Participation may result in total loss of contributed value. Only join if you understand the risks." },
+  { q: "Can I lose money?", a: "Yes. Participation may result in total loss of the amount you spend. Only join if you understand the risks." },
   { q: "Why can people join from $5?", a: "The Syndicate is an open membership experiment. Anyone should be able to enter the Archive — not just large buyers." },
   { q: "What is SYN?", a: "A utility token representing membership rank, archive identity, and access to future Syndicate experiences." },
   { q: "Do members own the Vault?", a: "No. The Vault is an ecosystem resource. SYN does not represent ownership of Vault assets." },

@@ -66,7 +66,7 @@ const ENTRIES: Entry[] = [
 
   // Risk & Legal
   { cat: "Risk & Legal", q: "Is this an investment?", a: "No. SYN is utility access for rank, identity, and participation — not equity, debt, dividend, or a Vault claim." },
-  { cat: "Risk & Legal", q: "Can I lose money?", a: "Yes. Participation may result in total loss of contributed value. Only join if you fully understand the risks." },
+  { cat: "Risk & Legal", q: "Can I lose money?", a: "Yes. Participation may result in total loss of the amount you spend. Only join if you fully understand the risks." },
   { cat: "Risk & Legal", q: "What is LIVE vs PENDING?", a: "LIVE modules (SYN, Sale, LP, routing wallets) display chain-verified data read directly from Avalanche RPC. PENDING modules (programmatic Vault contract, on-chain governance, identity NFT) are clearly labeled and never mixed with live numbers — the UI shows PENDING until the underlying contract is deployed." },
 ];
 

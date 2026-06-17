@@ -102,7 +102,7 @@ export function RevenueStreams() {
         ))}
       </div>
       <p className="mt-4 text-xs text-muted-foreground border-l-2 border-amber-500/40 pl-3 max-w-3xl">
-        These are separate income streams. NFT and LP proceeds do not pass through
+        These are separate income streams. NFT and LP income does not pass through
         the 70 / 20 / 10 Membership Sale split. No yield, no dividends, no claim by
         SYN holders on any stream — every destination is a public on-chain address
         you can verify.

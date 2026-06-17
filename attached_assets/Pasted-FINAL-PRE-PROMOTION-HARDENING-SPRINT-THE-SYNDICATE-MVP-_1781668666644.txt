@@ -1,0 +1,257 @@
+FINAL PRE-PROMOTION HARDENING SPRINT — THE SYNDICATE MVP
+
+Recalibrate fully before touching anything.
+
+We are no longer in brainstorming mode.
+
+We are no longer in contract deployment mode.
+
+Current state to verify, not assume:
+
+* V2a is paused / sealed / historical
+* V2b is deployed
+* V2b is funded
+* V2b is verified / partially verified on explorer
+* production is now cut over to V2b
+* package → checkout deep-link UX was implemented
+* V2b buy flow is almost ready for public smoke testing
+* deeper package/rank/chapter redesign is post-MVP
+* referral, NFT/Archive, journey, governance are out of scope for this sprint
+
+Goal:
+
+Make The Syndicate MVP safe, coherent, legal-safe, and testable before public promotion.
+
+Do not redesign the whole site.
+
+Do not change smart contracts.
+
+Do not redeploy contracts.
+
+Do not touch referral, NFT, Archive, governance, SeatRecord721, marketplace, or full chapter/rank redesign.
+
+This sprint is only:
+
+1. final production truth verification
+2. V2b buy-flow readiness
+3. public/legal wording cleanup
+4. canonical docs/memory protection against future drift
+
+A. Production truth verification
+
+Re-check live production, not only local code.
+
+Verify:
+
+* production bundle uses V2b as ACTIVE_SALE
+* quote uses V2b
+* approve spender is V2b
+* buy target is V2b
+* V2a appears only as sealed/history source
+* proof file root/count are merged V2b canonical values
+* holder index includes V1 + V2a + V2b
+* V2b is funded on-chain
+* V2b paused=false
+* next seat is correct
+* no V2a active buy path remains
+
+Return PASS / FAIL.
+
+B. Live buy-flow UX readiness
+
+Confirm the implemented package → checkout flow works:
+
+* package card opens /join with selected amount
+* selected amount is prefilled
+* page scrolls/focuses to purchase widget
+* user does not need to choose again
+* custom amount works
+* custom amount explains clearly:
+  “First valid membership purchase creates one permanent seat. SYN received follows the live era rate.”
+* if a user buys $7:
+
+  * one seat if first valid purchase
+  * SYN at live era rate
+  * no special “$7 package”
+  * recognition derives from cumulative membership purchase volume
+
+Do not fully solve package/rank/chapter naming now.
+
+But make sure current copy does not mislead.
+
+C. Legal / public wording harmony — DO NOT FORGET THIS
+
+This was requested and must be completed now.
+
+Inspect all public-facing UI, docs, labels, stats cards, dashboards, member cockpit, activity, transparency, registry, generated artifacts, tests, and route copy for unsafe or misleading words:
+
+* totalUsdcRaised
+* raised
+* contributed
+* contribution
+* invest
+* investor
+* proceeds
+* funding
+* funded
+* treasury ownership
+* payout
+* dividend
+* return
+* yield
+* claim
+* share
+* equity
+* profit
+* revenue share
+
+Important:
+
+Do not rename deployed contract fields.
+
+Do not change ABI.
+
+Do not touch smart contracts.
+
+If totalUsdcRaised exists in the deployed ABI, keep it technical-only.
+
+Explain and document:
+
+totalUsdcRaised = total USDC paid into the sale contract through buy()
+
+It does NOT mean:
+
+* equity raised
+* investment capital
+* investor contribution
+* vault ownership
+* dividend basis
+* profit claim
+* treasury entitlement
+* financial return
+* securities offering
+
+Choose one canonical public label and apply it consistently.
+
+Preferred safe labels:
+
+* Membership Sale Volume
+* Total Membership Sales
+* USDC Membership Volume
+* USDC Routed Through Memberships
+
+Pick the safest label based on context.
+
+Avoid public-facing:
+
+* raised
+* contribution
+* invested
+* investor
+* proceeds
+* dividend
+* return
+* yield
+* share
+* equity
+* claim
+
+Classify every occurrence as:
+
+* PUBLIC-FACING / FIXED
+* TECHNICAL ABI / KEPT
+* INTERNAL CODE / SAFE
+* HISTORICAL DOC / KEPT WITH STATUS
+* COMMENT / LOW RISK
+* TEST FIXTURE / OK OR UPDATED
+
+D. Doctrine / story / product harmony
+
+Preserve The Syndicate vision:
+
+* SYN is the seat
+* artifacts are the memory
+* membership is access/identity, not investment
+* ranks are recognition only
+* packages are suggested paths/payment inputs, not legal rights
+* Vault is transparent routing, not ownership by members
+* Chronicle/Register are protocol memory, not social hype
+* V2a is historical
+* V2b is active
+* Chapter/Era/package/rank deeper reconciliation is post-MVP
+
+If current live copy contradicts this, fix only the minimal public-facing wording.
+
+E. Docs / MD / memory protection
+
+Update docs or memory only where needed to prevent future drift.
+
+Do not overwrite history.
+
+Do not erase V2a.
+
+Mark clearly:
+
+* V2a = paused / sealed / historical / superseded
+* V2b = active / deployed / funded / verified
+* V2b root/count = canonical active proof artifact
+* V1 + V2a + V2b = holder index union
+* totalUsdcRaised = technical ABI only
+* public label = chosen safe label
+* package/rank/chapter redesign = post-MVP backlog
+* referral = future / not live
+* SeatRecord721 = future / not live
+
+Future Replit sessions must not resurrect old V2a values, old root count=2, or unsafe “raised/contribution” wording.
+
+F. Validation
+
+Run focused checks:
+
+* typecheck
+* wording guards
+* banned vocabulary scans
+* route render for /join, /my-syndicate, /transparency, /registry, /activity
+* production bundle probe
+* proof artifact probe
+* active sale address grep
+* V2a historical-only check
+* V2b funding read
+* package → checkout deep-link test
+* custom amount test
+* proof gate still passes
+
+G. Return
+
+Return a clean founder report:
+
+1. production truth PASS/FAIL
+2. V2b active sale verification
+3. V2b funding verification
+4. buy-flow UX verification
+5. custom amount explanation
+6. totalUsdcRaised technical meaning
+7. canonical public label chosen
+8. unsafe terms found and fixed
+9. terms intentionally left and why
+10. files changed
+11. docs/memory updates made
+12. validation results
+13. whether I can perform live smoke test now
+14. exact smoke-test path
+15. remaining blockers before public promotion
+16. post-MVP backlog only if relevant
+
+Most important:
+
+Do not drift.
+
+Do not broaden scope.
+
+Do not invent new doctrine.
+
+Do not make contract changes.
+
+Do not forget the legal wording cleanup.
+
+Make The Syndicate MVP coherent, safe, truthful, and ready for the first real public V2b purchase.

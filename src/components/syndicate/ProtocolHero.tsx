@@ -396,7 +396,7 @@ function HeroEngine({
               textShadow: "0 0 20px color-mix(in oklab, var(--success) 42%, transparent)",
             }}
           >
-            Live capital flow
+            Live USDC flow
           </div>
 
           <div
@@ -482,7 +482,7 @@ function HeroEngine({
           />
         </div>
         <div className="mt-5 mono text-[11px] uppercase tracking-[0.25em]" style={{ color: "var(--success)" }}>
-          Live capital flow
+          Live USDC flow
         </div>
         <div
           className="mt-2 mono text-[clamp(4rem,19vw,6rem)] font-semibold leading-none tabular-nums"
@@ -1007,7 +1007,7 @@ function EntryRail({
             Join the protocol
           </div>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Preview your entry. Capital routes automatically. Your seat is permanent.
+            Preview your entry. Your USDC routes automatically. Your seat is permanent.
           </p>
         </div>
 
