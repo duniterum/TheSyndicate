@@ -26,6 +26,7 @@
 // =============================================================================
 
 import { useQuery } from "@tanstack/react-query";
+import { keccak256, encodeAbiParameters, concat, type Hex } from "viem";
 
 /** Canonical zero address — the "no referrer" sentinel for V2 `buy`. */
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
@@ -34,19 +35,45 @@ export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as cons
 export const V1_PROOF_ARTIFACT_URL = "/v1-member-proofs.json";
 
 /**
- * The sealed V1 membership Merkle root — the cryptographic commitment to the
- * EXACT set of V1 members. It is baked into the deployed Sale V2
- * (0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48) and re-verified on-chain for
+ * The sealed membership Merkle root — the cryptographic commitment to the EXACT
+ * set of recognized members. For Sale V2b this is the MERGED V1∪V2a snapshot
+ * (5 members: 2 from V1 + 3 V2a-only seats #3–#5), baked into the deployed Sale
+ * V2b (0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b) and re-verified on-chain for
  * every proof; this constant was confirmed equal to the contract's
- * `V1_MEMBER_ROOT()` at wiring time. Any proof artifact whose root differs from
- * this — e.g. a regenerated snapshot that accidentally dropped or added a
- * member — is NOT the canonical snapshot and MUST NOT be trusted to classify
- * buyers: a dropped member would otherwise be mis-handled as a fresh buyer and
- * issued a DUPLICATE seat (the one irreversible identity gate). Lowercase for
- * case-insensitive comparison.
+ * `V1_MEMBER_ROOT()` at wiring time. The earlier V1-only root
+ * (0xae75…74ff, count 2) was V2a's and is now STALE. Any proof artifact whose
+ * root differs from this — e.g. a regenerated snapshot that accidentally dropped
+ * or added a member — is NOT the canonical snapshot and MUST NOT be trusted to
+ * classify buyers: a dropped member would otherwise be mis-handled as a fresh
+ * buyer and issued a DUPLICATE seat (the one irreversible identity gate).
+ * Lowercase for case-insensitive comparison.
  */
 export const V1_MEMBER_ROOT =
-  "0xae75ae2077570c7bd09d95cc142e283cfa73fc9e263c2debf1ba3403457474ff" as const;
+  "0xa1f2ed106c6d87372d99256765fcbad8c150441913d7bf0ea51908665f718c49" as const;
+
+/**
+ * The EXACT recognized-member set the sealed `V1_MEMBER_ROOT` commits to — the
+ * MERGED V1∪V2a snapshot (2 from V1 + 3 V2a-only seats #3–#5), lowercased for
+ * case-insensitive comparison. The canonical buy gate requires a ready artifact
+ * to carry proofs for EXACTLY this set — no member dropped, none swapped, no
+ * case-duplicate keys. The on-chain contract is the ultimate gate (it re-verifies
+ * every proof against the root), so the frontend's one safety duty is simply to
+ * never classify a real member as a fresh buyer — which would submit an empty
+ * proof and mint them a DUPLICATE seat (the one irreversible identity gate).
+ * Pinning the set makes that classification deterministic, not merely
+ * count-consistent. Bump this set in lockstep with `V1_MEMBER_ROOT` whenever the
+ * recognized set changes (e.g. a future V2c snapshot).
+ */
+export const RECOGNIZED_MEMBERS: ReadonlySet<string> = new Set([
+  "0x244531c571966f90f4849e03a507543d90f9c721",
+  "0x3488857b003104e2b08a1d198f8a23bff28b0045",
+  "0x03e99f09f0fc8d04864466bc37fd73dd7ba3c6d0",
+  "0x3b1396b1ff61b79c742751cfb6f0f04eac25ec6a",
+  "0x5734c19d1907857d1e54f95d12300e2fc7b0c2cd",
+]);
+
+/** Number of recognized members the sealed root commits to (= RECOGNIZED_MEMBERS.size). */
+export const EXPECTED_MEMBER_COUNT = RECOGNIZED_MEMBERS.size;
 
 /**
  * Shape of the proof artifact. `proofs` maps a member address → its Merkle
@@ -70,19 +97,81 @@ export function isArtifactReady(a: V1ProofArtifact | null | undefined): a is V1P
 }
 
 /**
+ * StandardMerkleTree leaf for leafEncoding `["address"]`, matching the deployed
+ * contract EXACTLY: `keccak256(bytes.concat(keccak256(abi.encode(addr))))`
+ * (a DOUBLE hash). Lowercased first so the leaf depends only on the address
+ * bytes, never its checksum casing.
+ */
+function v1MerkleLeaf(address: string): Hex {
+  const encoded = encodeAbiParameters([{ type: "address" }], [address.toLowerCase() as Hex]);
+  return keccak256(keccak256(encoded));
+}
+
+/** OpenZeppelin commutative node hash: keccak256 of the two 32-byte nodes in ascending byte order. */
+function hashPair(a: Hex, b: Hex): Hex {
+  const [lo, hi] = a.toLowerCase() <= b.toLowerCase() ? [a, b] : [b, a];
+  return keccak256(concat([lo, hi]));
+}
+
+/**
+ * Verify a member's Merkle proof against `root` EXACTLY as the on-chain contract
+ * does (`MerkleProof.verify` over a StandardMerkleTree `["address"]` leaf). Pure;
+ * returns false on any malformed input. This is the real duplicate-seat defense:
+ * the contract's `buy()` does NOT revert on a bad non-empty proof — it skips
+ * recognition and falls through to mint a FRESH seat — so an empty/corrupt proof
+ * for a real member would issue them a DUPLICATE seat. Verifying here lets the
+ * buy fail closed instead.
+ */
+export function verifyV1MerkleProof(
+  address: string,
+  proof: readonly string[],
+  root: string,
+): boolean {
+  try {
+    let node = v1MerkleLeaf(address);
+    for (const sib of proof) node = hashPair(node, sib as Hex);
+    return node.toLowerCase() === root.toLowerCase();
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Stronger-than-structural readiness, used at the BUY boundary. The artifact is
  * structurally ready AND its root matches the sealed on-chain `V1_MEMBER_ROOT`
- * AND its declared `count` matches the number of proofs it actually carries.
- * This is the airtight fail-closed gate: only a byte-for-byte canonical snapshot
- * may classify a buyer, so a real V1 member can never be silently demoted to a
- * "fresh buyer" (which would mint them a duplicate seat). Pure.
+ * AND its proofs cover EXACTLY the recognized-member set (`RECOGNIZED_MEMBERS`)
+ * AND every one of those proofs Merkle-verifies against the root. This is the
+ * airtight fail-closed gate: only a snapshot that recognizes precisely the known
+ * members — each with a proof the contract will accept — may classify a buyer,
+ * so a real member can never be silently demoted to a "fresh buyer" (which would
+ * submit an empty/invalid proof and mint them a duplicate seat). Pure.
  */
 export function isArtifactCanonical(
   a: V1ProofArtifact | null | undefined,
 ): a is V1ProofArtifact {
   if (!isArtifactReady(a)) return false;
-  if ((a.root ?? "").toLowerCase() !== V1_MEMBER_ROOT) return false;
-  return a.count === Object.keys(a.proofs).length;
+  const root = (a.root ?? "").toLowerCase();
+  if (root !== V1_MEMBER_ROOT) return false;
+  // Pin to the EXACT recognized-member set. Count-consistency alone is not
+  // enough: a correct-root artifact that dropped/swapped a member, or padded the
+  // set with extra/case-duplicate keys, could still look plausible. Require the
+  // declared count, the RAW key count, and the distinct lowercase addresses to
+  // all equal the recognized-set size, AND full coverage of RECOGNIZED_MEMBERS.
+  if (a.count !== EXPECTED_MEMBER_COUNT) return false;
+  const keys = Object.keys(a.proofs);
+  if (keys.length !== EXPECTED_MEMBER_COUNT) return false;
+  const distinct = new Set(keys.map((k) => k.toLowerCase()));
+  if (distinct.size !== EXPECTED_MEMBER_COUNT) return false;
+  for (const m of RECOGNIZED_MEMBERS) {
+    if (!distinct.has(m)) return false;
+  }
+  // Finally, each member's proof must actually authenticate against the sealed
+  // root. The contract mints a fresh seat — a DUPLICATE — on a bad/empty proof
+  // rather than reverting, so an unverifiable artifact MUST block the buy.
+  for (const [addr, proof] of Object.entries(a.proofs)) {
+    if (!verifyV1MerkleProof(addr, proof, root)) return false;
+  }
+  return true;
 }
 
 /**

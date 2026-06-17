@@ -10,6 +10,8 @@ import {
   MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
   SALE_V2_DEPLOYMENT_BLOCK,
   SALE_V2_LIVE,
+  MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS,
+  SALE_V2A_DEPLOYMENT_BLOCK,
 } from "./syndicate-config";
 import {
   loadPurchaseEventsSnapshot,
@@ -355,8 +357,9 @@ async function scanV2Purchases(args: {
 }
 
 /**
- * Canonical multi-source purchase scan (V1 + V2). Returns the FULL newest-first
- * NormalizedPurchase list across BOTH sale contracts; callers narrow via `select`.
+ * Canonical multi-source purchase scan (V1 + V2a history + V2b active). Returns
+ * the FULL newest-first NormalizedPurchase list across EVERY sale contract a
+ * member can live on; callers narrow via `select`.
  *
  * P0 (canonical scan): the expensive historical scan is keyed ONLY on
  * (fromBlock, sale contracts) — NOT on `limit`, so all ~31 holder-index
@@ -379,6 +382,15 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
       ? (MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS as `0x${string}`)
       : null;
 
+  // V2a is the SUPERSEDED/SEALED earlier V2 deploy. It is NEVER the active buy
+  // target, but its `Purchased`/`Routed` history holds members (seats #3–#5) who
+  // never appeared on V1 or V2b — so it is ALWAYS scanned as a historical source
+  // to keep member identity continuous across the V2a→V2b cutover.
+  const saleV2a =
+    MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS && SALE_V2A_DEPLOYMENT_BLOCK !== null
+      ? (MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS as `0x${string}`)
+      : null;
+
   // Stable per-observer view, memoized on [limit] so the select reference does
   // not change every render. This keeps TanStack Query v5's select memoization
   // intact and `data` referentially stable across renders — important because
@@ -391,29 +403,49 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
   return useQuery({
     // V2 address is part of the key so the query refetches cleanly the moment
     // V2 goes live; "v2-pending" keeps the dormant key stable (== old behavior).
-    queryKey: ["live-purchases", String(fromBlock), SALE, saleV2 ?? "v2-pending"],
+    queryKey: ["live-purchases", String(fromBlock), SALE, saleV2a ?? "no-v2a", saleV2 ?? "v2-pending"],
     enabled: Boolean(publicClient),
     refetchInterval: 60_000,
     staleTime: 30_000,
     queryFn: async (): Promise<PurchaseEvent[]> => {
       if (!publicClient) return [];
       // Resolve the head through the SHARED chain-tip cache (P4c) — one tip feeds
-      // BOTH source scans (same chain), freshness, and the pulse.
+      // ALL source scans (same chain), freshness, and the pulse.
       const tip = (await fetchSharedChainTip(publicClient, queryClient)).number;
 
-      const v1 = await scanV1Purchases({ publicClient, chainId, fromBlock, tip });
+      // Identity is first-seen order across ALL sources, so the scan UNIONS every
+      // sale contract a member can live on:
+      //   V1  → historical (sealed)
+      //   V2a → historical (sealed/superseded — seats #3–#5 live ONLY here)
+      //   V2b → ACTIVE     (current buy target — new seats land here)
+      // mergePurchaseEvents is an order-independent union deduped by tx:logIndex,
+      // and tx hashes never collide across contracts, so chaining merges is safe.
+      let merged = await scanV1Purchases({ publicClient, chainId, fromBlock, tip });
 
-      // Dormant until V2 deploys: V1 list returned unchanged.
-      if (!saleV2 || SALE_V2_DEPLOYMENT_BLOCK === null) return v1;
+      // Sealed V2a history — ALWAYS included (independent of SALE_V2_LIVE) so the
+      // V2a-only members survive the cutover even before any V2b buy exists.
+      if (saleV2a && SALE_V2A_DEPLOYMENT_BLOCK !== null) {
+        const v2a = await scanV2Purchases({
+          publicClient,
+          chainId,
+          saleV2: saleV2a,
+          fromBlock: SALE_V2A_DEPLOYMENT_BLOCK,
+          tip,
+        });
+        merged = mergePurchaseEvents(merged, v2a);
+      }
 
-      const v2 = await scanV2Purchases({
+      // Active V2b. Dormant (V1 + V2a only) until V2b is live.
+      if (!saleV2 || SALE_V2_DEPLOYMENT_BLOCK === null) return merged;
+
+      const v2b = await scanV2Purchases({
         publicClient,
         chainId,
         saleV2,
         fromBlock: SALE_V2_DEPLOYMENT_BLOCK,
         tip,
       });
-      return mergePurchaseEvents(v1, v2);
+      return mergePurchaseEvents(merged, v2b);
     },
     select,
   });

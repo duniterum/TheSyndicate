@@ -1,0 +1,99 @@
+Proceed with the minimal post-V2b cutover, but do not blindly execute my guessed changes.
+
+Use senior-grade judgment.
+
+First derive the canonical post-V2b state from:
+
+* live V2b chain reads
+* V2a paused state
+* finalized snapshot/root artifacts
+* current repo config
+* current proof files
+* holder-index / scanner logic
+* docs / MD files that may still contain stale values
+
+Current known facts to verify, not blindly trust:
+
+* V2b: 0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b
+* V2b deploy block: 88193183
+* V2a paused block: 88190780
+* merged root: 0xa1f2ed106c6d87372d99256765fcbad8c150441913d7bf0ea51908665f718c49
+* merged proof count: 5
+* V2a should become sealed/history
+* V2b should become active buy target
+
+Goal:
+
+Make the site safely point to V2b so I can test the buy flow from the published website.
+
+Scope:
+
+* active sale config
+* deployment block
+* proof file
+* holder-index / scanner continuity
+* registry/transparency values if derived from config
+* minimal docs/MD status notes only where needed to prevent future stale mistakes
+
+Do NOT touch:
+
+* package/rank redesign
+* 9 chapters
+* referral
+* NFT / Archive
+* journey
+* visual redesign
+* unrelated copy
+
+Important:
+
+Do not replace every V2a mention.
+
+V2a must remain as historical/sealed source where needed.
+
+V2b must become the active buy target where needed.
+
+Docs discipline:
+
+Update docs/MD only if they would mislead future work.
+
+Do not overwrite history.
+
+Mark:
+
+* V2a = paused / superseded / historical
+* V2b = active / deployed / funded / verified
+* old V1-only proof root = stale
+* merged V2b proof root = canonical active
+
+Validation required:
+
+1. active buy flow uses V2b
+2. quote uses V2b
+3. approve spender uses V2b
+4. holder index includes V1 + V2a + V2b correctly
+5. proof root/count match V2b
+6. V2a is not used as ACTIVE_SALE
+7. V2a remains only as sealed/history
+8. no stale V2a deployment block used for active scanner
+9. build/render checks for /join and /my-syndicate
+10. production publish/update required before I test live site
+
+Return:
+
+1. canonical state discovered
+2. files changed
+3. files intentionally not changed
+4. V2a role after cutover
+5. V2b role after cutover
+6. proof root/count
+7. holder-index source list
+8. docs/MD notes updated
+9. validation results
+10. whether I can test from thesyndicate.money after publish
+11. exact smoke-test path
+12. remaining blockers
+
+Do not implement broader cleanup.
+
+This is only the minimal canonical V2b cutover.

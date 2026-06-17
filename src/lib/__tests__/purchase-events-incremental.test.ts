@@ -149,8 +149,13 @@ describe("P4a · source invariants on useLivePurchaseEvents", () => {
     expect(src).toMatch(/mergePurchaseEvents\(cached\?\.events \?\? \[\], fresh\)/);
   });
 
-  it("V2 is dormant until live: the queryFn returns the V1 list unchanged when V2 is null", () => {
-    expect(src).toMatch(/if \(!saleV2 \|\| SALE_V2_DEPLOYMENT_BLOCK === null\) return v1/);
+  it("V2b is dormant until live: the queryFn returns the V1+V2a list unchanged when V2b is null", () => {
+    expect(src).toMatch(/if \(!saleV2 \|\| SALE_V2_DEPLOYMENT_BLOCK === null\) return merged/);
+  });
+
+  it("always unions the sealed V2a history so member identity survives the V2a→V2b cutover", () => {
+    expect(src).toMatch(/saleV2a/);
+    expect(src).toMatch(/fromBlock:\s*SALE_V2A_DEPLOYMENT_BLOCK/);
   });
 
   it("the V2 money-split join fails closed: joinIncomplete gates persistence, no zero-fill", () => {
@@ -160,9 +165,9 @@ describe("P4a · source invariants on useLivePurchaseEvents", () => {
     expect(src).not.toMatch(/split\?\.vault \?\? 0/);
   });
 
-  it("keeps the canonical queryKey (one scan per chain/sale + V2 addr, not per limit)", () => {
+  it("keeps the canonical queryKey (one scan per chain/sale + V2a/V2b addrs, not per limit)", () => {
     expect(src).toMatch(
-      /queryKey:\s*\["live-purchases",\s*String\(fromBlock\),\s*SALE,\s*saleV2\s*\?\?\s*"v2-pending"\]/,
+      /queryKey:\s*\["live-purchases",\s*String\(fromBlock\),\s*SALE,\s*saleV2a\s*\?\?\s*"no-v2a",\s*saleV2\s*\?\?\s*"v2-pending"\]/,
     );
     // Anti-regression: limit must never enter the canonical key.
     expect(src).not.toMatch(/\["live-purchases",\s*String\(fromBlock\),\s*limit/);

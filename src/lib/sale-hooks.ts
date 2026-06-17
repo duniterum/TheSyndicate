@@ -8,6 +8,7 @@ import {
   SYN_DECIMALS,
   LP_POOL,
   MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
+  MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS,
   SALE_V2_LIVE,
 } from "./syndicate-config";
 import { SALE_ABI, SALE_V2_ABI, ERC20_ABI, PAIR_ABI } from "./sale-abi";
@@ -21,6 +22,8 @@ import {
 
 /** Sealed V1 sale (history). Cumulative V1 totals fold into protocol totals. */
 const SALE_V1 = CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS as `0x${string}`;
+/** Sealed V2a sale (history). Its seats #3–#5 predate V2b; totals fold into protocol totals. */
+const SALE_V2A = MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS as `0x${string}`;
 /** Live V2 sale address, or null while V2 is dormant. */
 const SALE_V2 = (SALE_V2_LIVE && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
   ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
@@ -97,6 +100,12 @@ export function useSaleStats(): SaleStats {
           { address: SALE_V1, abi: SALE_ABI, functionName: "totalUsdcRaised" },
           { address: SALE_V1, abi: SALE_ABI, functionName: "totalSynSold" },
           { address: SALE_V1, abi: SALE_ABI, functionName: "purchaseCount" },
+          // Sealed V2a history (seats #3–#5) — also folded into cumulative totals
+          // so the cutover to V2b does not silently drop V2a's on-chain sales.
+          { address: SALE_V2A, abi: SALE_V2_ABI, functionName: "totalUsdcRaised" },
+          { address: SALE_V2A, abi: SALE_V2_ABI, functionName: "totalSynSold" },
+          { address: SALE_V2A, abi: SALE_V2_ABI, functionName: "memberCount" },
+          { address: SALE_V2A, abi: SALE_V2_ABI, functionName: "GENESIS_OFFSET" },
         ]
       : [
           { address: SALE_V1, abi: SALE_ABI, functionName: "availableSyn" },
@@ -117,8 +126,20 @@ export function useSaleStats(): SaleStats {
     const memberCount = okResult<bigint>(d[3]);
     const genesisOffset = okResult<bigint>(d[4]);
     const v1Purchases = okResult<bigint>(d[13]);
-    // V2 memberCount already counts from the V1 baseline (GENESIS_OFFSET), so it
-    // is the cumulative unique-member count. New V2 seats = memberCount − offset.
+    // Sealed V2a history (seats #3–#5 predate V2b): its USDC/SYN/seats fold into
+    // the protocol-cumulative totals so the headline "verify on-chain" numbers
+    // are not understated by the cutover. V2a's seat count mirrors the V2b
+    // derivation (memberCount − GENESIS_OFFSET). Reads fail-soft to 0 (sealed).
+    const v2aUsdc = okResult<bigint>(d[14]);
+    const v2aSyn = okResult<bigint>(d[15]);
+    const v2aMembers = okResult<bigint>(d[16]);
+    const v2aOffset = okResult<bigint>(d[17]);
+    const v2aSeats =
+      v2aMembers !== undefined && v2aOffset !== undefined && v2aMembers > v2aOffset
+        ? v2aMembers - v2aOffset
+        : 0n;
+    // V2b memberCount already counts from the MERGED V1∪V2a baseline (GENESIS_OFFSET),
+    // so it is the cumulative unique-member count. New V2b seats = memberCount − offset.
     const v2NewSeats =
       memberCount !== undefined && genesisOffset !== undefined
         ? memberCount > genesisOffset
@@ -128,12 +149,12 @@ export function useSaleStats(): SaleStats {
     return {
       ...base,
       availableSyn: okResult<bigint>(d[0]),
-      totalUsdcRaised: sumBig(okResult<bigint>(d[11]), okResult<bigint>(d[1])),
-      totalSynSold: sumBig(okResult<bigint>(d[12]), okResult<bigint>(d[2])),
+      totalUsdcRaised: sumBig(sumBig(okResult<bigint>(d[11]), v2aUsdc), okResult<bigint>(d[1])),
+      totalSynSold: sumBig(sumBig(okResult<bigint>(d[12]), v2aSyn), okResult<bigint>(d[2])),
       totalBuyers: memberCount,
       purchaseCount:
         v1Purchases !== undefined && v2NewSeats !== undefined
-          ? v1Purchases + v2NewSeats
+          ? v1Purchases + v2aSeats + v2NewSeats
           : v1Purchases,
       paused: okResult<boolean>(d[5]),
       saleSynBalance: okResult<bigint>(d[6]),

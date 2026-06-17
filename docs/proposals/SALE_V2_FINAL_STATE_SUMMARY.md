@@ -1,5 +1,14 @@
 # Sale V2 — Final State Summary (pre-deployment)
 
+> **⚠️ SUPERSEDED — HISTORICAL. This document describes V2a (the pre-deployment plan), not the live protocol.**
+> It is a frozen 2026-06-15 snapshot of the V2**a** deploy plan (genesisOffset = 2,
+> next seat #3, `V1_MEMBER_ROOT 0xae75…74ff`, count 2). The protocol has since cut
+> over to **V2b** (`0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b`, deploy block
+> 88,193,183), now the ACTIVE buy target with the MERGED V1∪V2a root
+> `0xa1f2…718c49` (count 5). V2a (`0x0b883…2b48`) is PAUSED/SEALED and retained
+> only as a historical scan source. **The live `src/lib/syndicate-config.ts` is the
+> canonical source of truth — not this doc.**
+
 > Human-readable snapshot of where things stand before the first mainnet signature.
 > All on-chain values were read live on **2026-06-15**. Read-only; nothing executed.
 > Companion files: `SALE_V2_MAINNET_EXECUTION_PACKAGE.md` (full) and

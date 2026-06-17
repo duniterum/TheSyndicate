@@ -1,14 +1,30 @@
 {
   "pending": false,
-  "root": "0xae75ae2077570c7bd09d95cc142e283cfa73fc9e263c2debf1ba3403457474ff",
-  "count": 2,
+  "root": "0xa1f2ed106c6d87372d99256765fcbad8c150441913d7bf0ea51908665f718c49",
+  "count": 5,
   "proofs": {
     "0x244531C571966f90f4849e03a507543d90f9C721": [
-      "0x3eb58fd16895751acdd571cb5db11df332a3c61a317fe3cdbba62311120dd484"
+      "0x351be682d5731e02352dd7e4a84dc8f8af1cc8f58e62316caafc44159d441f39",
+      "0xef07f63cec6e120b7b02d379ff08ceed31056c89ee8812835b7dd2845d42d403"
     ],
     "0x3488857b003104e2B08A1D198f8a23BFF28B0045": [
-      "0x2f88566ae4accbe296cd9222269a1eeeb4d56bf2c96a9f4bab14a2a9623e5fe3"
+      "0x1cafd1512d9feca9a70c3c66ff0e9b6b774003dfe83847276d7de838f04b55f6",
+      "0x929c81bdf7c84ce011276a5e2dc5a7e959b98f12f1c39751e024230249e92c59"
+    ],
+    "0x03E99f09f0FC8D04864466bc37fd73Dd7ba3C6d0": [
+      "0x0560ad24ad0d373632c2755d700b9c7aafd2d6040e3a829cf7930c77743ae4a7",
+      "0x3eb58fd16895751acdd571cb5db11df332a3c61a317fe3cdbba62311120dd484",
+      "0x929c81bdf7c84ce011276a5e2dc5a7e959b98f12f1c39751e024230249e92c59"
+    ],
+    "0x3b1396B1ff61b79C742751CfB6f0f04eAc25Ec6a": [
+      "0x2706e70c528387c0d2b480dfde8e23c8a4444070c1117e5139fa37ab13f6065b",
+      "0x3eb58fd16895751acdd571cb5db11df332a3c61a317fe3cdbba62311120dd484",
+      "0x929c81bdf7c84ce011276a5e2dc5a7e959b98f12f1c39751e024230249e92c59"
+    ],
+    "0x5734C19D1907857d1e54F95D12300e2fc7B0C2cD": [
+      "0x2f88566ae4accbe296cd9222269a1eeeb4d56bf2c96a9f4bab14a2a9623e5fe3",
+      "0xef07f63cec6e120b7b02d379ff08ceed31056c89ee8812835b7dd2845d42d403"
     ]
   },
-  "note": "Canonical V1 membership snapshot for Sale V2 recognition. root MUST equal the V1_MEMBER_ROOT baked into the deployed Sale V2 (0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48). Generated from contracts/tools/v1-merkle.json (StandardMerkleTree, leafEncoding [address]). count=2 V1 members. A fresh buyer (not listed) passes an empty proof and receives a new seat; a listed V1 member must pass THEIR proof so V2 continues their identity."
+  "note": "Canonical MERGED V1\u222aV2a membership snapshot for Sale V2b recognition. root MUST equal the V1_MEMBER_ROOT baked into the deployed Sale V2b (0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b). Generated from contracts/tools/v2b-merkle.json (StandardMerkleTree, leafEncoding [address]). count=5 = 2 V1 members + 3 V2a-only members (seats #3-#5), in first-seen order. A fresh buyer (not listed) passes an empty proof and receives a new seat (#6+); a listed member must pass THEIR proof so V2b continues their identity instead of minting a duplicate. The earlier V1-only root 0xae75...74ff (count 2) was V2a's and is now STALE."
 }

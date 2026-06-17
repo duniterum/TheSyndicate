@@ -320,16 +320,31 @@ const EXPLORER_KIND: Record<ContractKey, "token" | "address"> = {
 export const isLiveAddress = (v: string) =>
   v !== "PENDING" && /^0x[a-fA-F0-9]{40}$/.test(v);
 
-// ── Sale V2 (Model 2 continuation) — DEPLOYED & LIVE on Avalanche mainnet ──
-// The address + deploy block below are real and known, so SALE_V2_LIVE is true
-// and V2 is the ACTIVE self-service sale (V1 is sealed/paused, kept for history).
+// ── Sale V2 — ACTIVE buy target on Avalanche mainnet (V2b) ────────────────
+// V2b (below) is the LIVE, funded, on-chain-verified self-service sale and the
+// ACTIVE buy / quote / approve target. It SUPERSEDES V2a (an earlier same-source
+// deploy, now PAUSED/SEALED), which is retained ONLY as a historical scan source
+// for member continuity — see MEMBERSHIP_SALE_V2A_* below. V1 is also sealed.
 // NOTE: the V2 contract is UNAUDITED — describe it as live-but-unaudited / early,
 // never as audited. No placeholder strings, no inferred address (truth doctrine).
 // Kept OUTSIDE `CONTRACTS` so the `as const` map / ContractKey / EXPLORER_KIND
 // stay uniform; mirrors how SALE_DEPLOYMENT_BLOCK lives as a standalone export.
 export const MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS: string | null =
+  "0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b";
+export const SALE_V2_DEPLOYMENT_BLOCK: bigint | null = 88193183n;
+
+// ── Sale V2a (SUPERSEDED / SEALED) — historical scan source ONLY ──────────
+// V2a was an earlier same-source V2 deploy, now PAUSED (paused at block
+// 88,190,780) and replaced by V2b above. It is NEVER the active buy/quote/
+// approve target. It is retained solely so the Holder Index scanner can read
+// its `Purchased`/`Routed` history: 3 members first appeared on V2a (seats
+// #3–#5) and are absent from both V1 and V2b, so dropping V2a would erase them
+// from member identity. Same event ABI as V2b (same-source), so the existing
+// V2 scanner reads it verbatim.
+export const MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS: string | null =
   "0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48";
-export const SALE_V2_DEPLOYMENT_BLOCK: bigint | null = 88095827n;
+export const SALE_V2A_DEPLOYMENT_BLOCK: bigint | null = 88095827n;
+
 /** True only when BOTH the V2 address and its deploy block are known. */
 export const SALE_V2_LIVE: boolean =
   MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS !== null &&
