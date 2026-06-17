@@ -1,0 +1,227 @@
+THE SYNDICATE — UNFINISHED / PARTLY DONE / VERIFY-NEXT LIST
+
+Purpose:
+
+We are opening a new chat and do not want to lose context.
+
+Do not implement yet.
+
+First verify current repo, production, docs, chain state, and deployed contracts.
+
+Then return what is DONE, PARTLY DONE, NOT DONE, and what should be next.
+
+Current known state from recent work:
+
+* V2a paused / historical
+* V2b deployed
+* V2b funded with 7,000,000 SYN
+* V2b production cutover completed
+* Fresh-wallet V2b buy succeeded
+* Member #6 created
+* Later chain showed memberCount = 7 / nextSeat = 8
+* Proof gate fixed for fresh buyers
+* Carried-member proof path was reviewed
+* totalUsdcRaised / raised / contribution language cleanup was done
+* First Signal “uncapped” copy bug was fixed in code
+* First Signal is Archive1155 ID 1, edition of 10,000, wallet limit 5, repeat minting intentional
+* But some fixes may still require publish / production verification
+
+Your task:
+
+Create a complete founder-grade unfinished-work ledger.
+
+Do not assume.
+
+Verify current truth from:
+
+* production site
+* repo code
+* docs / MD files
+* memory files
+* chain reads
+* deployed contracts
+* current proof artifacts
+* current tests
+
+Classify every item:
+
+DONE
+DONE BUT NEEDS PUBLISH
+PARTLY DONE
+NOT DONE
+DEFERRED POST-MVP
+DANGEROUS IF FORGOTTEN
+
+Areas to check:
+
+1. V2b sale / live buy flow
+
+* active sale is V2b
+* V2a historical only
+* V1 + V2a + V2b holder index union
+* fresh buyer path
+* carried member #1–#5 repeat-buy path
+* native V2b member repeat-buy path
+* proof artifact root/count
+* duplicate-seat prevention
+* buy receipt
+* share card
+* 70/20/10 receipt clarity
+* totalUsdcRaised nuance
+
+2. Old members / repeat buys
+
+* Can members #1–#5 buy again from live site?
+* Does proof resolve?
+* Does memberCount stay unchanged?
+* Does knownMember flip correctly after first V2b buy?
+* Can member #6/#7 buy again without duplicate seat?
+* Any live UI blocker?
+
+3. Buy-flow UX
+
+* package card → /join selected amount
+* auto-scroll/focus to buy widget
+* custom amount clarity
+* package vs checkout preset mismatch
+* receipt clarity
+* failed/approved/pending state clarity
+* mobile flow
+* fewer steps / best-practice crypto checkout UX
+* user should not choose twice
+
+4. Legal / wording harmony
+
+* totalUsdcRaised technical-only
+* no public “raised” / “contribution” / “investor” / “return” / “yield” / “dividend” / “share” / “equity”
+* canonical public label
+* docs updated
+* guards pass
+
+5. NFT / Archive
+
+* First Signal ID 1 truth
+* edition of 10,000
+* wallet limit 5
+* repeat minting intentional
+* not the seat
+* record-only / no financial rights
+* cockpit copy
+* /nft copy
+* docs cleanup
+* publish status
+* Patron Seal / other IDs current status
+* SeatRecord721 remains future
+
+6. Docs / MD / memory drift
+
+* V2a marked historical
+* V2b marked active
+* old root count=2 not resurrected
+* merged root count=5 canonical
+* First Signal not uncapped
+* totalUsdcRaised nuance recorded
+* package/rank/chapter redesign deferred
+* referral not live
+* SeatRecord721 not live
+* stale docs marked historical, not overwritten blindly
+
+7. Production publish state
+
+* Which fixes are in code but not live?
+* Which chunks are live?
+* Does production show latest buy-flow fix?
+* Does production show latest First Signal copy fix?
+* Does production show legal wording cleanup?
+* Does live /v1-member-proofs.json match canonical artifact?
+
+8. FAQ / Registry / Transparency / Activity / My Syndicate
+
+* Are these pages aligned with V2b?
+* Do they show correct sale address?
+* Do they show correct proof/member data?
+* Do they avoid unsafe language?
+* Are important facts buried or missing?
+* Is FAQ updated to current truth?
+* Is Registry showing V2b active and V2a historical?
+
+9. Package / Rank / Chapter / Era conceptual debt
+
+* Package = suggested path
+* Rank = recognition only
+* Chapter = story cohort
+* Era = pricing/minimum/rate phase
+* Seat = identity
+* This is not fully resolved
+* Classify as post-MVP unless it blocks public understanding
+* Identify minimum copy fixes before promotion
+
+10. Referral / CommissionRouter
+
+* Not live
+* Do not activate now
+* Preserve future model
+* Verify no public UI implies live rewards
+* Verify no false referral earnings
+
+11. Journey / dashboard / member cockpit
+
+* My Syndicate working?
+* owned artifacts shown correctly?
+* member rank/seat shown correctly?
+* “since last visit” not duplicative/broken?
+* next action correct?
+* old member and new member states correct?
+
+12. Contract verification / explorer
+
+* V2b verified partial match acceptable
+* Archive1155 status
+* Sale V2a/V2b statuses
+* Need docs explaining partial match?
+* Any explorer links wrong?
+
+13. Final public promotion blockers
+    Return a table:
+
+MUST FIX BEFORE PROMOTION
+SHOULD FIX BEFORE PROMOTION
+CAN WAIT POST-MVP
+
+Be strict.
+
+Do not list dreams as blockers.
+
+Only list real blockers.
+
+14. Suggested next sprint
+    After the ledger, recommend the next sprint.
+
+It should be small, executable, and highest leverage.
+
+Do not start implementing until I approve.
+
+Return format:
+
+1. Current canonical production state
+2. DONE list
+3. DONE BUT NEEDS PUBLISH list
+4. PARTLY DONE list
+5. NOT DONE list
+6. DEFERRED POST-MVP list
+7. Dangerous drift risks
+8. Public promotion blockers
+9. Suggested next sprint
+10. Exact files/docs likely involved
+
+Most important:
+
+Think like senior CTO + product architect + protocol architect + legal-copy reviewer.
+
+Do not blindly follow my memory.
+
+If my memory is wrong, correct it.
+
+Use chain/code/docs/production as source of truth.
+
+We want to finish this slice cleanly and then continue building.
