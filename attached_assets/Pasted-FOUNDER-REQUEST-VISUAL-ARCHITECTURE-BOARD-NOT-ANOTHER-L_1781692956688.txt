@@ -1,0 +1,225 @@
+FOUNDER REQUEST — VISUAL ARCHITECTURE BOARD, NOT ANOTHER LAB
+
+Do not create a new lab route.
+
+Do not create another staging route.
+
+Do not create another prototype page.
+
+Before any implementation sprint:
+
+Use the existing lab/staging environment and create a VISUAL ARCHITECTURE BOARD.
+
+Problem:
+
+We are currently discussing the future structure only through text reports.
+
+The protocol is now too large.
+
+Text is no longer enough.
+
+I need to see the future composition visually.
+
+Goal:
+
+Create one founder-facing visual board that shows:
+
+1. Current site structure
+2. Proposed future structure
+3. Major pages
+4. Major dashboards
+5. User journeys
+6. Component ownership
+7. Duplication
+8. Missing links
+9. Future referral placement
+10. Future member OS placement
+
+Use actual screenshots and actual components whenever possible.
+
+Not text-only.
+
+Not another report.
+
+Not another audit.
+
+Visual first.
+
+SECTION A — CURRENT SITE MAP
+
+Show:
+
+Homepage
+Join
+My Syndicate
+Activity
+Vault
+Liquidity
+Tokenomics
+Ranks
+Chapters
+NFT
+Archive
+Transparency
+Registry
+Referral
+FAQ
+
+Display:
+
+* screenshot thumbnail
+* purpose
+* major components
+* current navigation position
+
+I want to visually see what exists.
+
+SECTION B — DUPLICATION MAP
+
+Visually show:
+
+Where the same information appears multiple times.
+
+Examples:
+
+* economy metrics
+* routing
+* vault
+* NFT story
+* chapter story
+* activity
+* verification
+
+Show overlaps with arrows.
+
+I want to see the disorder.
+
+SECTION C — FUTURE SITE ARCHITECTURE
+
+Create a visual block diagram.
+
+Show:
+
+HOME
+JOIN
+MEMBER OS
+ACTIVITY
+VAULT
+LIQUIDITY
+RANKS
+CHAPTERS
+NFT
+TRANSPARENCY
+REGISTRY
+REFERRAL
+
+and the relationships between them.
+
+Use arrows.
+
+Use ownership zones.
+
+Show what belongs where.
+
+SECTION D — ALICE JOURNEY
+
+Visual storyboard.
+
+Alice lands.
+Alice joins.
+Alice receives SYN.
+Alice gets seat identity.
+Alice enters Member OS.
+Alice buys more.
+Alice mints artifact.
+Alice shares.
+Alice returns.
+Alice eventually uses referral.
+
+Show visually.
+
+SECTION E — MEMBER OS
+
+Visual wireframe.
+
+Not code.
+
+Not final design.
+
+Show layout blocks:
+
+identity
+seat
+rank
+chapter
+assets
+receipts
+activity
+artifacts
+next action
+share
+referral
+settings
+
+I want to react to layout.
+
+SECTION F — REFERRAL PREVIEW
+
+Show the current referral preview visually.
+
+Show:
+
+current state
+future state
+commissionRouter status
+user flow
+
+I want to see it, not read about it.
+
+SECTION G — PAGE PRIORITY
+
+Color code:
+
+PRIMARY
+SECONDARY
+PROOF
+FUTURE
+
+So I can instantly see:
+
+what should be important
+what is supporting
+what is reference only
+what is preview only
+
+Output:
+
+Either:
+
+* a visual board page in the existing lab
+* or a founder review route
+* or a visual architecture document
+
+But it must be graphical.
+
+Screenshots.
+Diagrams.
+Blocks.
+Arrows.
+Layouts.
+
+Minimize long text.
+
+I want to review the future structure visually before we move components around.
+
+Important:
+
+Do not redesign yet.
+
+Do not implement page changes yet.
+
+Do not rename concepts yet.
+
+Do not touch production.
+
+This step exists only to make the architecture visible so we can make decisions with our eyes instead of 50-page reports.
