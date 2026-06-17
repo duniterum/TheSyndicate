@@ -1,0 +1,141 @@
+PRE-DESIGN REFACTOR CALIBRATION — FIND THE CONSTRAINTS FIRST
+
+Before starting any site design refactor, stop and think like a senior product designer, CTO, founder, growth lead, legal reviewer, QA lead, and crypto-native user.
+
+Do not implement yet.
+Do not redesign yet.
+Do not touch production yet.
+Do not create a new lab.
+Do not move routes.
+Do not rename concepts.
+
+We have tried several design passes before, and the result still did not feel like the desired premium crypto cockpit.
+
+So before you begin Sprint 0 / Sprint 1, answer this first:
+
+What has been blocking the design from becoming the site we want?
+
+Diagnose the constraints honestly.
+
+Evaluate:
+
+1. Component constraints
+
+Are existing components too rigid?
+Are they too text-heavy?
+Are they built as information blocks instead of visual product modules?
+Which components are reusable?
+Which components should not be reused for the new design?
+
+2. Layout constraints
+
+Is the site using too many stacked sections?
+Are pages too long?
+Are grids inconsistent?
+Are cards too similar?
+Is spacing / hierarchy / typography blocking the premium feel?
+Is the current layout system forcing “report style” instead of “crypto cockpit”?
+
+3. Data constraints
+
+Which live metrics are reliable enough for hero/dashboard use?
+Which values are still PENDING because of RPC/dev environment issues?
+Which values are hard to read live?
+Where would a beautiful dashboard risk showing blanks?
+
+4. Visual identity constraints
+
+Is the current logo/icon system inconsistent?
+Is the brand not yet wired into favicon, token icon, app icon, dashboards, and press kit?
+Would starting homepage refactor before brand assets cause rework?
+Can the preferred rounded interconnected Syndicate mark become the canonical design anchor?
+
+5. Narrative constraints
+
+Is the site still proof-first instead of desire-first?
+Is legal safety making the site feel defensive?
+Where does the site explain too much too early?
+Where does Alice lose the emotional reason to join?
+
+6. UX constraints
+
+Is /join overloaded?
+Is /my-syndicate buried?
+Is the homepage trying to do too many jobs?
+Is referral too hidden to review?
+Is navigation too wide / confusing?
+Does the user know what to do next?
+
+7. Legal constraints
+
+Which design moves are safe?
+Which design moves are risky?
+Where must we be careful not to imply:
+
+* ROI
+* yield
+* dividends
+* returns
+* equity
+* vault ownership
+* rank rights
+* NFT = membership
+* referral live today
+
+8. Technical constraints
+
+Is CSS/theme architecture fragmented?
+Are there too many one-off components?
+Are dark/light modes consistent?
+Are responsive/mobile layouts clean?
+Are route-level layouts inconsistent?
+Would a real redesign require design tokens first?
+
+9. QA constraints
+
+What could break if we touch homepage?
+What could break if we touch /join?
+What could break if we touch /my-syndicate?
+Which pages should be left untouched until later?
+What is the safest first implementation surface?
+
+10. Best implementation strategy
+
+Choose the best path:
+
+A. Brand system first, then homepage cockpit
+B. Homepage cockpit first, then brand
+C. Member OS first
+D. Join simplification first
+E. Full page-by-page cleanup
+F. New visual component system / design tokens first
+G. Another approach you recommend
+
+Return:
+
+1. The main blockers that caused previous design attempts to miss the target
+2. The constraints you must respect before refactoring
+3. Which existing components are good enough to reuse
+4. Which components are too text/report-like and should be redesigned
+5. Which pages are safe to touch first
+6. Which pages are dangerous to touch first
+7. Whether Sprint 0 should be brand assets, design tokens, or homepage cockpit
+8. Your recommended refactor strategy in 3–5 small sprints
+9. What you need from the founder before starting
+10. A clear “do not do this” list to avoid another messy pass
+
+Important:
+
+Be brutally honest.
+
+If current component architecture prevents a premium crypto cockpit, say so.
+
+If data/RPC reliability prevents a beautiful live dashboard, say so.
+
+If brand assets must be finalized before the design refactor, say so.
+
+If the correct move is not implementation yet, say so.
+
+Goal:
+
+Before we spend money and time again, I want to know what you think will happen when you begin the site design refactor, what could block you, and what the safest senior-grade path is.

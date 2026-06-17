@@ -353,3 +353,9 @@ id = "va2IGbjnldKc4oIfH0vMz"
 uri = "file://docs/handoffs/CENTER_OF_GRAVITY_2026-06-17.md"
 type = "text"
 title = "Center of Gravity Determination — The Seat / Member OS"
+
+[[outputs]]
+id = "oHIlKp3BTZcPz5kFVeimm"
+uri = "file://docs/handoffs/PRE_DESIGN_REFACTOR_CALIBRATION_2026-06-17.md"
+type = "text"
+title = "Pre-Design-Refactor Calibration — Constraints & Safe Path"
