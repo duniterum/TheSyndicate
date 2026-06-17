@@ -359,3 +359,21 @@ id = "oHIlKp3BTZcPz5kFVeimm"
 uri = "file://docs/handoffs/PRE_DESIGN_REFACTOR_CALIBRATION_2026-06-17.md"
 type = "text"
 title = "Pre-Design-Refactor Calibration — Constraints & Safe Path"
+
+[[outputs]]
+id = "7cPpz-pMQ89kxVCLX_4Me"
+uri = "file://docs/handoffs/DESIGN_FOUNDATION_LAYER_2026-06-17.md"
+type = "text"
+title = "Design Foundation Layer — Sprint 0 Spec (for approval)"
+
+[[outputs]]
+id = "eiOsB6bbkfwki0UW50Mn0"
+uri = "file://screenshots/current-home.jpg"
+type = "image"
+title = "Current state — Homepage (primitives in situ: hero CTAs, ticker, panels, pills)"
+
+[[outputs]]
+id = "5-4DwHc3vss-HxuySNPD7"
+uri = "file://screenshots/current-join.jpg"
+type = "image"
+title = "Current state — /join (LIVE pill, stat cells, cards, seat badge)"
