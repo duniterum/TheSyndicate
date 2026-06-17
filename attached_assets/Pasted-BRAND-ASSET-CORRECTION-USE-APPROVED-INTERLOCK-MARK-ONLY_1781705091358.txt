@@ -1,0 +1,159 @@
+BRAND ASSET CORRECTION — USE APPROVED INTERLOCK MARK ONLY
+
+Pause the node/hex emblem direction.
+
+Do not publish yet.
+Do not delete existing generated files yet.
+Do not wire any unapproved logo into Header/Logo/nav.
+
+Founder decision:
+
+The approved symbol is the rounded interlocking Syndicate mark shown in the provided reference images.
+
+Use this direction only.
+
+Do not invent:
+
+* node logo
+* hex logo
+* AI/network logo
+* validator logo
+* infrastructure emblem
+* new abstract symbol
+
+The mark should feel:
+
+* premium
+* crypto-native
+* membership identity
+* token-ready
+* favicon-ready
+* app-icon-ready
+* social-avatar-ready
+* luxury obsidian/gold
+* recognizably The Syndicate
+
+Not generic infrastructure.
+
+Task:
+
+Create a clean brand-v2 asset set based only on the approved Interlock mark.
+
+Use the uploaded/generated reference images as visual source direction.
+
+Folder:
+
+public/brand-v2-syndicate-interlock/
+
+Create or prepare these files:
+
+1. Mark only
+
+* syn-mark-gold.png / svg if possible
+* syn-mark-ink.png / svg if possible
+* syn-mark-ivory.png / svg if possible
+
+2. Icon tiles
+
+* syn-icon-gold.png
+* syn-icon-obsidian.png
+* syn-icon-maskable.png
+
+3. Favicon / app / avatar
+
+* syn-favicon.png
+* favicon.ico if safe
+* syn-app-icon-512.png
+* syn-avatar.png
+
+4. Token
+
+* syn-coin-gold.png
+* syn-coin-silver.png
+
+5. Lockups
+
+* syn-lockup-light.png
+* syn-lockup-dark.png
+* syn-lockup-obsidian.png
+* syn-lockup-stacked.png
+
+Text must be generated in code/SVG/HTML, not from AI image text.
+
+Use readable real text:
+
+* THE SYNDICATE
+* SYN
+* On-chain membership protocol
+* Membership. Signal. Legacy.
+
+Do not use AI-generated unreadable text.
+
+6. Social / listing
+
+* syn-og.png
+* syn-listing.png
+* exchange-preview.png
+
+7. Brand preview
+   Update the existing BrandBoard or /labs/component-index brand section to compare:
+
+A. current live mark
+B. rejected node/hex Sprint 0B mark
+C. approved Interlock mark asset set
+
+Clearly label:
+
+* APPROVED
+* REJECTED / DO NOT USE
+* CURRENT
+
+Important:
+
+Do not decide alone.
+
+Return:
+
+1. Which assets were created
+2. Exact file paths
+3. Which old node/hex files remain
+4. Which files are production-facing today
+5. Which files are not yet wired
+6. Screenshots/previews of:
+
+   * favicon
+   * app icon
+   * token coin
+   * light lockup
+   * dark lockup
+   * OG card
+   * listing preview
+7. Ask founder if any additional images are needed before wiring:
+
+   * wallet token logo
+   * CoinGecko / CoinMarketCap logo
+   * DexScreener pair icon
+   * Telegram/X avatar
+   * mobile splash icon
+   * PWA maskable variants
+   * press-kit hero image
+   * exchange listing image
+
+Guardrails:
+
+* Gold = identity / brand / seat / token
+* Cyan = live data / verification / activity
+* Green = live/success only
+* Red = risk/error only
+
+No ROI.
+No yield.
+No dividend.
+No return.
+No equity.
+No profit promise.
+No vault ownership claim.
+No NFT = membership claim.
+No referral live claim.
+
+Do not publish until founder approves the final asset set.

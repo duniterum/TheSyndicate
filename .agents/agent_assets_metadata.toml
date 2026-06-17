@@ -377,3 +377,21 @@ id = "5-4DwHc3vss-HxuySNPD7"
 uri = "file://screenshots/current-join.jpg"
 type = "image"
 title = "Current state — /join (LIVE pill, stat cells, cards, seat badge)"
+
+[[outputs]]
+id = "1WGVIEzWvr0kAAzMVA9SH"
+uri = "file://attached_assets/_verify/CONTACT_SHEET.png"
+type = "image"
+title = "Interlock — master contact sheet (marks, icons, coins, lockups, social)"
+
+[[outputs]]
+id = "Tnv1_JDUqJK9GllsLwNk6"
+uri = "file://public/brand-v2-syndicate-interlock/syn-og.png"
+type = "image"
+title = "Interlock — social / OG card (1200×630)"
+
+[[outputs]]
+id = "dGKqsr1YLzod9cpmYhe43"
+uri = "file://public/brand-v2-syndicate-interlock/syn-lockup-dark.png"
+type = "image"
+title = "Interlock — primary lockup (dark)"
