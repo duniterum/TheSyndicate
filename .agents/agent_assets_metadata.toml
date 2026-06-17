@@ -419,3 +419,45 @@ id = "ZAbtkHdd9cYYJaPdtFKbH"
 uri = "file://public/brand-v2-syndicate-interlock/syn-dexscreener-256.png"
 type = "image"
 title = "DexScreener pair icon (256×256)"
+
+[[outputs]]
+id = "VTL0Dgc5nEKqs6_yTS6oE"
+uri = "file://screenshots/sprint1/desktop-1-above-fold-LIVE.png"
+type = "image"
+title = "Desktop · Above the fold (live values)"
+
+[[outputs]]
+id = "QdhOBsHRNv2PMXgU5a2cb"
+uri = "file://screenshots/sprint1/desktop-2-kpi-grid.png"
+type = "image"
+title = "Desktop · Protocol KPIs grid"
+
+[[outputs]]
+id = "M7k9KulvoctwrHA8Q5S_H"
+uri = "file://screenshots/sprint1/desktop-3-engines.png"
+type = "image"
+title = "Desktop · Protocol engines panel"
+
+[[outputs]]
+id = "lAxg1IQBQ3zpGEW_3BkGb"
+uri = "file://screenshots/sprint1/desktop-4-vitals-activity.png"
+type = "image"
+title = "Desktop · Protocol vitals (heartbeat) + activity"
+
+[[outputs]]
+id = "gFKdQRLjo3HajPP57uvhz"
+uri = "file://screenshots/sprint1/mobile-1-above-fold.png"
+type = "image"
+title = "Mobile · Above the fold"
+
+[[outputs]]
+id = "2xlPBDfN9P0HwX2lmmIdu"
+uri = "file://screenshots/sprint1/mobile-2-ticker.png"
+type = "image"
+title = "Mobile · Calm ticker (top)"
+
+[[outputs]]
+id = "YRuDG0jKVjkAwMbNe7iKk"
+uri = "file://screenshots/sprint1/mobile-3-kpi-grid.png"
+type = "image"
+title = "Mobile · KPI grid (stacked)"
