@@ -461,3 +461,15 @@ id = "YRuDG0jKVjkAwMbNe7iKk"
 uri = "file://screenshots/sprint1/mobile-3-kpi-grid.png"
 type = "image"
 title = "Mobile · KPI grid (stacked)"
+
+[[outputs]]
+id = "qcOevPs6GUDcieNyDrabr"
+uri = "file://screenshots/sprint1/before-after.png"
+type = "image"
+title = "Before / After — OLD (production, left) vs NEW (dev, annotated, right)"
+
+[[outputs]]
+id = "tsfouN88aBiSHYiw6xTjE"
+uri = "file://screenshots/sprint1/new-top-annotated.png"
+type = "image"
+title = "NEW homepage annotated — fold line + where Sprint 1 added/raised sections"
