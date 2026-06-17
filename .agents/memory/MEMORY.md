@@ -1,4 +1,5 @@
 - [Foundation freeze](foundation-freeze.md) — 5-layer TRUTH→EVENTS→SIGNALS→MEMORY→STORY + Adjacency Law frozen in docs/canon/05; Signal=Type×Tier; size never raises tier.
+- [Center of gravity ruling](center-of-gravity.md) — product anchor = the SEAT rendered as Member OS; homepage=trailer; Vault/NFT NOT the anchor; systems-not-pages (5); sprint order 0 Brand→1 Home→2 MemberOS→3 Join→4 Nav.
 - [presentArtifact artifactId for canvas](canvas-presentartifact-artifactid.md) — plain canvas shapes still need an EXISTING artifactId (here `artifacts/mockup-sandbox`); shapeIds drive nav; bogus id error lists valid ones.
 - [Tailwind v4 arbitrary colors](tailwind-v4-arbitrary-colors.md) — color-mix arbitrary values compile; `/opacity` on arbitrary var() colors is unreliable — use color-mix or inline style.
 - [Mockup preview false-blank](mockup-preview-screenshot-blank.md) — pure-white external_url screenshot of a /__mockup/ preview is a capture timing/cache race, not a bug; bust with `?cb=`, trust the live canvas iframe.

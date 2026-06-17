@@ -347,3 +347,9 @@ id = "RZoQp37wPKil3iIsSCGfB"
 uri = "file://docs/handoffs/FOUNDER_REVIEW_PACK_2026-06-17.md"
 type = "text"
 title = "Founder Review Pack — Visual Architecture Board (A–H)"
+
+[[outputs]]
+id = "va2IGbjnldKc4oIfH0vMz"
+uri = "file://docs/handoffs/CENTER_OF_GRAVITY_2026-06-17.md"
+type = "text"
+title = "Center of Gravity Determination — The Seat / Member OS"
