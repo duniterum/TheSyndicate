@@ -466,10 +466,82 @@ title = "Mobile · KPI grid (stacked)"
 id = "qcOevPs6GUDcieNyDrabr"
 uri = "file://screenshots/sprint1/before-after.png"
 type = "image"
-title = "Before / After — OLD (production, left) vs NEW (dev, annotated, right)"
+title = "Reference · Sprint 1 before→after (annotated full page)"
 
 [[outputs]]
 id = "tsfouN88aBiSHYiw6xTjE"
 uri = "file://screenshots/sprint1/new-top-annotated.png"
 type = "image"
 title = "NEW homepage annotated — fold line + where Sprint 1 added/raised sections"
+
+[[outputs]]
+id = "MoI3O3dPuZa8B0oyqz7RC"
+uri = "file://screenshots/sprint1b/desktop-1-above-fold.png"
+type = "image"
+title = "Desktop · Above the fold (Sprint 1B)"
+
+[[outputs]]
+id = "Lo0mTGrMfi4SvNTf9Pz5R"
+uri = "file://screenshots/sprint1b/desktop-2-hero-kpi.png"
+type = "image"
+title = "Desktop · Hero base + KPI grid (The numbers, read live)"
+
+[[outputs]]
+id = "MtHk4-giXGJJgzBz6ofr-"
+uri = "file://screenshots/sprint1b/desktop-3-kpi-engines.png"
+type = "image"
+title = "Desktop · KPI grid + Engines (What is running)"
+
+[[outputs]]
+id = "9FwEMlgxioZBn2pe2LnvB"
+uri = "file://screenshots/sprint1b/desktop-4-engines-vitals.png"
+type = "image"
+title = "Desktop · Milestone + Protocol Vitals (What is happening right now)"
+
+[[outputs]]
+id = "89M5aPpUde0-NAaEDBKBk"
+uri = "file://screenshots/sprint1b/desktop-full.png"
+type = "image"
+title = "Desktop · Full page"
+
+[[outputs]]
+id = "XSFH_PT-Vm5IxdLxqAtvO"
+uri = "file://screenshots/sprint1b/mobile-1-above-fold.png"
+type = "image"
+title = "Mobile · Above the fold"
+
+[[outputs]]
+id = "biMwk2RzvISoYGV0LbDDr"
+uri = "file://screenshots/sprint1b/mobile-2-hero-metrics.png"
+type = "image"
+title = "Mobile · Live Protocol Overview metrics"
+
+[[outputs]]
+id = "6Wy9HCsZnx_fAnXS94QVS"
+uri = "file://screenshots/sprint1b/mobile-3-kpi-grid.png"
+type = "image"
+title = "Mobile · KPI grid (2-col)"
+
+[[outputs]]
+id = "WkGhvBI21UJq0OGb_r9IC"
+uri = "file://screenshots/sprint1b/mobile-full.png"
+type = "image"
+title = "Mobile · Full page"
+
+[[outputs]]
+id = "C-zDZO_6CXT6BGWnaLqIX"
+uri = "file://screenshots/sprint1b/fold-before-sprint1.png"
+type = "image"
+title = "Fold · Before Sprint 1 (full-screen hero, cockpit buried)"
+
+[[outputs]]
+id = "YPf_XVD4_z9qEp7A6P34O"
+uri = "file://screenshots/sprint1b/fold-after-sprint1.png"
+type = "image"
+title = "Fold · After Sprint 1 (cockpit relocated up, hero still full-screen)"
+
+[[outputs]]
+id = "k8cqUWoxt6wXEb7YClk27"
+uri = "file://screenshots/sprint1b/fold-after-sprint1b.png"
+type = "image"
+title = "Fold · After Sprint 1B (compact hero, cockpit at the fold)"
