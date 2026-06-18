@@ -19,7 +19,6 @@ import {
 import {
   StatusPill,
   ProgressBar,
-  AnimatedNumber,
   Section,
   type CanonicalStatus,
 } from "./Primitives";
@@ -58,14 +57,6 @@ const CTA_PRIMARY =
 
 const CTA_SECONDARY =
   "group mono inline-flex items-center justify-center gap-2 rounded-[4px] px-6 py-4 text-[12px] font-semibold uppercase tracking-[0.15em] transition-all duration-200 whitespace-nowrap will-change-transform hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0";
-
-const fmtCoreUsd = (n: number): string =>
-  n >= 100_000
-    ? Intl.NumberFormat("en-US", {
-        notation: "compact",
-        maximumFractionDigits: 1,
-      }).format(n)
-    : Math.round(n).toLocaleString("en-US");
 
 function usePrefersReducedMotion() {
   // Initialize `true` so SSR and the first client render emit NO animation
@@ -110,7 +101,6 @@ export function ProtocolHero() {
         : t.operationsUsdc,
   }));
 
-  const routedValue = t.usdcRaised.value;
   const seatLabel =
     t.nextMemberNumber.value !== undefined
       ? `#${fmtCount(t.nextMemberNumber.value)}`
@@ -133,8 +123,6 @@ export function ProtocolHero() {
 
           <HeroEngine
             className="order-3 xl:order-2"
-            routedValue={routedValue}
-            routedStatus={t.usdcRaised.status}
             seatLabel={seatLabel}
             lanes={lanes}
             chainLive={chainLive}
@@ -146,8 +134,12 @@ export function ProtocolHero() {
             className="order-2 xl:order-3"
             members={t.members.value}
             membersStatus={t.members.status}
+            routed={t.usdcRaised.value}
+            routedStatus={t.usdcRaised.status}
             burnedSyn={burnedSyn}
             burnedStatus={burnedStatus}
+            lpTvl={t.lpTvlUsd.value}
+            lpStatus={t.lpTvlUsd.status}
           />
         </div>
       </div>
@@ -253,8 +245,6 @@ function HeroLeft({ className = "" }: { className?: string }) {
 }
 
 function HeroEngine({
-  routedValue,
-  routedStatus,
   seatLabel,
   lanes,
   chainLive,
@@ -262,8 +252,6 @@ function HeroEngine({
   burnedStatus,
   className = "",
 }: {
-  routedValue: number | undefined;
-  routedStatus: CanonicalStatus;
   seatLabel: string;
   lanes: Array<{
     key: string;
@@ -300,7 +288,11 @@ function HeroEngine({
           className="mono mt-1.5 text-2xl font-bold tracking-[0.02em]"
           style={{ color: GOLD, textShadow: "0 2px 22px color-mix(in oklab, #E3A92B 45%, transparent)" }}
         >
-          Seat {seatLabel} available
+          Seat{" "}
+          <span className="inline-block tabular-nums" style={{ minWidth: "3.4ch" }}>
+            {seatLabel}
+          </span>{" "}
+          available
         </div>
       </div>
 
@@ -330,9 +322,13 @@ function HeroEngine({
           />
         </div>
 
+        {/* Calm center — communicates the live routing flow, not a KPI. Fixed
+            content (no live number) so first paint and loaded state are
+            dimensionally identical. The per-lane figures live on the nodes
+            below; the headline metrics live in the Protocol Overview panel. */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 text-center">
           <div
-            className="mono text-[15px] font-bold uppercase tracking-[0.2em]"
+            className="mono text-[13px] font-bold uppercase tracking-[0.24em]"
             style={{
               color: "var(--success)",
               textShadow: "0 0 20px color-mix(in oklab, var(--success) 42%, transparent)",
@@ -341,22 +337,28 @@ function HeroEngine({
             Live USDC flow
           </div>
 
-          <div
-            className="mt-2 mono tabular-nums font-semibold leading-none text-[clamp(3.6rem,1.1rem+4.6vw,6.5rem)]"
-            style={{
-              color: "var(--success)",
-              textShadow: "0 0 40px color-mix(in oklab, var(--success) 34%, transparent)",
-            }}
-          >
-            {routedValue !== undefined ? (
-              <AnimatedNumber value={routedValue} prefix="$" format={fmtCoreUsd} />
-            ) : (
-              "—"
-            )}
+          <div className="mt-3 flex items-center justify-center gap-2">
+            <span className="relative flex size-2">
+              {chainLive && (
+                <span
+                  className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-70"
+                  style={{ background: "var(--success)" }}
+                />
+              )}
+              <span
+                className="relative inline-flex size-2 rounded-full"
+                style={{ background: "var(--success)" }}
+              />
+            </span>
+            <span className="mono text-[11px] uppercase tracking-[0.2em] text-foreground/85">
+              Routing in real time
+            </span>
           </div>
 
-          <div className="mt-3 mono text-[13px] uppercase tracking-[0.28em] text-foreground">
-            USDC routed
+          <div className="mt-4 mono text-[10px] uppercase leading-relaxed tracking-[0.26em] text-muted-foreground">
+            Membership →
+            <br />
+            Vault · Liquidity · Ops
           </div>
         </div>
 
@@ -407,7 +409,11 @@ function HeroEngine({
           className="mono mt-1.5 text-lg font-bold uppercase tracking-[0.06em]"
           style={{ color: GOLD, textShadow: "0 2px 18px color-mix(in oklab, #E3A92B 42%, transparent)" }}
         >
-          Seat {seatLabel} available
+          Seat{" "}
+          <span className="inline-block tabular-nums" style={{ minWidth: "3.4ch" }}>
+            {seatLabel}
+          </span>{" "}
+          available
         </div>
         <div className="mx-auto mt-4 flex items-center justify-center">
           <img
@@ -426,18 +432,19 @@ function HeroEngine({
         <div className="mt-5 mono text-[11px] uppercase tracking-[0.25em]" style={{ color: "var(--success)" }}>
           Live USDC flow
         </div>
-        <div
-          className="mt-2 mono text-[clamp(4rem,19vw,6rem)] font-semibold leading-none tabular-nums"
-          style={{ color: "var(--success)" }}
-        >
-          {routedValue !== undefined ? (
-            <AnimatedNumber value={routedValue} prefix="$" format={fmtCoreUsd} />
-          ) : (
-            "—"
-          )}
+        <div className="mt-2 flex items-center justify-center gap-2">
+          <span className="relative flex size-2">
+            <span
+              className="relative inline-flex size-2 rounded-full"
+              style={{ background: "var(--success)" }}
+            />
+          </span>
+          <span className="mono text-[11px] uppercase tracking-[0.2em] text-foreground/85">
+            Routing in real time
+          </span>
         </div>
-        <div className="mt-1 mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
-          USDC routed
+        <div className="mt-1 mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+          Membership → Vault · Liquidity · Ops
         </div>
         <div className="mt-4 grid grid-cols-3 gap-2">
           {lanes.map((lane) => (
@@ -722,75 +729,161 @@ function statusTone(status: CanonicalStatus) {
     : "var(--muted-foreground)";
 }
 
+/**
+ * One row in the Protocol Overview panel. Every row reserves a FIXED value
+ * width (`reserveCh`, in `ch`) and uses `tabular-nums`, so the "—" / PENDING
+ * placeholder occupies exactly the same box as the loaded value — first paint
+ * and hydrated state are dimensionally identical (no reflow / pop-in). The row
+ * structure (label · value · status) is constant regardless of data, so the
+ * panel height never changes as values resolve.
+ */
+function HeroStat({
+  label,
+  value,
+  format,
+  status,
+  tone,
+  note,
+  reserveCh,
+  suffix,
+  knownBadge,
+}: {
+  label: string;
+  value: number | undefined;
+  format: (n: number | undefined) => string;
+  status: CanonicalStatus;
+  tone: string;
+  note: string;
+  reserveCh: number;
+  suffix?: string;
+  knownBadge?: { label: string; color: string };
+}) {
+  const known = value !== undefined;
+  return (
+    <div>
+      <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="mono mt-2 flex items-baseline gap-1.5 leading-none">
+        <span
+          className="inline-block text-[clamp(1.75rem,1.25rem+1vw,2.15rem)] font-bold tabular-nums"
+          style={{
+            minWidth: `${reserveCh}ch`,
+            color: known ? tone : "var(--muted-foreground)",
+            textShadow: known
+              ? `0 2px 22px color-mix(in oklab, ${tone} 26%, transparent)`
+              : undefined,
+          }}
+        >
+          {format(value)}
+        </span>
+        {known && suffix && (
+          <span className="text-sm font-semibold text-muted-foreground">{suffix}</span>
+        )}
+      </div>
+      {/* Two-line meta stack (status on line 1, note on line 2, both
+          nowrap). Fixed at two lines so a longer status word (PENDING /
+          DERIVED) can never wrap and reflow the rows below — first paint and
+          loaded state keep identical height. */}
+      <div className="mono mt-2.5 space-y-1 text-[9px] uppercase tracking-[0.14em]">
+        {known && knownBadge ? (
+          <div
+            className="flex items-center gap-1 whitespace-nowrap"
+            style={{ color: knownBadge.color }}
+          >
+            <span className="size-1 rounded-full" style={{ background: knownBadge.color }} />
+            {knownBadge.label}
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 whitespace-nowrap text-muted-foreground">
+            <span className="size-1 rounded-full" style={{ background: statusTone(status) }} />
+            {status}
+          </div>
+        )}
+        <div className="whitespace-nowrap text-muted-foreground/60">{note}</div>
+      </div>
+    </div>
+  );
+}
+
 function HeroRight({
   members,
   membersStatus,
+  routed,
+  routedStatus,
   burnedSyn,
   burnedStatus,
+  lpTvl,
+  lpStatus,
   className = "",
 }: {
   members: number | undefined;
   membersStatus: CanonicalStatus;
+  routed: number | undefined;
+  routedStatus: CanonicalStatus;
   burnedSyn: number | undefined;
   burnedStatus: CanonicalStatus;
+  lpTvl: number | undefined;
+  lpStatus: CanonicalStatus;
   className?: string;
 }) {
   return (
     <div className={`relative z-10 grid gap-3 lg:pb-10 ${className}`}>
       <div className="surface p-6 sm:p-7">
-        <div className="mono mb-7 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+        <div className="mono mb-6 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           Protocol overview
         </div>
 
-        {/* Members — live proof headline (grows as seats fill) */}
-        <div>
-          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Members
-          </div>
-          <div
-            className="mono mt-2.5 text-[clamp(2.8rem,2.1rem+1.4vw,3.3rem)] font-bold leading-none tabular-nums"
-            style={{ color: GOLD, textShadow: "0 2px 22px color-mix(in oklab, #E3A92B 30%, transparent)" }}
-          >
-            {fmtCount(members)}
-          </div>
-          <div className="mono mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <span className="size-1 rounded-full" style={{ background: statusTone(membersStatus) }} />
-              {membersStatus}
-            </span>
-            <span className="text-muted-foreground/60">· On-chain seats</span>
-          </div>
-        </div>
+        {/* Hero-support metrics — the headline figures the founder moved out of
+            the (now calm) radial center. Priority order: Members → USDC routed
+            → Burned SYN → LP TVL. */}
+        <div className="flex flex-col">
+          <HeroStat
+            label="Members"
+            value={members}
+            format={fmtCount}
+            status={membersStatus}
+            tone={GOLD}
+            note="On-chain seats"
+            reserveCh={6}
+          />
 
-        {/* Burned supply — second proof headline; grows permanently over time */}
-        <div className="mt-8 border-t border-border/50 pt-8">
-          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Burned supply
+          <div className="mt-5 border-t border-border/50 pt-5">
+            <HeroStat
+              label="USDC routed"
+              value={routed}
+              format={(n) => fmtUsd(n, 2)}
+              status={routedStatus}
+              tone="var(--success)"
+              note="70 / 20 / 10 split"
+              reserveCh={8}
+            />
           </div>
-          <div
-            className="mono mt-2.5 flex items-baseline gap-1.5 leading-none"
-            style={{ color: FLAME, textShadow: "0 2px 22px color-mix(in oklab, #F97316 32%, transparent)" }}
-          >
-            <span className="text-[clamp(2.8rem,2.1rem+1.4vw,3.3rem)] font-bold tabular-nums">
-              {burnedSyn !== undefined ? fmtCount(burnedSyn) : "—"}
-            </span>
-            {burnedSyn !== undefined && (
-              <span className="text-base font-semibold text-muted-foreground">SYN</span>
-            )}
+
+          <div className="mt-5 border-t border-border/50 pt-5">
+            <HeroStat
+              label="Burned SYN"
+              value={burnedSyn}
+              format={fmtCount}
+              suffix="SYN"
+              status={burnedStatus}
+              tone={FLAME}
+              note="Permanently removed"
+              reserveCh={6}
+              knownBadge={{ label: "Proof of Burn", color: FLAME }}
+            />
           </div>
-          <div className="mono mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.14em]">
-            {burnedSyn !== undefined ? (
-              <span className="inline-flex items-center gap-1" style={{ color: FLAME }}>
-                <span className="size-1 rounded-full" style={{ background: FLAME }} />
-                Proof of Burn
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 text-muted-foreground">
-                <span className="size-1 rounded-full" style={{ background: statusTone(burnedStatus) }} />
-                {burnedStatus}
-              </span>
-            )}
-            <span className="text-muted-foreground/60">· Permanently removed</span>
+
+          <div className="mt-5 border-t border-border/50 pt-5">
+            <HeroStat
+              label="LP TVL"
+              value={lpTvl}
+              format={(n) => fmtUsd(n, 2)}
+              status={lpStatus}
+              tone="var(--foreground)"
+              note="SYN / USDC pool"
+              reserveCh={9}
+            />
           </div>
         </div>
       </div>

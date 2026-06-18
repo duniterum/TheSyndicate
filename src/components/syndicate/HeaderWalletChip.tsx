@@ -295,7 +295,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Wallet menu — connected as ${address}, network ${networkLabel}`}
-        className="hidden md:inline-flex w-full justify-center items-center gap-2 rounded-md border border-border px-2.5 py-1.5 hover:border-[#E3A92B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A92B] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="hidden md:inline-flex w-full justify-center items-center gap-2 rounded-md border border-border px-2.5 py-2 hover:border-[#E3A92B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A92B] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <span
           className="size-1.5 rounded-full"

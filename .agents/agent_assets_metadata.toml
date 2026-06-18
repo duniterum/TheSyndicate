@@ -550,7 +550,7 @@ title = "Fold · After Sprint 1B (compact hero, cockpit at the fold)"
 id = "hgFrdbTW8kIaEiZVlhkXe"
 uri = "file://attached_assets/screenshots/thesyndicate_money.png"
 type = "image"
-title = "Production · Desktop above the fold (live)"
+title = "BEFORE — live production hero (giant $150 center, cluttered panel)"
 
 [[outputs]]
 id = "zzuD5N4s20gdKXmxgeCJF"
@@ -665,3 +665,15 @@ id = "WqTVERqerVTZERDityt_l"
 uri = "file://.local/hero_shots/refined_panel.png"
 type = "image"
 title = "AFTER — Protocol Overview panel (close-up)"
+
+[[outputs]]
+id = "2a4g9CRTqt0_3bmU7x7OF"
+uri = "file://screenshots/hero-after-firstpaint.jpg"
+type = "image"
+title = "AFTER — first paint (cold / PENDING placeholders)"
+
+[[outputs]]
+id = "Oiez_T7AnGxsg0HD2QxQY"
+uri = "file://screenshots/hero-after-loaded.jpg"
+type = "image"
+title = "AFTER — loaded (on-chain values resolved)"
