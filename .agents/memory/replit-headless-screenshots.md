@@ -16,4 +16,8 @@ The built-in `screenshot` tool only captures the **top of the viewport** for an 
 5. **Clean section panels:** find the section by its eyebrow text and screenshot the enclosing element — `page.getByText(eyebrow).first().locator('xpath=ancestor::section[1]').screenshot()` — instead of a header-centered viewport shot (which clips the grid at the frame edge).
 6. **Cleanup after:** `uninstallSystemDependencies(["chromium"])` and `rm -rf /tmp/pwshot` so `replit.nix` nets back to clean (install+uninstall in the same session leaves no diff).
 
-**Why:** repeated dead-ends — screenshot tool is top-only, runTest gives no files, and the nix chromium + new-headless flag is the non-obvious unlock. Saves re-deriving the headless-mode quirk and the testing-subagent limitation next time.
+**Capturing a CONNECTED state (mock wallet):** the wagmi connector is `injected({shimDisconnect})`. Inject a mock `window.ethereum` (return `0xa86a` for `eth_chainId`, `[addr]` for `eth_accounts`/`eth_requestAccounts`) then **click the header Connect button** — that reliably connects. Injecting the provider *before* page load does **NOT** auto-reconnect the injected connector (reconnect-on-mount didn't fire), so don't rely on it.
+
+**Connected MOBILE drawer:** on mobile the Connect control is hidden (it lives inside the drawer), so you can't click it at 390px. Instead: open the context at **desktop width (1280)**, click Connect, then `page.setViewportSize({width:390,height:844})` on the *same* page — wagmi connection state persists across the resize, and the drawer now renders the connected mobile chip (My Syndicate / My Wallet / Disconnect).
+
+**Why:** repeated dead-ends — screenshot tool is top-only, runTest gives no files, and the nix chromium + new-headless flag is the non-obvious unlock. Saves re-deriving the headless-mode quirk, the testing-subagent limitation, and the connect/resize tricks next time.

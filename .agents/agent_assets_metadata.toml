@@ -599,3 +599,45 @@ id = "_Pv2Z8p0A3jVHybzPvSth"
 uri = "file://screenshots/header-interlock-transparency.jpg"
 type = "image"
 title = "Header + PageShell hero — /transparency (unified mark)"
+
+[[outputs]]
+id = "RrkAqQYtOKQsn_73Ljpjp"
+uri = "file://.local/header_shots/1_desktop_disconnected.png"
+type = "image"
+title = "1 — Desktop header, disconnected"
+
+[[outputs]]
+id = "em1Vewh-L11v_LxR_pvaB"
+uri = "file://.local/header_shots/2_desktop_connected.png"
+type = "image"
+title = "2 — Desktop header, connected (same width)"
+
+[[outputs]]
+id = "e2BoX3GDjAZ_XS-822D4V"
+uri = "file://.local/header_shots/3_desktop_abovefold.png"
+type = "image"
+title = "3 — Desktop above-fold after load (hero + Protocol Overview, no crop)"
+
+[[outputs]]
+id = "x82w2ARCCirhHOm3rWnpI"
+uri = "file://.local/header_shots/5_mobile_disconnected.png"
+type = "image"
+title = "4 — Mobile header, disconnected"
+
+[[outputs]]
+id = "XbqryRNuqb8gZyaaVxLBf"
+uri = "file://.local/header_shots/6_mobile_connected.png"
+type = "image"
+title = "5 — Mobile header, connected (no overflow)"
+
+[[outputs]]
+id = "VLeSie6XUheBFgXkgv5e0"
+uri = "file://.local/header_shots/7_mobile_connected_drawer.png"
+type = "image"
+title = "6 — Mobile drawer, connected (My Syndicate accessible)"
+
+[[outputs]]
+id = "8hxXLiOWiuO9qrZceMNc5"
+uri = "file://.local/header_shots/4_desktop1280_connected.png"
+type = "image"
+title = "7 — Desktop @1280 connected (overflow sanity)"
