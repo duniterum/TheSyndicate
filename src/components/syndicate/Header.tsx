@@ -66,8 +66,18 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/85 border-b border-border">
       <div className={`mx-auto flex items-center justify-between gap-3 h-16 ${wide ? "w-full px-4 sm:px-6 lg:px-8" : "max-w-7xl px-5 md:px-8"}`}>
-        {/* Logo — gold brand lockup (reference header) */}
-        <Logo size="sm" tone="gold" withProtocolLabel withChapter onClick={() => setMobileOpen(false)} />
+        {/* Logo — gold Interlock lockup. Mark is enlarged for presence (48px →
+            52px at lg) with the wordmark scaled to match; Logo is header-only so
+            this does not affect the hero / footer / mobile marks. */}
+        <Logo
+          size="xl"
+          markClassName="lg:size-13"
+          wordmarkClassName="text-base lg:text-lg"
+          tone="gold"
+          withProtocolLabel
+          withChapter
+          onClick={() => setMobileOpen(false)}
+        />
 
         {/* Desktop grouped nav — full inline nav only at xl+, where it fits beside
             the action cluster; below xl it collapses into the drawer (hamburger). */}
@@ -124,43 +134,43 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
           ))}
         </nav>
 
-        {/* Action cluster — Bell · Avalanche C-Chain pill · theme toggle · Connect Wallet · Join (gold). */}
+        {/* Action cluster — Bell · Avalanche pill · theme · reserved wallet+action
+            zone · hamburger. The wallet+action zone is a FIXED-WIDTH reservation
+            (per breakpoint) so the header occupies identical space whether
+            disconnected, loading, or connected — no horizontal reflow, and it
+            never overruns the overflow-x-hidden shell (which previously clipped
+            "Buy More"). My Syndicate stays reachable from the wallet menu + drawer. */}
         <div className="flex items-center gap-1.5">
           <NotificationBell className="hidden sm:inline-flex" />
           <AvalancheNetworkPill />
           <ThemeToggle variant="icon" className="hidden md:inline-flex" />
-          <HeaderWalletChip />
-          {id.shouldShowMySyndicate && id.isMember && (
+          <div className="flex items-center justify-end gap-1.5 md:w-[244px] 2xl:w-[300px]">
+            {/* Wallet slot — fixed width; Connect / Connect Wallet and the
+                connected address chip fill it identically (no width swap). */}
+            <div className="hidden md:flex items-center w-[96px] 2xl:w-[150px]">
+              <HeaderWalletChip />
+            </div>
             <Link
-              to="/my-syndicate"
-              className="hidden 2xl:inline-flex mono items-center gap-1.5 rounded-[3px] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--accent)] hover:brightness-110 transition-[filter] whitespace-nowrap"
+              to="/join"
+              onClick={() =>
+                track("join_cta_click", {
+                  surface: "header",
+                  cta: id.isMember ? "buy_more" : id.shouldShowBecomeMember ? "become_member" : "join",
+                })
+              }
+              className="mono inline-flex items-center justify-center rounded-[3px] px-3.5 md:px-0 md:w-[140px] py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-[filter] hover:brightness-110 whitespace-nowrap"
+              style={{
+                background: "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%)",
+                color: "#15110A",
+                boxShadow: "0 10px 30px -12px color-mix(in oklab, #E3A92B 60%, transparent)",
+              }}
             >
-              My Syndicate
+              {/* Compact, fixed-width labels keep the gold button identical across
+                  states (Join / Become Member / Buy More SYN). Full canon labels
+                  stay on /join, the mobile drawer, and the MobileJoinBar. */}
+              {id.primaryMembershipLabelShort}
             </Link>
-          )}
-          <Link
-            to="/join"
-            onClick={() =>
-              track("join_cta_click", {
-                surface: "header",
-                cta: id.isMember ? "buy_more" : id.shouldShowBecomeMember ? "become_member" : "join",
-              })
-            }
-            className="mono inline-flex items-center gap-2 rounded-[3px] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-[filter] hover:brightness-110 whitespace-nowrap"
-            style={{
-              background: "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%)",
-              color: "#15110A",
-              boxShadow: "0 10px 30px -12px color-mix(in oklab, #E3A92B 60%, transparent)",
-            }}
-          >
-            {/* Compact "Join" for the disconnected default is intentional: this
-                button co-exists with the Connect button (no wallet chip yet), so
-                the neutral label stays short to protect the 1280 header width
-                budget. The full "Join The Syndicate" renders in the mobile drawer
-                + MobileJoinBar where there is room; connected states swap Connect
-                for the compact wallet chip, leaving room for the longer labels. */}
-            {id.isMember ? "Buy More SYN" : id.shouldShowBecomeMember ? "Become a Syndicate Member" : "Join"}
-          </Link>
+          </div>
           <button
             className="xl:hidden inline-flex items-center justify-center size-9 rounded-[3px] border border-border text-foreground hover:border-[color:var(--accent)] transition-colors"
             onClick={() => setMobileOpen((v) => !v)}

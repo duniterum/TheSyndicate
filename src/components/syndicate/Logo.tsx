@@ -87,6 +87,8 @@ export function Logo({
   tone = "accent",
   withProtocolLabel = false,
   className = "",
+  markClassName = "",
+  wordmarkClassName = "",
   onClick,
 }: {
   size?: MarkSize;
@@ -95,17 +97,21 @@ export function Logo({
   tone?: MarkTone;
   withProtocolLabel?: boolean;
   className?: string;
+  /** Extra classes for the mark (e.g. a responsive size bump in the header). */
+  markClassName?: string;
+  /** Extra classes for the "The Syndicate" wordmark line (e.g. text size). */
+  wordmarkClassName?: string;
   onClick?: () => void;
 }) {
   return (
     <Link
       to="/"
       aria-label="The Syndicate — home"
-      className={`group inline-flex items-center gap-2.5 shrink-0 ${className}`}
+      className={`group inline-flex items-center gap-3 shrink-0 ${className}`}
       onClick={onClick}
     >
-      <BrandMark size={size} tone={tone} />
-      {showWordmark && <Wordmark withLabel={withProtocolLabel} />}
+      <BrandMark size={size} tone={tone} className={markClassName} />
+      {showWordmark && <Wordmark withLabel={withProtocolLabel} className={wordmarkClassName} />}
       {withChapter && (
         <span className="mono ml-1 hidden 2xl:inline rounded-[3px] border border-border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
           CH #{SYNDICATE_CONFIG.CURRENT_EPISODE}

@@ -1,0 +1,142 @@
+HEADER STABILITY FIX — NO WIDTH SHIFT, NO HERO CROPPING
+
+Do not audit again.
+Do not redesign the homepage again.
+Do not touch contracts, buy flow, /join, Holder Index, routing, NFT truth, referral, or data logic.
+Do not publish until screenshots are approved.
+
+Problem shown in founder screenshots:
+
+1. Header logo mark is too small.
+2. Header right side changes after load:
+
+   * disconnected state shows Connect Wallet + Join
+   * connected state shows wallet + My Syndicate + Buy More
+   * this changes the occupied width
+   * it pushes/crops the hero and right Protocol Overview area
+   * the page feels unstable and unclean
+
+This is the issue to fix:
+
+The header must reserve stable space from first paint.
+The header must not expand after wallet/data hydrates.
+The hero below must not be squeezed/cropped by late header width changes.
+
+GOAL
+
+Make the header feel locked, premium, and stable.
+
+LEFT SIDE — BRAND
+
+Increase the Interlock mark size.
+
+Target:
+
+* desktop visual mark: 48–56px
+* mobile visual mark: 44–52px
+* keep “The Syndicate”
+* keep “PROTOCOL”
+* keep same Interlock favicon artwork
+* keep clean vertical alignment
+
+RIGHT SIDE — STABLE ACTION ZONE
+
+Create a fixed/stable right action zone.
+
+It must have the same reserved width in these states:
+
+A. disconnected:
+Connect Wallet + Join
+
+B. connected:
+wallet chip + My Syndicate + Buy More
+
+C. loading / pending:
+placeholder/skeleton with same width
+
+Rules:
+
+* no horizontal layout jump
+* no late expansion
+* no pushing hero content
+* no wrapping
+* no changing total header width
+* no shifting when wallet connects
+* no shifting when live values resolve
+
+If needed:
+
+* reserve a fixed min-width for the right action cluster
+* use CSS grid columns
+* use invisible placeholders/skeletons
+* keep button widths consistent
+* shorten wallet label in a stable fixed-width chip
+
+HEADER CONTENT PRIORITY
+
+Header should contain only:
+
+* brand
+* nav
+* network status
+* wallet/action zone
+* Join/Buy action
+
+Do NOT put extra protocol metrics in the header action zone.
+
+Protocol live metrics belong in:
+
+* ticker
+* hero overview
+* KPI grid
+
+not inside the right header area.
+
+HERO / PAGE WIDTH PROTECTION
+
+Also verify the hero layout after the header fix.
+
+The right Protocol Overview panel must not be cut off or pushed by header changes.
+
+At desktop width:
+
+* hero left text remains visible
+* radial engine remains centered enough
+* Protocol Overview panel remains clean
+* no horizontal overflow
+* no cropped right side
+
+MOBILE
+
+On mobile:
+
+* bigger logo mark
+* clean brand block
+* hamburger / wallet / Join bar must not collide
+* no header jump after wallet state changes
+
+RETURN SCREENSHOTS BEFORE PUBLISH
+
+Return:
+
+1. Desktop disconnected header first load
+2. Desktop disconnected loaded state
+3. Desktop connected header
+4. Desktop full above-fold hero after header fix
+5. Mobile disconnected header
+6. Mobile connected header
+7. Mobile above-fold hero
+
+Also return:
+
+* exact files changed
+* what width/space is reserved for right action zone
+* confirmation logo mark is bigger
+* confirmation no layout shift after wallet/data load
+* confirmation Protocol Overview is not cropped
+* confirmation no protocol/data logic changed
+* tests/guards run
+
+Success test:
+
+When comparing disconnected vs connected screenshots, the header frame and hero content must stay visually stable. Only the text inside the reserved action zone may change — the page must not reflow.

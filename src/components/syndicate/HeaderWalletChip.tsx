@@ -198,7 +198,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
         disabled={connectPending || !c}
         aria-label="Connect wallet"
         title={connectPending ? "Connecting…" : "Connect wallet"}
-        className="hidden md:inline-flex mono whitespace-nowrap items-center gap-1.5 rounded-md border border-border px-2.5 py-2 text-[11px] uppercase tracking-[0.12em] text-foreground hover:border-[#E3A92B] hover:text-[#E3A92B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A92B] focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60"
+        className="hidden md:inline-flex w-full justify-center mono whitespace-nowrap items-center gap-1.5 rounded-md border border-border px-2.5 py-2 text-[11px] uppercase tracking-[0.12em] text-foreground hover:border-[#E3A92B] hover:text-[#E3A92B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A92B] focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60"
       >
         {connectPending ? (
           "Connecting…"
@@ -287,7 +287,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
   }
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative w-full" ref={containerRef}>
       <button
         ref={triggerRef}
         onClick={() => setOpen((v) => !v)}
@@ -295,7 +295,7 @@ export function HeaderWalletChip({ variant = "desktop" }: { variant?: "desktop" 
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Wallet menu — connected as ${address}, network ${networkLabel}`}
-        className="hidden md:inline-flex items-center gap-2 rounded-md border border-border px-2.5 py-1.5 hover:border-[#E3A92B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A92B] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="hidden md:inline-flex w-full justify-center items-center gap-2 rounded-md border border-border px-2.5 py-1.5 hover:border-[#E3A92B] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A92B] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <span
           className="size-1.5 rounded-full"
