@@ -126,6 +126,7 @@ export function ProtocolHero() {
             seatLabel={seatLabel}
             lanes={lanes}
             chainLive={chainLive}
+            routed={t.usdcRaised.value}
             burnedSyn={burnedSyn}
             burnedStatus={burnedStatus}
           />
@@ -134,8 +135,6 @@ export function ProtocolHero() {
             className="order-2 xl:order-3"
             members={t.members.value}
             membersStatus={t.members.status}
-            routed={t.usdcRaised.value}
-            routedStatus={t.usdcRaised.status}
             burnedSyn={burnedSyn}
             burnedStatus={burnedStatus}
             lpTvl={t.lpTvlUsd.value}
@@ -248,6 +247,7 @@ function HeroEngine({
   seatLabel,
   lanes,
   chainLive,
+  routed,
   burnedSyn,
   burnedStatus,
   className = "",
@@ -262,6 +262,7 @@ function HeroEngine({
     fact: { value: number | undefined; status: CanonicalStatus };
   }>;
   chainLive: boolean;
+  routed: number | undefined;
   burnedSyn: number | undefined;
   burnedStatus: CanonicalStatus;
   className?: string;
@@ -322,22 +323,13 @@ function HeroEngine({
           />
         </div>
 
-        {/* Calm center — communicates the live routing flow, not a KPI. Fixed
-            content (no live number) so first paint and loaded state are
-            dimensionally identical. The per-lane figures live on the nodes
-            below; the headline metrics live in the Protocol Overview panel. */}
+        {/* Center = the single visual source of USDC routed (founder ruling).
+            Shows LIVE USDC FLOW · the headline figure · USDC ROUTED. The number
+            reserves a fixed width (minWidth + tabular-nums) so first paint
+            ("—") and the loaded value are dimensionally identical. This metric
+            is intentionally NOT repeated in the Protocol Overview panel. */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 text-center">
-          <div
-            className="mono text-[13px] font-bold uppercase tracking-[0.24em]"
-            style={{
-              color: "var(--success)",
-              textShadow: "0 0 20px color-mix(in oklab, var(--success) 42%, transparent)",
-            }}
-          >
-            Live USDC flow
-          </div>
-
-          <div className="mt-3 flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <span className="relative flex size-2">
               {chainLive && (
                 <span
@@ -350,15 +342,35 @@ function HeroEngine({
                 style={{ background: "var(--success)" }}
               />
             </span>
-            <span className="mono text-[11px] uppercase tracking-[0.2em] text-foreground/85">
-              Routing in real time
+            <span
+              className="mono text-[12px] font-bold uppercase tracking-[0.24em]"
+              style={{
+                color: "var(--success)",
+                textShadow: "0 0 20px color-mix(in oklab, var(--success) 42%, transparent)",
+              }}
+            >
+              Live USDC flow
             </span>
           </div>
 
-          <div className="mt-4 mono text-[10px] uppercase leading-relaxed tracking-[0.26em] text-muted-foreground">
-            Membership →
-            <br />
-            Vault · Liquidity · Ops
+          <div
+            className="mono mt-2.5 font-bold leading-none tabular-nums"
+            style={{
+              fontSize: "clamp(1.9rem, 1.3rem + 1.5vw, 2.7rem)",
+              color: routed !== undefined ? "var(--success)" : "var(--muted-foreground)",
+              textShadow:
+                routed !== undefined
+                  ? "0 2px 26px color-mix(in oklab, var(--success) 36%, transparent)"
+                  : undefined,
+            }}
+          >
+            <span className="inline-block" style={{ minWidth: "9ch" }}>
+              {fmtUsd(routed, 2)}
+            </span>
+          </div>
+
+          <div className="mt-2 mono text-[10px] uppercase tracking-[0.26em] text-muted-foreground">
+            USDC routed
           </div>
         </div>
 
@@ -429,22 +441,34 @@ function HeroEngine({
             }}
           />
         </div>
-        <div className="mt-5 mono text-[11px] uppercase tracking-[0.25em]" style={{ color: "var(--success)" }}>
-          Live USDC flow
-        </div>
-        <div className="mt-2 flex items-center justify-center gap-2">
-          <span className="relative flex size-2">
-            <span
-              className="relative inline-flex size-2 rounded-full"
-              style={{ background: "var(--success)" }}
-            />
-          </span>
-          <span className="mono text-[11px] uppercase tracking-[0.2em] text-foreground/85">
-            Routing in real time
+        <div className="mt-5 flex items-center justify-center gap-2">
+          <span
+            className="relative inline-flex size-2 rounded-full"
+            style={{ background: "var(--success)" }}
+          />
+          <span
+            className="mono text-[11px] font-bold uppercase tracking-[0.24em]"
+            style={{ color: "var(--success)" }}
+          >
+            Live USDC flow
           </span>
         </div>
-        <div className="mt-1 mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-          Membership → Vault · Liquidity · Ops
+        <div
+          className="mono mt-2 text-3xl font-bold leading-none tabular-nums"
+          style={{
+            color: routed !== undefined ? "var(--success)" : "var(--muted-foreground)",
+            textShadow:
+              routed !== undefined
+                ? "0 2px 22px color-mix(in oklab, var(--success) 34%, transparent)"
+                : undefined,
+          }}
+        >
+          <span className="inline-block" style={{ minWidth: "9ch" }}>
+            {fmtUsd(routed, 2)}
+          </span>
+        </div>
+        <div className="mt-1.5 mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+          USDC routed
         </div>
         <div className="mt-4 grid grid-cols-3 gap-2">
           {lanes.map((lane) => (
@@ -809,8 +833,6 @@ function HeroStat({
 function HeroRight({
   members,
   membersStatus,
-  routed,
-  routedStatus,
   burnedSyn,
   burnedStatus,
   lpTvl,
@@ -819,8 +841,6 @@ function HeroRight({
 }: {
   members: number | undefined;
   membersStatus: CanonicalStatus;
-  routed: number | undefined;
-  routedStatus: CanonicalStatus;
   burnedSyn: number | undefined;
   burnedStatus: CanonicalStatus;
   lpTvl: number | undefined;
@@ -834,9 +854,9 @@ function HeroRight({
           Protocol overview
         </div>
 
-        {/* Hero-support metrics — the headline figures the founder moved out of
-            the (now calm) radial center. Priority order: Members → USDC routed
-            → Burned SYN → LP TVL. */}
+        {/* Hero-support metrics — clean panel beside the radial. USDC routed is
+            intentionally NOT here: it lives once, in the radial center, as the
+            single visual source. Order: Members → Burned SYN → LP TVL. */}
         <div className="flex flex-col">
           <HeroStat
             label="Members"
@@ -847,18 +867,6 @@ function HeroRight({
             note="On-chain seats"
             reserveCh={6}
           />
-
-          <div className="mt-5 border-t border-border/50 pt-5">
-            <HeroStat
-              label="USDC routed"
-              value={routed}
-              format={(n) => fmtUsd(n, 2)}
-              status={routedStatus}
-              tone="var(--success)"
-              note="70 / 20 / 10 split"
-              reserveCh={8}
-            />
-          </div>
 
           <div className="mt-5 border-t border-border/50 pt-5">
             <HeroStat
