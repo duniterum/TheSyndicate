@@ -11,13 +11,25 @@ truth on the right, and they must not overlap:
 - **Radial diagram (center, `HeroEngine`)** = the ONLY home for the treasury/routing
   money stats: Next seat, USDC routed (center), 70% Vault, 20% Liquidity,
   10% Operations.
-- **Protocol Overview panel (`HeroRight`)** = identity/token/supply only: featured
-  Members headline, then "Token & valuation" (SYN price / Ref. market / Ref. FDV)
-  and "Supply" (Initial / Effective / Burned–Proof of Burn).
+- **Protocol Overview panel (`HeroRight`)** = TWO proof headlines ONLY:
+  Members (gold) + Burned Supply (flame, Proof of Burn). Generous breathing room,
+  big clamp-sized values, no sub-grids.
 
 **Why:** Those 5 money stats were deliberately removed from the overview panel
 because they already live in the radial — re-listing them is duplication, not new
 info. If asked to "add stats to the overview," do NOT re-add radial stats.
+
+## Hero = trailer, not dashboard (founder ruling)
+The panel previously also carried "Token & valuation" (SYN price / Ref. market /
+Ref. FDV) and "Supply" (Initial / Effective) sub-grids = 5 small competing values,
+several literal duplicates ($10M==$10M, 1B==1B). Founder ruling: the homepage hero
+is a TRAILER, the panel is hero-SUPPORT, not a mini-dashboard. Trimmed to the two
+proof headlines; the demoted token/valuation/supply metrics were NOT deleted from
+the site — they live on `/tokenomics`, in `HomeKpiGrid` (below fold) and the
+`ProtocolIntelligenceBar` ticker. **How to apply:** keep the hero panel to ≤2-3
+headline proof numbers; demote/move, never duplicate; never delete a metric off the
+site. Removing the grids also orphaned local `Stat`/`GroupLabel`/`fmtCompact*` —
+deleted them (lint hygiene; `noUnusedLocals` is OFF so tsc won't catch dead code).
 
 ## Latest Activity rail status honesty
 - `HeroActivityRail` derives its StatusPill from `useProtocolEvents().sources`:

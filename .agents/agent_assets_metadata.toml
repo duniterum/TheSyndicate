@@ -641,3 +641,27 @@ id = "8hxXLiOWiuO9qrZceMNc5"
 uri = "file://.local/header_shots/4_desktop1280_connected.png"
 type = "image"
 title = "7 — Desktop @1280 connected (overflow sanity)"
+
+[[outputs]]
+id = "cNL1VG0B1tlPC3bJ1KEAj"
+uri = "file://.local/hero_shots/current_desktop_abovefold.png"
+type = "image"
+title = "BEFORE — Current hero (desktop, above fold)"
+
+[[outputs]]
+id = "Xae0lJnn01HjvNhiiD3qT"
+uri = "file://.local/hero_shots/refined_desktop_abovefold.png"
+type = "image"
+title = "AFTER — Refined hero (desktop, above fold)"
+
+[[outputs]]
+id = "v-Ui8RQLQ2DsAzjjyCocp"
+uri = "file://.local/hero_shots/current_panel.png"
+type = "image"
+title = "BEFORE — Protocol Overview panel (close-up)"
+
+[[outputs]]
+id = "WqTVERqerVTZERDityt_l"
+uri = "file://.local/hero_shots/refined_panel.png"
+type = "image"
+title = "AFTER — Protocol Overview panel (close-up)"

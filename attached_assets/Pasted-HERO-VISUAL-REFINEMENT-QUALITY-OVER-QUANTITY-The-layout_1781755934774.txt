@@ -1,0 +1,158 @@
+HERO VISUAL REFINEMENT — QUALITY OVER QUANTITY
+
+The layout is now stable.
+
+The header fix is correct.
+
+However there is still a visual problem.
+
+This is NOT a protocol issue.
+This is NOT a responsive issue.
+This is NOT a data issue.
+
+It is a hierarchy issue.
+
+Compare the founder references.
+
+The cleaner version feels:
+
+* premium
+* readable
+* intentional
+* focused
+
+The current version feels:
+
+* crowded
+* data-heavy
+* visually noisy
+* harder to scan
+
+The issue is primarily the right-side Protocol Overview area and the density of visible metrics.
+
+Goal:
+
+Improve visual quality.
+
+Do NOT add more information.
+
+Do NOT add more cards.
+
+Do NOT add more metrics.
+
+Do NOT add more protocol surfaces.
+
+Instead:
+
+Reduce visual noise.
+
+Improve hierarchy.
+
+Make the hero easier to read.
+
+Requirements:
+
+1. Protocol Overview panel
+
+The panel should become a hero-support panel.
+
+Not a mini dashboard.
+
+Ask:
+
+What absolutely must be visible?
+
+Likely:
+
+* Members
+* USDC Routed
+* Burned Supply
+
+Maybe:
+
+* LP TVL
+
+Everything else can be:
+
+* secondary
+* collapsed
+* lower
+* moved elsewhere
+
+Do not force all protocol metrics into the hero.
+
+2. Visual density
+
+Reduce density.
+
+Create breathing room.
+
+Increase readability.
+
+The first screenshot is closer to the desired feeling than the second.
+
+3. Hero hierarchy
+
+The eye should read:
+
+1. Seat identity
+2. Join CTA
+3. Live protocol flow
+4. Key proof metrics
+
+Not:
+
+20 metrics simultaneously.
+
+4. Typography
+
+Prioritize readability.
+
+Large values should be meaningful.
+
+Avoid many small competing values.
+
+5. Dashboard discipline
+
+The homepage is:
+
+A trailer.
+
+Not a terminal.
+
+Not an admin dashboard.
+
+Not a monitoring screen.
+
+Use only the most important information above the fold.
+
+6. Data quality
+
+No fake values.
+
+No removed metrics.
+
+No protocol logic changes.
+
+Only hierarchy changes.
+
+7. Deliverables
+
+Return:
+
+* current hero screenshot
+* refined hero screenshot
+* explanation of what was removed, collapsed, or demoted
+* why the new hierarchy is better
+
+Goal:
+
+The founder's reaction should be:
+
+"Cleaner."
+
+Not:
+
+"More data."
+
+The homepage must feel like a premium membership protocol, not a crowded analytics dashboard.

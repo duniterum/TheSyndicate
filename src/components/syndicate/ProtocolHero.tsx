@@ -59,22 +59,6 @@ const CTA_PRIMARY =
 const CTA_SECONDARY =
   "group mono inline-flex items-center justify-center gap-2 rounded-[4px] px-6 py-4 text-[12px] font-semibold uppercase tracking-[0.15em] transition-all duration-200 whitespace-nowrap will-change-transform hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0";
 
-const fmtCompactUsd = (n: number | undefined): string =>
-  n === undefined
-    ? "—"
-    : `$${Intl.NumberFormat("en-US", {
-        notation: "compact",
-        maximumFractionDigits: 1,
-      }).format(n)}`;
-
-const fmtCompactSyn = (n: number | undefined): string =>
-  n === undefined
-    ? "—"
-    : `${Intl.NumberFormat("en-US", {
-        notation: "compact",
-        maximumFractionDigits: 1,
-      }).format(n)} SYN`;
-
 const fmtCoreUsd = (n: number): string =>
   n >= 100_000
     ? Intl.NumberFormat("en-US", {
@@ -113,19 +97,6 @@ export function ProtocolHero() {
   // action; rendered with the flame palette and a "Proof of Burn" tag.
   const burnedSyn = supply.burned;
   const burnedStatus: CanonicalStatus = burnedSyn !== undefined ? "LIVE" : "PENDING";
-
-  const totalSupply = t.totalSupplySyn.value;
-  const effectiveSupply =
-    totalSupply !== undefined && burnedSyn !== undefined
-      ? Math.max(0, totalSupply - burnedSyn)
-      : undefined;
-
-  const refFdv =
-    effectiveSupply !== undefined
-      ? effectiveSupply * ACCESS_RATE_USDC_PER_SYN
-      : totalSupply !== undefined
-      ? totalSupply * ACCESS_RATE_USDC_PER_SYN
-      : undefined;
 
   const lanes = USDC_ROUTING.map((r) => ({
     ...r,
@@ -175,14 +146,8 @@ export function ProtocolHero() {
             className="order-2 xl:order-3"
             members={t.members.value}
             membersStatus={t.members.status}
-            synPrice={t.synPriceUsd.value}
-            synPriceStatus={t.synPriceUsd.status}
-            totalSupply={totalSupply}
-            totalSupplyStatus={t.totalSupplySyn.status}
-            effectiveSupply={effectiveSupply}
             burnedSyn={burnedSyn}
             burnedStatus={burnedStatus}
-            refFdv={refFdv}
           />
         </div>
       </div>
@@ -747,14 +712,6 @@ function BurnMonument({
   );
 }
 
-function GroupLabel({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return (
-    <div className={`mono mb-3 text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80 ${className}`}>
-      {children}
-    </div>
-  );
-}
-
 function statusTone(status: CanonicalStatus) {
   return status === "LIVE"
     ? "var(--success)"
@@ -768,47 +725,35 @@ function statusTone(status: CanonicalStatus) {
 function HeroRight({
   members,
   membersStatus,
-  synPrice,
-  synPriceStatus,
-  totalSupply,
-  totalSupplyStatus,
-  effectiveSupply,
   burnedSyn,
   burnedStatus,
-  refFdv,
   className = "",
 }: {
   members: number | undefined;
   membersStatus: CanonicalStatus;
-  synPrice: number | undefined;
-  synPriceStatus: CanonicalStatus;
-  totalSupply: number | undefined;
-  totalSupplyStatus: CanonicalStatus;
-  effectiveSupply: number | undefined;
   burnedSyn: number | undefined;
   burnedStatus: CanonicalStatus;
-  refFdv: number | undefined;
   className?: string;
 }) {
   return (
     <div className={`relative z-10 grid gap-3 lg:pb-10 ${className}`}>
-      <div className="surface p-5">
-        <div className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+      <div className="surface p-6 sm:p-7">
+        <div className="mono mb-7 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           Protocol overview
         </div>
 
-        {/* Members — live headline (grows as seats fill) */}
-        <div className="pb-4">
+        {/* Members — live proof headline (grows as seats fill) */}
+        <div>
           <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             Members
           </div>
           <div
-            className="mono mt-1.5 text-[2.7rem] font-bold leading-none tabular-nums"
+            className="mono mt-2.5 text-[clamp(2.8rem,2.1rem+1.4vw,3.3rem)] font-bold leading-none tabular-nums"
             style={{ color: GOLD, textShadow: "0 2px 22px color-mix(in oklab, #E3A92B 30%, transparent)" }}
           >
             {fmtCount(members)}
           </div>
-          <div className="mono mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+          <div className="mono mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <span className="size-1 rounded-full" style={{ background: statusTone(membersStatus) }} />
               {membersStatus}
@@ -817,23 +762,23 @@ function HeroRight({
           </div>
         </div>
 
-        {/* Burned supply — headline directly under Members; grows permanently over time */}
-        <div className="border-t border-border/50 pt-4">
+        {/* Burned supply — second proof headline; grows permanently over time */}
+        <div className="mt-8 border-t border-border/50 pt-8">
           <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             Burned supply
           </div>
           <div
-            className="mono mt-1.5 flex items-baseline gap-1.5 leading-none"
+            className="mono mt-2.5 flex items-baseline gap-1.5 leading-none"
             style={{ color: FLAME, textShadow: "0 2px 22px color-mix(in oklab, #F97316 32%, transparent)" }}
           >
-            <span className="text-[2.7rem] font-bold tabular-nums">
+            <span className="text-[clamp(2.8rem,2.1rem+1.4vw,3.3rem)] font-bold tabular-nums">
               {burnedSyn !== undefined ? fmtCount(burnedSyn) : "—"}
             </span>
             {burnedSyn !== undefined && (
               <span className="text-base font-semibold text-muted-foreground">SYN</span>
             )}
           </div>
-          <div className="mono mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.14em]">
+          <div className="mono mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.14em]">
             {burnedSyn !== undefined ? (
               <span className="inline-flex items-center gap-1" style={{ color: FLAME }}>
                 <span className="size-1 rounded-full" style={{ background: FLAME }} />
@@ -847,23 +792,6 @@ function HeroRight({
             )}
             <span className="text-muted-foreground/60">· Permanently removed</span>
           </div>
-        </div>
-
-        <GroupLabel className="mt-5">Token &amp; valuation</GroupLabel>
-        <div className="grid grid-cols-3 gap-x-4 gap-y-3">
-          <Stat label="SYN price" value={fmtUsd(synPrice, 4)} status={synPriceStatus} />
-          <Stat label="Ref. market" value={fmtCompactUsd(refFdv)} status="DERIVED" />
-          <Stat label="Ref. FDV" value={fmtCompactUsd(refFdv)} status="DERIVED" />
-        </div>
-
-        <GroupLabel className="mt-5">Supply</GroupLabel>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-          <Stat label="Initial supply" value={fmtCompactSyn(totalSupply)} status={totalSupplyStatus} />
-          <Stat
-            label="Effective supply"
-            value={fmtCompactSyn(effectiveSupply)}
-            status={effectiveSupply !== undefined ? "DERIVED" : "PENDING"}
-          />
         </div>
       </div>
 
@@ -1211,57 +1139,6 @@ function HeroAtmosphere() {
         }}
       />
     </>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  status,
-  money,
-  gold,
-  primary,
-}: {
-  label: string;
-  value: string;
-  status: CanonicalStatus;
-  money?: boolean;
-  gold?: boolean;
-  primary?: boolean;
-}) {
-  const tone =
-    status === "LIVE"
-      ? "var(--success)"
-      : status === "DERIVED"
-      ? "var(--verify)"
-      : status === "PARTIAL"
-      ? GOLD
-      : "var(--muted-foreground)";
-
-  return (
-    <div className="border-l border-border/50 pl-3">
-      <div className="mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
-        {label}
-      </div>
-      <div
-        className={`mono mt-1.5 tabular-nums leading-none ${primary ? "text-[1.4rem] font-bold" : "text-[15px] font-medium"}`}
-        style={
-          money && status === "LIVE"
-            ? { color: "var(--success)" }
-            : gold
-            ? { color: GOLD }
-            : primary
-            ? undefined
-            : { color: "var(--muted-foreground)" }
-        }
-      >
-        {value}
-      </div>
-      <div className="mono mt-1.5 inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-        <span className="size-1 rounded-full" style={{ background: tone }} />
-        {status}
-      </div>
-    </div>
   );
 }
 
