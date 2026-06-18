@@ -31,3 +31,8 @@ dist-ssr
 *.sln
 *.sw?
 reports/
+
+# Local environment files — never commit real secrets; keep only the template
+.env
+.env.*
+!.env.example
