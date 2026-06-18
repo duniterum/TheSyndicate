@@ -1,0 +1,126 @@
+HERO CLEANLINESS + HYDRATION STABILITY FIX
+
+Do not audit.
+Do not add metrics.
+Do not redesign the whole homepage.
+Do not touch protocol logic.
+
+Problem:
+
+The clean screenshot looks premium because values are readable, sparse, and stable.
+
+The current loaded site becomes ugly because:
+
+* the hero changes after data loads
+* the right Protocol Overview becomes too dense
+* large numbers appear and visually overload the panel
+* the radial center changes from clean to heavy
+* the first paint and loaded state do not feel identical
+
+Goal:
+
+Make the loaded hero look as clean as the clean reference.
+
+Fix two things only:
+
+1. Hydration stability
+
+First paint and loaded state must have the same layout.
+
+Reserve fixed space for all hero values before data loads.
+
+Use skeletons/placeholders with the same dimensions as final values.
+
+No panel expansion.
+No metric block growth.
+No radial diagram weight jump.
+No text reflow.
+No right-side width/height change.
+
+2. Visual hierarchy / density
+
+The Protocol Overview panel must not be a full analytics dashboard.
+
+Reduce it to the cleanest hero-support version.
+
+Above the fold, show only the most important hero metrics:
+
+* Members
+* USDC Routed
+* Burned SYN
+* maybe LP TVL if it fits cleanly
+
+Move or hide secondary values from the hero panel:
+
+* SYN price
+* Ref Market
+* FDV
+* Initial Supply
+* Effective Supply
+
+Those belong in KPI grid / token page / lower sections, not the hero overview.
+
+The hero must read:
+
+Seat identity → Join CTA → live protocol flow → key proof metrics
+
+not:
+
+too many numbers at once.
+
+Design target:
+
+Use the clean reference screenshot as the target.
+
+Clean loaded state should feel:
+
+* premium
+* calm
+* readable
+* spacious
+* intentional
+
+Not:
+
+* dense
+* noisy
+* terminal-like
+* overloaded
+
+Specific visual fixes:
+
+* Keep large values readable.
+* Reduce small competing labels.
+* Keep panel spacing consistent.
+* Keep number sizes stable.
+* Reserve exact widths for big numbers like 10,000 SYN and $150.
+* Do not let “PENDING / —” placeholders create a smaller layout than loaded values.
+* Use tabular numbers where possible.
+* Make loaded values replace placeholders inside fixed boxes.
+
+Success test:
+
+Record first paint and loaded state.
+
+Frame 0 and frame 10 seconds must look almost identical in structure.
+
+Only the text values should change.
+
+The founder should say:
+
+“Now the loaded site still looks clean.”
+
+Return before publish:
+
+1. First-paint screenshot.
+2. Loaded screenshot.
+3. Side-by-side first paint vs loaded.
+4. Short video/GIF if possible.
+5. Explain exactly which hero elements had reserved space added.
+6. Explain which metrics were demoted from Protocol Overview.
+7. Confirm KPI grid still shows the full metric set below.
+8. Confirm no protocol/data logic changed.
+9. Confirm no homepage structure beyond hero cleanup changed.
+10. Confirm no banned wording introduced.
+
+Do not publish until founder approves screenshots.
