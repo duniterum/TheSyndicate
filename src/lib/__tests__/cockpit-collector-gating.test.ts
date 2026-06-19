@@ -5,8 +5,9 @@
  * hard doctrine rules cannot silently regress.
  *
  * Doctrine being protected:
- *   • A card may assert "ACTIVE · MINT OPEN" / show a Collect CTA ONLY when the
- *     contract explicitly reports active === true AND paused === false.
+ *   • A card may assert an active collect state ONLY when the contract explicitly
+ *     reports active === true AND paused === false. Read-gated artifacts must
+ *     say READ GATED instead of flattening wallet checks into "mint open."
  *   • An unknown pause state (paused undefined + pausedError) must degrade to an
  *     honest "unverifiable" state — it must NEVER imply mint-open.
  *   • The First Signal is a fixed edition of 10,000 (on-chain maxSupply) →
@@ -29,13 +30,14 @@ const COLLECTOR = "src/components/syndicate/cockpit/CockpitCollector.tsx";
 const src = readFileSync(join(ROOT, COLLECTOR), "utf8");
 
 describe("CockpitCollector — mint-open status gating", () => {
-  it("only asserts ACTIVE · MINT OPEN when active === true AND paused === false", () => {
+  it("only asserts an active collect state when active === true AND paused === false", () => {
     // The success pill is guarded by BOTH explicit reads, never active alone.
     expect(src).toMatch(
-      /active === true && paused === false\)\s*\{\s*statusLabel = "ACTIVE · MINT OPEN";/,
+      /active === true && paused === false\)\s*\{\s*statusLabel = item\.readGated \? "ACTIVE · READ GATED" : "ACTIVE · MINT OPEN";/,
     );
     // There must be no looser pill branch that claims ACTIVE on active alone.
     expect(src).not.toMatch(/active === true\)\s*\{\s*statusLabel = "ACTIVE · MINT OPEN";/);
+    expect(src).not.toMatch(/active === true\)\s*\{\s*statusLabel = item\.readGated/);
   });
 
   it("derives an explicit pauseUnknown state from paused undefined + pausedError", () => {
@@ -48,7 +50,7 @@ describe("CockpitCollector — mint-open status gating", () => {
     const pendingIdx = src.indexOf('statusLabel = "PENDING · ERC-721";');
     const pausedIdx = src.indexOf('statusLabel = "PAUSED ON-CHAIN";');
     const unknownIdx = src.indexOf('statusLabel = "PAUSE UNREADABLE";');
-    const activeIdx = src.indexOf('statusLabel = "ACTIVE · MINT OPEN";');
+    const activeIdx = src.indexOf('statusLabel = item.readGated ? "ACTIVE · READ GATED" : "ACTIVE · MINT OPEN";');
     const inactiveIdx = src.indexOf('statusLabel = "CONFIGURED · NOT ACTIVE";');
     for (const i of [pendingIdx, pausedIdx, unknownIdx, activeIdx, inactiveIdx]) {
       expect(i).toBeGreaterThan(-1);
@@ -67,8 +69,8 @@ describe("CockpitCollector — Collect CTA gating", () => {
     // never cause a false failure — only the gating contract is asserted.
     // 1. The CTA branch is gated on BOTH explicit reads.
     expect(src).toMatch(/: active === true && paused === false \? \(/);
-    // 2. The only Collect link points at /nft.
-    expect(src).toMatch(/to="\/nft"[\s\S]{0,400}Collect →/);
+    // 2. The only Collect link points at /nft, with read-gated copy when needed.
+    expect(src).toMatch(/to="\/nft"[\s\S]{0,500}item\.readGated \? "Check mintability →" : "Collect →"/);
     // 3. Negative guard: the Collect link must NOT be reachable from an
     //    active-only gate (the doctrine regression we are protecting against).
     expect(src).not.toMatch(/: active === true \? \([\s\S]{0,400}to="\/nft"/);

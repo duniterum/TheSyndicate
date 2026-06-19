@@ -21,7 +21,7 @@
 // IMPORTANT — what this file does NOT do:
 //   • does not invent contract addresses
 //   • does not invent mint counts, holders, or revenue
-//   • does not mark additional artifacts LIVE beyond the deployed ID 1 state
+//   • does not present read-gated artifacts as mintable without live reads
 //   • does not bind the protocol to ship every listed item
 //
 // See docs/ARCHIVE_ENGINE_V1.md for the gate audit + roadmap.
@@ -48,7 +48,7 @@ export const ARTIFACT_STATUS_LABEL: Record<ArtifactStatus, string> = {
 
 export const ARTIFACT_STATUS_HINT: Record<ArtifactStatus, string> = {
   ACTIVE_MINT_OPEN:
-    "Public mint is open on the deployed Archive1155 contract on Avalanche.",
+    "Backed by the deployed Archive1155 contract on Avalanche. Visitor copy must still respect per-artifact read gates.",
   CONFIGURED_NOT_ACTIVE:
     "Defined on the deployed Archive1155 contract but mint is not enabled yet.",
   PENDING_CONTRACT:
@@ -151,8 +151,8 @@ export const ARCHIVE_CATEGORIES: ArtifactCategory[] = [
     name: "Patron Seals",
     status: "ACTIVE_MINT_OPEN",
     explanation:
-      "Optional support artifact for people who want to help fund development, infrastructure, design, operations, and public storytelling. Live on the deployed Archive contract at 5.00 USDC — wallet limit 5, supply 10,000.",
-    unlock: "Open now — connect a wallet on Avalanche and mint. Single flat support amount — no tiers.",
+      "Optional support artifact for people who want to help fund development, infrastructure, design, operations, and public storytelling. Active on the deployed Archive contract at 5.00 USDC, but PUBLIC_MINT_READ_GATED: wallet mintability must come from live Archive1155 reads. Wallet limit 5, supply 10,000.",
+    unlock: "Read-gated on Avalanche. Connect a wallet to check mintability from the live contract. Single flat support amount - no tiers.",
     cta: "View",
   },
   {
@@ -220,8 +220,8 @@ export const ARCHIVE_ARTIFACTS: ArtifactRecord[] = [
     targetPriceUsdc: 5,
     status: "ACTIVE_MINT_OPEN",
     blurb:
-      "Optional support artifact. Single flat amount — no tiers, no rank. Live on the deployed Archive contract at 5.00 USDC (wallet limit 5, supply 10,000).",
-    unlock: "Open now — connect a wallet on Avalanche and mint.",
+      "Optional support artifact. Single flat amount - no tiers, no rank. Active on the deployed Archive contract at 5.00 USDC, but shown as mintable only from live Archive1155 wallet reads (wallet limit 5, supply 10,000).",
+    unlock: "Connect a wallet on Avalanche to check read-gated mintability.",
   },
   {
     id: "heart-signal",

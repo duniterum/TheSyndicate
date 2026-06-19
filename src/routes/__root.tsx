@@ -30,16 +30,23 @@ function NotFoundComponent() {
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">No protocol record here</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+          This route is not part of the current public record. You can return
+          to the live protocol or open the Registry to verify what exists.
         </p>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go home
+            Return home
+          </Link>
+          <Link
+            to="/registry"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          >
+            Open Registry
           </Link>
         </div>
       </div>
@@ -58,10 +65,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          This protocol surface did not load
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+          The claim is not being hidden; the page simply failed to render. Try
+          again, return home, or verify live contract status in the Registry.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -74,10 +82,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             Try again
           </button>
           <a
-            href="/"
+            href="/registry"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Go home
+            Open Registry
           </a>
         </div>
       </div>
@@ -90,16 +98,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "The Syndicate (SYN) — Experimental Utility Membership Token on Avalanche" },
-      { name: "description", content: "The Syndicate is a transparent experimental utility membership system powered by SYN, a fixed-supply ERC20 token live on Avalanche C-Chain." },
+      { title: "The Syndicate — Transparent On-Chain Membership Protocol" },
+      { name: "description", content: "The Syndicate is a transparent on-chain membership protocol. Buying membership delivers SYN, seats the wallet, and proves Membership Sale and 70/20/10 routing live on Avalanche C-Chain." },
       { name: "author", content: "The Syndicate" },
       { property: "og:site_name", content: "The Syndicate" },
       { property: "og:type", content: "website" },
-      { property: "og:title", content: "The Syndicate (SYN) — Experimental Utility Membership Token on Avalanche" },
-      { property: "og:description", content: "Fixed 1,000,000,000 SYN supply · No admin · No mint · No tax · Membership Sale and 70/20/10 routing live on Avalanche C-Chain." },
+      { property: "og:title", content: "The Syndicate — Transparent On-Chain Membership Protocol" },
+      { property: "og:description", content: "SYN is the seat. Membership Sale and 70/20/10 routing live on Avalanche C-Chain. Every wallet, route, and receipt is verifiable." },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "The Syndicate (SYN) — Live on Avalanche" },
-      { name: "twitter:description", content: "Transparent experimental utility membership token. Fixed supply. Live on Avalanche C-Chain." },
+      { name: "twitter:title", content: "The Syndicate — Live Membership Protocol" },
+      { name: "twitter:description", content: "SYN is the seat. Join through the live Membership Sale, verify the routing, and carry your place in the protocol record." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

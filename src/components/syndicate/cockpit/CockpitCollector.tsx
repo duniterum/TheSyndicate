@@ -50,6 +50,7 @@ type CollectItem = {
   chapter: string;
   meaning: string;
   status: "ACTIVE_MINT_OPEN" | "PENDING_CONTRACT";
+  readGated?: boolean;
   supplyMode: SupplyMode;
   /** Catalog (reference) supply target — used ONLY as a clearly-labeled
    *  fallback for capped / fixed-edition artifacts when the live maxSupply
@@ -80,6 +81,7 @@ const COLLECT: CollectItem[] = [
     meaning:
       "Optional flat-support artifact. One tier only — no rank, no wealth-coding, no financial rights.",
     status: "ACTIVE_MINT_OPEN",
+    readGated: true,
     supplyMode: "capped",
     catalogMaxSupply: 10_000,
     catalogWalletLimit: 5,
@@ -554,7 +556,7 @@ function CollectCard({
     statusLabel = "PAUSE UNREADABLE";
     statusTone = "warning";
   } else if (active === true && paused === false) {
-    statusLabel = "ACTIVE · MINT OPEN";
+    statusLabel = item.readGated ? "ACTIVE · READ GATED" : "ACTIVE · MINT OPEN";
     statusTone = "success";
   } else if (active === false) {
     statusLabel = "CONFIGURED · NOT ACTIVE";
@@ -622,7 +624,7 @@ function CollectCard({
             className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-[11px] font-medium text-[oklch(0.22_0.025_260)]"
             style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)" }}
           >
-            Collect →
+            {item.readGated ? "Check mintability →" : "Collect →"}
           </Link>
         ) : active === false ? (
           <span className="mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">

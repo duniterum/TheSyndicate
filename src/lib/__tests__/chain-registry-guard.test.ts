@@ -163,7 +163,7 @@ describe("ARCHIVE_ID_REGISTRY", () => {
     expect(e.publicMintAllowed).toBe(true);
   });
 
-  it("ID 3 (Patron Seal) is LIVE public mint at 5.00 USDC, wallet limit 5, supply 10,000", () => {
+  it("ID 3 (Patron Seal) is active at 5.00 USDC with wallet limit 5 and supply 10,000", () => {
     const e = archiveIdEntry(3)!;
     expect(e.activation).toBe("LIVE_PUBLIC_MINT");
     expect(e.priceUsdc).toBe(5);

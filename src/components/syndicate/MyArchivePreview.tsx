@@ -29,6 +29,7 @@ export function MyArchivePreview() {
     <div id="my-archive">
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <Pill tone="success">ID 1 · ACTIVE · MINT OPEN</Pill>
+        <Pill tone="navy">ID 3 · ACTIVE · READ GATED</Pill>
         <Pill tone="navy">READ-ONLY OTHER IDS</Pill>
       </div>
 
@@ -39,7 +40,8 @@ export function MyArchivePreview() {
           </div>
           <p className="mt-1 text-sm text-foreground/80 leading-relaxed">
             Real per-wallet balance reads from the deployed Archive contract. The
-            First Signal (ID 1) is open; owned Artifacts appear here after minting.
+            First Signal (ID 1) is open; Patron Seal (ID 3) is active but
+            wallet/read-gated; owned Artifacts appear here after minting.
           </p>
         </div>
         {/* Compact token ID status list */}
@@ -68,10 +70,15 @@ export function MyArchivePreview() {
                 // ID 1 is ACTIVE at the contract level (active=true,
                 // definitionFrozen=true). A failed RPC read MUST NOT
                 // imply "no public mint yet" — show a refreshing state.
-                statusText = "Active · Mint OPEN";
-                meaningText = readErr
-                  ? "Public mint OPEN — refreshing on-chain status."
-                  : "First public Artifact — 0.50 USDC on Avalanche";
+                const readGated = id === 3;
+                statusText = readGated ? "Active · Read gated" : "Active · Mint OPEN";
+                meaningText = readGated
+                  ? readErr
+                    ? "Active support Artifact — refreshing wallet/read-gated status."
+                    : "Patron Seal — mintability comes from live Archive1155 reads"
+                  : readErr
+                    ? "Public mint OPEN — refreshing on-chain status."
+                    : "First public Artifact — 0.50 USDC on Avalanche";
                 tone = "success";
               } else if (readErr) {
                 statusText = "Configured · Not active";
@@ -174,9 +181,10 @@ export function MyArchivePreview() {
                 public Artifact mint; other Artifacts are protocol-memory surfaces sealed by event. */}
             <div className="surface elevated p-3 mb-3 text-xs text-muted-foreground leading-relaxed">
               The First Signal (ID 1) is an open public Artifact mint —
-              open at 0.50 USDC on Avalanche. Other Artifacts remain
-              inactive. Join The Syndicate to take your seat; owned Artifacts
-              will appear here as real on-chain reads.
+              open at 0.50 USDC on Avalanche. Patron Seal (ID 3) is active
+              but wallet/read-gated; other Artifacts are sealed, reserved, or
+              future-contract surfaces. Join The Syndicate to take your seat;
+              owned Artifacts will appear here as real on-chain reads.
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <Link
                   to="/join"
@@ -254,7 +262,9 @@ export function MyArchivePreview() {
                         {reserved
                           ? "RESERVED · DISABLED"
                           : a.status === "ACTIVE_MINT_OPEN"
-                            ? "ACTIVE · MINT OPEN"
+                            ? a.id === 3
+                              ? "ACTIVE · READ GATED"
+                              : "ACTIVE · MINT OPEN"
                             : "NOT ACTIVE"}
                       </Pill>
 
@@ -275,8 +285,9 @@ export function MyArchivePreview() {
               <span className="mono text-foreground">balanceOf(wallet, id)</span>{" "}
               read against the deployed Archive contract. The First Signal
               (ID 1) public mint is OPEN — owned Artifacts appear here after
-              minting. ID 2 is reserved/disabled in V1 — a future ERC-721
-              will hold Seat Records.
+              minting. Patron Seal (ID 3) is active but wallet/read-gated.
+              ID 2 is reserved/disabled in V1 — a future ERC-721 will hold
+              Seat Records.
             </p>
           </>
         )}

@@ -81,7 +81,7 @@ export const ARCHIVE_ID_REGISTRY: ArchiveIdEntry[] = [
     walletLimit: 5,
     maxSupply: 10_000,
     frozen: true,
-    notes: "Flat support artifact. Public mint OPEN at 5.00 USDC.",
+    notes: "Flat support artifact. Active at 5.00 USDC; wallet mintability is shown only from live Archive1155 reads.",
   },
   {
     id: 4,

@@ -10,10 +10,11 @@
 //     • Read live on-chain state (never fabricate active/mintable).
 //     • Render the real on-chain SVG (uri(3) is valid).
 //     • Display 5.00 USDC sourced from priceUsdc when available.
-//     • Mount MintPatronSeal when live reads confirm
-//       active === true AND isMintableConnected === true AND paused !== true.
-//     • Show wallet-specific disabled states (paused / sold out /
-//       mint limit reached) when applicable.
+//     • Mount MintPatronSeal when global live reads confirm active === true
+//       and paused !== true; wallet-specific mintability stays inside the
+//       mint component.
+//     • Show wallet-specific disabled states (sold out / mint limit reached)
+//       when applicable.
 //     • Never claim equity, yield, revenue share, Vault/LP ownership,
 //       dividends, or governance rights.
 import { Pill, Section, SectionHeader, ProofButton } from "@/components/syndicate/Primitives";

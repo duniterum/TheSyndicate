@@ -1,10 +1,11 @@
 // Read-only Contract Integration Status widget for the deployed
 // SyndicateArchive1155 contract on Avalanche C-Chain.
 //
-// Doctrine: contract is DEPLOYED; ID 1 (First Signal) and ID 3 (Patron
-// Seal) public mints are ACTIVE; ID 2 is reserved/disabled. Reads are real
-// and live where they succeed — values that fail or are unavailable show
-// honest labels. No mint/approve/quantity/price UI.
+// Doctrine: contract is DEPLOYED; ID 1 (First Signal) is the public-open
+// mint; ID 3 (Patron Seal) is active but wallet/read-gated; ID 2 is
+// reserved/disabled. Reads are real and live where they succeed — values
+// that fail or are unavailable show honest labels. No mint/approve/quantity
+// UI.
 //
 // See docs/DEPLOYMENT_STATE_V1.md and docs/CONTRACT_INTEGRATION_STATUS.md.
 import { GlassCard, Pill } from "@/components/syndicate/Primitives";
@@ -78,15 +79,18 @@ export function ArchiveContractStatus() {
     <GlassCard className="p-5 md:p-6">
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <StatusPill tone="live">DEPLOYED</StatusPill>
-        <StatusPill tone="live">PUBLIC DROPS · {s.publicDropsActivated}</StatusPill>
+        <StatusPill tone="live">PUBLIC DROP READS · {s.publicDropsActivated}</StatusPill>
         {s.artifacts.map((a) => {
           const id = a.id;
           const active = a.active as boolean;
           const reserved = a.configured === "RESERVED_DISABLED";
+          const readGated = id === 3 && active;
           const tone: Tone = reserved ? "reserved" : active ? "live" : "validation";
           const label = reserved
             ? `ID ${id} · RESERVED · DISABLED`
-            : active
+            : readGated
+              ? `ID ${id} · ACTIVE · READ GATED`
+              : active
               ? `ID ${id} · ACTIVE · MINT OPEN`
               : `ID ${id} · CONFIGURED · NOT ACTIVE`;
           return (
@@ -205,9 +209,11 @@ export function ArchiveContractStatus() {
           limit 5. ID 2 is reserved in Archive1155 V1 and intentionally
           non-mintable; Seat Records will live in a separate future ERC-721
           contract (<span className="mono">SyndicateSeatRecord721</span>).
-          ID 3 (Patron Seal) is LIVE — 5.00 USDC, wallet limit 5. All values
-          shown are read directly from the deployed contract; missing reads
-          are labeled and never substituted with placeholder zeros.
+          ID 3 (Patron Seal) is active but wallet/read-gated — 5.00 USDC,
+          wallet limit 5, and shown as mintable only from live Archive1155
+          reads. All values shown are read directly from the deployed
+          contract; missing reads are labeled and never substituted with
+          placeholder zeros.
         </p>
       </div>
     </GlassCard>
@@ -237,8 +243,17 @@ function ArtifactRow({
     topPills.push(<Pill key="f" tone="warning">FUTURE ERC-721</Pill>);
     topPills.push(<Pill key="n" tone="muted">NOT MINTABLE IN ARCHIVE1155 V1</Pill>);
   } else if (meta.active) {
-    topPills.push(<Pill key="a" tone="success">ACTIVE · MINT OPEN</Pill>);
-    topPills.push(<Pill key="p" tone="success">PUBLIC MINT OPEN</Pill>);
+    const readGated = meta.id === 3;
+    topPills.push(
+      <Pill key="a" tone="success">
+        {readGated ? "ACTIVE · READ GATED" : "ACTIVE · MINT OPEN"}
+      </Pill>,
+    );
+    topPills.push(
+      <Pill key="p" tone={readGated ? "navy" : "success"}>
+        {readGated ? "WALLET MINTABILITY FROM LIVE READS" : "PUBLIC MINT OPEN"}
+      </Pill>,
+    );
     if (art?.active === false) {
       topPills.push(<Pill key="w" tone="warning">LIVE READ: active=false</Pill>);
     }

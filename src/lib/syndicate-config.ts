@@ -219,7 +219,7 @@ export const ARCHIVE_CONTRACT_STATE = {
       label: "Patron Seal",
       configured: "DEPLOYED_CONFIGURED" as const,
       active: true,
-      note: "Public mint OPEN at 5.00 USDC (wallet limit 5, supply 10,000).",
+      note: "Active at 5.00 USDC (wallet limit 5, supply 10,000); wallet mintability is shown only from live Archive1155 reads.",
     },
   ],
 } as const;
@@ -529,7 +529,7 @@ export const TRANSPARENCY_ITEMS: TransparencyItem[] = [
   { label: "Member Number / Founder Recognition", status: "partial", detail: "Derived from holder index purchase order; no separate contract exists for this recognition layer.", href: "/members" },
   { label: "Member Registry",      status: "partial", detail: "Derived from indexed purchase events; registry coverage is partial until indexing is complete.", href: "/members" },
   { label: "Vault Contract",       status: "pending", detail: "Programmatic Vault contract not deployed — Vault is currently a public wallet." },
-  { label: "Archive Contract (SyndicateArchive1155)", status: "live",    detail: "Deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC, wallet limit 5. Other IDs inactive.", href: ARCHIVE_NFT_EXPLORERS.avascan },
+  { label: "Archive Contract (SyndicateArchive1155)", status: "live",    detail: "Deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC, wallet limit 5. Patron Seal (ID 3) is active but wallet/read-gated. Other IDs are sealed, reserved, or future-contract surfaces.", href: ARCHIVE_NFT_EXPLORERS.avascan },
   { label: "NFT Contract (Seat Record · ERC-721)", status: "pending", detail: "Future identity contract — not deployed." },
   { label: "Governance",           status: "pending", detail: "No governance rights are live or promised." },
   { label: "AI Layer",             status: "pending", detail: "No AI module is live." },
@@ -550,7 +550,7 @@ export const PROTOCOL_STATUS: ProtocolStatusItem[] = [
   { key: "allocation", label: "Initial Allocation",  status: "live",    summary: "7 public allocation wallets · initial mint confirmed.", href: "/registry" },
   { key: "verify",     label: "Source Verification", status: "live",    summary: "Verified on Sourcify and Routescan.", href: "/transparency" },
   { key: "vault",      label: "Vault Contract",      status: "pending", summary: "Vault is currently a public wallet — programmatic contract not deployed.", href: "/vault" },
-  { key: "archive",    label: "Archive Contract",    status: "live",    summary: "SyndicateArchive1155 deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC.", href: "/nft" },
+  { key: "archive",    label: "Archive Contract",    status: "live",    summary: "SyndicateArchive1155 deployed on Avalanche · First Signal is public-open; Patron Seal is wallet/read-gated.", href: "/nft" },
   { key: "nft",        label: "NFT Contract (Seat Record)", status: "pending", summary: "Future ERC-721 Seat Record contract — not deployed yet.", href: "/nfts" },
   { key: "lp",         label: "LP Pool",             status: "live",    summary: "Trader Joe v1 SYN/USDC pair live on Avalanche — reserves & price read onchain.", href: "/liquidity" },
   { key: "gov",        label: "Governance",          status: "pending", summary: "Snapshot / onchain governance — not deployed yet.", href: "/registry" },
@@ -663,4 +663,3 @@ export const HOMEPAGE_METRICS: HomeMetric[] = [
   { key: "vaultValue",     label: "Vault value",        source: "pending", hint: "Vault contract not deployed" },
   { key: "governance",     label: "Governance proposals", source: "pending", hint: "Module not deployed" },
 ];
-

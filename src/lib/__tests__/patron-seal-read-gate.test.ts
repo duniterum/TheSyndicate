@@ -61,6 +61,26 @@ describe("Patron Seal public mint copy", () => {
     }
   });
 
+  it("keeps source-of-truth catalog and member archive surfaces read-gated for ID 3", () => {
+    const status = read("src/components/syndicate/ArchiveContractStatus.tsx");
+    const config = read("src/lib/archive-config.ts");
+    const myArchive = read("src/components/syndicate/MyArchivePreview.tsx");
+    const cockpit = read("src/components/syndicate/cockpit/CockpitCollector.tsx");
+
+    expect(status).toContain("ID 3 (Patron Seal) is active but wallet/read-gated");
+    expect(status).toContain("WALLET MINTABILITY FROM LIVE READS");
+    expect(status).not.toContain("ID 3 (Patron Seal) is LIVE");
+
+    expect(config).toContain("PUBLIC_MINT_READ_GATED");
+    expect(config).toContain("Connect a wallet on Avalanche to check read-gated mintability");
+
+    expect(myArchive).toContain("ID 3 · ACTIVE · READ GATED");
+    expect(myArchive).toContain("Patron Seal (ID 3) is active but wallet/read-gated");
+
+    expect(cockpit).toContain('"ACTIVE · READ GATED"');
+    expect(cockpit).toContain('"Check mintability →"');
+  });
+
   it("keeps the actual write path behind on-chain active and wallet mintability checks", () => {
     const src = read("src/components/syndicate/MintPatronSeal.tsx");
     expect(src).toContain("isActive");
