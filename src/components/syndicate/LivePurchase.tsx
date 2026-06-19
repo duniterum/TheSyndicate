@@ -44,6 +44,7 @@ import { recordTx } from "@/lib/tx-history";
 import { useMintHashPersistence } from "@/lib/mint-persistence";
 import { classifyTxError } from "@/lib/tx-errors";
 import { useHolderIndex } from "@/lib/holder-index";
+import { buildMembershipCommerceReceipt } from "@/lib/protocol-commerce-receipt";
 import { CANONICAL_ORIGIN } from "@/lib/canonical-origin";
 import { buildReferralShareUrl } from "@/lib/referral-attribution";
 import { ShareActions } from "./ShareActions";
@@ -525,10 +526,10 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
           </p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-5 lg:grid-cols-2">
           {/* Purchase widget */}
-          <article className="rounded-2xl border border-border/50 bg-card/40 backdrop-blur p-6">
-            <div className="flex items-center justify-between mb-4">
+          <article className="rounded-lg border border-border/50 bg-card/40 backdrop-blur p-4 sm:p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
               <h3 className="text-lg font-semibold">Live Purchase</h3>
               <WalletBadge
                 address={address}
@@ -557,7 +558,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
             )}
 
             {/* Presets */}
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 mb-3 mt-4">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 mb-3 mt-4">
               {PURCHASE_PRESETS_USDC.map((v) => (
                 <button
                   key={v}
@@ -565,7 +566,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
                     setUsdc(v);
                     setPhase("idle");
                   }}
-                  className={`mono text-[11px] uppercase tracking-[0.15em] rounded-md border py-2 transition-colors ${
+                  className={`mono min-h-11 text-[11px] uppercase tracking-[0.15em] rounded-md border px-2 py-2 transition-colors ${
                     usdc === v
                       ? "border-[var(--gold)] bg-[var(--gold)]/10"
                       : "border-border/60 text-muted-foreground hover:border-[var(--gold)]/60"
@@ -650,7 +651,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
 
             {/* User balances */}
             {isConnected && !wrongChain && (
-              <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                 <BalCell label="Your USDC" value={fmtUsdc(userBal.usdcBalance)} />
                 <BalCell label="Your SYN" value={fmtSyn(userBal.synBalance)} />
                 <BalCell label="Allowance" value={fmtUsdc(userBal.usdcAllowance)} />
@@ -687,7 +688,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
             <button
               onClick={() => state.onClick?.()}
               disabled={state.disabled}
-              className={`mt-4 w-full rounded-md px-4 py-3 text-sm font-semibold transition-opacity disabled:opacity-60 ${buttonStyle}`}
+              className={`mt-4 min-h-12 w-full rounded-md px-4 py-3 text-center text-sm font-semibold transition-opacity disabled:opacity-60 ${buttonStyle}`}
               style={state.tone === "gold" && !state.disabled ? { background: "var(--gradient-gold)" } : undefined}
             >
               {state.label}
@@ -728,7 +729,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
           </article>
 
           {/* Live stats + addresses */}
-          <article className="rounded-2xl border border-border/50 bg-card/40 backdrop-blur p-6 flex flex-col gap-6">
+          <article className="rounded-lg border border-border/50 bg-card/40 backdrop-blur p-4 sm:p-6 flex flex-col gap-6">
             <SaleStatsPanel />
             <ContractAddresses />
             <div className="rounded-lg border border-border/50 bg-background/60 p-4">
@@ -945,12 +946,26 @@ function SuccessReceipt({
   const shareText = record
     ? `I just took my seat — Member #${record.founderNumber} of The Syndicate. My membership is permanently recorded on-chain.`
     : "";
+  const receipt = buildMembershipCommerceReceipt({
+    wallet: record?.wallet,
+    memberNumber: record?.founderNumber,
+    usdcPaid: fmtUsd(usdc),
+    synReceived: `${fmtSyn(synRaw)} SYN`,
+    vaultAmount: fmtUsd(flow.vault),
+    liquidityAmount: fmtUsd(flow.lp),
+    operationsAmount: fmtUsd(flow.ops),
+    rank,
+    proof: {
+      txHash: hash,
+      explorerUrl: txExplorerUrl(hash),
+    },
+  });
 
   return (
     <div className="mt-4 rounded-lg border border-emerald-500/40 bg-emerald-500/5 p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="mono text-[11px] uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-400">
-          ✓ SYN Received
+          Seat receipt sealed
         </div>
         <button onClick={onReset} className="mono text-[10px] uppercase text-muted-foreground hover:text-foreground">
           New purchase
@@ -965,7 +980,7 @@ function SuccessReceipt({
         className="mb-3 rounded-md border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-3 text-center"
       >
         <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          Your seat is now part of the protocol record
+          Your wallet is now seated in the protocol record
         </div>
         {record ? (
           <div className="mt-1 text-2xl font-semibold text-gradient-gold">
@@ -976,6 +991,36 @@ function SuccessReceipt({
             Indexing your seat…
           </div>
         )}
+      </div>
+
+      <div className="mb-3 rounded-md border border-border/50 bg-background/45 p-3">
+        <div className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--gold)]">
+          Receipt as protocol memory object
+        </div>
+        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+          This receipt is the first proof of the state change: SYN received, USDC routed,
+          transaction proof, and the member home that can now give the seat context.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a
+            href="/my-syndicate"
+            className="mono rounded-md border border-border/60 px-2.5 py-1.5 text-[10px] uppercase tracking-[0.16em] text-foreground hover:border-[var(--gold)]/60"
+          >
+            Open My Syndicate
+          </a>
+          <a
+            href="/activity"
+            className="mono rounded-md border border-border/60 px-2.5 py-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground hover:border-[var(--gold)]/60"
+          >
+            See Activity
+          </a>
+          <a
+            href="/archive"
+            className="mono rounded-md border border-border/60 px-2.5 py-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground hover:border-[var(--gold)]/60"
+          >
+            Explore Archive
+          </a>
+        </div>
       </div>
 
       {record && (
@@ -990,15 +1035,22 @@ function SuccessReceipt({
       )}
 
       <dl className="space-y-1 text-xs">
-        <Row label="USDC paid" value={fmtUsd(usdc)} />
-        <Row label="SYN received" value={`${fmtSyn(synRaw)} SYN`} accent />
-        {rank && <Row label="Rank reflected" value={rank} />}
+        {receipt.lines
+          .filter((line) => line.label !== "Wallet seated")
+          .map((line) => (
+            <Row
+              key={line.label}
+              label={line.label}
+              value={line.value}
+              accent={line.label === "SYN received"}
+            />
+          ))}
         <Row label="→ Vault" value={fmtUsd(flow.vault)} />
         <Row label="→ Liquidity" value={fmtUsd(flow.lp)} />
         <Row label="→ Operations" value={fmtUsd(flow.ops)} />
       </dl>
       <div className="mt-3">
-        <ProofButton href={txExplorerUrl(hash)}>
+        <ProofButton href={receipt.proof.explorerUrl}>
           View transaction on Avascan ↗
         </ProofButton>
       </div>
@@ -1127,9 +1179,9 @@ function PurchaseStepper({
   ];
   return (
     <nav aria-label="Purchase progress" className="mt-4 rounded-lg border border-border/50 bg-background/60 p-3">
-      <ol className="flex items-start justify-between gap-1">
+      <ol className="grid grid-cols-3 items-start gap-2">
         {steps.map((s) => (
-          <li key={s.n} className="flex flex-1 flex-col items-center gap-1 text-center min-w-0">
+          <li key={s.n} className="flex min-w-0 flex-col items-center gap-1 text-center">
             <PurchaseStepDot status={s.status} number={s.n} />
             <span
               className={`mono text-[9px] sm:text-[10px] uppercase tracking-[0.12em] leading-tight ${

@@ -18,6 +18,7 @@ import { CHRONICLE_ENTRIES } from "@/lib/chronicle-entries";
 import { deriveGenesisRegisterEntries } from "@/lib/institutional-register-genesis";
 import { buildPublicChronicleView } from "@/lib/chronicle-public-integration";
 import { useProtocolTruth } from "@/lib/protocol-truth";
+import { ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
 
 export const Route = createFileRoute("/chronicle")({
   head: () => ({
@@ -64,7 +65,7 @@ function ChroniclePage() {
       description="Written in the protocol's voice, oldest first. Entries appear only when their on-chain anchor already exists. Nothing here is editorial."
     >
       <PagePurpose
-        statement="The Chronicle is the protocol's curated memory — verified events narrated in the protocol's own voice, oldest first."
+        statement="The Chronicle receives consequential events from Activity and turns them into narrated protocol memory. It does not invent events; it explains why verified movement mattered."
         distinctions={[
           { label: "Activity", to: "/activity" },
           { label: "Institutional Register", to: "/institutional-register" },
@@ -72,6 +73,8 @@ function ChroniclePage() {
       />
 
       {/* ── Current chapter block ─────────────────────────────────────── */}
+      <ProtocolMemoryPipeline compact />
+
       <Section id="current-chapter" width="narrow">
         <div className="border border-border rounded-lg p-5 md:p-6 bg-card">
           <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
@@ -183,9 +186,10 @@ function ChroniclePage() {
       <Section id="what-comes-next" width="narrow">
         <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
           The next entry will appear when a canonical on-chain predicate
-          fires — a chapter sealing, a treasury or liquidity threshold
+          fires - a chapter sealing, a treasury or liquidity threshold
           crossing, or another artifact joining the archive. Until then,
-          this page is complete.
+          this page is complete, and Activity remains the place to watch what
+          may become memory.
         </p>
       </Section>
 

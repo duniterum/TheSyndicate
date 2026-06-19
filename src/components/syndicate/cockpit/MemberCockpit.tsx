@@ -283,17 +283,36 @@ function CockpitHeader({
 
         {/* DISCONNECTED — dormant shell */}
         {!isConnected ? (
-          <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
-            <WalletAvatar address={null} size={72} />
-            <div className="flex-1 min-w-0">
-              <h1 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-foreground">
-                Your seat awaits
-              </h1>
-              <p className="mt-1.5 text-sm text-muted-foreground max-w-md">
-                Connect your wallet to load your member number, rank, SYN position,
+          <div className="relative grid gap-6 lg:grid-cols-[auto_1fr] lg:items-start">
+            <div className="rounded-[6px] border border-border/60 bg-background/50 p-3">
+              <WalletAvatar address={null} size={80} />
+            </div>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-foreground">
+                  Your cockpit waits for a wallet.
+                </h1>
+                <Pill tone="muted">Disconnected</Pill>
+              </div>
+              <p className="mt-2 max-w-2xl text-sm md:text-[15px] leading-relaxed text-muted-foreground">
+                Connect to load wallet-specific truth: member number, SYN received, USDC routed,
                 and owned artifacts — every value a live on-chain read.
               </p>
-              <div className="mt-4 max-w-md">
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {[
+                  ["Identity", "Member number, chapter, rank, and wallet proof."],
+                  ["Position", "SYN received, purchases, routing receipt, and joined block."],
+                  ["Memory", "Artifact ownership and activity history from indexed reads."],
+                ].map(([label, body]) => (
+                  <div key={label} className="rounded-[6px] border border-border/55 bg-card/35 p-3">
+                    <div className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--gold)]">
+                      {label}
+                    </div>
+                    <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{body}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 max-w-xl">
                 <ConnectCTA
                   message="Connect wallet to activate your cockpit."
                   hint="seat · assets · artifacts"

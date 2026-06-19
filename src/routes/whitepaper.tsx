@@ -264,9 +264,9 @@ function WhitepaperPage() {
       </Section>
 
       <Section id="nft">
-        <SectionHeader eyebrow="10 — NFT Layer" title="NFT layer — two public mints open" />
+        <SectionHeader eyebrow="10 — NFT Layer" title="NFT layer — open plus read-gated artifacts" />
         <GlassCard className="p-6 text-sm text-foreground/85 leading-relaxed space-y-2">
-          <p>The Archive1155 contract is <StatusBadge status="live" /> on Avalanche. The First Signal (ID 1) and the Patron Seal (ID 3) are both OPEN for public mint. Other Artifacts are protocol-memory surfaces sealed by event — they activate when the underlying on-chain event fires.</p>
+          <p>The Archive1155 contract is <StatusBadge status="live" /> on Avalanche. The First Signal (ID 1) is OPEN for public mint. Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event — they activate when the underlying on-chain event fires.</p>
           <p className="text-muted-foreground text-xs">
             The NFT layer is implemented as the <a href="/nft" className="underline-offset-4 hover:underline text-foreground">NFT Collection</a> — the collectible memory layer (Chapter Artifacts, Seat Records, Patron Seals, Milestone Artifacts, Liquidity Marks, Protocol Milestones, Secret Artifacts, Legacy Artifacts). Artifacts do not grant equity, debt, Vault ownership, dividends, revenue share, governance rights, or promises of profit.
           </p>
@@ -274,7 +274,7 @@ function WhitepaperPage() {
       </Section>
 
       <Section id="archive">
-        <SectionHeader eyebrow="10b — Archive" title="Memory layer around the seat — two mints open" />
+        <SectionHeader eyebrow="10b — Archive" title="Memory layer around the seat" />
         <GlassCard className="p-6 text-sm text-foreground/85 leading-relaxed space-y-3">
           <p>
             SYN is the seat. <strong>Artifacts are the memory.</strong> The Archive is an
@@ -285,7 +285,7 @@ function WhitepaperPage() {
           </p>
           <p>
             The Archive1155 contract is <StatusBadge status="live" /> on Avalanche. The First
-            Signal (ID 1) is OPEN at 0.50 USDC (wallet limit 5) and the Patron Seal (ID 3) is OPEN at 5.00 USDC. Other Artifacts
+            Signal (ID 1) is OPEN at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. Other Artifacts
             remain inactive. See
             {" "}<Link to="/nft" className="underline-offset-4 hover:underline">/nft</Link>{" "}
             to mint or browse, and

@@ -11,20 +11,20 @@ import { NftPage } from "@/components/syndicate/NftPage";
 export const Route = createFileRoute("/nfts")({
   head: () => ({
     meta: [
-      { title: "The Syndicate NFTs — First Signal & Patron Seal mints open on Avalanche" },
+      { title: "The Syndicate NFTs — First Signal mint open · Patron Seal read-gated" },
       {
         name: "description",
         content:
-          "Collectible NFT Artifacts for The Syndicate. Two public mints open on Avalanche: The First Signal (ID 1, 0.50 USDC) and the Patron Seal (ID 3, 5.00 USDC). Other Artifacts are protocol-memory surfaces sealed by event.",
+          "Collectible NFT Artifacts for The Syndicate. The First Signal (ID 1) is open on Avalanche at 0.50 USDC. Patron Seal (ID 3) is contract/read gated and only mintable when live Archive1155 reads say so. Other Artifacts are protocol-memory surfaces sealed by event.",
       },
       {
         property: "og:title",
-        content: "The Syndicate NFTs — First Signal & Patron Seal mints open",
+        content: "The Syndicate NFTs — First Signal mint open · Patron Seal read-gated",
       },
       {
         property: "og:description",
         content:
-          "Two public mints open on Avalanche: The First Signal (0.50 USDC) and the Patron Seal (5.00 USDC).",
+          "The First Signal is open on Avalanche at 0.50 USDC. Patron Seal is contract/read gated by live Archive1155 reads.",
       },
       { property: "og:url", content: "https://thesyndicate.money/nfts" },
       { property: "twitter:card", content: "summary_large_image" },

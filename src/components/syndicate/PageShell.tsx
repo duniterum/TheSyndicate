@@ -63,11 +63,6 @@ export function PageShell({
             style={{ borderColor: "var(--border)", background: "var(--background)" }}
           >
             <div aria-hidden className="absolute inset-0 grid-bg opacity-25" />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -top-32 -right-24 size-[420px] rounded-full opacity-15 blur-3xl"
-              style={{ background: "var(--gradient-gold)" }}
-            />
             <div className="relative mx-auto max-w-7xl px-5 md:px-8 pt-12 md:pt-20 pb-10 md:pb-14">
               <div className="border-l-2 pl-5 md:pl-7" style={{ borderColor: "var(--accent)" }}>
                 <div className="flex items-center gap-3 mb-5">

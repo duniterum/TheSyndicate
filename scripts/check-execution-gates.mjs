@@ -125,21 +125,25 @@ for (const f of findings) buckets[decisionFor(f.severity)]++;
 if (findings.length === 0) buckets.PASS = 1;
 
 // Best-effort JSON report. Never fails the runner.
+// Synthetic failure injection is for exit-code tests only; it must not
+// overwrite the canonical latest release report.
 try {
   const { mkdirSync, writeFileSync } = await import("node:fs");
-  mkdirSync(join(ROOT, "reports"), { recursive: true });
-  const payload = {
-    timestamp: new Date().toISOString(),
-    status: buckets.BLOCKER > 0 ? "BLOCKER" : buckets.WARN > 0 ? "WARN" : "PASS",
-    counts: { ...counts, ...buckets },
-    findings: findings.map((f) => ({
-      gate: f.gate,
-      severity: f.severity,
-      decision: decisionFor(f.severity),
-      message: f.message,
-    })),
-  };
-  writeFileSync(join(ROOT, "reports/execution-gates.latest.json"), JSON.stringify(payload, null, 2));
+  if (!synthetic) {
+    mkdirSync(join(ROOT, "reports"), { recursive: true });
+    const payload = {
+      timestamp: new Date().toISOString(),
+      status: buckets.BLOCKER > 0 ? "BLOCKER" : buckets.WARN > 0 ? "WARN" : "PASS",
+      counts: { ...counts, ...buckets },
+      findings: findings.map((f) => ({
+        gate: f.gate,
+        severity: f.severity,
+        decision: decisionFor(f.severity),
+        message: f.message,
+      })),
+    };
+    writeFileSync(join(ROOT, "reports/execution-gates.latest.json"), JSON.stringify(payload, null, 2));
+  }
 } catch { /* report is optional */ }
 
 if (findings.length === 0) {
@@ -165,4 +169,3 @@ if (buckets.BLOCKER > 0) {
 }
 console.log("\n✅ PASS — no BLOCKER findings (WARN/DEFERRED reported above).");
 process.exit(0);
-

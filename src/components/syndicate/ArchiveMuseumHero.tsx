@@ -84,7 +84,7 @@ export function ArchiveMuseumHero() {
             </div>
 
             <div className="mt-5 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Curated · Secured on-chain · Preserved for generations · Governed by members
+              Curated · Secured on-chain · Preserved for generations · Future systems read-gated
             </div>
           </div>
 
@@ -156,11 +156,6 @@ export function ArchiveMuseumHero() {
         </div>
       </div>
 
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-40 -left-20 size-[520px] rounded-full opacity-20 blur-3xl"
-        style={{ background: "var(--gradient-gold)" }}
-      />
     </section>
   );
 }

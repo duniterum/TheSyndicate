@@ -1267,7 +1267,7 @@ const FAQS: Array<{ q: string; a: string }> = [
   { q: "Is there a tax?", a: "No. SYN has 0% transfer tax." },
   { q: "Can transfers be blocked?", a: "No. There is no blacklist, no whitelist, no pause, no max wallet, no max tx, and no transfer restrictions." },
   { q: "What is the Archive?", a: "An optional collectible memory layer for what happens around each seat — Chapter Artifacts, Seat Records, Patron Seals, Milestone Artifacts, Liquidity Marks, Protocol Milestones, Secret Artifacts, Legacy Artifacts, Genesis Founder Marks. SYN is the seat. Artifacts are the memory. The SyndicateArchive1155 contract is deployed on Avalanche." },
-  { q: "Is the Archive live?", a: "Yes — The First Signal (ID 1) public mint is OPEN on Avalanche at 0.50 USDC (wallet limit 5). Other Artifacts are protocol-memory surfaces sealed by event. See /nft to mint or browse." },
+  { q: "Is the Archive live?", a: "Yes — The First Signal (ID 1) public mint is OPEN on Avalanche at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event. See /nft to mint or browse." },
   { q: "Do Archive artifacts grant ownership or yield?", a: "No. Artifacts are collectible records only. They are not equity, debt, Vault ownership, dividend instruments, revenue share, governance rights, or promises of profit. Participation may result in total loss." },
   { q: "Will artifacts have tiers or wealth-coded ranks?", a: "No. Patron Seal is a single flat support amount with no tiers and no status. All artifact identity is positional (seat / chapter / on-chain event), never wealth-coded." },
 ];

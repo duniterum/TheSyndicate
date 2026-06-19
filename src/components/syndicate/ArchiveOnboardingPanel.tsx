@@ -6,7 +6,7 @@ import { GlassCard, Pill, Section } from "@/components/syndicate/Primitives";
 const TODAY = [
   "Join The Syndicate",
   "Mint The First Signal (ID 1) — 0.50 USDC on Avalanche",
-  "Mint the Patron Seal (ID 3) — 5.00 USDC on Avalanche",
+  "Mint Patron Seal (ID 3) only when live Archive1155 reads allow it",
   "Explore planned Artifacts",
   "Verify the deployed Archive contract",
   "Connect your wallet to preview your Archive identity",
@@ -25,7 +25,7 @@ export function ArchiveOnboardingPanel() {
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <Pill tone="gold">START HERE</Pill>
           <Pill tone="success">ID 1 · MINT OPEN</Pill>
-          <Pill tone="success">ID 3 · MINT OPEN</Pill>
+          <Pill tone="warning">ID 3 · READ GATED</Pill>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

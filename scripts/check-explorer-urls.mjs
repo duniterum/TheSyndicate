@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 // Validate that the explorer URL formats we emit for the Archive contract
-// and sample transaction hashes (a) have the right shape, and (b) return
-// something other than 404 / 5xx from Routescan, SnowTrace, and Avascan.
+// and sample transaction hashes have the right shape and do not return 404/5xx
+// from Routescan, SnowTrace, or Avascan.
 //
-// Usage:  node scripts/check-explorer-urls.mjs
+// 403/429 responses are accepted because explorer CDNs often block automated
+// probes while still serving the same URL to a browser.
+//
+// Usage: node scripts/check-explorer-urls.mjs
 // Optional positional args: extra tx hashes to probe.
-//
-// Exit code 0 on success, 1 if any URL fails its assertions.
 
 const ADDRESS = "0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d";
 const DEFAULT_TX_HASHES = [
-  // SyndicateMembershipSale deployment tx — known good Avalanche C-Chain tx.
+  // SyndicateMembershipSale deployment tx, known-good Avalanche C-Chain tx.
   "0x30e1378a66dc1037d49cb7557a162635f37a90ffde80e973bd9750d39927bdb6",
 ];
 
@@ -18,40 +19,43 @@ const extraTx = process.argv.slice(2).filter((s) => /^0x[a-fA-F0-9]{64}$/.test(s
 const TX_HASHES = [...DEFAULT_TX_HASHES, ...extraTx];
 
 const addrUrls = {
-  avascan:   `https://avascan.info/blockchain/c/address/${ADDRESS}`,
+  avascan: `https://avascan.info/blockchain/c/address/${ADDRESS}`,
   snowtrace: `https://snowtrace.io/address/${ADDRESS}`,
   routescan: `https://routescan.io/address/${ADDRESS}/contract/43114/code`,
 };
+
 const txUrlBuilders = {
   routescan: (h) => `https://routescan.io/tx/${h}`,
   snowtrace: (h) => `https://snowtrace.io/tx/${h}`,
-  avascan:   (h) => `https://avascan.info/blockchain/c/tx/${h}`,
+  avascan: (h) => `https://avascan.info/blockchain/c/tx/${h}`,
 };
 
-const ADDR_RE  = /^0x[a-fA-F0-9]{40}$/;
-const TXH_RE   = /^0x[a-fA-F0-9]{64}$/;
+const ADDR_RE = /^0x[a-fA-F0-9]{40}$/;
+const TXH_RE = /^0x[a-fA-F0-9]{64}$/;
 const HTTPS_RE = /^https:\/\//;
 
 async function probe(url) {
   try {
-    // HEAD first — some explorers don't allow HEAD, fall back to GET.
-    let r = await fetch(url, { method: "HEAD", redirect: "follow" });
-    if (r.status === 405 || r.status === 403) {
-      r = await fetch(url, { method: "GET", redirect: "follow" });
+    let response = await fetch(url, { method: "HEAD", redirect: "follow" });
+    if (response.status === 405 || response.status === 403) {
+      response = await fetch(url, { method: "GET", redirect: "follow" });
     }
-    return { status: r.status, ok: r.status > 0 && r.status < 400 };
+    return {
+      status: response.status,
+      ok: response.status > 0 && response.status < 500 && response.status !== 404,
+    };
   } catch (err) {
     return { status: 0, ok: false, error: String(err?.message ?? err) };
   }
 }
 
 function assertShape(name, url, kind, value) {
-  if (!HTTPS_RE.test(url)) throw new Error(`${name}: not an https URL → ${url}`);
+  if (!HTTPS_RE.test(url)) throw new Error(`${name}: not an https URL -> ${url}`);
   if (kind === "address" && !ADDR_RE.test(value)) {
-    throw new Error(`${name}: address shape invalid → ${value}`);
+    throw new Error(`${name}: address shape invalid -> ${value}`);
   }
   if (kind === "tx" && !TXH_RE.test(value)) {
-    throw new Error(`${name}: tx hash shape invalid → ${value}`);
+    throw new Error(`${name}: tx hash shape invalid -> ${value}`);
   }
 }
 
@@ -74,7 +78,7 @@ function record(label, url, result) {
   }
 
   for (const hash of TX_HASHES) {
-    console.log(`\nTx pages for ${hash.slice(0, 10)}…:`);
+    console.log(`\nTx pages for ${hash.slice(0, 10)}...:`);
     for (const [name, build] of Object.entries(txUrlBuilders)) {
       const url = build(hash);
       assertShape(`tx.${name}`, url, "tx", hash);
@@ -82,6 +86,6 @@ function record(label, url, result) {
     }
   }
 
-  console.log(`\n${failures === 0 ? "All explorer URLs reachable." : `${failures} URL(s) failed.`}`);
+  console.log(`\n${failures === 0 ? "All explorer URLs passed." : `${failures} URL(s) failed.`}`);
   process.exit(failures === 0 ? 0 : 1);
 })();

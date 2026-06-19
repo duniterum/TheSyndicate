@@ -116,7 +116,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     "archive1155",
     "LIVE",
     CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS,
-    "Multi-ID artifact contract. ID 1 + ID 3 public mints LIVE. See archive-id-registry.ts.",
+    "Multi-ID artifact contract. ID 1 public mint is open; ID 3 Patron Seal is contract/read gated and only shown as mintable from live Archive1155 reads. See archive-id-registry.ts.",
     "src/lib/archive-nft-abi.ts",
   ),
   entry(

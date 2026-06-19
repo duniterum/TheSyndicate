@@ -1,5 +1,5 @@
-// Guards that the release flow includes the execution gate runner and that
-// gate severity → exit-code mapping is correct.
+// Guards that the release flow includes the production release checks and that
+// gate severity maps to the correct exit code.
 import { describe, it, expect } from "vitest";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
@@ -13,20 +13,27 @@ describe("release flow wiring", () => {
     expect(pkg.scripts["check-execution-gates"]).toContain("check-execution-gates.mjs");
     expect(pkg.scripts["check-release"]).toContain("check-release.mjs");
     expect(pkg.scripts.prepublishOnly).toContain("check-release.mjs");
+    expect(pkg.scripts.typecheck).toContain("tsc --noEmit");
   });
 
-  it("check-release.mjs invokes the execution gate runner", () => {
+  it("check-release.mjs invokes the canonical release steps", () => {
     expect(existsSync(join(process.cwd(), "scripts/check-release.mjs"))).toBe(true);
     const src = read("scripts/check-release.mjs");
+    expect(src).toContain('"typecheck"');
+    expect(src).toContain('"tests"');
+    expect(src).toContain('"build"');
     expect(src).toContain("check-execution-gates.mjs");
-    expect(src).toContain("tsc");
-    expect(src).toContain("vitest");
+    expect(src).toContain("check-explorer-urls.mjs");
+    expect(src).toContain("check-explorer-canonical.mjs");
+    expect(src).toContain("check-protocol-health.mjs");
+    expect(src).toContain("check-visitor-vocabulary.mjs");
+    expect(src).toContain("check-live-state-truth.mjs");
   });
 });
 
-describe("gate runner severity → exit code", () => {
+describe("gate runner severity to exit code", () => {
   it("PASS / WARN / DEFERRED do not fail the runner (exit 0)", () => {
-    // Canonical sources currently produce zero findings → PASS.
+    // Canonical sources currently produce zero findings, so this should PASS.
     const out = execSync("node scripts/check-execution-gates.mjs", { encoding: "utf8" });
     expect(out).toMatch(/PASS=1/);
     expect(out).toMatch(/BLOCKER=0/);

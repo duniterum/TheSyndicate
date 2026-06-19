@@ -26,7 +26,7 @@ export type Milestone = {
 export const PROTOCOL_MILESTONES: Milestone[] = [
   { id: "first-buyer",       kind: "members",    target: 1,      label: "First member joined",                 description: "The protocol's first seat was sealed on Avalanche." },
   { id: "first-signal-mint", kind: "first-mint", target: 1,      label: "First Signal minted",                 description: "Archive1155 ID 1 — public mint open at 0.50 USDC." },
-  { id: "patron-seal-mint",  kind: "first-mint", target: 1,      label: "First Patron Seal minted",            description: "Archive1155 ID 3 — patron mint open at 5.00 USDC." },
+  { id: "patron-seal-mint",  kind: "first-mint", target: 1,      label: "First Patron Seal minted",            description: "Archive1155 ID 3 — contract/read gated Patron Seal mint at 5.00 USDC." },
   { id: "raise-100",         kind: "usdc",       target: 100,    label: "$100 routed",                         description: "First $100 of USDC routed through the Membership Sale." },
   { id: "raise-1k",          kind: "usdc",       target: 1_000,  label: "$1,000 routed",                       description: "First $1K through the sale." },
   { id: "raise-10k",         kind: "usdc",       target: 10_000, label: "$10,000 routed",                      description: "Crossing $10K of cumulative USDC." },

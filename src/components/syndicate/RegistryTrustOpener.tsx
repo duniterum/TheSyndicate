@@ -44,7 +44,7 @@ const TRUST_CARDS: TrustCard[] = [
     address: ARCHIVE_NFT_CONTRACT_ADDRESS,
     explorerHref: ARCHIVE_NFT_EXPLORERS.avascan,
     source: "LIVE",
-    description: "ID 1 (First Signal) and ID 3 (Patron Seal) public mints open on Avalanche.",
+    description: "ID 1 (First Signal) is open; ID 3 (Patron Seal) is contract/read gated by live Archive1155 reads.",
   },
   {
     role: "04 · Payment token",

@@ -20,7 +20,7 @@ export function FinalMintCTA() {
       <ActionPanel
         eyebrow="Chapter I · Closing record"
         title="Mint the opening signal."
-        description="Preserve your place in Chapter I of The Syndicate Archive. Once Chapter I closes, the First Signal can never be issued again."
+        description="Artifacts are memories, not seats. The First Signal appears mintable only while the deployed Archive1155 contract reports it open."
         primary={{ label: "Mint The First Signal", href: "#first-signal-showcase" }}
         secondary={{ label: "Verify on-chain ↗", href: verifyUrl }}
       />

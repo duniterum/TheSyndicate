@@ -82,13 +82,13 @@ export function ArchiveGalleryPreview() {
     <Section id="gallery-preview">
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <Pill tone="success">ID 1 · MINT OPEN</Pill>
-        <Pill tone="success">ID 3 · MINT OPEN</Pill>
+        <Pill tone="warning">ID 3 · READ GATED</Pill>
         <Pill tone="muted">IDS 4–9 · PROTOCOL MEMORY</Pill>
       </div>
       <SectionHeader
         eyebrow="The Collection"
         title={<>The rest of the <span className="text-gradient-gold">NFT Collection</span></>}
-        description="One contract on Avalanche. The First Signal (above) and the Patron Seal (above) are both live and mintable today. The remaining slots are protocol-memory artifacts sealed by on-chain events — no public mint, no price urgency."
+        description="One contract on Avalanche. The First Signal is open; Patron Seal is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155 reads. The remaining slots are protocol-memory artifacts sealed by on-chain events — no public mint, no price urgency."
       />
 
 
@@ -125,7 +125,7 @@ export function ArchiveGalleryPreview() {
       </div>
 
       <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
-        Only The First Signal (ID 1) is publicly mintable today. Patron Seal (ID 3) is OPEN for public mint at 5.00 USDC. ID 2 is a reserved identity
+        Only The First Signal (ID 1) is statically publicly mintable today. Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. ID 2 is a reserved identity
         pointer. IDs 4–8 are ownerOnly protocol-memory artifacts sealed by
         on-chain events. ID 9 is a roadmap slot — not configured on the
         deployed Archive contract. Read the full museum write-up at{" "}

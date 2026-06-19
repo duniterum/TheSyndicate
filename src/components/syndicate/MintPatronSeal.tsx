@@ -16,7 +16,7 @@
 //             → needs-usdc → needs-approval → approving
 //             → ready → minting → confirmed
 //   `error` is orthogonal and surfaced via `txError`.
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useReadContracts,
@@ -30,6 +30,7 @@ import { ERC20_ABI } from "@/lib/sale-abi";
 import {
   ARCHIVE_NFT_CONTRACT_ADDRESS,
   CONTRACTS,
+  txExplorerUrl,
   USDC_DECIMALS,
 } from "@/lib/syndicate-config";
 import { archiveTxUrl } from "@/lib/explorer-guard";
@@ -39,6 +40,7 @@ import { assertFreshWallet, walletFreshnessMessage } from "@/lib/wallet-freshnes
 import { recordTx } from "@/lib/tx-history";
 import { useMintHashPersistence } from "@/lib/mint-persistence";
 import { classifyTxError } from "@/lib/tx-errors";
+import { buildArtifactMintCommerceReceipt } from "@/lib/protocol-commerce-receipt";
 
 const ARCHIVE = ARCHIVE_NFT_CONTRACT_ADDRESS as `0x${string}`;
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
@@ -421,6 +423,24 @@ export function MintPatronSeal({
 
   const mintExplorerHref = useMemo(() => archiveTxUrl(effectiveMintHash), [effectiveMintHash]);
   const approveExplorerHref = useMemo(() => archiveTxUrl(effectiveApproveHash), [effectiveApproveHash]);
+  const artifactReceipt =
+    mintReceipt.isSuccess && effectiveMintHash
+      ? buildArtifactMintCommerceReceipt({
+          wallet,
+          artifactName: "Patron Seal",
+          tokenId: PATRON_SEAL_ID.toString(),
+          quantity: QUANTITY.toString(),
+          usdcPaid: requiredUsdc !== undefined ? fmtUsdc(requiredUsdc) : "5.00 USDC",
+          ownershipStatus:
+            ownedBal !== undefined
+              ? `Wallet balance reads ${ownedBal.toString()}`
+              : "Ownership refresh pending",
+          proof: {
+            txHash: effectiveMintHash,
+            explorerUrl: mintExplorerHref ?? txExplorerUrl(effectiveMintHash),
+          },
+        })
+      : null;
 
   return (
     <div role="region" aria-label="Mint Patron Seal" className="flex flex-col gap-2">
@@ -510,6 +530,14 @@ export function MintPatronSeal({
             Your Patron Seal has been recorded on-chain. It may take a few
             seconds for the counts below to refresh.
           </p>
+          <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+            {(artifactReceipt?.lines ?? []).map((line) => (
+              <Fragment key={line.label}>
+                <DT>{line.label}</DT>
+                <DD>{line.value}</DD>
+              </Fragment>
+            ))}
+          </dl>
           {effectiveMintHash && (
             <code className="mono text-[10px] text-muted-foreground break-all">
               tx · {effectiveMintHash}

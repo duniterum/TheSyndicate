@@ -85,7 +85,7 @@ const CONTRACT_ROWS: ContractRow[] = [
   },
   { label: "Vault Contract",     status: "pending", address: "PENDING", href: null, description: "Programmatic Vault is not deployed. Vault funds currently sit in a public wallet (see below)." },
   { label: "Seat Record NFT Contract", status: "pending", address: "PENDING", href: null, description: "Future ERC-721 identity record — PENDING CONTRACT. Distinct from the deployed Archive1155, where ID 1 The First Signal is mintable today." },
-  { label: "Archive Contract (SyndicateArchive1155)", status: "live", address: CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS, href: ARCHIVE_NFT_EXPLORERS.avascan, description: "Deployed on Avalanche · ID 1 The First Signal is ACTIVE and public mint is OPEN at 0.50 USDC (wallet limit 5). ID 3 Patron Seal is ACTIVE and public mint is OPEN at 5.00 USDC (wallet limit 5). ID 2 is reserved/disabled (future ERC-721 Seat Record)." },
+  { label: "Archive Contract (SyndicateArchive1155)", status: "live", address: CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS, href: ARCHIVE_NFT_EXPLORERS.avascan, description: "Deployed on Avalanche · ID 1 The First Signal is ACTIVE and public mint is OPEN at 0.50 USDC (wallet limit 5). ID 3 Patron Seal is CONTRACT_GATED / PUBLIC_MINT_READ_GATED: mintability is shown only from live Archive1155 reads. ID 2 is reserved/disabled (future ERC-721 Seat Record)." },
   { label: "Governance Module",  status: "pending", address: "PENDING", href: null, description: "Snapshot / onchain governance. Not deployed yet." },
   { label: "AI Layer",           status: "pending", address: "PENDING", href: null, description: "No AI module is live." },
 ];

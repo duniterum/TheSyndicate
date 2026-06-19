@@ -13,6 +13,7 @@ import { PageShell } from "@/components/syndicate/PageShell";
 import { PagePurpose } from "@/components/syndicate/PagePurpose";
 import { InstitutionalRegisterView } from "@/components/syndicate/InstitutionalRegisterView";
 import { Pill, Section } from "@/components/syndicate/Primitives";
+import { ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
 
 export const Route = createFileRoute("/institutional-register")({
   head: () => ({
@@ -50,13 +51,14 @@ function InstitutionalRegisterRoute() {
       description="A read-only record of verified protocol memory. Each entry is derived from an on-chain protocol event and traces back to it. This is the protocol's durable institutional record — not Story, not Recognition, not governance, and not a claim of return or investment value."
     >
       <PagePurpose
-        statement="The Institutional Register is the protocol's durable memory record — verified facts derived from on-chain events, each tracing back to its anchor."
+        statement="The Institutional Register receives verified facts from the memory path and preserves what became institutional truth. Chronicle tells the story; the Register keeps the durable record."
         distinctions={[
           { label: "Contract Registry", to: "/registry" },
           { label: "Chronicle", to: "/chronicle" },
         ]}
       />
 
+      <ProtocolMemoryPipeline compact />
       <InstitutionalRegisterView />
 
       <Section id="more">

@@ -14,21 +14,23 @@ type Group = { label: string; items: Item[] };
 // Cockpit nav: 6 primary destinations + a single "More" instrument group
 // (mirrors the reference header lockup).
 const PRIMARY: Item[] = [
-  { label: "Activity", to: "/activity", hint: "Onchain events stream" },
-  { label: "Vault", to: "/vault", hint: "70% routing destination" },
-  { label: "Artifacts", to: "/nft", hint: "First Signal & Patron Seal mints" },
+  { label: "My Syndicate", to: "/my-syndicate", hint: "Your seat, proof, and memory" },
+  { label: "Activity", to: "/activity", hint: "Protocol heartbeat" },
+  { label: "Archive", to: "/archive", hint: "Artifacts as protocol memory" },
   { label: "Verify", to: "/transparency", hint: "Verify every claim" },
-  { label: "Members", to: "/members", hint: "Who is joining" },
-  { label: "Token (SYN)", to: "/token", hint: "SYN contract & spec" },
+  { label: "Members", to: "/members", hint: "Who is seated" },
+  { label: "SYN", to: "/token", hint: "The V1 membership seat" },
 ];
 
 const GROUPS: Group[] = [
   {
     label: "More",
     items: [
+      { label: "Vault", to: "/vault", hint: "70% routing destination" },
+      { label: "First Signal Mint", to: "/nft", hint: "Archive1155 artifact mint" },
       { label: "Archive", to: "/archive", hint: "Museum · every Artifact & seal" },
       { label: "Roadmap", to: "/roadmap", hint: "Live · Next · Pending · Future" },
-      { label: "Referral · Preview", to: "/referral", hint: "Simulated future model" },
+      { label: "Referral Reserved", to: "/referral", hint: "Requires contract before live" },
       { label: "Tokenomics", to: "/tokenomics", hint: "Allocation & supply" },
       { label: "Liquidity", to: "/liquidity", hint: "SYN/USDC pool" },
       { label: "Contract Registry", to: "/registry", hint: "Every contract & wallet address" },
@@ -47,6 +49,21 @@ const NAV_BASE =
   "mono whitespace-nowrap px-2 py-2 text-[11px] uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors";
 const NAV_ACTIVE = "text-[color:var(--accent)]";
 
+function visibleGroupItems(items: Item[]) {
+  return items.filter((it) => it.to !== "/archive");
+}
+
+function navLabel(it: Item) {
+  if (it.to === "/referral") return "Referral Reserved";
+  return it.label;
+}
+
+function navHint(it: Item) {
+  if (it.to === "/referral") return "Requires contract before live";
+  if (it.to === "/roadmap") return "Live / Next / Pending / Future";
+  return it.hint;
+}
+
 export function Header({ wide = false }: { wide?: boolean } = {}) {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -62,6 +79,16 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
+
+  useEffect(() => {
+    const openWalletSurface = () => {
+      if (window.matchMedia("(max-width: 1279px)").matches) {
+        setMobileOpen(true);
+      }
+    };
+    document.addEventListener("syndicate:open-wallet", openWalletSurface);
+    return () => document.removeEventListener("syndicate:open-wallet", openWalletSurface);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/85 border-b border-border">
@@ -116,15 +143,15 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
               {openGroup === g.label && (
                 <div className="absolute left-0 top-full pt-2 w-64 z-50">
                   <div className="surface elevated p-1.5 border border-border bg-card">
-                    {g.items.map((it) => (
+                    {visibleGroupItems(g.items).map((it) => (
                       <Link
                         key={it.to}
                         to={it.to}
                         className="block rounded-[3px] px-3 py-2 text-xs hover:bg-muted border-l-2 border-transparent hover:border-[color:var(--accent)] transition-colors"
                         onClick={() => setOpenGroup(null)}
                       >
-                        <div className="font-medium text-foreground">{it.label}</div>
-                        {it.hint && <div className="mono mt-0.5 text-[10px] uppercase tracking-[0.1em] text-muted-foreground">{it.hint}</div>}
+                        <div className="font-medium text-foreground">{navLabel(it)}</div>
+                        {navHint(it) && <div className="mono mt-0.5 text-[10px] uppercase tracking-[0.1em] text-muted-foreground">{navHint(it)}</div>}
                       </Link>
                     ))}
                   </div>
@@ -158,7 +185,7 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
                   cta: id.isMember ? "buy_more" : id.shouldShowBecomeMember ? "become_member" : "join",
                 })
               }
-              className="mono inline-flex items-center justify-center rounded-[3px] px-3.5 md:px-0 md:w-[140px] py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-[filter] hover:brightness-110 whitespace-nowrap"
+              className="mono hidden sm:inline-flex items-center justify-center rounded-[3px] px-3.5 md:px-0 md:w-[140px] py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-[filter] hover:brightness-110 whitespace-nowrap"
               style={{
                 background: "linear-gradient(135deg, #F5C94A 0%, #E3A92B 44%, #9E6412 100%)",
                 color: "#15110A",
@@ -221,15 +248,15 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
               <div key={g.label}>
                 <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-2 border-l-2 border-border pl-2">{g.label}</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                  {g.items.map((it) => (
+                  {visibleGroupItems(g.items).map((it) => (
                     <Link
                       key={it.to}
                       to={it.to}
                       onClick={() => setMobileOpen(false)}
                       className="block rounded-[3px] px-3 py-2.5 hover:bg-muted border-l-2 border-transparent hover:border-[color:var(--accent)] transition-colors"
                     >
-                      <div className="text-sm font-medium text-foreground">{it.label}</div>
-                      {it.hint && <div className="mono mt-0.5 text-[11px] text-muted-foreground">{it.hint}</div>}
+                      <div className="text-sm font-medium text-foreground">{navLabel(it)}</div>
+                      {navHint(it) && <div className="mono mt-0.5 text-[11px] text-muted-foreground">{navHint(it)}</div>}
                     </Link>
                   ))}
                 </div>

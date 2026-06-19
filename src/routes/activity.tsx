@@ -21,6 +21,7 @@ import { ProtocolStorySoFar } from "@/components/syndicate/ProtocolStorySoFar";
 import { ActivityHeartbeat } from "@/components/syndicate/ActivityHeartbeat";
 import { ProofOfFireCard } from "@/components/syndicate/ProofOfFireCard";
 import { StoryTimeline } from "@/components/syndicate/StoryTimeline";
+import { ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
 
 import { useProtocolEvents } from "@/lib/protocol-events";
 import type { ActivityFilterKey } from "@/lib/activity-filters";
@@ -55,11 +56,12 @@ function ActivityPage() {
       description="Membership purchases, new-member archive entries, LP swaps, liquidity changes, and Vault USDC flows — merged into one chronological feed. Every row is verifiable on Avascan."
     >
       <PagePurpose
-        statement="Activity is the raw, verified on-chain stream — every protocol movement as it happens, newest first, nothing filtered."
+        statement="Activity is where a seat purchase, mint, route, or vault movement first becomes visible. It receives raw on-chain proof and passes meaningful events toward Chronicle, Register, and Archive memory."
         distinctions={[{ label: "Chronicle", to: "/chronicle" }]}
       />
 
       {/* Global "Story So Far" snapshot — same truth used on Home + /my-syndicate */}
+      <ProtocolMemoryPipeline compact />
       <ProtocolStorySoFar />
 
       {/* Protocol Heartbeat — single latest verified event with why-it-matters + proof */}
@@ -117,7 +119,7 @@ function ActivityPage() {
         <SectionHeader
           eyebrow="Latest Protocol Events"
           title={<>Every <span className="text-gradient-gold">on-chain movement</span>, newest first</>}
-          description="This is Activity — the raw, verified on-chain stream: every protocol movement, as it happens, nothing filtered or editorialized. (The Chronicle is the curated memory layer derived from these events.) Click any chip to scope the feed. Every row links to the originating transaction on Avascan with a Verify chip — even when the feed is sourced from direct RPC fallback."
+          description="This is Activity: every protocol movement as it happens, newest first. Chronicle and Register do not replace this ledger; they receive events from it when a movement has enough consequence to become memory. Every row links to the originating transaction on Avascan with a Verify chip, even when the feed is sourced from direct RPC fallback."
         />
         <div className="mb-4">
           <ActivityFilterChips value={filter} onChange={setFilter} counts={counts} />
