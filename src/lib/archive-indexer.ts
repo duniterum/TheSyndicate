@@ -182,7 +182,7 @@ export class MockArchiveIndexer implements ArchiveIndexer {
       truthState: "PENDING_SEAT_RECORD_CONTRACT",
       eligible: false,
       reason:
-        "Seat Record contract is not deployed. Eligibility cannot be enforced or proven on-chain today.",
+        "SeatRecord721 identity contract is not deployed. Eligibility cannot be enforced or proven on-chain today.",
       // We don't know the category from artifactId in the mock; return a
       // generic deferred binding. The live indexer will resolve this from
       // the artifact's category metadata.

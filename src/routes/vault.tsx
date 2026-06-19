@@ -10,7 +10,7 @@ import { vaultFlow, explorerUrlFor, CONTRACTS } from "@/lib/syndicate-config";
 import { fmtAddress } from "@/lib/sale-hooks";
 
 const ROUTE_DESTINATIONS = [
-  { key: "VAULT_WALLET",      pct: 70, label: "Vault Wallet",      role: "Long-term asset accumulation" },
+  { key: "VAULT_WALLET",      pct: 70, label: "Vault Wallet",      role: "Long-term protocol reserve" },
   { key: "LIQUIDITY_WALLET",  pct: 20, label: "Liquidity Wallet",  role: "Trader Joe SYN/USDC pair" },
   { key: "OPERATIONS_WALLET", pct: 10, label: "Operations Wallet", role: "Protocol operations" },
 ] as const;
@@ -85,7 +85,7 @@ function VaultPage() {
       <Section id="vault-explainer">
         <MetricExplainer
           what="The Vault holds the 70% share of every USDC purchase. Today it is a public Vault Reserve wallet. Programmatic Vault contract — PENDING, not deployed. Future automation would require audit and explicit activation."
-          why="The Vault is the long-term asset accumulation engine of the protocol — the substrate behind SYN. Everything else (LP, ops, ranks, NFTs) routes around it."
+          why="The Vault is the long-term protocol reserve — public infrastructure behind SYN membership. Everything else (LP, operations, recognition, and memory artifacts) routes around it."
           how="The Membership Sale contract splits every purchase 70 / 20 / 10 on-chain. The 70% leg lands in the Vault Reserve wallet today and will route into the Vault contract once deployed."
           verify={{ label: "Vault Wallet on Avascan", href: explorerUrlFor("VAULT_WALLET") ?? "#" }}
         />

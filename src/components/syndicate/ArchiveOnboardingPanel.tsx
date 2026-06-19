@@ -14,7 +14,7 @@ const TODAY = [
 
 const NOT_ACTIVE = [
   "marketplace / trading",
-  "Seat Record ERC-721",
+  "SeatRecord721 future identity record",
   "future milestone & discovery Artifacts",
 ];
 

@@ -142,7 +142,7 @@ const VERIFIABLE_TODAY: Array<{ title: string; body: string }> = [
 ];
 
 const PENDING_ITEMS: Array<{ title: string; status: ArtifactStatus }> = [
-  { title: "Seat Record NFT (future ERC-721 · separate contract)", status: "PENDING_CONTRACT" },
+  { title: "SeatRecord721 (future ERC-721 identity · separate contract)", status: "PENDING_CONTRACT" },
   { title: "Heart Signal", status: "SECRET" },
   { title: "Protocol Milestone Artifacts", status: "LOCKED" },
 ];
@@ -162,7 +162,7 @@ const MYTHOLOGY_FUTURE_GROUPS: Array<{
     key: "identity",
     title: "Your identity",
     items: [
-      { name: "Seat Record (ID 2)",     state: "IDENTITY",    blurb: "Your numbered seat. Lives in the future SeatRecord721 contract, not this collection." },
+      { name: "SeatRecord721 (ID 2 reserved)", state: "IDENTITY", blurb: "Future identity record for a verified seat. SYN is the seat; this contract is not deployed and is not part of Archive1155." },
       { name: "Chapter mark",           state: "ARMED",       blurb: "A sealed record of the chapter you joined in. Written when chapters close." },
       { name: "Founders mark",          state: "ARMED",       blurb: "A sealed record carried only by the first members of Chapter I." },
     ],
@@ -211,7 +211,7 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
     <PageShell
       eyebrow="Archive / Avalanche / First public mint OPEN"
       title="Carry the protocol's memory."
-      description="The First Signal (ID 1) is open at 0.50 USDC. Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event - they record seats, chapters, milestones, and support moments only when the protocol creates the required proof."
+      description="The First Signal (ID 1) is open at 0.50 USDC. Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event - they record chapters, milestones, and support moments only when the protocol creates the required proof."
       hideHeader
     >
       {heroOverride ? (

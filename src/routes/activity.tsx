@@ -156,7 +156,7 @@ function ActivityPage() {
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
             {[
               { label: "First Signal mint (ID 1)", state: "LIVE" },
-              { label: "Patron Seal mint (ID 3)", state: "LIVE" },
+              { label: "Patron Seal mint (ID 3)", state: "ACTIVE · READ GATED" },
               { label: "Chapter Artifact minted", state: "SEALED BY EVENT" },
               { label: "Milestone Artifact unlocked", state: "SEALED BY EVENT" },
               { label: "Liquidity Mark unlocked", state: "SEALED BY EVENT" },

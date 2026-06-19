@@ -339,12 +339,12 @@ export function SupplyDiscipline() {
   const types = [
     { t: "Time-based releases",         d: "Linear unlocks across a defined schedule." },
     { t: "Milestone-based releases",    d: "Allocations only unlock when public targets are reached." },
-    { t: "Governance-approved releases", d: "Unlocks require a member vote and a public episode." },
+    { t: "Governance-reserved releases", d: "Future governance would require a deployed module and a public episode first." },
   ];
   const examples = [
     "Seasonal community budget",
-    "Milestone reward pool",
-    "Vote-approved partnership allocation",
+    "Milestone memory budget",
+    "Future-governance partnership allocation",
     "Unused allocation burn proposal",
     "Future liquidity expansion",
   ];
@@ -380,9 +380,9 @@ export function SupplyDiscipline() {
 const EPISODES = [
   { n: "001", title: "Genesis",          action: "Constitution published",                            vault: "$100",   members: "1", tag: "Milestone",  status: "Live" },
   { n: "002", title: "Founding Members", action: "USDC onboarding opens",                              vault: "$___",   members: "—", tag: "Community",  status: "Up next" },
-  { n: "003", title: "First Genesis NFT", action: "First achievement NFT mint",                       vault: "—",      members: "—", tag: "NFT",        status: "Planned" },
+  { n: "003", title: "First Signal mint", action: "First Archive1155 memory artifact mint",             vault: "—",      members: "—", tag: "Archive",    status: "Live" },
   { n: "004", title: "First Vault Milestone", action: "Vault reaches $1,000",                          vault: "$1,000", members: "—", tag: "Vault",      status: "Planned" },
-  { n: "005", title: "First Vote",        action: "Members choose first ecosystem allocation",         vault: "—",      members: "—", tag: "Governance", status: "Planned" },
+  { n: "005", title: "Governance reserved", action: "Future module only after deployment",             vault: "—",      members: "—", tag: "Governance", status: "Pending" },
 ];
 
 export function EpisodeEngine() {
@@ -391,7 +391,7 @@ export function EpisodeEngine() {
       <SectionHeader
         eyebrow="13 — Episodes"
         title={<>Every decision becomes <span className="text-gradient-gold">an episode.</span></>}
-        description="The Syndicate is designed like a long-running real-life series with onchain consequences. Each milestone, vote, allocation, NFT mint, partnership, burn, or Vault action becomes a public episode."
+        description="The Syndicate is designed like a long-running real-life series with onchain consequences. Each milestone, allocation, Archive mint, partnership, burn, or Vault action can become a public episode when it is backed by verifiable proof. Governance remains reserved until a module exists."
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {EPISODES.map((e) => (
@@ -894,22 +894,22 @@ export function GenesisSupplyControls() {
   );
 }
 
-/* ─────────────────────── 25. Genesis NFT Mint Progress ─────────────────────── */
+/* ─────────────────────── 25. First Signal Mint Progress ─────────────────────── */
 export function GenesisNFTProgress() {
   const minted = 0;
-  const total = 1_000;
+  const total = 10_000;
   const pct = (minted / total) * 100;
   return (
     <Section id="nft-progress">
       <SectionHeader
-        eyebrow="25 — Genesis NFT"
-        title={<>Genesis NFT <span className="text-gradient-gold">mint progress.</span></>}
-        description="The Genesis Syndicate NFT is the first archive artifact. Only 1,000 will ever be minted."
+        eyebrow="25 — First Signal"
+        title={<>First Signal <span className="text-gradient-gold">mint progress.</span></>}
+        description="The First Signal is the first public Archive1155 memory artifact. Public mint is open on Avalanche while contract reads report it open."
       />
       <GlassCard glow="gold">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
           <div className="md:col-span-1">
-            <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Genesis Syndicate NFT</div>
+            <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">The First Signal</div>
             <div className="mono text-5xl md:text-6xl font-semibold text-gradient-gold mt-2 leading-none">
               {minted}<span className="text-muted-foreground"> / {total.toLocaleString("en-US")}</span>
             </div>
@@ -924,11 +924,11 @@ export function GenesisNFTProgress() {
               <div className="h-full rounded-full" style={{ width: `${Math.max(0.5, pct)}%`, background: "var(--gradient-gold)" }} />
             </div>
             <div className="grid grid-cols-3 gap-3 pt-2">
-              <div className="surface p-3"><div className="mono text-[9px] uppercase tracking-widest text-muted-foreground">Supply</div><div className="mono mt-1 text-sm">1,000</div></div>
+              <div className="surface p-3"><div className="mono text-[9px] uppercase tracking-widest text-muted-foreground">Supply</div><div className="mono mt-1 text-sm">10,000</div></div>
               <div className="surface p-3"><div className="mono text-[9px] uppercase tracking-widest text-muted-foreground">Minted</div><div className="mono mt-1 text-sm">{minted}</div></div>
               <div className="surface p-3"><div className="mono text-[9px] uppercase tracking-widest text-muted-foreground">Remaining</div><div className="mono mt-1 text-sm">{(total - minted).toLocaleString("en-US")}</div></div>
             </div>
-            <CTAButton variant="ghost" href="/transparency" className="w-full md:w-auto">Mint Genesis NFT — Pending Contract</CTAButton>
+            <CTAButton variant="ghost" href="/nft" className="w-full md:w-auto">Open Archive1155 mint</CTAButton>
           </div>
         </div>
       </GlassCard>
@@ -988,12 +988,12 @@ export function WhyComeBackTomorrow() {
   const items = [
     { t: "Vault Growth",      d: "Watch The Vault balance sheet evolve daily.",       tone: "gold"  as const },
     { t: "New Members",       d: "Every founding member is publicly archived.",       tone: "navy"  as const },
-    { t: "Genesis NFT Mints", d: "Scarcity drops as the 1,000 supply gets claimed.",  tone: "gold"  as const },
+    { t: "Archive Memory", d: "The First Signal and Patron Seal move only when Archive1155 reads say so.",  tone: "gold"  as const },
     { t: "Rank Changes",      d: "Citizen → Operator → Vanguard → Architect…",        tone: "navy"  as const },
     { t: "Member Movements",  d: "Who entered, who advanced, who held longest.",      tone: "gold"  as const },
     { t: "New Episodes",      d: "Every milestone becomes a published chapter.",      tone: "navy"  as const },
-    { t: "New Votes",         d: "Proposals open, members vote, results published.",  tone: "gold"  as const },
-    { t: "New Milestones",    d: "Vault targets unlock, supply unlocks, episodes ship.", tone: "navy" as const },
+    { t: "Reserved Governance", d: "Governance stays pending until a real module exists.",  tone: "gold"  as const },
+    { t: "New Milestones",    d: "Verifiable events may become Chronicle, Register, or Archive memory.", tone: "navy" as const },
   ];
   return (
     <Section id="come-back">
@@ -1266,7 +1266,7 @@ const FAQS: Array<{ q: string; a: string }> = [
   { q: "Can the owner change the token?", a: "No. The ERC20 contract has no owner and no admin. It is non-upgradeable." },
   { q: "Is there a tax?", a: "No. SYN has 0% transfer tax." },
   { q: "Can transfers be blocked?", a: "No. There is no blacklist, no whitelist, no pause, no max wallet, no max tx, and no transfer restrictions." },
-  { q: "What is the Archive?", a: "An optional collectible memory layer for what happens around each seat — Chapter Artifacts, Seat Records, Patron Seals, Milestone Artifacts, Liquidity Marks, Protocol Milestones, Secret Artifacts, Legacy Artifacts, Genesis Founder Marks. SYN is the seat. Artifacts are the memory. The SyndicateArchive1155 contract is deployed on Avalanche." },
+  { q: "What is the Archive?", a: "An optional collectible memory layer for what happens around each seat — The First Signal, Patron Seals, Chapter Artifacts, Milestone Artifacts, Liquidity Marks, Protocol Milestones, Secret Artifacts, and Legacy Artifacts. SYN is the seat. Artifacts are the memory. SeatRecord721 is future identity infrastructure, separate from Archive1155." },
   { q: "Is the Archive live?", a: "Yes — The First Signal (ID 1) public mint is OPEN on Avalanche at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event. See /nft to mint or browse." },
   { q: "Do Archive artifacts grant ownership or yield?", a: "No. Artifacts are collectible records only. They are not equity, debt, Vault ownership, dividend instruments, revenue share, governance rights, or promises of profit. Participation may result in total loss." },
   { q: "Will artifacts have tiers or wealth-coded ranks?", a: "No. Patron Seal is a single flat support amount with no tiers and no status. All artifact identity is positional (seat / chapter / on-chain event), never wealth-coded." },

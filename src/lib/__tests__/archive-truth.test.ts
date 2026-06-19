@@ -49,7 +49,7 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
 
   it("Seat Record truth state key is PENDING_SEAT_RECORD_CONTRACT (not PENDING_NFT_CONTRACT)", () => {
     const key: TruthState = "PENDING_SEAT_RECORD_CONTRACT";
-    expect(TRUTH_STATE_LABEL[key]).toBe("PENDING SEAT RECORD CONTRACT");
+    expect(TRUTH_STATE_LABEL[key]).toBe("PENDING SEATRECORD721");
 
     // Whole-tree sweep: the legacy identifier must be fully retired.
     const files = [
@@ -68,7 +68,7 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
 
   it("Seat Record hint stays exactly worded", () => {
     expect(TRUTH_STATE_HINT.PENDING_SEAT_RECORD_CONTRACT).toBe(
-      "Requires the future SyndicateSeatRecord721 contract. Archive1155 is deployed; Seat Records are not.",
+      "Requires the future SyndicateSeatRecord721 contract. Archive1155 is deployed; SeatRecord721 is not.",
     );
 
   });
@@ -278,6 +278,4 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
     expect(src).toContain("const PATRON_SEAL_ID = 3n;");
   });
 });
-
-
 

@@ -12,7 +12,7 @@
 //                                   indexed event log.
 //   PENDING_SEAT_RECORD_CONTRACT  — requires the future
 //                                   SyndicateSeatRecord721 contract.
-//                                   Archive1155 is deployed; Seat Records
+//                                   Archive1155 is deployed; SeatRecord721
 //                                   are not.
 //   ROADMAP                       — future concept; no deployed contract or
 //                                   enforceable eligibility today.
@@ -24,7 +24,7 @@
 // The artifact-layer status vocabulary in `archive-config.ts`
 // (PENDING_CONTRACT / PENDING_ELIGIBILITY / LOCKED / SECRET) is a
 // PRESENTATION refinement of PENDING_SEAT_RECORD_CONTRACT — it never
-// escapes the PENDING bucket until the Seat Record contract is deployed.
+// escapes the PENDING bucket until the SeatRecord721 contract is deployed.
 //
 // CONTRACT INTEGRATION CONTRACT (when contracts ship):
 //   1. Implement `resolveTruthState()` to actually query indexer state.
@@ -51,7 +51,7 @@ export type TruthState =
 export const TRUTH_STATE_LABEL: Record<TruthState, string> = {
   LIVE_ON_AVALANCHE:            "LIVE ON AVALANCHE",
   DERIVED_FROM_ON_CHAIN_DATA:   "DERIVED FROM ON-CHAIN DATA",
-  PENDING_SEAT_RECORD_CONTRACT: "PENDING SEAT RECORD CONTRACT",
+  PENDING_SEAT_RECORD_CONTRACT: "PENDING SEATRECORD721",
   ROADMAP:                      "ROADMAP",
 };
 
@@ -61,7 +61,7 @@ export const TRUTH_STATE_HINT: Record<TruthState, string> = {
   DERIVED_FROM_ON_CHAIN_DATA:
     "Computed from a live on-chain read or an indexed Avalanche event log.",
   PENDING_SEAT_RECORD_CONTRACT:
-    "Requires the future SyndicateSeatRecord721 contract. Archive1155 is deployed; Seat Records are not.",
+    "Requires the future SyndicateSeatRecord721 contract. Archive1155 is deployed; SeatRecord721 is not.",
   ROADMAP:
     "Future concept. No deployed contract, indexer, or enforceable eligibility today.",
 };
@@ -170,7 +170,7 @@ export const CATEGORY_FUTURE_BINDING: Record<string, FutureBinding> = {
       buyer: "address",
       purchaseTxHash: "bytes32",
     },
-    note: "Optional post-purchase Seat Record on the future SyndicateSeatRecord721 contract. Indexer derives memberNumber from TokensPurchased order.",
+    note: "Optional post-purchase identity record on the future SyndicateSeatRecord721 contract. Indexer derives memberNumber from TokensPurchased order.",
   },
   "founder-mark": {
     providerKind: "archive-nft-contract",

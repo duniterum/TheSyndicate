@@ -92,16 +92,16 @@ export function ArchiveGalleryPreview() {
       />
 
 
-      {/* Identity band — ID 2 (Reserved Seat Record) */}
+      {/* Identity band — ID 2 (reserved SeatRecord721 pointer) */}
       {reservedSeat && (
         <div className="mb-6 rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="mono text-[10px] uppercase tracking-[0.22em] text-amber-700 dark:text-amber-400 shrink-0">
             ID 2 · Identity · Reserved
           </div>
           <p className="text-xs text-foreground/85 leading-snug flex-1">
-            ID 2 is a permanently reserved pointer in Archive1155 V1. The seat
-            itself — the identity NFT — will live in a separate future ERC-721
-            contract (<span className="mono text-foreground">SyndicateSeatRecord721</span>),
+            ID 2 is a permanently reserved pointer in Archive1155 V1. SYN is
+            the seat today. The future identity record will live in a separate
+            ERC-721 contract (<span className="mono text-foreground">SyndicateSeatRecord721</span>),
             not as an Archive1155 mint. It is not, and will never be, a public
             collectible here.
           </p>
@@ -327,7 +327,7 @@ function ArtifactCard({
 
         {reserved && (
           <div className="mt-2 border-t border-border/40 pt-3 text-[11px] text-muted-foreground">
-            Reserved for future ERC-721 Seat Record. Not mintable in
+            Reserved for future SeatRecord721 identity. Not mintable in
             Archive1155 V1.
           </div>
         )}
@@ -545,8 +545,8 @@ function ArtifactDetailModal({
                   </div>
                   {reserved && (
                     <div className="rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-amber-700 dark:text-amber-400">
-                      Reserved for future ERC-721 Seat Record. Not mintable in
-                      Archive1155 V1.
+                      Reserved for future SeatRecord721 identity. Not mintable
+                      in Archive1155 V1.
                     </div>
                   )}
                 </>

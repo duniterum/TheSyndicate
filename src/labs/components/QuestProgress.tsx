@@ -58,14 +58,14 @@ export function QuestProgress() {
               </div>
 
               <div className="border-t border-border/40 pt-2 flex items-center justify-between gap-2">
-                <span className="mono text-[10px] uppercase tracking-[0.16em] text-foreground">Reward</span>
+                <span className="mono text-[10px] uppercase tracking-[0.16em] text-foreground">Recognition</span>
                 <span className="mono inline-flex items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] text-amber-700 dark:text-amber-400">
                   <span className="size-1 rounded-full bg-amber-500" />
-                  {q.rewardStatus}
+                  {q.recognitionStatus}
                 </span>
               </div>
               <div className="text-[11px] text-muted-foreground leading-relaxed -mt-1">
-                {q.reward}
+                {q.recognition}
               </div>
             </article>
           );

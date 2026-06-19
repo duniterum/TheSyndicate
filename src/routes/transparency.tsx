@@ -70,9 +70,10 @@ export const Route = createFileRoute("/transparency")({
         />
         <div className="surface elevated p-5 text-sm text-muted-foreground leading-relaxed">
           <p>
-            Nine artifact categories are registered in code (Chapter Artifacts, Seat Records,
-            Genesis Founder Marks, Milestone Artifacts, Liquidity Marks, Protocol Milestones, Patron
-            Seals, Secret Artifacts, Legacy Artifacts) with explicit pending/locked/secret statuses.
+            Archive memory categories are registered in code (Chapter Artifacts, Patron Seals,
+            Milestone Artifacts, Liquidity Marks, Protocol Milestones, Secret Artifacts, and
+            Legacy Artifacts) with explicit pending/locked/secret statuses. SeatRecord721 is a
+            separate future identity contract, not a live Archive1155 mint.
             See <a href="/nft" className="text-foreground underline-offset-4 hover:underline">/nft</a>.
 
           </p>

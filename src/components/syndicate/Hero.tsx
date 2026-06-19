@@ -49,7 +49,7 @@ export function Hero() {
 
         <p className="mt-3 max-w-2xl text-xs md:text-sm text-muted-foreground leading-relaxed">
           No financial promise. No governance token. No rewards.
-          SYN is the seat; Archive Artifacts are the live memory layer — The First Signal mints now on Avalanche, while the future Seat Record contract stays clearly marked PENDING.
+          SYN is the seat; Archive Artifacts are the live memory layer — The First Signal mints now on Avalanche, while the future SeatRecord721 identity record stays clearly marked PENDING.
           A seat is your identity in the story. The flywheel — routing, vault, liquidity, activity, chapters — is the product.
         </p>
 

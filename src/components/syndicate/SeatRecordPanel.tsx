@@ -12,7 +12,7 @@ export function SeatRecordPanel() {
     <div id="seat-record">
       <GlassCard className="p-5 md:p-6">
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          <Pill tone="warning">PENDING SEAT RECORD CONTRACT</Pill>
+          <Pill tone="warning">PENDING SEATRECORD721</Pill>
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             Target reference price: $0.10 USDC · not chargeable today
           </span>
@@ -22,13 +22,13 @@ export function SeatRecordPanel() {
             SeatRecord721
           </div>
           <p className="mt-1 text-sm text-foreground/80 leading-relaxed">
-            Future optional seat artifact. Archive1155 is live; SeatRecord721 is not.
+            Future optional identity record. Archive1155 is live for memory artifacts; SeatRecord721 is not deployed.
           </p>
         </div>
         <p className="text-sm text-foreground/90 leading-relaxed">
           {isConnected
-            ? "Your wallet is connected. Once the SyndicateSeatRecord721 contract deploys, eligibility for the Seat Record NFT will be derived from your verified Membership Sale purchase — no waitlist, no reservation today."
-            : "Connect the wallet you used (or plan to use) for the Membership Sale. Eligibility for the Seat Record NFT will be derived from your verified purchase once the SyndicateSeatRecord721 contract is live."}
+            ? "Your wallet is connected. Once the SyndicateSeatRecord721 contract deploys, eligibility for the Seat Record will be derived from your verified Membership Sale purchase — no waitlist, no reservation today."
+            : "Connect the wallet you used (or plan to use) for the Membership Sale. Eligibility for the Seat Record will be derived from your verified purchase once the SyndicateSeatRecord721 contract is live."}
         </p>
         <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground leading-relaxed">
           <li>• Would encode member number, chapter, and block height.</li>
@@ -47,7 +47,7 @@ export function SeatRecordPanel() {
             Explore the Archive →
           </Link>
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Do not just join. Be recorded.
+            NFTs are memories, not seats.
           </span>
         </div>
         <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed border-t border-border/40 pt-3">

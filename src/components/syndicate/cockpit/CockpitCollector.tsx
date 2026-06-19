@@ -11,7 +11,7 @@
 //     on-chain maxSupply + minted read. The First Signal is a fixed edition of
 //     10,000 (on-chain maxSupply) shown as edition size + remaining — never a
 //     scarcity progress bar.
-//   • No "Genesis NFT", no false 1,000 supply, no "Mint Genesis NFT".
+//   • No legacy genesis-collection naming, no false 1,000 supply, no pending-contract mint CTA.
 //   • Seat Record is a future ERC-721 (SyndicateSeatRecord721) — never shown as
 //     mintable, never conflated with Archive1155.
 //   • Prices come from the live priceUsdc read, falling back to the canonical

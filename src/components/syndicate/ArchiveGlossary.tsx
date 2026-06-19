@@ -5,8 +5,9 @@ import { Pill } from "@/components/syndicate/Primitives";
 const TERMS: Array<{ term: string; def: string }> = [
   { term: "DEPLOYED", def: "Archive1155 contract exists on Avalanche." },
   { term: "ACTIVE · MINT OPEN", def: "Public mint is open for this Artifact (ID 1 today)." },
-  { term: "CONFIGURED · NOT ACTIVE", def: "Defined on the contract but mint is not enabled yet (e.g. ID 3 Patron Seal)." },
-  { term: "RESERVED · DISABLED", def: "Slot reserved · not mintable in Archive1155 V1 (e.g. ID 2 Seat Record)." },
+  { term: "ACTIVE · READ GATED", def: "Artifact is active, but wallet mintability must come from live reads (ID 3 Patron Seal today)." },
+  { term: "CONFIGURED · NOT ACTIVE", def: "Defined on the contract, but public mint is not enabled for that ID." },
+  { term: "RESERVED · DISABLED", def: "Slot reserved · not mintable in Archive1155 V1 (ID 2 points to future SeatRecord721 identity)." },
   { term: "PENDING SEPARATE CONTRACT", def: "Depends on a separate future contract (e.g. SyndicateSeatRecord721)." },
   { term: "READ-ONLY", def: "This surface only displays data for inactive IDs; it cannot change the contract." },
 ];
@@ -14,6 +15,7 @@ const TERMS: Array<{ term: string; def: string }> = [
 // Compact per-ID chip legend.
 const ID_CHIPS: Array<{ term: string; def: string }> = [
   { term: "ACTIVE · MINT OPEN", def: "Public mint open (ID 1 only)." },
+  { term: "ACTIVE · READ GATED", def: "Active, but wallet mintability comes only from live reads (ID 3)." },
   { term: "CONFIGURED", def: "Artifact exists in the contract config." },
   { term: "RESERVED", def: "Slot reserved · not mintable." },
   { term: "NOT ACTIVE", def: "Public mint is not enabled yet." },

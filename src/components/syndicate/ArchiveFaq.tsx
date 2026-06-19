@@ -17,7 +17,7 @@ const FAQ: Item[] = [
   },
   {
     q: "Are all Artifacts live?",
-    a: "No. ID 1 (The First Signal) is open. ID 3 (Patron Seal) is contract/read gated. ID 2 is reserved for a future ERC-721 Seat Record. IDs 4–8 are roadmap previews and not active.",
+    a: "No. ID 1 (The First Signal) is open. ID 3 (Patron Seal) is contract/read gated. ID 2 is reserved for future SeatRecord721 identity, not a public Archive1155 mint. IDs 4–8 are roadmap previews and not active.",
   },
   {
     q: "Is there a marketplace?",
@@ -33,7 +33,7 @@ const FAQ: Item[] = [
   },
   {
     q: "What is ID 2 / Seat Record?",
-    a: "ID 2 is reserved and disabled in Archive1155 V1. Seat Records are planned as a future ERC-721 identity layer.",
+    a: "ID 2 is reserved and disabled in Archive1155 V1. SeatRecord721 is planned as a separate future ERC-721 identity layer.",
   },
 ];
 

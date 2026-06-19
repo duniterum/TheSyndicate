@@ -60,7 +60,7 @@ export const ARCHIVE_ID_REGISTRY: ArchiveIdEntry[] = [
   {
     id: 2,
     name: "Reserved Seat Record Reference",
-    category: "Seat Record (reserved)",
+    category: "SeatRecord721 identity (reserved)",
     activation: "RESERVED_DISABLED",
     configuredOnChain: true,
     publicMintAllowed: false,
@@ -68,7 +68,7 @@ export const ARCHIVE_ID_REGISTRY: ArchiveIdEntry[] = [
     walletLimit: null,
     maxSupply: null,
     frozen: true,
-    notes: "Reserved slot only. Real Seat Records live in future ERC-721 SyndicateSeatRecord721 (PENDING).",
+    notes: "Reserved slot only. SeatRecord721 identity records live in the future ERC-721 SyndicateSeatRecord721 contract (PENDING).",
   },
   {
     id: 3,

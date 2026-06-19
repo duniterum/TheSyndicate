@@ -11,8 +11,8 @@
 //   • Every address + status is read from syndicate-config CONTRACTS via
 //     isLiveAddress / explorerUrlFor — NO hardcoded 0x… literals here.
 //   • Status vocabulary is LIVE / PENDING only — never SIMULATED / MOCK / DEMO.
-//   • Seat Record (ERC-721) is shown as PENDING (not deployed) — no fake supply,
-//     no "Genesis NFT", no countdown, no financial-return language.
+//   • SeatRecord721 is shown as PENDING (not deployed) — no fake supply,
+//     no legacy genesis-collection naming, no countdown, no financial-return language.
 //   • Claim sources are limited to: contract read · indexed event ·
 //     derived config · pending future contract.
 // ─────────────────────────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ const CLAIM_ENTRIES: ClaimEntry[] = [
   { claim: "Chapter", source: "Derived from member number · chapters.ts thresholds", kind: "derived config" },
   { claim: "Rank / recognition", source: "Derived from USDC routed · RANKS_V2 ladder", kind: "derived config" },
   { claim: "Live activity", source: "Protocol events — indexed on-chain movement", kind: "indexed event" },
-  { claim: "Seat Record (ERC-721)", source: "Future identity contract — not deployed", kind: "pending" },
+  { claim: "SeatRecord721", source: "Future identity contract — not deployed", kind: "pending" },
 ];
 
 function KindBadge({ kind }: { kind: SourceKind }) {
@@ -149,7 +149,7 @@ export function CockpitProof() {
           <li className="flex flex-wrap items-center gap-2 py-2.5 min-w-0">
             <StatusPill status="PENDING" withDot={false} />
             <span className="text-sm text-foreground flex-1 min-w-0">
-              Seat Record (ERC-721)
+              SeatRecord721 (future ERC-721)
               <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5">
                 Future identity contract — not deployed
               </span>

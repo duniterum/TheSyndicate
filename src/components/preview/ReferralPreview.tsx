@@ -135,12 +135,11 @@ export function ReferralDisclosure() {
   return (
     <div data-preview="true" className="rounded-md border border-border p-4 text-xs text-muted-foreground leading-relaxed">
       <div className="mono text-[10px] uppercase tracking-[0.18em] text-foreground mb-2">Disclosure</div>
-      Referral rewards are commissions on protocol membership sales, paid from the Operations slice only.
-      Vault and Liquidity allocations are never touched. Participation in the referral program does not
-      constitute a security, investment contract, or promise of profit. Local laws may require additional
-      disclosure when sharing your link. The Syndicate is an experimental utility membership protocol.
-      Participation may result in total loss. No contract has been deployed for this surface yet — all
-      figures here are illustrative and subject to change before launch.
+      Referral economics are reserved future infrastructure. No CommissionRouter is deployed, no referral
+      commission is accruing, and no reward is claimable. If a future referral contract ships, it must preserve
+      Vault and Liquidity routing, disclose local-law requirements, and stay separate from any security,
+      investment contract, or promise of profit. The Syndicate is an experimental utility membership protocol.
+      Participation may result in total loss. All figures here are illustrative planning data, not live state.
     </div>
   );
 }

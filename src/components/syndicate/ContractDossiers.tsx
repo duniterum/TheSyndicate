@@ -4,6 +4,7 @@
 
 import {
   CONTRACTS,
+  ARCHIVE_NFT_EXPLORERS,
   LP_POOL,
   SYN_EXPLORERS,
   explorerUrlFor,
@@ -125,7 +126,27 @@ const DOSSIERS: Dossier[] = [
     status: "pending",
   },
   {
-    label: "Seat Record Contract (ERC-721)",
+    label: "SyndicateArchive1155",
+    address: CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS,
+    explorerHref: ARCHIVE_NFT_EXPLORERS.avascan,
+    network: "Avalanche C-Chain",
+    chainId: 43114,
+    deployment: { kind: "block", value: "Deployed 2026-06-06" },
+    verified: "partial",
+    verificationSources: [
+      { label: "Avascan", href: ARCHIVE_NFT_EXPLORERS.avascan },
+      { label: "Sourcify", href: ARCHIVE_NFT_EXPLORERS.sourcify },
+      { label: "Routescan", href: ARCHIVE_NFT_EXPLORERS.routescan },
+    ],
+    ownerLabel: "Archive owner / operator keys control future sealed memory surfaces",
+    upgradeable: "no",
+    standard: "ERC1155 archive memory contract",
+    description:
+      "Live Archive1155 memory contract. The First Signal (ID 1) is public-open at 0.50 USDC; Patron Seal (ID 3) is active but wallet/read-gated by live contract reads. SeatRecord721 is a separate future ERC-721.",
+    status: "live",
+  },
+  {
+    label: "SeatRecord721 (future ERC-721)",
     address: "PENDING",
     explorerHref: null,
     network: "Avalanche C-Chain (planned)",
@@ -136,7 +157,7 @@ const DOSSIERS: Dossier[] = [
     ownerLabel: "—",
     upgradeable: "pending",
     standard: "ERC721 (planned)",
-    description: "Future ERC-721 Seat Record — the optional post-purchase identity record. Not deployed; clearly marked PENDING. (The live Archive1155 artifact contract is listed separately.)",
+    description: "Future ERC-721 identity record for verified Membership Sale purchases. Not deployed; clearly marked PENDING. The live Archive1155 memory contract is listed separately.",
     status: "pending",
   },
   {

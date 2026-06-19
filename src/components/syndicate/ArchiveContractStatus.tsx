@@ -207,8 +207,8 @@ export function ArchiveContractStatus() {
         <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed">
           ID 1 (The First Signal) public mint is OPEN — 0.50 USDC, wallet
           limit 5. ID 2 is reserved in Archive1155 V1 and intentionally
-          non-mintable; Seat Records will live in a separate future ERC-721
-          contract (<span className="mono">SyndicateSeatRecord721</span>).
+          non-mintable; future identity records will live in the separate
+          <span className="mono"> SyndicateSeatRecord721</span> contract.
           ID 3 (Patron Seal) is active but wallet/read-gated — 5.00 USDC,
           wallet limit 5, and shown as mintable only from live Archive1155
           reads. All values shown are read directly from the deployed

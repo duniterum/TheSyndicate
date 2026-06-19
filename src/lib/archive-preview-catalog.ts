@@ -90,7 +90,7 @@ export const PREVIEW_ARTIFACTS: PreviewArtifact[] = [
   {
     id: 2,
     whyItMatters:
-      "Reserved for a future ERC-721 Seat Record. Not mintable in Archive1155 V1.",
+      "Reserved for future SeatRecord721 identity. Not mintable in Archive1155 V1.",
     name: "Reserved Seat Record Reference",
     category: "Identity Certificate (future ERC-721)",
     chapterLabel: "—",
@@ -102,7 +102,7 @@ export const PREVIEW_ARTIFACTS: PreviewArtifact[] = [
     proposedMaxSupply: 0,
     proposedWalletLimit: null,
     description:
-      "Reserved pointer in Archive1155 V1. Not mintable. Seat Records will live in a separate future ERC-721 contract (SyndicateSeatRecord721).",
+      "Reserved pointer in Archive1155 V1. Not mintable. SeatRecord721 identity records will live in a separate future ERC-721 contract (SyndicateSeatRecord721).",
     rights: baseRights,
     primaryColor: "#1A1F2E",
     accentColor: "#8C8C8C",

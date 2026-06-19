@@ -16,12 +16,12 @@ export type Quest = {
   id: string;
   title: string;
   detail: string;
-  reward: string;
+  recognition: string;
   state: QuestState;
   /** 0–100 */
   progress: number;
   progressLabel: string;
-  rewardStatus: "PLANNED";
+  recognitionStatus: "PLANNED";
 };
 
 /**
@@ -33,7 +33,7 @@ export type Quest = {
  * - Episode Participant: governance not live → locked
  * - Referral: tracking not live → locked
  *
- * Recognition remains PENDING across the board.
+ * Recognition remains PENDING across the board. No reward, claim, or payout is live.
  */
 export function useUserQuestProgress(): {
   connected: boolean;
@@ -92,7 +92,7 @@ export function useUserQuestProgress(): {
         id: "first-purchase",
         title: "First Purchase",
         detail: "Buy any amount of SYN via the Membership Sale.",
-        reward: "Citizen badge + archive entry",
+        recognition: "Citizen marker + archive entry",
         state: !connected ? "not_started" : userEvents.length > 0 ? "complete" : "in_progress",
         progress: !connected ? 0 : userEvents.length > 0 ? 100 : 0,
         progressLabel: !connected
@@ -100,13 +100,13 @@ export function useUserQuestProgress(): {
           : userEvents.length > 0
             ? `${userEvents.length} purchase${userEvents.length === 1 ? "" : "s"} verified`
             : "No purchase found",
-        rewardStatus: "PLANNED",
+        recognitionStatus: "PLANNED",
       },
       {
         id: "long-term-holder",
         title: "Long-Term Holder",
         detail: "Hold SYN for 90+ days without selling.",
-        reward: "Long-term holder archive marker",
+        recognition: "Long-term holder archive marker",
         state: !connected
           ? "not_started"
           : synBalance > 0 && daysHeld >= 90
@@ -118,13 +118,13 @@ export function useUserQuestProgress(): {
         progressLabel: !connected
           ? "Connect wallet to track"
           : `${daysHeld} / 90 days`,
-        rewardStatus: "PLANNED",
+        recognitionStatus: "PLANNED",
       },
       {
         id: "lp-provider",
         title: "Liquidity Provider",
         detail: "Provide liquidity to the SYN/USDC pool on Trader Joe.",
-        reward: "LP participation marker",
+        recognition: "LP participation marker",
         state: !connected ? "not_started" : lpBalance > 0 ? "complete" : "in_progress",
         progress: !connected ? 0 : lpBalance > 0 ? 100 : 0,
         progressLabel: !connected
@@ -132,13 +132,13 @@ export function useUserQuestProgress(): {
           : lpBalance > 0
             ? `${lpBalance.toLocaleString("en-US", { maximumFractionDigits: 6 })} JLP held`
             : "No LP position",
-        rewardStatus: "PLANNED",
+        recognitionStatus: "PLANNED",
       },
       {
         id: "rank-climber",
         title: "Reach Vanguard Rank",
         detail: "Hold ≥ 10,000 SYN (≈ $100 contribution).",
-        reward: "Vanguard archive marker",
+        recognition: "Vanguard archive marker",
         state: !connected
           ? "not_started"
           : synBalance >= vanguardSyn
@@ -150,27 +150,27 @@ export function useUserQuestProgress(): {
         progressLabel: !connected
           ? "Connect wallet to track"
           : `${rank?.name ?? "—"} · ${synBalance.toLocaleString("en-US", { maximumFractionDigits: 0 })} / ${vanguardSyn.toLocaleString("en-US")} SYN`,
-        rewardStatus: "PLANNED",
+        recognitionStatus: "PLANNED",
       },
       {
         id: "episode-participant",
         title: "Episode Participant",
         detail: "Vote on a governance episode once governance is live.",
-        reward: "Voter archive credit",
+        recognition: "Governance recognition not live",
         state: "locked",
         progress: 0,
         progressLabel: "Governance contract not deployed",
-        rewardStatus: "PLANNED",
+        recognitionStatus: "PLANNED",
       },
       {
         id: "referral",
         title: "Referral",
         detail: "Refer a member who reaches Operator rank.",
-        reward: "Referral tracking not live",
+        recognition: "Referral tracking not live",
         state: "locked",
         progress: 0,
         progressLabel: "Referral tracking not deployed",
-        rewardStatus: "PLANNED",
+        recognitionStatus: "PLANNED",
       },
     ];
 

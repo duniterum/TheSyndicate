@@ -189,8 +189,8 @@ export function ChapterOneHero({ hideHero = false }: { hideHero?: boolean } = {}
                 chapter — minted on Avalanche, image rendered fully on-chain.
               </li>
               <li>
-                Other artifacts shown elsewhere on this site are inactive until
-                their chapters seal.
+                Other artifacts shown elsewhere on this site are read-gated,
+                owner-only, sealed by event, or reserved for future contracts.
               </li>
             </ul>
             <a
@@ -226,8 +226,8 @@ export function ChapterOneHero({ hideHero = false }: { hideHero?: boolean } = {}
                 Other artifacts
               </div>
               <p className="mt-1 text-[11px] text-muted-foreground leading-snug">
-                Seat record, chapter seals, milestones — inactive until they
-                seal on-chain.
+                SeatRecord721 is future identity. Chapter seals and milestones
+                remain sealed until their proof exists on-chain.
               </p>
               <span className="mt-2 inline-block mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground group-hover:text-[var(--gold)]">
                 Browse the gallery →

@@ -170,8 +170,8 @@ export const CONTRACTS = {
   // Trader Joe v1 SYN/USDC pair (Avalanche C-Chain) — live LP pool.
   LP_PAIR_ADDRESS: "0xe12491b79c9cfc6a07db8cd7fc8b3da0bb019389",
   // SyndicateArchive1155 — deployed on Avalanche C-Chain 2026-06-06.
-  // Validation phase: contract deployed, no artifact drop activated yet.
-  // Read-only integration only. No mint, approve, or admin write paths.
+  // ID 1 is public-open. ID 3 is active but wallet/read-gated by live reads.
+  // SeatRecord721 is a separate future identity contract.
   ARCHIVE_NFT_CONTRACT_ADDRESS: "0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d",
 } as const;
 
@@ -530,7 +530,7 @@ export const TRANSPARENCY_ITEMS: TransparencyItem[] = [
   { label: "Member Registry",      status: "partial", detail: "Derived from indexed purchase events; registry coverage is partial until indexing is complete.", href: "/members" },
   { label: "Vault Contract",       status: "pending", detail: "Programmatic Vault contract not deployed — Vault is currently a public wallet." },
   { label: "Archive Contract (SyndicateArchive1155)", status: "live",    detail: "Deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC, wallet limit 5. Patron Seal (ID 3) is active but wallet/read-gated. Other IDs are sealed, reserved, or future-contract surfaces.", href: ARCHIVE_NFT_EXPLORERS.avascan },
-  { label: "NFT Contract (Seat Record · ERC-721)", status: "pending", detail: "Future identity contract — not deployed." },
+  { label: "SeatRecord721 (future ERC-721)", status: "pending", detail: "Future identity contract — not deployed. Separate from the live Archive1155 memory contract." },
   { label: "Governance",           status: "pending", detail: "No governance rights are live or promised." },
   { label: "AI Layer",             status: "pending", detail: "No AI module is live." },
 ];
@@ -551,7 +551,7 @@ export const PROTOCOL_STATUS: ProtocolStatusItem[] = [
   { key: "verify",     label: "Source Verification", status: "live",    summary: "Verified on Sourcify and Routescan.", href: "/transparency" },
   { key: "vault",      label: "Vault Contract",      status: "pending", summary: "Vault is currently a public wallet — programmatic contract not deployed.", href: "/vault" },
   { key: "archive",    label: "Archive Contract",    status: "live",    summary: "SyndicateArchive1155 deployed on Avalanche · First Signal is public-open; Patron Seal is wallet/read-gated.", href: "/nft" },
-  { key: "nft",        label: "NFT Contract (Seat Record)", status: "pending", summary: "Future ERC-721 Seat Record contract — not deployed yet.", href: "/nfts" },
+  { key: "seatRecord", label: "SeatRecord721",       status: "pending", summary: "Future ERC-721 identity record — separate from the live Archive1155 memory contract.", href: "/registry" },
   { key: "lp",         label: "LP Pool",             status: "live",    summary: "Trader Joe v1 SYN/USDC pair live on Avalanche — reserves & price read onchain.", href: "/liquidity" },
   { key: "gov",        label: "Governance",          status: "pending", summary: "Snapshot / onchain governance — not deployed yet.", href: "/registry" },
   { key: "ai",         label: "AI Layer",            status: "pending", summary: "No AI module is live.", href: "/ai" },
@@ -581,7 +581,7 @@ export const WHATS_LIVE = {
     "Vault asset dashboard — balances live where price sources are verified",
   ],
   pending: [
-    "Seat Record ERC-721 not deployed; non-ID-1 artifacts inactive",
+    "SeatRecord721 not deployed; Archive1155 ID 1 is public-open and ID 3 is wallet/read-gated",
     "Programmatic Vault contract not deployed",
     "Governance — no governance rights are live or promised",
     "AI Layer — no AI module is live",
@@ -659,7 +659,7 @@ export const HOMEPAGE_METRICS: HomeMetric[] = [
   { key: "buyers",         label: "Unique buyers",      source: "live",    hint: "Distinct wallets" },
   { key: "purchases",      label: "Purchases",          source: "live",    hint: "Onchain transactions" },
   { key: "lpDepth",        label: "LP depth",           source: "live",    hint: "Trader Joe SYN/USDC reserves" },
-  { key: "nftCount",       label: "Seat Record NFT",     source: "pending", hint: "Future ERC-721; Archive1155 ID 1 is live" },
+  { key: "seatRecord721",  label: "SeatRecord721",       source: "pending", hint: "Future ERC-721 identity record; Archive1155 memory artifacts are separate" },
   { key: "vaultValue",     label: "Vault value",        source: "pending", hint: "Vault contract not deployed" },
   { key: "governance",     label: "Governance proposals", source: "pending", hint: "Module not deployed" },
 ];

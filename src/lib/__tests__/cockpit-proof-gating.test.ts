@@ -7,7 +7,7 @@
  *   • Addresses + status come ONLY from syndicate-config CONTRACTS via
  *     isLiveAddress / explorerUrlFor — never hardcoded 0x… literals.
  *   • Status vocabulary is LIVE / PENDING only — never SIMULATED / MOCK / DEMO.
- *   • Seat Record (ERC-721) is shown as a PENDING, not-deployed row — no fake
+ *   • SeatRecord721 is shown as a PENDING, not-deployed row — no fake
  *     supply, no "Genesis NFT".
  *   • Artifact mintability claim documents the active && !paused gate.
  *   • Claim sources are limited to the four honest kinds.
@@ -68,8 +68,8 @@ describe("CockpitProof — address provenance", () => {
 });
 
 describe("CockpitProof — honest PENDING, no fakes", () => {
-  it("shows Seat Record (ERC-721) as a not-deployed PENDING row", () => {
-    expect(src).toContain("Seat Record (ERC-721)");
+  it("shows SeatRecord721 as a not-deployed PENDING row", () => {
+    expect(src).toContain("SeatRecord721 (future ERC-721)");
     expect(src).toMatch(/not deployed/);
   });
 

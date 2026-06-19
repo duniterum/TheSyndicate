@@ -1,8 +1,7 @@
 // /nfts — alias of /nft (plural). Renders the same NFT Archive experience.
 //
-// This replaces the prior stale "Genesis NFTs — Eligibility Scaffold"
-// page (which claimed the NFT contract was not deployed). The Archive
-// contract is now DEPLOYED on Avalanche; the public route is /nft.
+// This replaces an older eligibility-scaffold page that predated Archive1155.
+// The Archive contract is now DEPLOYED on Avalanche; the public route is /nft.
 // /nfts is kept as a valid alias for any existing inbound links and
 // search results, with a canonical pointing to /nft.
 import { createFileRoute } from "@tanstack/react-router";

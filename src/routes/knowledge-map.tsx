@@ -180,8 +180,8 @@ function KnowledgeMapRoute() {
             </h3>
             <p className="mt-2 text-sm text-foreground/85 leading-relaxed">
               Most of what the protocol knows is recomputed every load from on-chain truth.
-              Member numbers live in the Holder Index. NFTs live in the Archive. Treasury values
-              live in the asset / treasury reads. Nothing is stored twice — each fact is read
+              Member numbers live in the Holder Index. Archive1155 artifacts live in the Archive.
+              SeatRecord721 is reserved for future identity records. Treasury values live in the asset / treasury reads. Nothing is stored twice — each fact is read
               from its one canonical home.
             </p>
           </GlassCard>

@@ -11,7 +11,7 @@ type Family = {
   key: string;
   family: string;
   title: string;
-  state: "LIVE" | "SEALED";
+  state: "LIVE" | "READ_GATED" | "SEALED";
   sealingRule?: string;     // only for SEALED
   ctaHref?: string;         // only for LIVE
   ctaLabel?: string;
@@ -23,7 +23,7 @@ const FAMILIES: Family[] = [
     key: "first-signal",
     family: "Chapter Artifact · ID 1",
     title: "The First Signal",
-    state: "LIVE",
+    state: "READ_GATED",
     ctaHref: "#first-signal-showcase",
     ctaLabel: "Mint The First Signal →",
     blurb: "The opening artifact of Chapter I. Public mint open on Avalanche — 0.50 USDC, wallet limit 5.",
@@ -35,7 +35,7 @@ const FAMILIES: Family[] = [
     state: "LIVE",
     ctaHref: "#patron-seal-readiness",
     ctaLabel: "Mint Patron Seal →",
-    blurb: "A flat support artifact for early patrons. Public mint open on Avalanche — 5.00 USDC, wallet limit 5.",
+    blurb: "A flat support artifact. Active at 5.00 USDC, but wallet mintability is shown only from live Archive1155 reads.",
   },
   {
     key: "seat-record",
@@ -43,7 +43,7 @@ const FAMILIES: Family[] = [
     title: "Seat Record",
     state: "SEALED",
     sealingRule: "Identity layer — sealed until its own contract opens.",
-    blurb: "Your numbered seat will live in a separate ERC-721 contract, not in this collection. Joining now permanently records your member number and chapter on-chain.",
+    blurb: "Future identity record for a verified seat. SYN is the seat today; this separate ERC-721 contract is not deployed.",
   },
   {
     key: "protocol-memory",
@@ -77,7 +77,7 @@ export function ArtifactUniverseBoard() {
       <SectionHeader
         eyebrow="The Archive Universe"
         title={<>One archive, <span className="text-gradient-gold">six families</span></>}
-        description="The Syndicate Archive is one on-chain memory engine. Two artifacts are live and mintable today. The others are sealed by the protocol and open only when their on-chain event arrives — by event, by chapter, by discovery."
+        description="The Syndicate Archive is one on-chain memory engine. The First Signal is public-open; Patron Seal is active but read-gated. The others are sealed, owner-only, reserved, or future-contract surfaces."
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -85,7 +85,7 @@ export function ArtifactUniverseBoard() {
       </div>
 
       <p className="mt-6 mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground text-center">
-        Live = public mint open today · Sealed = on-chain event has not occurred yet
+        Live = contract-backed today · Read gated = wallet mintability comes from live reads · Sealed = proof has not occurred yet
       </p>
     </Section>
   );
@@ -93,12 +93,13 @@ export function ArtifactUniverseBoard() {
 
 function FamilyCard({ f }: { f: Family }) {
   const live = f.state === "LIVE";
+  const readGated = f.state === "READ_GATED";
   return (
     <div
       className="relative surface elevated p-5 flex flex-col gap-3 h-full"
       style={{
-        borderColor: live ? "color-mix(in oklab, var(--gold) 35%, transparent)" : "var(--border)",
-        background: live
+        borderColor: live || readGated ? "color-mix(in oklab, var(--gold) 35%, transparent)" : "var(--border)",
+        background: live || readGated
           ? "color-mix(in oklab, var(--gold) 4%, var(--background))"
           : "color-mix(in oklab, var(--foreground) 2%, var(--background))",
       }}
@@ -107,15 +108,19 @@ function FamilyCard({ f }: { f: Family }) {
         <span className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           {f.family}
         </span>
-        {live
-          ? <Pill tone="success">LIVE</Pill>
-          : <Pill tone="muted">SEALED</Pill>}
+        {live ? (
+          <Pill tone="success">LIVE</Pill>
+        ) : readGated ? (
+          <Pill tone="warning">READ GATED</Pill>
+        ) : (
+          <Pill tone="muted">SEALED</Pill>
+        )}
       </div>
 
       <h3 className="font-serif text-2xl text-foreground leading-tight">{f.title}</h3>
 
       {/* Sealed visual mark — intentional, not missing */}
-      {!live && (
+      {!live && !readGated && (
         <div
           aria-hidden
           className="my-1 flex items-center justify-center h-20 rounded-md border border-dashed"
@@ -127,13 +132,13 @@ function FamilyCard({ f }: { f: Family }) {
 
       <p className="text-sm text-foreground/80 leading-relaxed">{f.blurb}</p>
 
-      {!live && f.sealingRule && (
+      {!live && !readGated && f.sealingRule && (
         <p className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]/80">
           {f.sealingRule}
         </p>
       )}
 
-      {live && f.ctaHref && f.ctaLabel && (
+      {(live || readGated) && f.ctaHref && f.ctaLabel && (
         <a
           href={f.ctaHref}
           className="mt-auto inline-flex items-center justify-center rounded-md px-3 py-2 mono text-[10px] uppercase tracking-[0.22em] text-[oklch(0.22_0.025_260)]"
