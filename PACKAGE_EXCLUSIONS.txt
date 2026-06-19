@@ -1,5 +1,0 @@
-﻿The Syndicate final clean source package
-Created: 20260619-113300
-Validated with: npm.cmd run check-release
-Includes source, config, docs, contracts, scripts, public assets, attached assets, Replit config, and non-generated contract artifacts.
-Excludes node_modules, .output, .git, reports, screenshots, caches, nested zips, interrupted package folders, and logs.
