@@ -102,14 +102,15 @@ export function ArchiveContractStatus() {
       </div>
 
       <h3 className="text-base font-semibold text-foreground">
-        Archive Contract — Deployed on Avalanche · First public mint OPEN
+        Archive Contract — Deployed on Avalanche · First Signal OPEN
       </h3>
       <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-        Read-only contract state. The First Signal (ID 1) and Patron Seal
-        (ID 3) public mints are open on Avalanche (0.50 and 5.00 USDC,
-        wallet limit 5 each). ID 2 is reserved and disabled. Values below
-        come from live on-chain reads; if a read fails it is labeled
-        honestly and never replaced with fake or zero values.
+        Read-only contract state. The First Signal (ID 1) public mint is open
+        on Avalanche at 0.50 USDC. Patron Seal (ID 3) is CONTRACT_GATED /
+        PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155
+        reads. ID 2 is reserved and disabled. Values below come from live
+        on-chain reads; if a read fails it is labeled honestly and never
+        replaced with fake or zero values.
       </p>
 
       {/* Address + explorer links */}

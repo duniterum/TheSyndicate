@@ -181,18 +181,23 @@ export function HeroEntryStrip() {
 function HeroLeft({ className = "" }: { className?: string }) {
   return (
     <div className={`relative z-10 max-w-xl lg:pb-10 ${className}`}>
-      <h1 className="font-serif text-[clamp(2.6rem,1.8rem+2.6vw,4.25rem)] font-normal leading-[1.0] tracking-[-0.04em] text-foreground">
-        Take your seat
-        <br />
-        in a living{" "}
-        <span
-          className="inline-block"
-          style={{
-            color: GOLD,
-            textShadow: "0 0 34px color-mix(in oklab, #E3A92B 25%, transparent)",
-          }}
-        >
-          protocol.
+      <h1
+        aria-label="Take your seat in a living protocol."
+        className="font-serif text-[clamp(2.6rem,1.8rem+2.6vw,4.25rem)] font-normal leading-[1.0] tracking-[-0.04em] text-foreground"
+      >
+        <span aria-hidden="true">
+          Take your seat
+          <br />
+          in a living{" "}
+          <span
+            className="inline-block"
+            style={{
+              color: GOLD,
+              textShadow: "0 0 34px color-mix(in oklab, #E3A92B 25%, transparent)",
+            }}
+          >
+            protocol.
+          </span>
         </span>
       </h1>
 

@@ -96,7 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "The Syndicate" },
       { property: "og:type", content: "website" },
       { property: "og:title", content: "The Syndicate (SYN) — Experimental Utility Membership Token on Avalanche" },
-      { property: "og:description", content: "Fixed 1,000,000,000 SYN supply · No admin · No mint · No tax · Live on Avalanche C-Chain. Membership Sale contract is next." },
+      { property: "og:description", content: "Fixed 1,000,000,000 SYN supply · No admin · No mint · No tax · Membership Sale and 70/20/10 routing live on Avalanche C-Chain." },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "The Syndicate (SYN) — Live on Avalanche" },
       { name: "twitter:description", content: "Transparent experimental utility membership token. Fixed supply. Live on Avalanche C-Chain." },

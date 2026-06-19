@@ -25,7 +25,7 @@ export function SectionHeader({
   align?: "left" | "center";
 }) {
   return (
-    <div className={`max-w-4xl ${align === "center" ? "mx-auto text-center" : ""} mb-14`}>
+    <div className={`max-w-4xl ${align === "center" ? "mx-auto text-center" : ""} mb-10 md:mb-14`}>
       {eyebrow && (
         <div
           className={`mono text-[12px] uppercase tracking-[0.26em] mb-6 ${align === "left" ? "border-l-2 pl-3" : ""}`}
@@ -38,7 +38,7 @@ export function SectionHeader({
         {title}
       </h2>
       {description && (
-        <p className="mt-6 text-lg md:text-xl text-foreground/80 leading-relaxed max-w-3xl">
+        <p className="mt-5 md:mt-6 text-base md:text-xl text-foreground/80 leading-relaxed max-w-3xl">
           {description}
         </p>
       )}
@@ -344,7 +344,7 @@ export function CTAButton({
   className?: string;
 }) {
   const base =
-    "mono inline-flex items-center justify-center gap-2 rounded-[3px] px-6 py-3.5 text-[13px] uppercase tracking-[0.14em] transition-all duration-200 whitespace-nowrap";
+    "mono inline-flex w-full sm:w-auto min-h-11 items-center justify-center gap-2 rounded-[3px] px-5 sm:px-6 py-3 text-center text-[12px] sm:text-[13px] uppercase tracking-[0.12em] sm:tracking-[0.14em] leading-tight transition-all duration-200";
   const styles =
     variant === "gold"
       ? "font-bold hover:brightness-110"
@@ -708,14 +708,9 @@ export function ActionPanel({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-[var(--gold)]/30 bg-card/70 p-8 md:p-10 ${className}`}
+      className={`relative overflow-hidden rounded-lg border border-[var(--gold)]/30 bg-card/70 p-6 sm:p-8 md:p-10 ${className}`}
       style={{ boxShadow: "var(--shadow-glow-gold)" }}
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full opacity-20 blur-3xl"
-        style={{ background: "var(--gradient-gold)" }}
-      />
       <div className="relative">
         {eyebrow && (
           <div
@@ -733,7 +728,7 @@ export function ActionPanel({
             {description}
           </p>
         )}
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-7 md:mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <PrimaryButton href={primary.href}>{primary.label}</PrimaryButton>
           {secondary && (
             <SecondaryButton href={secondary.href}>{secondary.label}</SecondaryButton>
@@ -892,5 +887,4 @@ export function Panel({
  * (fixed max-width + py-16→24 rhythm). Pair with <SectionHeader>.
  */
 export const SectionShell = Section;
-
 

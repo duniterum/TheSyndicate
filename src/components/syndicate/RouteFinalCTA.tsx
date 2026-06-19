@@ -31,10 +31,10 @@ interface PresetConfig {
 
 const PRESETS: Record<Preset, PresetConfig> = {
   join: {
-    eyebrow: "Join",
+    eyebrow: "Take your seat",
     title: (
       <>
-        Take your seat in <span className="text-gradient-gold">The Syndicate</span>.
+        Receive SYN. <span className="text-gradient-gold">Enter the record.</span>
       </>
     ),
     description:
@@ -44,9 +44,9 @@ const PRESETS: Record<Preset, PresetConfig> = {
   },
   mint: {
     eyebrow: "Chapter I · Mint open",
-    title: <>Mint the opening signal.</>,
+    title: <>Carry the opening signal.</>,
     description:
-      "Preserve your place in Chapter I of The Syndicate Archive. Once Chapter I closes, the First Signal can never be issued again.",
+      "Artifacts are memories, not seats. The First Signal is open only because the Archive1155 contract says it is open; other artifact states stay read-gated or sealed by event.",
     primary: { label: "Mint The First Signal", href: "/nft#first-signal-showcase" },
     secondary: { label: "Verify on-chain ↗", href: "/transparency" },
   },
@@ -58,26 +58,64 @@ const PRESETS: Record<Preset, PresetConfig> = {
       </>
     ),
     description:
-      "Read the contracts, follow the addresses, check the transactions. The Protocol Registry lists every wallet, every status, every explorer link.",
+      "Read the contracts, follow the addresses, check the transactions. The Protocol Registry lists every wallet, every status, and every explorer link before you act.",
     primary: { label: "Open Protocol Registry", href: "/registry" },
-    secondary: { label: "Join The Syndicate", href: "/join" },
+    secondary: { label: "Take your seat", href: "/join" },
   },
   editorial: {
-    eyebrow: "Next step",
+    eyebrow: "From reading to protocol",
     title: (
       <>
-        Read the protocol. <span className="text-gradient-gold">Then take your seat.</span>
+        Understand the system. <span className="text-gradient-gold">Then take your seat.</span>
       </>
     ),
     description:
-      "Stories explain what The Syndicate is becoming. Membership records that you were there when it was written.",
-    primary: { label: "Join The Syndicate", href: "/join" },
-    secondary: { label: "Browse the Archive", href: "/archive" },
+      "The public pages explain the institution. Membership records that your wallet was present as the protocol formed.",
+    primary: { label: "Take your seat", href: "/join" },
+    secondary: { label: "Open My Syndicate", href: "/my-syndicate" },
+  },
+};
+
+type PresetOverride = Partial<Omit<PresetConfig, "primary" | "secondary">> & {
+  primary?: Partial<PresetConfig["primary"]>;
+  secondary?: Partial<PresetConfig["secondary"]>;
+};
+
+const DISPLAY_OVERRIDES: Partial<Record<Preset, PresetOverride>> = {
+  join: {
+    description:
+      "Membership is the state change: SYN lands in the wallet, USDC routes 70 / 20 / 10, and the receipt becomes proof My Syndicate can remember.",
+    primary: { label: "Take your seat" },
+    secondary: { label: "Verify the routing" },
+  },
+  mint: {
+    eyebrow: "Archive memory",
+    description:
+      "Artifacts are memories, not seats. The First Signal is open only because the Archive1155 contract says it is open; other artifact states stay read-gated or sealed by event.",
+    primary: { label: "Open Archive mint" },
+    secondary: { label: "Verify Archive truth" },
+  },
+  verify: {
+    description:
+      "Read the contracts, follow the addresses, check the transactions. The Protocol Registry lists every wallet, every status, and every explorer link before you act.",
+    secondary: { label: "Take your seat" },
+  },
+  editorial: {
+    description:
+      "The public pages explain the institution. Membership records that your wallet was present as the protocol formed.",
+    primary: { label: "Take your seat" },
   },
 };
 
 export function RouteFinalCTA({ preset }: { preset: Preset }) {
-  const cfg = PRESETS[preset];
+  const base = PRESETS[preset];
+  const override = DISPLAY_OVERRIDES[preset] ?? {};
+  const cfg = {
+    ...base,
+    ...override,
+    primary: { ...base.primary, ...override.primary },
+    secondary: { ...base.secondary, ...override.secondary },
+  };
   return (
     <Section id="route-final-cta" width="editorial">
       <ActionPanel

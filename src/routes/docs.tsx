@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import { GlassCard, Pill, Section, SectionHeader } from "@/components/syndicate/Primitives";
+import { ProtocolJourneySpine } from "@/components/syndicate/ProtocolJourneySpine";
 
 export const Route = createFileRoute("/docs")({
   head: () => ({
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/docs")({
 });
 
 type Audience = "Beginner" | "Member" | "Builder" | "Verifier";
-type Status = "LIVE" | "PENDING" | "REFERENCE";
+type Status = "LIVE" | "PARTIAL" | "PENDING" | "REFERENCE";
 
 type Card = {
   title: string;
@@ -90,16 +91,17 @@ const GROUPS: Group[] = [
   {
     eyebrow: "NFTs",
     title: "NFT Archive (memory layer)",
-    description: "SYN is the seat. Artifacts are the memory of what happens around that seat. Optional, collectible, no financial rights. Archive1155 deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC · other Artifacts inactive.",
+    description: "SYN is the seat. Artifacts are the memory of what happens around that seat. Optional, collectible, no financial rights. Archive1155 deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC · Patron Seal (ID 3) CONTRACT_GATED / PUBLIC_MINT_READ_GATED · other Artifacts sealed or reserved.",
     cards: [
       { title: "NFTs",         purpose: "Public NFT Archive — gallery, contract status, future collector view.", href: "/nft", status: "LIVE", audience: ["Beginner", "Member", "Verifier"] },
-      { title: "My Syndicate", purpose: "Your seat, chapter, member number, Seat Record status, and artifact eligibility.", href: "/my-syndicate", status: "PENDING", audience: ["Member"] },
+      { title: "My Syndicate", purpose: "Live member cockpit for your seat, chapter, member number, purchase routing, memory, proof, and pending future modules.", href: "/my-syndicate", status: "LIVE", audience: ["Member"] },
     ],
   },
 ];
 
 const STATUS_TONE: Record<Status, "success" | "muted" | "gold"> = {
   LIVE: "success",
+  PARTIAL: "muted",
   PENDING: "muted",
   REFERENCE: "gold",
 };
@@ -108,9 +110,16 @@ function DocsPage() {
   return (
     <PageShell
       eyebrow="Docs"
-      title="Knowledge hub"
+      title="Protocol operating manual"
       description="Structured documentation for members, builders, verifiers, and researchers. Every card carries a status and an audience tag — so you know where to start."
     >
+      <ProtocolJourneySpine
+        current="visitor"
+        compact
+        id="operating-manual-journey"
+        title="Read the protocol in the same order a member experiences it."
+        description="Docs are not a separate knowledge pile. They explain the journey: understand the system, take a seat, verify the receipt, return home, watch activity, and preserve memory."
+      />
       {GROUPS.map((g) => (
         <Section key={g.title} id={`docs-${g.eyebrow.toLowerCase().replace(/\s+/g, "-")}`}>
           <SectionHeader eyebrow={g.eyebrow} title={g.title} description={g.description} />

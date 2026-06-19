@@ -1,8 +1,8 @@
 // /activity Heartbeat hero — the single latest verified protocol event,
 // elevated above the feed with a "why it matters" line and an INLINE
 // proof drawer (ProofChip → TxProofDrawer). No fabricated narrative:
-// the why-it-matters string is a static mapping from the canonical
-// ProtocolEventKind taxonomy.
+// meaning, consequence, and disposition come from the canonical
+// protocol-event intelligence engine.
 //
 // When a wallet is connected AND we have a previous visit snapshot, we
 // also surface a "Why it matters to me" panel — exclusively from
@@ -11,7 +11,8 @@
 
 import { useMemo } from "react";
 import { useAccount } from "wagmi";
-import { useProtocolEvents, type ProtocolEvent } from "@/lib/protocol-events";
+import { useProtocolEvents } from "@/lib/protocol-events";
+import { interpretProtocolEvent } from "@/lib/protocol-event-intelligence";
 import { useProtocolPulse } from "@/lib/protocol-pulse";
 import { useHolderIndex } from "@/lib/holder-index";
 import { useVisitorMemory } from "@/lib/visitor-memory";
@@ -19,42 +20,12 @@ import { txExplorerUrl, explorerUrlForAddress } from "@/lib/syndicate-config";
 import { isValidTxHash } from "./TxProofDrawer";
 import { ProofChip } from "./ProofChip";
 import { VerifiedUpToBadge } from "./VerifiedUpToBadge";
-import { GlassCard, Section, StatusPill } from "./Primitives";
-
-const WHY_IT_MATTERS: Record<ProtocolEvent["kind"], string> = {
-  purchase:
-    "A new USDC purchase routed through the Membership Sale — every seat sealed in join order, no private rounds.",
-  "new-member":
-    "A new member number was sealed on-chain. Chapter assignment is immutable once recorded.",
-  "rank-reached":
-    "A member crossed a cumulative purchase threshold — rank derives from on-chain history, never from off-chain claims.",
-  "swap-buy":
-    "USDC routed to SYN on the LP — secondary-market depth derives from the same pool every member trades.",
-  "swap-sell":
-    "SYN sold back into USDC on the LP — visible to everyone, the same pool every member trades.",
-  "lp-add":
-    "Liquidity added to the protocol pair — deepens the same pool every holder can verify on Avascan.",
-  "lp-remove":
-    "Liquidity removed from the protocol pair — every removal is on-chain and trackable.",
-  "vault-in":
-    "The protocol vault received USDC — treasury inflows are publicly visible per the canonical routing policy.",
-  "vault-out":
-    "The protocol vault sent USDC — every outflow is on-chain and tied to a counterparty.",
-  "nft-mint-first-signal":
-    "Archive ID 1 (The First Signal) was minted — a public chapter artifact attached to a seat at 0.50 USDC.",
-  "nft-mint-patron-seal":
-    "Archive ID 3 (Patron Seal) was minted — the optional patron artifact for early members at 5.00 USDC.",
-  "nft-mint-other":
-    "An Archive1155 artifact was minted on the deployed NFT contract.",
-  "burn-founder":
-    "SYN was permanently removed from supply by the Founder wallet — a verified burn (Proof of Burn) sent to the dead address. The protocol runs no automated burn.",
-  "burn-community":
-    "SYN was permanently removed from supply by a member — a verified burn (Proof of Burn) sent to the dead address.",
-};
+import { GlassCard, Pill, Section, StatusPill } from "./Primitives";
 
 export function ActivityHeartbeat() {
   const { events, isLoading } = useProtocolEvents({ limit: 10 });
   const latest = events[0];
+  const intelligence = latest ? interpretProtocolEvent(latest) : null;
   const latestValidTx = latest && isValidTxHash(latest.txHash) ? latest.txHash : null;
   const proofHref = latestValidTx ? txExplorerUrl(latestValidTx) : null;
 
@@ -94,8 +65,33 @@ export function ActivityHeartbeat() {
                 Why it matters
               </div>
               <p className="text-sm text-foreground/90 max-w-3xl leading-relaxed">
-                {WHY_IT_MATTERS[latest.kind]}
+                {intelligence?.meaning}
               </p>
+              {intelligence && (
+                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div className="rounded-md border border-border/40 bg-background/40 px-3 py-2">
+                    <div className="mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+                      Consequence
+                    </div>
+                    <p className="mt-1 text-xs text-foreground/85 leading-relaxed">
+                      {intelligence.consequence}
+                    </p>
+                  </div>
+                  <div className="rounded-md border border-border/40 bg-background/40 px-3 py-2">
+                    <div className="mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+                      Disposition
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      <Pill tone={intelligence.chronicleCandidate.status === "CANDIDATE" ? "gold" : "muted"}>
+                        {intelligence.chronicleCandidate.label}
+                      </Pill>
+                      <Pill tone={intelligence.registerDisposition.status === "ACTIVE_RECORD" ? "success" : "muted"}>
+                        {intelligence.registerDisposition.label}
+                      </Pill>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <WhyItMattersToMe />

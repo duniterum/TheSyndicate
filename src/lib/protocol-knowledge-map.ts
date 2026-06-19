@@ -282,7 +282,7 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     internalSurfaces: [],
     status: "partial",
     statusNote:
-      "Archive1155 deployed and live; ID 1 (First Signal) & ID 3 (Patron Seal) active/mintable, ID 2 reserved/disabled (future SeatRecord721). Evidence: src/lib/archive-config.ts and ARCHIVE_CONTRACT_STATE in src/lib/syndicate-config.ts.",
+      "Archive1155 deployed and live; ID 1 (First Signal) open; ID 3 (Patron Seal) CONTRACT_GATED / PUBLIC_MINT_READ_GATED and shown as mintable only from live Archive1155 reads; ID 2 reserved/disabled (future SeatRecord721). Evidence: src/lib/archive-config.ts, PatronSealReadiness, and ARCHIVE_CONTRACT_STATE in src/lib/syndicate-config.ts.",
     identityPosture: "identity-free",
     indexes: {
       canonDocs: ["docs/canon/02_SOURCE_OF_TRUTH_TABLE.md"],

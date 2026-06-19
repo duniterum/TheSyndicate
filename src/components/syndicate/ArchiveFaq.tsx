@@ -9,15 +9,15 @@ type Item = { q: string; a: string };
 const FAQ: Item[] = [
   {
     q: "Are NFTs live today?",
-    a: "Yes — the Archive1155 contract is deployed on Avalanche and The First Signal (ID 1) public mint is OPEN at 0.50 USDC (wallet limit 5). Other Artifacts are protocol-memory surfaces sealed by event.",
+    a: "Yes — the Archive1155 contract is deployed on Avalanche and The First Signal (ID 1) public mint is OPEN at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event.",
   },
   {
     q: "Can I mint now?",
-    a: "Yes — two Artifacts are live. ID 1 (The First Signal) at 0.50 USDC, and ID 3 (Patron Seal) at 5.00 USDC. Connect a wallet, switch to Avalanche, approve the price, then mint.",
+    a: "The First Signal (ID 1) is the open public mint. Patron Seal (ID 3) is shown as mintable only when live contract reads say the connected wallet can mint it. No static public-open claim is made for ID 3.",
   },
   {
     q: "Are all Artifacts live?",
-    a: "No. ID 1 (The First Signal) and ID 3 (Patron Seal) are active and mintable today. ID 2 is reserved for a future ERC-721 Seat Record. IDs 4–8 are roadmap previews and not active.",
+    a: "No. ID 1 (The First Signal) is open. ID 3 (Patron Seal) is contract/read gated. ID 2 is reserved for a future ERC-721 Seat Record. IDs 4–8 are roadmap previews and not active.",
   },
   {
     q: "Is there a marketplace?",

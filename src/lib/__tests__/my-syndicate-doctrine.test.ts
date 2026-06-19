@@ -213,6 +213,6 @@ describe("/my-syndicate doctrine — narrative arc", () => {
   it("PageShell renders with hideHeader and the OS title", () => {
     expect(ROUTE).toMatch(/<PageShell/);
     expect(ROUTE).toMatch(/hideHeader/);
-    expect(ROUTE).toMatch(/Your seat\. Your assets\. Your chronicle\./);
+    expect(ROUTE).toMatch(/Your seat\. Your proof\. Your memory\./);
   });
 });

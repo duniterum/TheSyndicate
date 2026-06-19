@@ -75,10 +75,11 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
 
   it("NFT Collection hierarchy pills stay exactly worded", () => {
     const src = read("src/components/syndicate/ArchiveGalleryPreview.tsx");
-    // Post-activation doctrine: ID 1 and ID 3 are both LIVE; IDs 4–9 are
-    // protocol-memory. ID 2 has its own identity band.
+    // Post-read-gate doctrine: ID 1 is the static public mint; ID 3 is
+    // surfaced only through live Archive1155 reads. IDs 4–9 are protocol-memory.
+    // ID 2 has its own identity band.
     expect(src).toContain("ID 1 · MINT OPEN");
-    expect(src).toContain("ID 3 · MINT OPEN");
+    expect(src).toContain("ID 3 · READ GATED");
     expect(src).toContain("IDS 4–9 · PROTOCOL MEMORY");
     // The legacy "configured · not active" wording for ID 3 must be gone.
     expect(src).not.toContain("ID 3 · CONFIGURED · NOT ACTIVE");
@@ -96,8 +97,8 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
     expect(src).not.toContain(
       "liveActive === true && read?.isMintableConnected === true && read",
     );
-    // The "Live · mint open" status band must be present for the active path.
-    expect(src).toContain("Live · mint open");
+    // The active path must still be explicitly read-gated.
+    expect(src).toContain("Live · read gated");
     // No writeContract / approve / mint write path may be wired in this panel.
     expect(src).not.toMatch(/\buseWriteContract\b|\.writeContractAsync\(/);
 
@@ -277,7 +278,6 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
     expect(src).toContain("const PATRON_SEAL_ID = 3n;");
   });
 });
-
 
 
 

@@ -16,13 +16,13 @@ const STEPS = [
     n: "02",
     label: "Approve",
     title: "Approve USDC spend",
-    body: "One-time on-chain allowance so the Membership Sale contract can pull USDC. You stay in control.",
+    body: "One on-chain allowance lets the Membership Sale contract use the exact USDC you choose. Approval alone does not create a seat.",
   },
   {
     n: "03",
-    label: "Mint",
+    label: "Seat",
     title: "Receive your seat",
-    body: "SYN lands in your wallet at 1 SYN = 0.01 USDC. Routing 70 / 20 / 10 to Vault · Liquidity · Operations.",
+    body: "The buy transaction delivers SYN, routes USDC 70 / 20 / 10, and gives the receipt My Syndicate can read.",
   },
 ];
 
@@ -31,10 +31,10 @@ export function JoinStepsPlaque() {
     <Section id="how-to-join">
       <div className="mb-8">
         <div className="mono text-[10px] uppercase tracking-[0.28em] mb-3" style={{ color: "var(--gold)" }}>
-          How to join · 3 steps
+          Membership ceremony / 3 steps
         </div>
         <h2 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-foreground max-w-2xl">
-          Connect. Approve. Take your seat.
+          Connect. Approve. Then the wallet becomes seated.
         </h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -74,7 +74,7 @@ export function JoinStepsPlaque() {
         ))}
       </div>
       <p className="mt-5 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-        Non-custodial · Avalanche C-Chain · Same rate for everyone · No allowlist
+        Non-custodial / Avalanche C-Chain / same rate for everyone / no fake success state
       </p>
     </Section>
   );

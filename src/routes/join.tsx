@@ -6,10 +6,12 @@ import { JoinStepsPlaque } from "@/components/syndicate/JoinStepsPlaque";
 import { MembershipCalculator, AccessRate, PaymentStrategy, RankLadder } from "@/components/syndicate/Sections";
 import { MemberCard } from "@/components/syndicate/MemberCard";
 import { SeatRecordPanel } from "@/components/syndicate/SeatRecordPanel";
-import { Section, SectionHeader } from "@/components/syndicate/Primitives";
-import { SplitVisualizer } from "@/components/preview/SplitVisualizer";
+import { Section, SectionHeader, StatusPill } from "@/components/syndicate/Primitives";
+import { RoutingFlow } from "@/components/syndicate/RoutingFlow";
 import { ReferralAttributionNote } from "@/components/syndicate/ReferralAttributionNote";
 import { SeatPackages, EraSchedulePreview } from "@/components/syndicate/JoinPackages";
+import { ProtocolJourneySpine } from "@/components/syndicate/ProtocolJourneySpine";
+import { AnticipationLine } from "@/components/syndicate/AnticipationLine";
 
 export const Route = createFileRoute("/join")({
   // Package / preset cards deep-link here with a prefilled amount, e.g. a $25
@@ -30,10 +32,10 @@ export const Route = createFileRoute("/join")({
   },
   head: () => ({
     meta: [
-      { title: "Buy SYN with USDC — Live Membership Sale | The Syndicate" },
-      { name: "description", content: "Live USDC → SYN purchase on Avalanche C-Chain. Fixed rate: 1 SYN = $0.01 USDC. Minimum 5 USDC. Routes 70/20/10 to Vault, Liquidity, Operations." },
-      { property: "og:title", content: "Buy SYN with USDC — Live on Avalanche" },
-      { property: "og:description", content: "Connect wallet, approve USDC, buy SYN. Fully onchain, non-custodial." },
+      { title: "Take Your Seat — Live Membership Sale | The Syndicate" },
+      { name: "description", content: "Take a V1 membership seat by buying SYN with USDC on Avalanche. Fixed rate: 1 SYN = $0.01 USDC. Every purchase routes 70/20/10 to Vault, Liquidity, Operations." },
+      { property: "og:title", content: "Take your seat in The Syndicate" },
+      { property: "og:description", content: "Connect wallet, approve USDC, receive SYN, and verify the receipt on-chain." },
       { property: "og:url", content: "https://thesyndicate.money/join" },
     ],
     links: [{ rel: "canonical", href: "https://thesyndicate.money/join" }],
@@ -45,12 +47,21 @@ function JoinPage() {
   const { amount } = Route.useSearch();
   return (
     <PageShell
-      eyebrow="Buy SYN"
-      title="Live USDC → SYN purchase"
-      description="Membership Sale contract live on Avalanche C-Chain. Fixed access rate: 1 SYN = $0.01 USDC. Minimum 5 USDC."
+      eyebrow="Membership Ceremony"
+      title="Take your seat. Receive SYN."
+      description="This is the live Membership Sale on Avalanche. Buying membership delivers SYN to the wallet, routes USDC 70 / 20 / 10, and creates a receipt the protocol can remember."
     >
+      <AnticipationLine />
+      <ProtocolJourneySpine
+        current="seat"
+        compact
+        id="membership-ceremony"
+        title="This is where a visitor becomes seated."
+        description="Membership is the state change: the wallet receives SYN, the route is enforced on-chain, and the receipt becomes the bridge into My Syndicate."
+      />
       <JoinStepsPlaque />
       <ReferralAttributionNote className="mt-2" />
+      <TransactionOutcomeBand />
       <Section id="member-card">
         <SectionHeader
           eyebrow="Member identity"
@@ -67,14 +78,7 @@ function JoinPage() {
         <LivePurchase initialAmount={amount} />
       </div>
       <SeatPackages />
-      <Section id="split-visualizer">
-        <SectionHeader
-          eyebrow="Where every $1 goes"
-          title={<>The split <span className="text-gradient-gold">never changes</span></>}
-          description="Vault 70% and Liquidity 20% are untouched. Referral commission (preview) only comes from the 10% Operations slice."
-        />
-        <SplitVisualizer />
-      </Section>
+      <RoutingFlow />
       <SeatRecordPanel />
       <AccessRate />
       <EraSchedulePreview />
@@ -83,5 +87,64 @@ function JoinPage() {
       <PaymentStrategy />
     <RouteFinalCTA preset="mint" />
     </PageShell>
+  );
+}
+
+function TransactionOutcomeBand() {
+  const outcomes = [
+    {
+      label: "Seat",
+      title: "Wallet becomes seated",
+      body: "Membership purchase delivers SYN. SYN is the V1 membership seat signal.",
+    },
+    {
+      label: "Route",
+      title: "USDC routes immediately",
+      body: "The contract enforces 70% Vault, 20% Liquidity, and 10% Operations.",
+    },
+    {
+      label: "Proof",
+      title: "Receipt is verifiable",
+      body: "The success state links to the transaction and summarizes what changed.",
+    },
+    {
+      label: "Memory",
+      title: "Activity enters history",
+      body: "Your purchase can surface in Activity, My Syndicate, Chronicle, and Register views as indexed truth.",
+    },
+  ];
+
+  return (
+    <Section id="transaction-outcome" className="py-10 md:py-12">
+      <div className="rounded-[6px] border border-border/70 bg-card/35 p-5 md:p-6">
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                What buying does
+              </span>
+              <StatusPill status="LIVE" />
+            </div>
+            <h2 className="mt-3 font-serif text-2xl md:text-3xl font-normal tracking-tight text-foreground">
+              A purchase is an on-chain state change, not a checkout screen.
+            </h2>
+          </div>
+          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground md:text-right">
+            Before you connect, the page shows the exact consequences to expect. No balance, receipt, or success state appears until the wallet and chain provide it.
+          </p>
+        </div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {outcomes.map((item) => (
+            <div key={item.label} className="border-l border-border/70 pl-4">
+              <div className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--gold)]">
+                {item.label}
+              </div>
+              <h3 className="mt-2 text-sm font-semibold text-foreground">{item.title}</h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Section>
   );
 }

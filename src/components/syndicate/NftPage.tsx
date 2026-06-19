@@ -26,6 +26,7 @@ import { FirstSignalAnatomyBands } from "@/components/syndicate/FirstSignalAnato
 import { HowArchiveWorksFlow } from "@/components/syndicate/HowArchiveWorksFlow";
 import { PatronSealReadiness } from "@/components/syndicate/PatronSealReadiness";
 import { MythologyWall } from "@/components/syndicate/MythologyWall";
+import { ArchiveCeremony } from "@/components/syndicate/ArchiveCeremony";
 import { LiveProofStrip } from "@/components/syndicate/LiveProofStrip";
 import { ArchiveContractStatus } from "@/components/syndicate/ArchiveContractStatus";
 import { FinalMintCTA } from "@/components/syndicate/FinalMintCTA";
@@ -35,9 +36,9 @@ import { RecentCollectorsRail } from "@/components/syndicate/RecentCollectorsRai
 export function NftPage() {
   return (
     <PageShell
-      eyebrow="NFT · Avalanche · Chapter I mints open"
+      eyebrow="NFT · Avalanche · Chapter I archive"
       title="The First Signal — the opening NFT of The Syndicate"
-      description="Two public mints open on Avalanche: The First Signal (0.50 USDC) and the Patron Seal (5.00 USDC). Other Artifacts are protocol-memory surfaces sealed by event."
+      description="The First Signal is open on Avalanche at 0.50 USDC. Patron Seal is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable when live Archive1155 reads say so. Other Artifacts are protocol-memory surfaces sealed by event."
       hideHeader
     >
       {/* 1. Artifact Hero — huge NFT left, info + mint right (Genesis Seal lives here) */}
@@ -46,13 +47,15 @@ export function NftPage() {
       {/* 1b. Mythology Wall — 9-slot public mythology (Acts I–III) */}
       <MythologyWall />
 
+      <ArchiveCeremony />
+
       {/* 2. What Is The First Signal — anatomy callouts on the live on-chain SVG */}
       <FirstSignalAnatomyBands />
 
       {/* 3. How The Archive Works — single infographic, 6 steps */}
       <HowArchiveWorksFlow />
 
-      {/* 3b. Patron Seal — ID 3 dedicated panel (LIVE · mint open · 5.00 USDC) */}
+      {/* 3b. Patron Seal - ID 3 dedicated panel (contract/read gated) */}
       <PatronSealReadiness />
 
       {/* 4b. Recent collectors rail — live mints scanned from Archive1155 */}

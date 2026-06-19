@@ -18,6 +18,8 @@ import { WhatChangesAfterJoining } from "@/components/syndicate/WhatChangesAfter
 import { HomeTransparencySnapshot } from "@/components/syndicate/HomeTransparencySnapshot";
 import { RiskDisclaimer } from "@/components/syndicate/RiskDisclaimer";
 import { Section, SectionHeader, CTAButton } from "@/components/syndicate/Primitives";
+import { ProtocolJourneySpine, ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
+import { AnticipationLine } from "@/components/syndicate/AnticipationLine";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -90,6 +92,8 @@ function Index() {
           Each panel self-labels via its own SectionHeader; no act markers up here. */}
       <ProtocolIntelligenceBar cells={HOME_TICKER_CELLS} mobilePriority={4} />
       <ProtocolHero />
+      <AnticipationLine />
+      <ProtocolJourneySpine current="visitor" />
       <HomeKpiGrid />
       <ProtocolEnginesPanel />
 
@@ -98,6 +102,7 @@ function Index() {
       <MilestoneApproachingTile />
       <LivePulseStrip />
       <HomeActivityTape />
+      <ProtocolMemoryPipeline compact />
       <HeroEntryStrip />
 
       {/* ── HOW IT WORKS ── prose, demoted into one compressed band below the
@@ -128,8 +133,8 @@ function Index() {
       <Section id="home-join-cta">
         <SectionHeader
           eyebrow="Take your seat"
-          title={<>Buy SYN. <span className="text-gradient-gold">Verify on-chain.</span></>}
-          description="Open the live Membership Sale on Avalanche. Same rate for everyone: every USDC routes 70% Vault, 20% Liquidity, 10% Operations."
+          title={<>Receive SYN. <span className="text-gradient-gold">Enter the record.</span></>}
+          description="Open the live Membership Sale on Avalanche. The wallet receives SYN, every USDC routes 70 / 20 / 10, and the receipt becomes proof My Syndicate can remember."
         />
         <div className="flex flex-wrap items-center gap-3">
           <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>

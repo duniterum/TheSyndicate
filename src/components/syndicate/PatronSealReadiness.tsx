@@ -71,7 +71,7 @@ export function PatronSealReadiness() {
   // Paused overrides active so an emergency pause is visible at a glance.
   const statusPill = (() => {
     if (livePaused === true) return <Pill tone="warning">PAUSED</Pill>;
-    if (liveActive === true) return <Pill tone="success">ACTIVE · MINT OPEN</Pill>;
+    if (liveActive === true) return <Pill tone="success">ACTIVE · READ GATED</Pill>;
     if (liveConfigured === true) return <Pill tone="navy">CONFIGURED · NOT ACTIVE</Pill>;
     if (read?.errors.artifact) return <Pill tone="muted">READ PENDING</Pill>;
     return <Pill tone="muted">READING ON-CHAIN STATE</Pill>;
@@ -90,7 +90,7 @@ export function PatronSealReadiness() {
         title={<>The <span className="text-gradient-gold">Patron Seal</span></>}
         description={
           liveActive === true
-            ? "Live on Avalanche at 5.00 USDC. Optional, flat support Artifact — one tier only, no rank, no financial rights. Wallet limit 5, supply 10,000."
+            ? "Live on Avalanche at 5.00 USDC and shown as mintable only from live Archive1155 reads. Optional, flat support Artifact — one tier only, no rank, no financial rights. Wallet limit 5, supply 10,000."
             : "Configured on-chain at 5.00 USDC. Live reads will enable the mint button as soon as the contract reports active === true."
         }
       />
@@ -185,10 +185,11 @@ export function PatronSealReadiness() {
           {liveActive === true ? (
             <div className="rounded-md border border-[var(--gold)]/40 bg-[var(--gold)]/5 p-3 text-xs text-foreground/90 leading-relaxed">
               <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)] mb-1">
-                Live · mint open
+                Live · read gated
               </div>
               <p>
-                Public mint is OPEN on Avalanche at <span className="mono text-foreground">{price.value}</span>.
+                Patron Seal appears mintable only when live Archive1155 reads confirm
+                the connected wallet can mint it at <span className="mono text-foreground">{price.value}</span>.
                 Wallet limit {walletLimit}. Definition is frozen on-chain.
                 Connect a wallet on Avalanche C-Chain, approve 5.00 USDC, and mint
                 ID 3. Patron Seal is a collectible record only — no equity, yield,

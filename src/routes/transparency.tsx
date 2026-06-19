@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
 import { TransparencyCenter } from "@/components/syndicate/TransparencyCenter";
+import { TransparencyTimeline } from "@/components/syndicate/TransparencyTimeline";
 import { TransparencyReport } from "@/components/syndicate/TransparencyReport";
 import { TreasuryComposition } from "@/components/syndicate/TreasuryComposition";
 import { VerifyEverything } from "@/components/syndicate/VerifyEverything";
@@ -10,8 +11,6 @@ import { UseOfFunds } from "@/components/syndicate/UseOfFunds";
 import { LpStatusCard } from "@/components/syndicate/LpStatus";
 import { Section, SectionHeader } from "@/components/syndicate/Primitives";
 import { RiskDisclaimer } from "@/components/syndicate/RiskDisclaimer";
-import { TreasuryLedgerPreview, TreasuryCategoryChart } from "@/components/preview/TreasuryLedgerPreview";
-import { PreviewBanner } from "@/components/preview/PreviewPrimitives";
 
 export const Route = createFileRoute("/transparency")({
   head: () => ({
@@ -42,6 +41,8 @@ export const Route = createFileRoute("/transparency")({
     >
       <TransparencyCenter />
 
+      <TransparencyTimeline />
+
       <VerifyEverything />
 
       <TreasuryComposition />
@@ -64,8 +65,8 @@ export const Route = createFileRoute("/transparency")({
       <Section id="archive-status">
         <SectionHeader
           eyebrow="Archive"
-          title="Memory layer — two public mints open"
-          description="An optional collectible memory layer around each seat. The Archive1155 contract is deployed on Avalanche; The First Signal (ID 1) is OPEN at 0.50 USDC and the Patron Seal (ID 3) is OPEN at 5.00 USDC. Other Artifacts are protocol-memory surfaces sealed by event. SYN is the seat. Artifacts are the memory."
+          title="Memory layer — open plus read-gated artifacts"
+          description="An optional collectible memory layer around each seat. The Archive1155 contract is deployed on Avalanche; The First Signal (ID 1) is OPEN at 0.50 USDC. Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED: mintability is shown only from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event. SYN is the seat. Artifacts are the memory."
         />
         <div className="surface elevated p-5 text-sm text-muted-foreground leading-relaxed">
           <p>
@@ -79,22 +80,6 @@ export const Route = createFileRoute("/transparency")({
             Artifacts are collectible records only. They are not equity, debt, Vault ownership,
             dividend instruments, revenue share, governance rights, or promises of profit.
             Participation may result in total loss.
-          </p>
-        </div>
-      </Section>
-
-      <Section id="treasury-ledger-preview">
-        <SectionHeader
-          eyebrow="Treasury Ledger · Preview"
-          title={<>Where the money <span className="text-gradient-gold">will move</span></>}
-          description='Future directional ledger of every fund movement. Simulated rows below — real rows arrive when CommissionRouter ships and will link to a tx hash.'
-        />
-        <div className="flex flex-col gap-4">
-          <PreviewBanner title="Treasury Ledger — simulated preview" />
-          <TreasuryLedgerPreview />
-          <TreasuryCategoryChart />
-          <p className="text-xs text-muted-foreground">
-            Founder-managed until DAO activation. Nothing hidden happened.
           </p>
         </div>
       </Section>

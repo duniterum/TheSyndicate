@@ -8,11 +8,11 @@
 // Doctrine:
 //   SYN is the seat. Artifacts are the memory.
 //
-// Current truth (Wave: both public mints OPEN):
+// Current truth:
 //   - SyndicateArchive1155 is DEPLOYED on Avalanche mainnet.
 //   - ID 1 "The First Signal" is LIVE — public mint OPEN at 0.50 USDC.
 //   - ID 2 is RESERVED · future ERC-721 SeatRecord721 identity layer.
-//   - ID 3 "Patron Seal" is LIVE — public mint OPEN at 5.00 USDC.
+//   - ID 3 "Patron Seal" is CONTRACT_GATED / PUBLIC_MINT_READ_GATED.
 //   - IDs 4–8 are sealed / armed — protocol-memory artifacts (no public mint).
 //   - ID 9 "Protocol Chronicle" is FAR HORIZON — sealed until Chapter I closes.
 import type { ReactNode } from "react";
@@ -46,8 +46,10 @@ import { ArchiveOnboardingPanel } from "@/components/syndicate/ArchiveOnboarding
 import { ArchiveGlossary } from "@/components/syndicate/ArchiveGlossary";
 import { ChapterOneHero } from "@/components/syndicate/ChapterOneHero";
 import { ArchiveMuseumHero } from "@/components/syndicate/ArchiveMuseumHero";
+import { ArchiveCeremony } from "@/components/syndicate/ArchiveCeremony";
 import { LiveProofStrip } from "@/components/syndicate/LiveProofStrip";
 import { track } from "@/lib/analytics";
+import { ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
 
 export const Route = createFileRoute("/archive")({
   head: () => ({
@@ -65,7 +67,7 @@ export const Route = createFileRoute("/archive")({
       {
         property: "og:description",
         content:
-          "Collect proof you were early. The First Signal (ID 1) is open for mint on Avalanche at 0.50 USDC. Other Artifacts are protocol-memory surfaces sealed by event.",
+          "Carry protocol memory. The First Signal (ID 1) is open for mint on Avalanche at 0.50 USDC. Other Artifacts are protocol-memory surfaces sealed by event.",
       },
       { property: "og:url", content: "https://thesyndicate.money/archive" },
       { property: "twitter:card", content: "summary_large_image" },
@@ -76,7 +78,7 @@ export const Route = createFileRoute("/archive")({
       {
         property: "twitter:description",
         content:
-          "Collect proof you were early. The First Signal (ID 1) public mint is open on Avalanche at 0.50 USDC.",
+          "Carry protocol memory. The First Signal (ID 1) public mint is open on Avalanche at 0.50 USDC.",
       },
     ],
     links: [
@@ -149,7 +151,7 @@ const PENDING_ITEMS: Array<{ title: string; status: ArtifactStatus }> = [
 // CATEGORY_GROUPS grid which carried operator status pills (CONFIGURED_NOT_ACTIVE,
 // PENDING_*) onto a visitor surface. Per docs/NFT_DESIRE_ARCHITECTURE_PASS.md
 // every public slot is one of: OPEN · IDENTITY · HIDDEN · ARMED · FAR HORIZON.
-type MythologyState = "OPEN" | "IDENTITY" | "HIDDEN" | "ARMED" | "FAR HORIZON";
+type MythologyState = "OPEN" | "READ GATED" | "IDENTITY" | "HIDDEN" | "ARMED" | "FAR HORIZON";
 
 const MYTHOLOGY_FUTURE_GROUPS: Array<{
   key: string;
@@ -178,7 +180,7 @@ const MYTHOLOGY_FUTURE_GROUPS: Array<{
     key: "support",
     title: "What you support or discover",
     items: [
-      { name: "Patron Seal (ID 3)",     state: "OPEN",        blurb: "A flat support artifact for early patrons. Public mint open on Avalanche — 5.00 USDC, wallet limit 5." },
+      { name: "Patron Seal (ID 3)",     state: "READ GATED",  blurb: "A flat support artifact. Mintability is contract/read gated and shown only when live Archive1155 reads confirm it." },
       { name: "Heart Signal (ID 4)",    state: "HIDDEN",      blurb: "A hidden discovery artifact. Conditions are not public; it opens only when discovered." },
       { name: "Protocol Chronicle (ID 9)", state: "FAR HORIZON", blurb: "The closing record of Chapter I. Written only when the chapter ends — sealed until then." },
     ],
@@ -188,6 +190,7 @@ const MYTHOLOGY_FUTURE_GROUPS: Array<{
 function mythToneClass(s: MythologyState): { tone: "success" | "navy" | "muted" | "warning"; label: string } {
   switch (s) {
     case "OPEN":        return { tone: "success", label: "OPEN" };
+    case "READ GATED":  return { tone: "warning", label: "READ GATED" };
     case "IDENTITY":    return { tone: "navy",    label: "IDENTITY" };
     case "HIDDEN":      return { tone: "muted",   label: "HIDDEN" };
     case "ARMED":       return { tone: "warning", label: "ARMED" };
@@ -206,9 +209,9 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
 
   return (
     <PageShell
-      eyebrow="NFT Archive · Avalanche · First public mint OPEN"
-      title="Collect proof you were early."
-      description="Two public mints are open. The First Signal (ID 1) at 0.50 USDC and the Patron Seal (ID 3) at 5.00 USDC — both live on Avalanche. Other Artifacts are protocol-memory surfaces sealed by event — they will record seats, chapters, milestones, support and hidden discoveries as the protocol writes its own story."
+      eyebrow="Archive / Avalanche / First public mint OPEN"
+      title="Carry the protocol's memory."
+      description="The First Signal (ID 1) is open at 0.50 USDC. Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event - they record seats, chapters, milestones, and support moments only when the protocol creates the required proof."
       hideHeader
     >
       {heroOverride ? (
@@ -227,12 +230,14 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
       )}
 
       <PagePurpose
-        statement="The Archive is the protocol's collectible layer — on-chain Artifacts that record seats, chapters, and milestones as the protocol writes its own story."
+        statement="The Archive receives verified memory from Activity, Chronicle, and Register, then lets artifacts carry that memory. SYN remains the seat; artifacts are records of what the protocol lived through."
         distinctions={[
           { label: "Activity", to: "/activity" },
           { label: "Institutional Register", to: "/institutional-register" },
         ]}
       />
+
+      <ArchiveCeremony />
 
       {/* ─── 2. How it works (3 steps) ──────────────────────────────── */}
       <Section id="how-it-works">
@@ -255,14 +260,14 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
               n: "02",
               title: "Watch the story unfold",
               body:
-                "Chapters seal, milestones land, liquidity grows, support moments happen, and hidden Artifacts wait to be discovered.",
+                "Chapters seal, milestones land, liquidity grows, support moments happen, and reserved Artifacts remain read-gated until their event truth exists.",
               tone: "UNFOLDING" as const,
             },
             {
               n: "03",
               title: "Collect the memory",
               body:
-                "The First Signal is an open public Artifact mint — open on Avalanche at 0.50 USDC. Other Artifacts are protocol-memory surfaces sealed by event and will activate as the protocol writes its own story.",
+                "The First Signal is an open public Artifact mint on Avalanche at 0.50 USDC. Other Artifacts are protocol-memory surfaces sealed by event and activate only when the protocol creates the required proof.",
               tone: "LIVE" as const,
             },
           ].map((s) => (
@@ -301,6 +306,7 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
       </Section>
 
       {/* ─── 2.5 What you can do today (onboarding) ────────────────── */}
+      <ProtocolMemoryPipeline compact />
       <ArchiveOnboardingPanel />
 
       {/* ─── 3. Mythology Wall (9 slots · public surface) ───────────── */}
@@ -472,7 +478,7 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
         <SectionHeader
           eyebrow="SEALED · AWAITING EVENT"
           title={<>What is <span className="text-gradient-gold">sealed beyond the two open mints?</span></>}
-          description="The First Signal (ID 1) and Patron Seal (ID 3) are both LIVE public mints on the deployed Archive1155 contract. The items below are sealed protocol-memory surfaces — they unseal when their on-chain event fires or live in a separate future contract (e.g. SyndicateSeatRecord721)."
+          description="The First Signal (ID 1) is an open public mint on the deployed Archive1155 contract. Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. The items below are sealed protocol-memory surfaces — they unseal when their on-chain event fires or live in a separate future contract (e.g. SyndicateSeatRecord721)."
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {PENDING_ITEMS.map((p) => (
@@ -492,7 +498,7 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
         <SectionHeader
           eyebrow="Future Artifact Types"
           title={<>How the Archive will <span className="text-gradient-gold">remember</span></>}
-          description="The categories of moments the Archive is designed to record. Two public mints are OPEN today (First Signal · Patron Seal). The rest are IDENTITY, HIDDEN, ARMED or FAR HORIZON — they unseal only when their on-chain event arrives."
+          description="The categories of moments the Archive is designed to record. The First Signal is OPEN today; Patron Seal is READ GATED; the rest are IDENTITY, HIDDEN, ARMED or FAR HORIZON — they unseal only when their on-chain event arrives."
         />
         <div className="flex flex-col gap-6">
           {MYTHOLOGY_FUTURE_GROUPS.map((g) => (
@@ -546,7 +552,7 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
             Artifacts confer no financial rights, no revenue share, no Vault
             ownership, no LP ownership, no governance rights and no profit
             promise. Participation may result in loss. The First Signal
-            (ID 1) and the Patron Seal (ID 3) public mints are open; other Artifacts are protocol-memory surfaces sealed by event. See the{" "}
+            (ID 1) is open; Patron Seal (ID 3) is contract/read gated; other Artifacts are protocol-memory surfaces sealed by event. See the{" "}
             <Link to="/registry" className="underline-offset-4 hover:underline text-foreground">
               Protocol Registry
             </Link>{" "}

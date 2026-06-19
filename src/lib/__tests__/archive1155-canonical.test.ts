@@ -247,9 +247,9 @@ describe("Global vs wallet-specific state separation", () => {
     }
   });
 
-  it("PatronSealReadiness keeps 'Live · mint open' as the global pill even when a wallet-specific issue blocks the CTA", () => {
+  it("PatronSealReadiness keeps the live global pill read-gated even when a wallet-specific issue blocks the CTA", () => {
     const src = read("src/components/syndicate/PatronSealReadiness.tsx");
-    expect(src).toContain("Live · mint open");
+    expect(src).toContain("Live · read gated");
     // Wallet-specific blocks live in the CTA, not the status pill.
     expect(src).toContain("Mint limit reached");
   });

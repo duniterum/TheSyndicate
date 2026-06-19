@@ -96,7 +96,7 @@ export async function assertFreshWallet(expected: string | undefined | null): Pr
 export function walletFreshnessMessage(result: WalletFreshnessResult): string | null {
   if (result.ok) return null;
   if (result.code === "wallet-switched") {
-    return "Your wallet is on a different account than the app. The page is syncing before minting so the NFT cannot go to the wrong address.";
+    return "Your wallet is on a different wallet account than the app. The page is syncing before minting so the NFT cannot go to the wrong address.";
   }
   if (result.code === "wallet-unavailable") {
     return "Your wallet did not return an active account. Reconnect your wallet, then mint again.";

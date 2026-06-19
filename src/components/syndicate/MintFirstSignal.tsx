@@ -19,7 +19,7 @@
 //   - The post-mint confirmation is a region role="status" with focus moved
 //     to it; the page also scrolls to #collectible-record so the user can
 //     immediately see the artifact they now own.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useWriteContract,
@@ -46,6 +46,7 @@ import { useMintHashPersistence } from "@/lib/mint-persistence";
 import { useMintGasEstimates, useFormattedActualFee } from "@/lib/mint-gas-estimate";
 import { assertFreshWallet, walletFreshnessMessage } from "@/lib/wallet-freshness";
 import { recordTx } from "@/lib/tx-history";
+import { buildArtifactMintCommerceReceipt } from "@/lib/protocol-commerce-receipt";
 // Canonical classifier — `classifyMintError` is the specialized variant for
 // First Signal-specific phase logic; `classifyTxError` is the site-wide
 // fallback shape every write surface must reference (guarded by
@@ -577,7 +578,25 @@ export function MintFirstSignal({
     );
   }
 
-  const showConfirmation = mintReceipt.isSuccess && !!mintTx.data;
+  const showConfirmation = mintReceipt.isSuccess && !!effectiveMintHash;
+  const artifactReceipt =
+    showConfirmation && effectiveMintHash
+      ? buildArtifactMintCommerceReceipt({
+          wallet,
+          artifactName: "The First Signal",
+          tokenId: FIRST_SIGNAL_ID_DISPLAY,
+          quantity: QUANTITY.toString(),
+          usdcPaid: requiredUsdc !== undefined ? fmtUsdc(requiredUsdc) : "0.50 USDC",
+          ownershipStatus:
+            ownedBal !== undefined
+              ? `Wallet balance reads ${ownedBal.toString()}`
+              : "Ownership refresh pending",
+          proof: {
+            txHash: effectiveMintHash,
+            explorerUrl: mintExplorerHref ?? ARCHIVE_NFT_EXPLORERS.avascan,
+          },
+        })
+      : null;
 
   return (
     <div
@@ -752,10 +771,12 @@ export function MintFirstSignal({
             Recorded on Avalanche. A permanent collectible record of Chapter I.
           </p>
           <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1">
-            <DT>Token ID</DT>
-            <DD>{FIRST_SIGNAL_ID_DISPLAY}</DD>
-            <DT>You now own</DT>
-            <DD>{ownedBal !== undefined ? ownedBal.toString() : "—"}</DD>
+            {(artifactReceipt?.lines ?? []).map((line) => (
+              <Fragment key={line.label}>
+                <DT>{line.label}</DT>
+                <DD>{line.value}</DD>
+              </Fragment>
+            ))}
           </dl>
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
             {mintExplorerLinks.length > 0 ? (
