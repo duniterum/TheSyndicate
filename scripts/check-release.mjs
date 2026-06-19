@@ -18,7 +18,17 @@ import { existsSync } from "node:fs";
 
 const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
 const releaseEnv = { ...process.env };
-if (!/\b--use-system-ca\b/.test(releaseEnv.NODE_OPTIONS || "")) {
+// `--use-system-ca` is only accepted inside NODE_OPTIONS on newer Node runtimes;
+// older ones (e.g. the project's declared Node 20) reject it and abort every
+// spawned step with exit 9. Probe actual support at runtime instead of guessing
+// from the version number — Node's bundled CA store already covers the public
+// HTTPS endpoints these release checks call, so skipping the flag is safe.
+const supportsSystemCa = () =>
+  spawnSync(process.execPath, ["-e", ""], {
+    env: { ...process.env, NODE_OPTIONS: "--use-system-ca" },
+    stdio: "ignore",
+  }).status === 0;
+if (supportsSystemCa() && !/\b--use-system-ca\b/.test(releaseEnv.NODE_OPTIONS || "")) {
   releaseEnv.NODE_OPTIONS = [releaseEnv.NODE_OPTIONS, "--use-system-ca"].filter(Boolean).join(" ");
 }
 
