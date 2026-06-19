@@ -260,13 +260,6 @@ function CockpitHeader({
         ref={ref}
         className="relative overflow-hidden p-5 sm:p-6 md:p-8"
       >
-        {/* decorative cockpit glow */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-28 -right-24 size-72 rounded-full opacity-20 blur-3xl"
-          style={{ background: "var(--gradient-gold)" }}
-        />
-
         <div className="relative flex items-center justify-between gap-3 mb-5">
           <div className="flex items-center gap-2">
             <StatusPill status={status} />
@@ -290,13 +283,13 @@ function CockpitHeader({
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-foreground">
-                  Your cockpit waits for a wallet.
+                  Your seat becomes visible when you connect.
                 </h1>
                 <Pill tone="muted">Disconnected</Pill>
               </div>
               <p className="mt-2 max-w-2xl text-sm md:text-[15px] leading-relaxed text-muted-foreground">
                 Connect to load wallet-specific truth: member number, SYN received, USDC routed,
-                and owned artifacts — every value a live on-chain read.
+                and owned artifacts. Every value is read or derived from verifiable protocol data.
               </p>
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 {[
@@ -314,8 +307,8 @@ function CockpitHeader({
               </div>
               <div className="mt-5 max-w-xl">
                 <ConnectCTA
-                  message="Connect wallet to activate your cockpit."
-                  hint="seat · assets · artifacts"
+                  message="Connect wallet to open your Member OS."
+                  hint="seat · receipt · memory"
                 />
               </div>
             </div>

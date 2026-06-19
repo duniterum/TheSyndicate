@@ -118,15 +118,15 @@ function RiskPage() {
             </ul>
           </GlassCard>
 
-          {/* NFT Archive status */}
+          {/* Archive status */}
           <GlassCard className="p-6 space-y-4">
             <div className="flex items-center gap-2">
               <Pill tone="success">LIVE</Pill>
             </div>
             <SectionHeader
-              eyebrow="NFT Archive"
+              eyebrow="Archive"
               title="Archive1155 is live on Avalanche"
-              description="Two public mints are open: The First Signal (ID 1, 0.50 USDC) and the Patron Seal (ID 3, 5.00 USDC). Other Artifact categories are protocol-memory surfaces sealed by event — they activate when the underlying on-chain event fires."
+              description="The First Signal (ID 1, 0.50 USDC) is open. Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable when live Archive1155 reads support it. Other Artifact categories are protocol-memory surfaces sealed by event."
             />
             <p className="text-sm text-muted-foreground leading-relaxed">{ARCHIVE_DISCLAIMER}</p>
             <p className="text-sm text-muted-foreground leading-relaxed">

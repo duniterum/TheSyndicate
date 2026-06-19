@@ -8,9 +8,9 @@ export function HomeArchiveTeaser() {
   return (
     <Section id="home-archive">
       <SectionHeader
-        eyebrow="NFT Archive"
+        eyebrow="Archive memory layer"
         title={<>Your seat is live. <span className="text-gradient-gold">Your Artifact is next.</span></>}
-        description="Membership and routing are already verifiable on Avalanche. The NFT Archive is deployed and live. The First Signal (ID 1) is open; Patron Seal (ID 3) is contract/read gated; future Artifacts stay sealed until their on-chain event fires."
+        description="Membership and routing are already verifiable on Avalanche. Archive1155 is deployed and live. The First Signal (ID 1) is open; Patron Seal (ID 3) is contract/read gated; future Artifacts stay sealed until their on-chain event fires."
       />
       <GlassCard className="p-5 md:p-6">
         <div className="flex flex-col gap-2 mb-4">

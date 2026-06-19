@@ -9,7 +9,7 @@ const LABELS: Record<string, string> = {
   faq: "FAQ",
   join: "Join",
   liquidity: "Liquidity",
-  nfts: "NFT Archive",
+  nfts: "Archive",
   ranks: "Ranks",
   registry: "Protocol Registry",
   roadmap: "Roadmap",
