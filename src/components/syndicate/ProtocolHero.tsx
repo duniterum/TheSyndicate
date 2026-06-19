@@ -53,10 +53,10 @@ const NODE_POS: Record<string, { wrap: string; line: [number, number] }> = {
 };
 
 const CTA_PRIMARY =
-  "mono inline-flex items-center justify-center gap-2 rounded-[4px] px-6 py-4 text-[12px] font-bold uppercase tracking-[0.15em] transition-all duration-200 whitespace-nowrap will-change-transform hover:-translate-y-0.5 hover:brightness-[1.06] active:translate-y-0";
+  "mono inline-flex w-full items-center justify-center gap-2 rounded-[4px] px-5 py-4 text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-200 whitespace-nowrap will-change-transform hover:-translate-y-0.5 hover:brightness-[1.06] active:translate-y-0 sm:w-auto sm:px-6 sm:text-[12px] sm:tracking-[0.15em]";
 
 const CTA_SECONDARY =
-  "group mono inline-flex items-center justify-center gap-2 rounded-[4px] px-6 py-4 text-[12px] font-semibold uppercase tracking-[0.15em] transition-all duration-200 whitespace-nowrap will-change-transform hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0";
+  "group mono inline-flex w-full items-center justify-center gap-2 rounded-[4px] px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.12em] transition-all duration-200 whitespace-nowrap will-change-transform hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 sm:w-auto sm:px-6 sm:text-[12px] sm:tracking-[0.15em]";
 
 function usePrefersReducedMotion() {
   // Initialize `true` so SSR and the first client render emit NO animation
@@ -118,11 +118,11 @@ export function ProtocolHero() {
         {/* Compact cockpit cover — identity · capital engine · live protocol.
             Mobile order: identity + Join → live proof metrics → economy visual;
             xl reconstructs Left | Engine | Right via order utilities. */}
-        <div className="grid grid-cols-1 items-start gap-6 py-5 sm:py-6 xl:grid-cols-[1.1fr_1.78fr_1.12fr] xl:gap-8 xl:py-8">
+        <div className="grid min-w-0 grid-cols-1 items-start gap-6 py-5 sm:py-6 xl:grid-cols-[1.1fr_1.78fr_1.12fr] xl:gap-8 xl:py-8">
           <HeroLeft />
 
           <HeroEngine
-            className="order-3 xl:order-2"
+            className="order-2 xl:order-2"
             seatLabel={seatLabel}
             lanes={lanes}
             chainLive={chainLive}
@@ -132,7 +132,7 @@ export function ProtocolHero() {
           />
 
           <HeroRight
-            className="order-2 xl:order-3"
+            className="order-3 xl:order-3"
             members={t.members.value}
             membersStatus={t.members.status}
             burnedSyn={burnedSyn}
@@ -180,7 +180,7 @@ export function HeroEntryStrip() {
 
 function HeroLeft({ className = "" }: { className?: string }) {
   return (
-    <div className={`relative z-10 max-w-xl lg:pb-10 ${className}`}>
+    <div className={`relative z-10 w-full min-w-0 max-w-full sm:max-w-xl lg:pb-10 ${className}`}>
       <h1
         aria-label="Take your seat in a living protocol."
         className="font-serif text-[clamp(2.6rem,1.8rem+2.6vw,4.25rem)] font-normal leading-[1.0] tracking-[-0.04em] text-foreground"
@@ -201,11 +201,11 @@ function HeroLeft({ className = "" }: { className?: string }) {
         </span>
       </h1>
 
-      <p className="mt-6 max-w-md text-[1.05rem] leading-relaxed text-foreground/82 md:text-lg">
+      <p className="mt-6 max-w-[31ch] text-base leading-relaxed text-foreground/82 sm:max-w-md md:text-lg">
         Your seat is on-chain. Every USDC route is verifiable. Artifacts carry the memory.
       </p>
 
-      <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-9 flex w-full max-w-[34rem] flex-col gap-3 sm:flex-row">
         <Link
           to="/join"
           onClick={() => track("claim_seat_click", { surface: "protocol_hero" })}
@@ -238,7 +238,7 @@ function HeroLeft({ className = "" }: { className?: string }) {
         </Link>
       </div>
 
-      <div className="mt-10 grid max-w-lg grid-cols-2 gap-x-4 gap-y-4 border-t border-border/60 pt-6 sm:grid-cols-4">
+      <div className="mt-10 grid w-full max-w-lg grid-cols-2 gap-x-4 gap-y-4 border-t border-border/60 pt-6 sm:grid-cols-4">
         <ProofMini icon={<AvalancheMark size={20} />} title="Live on Avalanche" text="C-Chain" red />
         <ProofMini icon={<ShieldIcon />} title="All routes verified" text="On-chain" />
         <ProofMini icon={<CubeIcon />} title="Artifacts" text="On-chain" />
@@ -277,7 +277,7 @@ function HeroEngine({
   const operationsLane = lanes.find((l) => l.key === "OPERATIONS_WALLET");
 
   return (
-    <div className={`relative mx-auto w-full max-w-[460px] py-2 sm:max-w-[500px] lg:self-start xl:max-w-[520px] ${className}`}>
+    <div className={`relative mx-auto w-full min-w-0 max-w-full py-2 sm:max-w-[500px] lg:self-start xl:max-w-[520px] ${className}`}>
       <div
         aria-hidden
         className="absolute inset-[-8%] rounded-full blur-3xl"
@@ -418,7 +418,7 @@ function HeroEngine({
         </EngineNode>
       </div>
 
-      <div className="glass-card elevated p-5 text-center sm:hidden">
+      <div className="glass-card elevated w-full max-w-full p-5 text-center sm:hidden">
         <div className="mono text-[10px] uppercase tracking-[0.26em] text-muted-foreground">
           You are visitor
         </div>
@@ -477,11 +477,11 @@ function HeroEngine({
         </div>
         <div className="mt-4 grid grid-cols-3 gap-2">
           {lanes.map((lane) => (
-            <div key={lane.key} className="rounded-lg border border-border/50 bg-card/50 px-2 py-3">
+            <div key={lane.key} className="min-w-0 rounded-lg border border-border/50 bg-card/50 px-2 py-3">
               <div className="mono text-sm font-semibold tabular-nums" style={{ color: lane.color }}>
                 {lane.pct}%
               </div>
-              <div className="mono mt-1 text-[8px] uppercase tracking-[0.1em] text-muted-foreground">
+              <div className="mono mt-1 truncate text-[8px] uppercase tracking-[0.08em] text-muted-foreground">
                 {lane.label.replace(" Wallet", "")}
               </div>
               <div className="mono mt-1 text-[10px] text-foreground/85">
