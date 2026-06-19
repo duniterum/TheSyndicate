@@ -9,7 +9,7 @@ type Category =
   | "Vault & Routing"
   | "Liquidity"
   | "Ranks & Identity"
-  | "NFT Archive"
+  | "Archive"
   | "Risk & Legal";
 
 type Entry = { q: string; a: string; cat: Category };
@@ -56,13 +56,13 @@ const ENTRIES: Entry[] = [
   { cat: "Ranks & Identity", q: "How do ranks work?", a: "Rank is derived directly from on-chain SYN balance — there are twelve tiers from Citizen to Cornerstone. Rank reflects archive recognition and visibility, never bonus tokens, payouts, or a better rate." },
   { cat: "Ranks & Identity", q: "Do ranks give cheaper SYN?", a: "No. Rank reflects status, visibility, and future module access only. Token price is fixed for everyone." },
 
-  // NFT Archive
-  { cat: "NFT Archive", q: "What is the NFT Archive?", a: "The NFT Archive is the collectible memory layer of The Syndicate on Avalanche. The Archive1155 contract is deployed; The First Signal (ID 1) is an open public Artifact mint — OPEN at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155 reads. Other Artifact IDs are sealed or reserved. Artifacts do not grant equity, debt, Vault ownership, dividends, revenue share, governance rights, or promises of profit." },
-  { cat: "NFT Archive", q: "Are Archive Artifacts NFTs?", a: "Yes — Archive Artifacts are ERC-1155 NFTs on Avalanche, served by the deployed SyndicateArchive1155 contract. ID 1 is publicly mintable today; ID 3 is contract/read gated; other IDs are configured-not-active or pending a separate future contract." },
-  { cat: "NFT Archive", q: "Are any NFTs live today?", a: "Yes. The First Signal (ID 1) public mint is OPEN on Avalanche at 0.50 USDC, wallet limit 5. Patron Seal (ID 3) only appears mintable when live Archive1155 reads confirm it for the connected wallet. Other Artifacts are protocol-memory surfaces sealed by event — no other mint, waitlist, or allocation today." },
-  { cat: "NFT Archive", q: "What is a Seat Record?", a: "A Seat Record is the planned optional Artifact that timestamps a Membership Sale purchase, encoding member number, chapter, and block height. It lives in a separate future ERC-721 contract (SyndicateSeatRecord721) — not yet deployed." },
-  { cat: "NFT Archive", q: "Do NFT Archive Artifacts give financial rights?", a: "No. Artifacts are an optional memory layer. They are not equity, not debt, not Vault ownership, not dividend instruments, not revenue share, not governance rights, and not promises of profit. Participation may result in total loss." },
-  { cat: "NFT Archive", q: "What does PENDING SEPARATE CONTRACT mean?", a: "It means the artifact depends on a future contract distinct from Archive1155 — for example SyndicateSeatRecord721. The Archive1155 contract itself is deployed and verified on Avalanche; The First Signal (ID 1) is mintable today." },
+  // Archive
+  { cat: "Archive", q: "What is the Archive?", a: "The Archive is the collectible memory layer of The Syndicate on Avalanche. The Archive1155 contract is deployed; The First Signal (ID 1) is an open public Artifact mint — OPEN at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155 reads. Other Artifact IDs are sealed or reserved. Artifacts do not grant equity, debt, Vault ownership, dividends, revenue share, governance rights, or promises of profit." },
+  { cat: "Archive", q: "Are Archive Artifacts NFTs?", a: "Yes — Archive Artifacts are ERC-1155 NFTs on Avalanche, served by the deployed SyndicateArchive1155 contract. ID 1 is publicly mintable today; ID 3 is contract/read gated; other IDs are configured-not-active or pending a separate future contract." },
+  { cat: "Archive", q: "Are any Artifacts live today?", a: "Yes. The First Signal (ID 1) public mint is OPEN on Avalanche at 0.50 USDC, wallet limit 5. Patron Seal (ID 3) only appears mintable when live Archive1155 reads confirm it for the connected wallet. Other Artifacts are protocol-memory surfaces sealed by event — no other mint, waitlist, or allocation today." },
+  { cat: "Archive", q: "What is a Seat Record?", a: "A Seat Record is the planned optional Artifact that timestamps a Membership Sale purchase, encoding member number, chapter, and block height. It lives in a separate future ERC-721 contract (SyndicateSeatRecord721) — not yet deployed." },
+  { cat: "Archive", q: "Do Archive Artifacts give financial rights?", a: "No. Artifacts are an optional memory layer. They are not equity, not debt, not Vault ownership, not dividend instruments, not revenue share, not governance rights, and not promises of profit. Participation may result in total loss." },
+  { cat: "Archive", q: "What does PENDING SEPARATE CONTRACT mean?", a: "It means the artifact depends on a future contract distinct from Archive1155 — for example SyndicateSeatRecord721. The Archive1155 contract itself is deployed and verified on Avalanche; The First Signal (ID 1) is mintable today." },
 
   // Risk & Legal
   { cat: "Risk & Legal", q: "Is this an investment?", a: "No. SYN is utility access for rank, identity, and participation — not equity, debt, dividend, or a Vault claim." },
@@ -77,7 +77,7 @@ const CATEGORIES: Category[] = [
   "Vault & Routing",
   "Liquidity",
   "Ranks & Identity",
-  "NFT Archive",
+  "Archive",
   "Risk & Legal",
 ];
 

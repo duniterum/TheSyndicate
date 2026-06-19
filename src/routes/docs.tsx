@@ -89,11 +89,11 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    eyebrow: "NFTs",
-    title: "NFT Archive (memory layer)",
+    eyebrow: "Archive",
+    title: "Archive memory layer",
     description: "SYN is the seat. Artifacts are the memory of what happens around that seat. Optional, collectible, no financial rights. Archive1155 deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC · Patron Seal (ID 3) CONTRACT_GATED / PUBLIC_MINT_READ_GATED · other Artifacts sealed or reserved.",
     cards: [
-      { title: "NFTs",         purpose: "Public NFT Archive — gallery, contract status, future collector view.", href: "/nft", status: "LIVE", audience: ["Beginner", "Member", "Verifier"] },
+      { title: "First Signal", purpose: "Public Archive artifact mint, contract status, and future collector view.", href: "/nft", status: "LIVE", audience: ["Beginner", "Member", "Verifier"] },
       { title: "My Syndicate", purpose: "Live member cockpit for your seat, chapter, member number, purchase routing, memory, proof, and pending future modules.", href: "/my-syndicate", status: "LIVE", audience: ["Member"] },
     ],
   },

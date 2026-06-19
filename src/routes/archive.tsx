@@ -54,26 +54,26 @@ import { ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySp
 export const Route = createFileRoute("/archive")({
   head: () => ({
     meta: [
-      { title: "NFT Archive — The First Signal mint open · The Syndicate" },
+      { title: "Archive - The First Signal mint open | The Syndicate" },
       {
         name: "description",
         content:
-          "The Syndicate NFT Archive — The First Signal (ID 1) is an open public Artifact mint, open on Avalanche at 0.50 USDC. Other Artifacts are protocol-memory surfaces sealed by event.",
+          "The Syndicate Archive preserves protocol memory. The First Signal (ID 1) is open on Avalanche at 0.50 USDC; other Artifacts stay sealed until contract and event truth support them.",
       },
       {
         property: "og:title",
-        content: "NFT Archive — The First Signal mint open · The Syndicate",
+        content: "Archive - The First Signal mint open | The Syndicate",
       },
       {
         property: "og:description",
         content:
-          "Carry protocol memory. The First Signal (ID 1) is open for mint on Avalanche at 0.50 USDC. Other Artifacts are protocol-memory surfaces sealed by event.",
+          "Carry protocol memory. The First Signal (ID 1) is open for mint on Avalanche at 0.50 USDC. Other Artifacts remain sealed until on-chain truth supports them.",
       },
       { property: "og:url", content: "https://thesyndicate.money/archive" },
       { property: "twitter:card", content: "summary_large_image" },
       {
         property: "twitter:title",
-        content: "NFT Archive — The Syndicate · First Signal mint open",
+        content: "Archive - The Syndicate | First Signal mint open",
       },
       {
         property: "twitter:description",

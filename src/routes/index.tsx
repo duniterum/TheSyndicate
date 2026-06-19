@@ -24,29 +24,29 @@ import { AnticipationLine } from "@/components/syndicate/AnticipationLine";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "The Syndicate — Transparent On-Chain Asset Accumulation Protocol" },
+      { title: "The Syndicate - Take Your Seat in a Transparent Protocol" },
       {
         name: "description",
         content:
-          "A transparent on-chain protocol on Avalanche. Revenue enters via Membership Sales, routes on-chain to liquidity, treasury, and operations. Every number verifiable.",
+          "A transparent on-chain membership protocol on Avalanche. Buying membership delivers SYN, routes USDC 70 / 20 / 10, and leaves a verifiable public receipt.",
       },
-      { property: "og:title", content: "The Syndicate — On-chain asset accumulation" },
+      { property: "og:title", content: "The Syndicate - Take your seat in a transparent protocol" },
       {
         property: "og:description",
         content:
-          "Revenue in → routed on-chain → liquidity, treasury, operations. Live on Avalanche. Pending modules clearly labeled.",
+          "SYN is the seat. USDC routes on-chain. Activity becomes Chronicle, Register, and Archive memory. Live systems and future systems are labeled clearly.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://thesyndicate.money/" },
       { property: "og:image", content: "https://thesyndicate.money/brand-v2-syndicate-interlock/syn-og.png" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "The Syndicate — On-chain membership protocol" },
+      { property: "og:image:alt", content: "The Syndicate - On-chain membership protocol" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "The Syndicate — On-chain asset accumulation" },
-      { name: "twitter:description", content: "Live on Avalanche. Membership Sale routes every USDC 70 / 20 / 10 on-chain. Verifiable." },
+      { name: "twitter:title", content: "The Syndicate - Take your seat in a transparent protocol" },
+      { name: "twitter:description", content: "Live on Avalanche. Membership Sale delivers SYN and routes every USDC 70 / 20 / 10 on-chain. Verifiable." },
       { name: "twitter:image", content: "https://thesyndicate.money/brand-v2-syndicate-interlock/syn-og.png" },
-      { name: "twitter:image:alt", content: "The Syndicate — On-chain membership protocol" },
+      { name: "twitter:image:alt", content: "The Syndicate - On-chain membership protocol" },
     ],
     links: [
       { rel: "canonical", href: "https://thesyndicate.money/" },
@@ -58,10 +58,10 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebPage",
-          name: "The Syndicate — Transparent On-Chain Asset Accumulation Protocol",
+          name: "The Syndicate - Take Your Seat in a Transparent Protocol",
           url: "https://thesyndicate.money/",
           description:
-            "A transparent on-chain protocol on Avalanche. Revenue enters via Membership Sales, routes on-chain to liquidity, treasury, and operations.",
+            "A transparent on-chain membership protocol on Avalanche. Buying membership delivers SYN, routes USDC 70 / 20 / 10, and leaves a verifiable public receipt.",
           isPartOf: { "@id": "https://thesyndicate.money/#site" },
         }),
       },
