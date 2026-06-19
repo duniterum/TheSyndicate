@@ -774,7 +774,7 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     status: "PARTIAL",
     unit: "count",
     description:
-      "Total Archive1155 artifacts minted across all ids. The contract is deployed and read-only today; no artifact drop is activated yet, so this reads 0.",
+      "Total Archive1155 artifacts minted across all known ids. The contract is deployed; ID 1 is public-open and ID 3 is read-gated by live contract state.",
     source: "Avalanche C-Chain RPC. Sum of totalSupply(id) across known ids on the Archive1155 contract.",
     formula: "Σ Archive1155.totalSupply(id)",
     verification: {
@@ -787,7 +787,7 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     surfaces: ["nft", "archive", "registry"],
     dependencies: ["firstSignalMinted", "patronSealMinted"],
     hook: "Archive1155.totalSupply(id) (read-only)",
-    emptyState: "Reads 0 until an artifact drop is activated on the deployed contract.",
+    emptyState: "Reads the live Archive1155 supply; zero means no units are currently minted in the indexed set.",
   }),
   m({
     id: "firstSignalMinted",
@@ -799,7 +799,7 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     status: "PARTIAL",
     unit: "count",
     description:
-      "Units minted of the First Signal artifact (Archive1155 id 1). Contract deployed and read-only; drop not yet activated.",
+      "Units minted of the First Signal artifact (Archive1155 id 1). Contract deployed; ID 1 is public-open when live Archive1155 reads report it mintable.",
     source: "Avalanche C-Chain RPC. Reads totalSupply(1) on the Archive1155 contract.",
     formula: "Archive1155.totalSupply(1)",
     verification: {
@@ -823,7 +823,7 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     status: "PARTIAL",
     unit: "count",
     description:
-      "Units minted of the Patron Seal artifact (Archive1155 id 3). Contract deployed and read-only; drop not yet activated.",
+      "Units minted of the Patron Seal artifact (Archive1155 id 3). Contract deployed; mintability is wallet/read-gated by live Archive1155 reads.",
     source: "Avalanche C-Chain RPC. Reads totalSupply(3) on the Archive1155 contract.",
     formula: "Archive1155.totalSupply(3)",
     verification: {

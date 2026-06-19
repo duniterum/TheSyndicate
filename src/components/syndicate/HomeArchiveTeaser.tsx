@@ -41,7 +41,7 @@ export function HomeArchiveTeaser() {
             onClick={() => track("nft_archive_cta_click", { surface: "home_teaser" })}
             className="ml-auto mono text-[11px] uppercase tracking-[0.18em] text-[color:oklch(0.5_0.13_75)] hover:text-[var(--gold)] underline-offset-4 hover:underline"
           >
-            Explore the NFTs →
+            Explore the Archive →
           </Link>
         </div>
       </GlassCard>

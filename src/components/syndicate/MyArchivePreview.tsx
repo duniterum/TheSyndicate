@@ -138,7 +138,7 @@ export function MyArchivePreview() {
                 to="/nft"
                 className="inline-flex items-center justify-center rounded-md border border-border/60 bg-card/60 hover:bg-card px-3.5 py-2 text-xs font-medium text-foreground"
               >
-                Explore NFTs
+                Explore Archive
               </Link>
               <a
                 href={ARCHIVE_NFT_EXPLORERS.avascan}
@@ -200,7 +200,7 @@ export function MyArchivePreview() {
                   to="/nft"
                   className="inline-flex items-center justify-center rounded-md border border-border/60 bg-card/60 hover:bg-card px-3 py-1.5 text-[11px] font-medium text-foreground"
                 >
-                  Explore NFTs
+                  Explore Archive
                 </Link>
                 <a
                   href={ARCHIVE_NFT_EXPLORERS.avascan}

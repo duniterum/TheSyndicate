@@ -1,4 +1,4 @@
-// /nfts — alias of /nft (plural). Renders the same NFT Archive experience.
+// /nfts — alias of /nft (plural). Renders the same Archive memory experience.
 //
 // This replaces an older eligibility-scaffold page that predated Archive1155.
 // The Archive contract is now DEPLOYED on Avalanche; the public route is /nft.
@@ -10,15 +10,15 @@ import { NftPage } from "@/components/syndicate/NftPage";
 export const Route = createFileRoute("/nfts")({
   head: () => ({
     meta: [
-      { title: "The Syndicate NFTs — First Signal mint open · Patron Seal read-gated" },
+      { title: "The Syndicate Archive — First Signal open · Patron Seal read-gated" },
       {
         name: "description",
         content:
-          "Collectible NFT Artifacts for The Syndicate. The First Signal (ID 1) is open on Avalanche at 0.50 USDC. Patron Seal (ID 3) is contract/read gated and only mintable when live Archive1155 reads say so. Other Artifacts are protocol-memory surfaces sealed by event.",
+          "Memory artifacts for The Syndicate. The First Signal (ID 1) is open on Avalanche at 0.50 USDC. Patron Seal (ID 3) is contract/read gated and only mintable when live Archive1155 reads say so. Other Artifacts are protocol-memory surfaces sealed by event.",
       },
       {
         property: "og:title",
-        content: "The Syndicate NFTs — First Signal mint open · Patron Seal read-gated",
+        content: "The Syndicate Archive — First Signal open · Patron Seal read-gated",
       },
       {
         property: "og:description",

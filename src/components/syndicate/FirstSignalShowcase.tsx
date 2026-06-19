@@ -1,4 +1,4 @@
-// FirstSignalShowcase — collector-grade redesign of the /nft hero.
+// FirstSignalShowcase — museum-grade redesign of the /nft hero.
 //
 // Direction: "Editorial split" (v2). Locked design tokens — gold accent,
 // cyan/emerald verify, Instrument Serif headlines, Work Sans body,
@@ -155,8 +155,9 @@ export function FirstSignalShowcase() {
 
             <p className="mt-5 max-w-[44ch] text-[15px] md:text-base text-muted-foreground leading-relaxed">
               The First Signal is the permanent record of those who arrived at
-              the beginning. Mint yours before Chapter I closes — once sealed,
-              this artifact can never be issued again.
+              the beginning. It is open while live Archive1155 reads keep ID 1
+              mintable; future chapter memories should follow contract and
+              event truth, not static promises.
             </p>
 
             {/* ─── Genesis Seal (only if #000001 is on-chain) ─────── */}
@@ -200,8 +201,8 @@ export function FirstSignalShowcase() {
 
             {/* ─── Truth note — collectible edition, not the seat ──── */}
             <p className="mt-3 max-w-[46ch] text-[12px] text-muted-foreground leading-relaxed">
-              Collectible Chapter I edition. You can hold up to 5. This is the
-              memory of your membership, not the seat.
+              Chapter I memory artifact. You can hold up to 5. This is the
+              memory around your membership, not the seat.
             </p>
             <p className="mt-1 mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
               Record-only. No equity, governance, revenue share, or financial
@@ -240,7 +241,7 @@ export function FirstSignalShowcase() {
               </a>
             </div>
 
-            {/* ─── Why collectors mint ────────────────────────────── */}
+            {/* ─── Why witnesses mint ─────────────────────────────── */}
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
               {COLLECTOR_REASONS.map((r) => (
                 <div

@@ -10,31 +10,31 @@ import { NftPage } from "@/components/syndicate/NftPage";
 export const Route = createFileRoute("/nft")({
   head: () => ({
     meta: [
-      { title: "The First Signal — Chapter I NFT mint open · The Syndicate" },
+      { title: "Archive Memory — The First Signal open · The Syndicate" },
       {
         name: "description",
         content:
-          "The First Signal is the first public Artifact in The Syndicate Archive. Open for mint on Avalanche at 0.50 USDC, wallet limit 5. Rendered fully on-chain. Collectible record only — no financial rights.",
+          "The First Signal is the first public memory artifact in The Syndicate Archive. Open on Avalanche at 0.50 USDC, wallet limit 5. Rendered fully on-chain. Record only — no financial rights.",
       },
       {
         property: "og:title",
-        content: "The First Signal — Chapter I NFT mint open",
+        content: "Archive Memory — The First Signal open",
       },
       {
         property: "og:description",
         content:
-          "The first public signal ever recorded inside The Syndicate Archive. Mint during Chapter I to become part of the permanent opening record. 0.50 USDC on Avalanche.",
+          "The first public signal recorded inside The Syndicate Archive. Mint the Chapter I memory artifact while live Archive1155 reads keep ID 1 open. 0.50 USDC on Avalanche.",
       },
       { property: "og:url", content: "https://thesyndicate.money/nft" },
       { property: "twitter:card", content: "summary_large_image" },
       {
         property: "twitter:title",
-        content: "The First Signal — Chapter I NFT mint open",
+        content: "Archive Memory — The First Signal open",
       },
       {
         property: "twitter:description",
         content:
-          "The first public Artifact in The Syndicate Archive. Open on Avalanche at 0.50 USDC. Rendered fully on-chain.",
+          "The first public memory artifact in The Syndicate Archive. Open on Avalanche at 0.50 USDC. Rendered fully on-chain.",
       },
     ],
     links: [

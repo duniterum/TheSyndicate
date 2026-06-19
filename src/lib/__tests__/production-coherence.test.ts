@@ -152,6 +152,32 @@ describe("production coherence guards", () => {
     expect(offenders, JSON.stringify(offenders, null, 2)).toEqual([]);
   });
 
+  it("frames public Archive surfaces as protocol memory instead of an NFT shop", () => {
+    const nft = read("src/routes/nft.tsx");
+    const nfts = read("src/routes/nfts.tsx");
+    const archive = read("src/routes/archive.tsx");
+    const page = read("src/components/syndicate/NftPage.tsx");
+    const firstSignal = read("src/components/syndicate/FirstSignalShowcase.tsx");
+    const homeTeaser = read("src/components/syndicate/HomeArchiveTeaser.tsx");
+    const metrics = read("src/lib/protocol-metrics-registry.ts");
+
+    expect(nft).toContain("Archive Memory — The First Signal open");
+    expect(nfts).toContain("The Syndicate Archive — First Signal open");
+    expect(archive).toContain("Archive Memory - The First Signal open");
+    expect(page).toContain("The First Signal — the opening memory of The Syndicate");
+    expect(firstSignal).toContain("future chapter memories should follow contract and");
+    expect(homeTeaser).toContain("Explore the Archive");
+    expect(metrics).toContain("ID 1 is public-open and ID 3 is read-gated by live contract state");
+
+    for (const [name, src] of Object.entries({ nft, nfts, archive, page, firstSignal, homeTeaser, metrics })) {
+      expect(src, name).not.toMatch(/NFT mint open/i);
+      expect(src, name).not.toMatch(/Collectible NFT Artifacts/i);
+      expect(src, name).not.toMatch(/Mint yours before Chapter I closes/i);
+      expect(src, name).not.toMatch(/artifact drop is activated/i);
+      expect(src, name).not.toMatch(/drop not yet activated/i);
+    }
+  });
+
   it("keeps Registry distinctions explicit: Archive1155 live, SeatRecord721 future", () => {
     const registry = read("src/routes/registry.tsx");
     const dossiers = read("src/components/syndicate/ContractDossiers.tsx");

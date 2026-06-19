@@ -51,7 +51,7 @@ export function ArchiveMuseumHero() {
             </p>
 
             <p className="mt-6 max-w-xl text-base md:text-lg text-foreground/80 leading-relaxed">
-              A curated collection of on-chain artifacts that record what The
+              A curated archive of on-chain artifacts that record what The
               Syndicate witnessed. The First Signal — Chapter I —
               <span className="font-medium text-foreground"> is open on Avalanche</span> at
               0.50 USDC, wallet limit 5. Other artifacts remain sealed until

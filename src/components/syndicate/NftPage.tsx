@@ -1,16 +1,16 @@
-// NftPage — bespoke, artifact-first page for The First Signal.
+// NftPage — bespoke, memory-first page for The First Signal.
 //
 // Rendered by BOTH the /nft and /nfts routes. It lives here (not in a route
 // file) so each route module only exports `Route` and stays code-split (P5).
 //
 // Doctrine (Founder Audit, June 2026):
-//   The NFT is the product. The page exists to make the NFT feel
-//   collectible, historic, and desirable.
+//   The memory is the product. The page exists to make the artifact feel
+//   historical, verifiable, and worth carrying.
 //
 //   Wrong:  PAGE └ NFT card inside page
 //   Correct: NFT  └ Page built around the NFT
 //
-// Mental model: Artifact → Collector → Story → Action → Proof → Contract.
+// Mental model: Artifact -> Witness -> Story -> Action -> Proof -> Contract.
 //
 // Section order (locked):
 //   1. Artifact Hero            — <FirstSignalShowcase /> (huge NFT left, action/info right)
@@ -36,8 +36,8 @@ import { RecentCollectorsRail } from "@/components/syndicate/RecentCollectorsRai
 export function NftPage() {
   return (
     <PageShell
-      eyebrow="NFT · Avalanche · Chapter I archive"
-      title="The First Signal — the opening NFT of The Syndicate"
+      eyebrow="Archive memory · Avalanche · Chapter I"
+      title="The First Signal — the opening memory of The Syndicate"
       description="The First Signal is open on Avalanche at 0.50 USDC. Patron Seal is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable when live Archive1155 reads say so. Other Artifacts are protocol-memory surfaces sealed by event."
       hideHeader
     >

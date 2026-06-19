@@ -1,4 +1,4 @@
-// /archive — internal/protocol route for the NFT Archive experience.
+// /archive — internal/protocol route for the Archive memory experience.
 //
 // Public-facing visitors land on /nft (preferred SEO route), which renders its
 // own NftPage. /archive remains a valid route so existing links, docs, and
@@ -54,20 +54,20 @@ import { ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySp
 export const Route = createFileRoute("/archive")({
   head: () => ({
     meta: [
-      { title: "Archive - The First Signal mint open | The Syndicate" },
+      { title: "Archive Memory - The First Signal open | The Syndicate" },
       {
         name: "description",
         content:
-          "The Syndicate Archive preserves protocol memory. The First Signal (ID 1) is open on Avalanche at 0.50 USDC; other Artifacts stay sealed until contract and event truth support them.",
+          "The Syndicate Archive preserves protocol memory. The First Signal (ID 1) is open on Avalanche at 0.50 USDC; Patron Seal is read-gated; other Artifacts stay sealed until contract and event truth support them.",
       },
       {
         property: "og:title",
-        content: "Archive - The First Signal mint open | The Syndicate",
+        content: "Archive Memory - The First Signal open | The Syndicate",
       },
       {
         property: "og:description",
         content:
-          "Carry protocol memory. The First Signal (ID 1) is open for mint on Avalanche at 0.50 USDC. Other Artifacts remain sealed until on-chain truth supports them.",
+          "Carry protocol memory. The First Signal (ID 1) is open on Avalanche at 0.50 USDC. Patron Seal is read-gated; other Artifacts remain sealed until on-chain truth supports them.",
       },
       { property: "og:url", content: "https://thesyndicate.money/archive" },
       { property: "twitter:card", content: "summary_large_image" },
@@ -78,7 +78,7 @@ export const Route = createFileRoute("/archive")({
       {
         property: "twitter:description",
         content:
-          "Carry protocol memory. The First Signal (ID 1) public mint is open on Avalanche at 0.50 USDC.",
+          "Carry protocol memory. The First Signal (ID 1) is open on Avalanche at 0.50 USDC.",
       },
     ],
     links: [
@@ -265,7 +265,7 @@ function ArchivePage({ heroOverride }: { heroOverride?: ReactNode } = {}) {
             },
             {
               n: "03",
-              title: "Collect the memory",
+              title: "Carry the memory",
               body:
                 "The First Signal is an open public Artifact mint on Avalanche at 0.50 USDC. Other Artifacts are protocol-memory surfaces sealed by event and activate only when the protocol creates the required proof.",
               tone: "LIVE" as const,
