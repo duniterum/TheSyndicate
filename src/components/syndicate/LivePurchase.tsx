@@ -667,6 +667,9 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
               />
             )}
 
+            {/* Pre-signature explainer: what the two wallet prompts actually do */}
+            {isConnected && !wrongChain && <WalletAskExplainer />}
+
             {/* Recovery / post-approve guidance: allowance is on-chain, seat is not */}
             {showBuyGuidance && (
               <BuyStepGuidance justConfirmed={approveJustConfirmed} isMember={Boolean(myRecord)} />
@@ -1223,6 +1226,38 @@ function BuyStepGuidance({ justConfirmed, isMember }: { justConfirmed: boolean; 
         {!isMember && <li>Approval alone does not create a seat.</li>}
         {!isMember && <li>Your member number appears only after Buy confirms.</li>}
       </ul>
+    </div>
+  );
+}
+
+// Pre-signature explainer rendered before any wallet prompt. Keeps the live
+// purchase ceremony honest and non-custodial: two separate signatures, and the
+// site can never move funds on the member's behalf.
+function WalletAskExplainer() {
+  return (
+    <div className="mt-3 rounded-lg border border-border/50 bg-background/60 p-3">
+      <p className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        What your wallet will ask
+      </p>
+      <ol className="mt-2 space-y-1.5 text-xs text-muted-foreground leading-relaxed list-decimal pl-4">
+        <li>
+          <span className="font-semibold text-foreground">
+            Approve the exact USDC amount for this purchase.
+          </span>{" "}
+          Approval alone does not create a seat — it only lets the sale contract
+          pull that USDC.
+        </li>
+        <li>
+          <span className="font-semibold text-foreground">
+            The Buy signature delivers SYN, routes USDC, and creates the receipt.
+          </span>{" "}
+          Your member number appears only after Buy confirms on-chain.
+        </li>
+      </ol>
+      <p className="mt-2 text-[11px] text-muted-foreground/80 leading-relaxed">
+        {/* prettier-ignore */}
+        Both prompts are your own signatures on Avalanche — the site still cannot move funds without your signature.
+      </p>
     </div>
   );
 }
