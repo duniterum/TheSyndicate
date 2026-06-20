@@ -178,27 +178,55 @@ function MySyndicatePage() {
 }
 
 const MEMBER_OS_MAP = [
-  { label: "Overview", href: "#my-seat", status: "LIVE", body: "Seat, wallet, SYN, and action dock." },
-  { label: "Passport", href: "#seat-passport", status: "DERIVED", body: "Identity, chapter, proof, and legacy context." },
-  { label: "Wallet", href: "#my-assets", status: "LIVE", body: "SYN, purchases, routing, and artifact reads." },
-  { label: "Activity", href: "#memory", status: "LIVE", body: "What changed and what entered history." },
-  { label: "Archive", href: "#memory-path", status: "READ-GATED", body: "Memories connected to the seat." },
-  { label: "Referral", href: "#parked", status: "RESERVED", body: "Attribution only until contracts ship." },
-  { label: "Horizon", href: "#horizon-watch", status: "WATCHING", body: "Truthful anticipation, no fake rewards." },
-  { label: "Verify", href: "#proof", status: "LIVE", body: "Registry, contracts, receipts, and explorers." },
+  { group: "Home", label: "Overview", href: "#my-seat", status: "LIVE", body: "Seat, wallet, SYN, and one action dock." },
+  { group: "Identity", label: "Passport", href: "#seat-passport", status: "DERIVED", body: "Member number, chapter, proof, and legacy context." },
+  { group: "Wallet", label: "Position", href: "#my-assets", status: "LIVE", body: "SYN received, purchases, routing, and artifact reads." },
+  { group: "History", label: "Activity", href: "#memory", status: "LIVE", body: "What changed and what entered memory." },
+  { group: "Memory", label: "Archive", href: "#memory-path", status: "READ-GATED", body: "Protocol memories connected to the seat." },
+  { group: "Growth", label: "Referral", href: "#parked", status: "RESERVED", body: "Attribution only until contracts ship." },
+  { group: "Future", label: "Horizon", href: "#horizon-watch", status: "WATCHING", body: "Truthful anticipation, no fake rewards." },
+  { group: "Proof", label: "Verify", href: "#proof", status: "LIVE", body: "Registry, contracts, receipts, and explorers." },
 ] as const;
 
 function MemberOSMap() {
+  const { address, isConnected } = useAccount();
+  const idx = useHolderIndex();
+  const record = address ? idx.getByWallet(address) : undefined;
+  const chapter = record
+    ? getChapterByMemberNumber(record.memberNumber)
+    : getChapterByMemberNumber(idx.totals.nextMemberNumber);
+
+  const homeStatus = !isConnected
+    ? "Disconnected"
+    : idx.isLoading
+      ? "Reading wallet"
+      : record
+        ? `Member #${record.memberNumber.toLocaleString("en-US")}`
+        : "Observer wallet";
+  const homeBody = !isConnected
+    ? "Connect to open wallet-specific seat, receipt, memory, and proof surfaces."
+    : idx.isLoading
+      ? "The Member OS is resolving this wallet against the Holder Index."
+      : record
+        ? `Your home begins in ${chapter.shortLabel}; the sections below organize proof, memory, and what to watch.`
+        : `This wallet can inspect the protocol. Taking a seat would enter ${chapter.shortLabel}.`;
+  const primaryHref = !isConnected ? "#my-seat" : record ? "#seat-passport" : "/join";
+  const primaryLabel = !isConnected ? "Connect wallet" : record ? "Open passport" : "Take a seat";
+  const proofLabel = record ? "Seat proof anchored" : "No seat proof asserted";
+  const proofBody = record
+    ? "Receipts, routing, and contract links are grouped below before pending systems."
+    : "The page stays useful as an observer shell, but no identity, artifact, or future eligibility is inferred.";
+
   return (
     <Section id="member-os-map" width="data" className="py-3 md:py-4">
-      <GlassCard className="p-3 md:p-4">
+      <GlassCard className="overflow-hidden">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
             <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
-              Member OS map
+              Member OS command layer
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              One home for identity, wallet position, receipts, activity, memory, pending systems, and proof.
+              Home is where the seat, proof, memory, and next safe action meet.
             </p>
           </div>
           <Link
@@ -207,6 +235,42 @@ function MemberOSMap() {
           >
             Verify contracts →
           </Link>
+        </div>
+        <div className="mb-4 grid grid-cols-1 lg:grid-cols-3 gap-px overflow-hidden rounded-md border border-border/50 bg-border/50">
+          <OSCommandCard
+            label="Home state"
+            status={idx.isLoading ? "PARTIAL" : record ? "LIVE" : "PENDING"}
+            title={homeStatus}
+            body={homeBody}
+            href="#my-seat"
+          />
+          <OSCommandCard
+            label="Next safe action"
+            status={record ? "DERIVED" : "PENDING"}
+            title={primaryLabel}
+            body={
+              record
+                ? "Start with the passport, then follow memory, proof, and horizon in order."
+                : "Join remains the only write path here; pending systems stay read-only."
+            }
+            href={primaryHref}
+          />
+          <OSCommandCard
+            label="Proof posture"
+            status={record ? "LIVE" : "PENDING"}
+            title={proofLabel}
+            body={proofBody}
+            href="#proof"
+          />
+        </div>
+        <div className="mb-3">
+          <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
+            Operating sections
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Reserved slots are visible for Privy, referral, SeatRecord721, settings,
+            notifications, and account management later.
+          </p>
         </div>
         <nav aria-label="Member operating system sections" className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {MEMBER_OS_MAP.map((item) => (
@@ -221,6 +285,9 @@ function MemberOSMap() {
                   {item.status}
                 </span>
               </div>
+              <div className="mt-1 mono text-[8px] uppercase tracking-[0.16em] text-[var(--gold)]/80">
+                {item.group}
+              </div>
               <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
                 {item.body}
               </p>
@@ -229,6 +296,51 @@ function MemberOSMap() {
         </nav>
       </GlassCard>
     </Section>
+  );
+}
+
+function OSCommandCard({
+  label,
+  status,
+  title,
+  body,
+  href,
+}: {
+  label: string;
+  status: "LIVE" | "DERIVED" | "PARTIAL" | "PENDING";
+  title: string;
+  body: string;
+  href: string;
+}) {
+  const tone =
+    status === "LIVE"
+      ? "success"
+      : status === "DERIVED"
+        ? "navy"
+        : status === "PARTIAL"
+          ? "warning"
+          : "muted";
+  return (
+    <a
+      href={href}
+      className="group bg-card/45 p-4 hover:bg-[var(--gold)]/5 transition-colors"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          {label}
+        </span>
+        <Pill tone={tone}>{status}</Pill>
+      </div>
+      <p className="mt-2 text-base font-semibold text-foreground leading-snug">
+        {title}
+      </p>
+      <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+        {body}
+      </p>
+      <span className="mt-3 inline-flex mono text-[10px] uppercase tracking-[0.16em] text-[var(--navy-soft)] group-hover:text-[var(--gold)]">
+        Open section →
+      </span>
+    </a>
   );
 }
 

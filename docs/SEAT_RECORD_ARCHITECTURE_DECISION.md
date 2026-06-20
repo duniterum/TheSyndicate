@@ -1,150 +1,249 @@
-# Final Seat Record Architecture Decision
+# SeatRecord721 Architecture Decision and Specification Freeze
 
-**Status:** ✅ LOCKED (2026-06-06) · binding across all Archive docs
-**Doctrine:** SYN is the seat. Artifacts are the memory.
+Status: SPECIFICATION FROZEN / NOT IMPLEMENTED / NOT DEPLOYED / NOT LIVE
 
----
+Last updated: 2026-06-20
+
+Binding doctrine:
+
+- SYN is the V1 membership seat.
+- Holding SYN means the wallet is seated.
+- Archive1155 artifacts are protocol memory, not seats.
+- SeatRecord721 is reserved for a future identity record.
+- No SeatRecord721 balance, claim, mint, eligibility, or address exists today.
 
 ## 1. Decision
 
-Seat Records **MUST NOT** be active ERC-1155 artifacts in
-`SyndicateArchive1155` V1.
+SeatRecord721 must be a separate future ERC-721 identity contract. It must not
+be implemented inside SyndicateArchive1155 and must not compete with SYN as the
+membership seat.
 
 The final architecture is:
 
-- **`SyndicateArchive1155` V1** = collectible **protocol artifacts only**
-  (Chapter Artifacts, Patron Seal, Heart Signal, Genesis Sealed, First
-  Liquidity Event, First Routing Signal, Legacy Era I).
-- **Seat Records** = future, **separate ERC-721 contract**, likely named
-  `SyndicateSeatRecord721` or `SyndicateSeatRegistry721`, deployed at a
-  new address once eligibility is enforceable on-chain.
-- **Token ID 2 in `SyndicateArchive1155`** remains **reserved and
-  disabled** in V1 as a stable pointer / reference to the future
-  `SeatRecord721`. It is never publicly mintable; it is never
-  admin-mintable; it never resolves a `uri(id)`.
+- SYN = the live V1 seat.
+- Holder Index = the current identity source of record.
+- SyndicateArchive1155 = protocol memory artifacts.
+- Archive1155 ID 2 = disabled pointer to future SeatRecord721 only.
+- SeatRecord721 = future identity record derived from existing membership truth.
 
-## 2. Reason
+No product surface may describe SeatRecord721 as live until a contract is
+implemented, tested, audited, deployed, verified, registered, and read back on
+Avalanche C-Chain.
 
-A Seat Record is an **identity record**, not an edition-style
-collectible. Each member receives a *unique* record:
+## 2. What SeatRecord721 Is
 
-- Member #1
-- Member #2
-- Member #100
-- Member #10,000
-- …
+SeatRecord721 is future identity infrastructure. Its job is to preserve a
+member's protocol identity in a durable, contract-backed record.
 
-That is naturally an ERC-721 shape — one unique token per seat, with
-its own provenance and history. ERC-1155 is the correct shape for the
-edition-style artifacts above. Mixing identity into the same edition
-contract is the wrong abstraction and creates unenforceable eligibility
-checks in V1.
+It should answer:
 
-## 3. V1 enforcement (binding for `SyndicateArchive1155`)
+- which member number the seat is associated with,
+- which wallet first took that seat,
+- which chapter the seat entered,
+- which transaction and block anchor the identity,
+- what record proves the identity lineage,
+- whether the record is current, reassigned, burned, or retired.
 
-For token ID 2 inside `SyndicateArchive1155`:
+SeatRecord721 should make identity more durable. It must not become a speculative
+NFT product.
 
-| Field              | Value                                  |
-| ------------------ | -------------------------------------- |
-| `configured`       | `true` (reserved in catalog)           |
-| `active`           | `false` (never public mintable in V1)  |
-| `ownerOnly`        | `true`                                 |
-| `rendererMode`     | `NONE` (LOCKED — `uri(2)` reverts)     |
-| `maxSupply`        | `0` → LOCKED / NOT MINTABLE            |
-| `walletLimit`      | `1` (placeholder; irrelevant while locked) |
-| `priceUsdc`        | `0` (n/a)                              |
-| `definitionFrozen` | `false` (a disabled placeholder is not frozen) |
+## 3. What SeatRecord721 Is Not
 
-Required contract behaviour:
+SeatRecord721 is not:
 
-- `mint(2, …)` MUST revert (`DropInactive` or `OwnerOnlyDrop`).
-- `adminMint(_, 2, _)` MUST revert (`ExceedsMaxSupply` because
-  `maxSupply == 0`).
-- `uri(2)` MUST revert `URINotReady(2)`.
-- `setDropActive(2, true)` MUST revert
-  (`OwnerOnlyCannotBePublic` or `RendererNotReady` or
-  `DefinitionNotFrozen` — any of the three is sufficient).
+- the V1 seat,
+- a replacement for SYN,
+- a reward,
+- a claim,
+- a governance right,
+- a yield product,
+- a social profile,
+- an Archive1155 memory artifact,
+- a public-open mint,
+- a requirement for membership,
+- proof that a wallet is seated unless it reconciles to live SYN and Holder
+  Index truth.
 
-## 4. Contract-wide rule (no unlimited minting in V1)
+## 4. Source Of Truth
 
-`maxSupply == 0` **means LOCKED / NOT MINTABLE** for V1. It does **NOT**
-mean unlimited. The Solidity spec enforces:
+The Holder Index remains the identity source of record until SeatRecord721 is
+implemented and reconciled.
 
-- `_checkSupply` (or equivalent) reverts when `maxSupply == 0`.
-- `mint` reverts when `maxSupply == 0`.
-- `adminMint` reverts when `maxSupply == 0`.
-- `remainingSupply(id)` returns `0` when `maxSupply == 0`.
-- `configureArtifact` rejects any *public* drop with `maxSupply == 0`.
-- Owner-only drops also require `maxSupply > 0` before any mint can
-  succeed (admin distribution to a closed set of wallets still has a
-  cap).
-- No V1 artifact is unlimited. Every ID that ever mints in V1 has
-  `maxSupply > 0`.
+SeatRecord721 must derive from:
 
-## 5. What the future `SyndicateSeatRecord721` will likely store
+1. live SYN seat truth,
+2. first-seen Holder Index ordering,
+3. verified Membership Sale purchase history,
+4. canonical chapter assignment rules.
 
-Designed separately, audited separately, deployed separately. Likely
-fields (non-binding sketch — final shape decided when that contract is
-specified):
+Sale V2 counters may corroborate identity, but they must not replace the Holder
+Index as the identity source of record.
 
-- member number (unique, monotonic) — **BINDING: sourced from the Holder
-  Index (first-seen `TokensPurchased` ordering, de-duplicated by buyer),
-  the master identity record. It MUST NOT be minted from the raw Sale V2
-  `memberCount` / `memberNumberOf` counters, which are a sale-side
-  convenience sequence, not the canonical identity.**
-- original purchasing wallet
-- first purchase tx hash
-- first purchase block height
-- chapter joined
-- timestamp
-- linked-wallet policy (if added) — strict rules, on-chain enforced
+## 5. Transferability Freeze
 
-**Identity source (binding).** When `SyndicateSeatRecord721` is built, each
-seat's member number is assigned from the **Holder Index** — the same
-first-seen `TokensPurchased` ordering the website already treats as the
-single source of member identity (see `docs/HOLDER_INDEX_ARCHITECTURE.md`
-and `.agents/memory/identity-hierarchy-freeze.md`). Sale V2's on-chain
-`memberCount` / `memberNumberOf` may *corroborate* a seat but is never the
-identity of record; the two must reconcile **to** the Holder Index, not the
-reverse.
+Recommended V1 policy: non-transferable identity record.
 
-No Seat Record minting happens until this contract is designed,
-specified, tested, audited, and deployed separately from
-`SyndicateArchive1155`. Until then, every Syndicate surface continues
-to display Seat-Record-related state as `PENDING NFT CONTRACT`.
+Reason:
 
-## 6. Allowed wording (everywhere in the project)
+- the seat can move by SYN transfer,
+- the identity record should preserve member history,
+- open transferability would let identity detach from the member history it
+  claims to preserve,
+- a marketable identity NFT would confuse The Syndicate with an NFT project.
 
-- "Seat Records are reserved for a future ERC-721 identity contract."
-- "Archive1155 V1 records collectible protocol artifacts."
-- "ID 2 is reserved and disabled in V1."
-- "SYN is the seat. Artifacts are the memory."
+Before implementation, the contract spec must choose one of these explicit
+models:
 
-## 7. Forbidden wording (anywhere in the project)
+| Model | Status | Notes |
+| --- | --- | --- |
+| Soulbound / non-transferable | RECOMMENDED | Best aligned with identity continuity and no-speculation doctrine. |
+| Constrained transfer | REQUIRES DESIGN | Could support wallet recovery but needs strict policy and events. |
+| Fully transferable | REJECTED FOR V1 | Creates market, identity drift, and doctrine confusion. |
 
-- Seat Record is active in Archive1155 V1.
-- Seat Record can be publicly minted in V1.
-- `maxSupply == 0` means unlimited.
-- ERC-1155 Seat Record is the final architecture.
-- Front-end eligibility alone is enough for Seat Records.
-- Seat Record member numbers are minted from the raw Sale V2 `memberCount`
-  / `memberNumberOf` (the Holder Index is the identity of record).
-- Token ID 2 in `SyndicateArchive1155` is an identity source or a member
-  key (it is only a disabled pointer / reference to the future ERC-721).
+Wallet-change support should be handled as a future reassignment or linked-wallet
+process, not as ordinary NFT transfer.
 
-## 8. Cross-references
+## 6. Mint Authority And Eligibility
 
-Updated to match this decision:
+No public mint is approved today.
 
-- `docs/NFT_ARCHIVE_SMART_CONTRACT_ARCHITECTURE_V1.md` (Part B, Part G)
-- `docs/NFT_ARCHIVE_SOLIDITY_SPEC_V1.md` (§1.4, §2, §3.4, §3.6, §3.17, §8, §10)
-- `docs/NFT_ARCHIVE_TOKEN_CATALOG_V1.md` (§1, §2 ID 2, §4)
-- `docs/NFT_ARCHIVE_METADATA_PHILOSOPHY.md`
-- `docs/NFT_ARCHIVE_VISUAL_SYSTEM_V1.md`
-- `docs/SMART_CONTRACT_DECISIONS_PENDING.md` (A2, E2 → CLOSED)
-- `docs/SMART_CONTRACTS_DEFERRED.md`
-- `docs/ARCHIVE_ENGINE_V1.md`
-- `docs/NFT_ARCHIVE_VERIFIABILITY_MATRIX.md`
-- `docs/STEP_BY_STEP_FROM_HERE.md`
-- `docs/VISION.md`
-- `docs/CONSTITUTION_SUMMARY.md`
+Before any mint path exists, the implementation must freeze:
+
+- who can issue records,
+- whether minting is self-serve, admin-issued, or both,
+- the exact eligibility proof,
+- how duplicate wallet, duplicate member number, and wallet-change cases fail,
+- whether secondary SYN holders can receive a record immediately or require a
+  later identity reconciliation policy.
+
+Open founder decision:
+
+Secondary-market SYN holders are seated by SYN balance. Whether and how they
+receive canonical member numbers in SeatRecord721 must be decided before
+implementation. Until then, no UI may imply SeatRecord721 eligibility for any
+wallet.
+
+## 7. Metadata Freeze
+
+SeatRecord721 metadata must avoid hype, rarity, financial value, and personal
+data.
+
+Required metadata direction:
+
+- member number,
+- original purchasing wallet,
+- current recorded wallet if reassignment exists,
+- first purchase transaction hash,
+- first purchase block number,
+- joined chapter,
+- issue transaction hash,
+- record status,
+- immutable or permanence-backed metadata storage.
+
+Forbidden metadata direction:
+
+- rarity language,
+- reward level,
+- financial upside,
+- governance weight,
+- private personal details,
+- mutable marketing traits that change the meaning of the record.
+
+## 8. Required Events
+
+The future contract should emit events rich enough for Activity, Chronicle,
+Institutional Register, Archive, and My Syndicate read models.
+
+Minimum event requirements:
+
+- record issued,
+- record retired or burned,
+- record reassigned or linked, if wallet-change policy exists,
+- metadata frozen or updated, if metadata mutability exists,
+- authority changes.
+
+Events must include enough information to reconstruct identity history without
+trusting frontend state.
+
+## 9. Archive1155 ID 2 Rule
+
+Token ID 2 in SyndicateArchive1155 remains reserved and disabled in V1.
+
+Binding behavior:
+
+- ID 2 is never public mintable in Archive1155 V1.
+- ID 2 is never admin-mintable in Archive1155 V1.
+- ID 2 is not an identity source.
+- ID 2 is only a disabled pointer to future SeatRecord721.
+- `maxSupply == 0` means locked / not mintable, not unlimited.
+
+## 10. Frontend Activation Sequence
+
+Current state:
+
+- registry: PENDING,
+- address: null,
+- public route state: RESERVED / FUTURE,
+- action state: no action,
+- claim state: no claim,
+- mint state: no mint.
+
+Future sequence:
+
+1. Write Solidity spec and Foundry tests.
+2. Review Holder Index reconciliation and secondary-holder policy.
+3. Complete audit/static analysis.
+4. Deploy only after founder approval.
+5. Verify contract source.
+6. Register the real address in the contract registry.
+7. Add read-only status first.
+8. Add wallet readback and explorer proof.
+9. Add mint or reassignment UI only after read-only state is proven.
+
+## 11. Tests Required Before Implementation
+
+The future contract must have tests for:
+
+- only eligible member identities can receive a record,
+- a member number cannot be duplicated,
+- a wallet cannot mint multiple records unless policy explicitly permits it,
+- transfer behavior follows the frozen model,
+- metadata cannot misrepresent membership truth,
+- Holder Index reconciliation is deterministic,
+- burn/reassignment/linking behavior emits durable events,
+- owner/admin powers are bounded and documented,
+- no Archive1155 ID 2 behavior is treated as identity issuance.
+
+## 12. Allowed Wording
+
+- "SeatRecord721 is reserved for a future identity record."
+- "SYN is the V1 membership seat."
+- "Archive1155 artifacts are memories, not seats."
+- "Archive1155 ID 2 is a disabled pointer only."
+- "No SeatRecord721 claim, mint, balance, eligibility, or address exists today."
+
+## 13. Forbidden Wording
+
+- "SeatRecord721 is live."
+- "Mint your SeatRecord721."
+- "Claim your Seat Record."
+- "SeatRecord721 is your membership seat."
+- "The Seat Record NFT proves your seat."
+- "SeatRecord721 eligibility is open."
+- "Archive1155 Seat Record artifact."
+- "`maxSupply == 0` means unlimited."
+- "SeatRecord721 gives rewards, yield, governance, or status."
+
+## 14. Go / No-Go Before Implementation
+
+Implementation remains blocked until:
+
+- founder approves transferability policy,
+- founder approves secondary-holder identity policy,
+- Holder Index reconciliation spec is complete,
+- metadata permanence plan is complete,
+- Solidity spec is reviewed,
+- Foundry test plan is accepted,
+- no public product surface implies live eligibility.
+
+Until those gates are green, SeatRecord721 stays a future identity record only.

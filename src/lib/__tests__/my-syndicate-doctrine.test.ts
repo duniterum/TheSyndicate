@@ -68,15 +68,23 @@ describe("/my-syndicate doctrine — narrative arc", () => {
 
   it("exposes a compact Member OS map before the long narrative sections", () => {
     expect(ROUTE).toContain("MEMBER_OS_MAP");
-    expect(ROUTE).toContain("Member OS map");
+    expect(ROUTE).toContain("Member OS command layer");
+    expect(ROUTE).toContain("Home is where the seat, proof, memory, and next safe action meet");
+    expect(ROUTE).toContain("OSCommandCard");
+    expect(ROUTE).toContain("Home state");
+    expect(ROUTE).toContain("Next safe action");
+    expect(ROUTE).toContain("Proof posture");
+    expect(ROUTE).toContain("Operating sections");
     expect(ROUTE).toContain("Overview");
     expect(ROUTE).toContain("Passport");
-    expect(ROUTE).toContain("Wallet");
+    expect(ROUTE).toContain("Position");
     expect(ROUTE).toContain("Activity");
     expect(ROUTE).toContain("Archive");
     expect(ROUTE).toContain("Referral");
     expect(ROUTE).toContain("Horizon");
     expect(ROUTE).toContain("Verify");
+    expect(ROUTE).toContain("Reserved slots are visible for Privy, referral, SeatRecord721");
+    expect(ROUTE).toContain("Join remains the only write path here; pending systems stay read-only");
     expectInOrder(ROUTE, [
       "<MemberCockpit",
       "<MemberOSMap",
