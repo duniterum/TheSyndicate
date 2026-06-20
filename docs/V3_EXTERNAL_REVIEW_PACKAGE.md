@@ -98,11 +98,11 @@ Result:
 SourceRegistryV1Test: 20 passed
 MembershipSaleV3Test: 35 passed
 RehearsalForkV3 local/skip path: 3 passed, 1 skipped
+RehearsalForkV3 real QuickNode fork after reviewer-finding patches: 4 passed, 0 failed, 0 skipped
 ```
 
-The skipped rehearsal path requires `AVAX_RPC`. Real QuickNode fork rehearsal
-must be rerun after reviewer-finding patches before the patched contracts can
-claim fork-level proof.
+The real QuickNode fork was run against patched commit `48007bc6200583d0d3df382f15678d48cd31cdb6`.
+The local/skip path remains useful when `AVAX_RPC` is unset.
 
 Full unfiltered Foundry suite status:
 
@@ -251,9 +251,23 @@ The fork rehearsal checks:
 - receipt event reconstruction,
 - member number / first-seat behavior.
 
-Real QuickNode fork rehearsal must be rerun after reviewer-finding patches. Any
-earlier fork result predates the patched contracts and must not be treated as
-final proof for the current candidate.
+Real QuickNode fork rehearsal was rerun after reviewer-finding patches against
+patched commit `48007bc6200583d0d3df382f15678d48cd31cdb6`.
+
+Result:
+
+```text
+RehearsalForkV3: 4 passed, 0 failed, 0 skipped.
+```
+
+Fork log summary:
+
+```text
+V3 fork rehearsal OK: readbacks, no-source buy, source buy, receipt, V2b/Archive posture.
+```
+
+Foundry emitted one cache warning for a missing local RPC cache file. This is
+normal first-run cache noise and not a contract failure.
 
 ## Blocker Table
 
@@ -266,7 +280,6 @@ None currently confirmed by internal tests.
 | Blocker | Why it matters | Required action | Blocks |
 | --- | --- | --- | --- |
 | Second analyzer not run | Slither alone is not enough for deployment-quality confidence. | Install/run Aderyn or another credible Solidity analyzer and disposition findings. | Deployment |
-| Real Avalanche fork rehearsal not rerun after reviewer-finding patches | V3 must be rehearsed against live Avalanche token behavior and live address posture after the current contract changes. | Set `AVAX_RPC` and run `RehearsalForkV3` from the patched commit. | Deployment |
 | External review not complete | V3 moves USDC, attributes sources, and controls escrow. | Send this package to reviewer and resolve findings. | Deployment |
 | Owner hardware-wallet addresses not frozen | Owner powers are material before protocol maturity. | Freeze deployment and owner hardware-wallet addresses and rehearse Ownable2Step acceptance. | Deployment |
 

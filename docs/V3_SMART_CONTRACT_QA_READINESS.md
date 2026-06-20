@@ -307,9 +307,23 @@ The rehearsal should prove:
 - V1/V2/V2b historical seat posture remains intact,
 - no V3 frontend activation happens as part of rehearsal.
 
-Real QuickNode fork rehearsal must be rerun after reviewer-finding patches. Any
-earlier fork result predates the patched contracts and must not be treated as
-final proof for the current candidate.
+Real QuickNode fork rehearsal was rerun after reviewer-finding patches against
+patched commit `48007bc6200583d0d3df382f15678d48cd31cdb6`.
+
+Result:
+
+```text
+RehearsalForkV3: 4 passed, 0 failed, 0 skipped.
+```
+
+Fork log summary:
+
+```text
+V3 fork rehearsal OK: readbacks, no-source buy, source buy, receipt, V2b/Archive posture.
+```
+
+Foundry emitted one cache warning for a missing local RPC cache file. This is
+normal first-run cache noise and not a contract failure.
 
 ## Go / No-Go
 
@@ -325,7 +339,6 @@ Still blocked before audit/deployment:
 
 - fresh Slither / repeatable Slither disposition,
 - second static-analysis tool,
-- real V3 fork rehearsal with `AVAX_RPC` after reviewer-finding patches,
 - deployment hardware-wallet address recorded and tested,
 - owner hardware-wallet address recorded and tested,
 - Ownable2Step transfer/acceptance readback rehearsed,
