@@ -2,6 +2,10 @@
 
 Status: QA PASS FOR LOCAL CANDIDATE / NOT AUDIT-READY / NOT DEPLOYMENT-READY
 
+External-review package status: prepared for review intake in
+`docs/V3_EXTERNAL_REVIEW_PACKAGE.md`, but V3 remains blocked from deployment
+until the gates below are closed.
+
 This document records the focused QA pass for the V3 candidate contracts:
 
 - `contracts/src/SourceRegistryV1.sol`
@@ -66,6 +70,12 @@ The V3 candidate test suite now covers:
 - receipt event reconstructs gross, acquisition cost, protocol contribution,
   Vault, Liquidity, Operations, SYN, era, chapter, source, rate, cap/window state,
   first-seat state, and receipt version.
+- repeat purchase after attribution-window expiry,
+- paused linked source auto-fallback and explicit-source rejection,
+- revoked linked source auto-fallback and explicit-source rejection,
+- referrer losing SYN seat after attribution,
+- active attribution hijack protection,
+- V3 fork rehearsal readback shape and skip behavior.
 
 ## Payout Safety Review
 
@@ -224,41 +234,37 @@ Before activation:
 
 ## Static Analysis Status
 
-Fresh Slither was attempted locally and is blocked because Slither is not
-installed:
+Slither was installed and run during the security-readiness phase. It produced
+findings that need external disposition before deployment. The most important
+finding is a benign-reentrancy warning around the `MembershipSaleV3` source
+payout / escrow fallback path.
 
-```text
-cd contracts
-slither . --exclude-dependencies
-```
+Current internal disposition:
 
-Observed blocker:
+- `buy` and `claimSourceEscrow` are `nonReentrant`,
+- `pushSourcePayout` is callable only by `address(this)`,
+- blocked payout wallets fall back to escrow without blocking the buy,
+- smart-contract payout wallets are covered by tests,
+- USDC and SYN are protected from owner rescue.
 
-```text
-slither: command not found
-```
+This remains a reviewer item because direct payout is the most sensitive V3
+money path.
 
-Second analyzer check was attempted with Aderyn and is blocked because Aderyn is
-not installed:
+Second analyzer status: Aderyn has not run because Rust/Cargo is unavailable in
+the current Windows environment. No second analyzer should be marked complete
+until a credible second tool runs and findings are dispositioned.
 
-```text
-cd contracts
-aderyn .
-```
-
-Observed blocker:
-
-```text
-aderyn: command not found
-```
-
-Deployment remains blocked until fresh Slither and a second static-analysis tool
-are run and every finding is either fixed or dispositioned.
+Tooling note: a follow-up Slither rerun hit a Windows `crytic-compile` /
+Foundry PATH issue even though `forge test` itself passes. This is a local
+static-analysis tooling issue, not a Solidity test failure, but deployment
+remains blocked until static analysis is repeatable in a clean shell, CI, WSL,
+or reviewer environment.
 
 ## Fork Rehearsal Plan
 
-No fork rehearsal was executed in this pass because neither `AVAX_RPC` nor
-`VITE_AVALANCHE_RPC_URL` is available in the current shell.
+`contracts/test/RehearsalForkV3.t.sol` now exists. The fork path skips cleanly
+when `AVAX_RPC` is unset, while local shape tests still validate blocked payout
+escrow and smart-wallet payout compatibility.
 
 Required environment:
 
@@ -266,7 +272,7 @@ Required environment:
 AVAX_RPC=<QuickNode Avalanche C-Chain HTTPS endpoint>
 ```
 
-Recommended command after a V3 rehearsal test exists:
+Recommended command:
 
 ```text
 cd contracts
@@ -285,20 +291,24 @@ The rehearsal should prove:
 - V1/V2/V2b historical seat posture remains intact,
 - no V3 frontend activation happens as part of rehearsal.
 
+The real Avalanche fork path has not been run yet because `AVAX_RPC` is not
+available in the current shell.
+
 ## Go / No-Go
 
 Green locally:
 
 - SourceRegistryV1 unit tests,
 - MembershipSaleV3 unit tests,
-- Foundry compile,
+- RehearsalForkV3 local/skip tests,
+- full Foundry compile and suite,
 - frontend release gate after candidate files.
 
 Still blocked before audit/deployment:
 
-- fresh Slither,
+- fresh Slither / repeatable Slither disposition,
 - second static-analysis tool,
-- V3 fork rehearsal,
+- real V3 fork rehearsal with `AVAX_RPC`,
 - deployment hardware-wallet address recorded and tested,
 - owner hardware-wallet address recorded and tested,
 - Ownable2Step transfer/acceptance readback rehearsed,
@@ -308,5 +318,5 @@ Still blocked before audit/deployment:
 - frontend read-only preview design,
 - explicit activation plan.
 
-Verdict: V3 candidate is stronger after QA, but still not audit-ready and not
+Verdict: V3 candidate is ready to package for external review, but still not
 deployment-ready.
