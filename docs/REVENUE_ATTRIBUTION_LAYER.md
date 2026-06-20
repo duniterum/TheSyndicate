@@ -6,6 +6,12 @@ route remains reserved/read-only until a verified router address exists.
 
 Public name: **Referral**. Internal name: **Revenue Attribution Layer**.
 
+Doctrine boundary: Referral is one acquisition layer, not the business model
+and not the institution. It may record verified introductions and future
+Operations-slice commission if approved and deployed, but it must never be
+framed as yield, passive income, a rank entitlement, or the primary measure of
+institutional trust capital.
+
 ## Purpose
 
 Record who caused every protocol sale and split the gross deterministically, in a single immutable event that downstream surfaces (Treasury Ledger, Activity, Builder Records) can read without re-deriving anything.
@@ -60,6 +66,10 @@ The `source` field is `bytes32` and the allow-list is governance-gated — this 
 ## Forward-compatibility
 
 The schema reserves namespace for: `SPONSORSHIP`, `AFFILIATE`, `BD_NETWORK`, `WHITELABEL`, `TREASURY_DEAL`. Adding any of these requires no contract change — only a governance vote on the source allow-list.
+
+Builder Records, recognition, Chronicle, Register, and Archive may later read
+referral events as one signal among many. They must answer what a participant
+helped the institution become, not only how much was paid or attributed.
 
 ## Cross-references
 

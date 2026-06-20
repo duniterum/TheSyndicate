@@ -24,7 +24,7 @@ export const Route = createFileRoute("/v3-preview")({
       {
         name: "description",
         content:
-          "Read-only V3 preview for quote, acquisition-first routing, receipt schema, source attribution, chapter pricing, and source progression. Candidate, pending, not live.",
+          "Read-only V3 preview for quote, acquisition-first routing, receipt schema, source attribution, chapter pricing, and introduction progression. Candidate, pending, not live.",
       },
       { name: "robots", content: "noindex,nofollow" },
       { property: "og:title", content: "The Syndicate - V3 Preview" },
@@ -61,12 +61,12 @@ function StatusRail() {
 
 function ValueCard({ label, value, note }: { label: string; value: string; note: string }) {
   return (
-    <div className="rounded-[6px] border border-border/60 bg-background/45 p-4">
-      <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+    <div className="rounded-[6px] border border-border/60 bg-background/45 p-5">
+      <div className="mono text-xs uppercase tracking-[0.14em] text-foreground/65">
         {label}
       </div>
-      <div className="mt-2 text-xl font-semibold tabular-nums text-foreground">{value}</div>
-      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{note}</p>
+      <div className="mt-2 text-2xl font-semibold tabular-nums text-foreground md:text-3xl">{value}</div>
+      <p className="mt-3 text-sm leading-relaxed text-foreground/72">{note}</p>
     </div>
   );
 }
@@ -76,19 +76,19 @@ function V3PreviewPage() {
     <PageShell
       eyebrow="V3 Preview"
       title="Candidate protocol engine preview"
-      description="A read-only workbench for the proposed V3 sale engine: quote, acquisition-first routing, receipt reconstruction, source attribution, era pricing, and source progression. Nothing here is live."
+      description="A read-only workbench for the proposed V3 sale engine: quote, acquisition-first routing, receipt reconstruction, source attribution, era pricing, and introduction progression. Nothing here is live."
     >
       <Section id="status" width="editorial" className="pt-10 md:pt-12">
         <GlassCard className="p-5 md:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <div className="mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              <div className="mono text-xs uppercase tracking-[0.16em] text-foreground/65">
                 Safety boundary
               </div>
-              <h2 className="mt-2 font-serif text-2xl font-semibold tracking-tight">
+              <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight">
                 No writes. No deployment. No registry switch.
               </h2>
-              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-foreground/80">
+              <p className="mt-3 max-w-3xl text-base leading-relaxed text-foreground/82">
                 This page previews the candidate V3 model only. The live buy path
                 remains Membership Sale V2b. No V3 contract address is registered,
                 no source balance is shown, and no action can create a commission.
@@ -122,9 +122,9 @@ function V3PreviewPage() {
             note="Sale V3 candidate logic prices SYN from the gross purchase amount."
           />
           <ValueCard
-            label="Source rate"
+            label="Commission rate"
             value={formatBps(EXAMPLE_QUOTE.commissionBps)}
-            note={`${EXAMPLE_SOURCE.recognition} example. Source terms remain pending.`}
+            note={`${EXAMPLE_SOURCE.label} example. Source terms remain pending.`}
           />
         </div>
       </Section>
@@ -133,7 +133,7 @@ function V3PreviewPage() {
         <SectionHeader
           eyebrow="Acquisition-first routing"
           title="Gross payment becomes a transparent receipt"
-          description="If a valid source exists, acquisition cost is calculated first. The remaining protocol contribution then routes 70 / 20 / 10."
+          description="If a valid source exists, acquisition commission is calculated first. Net USDC Routed then splits 70 / 20 / 10."
         />
         <div className="grid gap-4 lg:grid-cols-[1fr,1.2fr]">
           <GlassCard className="p-5">
@@ -141,8 +141,8 @@ function V3PreviewPage() {
             <div className="mt-5 space-y-3 text-sm">
               {[
                 ["Gross USDC", EXAMPLE_QUOTE.grossUsdc],
-                ["Acquisition cost", EXAMPLE_QUOTE.acquisitionCost],
-                ["Protocol contribution", EXAMPLE_QUOTE.protocolContribution],
+                ["Acquisition commission", EXAMPLE_QUOTE.acquisitionCost],
+                ["Net USDC Routed", EXAMPLE_QUOTE.protocolContribution],
                 ["Vault 70%", EXAMPLE_QUOTE.vaultAmount],
                 ["Liquidity 20%", EXAMPLE_QUOTE.liquidityAmount],
                 ["Operations 10%", EXAMPLE_QUOTE.operationsAmount],
@@ -160,18 +160,40 @@ function V3PreviewPage() {
             <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               Formula
             </div>
-            <pre className="mt-4 overflow-x-auto rounded-[6px] border border-border/60 bg-background/60 p-4 text-xs leading-relaxed text-foreground/85">
-{`grossUsdc - acquisitionCost = protocolContribution
-protocolContribution * 70% = vaultAmount
-protocolContribution * 20% = liquidityAmount
-protocolContribution * 10% = operationsAmount`}
+            <pre className="mt-4 overflow-x-auto rounded-[6px] border border-border/60 bg-background/60 p-4 text-sm leading-relaxed text-foreground/85">
+{`USDC Paid - Acquisition Commission = Net USDC Routed
+Net USDC Routed * 70% = Vault
+Net USDC Routed * 20% = Liquidity
+Net USDC Routed * 10% = Operations`}
             </pre>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              The preview shows acquisition cost as an explicit line, not as a
-              hidden Operations expense. It also keeps Vault and Liquidity
-              amounts reconstructable from the receipt.
+            <p className="mt-4 text-base leading-relaxed text-foreground/75">
+              In plain language: USDC Paid minus Acquisition Commission equals
+              Net USDC Routed. The routed amount then splits to Vault, Liquidity,
+              and Operations in a way the receipt can reconstruct.
             </p>
           </GlassCard>
+        </div>
+      </Section>
+
+      <Section id="language-boundary">
+        <SectionHeader
+          eyebrow="Language boundary"
+          title="Recognition, terms, and receipts are separate"
+          description="V3 must keep human contribution, money rules, and event truth distinct so introduction does not become ownership."
+        />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          {[
+            ["Introduction Progression", "Recognition path for verified introductions. It is not a commission promise."],
+            ["Source Terms", "The future contract rules: rate, caps, window, status, and payout wallet."],
+            ["Acquisition Attribution", "The receipt truth that records which source, if any, applied to a purchase."],
+            ["Acquisition Commission", "USDC paid to a valid source only when source terms and contract truth allow it."],
+            ["Net USDC Routed", "The amount routed after acquisition commission, split 70% Vault / 20% Liquidity / 10% Operations."],
+          ].map(([title, copy]) => (
+            <GlassCard key={title} className="p-4">
+              <h3 className="text-base font-semibold text-foreground">{title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-foreground/75">{copy}</p>
+            </GlassCard>
+          ))}
         </div>
       </Section>
 
@@ -188,8 +210,8 @@ protocolContribution * 10% = operationsAmount`}
               ["buyer", "wallet signing the purchase"],
               ["recipient", "wallet receiving SYN"],
               ["grossUsdc", formatUsdc(EXAMPLE_QUOTE.grossUsdc)],
-              ["acquisitionCost", formatUsdc(EXAMPLE_QUOTE.acquisitionCost)],
-              ["protocolContribution", formatUsdc(EXAMPLE_QUOTE.protocolContribution)],
+              ["acquisitionCommission", formatUsdc(EXAMPLE_QUOTE.acquisitionCost)],
+              ["netUsdcRouted", formatUsdc(EXAMPLE_QUOTE.protocolContribution)],
               ["vaultAmount", formatUsdc(EXAMPLE_QUOTE.vaultAmount)],
               ["liquidityAmount", formatUsdc(EXAMPLE_QUOTE.liquidityAmount)],
               ["operationsAmount", formatUsdc(EXAMPLE_QUOTE.operationsAmount)],
@@ -204,10 +226,10 @@ protocolContribution * 10% = operationsAmount`}
               ["status", "CANDIDATE / PENDING / NOT LIVE"],
             ].map(([label, value]) => (
               <div key={label} className="rounded-[6px] border border-border/55 bg-background/40 p-3">
-                <div className="mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+                <div className="mono text-xs uppercase tracking-[0.12em] text-foreground/62">
                   {label}
                 </div>
-                <div className="mt-1.5 text-sm text-foreground/90">{value}</div>
+                <div className="mt-2 text-base text-foreground/90">{value}</div>
               </div>
             ))}
           </div>
@@ -273,28 +295,29 @@ protocolContribution * 10% = operationsAmount`}
 
       <Section id="source-progression">
         <SectionHeader
-          eyebrow="Source progression visualization"
+          eyebrow="Introduction progression visualization"
           title="Recognition can progress; money terms stay bounded"
-          description="Public source progression is candidate policy. It is designed for transparent acquisition, not passive income, downlines, or hidden balances."
+          description="Public introduction progression is candidate policy. It is designed for transparent acquisition, not member ownership, official representation, or hidden balances."
         />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {V3_PUBLIC_SOURCE_PROGRESSION.map((row) => (
-            <GlassCard key={row.recognition} className="p-4">
+            <GlassCard key={row.label} className="p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <div className="mono text-xs uppercase tracking-[0.14em] text-foreground/65">
                     {row.status}
                   </div>
-                  <h3 className="mt-2 text-lg font-semibold">{row.recognition}</h3>
+                  <h3 className="mt-2 text-xl font-semibold">{row.label}</h3>
+                  <p className="mt-1 text-sm text-foreground/65">{row.category}</p>
                 </div>
                 <Pill tone={row.reviewRequired ? "warning" : "gold"}>
                   {formatBps(row.commissionBps)}
                 </Pill>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-foreground/80">{row.condition}</p>
-              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              <p className="mt-4 text-base leading-relaxed text-foreground/82">{row.condition}</p>
+              <p className="mt-3 text-sm leading-relaxed text-foreground/65">
                 {row.reviewRequired
-                  ? "Requires founder/operator review before money terms can apply."
+                  ? "Requires founder/operator review before source terms can apply."
                   : "Automatic only if the future contract, source health, caps, and attribution window allow it."}
               </p>
             </GlassCard>

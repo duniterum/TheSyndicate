@@ -69,14 +69,19 @@ describe("V3 preview model", () => {
       "TREASURY_DEAL",
     ]);
 
-    expect(V3_PUBLIC_SOURCE_PROGRESSION.map((row) => row.recognition)).toEqual([
-      "Signal",
+    expect(V3_PUBLIC_SOURCE_PROGRESSION.map((row) => row.label)).toEqual([
+      "Initiator",
       "Advocate",
       "Connector",
       "Catalyst",
-      "Ambassador",
-      "Chapter Source",
+      "Steward",
+      "Reviewed Source Terms",
     ]);
+    expect(V3_PUBLIC_SOURCE_PROGRESSION.slice(0, 5).every((row) => row.category === "Introduction Recognition")).toBe(true);
+    expect(V3_PUBLIC_SOURCE_PROGRESSION.at(-1)?.category).toBe("Reviewed Source Terms");
+    expect(V3_PUBLIC_SOURCE_PROGRESSION.map((row) => row.label)).not.toEqual(
+      expect.arrayContaining(["Signal", "Ambassador", "Chapter Source"]),
+    );
     expect(Math.max(...V3_PUBLIC_SOURCE_PROGRESSION.map((row) => row.commissionBps))).toBe(1500);
     expect(V3_PUBLIC_SOURCE_PROGRESSION.at(-1)).toMatchObject({
       status: "PENDING",

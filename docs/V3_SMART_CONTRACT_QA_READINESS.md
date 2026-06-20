@@ -166,9 +166,12 @@ All source policy actions emit events.
 - recover unsold SYN after conclusion or timelocked wind-down,
 - rescue non-USDC/non-SYN tokens.
 
-Deployment blocker: final owner/final-owner model must be decided before any V3
-deployment. Recommended review options remain hardware-wallet EOA for initial
-test deployment or multisig for serious public activation.
+Founder decision update: V3 preparation now uses a hardware-wallet-first owner
+model. The operational package is `docs/V3_DEPLOYMENT_READINESS_PACKAGE.md`.
+Deployment remains blocked until the exact deployment hardware-wallet address,
+owner hardware-wallet address, ownership transfer/acceptance flow, and readback
+log are frozen. Safe/multisig/timelock remain future control-evolution stages,
+not the current execution blocker.
 
 ## Event Completeness
 
@@ -296,8 +299,10 @@ Still blocked before audit/deployment:
 - fresh Slither,
 - second static-analysis tool,
 - V3 fork rehearsal,
-- final owner/final-owner decision,
-- deployment parameter sheet,
+- deployment hardware-wallet address recorded and tested,
+- owner hardware-wallet address recorded and tested,
+- Ownable2Step transfer/acceptance readback rehearsed,
+- deployment parameter sheet frozen,
 - external review,
 - legal/product signoff,
 - frontend read-only preview design,

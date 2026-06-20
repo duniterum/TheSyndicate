@@ -53,16 +53,16 @@ Current QA companion:
 - paused public source receives no new attribution,
 - revoked public source receives no new attribution,
 - public automatic rate cannot exceed 12% without review,
-- `Chapter Source` progression requires review before 15% money terms activate.
+- `Reviewed Source Terms` requires review before 15% money terms activate.
 
 ## 4. Public Progression Tests
 
-- Signal threshold activates at first verified seated member introduced,
+- Initiator threshold activates at first verified seated member introduced,
 - Advocate threshold activates at 5 seated members introduced,
 - Connector threshold activates at 20 seated members introduced,
 - Catalyst threshold activates at 75 seated members introduced,
-- Ambassador threshold activates at 250 seated members introduced,
-- Chapter Source threshold is detected at 1,000 seated members introduced,
+- Steward threshold activates at 250 seated members introduced,
+- Reviewed Source Terms threshold is detected at 1,000 seated members introduced,
 - recognition progression emits event or read-model input,
 - recognition progression does not itself grant governance, yield, or equity,
 - recognition name does not automatically overwrite source terms unless the
@@ -180,8 +180,8 @@ Current QA companion:
 
 ## 10. Doctrine And Product Guard Tests
 
-- no MLM/downline language,
-- no passive income/yield/ROI language,
+- no member-ownership or network-inventory language,
+- no passive-return/yield/ROI language,
 - no fake referral balances,
 - no fake claim UI,
 - no old fixed-price V3 doctrine drift,

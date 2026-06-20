@@ -11,7 +11,8 @@ export type V3EraPreview = {
 };
 
 export type V3SourceProgression = {
-  recognition: string;
+  label: string;
+  category: "Introduction Recognition" | "Reviewed Source Terms";
   condition: string;
   commissionBps: number;
   status: V3PreviewStatus;
@@ -130,42 +131,48 @@ export const V3_ERA_PREVIEW: V3EraPreview[] = [
 
 export const V3_PUBLIC_SOURCE_PROGRESSION: V3SourceProgression[] = [
   {
-    recognition: "Signal",
+    label: "Initiator",
+    category: "Introduction Recognition",
     condition: "First verified seated member introduced",
     commissionBps: 500,
     status: "CANDIDATE",
     reviewRequired: false,
   },
   {
-    recognition: "Advocate",
+    label: "Advocate",
+    category: "Introduction Recognition",
     condition: "5 seated members introduced and source health clean",
     commissionBps: 600,
     status: "CANDIDATE",
     reviewRequired: false,
   },
   {
-    recognition: "Connector",
+    label: "Connector",
+    category: "Introduction Recognition",
     condition: "20 seated members introduced and source health clean",
     commissionBps: 800,
     status: "CANDIDATE",
     reviewRequired: false,
   },
   {
-    recognition: "Catalyst",
+    label: "Catalyst",
+    category: "Introduction Recognition",
     condition: "75 seated members introduced and source health clean",
     commissionBps: 1000,
     status: "CANDIDATE",
     reviewRequired: false,
   },
   {
-    recognition: "Ambassador",
+    label: "Steward",
+    category: "Introduction Recognition",
     condition: "250 seated members introduced, clean source history, review flag clear",
     commissionBps: 1200,
     status: "CANDIDATE",
     reviewRequired: false,
   },
   {
-    recognition: "Chapter Source",
+    label: "Reviewed Source Terms",
+    category: "Reviewed Source Terms",
     condition: "1,000 seated members introduced, clean history, founder review required",
     commissionBps: 1500,
     status: "PENDING",
@@ -178,7 +185,7 @@ export const V3_SOURCE_CLASSES: V3SourceClassPreview[] = [
     sourceClass: "MEMBER_INTRODUCTION",
     assignment: "Autonomous public source",
     purpose: "A seated member introduces a buyer.",
-    defaultPolicy: "Progression schedule, capped, no downline.",
+    defaultPolicy: "Introduction progression, capped, no member ownership.",
   },
   {
     sourceClass: "BUILDER_SOURCE",

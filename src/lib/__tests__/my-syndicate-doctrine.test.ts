@@ -14,7 +14,7 @@
 // is the only hero and it lives in the cockpit. Proof is promoted (it must sit
 // above the parked/pending tail). Action collapses to ONE dock in the cockpit.
 //
-// Language rules: no "raised / contribution / investor / investment / yield /
+// Language rules: no "raised / investor / investment / yield /
 // dividend / ROI / pooled / commission" and no fake gamification
 // ("XP / score / leaderboard / spend-ladder / next rank").
 
@@ -203,7 +203,6 @@ describe("/my-syndicate doctrine — narrative arc", () => {
     const stripped = stripComments(ROUTE);
     const BANNED: RegExp[] = [
       /\braised\b/i,
-      /\bcontribution\b/i,
       /\binvestor\b/i,
       /\binvestment\b/i,
       /\bdividend(s)?\b/i,
@@ -238,6 +237,16 @@ describe("/my-syndicate doctrine — narrative arc", () => {
         expect(re.test(src), `gamification word matched: ${re}`).toBe(false);
       }
     }
+  });
+
+  it("keeps the canonical seat doctrine visible without turning it into a spend ladder", () => {
+    expect(ROUTE).toContain("contribution depth");
+    expect(ROUTE).toContain("one seat identity");
+    expect(ROUTE).toContain("SYN acquired; seat stays singular");
+    expect(ROUTE).toContain("institutional trust capital");
+    expect(ROUTE).not.toMatch(/multiple seats/i);
+    expect(ROUTE).not.toMatch(/buy more seats/i);
+    expect(ROUTE).not.toMatch(/extra seats/i);
   });
 
   it("PageShell renders with hideHeader and the OS title", () => {

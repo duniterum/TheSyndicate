@@ -12,11 +12,11 @@
 // the Proof chapter (contracts + claim sources, promoted ABOVE pending), and a
 // single collapsed "What's Building" tail for not-yet-shipped surfaces.
 //
-// Language rules: no "raised", no "contribution", no "investor", no
+// Language rules: no "raised", no "investor", no
 // "investment", no "share", no "dividend", no "yield", no "passive income",
 // no "ROI", no "pooled", no "stake", no "earn a commission".
 // Use: USDC routed · sale volume · purchase routing · protocol movement ·
-// on-chain receipt · eligibility · recognition · where you fit.
+// contribution depth · on-chain receipt · eligibility · recognition · where you fit.
 // ─────────────────────────────────────────────────────────────────────────
 
 import { useRef } from "react";
@@ -470,9 +470,9 @@ function SeatPassport() {
                   note={firstTx ? "first tx available" : "valid tx required"}
                 />
                 <PassportFact
-                  label="SYN received"
+                  label="Contribution depth"
                   value={record ? fmtInt(record.cumulativeSyn) : "none"}
-                  note="Membership Sale only"
+                  note="SYN acquired, one seat"
                 />
               </div>
 
@@ -528,7 +528,7 @@ function SeatPassport() {
                 }
                 body={
                   record
-                    ? "Recognition is structural acknowledgement only. Candidates are not official records until reviewed by their own gates."
+                    ? "Recognition is structural acknowledgement only. Candidates may later reflect contribution depth or institutional trust capital, but they are not official records until reviewed by their own gates."
                     : "No recognition is attached to an unseated wallet."
                 }
                 to="/ranks"
@@ -1297,15 +1297,15 @@ function ReturnBriefing() {
             {!isConnected
               ? "Until a wallet is connected, My Syndicate does not assume a seat, artifact, receipt, or eligibility."
               : record
-                ? `SYN is the seat. Because this wallet is seated in ${activeChapter.label}, its Membership Sale history can become proof, context, and memory.`
+                ? `SYN is the seat. This wallet holds one seat identity in ${activeChapter.label}; its contribution depth can become proof, context, memory, and future recognition material.`
                 : "Connected wallets can observe the protocol, but seating begins only when a Membership Sale purchase delivers SYN."}
           </p>
 
           <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-2">
             <BriefingMetric
-              label="SYN received"
+              label="Contribution depth"
               value={record ? fmtInt(record.cumulativeSyn) : "not seated"}
-              note={record ? "from Membership Sale events" : "no purchase indexed"}
+              note={record ? "SYN acquired; seat stays singular" : "no purchase indexed"}
             />
             <BriefingMetric
               label="USDC routing"

@@ -44,9 +44,11 @@ Current repository truth:
 - Older docs/config still contain fixed-price language such as `1 SYN = $0.01`
   and "same rate for everyone".
 - `CommissionRouterV1.sol` implements an Operations-slice router only.
-- `src/lib/preview/referral.ts` defines Signal, Advocate, Connector, Catalyst,
-  and Ambassador as preview/referral labels, with money-weighted fields
-  quarantined from Signals, Chronicle, and Recognition.
+- Older preview/referral labels included Signal, Advocate, Connector, Catalyst,
+  Ambassador, and Chapter Source. V3 preview language now treats Signal,
+  Ambassador, and Chapter Source as retired for acquisition progression because
+  they collide with protocol signals, official-representation language, and
+  chapter doctrine.
 - `docs/REVENUE_ATTRIBUTION_LAYER.md` reserves source namespaces including
   `SPONSORSHIP`, `AFFILIATE`, `BD_NETWORK`, `WHITELABEL`, and
   `TREASURY_DEAL`.
@@ -127,7 +129,7 @@ explicit source-policy action and must emit events.
 ## 6. Public Autonomous Referral Progression
 
 Public referral must be meaningful enough to drive growth, but not shaped like
-MLM, downline income, yield, or passive income.
+member ownership, network inventory, yield, or passive returns.
 
 Public referral requirements:
 
@@ -137,23 +139,24 @@ Public referral requirements:
 - source must be active,
 - source must remain healthy,
 - commission applies only inside its window and caps,
-- no downline exists,
+- no source owns a member,
 - no commission exists without a purchase receipt.
 
 Recommended autonomous progression:
 
-| Recognition | Transparent condition | Public commission |
+| Introduction recognition | Transparent condition | Public commission |
 | --- | --- | ---: |
-| Signal | first verified seated member introduced | 5% |
+| Initiator | first verified seated member introduced | 5% |
 | Advocate | 5 seated members introduced and source health clean | 6% |
 | Connector | 20 seated members introduced and source health clean | 8% |
 | Catalyst | 75 seated members introduced and source health clean | 10% |
-| Ambassador | 250 seated members introduced, source health clean, review flag clear | 12% |
-| Chapter Source | 1,000 seated members introduced, clean history, founder review required | 15% |
+| Steward | 250 seated members introduced, source health clean, review flag clear | 12% |
+| Reviewed Source Terms | 1,000 seated members introduced, clean history, founder review required | 15% |
 
-The first five names come from existing repository vocabulary. `Chapter Source`
-is added for scale: it marks a source that materially helps form chapters, not
-a rank, not a governance role, and not a financial identity.
+`Initiator` replaces Signal to avoid collision with Protocol Signals, First
+Signal, and Genesis Signal. `Steward` replaces Ambassador to avoid implying
+official representation, employment, or agency. `Reviewed Source Terms` is a
+policy/review state, not a public member identity title and not a chapter role.
 
 Public progression uses protocol-visible data first:
 
@@ -187,7 +190,7 @@ Recommended defaults:
 - public maximum automatic rate: 12%,
 - public rate above 12% requires founder/operator review.
 
-`Chapter Source` at 15% must require review even though the progression
+`Reviewed Source Terms` at 15% must require review even though the progression
 threshold is automatic. This keeps large public sources from silently becoming
 institutional representatives.
 
@@ -435,9 +438,9 @@ separately deployed and activated for a non-V3 purpose.
 
 ## 16. What V3 Must Never Become
 
-- no MLM,
-- no downline,
-- no passive income,
+- no member ownership,
+- no network inventory,
+- no passive returns,
 - no yield,
 - no hidden manual payouts,
 - no fake-live referral balances,

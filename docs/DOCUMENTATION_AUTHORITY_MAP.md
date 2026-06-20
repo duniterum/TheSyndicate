@@ -150,6 +150,7 @@ specs that match the deployed reality. Safe to reference for current work.
 - `docs/NFT_ARCHIVE_DESIGN_REFERENCES.md`
 - `docs/NFT_ARCHIVE_VERIFIABILITY_MATRIX.md`
 - `docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md`
+- `docs/V3_DEPLOYMENT_READINESS_PACKAGE.md` — hardware-wallet-first V3 operational deployment-preparation package. No deployment or activation authority.
 
 > Docs that were previously treated as operational but still carry
 > pre-doctrine vocabulary (NFT_ARCHIVE V1 specs, ARCHIVE_9_SLOT_READINESS_AUDIT,

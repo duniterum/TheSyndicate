@@ -91,17 +91,19 @@ CommissionRouter deployment remains blocked until:
 - fresh Slither is green or dispositioned,
 - a second static-analysis tool is green or dispositioned,
 - fork rehearsal is green with a reliable Avalanche RPC,
-- final owner/final-owner model is decided,
+- owner/final-owner model is frozen for the specific deployment,
 - external review is complete,
 - legal/product signoff is final.
 
 V3 SourceRegistry/Sale deployment remains blocked until:
 
 - `docs/V3_SMART_CONTRACT_QA_READINESS.md` blockers are resolved,
+- `docs/V3_DEPLOYMENT_READINESS_PACKAGE.md` is followed,
 - fresh Slither is green or dispositioned,
 - a second static-analysis tool is green or dispositioned,
 - V3 fork rehearsal is green against Avalanche RPC,
-- final owner/final-owner model is decided,
+- hardware-wallet deployment and owner addresses are recorded and tested,
+- Ownable2Step ownership transfer/acceptance is rehearsed and read back,
 - external review is complete,
 - legal/product signoff is final,
 - frontend read-only preview and registry activation sequence are approved.

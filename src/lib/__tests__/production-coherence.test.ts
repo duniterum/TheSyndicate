@@ -293,6 +293,7 @@ describe("production coherence guards", () => {
     const v3 = read("docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md");
     const testPlan = read("docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md");
     const qa = read("docs/V3_SMART_CONTRACT_QA_READINESS.md");
+    const deployment = read("docs/V3_DEPLOYMENT_READINESS_PACKAGE.md");
     const contractRegistry = read("src/lib/contract-registry.ts");
     const referral = read("src/routes/referral.tsx");
 
@@ -307,12 +308,13 @@ describe("production coherence guards", () => {
     expect(v3).toContain("WHITELABEL");
     expect(v3).toContain("SPONSORSHIP");
     expect(v3).toContain("TREASURY_DEAL");
-    expect(v3).toContain("Signal");
+    expect(v3).toContain("Initiator");
     expect(v3).toContain("Advocate");
     expect(v3).toContain("Connector");
     expect(v3).toContain("Catalyst");
-    expect(v3).toContain("Ambassador");
-    expect(v3).toContain("Chapter Source");
+    expect(v3).toContain("Steward");
+    expect(v3).toContain("Reviewed Source Terms");
+    expect(v3).toContain("as retired for acquisition progression");
     expect(v3).toContain("approved source terms may go up to 30%");
     expect(v3).toContain("public maximum automatic rate: 12%");
     expect(v3).toContain("Every action must emit an event and be visible");
@@ -323,7 +325,7 @@ describe("production coherence guards", () => {
     expect(testPlan).toContain("exact V3 era price schedule");
     expect(testPlan).toContain("repeat purchase inside attribution window pays commission");
     expect(testPlan).toContain("30%");
-    expect(testPlan).toContain("no MLM/downline language");
+    expect(testPlan).toContain("no member-ownership or network-inventory language");
     expect(testPlan).toContain("Payout Escrow And Smart-Wallet Tests");
 
     expect(qa).toContain("Status: QA PASS FOR LOCAL CANDIDATE / NOT AUDIT-READY / NOT DEPLOYMENT-READY");
@@ -331,6 +333,22 @@ describe("production coherence guards", () => {
     expect(qa).toContain("fresh Slither");
     expect(qa).toContain("V3 fork rehearsal");
     expect(qa).toContain("V2b remains the live buy path");
+    expect(qa).toContain("hardware-wallet-first owner");
+    expect(qa).toContain("deployment hardware-wallet address recorded and tested");
+
+    expect(deployment).toContain("Status: OPERATIONAL READINESS PACKAGE / HARDWARE-WALLET FIRST / NO DEPLOYMENT AUTHORIZED");
+    expect(deployment).toContain("No step in this package authorizes deployment, activation, registry switch, or");
+    expect(deployment).toContain("dedicated owner hardware wallet");
+    expect(deployment).toContain("Ownable2Step transfer + owner acceptance readback");
+    expect(deployment).toContain("`SourceRegistryV1` Constructor");
+    expect(deployment).toContain("`MembershipSaleV3` Constructor Parameters");
+    expect(deployment).toContain("V2b remains the live buy path");
+    expect(deployment).toContain("slither . --exclude-dependencies");
+    expect(deployment).toContain("aderyn .");
+    expect(deployment).toContain("AVAX_RPC=<QuickNode Avalanche C-Chain HTTPS endpoint>");
+    expect(deployment).toContain("No private keys. No broadcast. No real deployment.");
+    expect(deployment).toContain("2-of-3 Safe");
+    expect(deployment).toContain("Safe + timelock");
 
     expect(contractRegistry).toContain('"COMMISSION_ROUTER_V1"');
     expect(contractRegistry).toContain('"PENDING"');
@@ -384,19 +402,29 @@ describe("production coherence guards", () => {
     expect(route).toContain("Receipt example");
     expect(route).toContain("Source attribution");
     expect(route).toContain("Chapter pricing visualization");
-    expect(route).toContain("Source progression visualization");
+    expect(route).toContain("Introduction progression visualization");
     expect(route).toContain("source owns a member");
+    expect(route).toContain("Net USDC Routed");
+    expect(route).toContain("Acquisition Commission");
+    expect(route).toContain("Introduction Progression");
+    expect(route).toContain("Source Terms");
+    expect(route).toContain("Acquisition Attribution");
 
     expect(model).toContain("V3_ERA_PREVIEW");
     expect(model).toContain("previewV3Quote");
     expect(model).toContain("MEMBER_INTRODUCTION");
-    expect(model).toContain("Chapter Source");
+    expect(model).toContain("Initiator");
+    expect(model).toContain("Steward");
+    expect(model).toContain("Reviewed Source Terms");
     expect(docs).toContain("V3 Preview");
     expect(docs).toContain("Read-only candidate model");
 
     expect(route).not.toMatch(/useWriteContract|writeContract|sendTransaction|useSendTransaction|claimSourceEscrow|buy\(/);
     expect(route).not.toMatch(/router address|live V3 buy path/i);
     expect(route).not.toMatch(/earned commission|claimable|claim button/i);
+    expect(route).not.toMatch(/Protocol contribution|Source rate|source progression/i);
+    expect(route).not.toMatch(/passive income|downline|MLM/i);
+    expect(model).not.toMatch(/label:\s*"Signal"|label:\s*"Ambassador"|label:\s*"Chapter Source"/);
   });
 
   it("keeps Registry distinctions explicit: Archive1155 live, SeatRecord721 future", () => {

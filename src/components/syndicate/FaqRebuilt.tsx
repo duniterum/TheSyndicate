@@ -23,7 +23,7 @@ const ENTRIES: Entry[] = [
   { cat: "Basics", q: "What is the Signal Chamber?", a: "A planned future module that would surface member signals derived from on-chain activity. It is advisory only and clearly labeled PENDING — not live, conferring no rights, and never influencing the sale rate, rank, or any value. It would only describe what is already on-chain — never predict price or promise a return." },
 
   // SYN
-  { cat: "SYN Token", q: "What is SYN?", a: "A fixed-supply ERC20 utility token on Avalanche C-Chain. SYN is the V1 membership seat: it powers rank, identity in the archive, and access to Syndicate participation. Any future governance or identity contract remains reserved until deployed. It is not equity, not a security, and not a claim on Vault assets." },
+  { cat: "SYN Token", q: "What is SYN?", a: "A fixed-supply ERC20 utility token on Avalanche C-Chain. SYN is the V1 membership seat: holding SYN means the wallet is seated. It powers rank, identity in the archive, and access to Syndicate participation. Any future governance or identity contract remains reserved until deployed. It is not equity, not a security, and not a claim on Vault assets." },
   { cat: "SYN Token", q: "Is SYN live?", a: "Yes. SYN is deployed at 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 on Avalanche C-Chain and verified on Avascan, Sourcify, and Routescan." },
   { cat: "SYN Token", q: "Is the token mintable?", a: "No. Fixed supply of 1,000,000,000 SYN. No mint function exists." },
   { cat: "SYN Token", q: "Can the owner change the token?", a: "No. The ERC20 has no owner, no admin, no upgrade path, no pause, no blacklist, no whitelist, no max wallet, no max tx, and 0% tax." },
@@ -31,9 +31,11 @@ const ENTRIES: Entry[] = [
 
   // Membership & Sale
   { cat: "Membership & Sale", q: "How do I become a member?", a: "Go to /join, connect a wallet on Avalanche C-Chain, approve USDC, and call buy() on the live Membership Sale contract. Minimum entry is 5 USDC. Rate is fixed: 1 SYN = $0.01 USDC." },
-  { cat: "Membership & Sale", q: "Can larger members get cheaper tokens?", a: "No. Same fixed rate for every wallet. Larger purchases unlock higher ranks and archive recognition — never bonus tokens, never a better rate." },
+  { cat: "Membership & Sale", q: "Can larger members get cheaper tokens?", a: "No. Same fixed rate for every wallet. Larger purchases can deepen SYN held, protocol contribution, routing impact, rank progression, historical footprint, and future recognition candidates — never bonus tokens, never a better rate." },
   { cat: "Membership & Sale", q: "Can I buy a custom amount?", a: "Yes. Any USDC amount above the $5 minimum works." },
-  { cat: "Membership & Sale", q: "What changes after I join?", a: "You receive a permanent Founder Number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship." },
+  { cat: "Membership & Sale", q: "Can I buy multiple seats?", a: "No. The seat is binary. A wallet becomes seated by holding SYN. A 5 USDC entrant and a 10,000 USDC entrant both hold one seat identity; what changes is contribution depth, SYN acquired, USDC routed, rank progression, historical footprint, chapter position, and future recognition." },
+  { cat: "Membership & Sale", q: "What changes after I join?", a: "You receive a permanent Founder Number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship. My Syndicate becomes the home for the seat, its proofs, contribution depth, memory path, and future pending systems." },
+  { cat: "Membership & Sale", q: "Is member count the same as economic scale?", a: "No. Member count measures seated wallets and institutional reach. Economic scale comes from routed USDC, liquidity growth, operations capacity, approved acquisition cost if future systems go live, and future product or service revenue. The site keeps those signals separate." },
   { cat: "Membership & Sale", q: "What is a seat package?", a: "A package is simply a featured entry amount on /join. Each one maps 1:1 to an existing recognition tier and shows the SYN you receive at the live Genesis access rate (1 SYN = $0.01 USDC). Recognition only — no payout, no rate change, no entitlement, and no bonus tokens. Any custom amount above the $5 minimum works just the same." },
   { cat: "Membership & Sale", q: "What are the distribution eras?", a: "The distribution eras are a positional schedule layered over the member archive. Era I (Genesis, members #1–#333) is LIVE at the single fixed access rate for every member. Eras II through IX are a PROPOSED FUTURE distribution model — not live, clearly labeled, and contingent on a future sale contract before any could take effect. They never change today's fixed rate." },
 
@@ -53,7 +55,8 @@ const ENTRIES: Entry[] = [
 
   // Ranks & Identity
   { cat: "Ranks & Identity", q: "What is a Founder Number?", a: "A permanent archive ID assigned in join order. The first members carry the lowest numbers forever." },
-  { cat: "Ranks & Identity", q: "How do ranks work?", a: "Rank is derived directly from on-chain SYN balance — there are twelve tiers from Citizen to Cornerstone. Rank reflects archive recognition and visibility, never bonus tokens, payouts, or a better rate." },
+  { cat: "Ranks & Identity", q: "How do ranks work?", a: "Rank is derived directly from on-chain SYN balance — there are twelve tiers from Citizen to Cornerstone. Rank reflects contribution depth, archive recognition, and visibility, never a wealth leaderboard, bonus tokens, payouts, or a better rate." },
+  { cat: "Ranks & Identity", q: "What is institutional trust capital?", a: "It is future recognition of what a participant helped the institution become: building, documenting, operating, verifying, auditing, introducing, preserving, or creating meaningful infrastructure. It is not yield, governance, equity, or a claim. Future Builder Records, Chronicle, Register, Archive, and SeatRecord721 may reflect it only when real gates exist." },
   { cat: "Ranks & Identity", q: "Do ranks give cheaper SYN?", a: "No. Rank reflects status, visibility, and future module access only. Token price is fixed for everyone." },
 
   // Archive

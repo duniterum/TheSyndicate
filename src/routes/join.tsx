@@ -57,7 +57,7 @@ function JoinPage() {
         compact
         id="membership-ceremony"
         title="This is where a visitor becomes seated."
-        description="Membership is the state change: the wallet receives SYN, the route is enforced on-chain, and the receipt becomes the bridge into My Syndicate."
+        description="Membership is the state change: the wallet receives SYN, the route is enforced on-chain, and the receipt becomes the bridge into My Syndicate. The seat is binary; contribution depth is variable."
       />
       <JoinStepsPlaque />
       <ReferralAttributionNote className="mt-2" />
@@ -95,7 +95,12 @@ function TransactionOutcomeBand() {
     {
       label: "Seat",
       title: "Wallet becomes seated",
-      body: "Membership purchase delivers SYN. SYN is the V1 membership seat signal.",
+      body: "Membership purchase delivers SYN. Holding SYN is the V1 seat signal; buying more changes depth, not seat count.",
+    },
+    {
+      label: "Depth",
+      title: "Contribution is variable",
+      body: "A 5 USDC entrant and a 10,000 USDC entrant both have one seat. The difference is SYN acquired, routing impact, rank, and footprint.",
     },
     {
       label: "Route",
@@ -133,7 +138,7 @@ function TransactionOutcomeBand() {
             Before you connect, the page shows the exact consequences to expect. No balance, receipt, or success state appears until the wallet and chain provide it.
           </p>
         </div>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {outcomes.map((item) => (
             <div key={item.label} className="border-l border-border/70 pl-4">
               <div className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--gold)]">
