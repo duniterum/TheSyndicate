@@ -135,7 +135,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     "seat-record-721",
     "PENDING",
     null,
-    "Future ERC-721 — encodes member#, chapter, block height. NOT DEPLOYED. Do not infer an address.",
+    "Future ERC-721 identity record derived from SYN seat truth and the Holder Index. NOT DEPLOYED. Do not infer an address.",
   ),
   entry(
     "LP_PAIR",

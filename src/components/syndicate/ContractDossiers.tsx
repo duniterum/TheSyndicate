@@ -12,6 +12,10 @@ import {
   extrasForAddress,
   txExplorerUrl,
   SALE_DEPLOYMENT_BLOCK,
+  MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
+  SALE_V2_DEPLOYMENT_BLOCK,
+  MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS,
+  SALE_V2A_DEPLOYMENT_BLOCK,
 } from "@/lib/syndicate-config";
 import { routescanContractCodeUrl, snowtraceTokenUrl } from "@/lib/chain-registry";
 import { ContractLink, GlassCard, Section, SectionHeader, Pill, StatusPill } from "./Primitives";
@@ -29,7 +33,7 @@ type Dossier = {
   upgradeable: "no" | "yes" | "pending";
   standard: string;
   description: string;
-  status: "live" | "pending";
+  status: "live" | "historical" | "pending";
 };
 
 const DOSSIERS: Dossier[] = [
@@ -55,7 +59,75 @@ const DOSSIERS: Dossier[] = [
     status: "live",
   },
   {
-    label: "SyndicateMembershipSale",
+    label: "SyndicateMembershipSale V2b (active)",
+    address: MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS ?? "PENDING",
+    explorerHref: MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+      ? explorerUrlForAddress(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS)
+      : null,
+    network: "Avalanche C-Chain",
+    chainId: 43114,
+    deployment: {
+      kind: SALE_V2_DEPLOYMENT_BLOCK ? "block" : "pending",
+      value: SALE_V2_DEPLOYMENT_BLOCK ? `Block ${SALE_V2_DEPLOYMENT_BLOCK.toString()} - active sale` : "Pending",
+    },
+    verified: "partial",
+    verificationSources: [
+      {
+        label: "Avascan",
+        href: MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+          ? explorerUrlForAddress(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS) ?? ""
+          : "",
+      },
+      {
+        label: "Routescan",
+        href: MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+          ? routescanContractCodeUrl(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS) ?? ""
+          : "",
+      },
+    ],
+    ownerLabel: "Owner can pause, recover unsold SYN after timelock, and wire a future router after timelock",
+    upgradeable: "no",
+    standard: "Custom - active membership sale - V1/V2a recognition - router unset",
+    description:
+      "Current self-service membership sale. Accepts USDC, delivers SYN, routes 70% Vault / 20% Liquidity / 10% Operations, and preserves member numbering through the Holder Index. CommissionRouter is unset, so referral remains pending.",
+    status: "live",
+  },
+  {
+    label: "SyndicateMembershipSale V2a (sealed historical)",
+    address: MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS ?? "PENDING",
+    explorerHref: MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS
+      ? explorerUrlForAddress(MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS)
+      : null,
+    network: "Avalanche C-Chain",
+    chainId: 43114,
+    deployment: {
+      kind: SALE_V2A_DEPLOYMENT_BLOCK ? "block" : "pending",
+      value: SALE_V2A_DEPLOYMENT_BLOCK ? `Block ${SALE_V2A_DEPLOYMENT_BLOCK.toString()} - historical source` : "Pending",
+    },
+    verified: "partial",
+    verificationSources: [
+      {
+        label: "Avascan",
+        href: MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS
+          ? explorerUrlForAddress(MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS) ?? ""
+          : "",
+      },
+      {
+        label: "Routescan",
+        href: MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS
+          ? routescanContractCodeUrl(MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS) ?? ""
+          : "",
+      },
+    ],
+    ownerLabel: "Historical sale contract; not the current buy target",
+    upgradeable: "no",
+    standard: "Custom - historical V2 sale - scanned for member continuity",
+    description:
+      "Superseded V2 sale preserved as a historical event source. Seats #3-#5 live here, so Activity and the Holder Index scan it, but the frontend does not route new buys to it.",
+    status: "historical",
+  },
+  {
+    label: "SyndicateMembershipSale V1 (sealed historical)",
     address: CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS,
     explorerHref: explorerUrlFor("MEMBERSHIP_SALE_CONTRACT_ADDRESS"),
     network: "Avalanche C-Chain",
@@ -68,10 +140,10 @@ const DOSSIERS: Dossier[] = [
     ],
     ownerLabel: "Deployer · permitted to pause and seed inventory only · cannot mint, cannot change price",
     upgradeable: "no",
-    standard: "Custom · routes USDC 70/20/10 onchain · 1 SYN = $0.01 USDC fixed",
+    standard: "Custom - sealed historical sale - 1 SYN = $0.01 USDC fixed",
     description:
-      "Accepts USDC and dispatches SYN from the Membership Distribution wallet. Splits every USDC across Vault (70%), Liquidity (20%), Operations (10%) in the same transaction. Emits TokensPurchased.",
-    status: "live",
+      "Original Membership Sale. Paused/closed with no active inventory; kept for independent verification and historical member identity. Active buys now use V2b.",
+    status: "historical",
   },
   {
     label: "USDC (Native Avalanche)",
@@ -262,7 +334,8 @@ function Field({ label, value, href }: { label: string; value: string; href?: st
   );
 }
 
-function StatusBadge({ status }: { status: "live" | "pending" }) {
+function StatusBadge({ status }: { status: Dossier["status"] }) {
+  if (status === "historical") return <Pill tone="muted">SEALED</Pill>;
   return <StatusPill status={status === "live" ? "LIVE" : "PENDING"} />;
 }
 

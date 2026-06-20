@@ -320,6 +320,8 @@ describe("production coherence guards", () => {
     const onboarding = read("src/components/syndicate/ArchiveOnboardingPanel.tsx");
     const cockpitProof = read("src/components/syndicate/cockpit/CockpitProof.tsx");
     const archiveFaq = read("src/components/syndicate/ArchiveFaq.tsx");
+    const seatRecordDecision = read("docs/SEAT_RECORD_ARCHITECTURE_DECISION.md");
+    const contractRegistry = read("src/lib/contract-registry.ts");
 
     expect(gallery).toContain("SYN is");
     expect(gallery).toContain("the seat today");
@@ -329,6 +331,50 @@ describe("production coherence guards", () => {
     expect(onboarding).toContain("SeatRecord721 future identity record");
     expect(cockpitProof).toContain("SeatRecord721 (future ERC-721)");
     expect(archiveFaq).toContain("SeatRecord721 is planned as a separate future ERC-721 identity layer");
+
+    expect(seatRecordDecision).toContain("Status: SPECIFICATION FROZEN / NOT IMPLEMENTED / NOT DEPLOYED / NOT LIVE");
+    expect(seatRecordDecision).toContain("SYN is the V1 membership seat");
+    expect(seatRecordDecision).toContain("Holding SYN means the wallet is seated");
+    expect(seatRecordDecision).toContain("Archive1155 artifacts are protocol memory, not seats");
+    expect(seatRecordDecision).toContain("No SeatRecord721 balance, claim, mint, eligibility, or address exists today");
+    expect(seatRecordDecision).toContain("Recommended V1 policy: non-transferable identity record");
+    expect(seatRecordDecision).toContain("Secondary-market SYN holders are seated by SYN balance");
+    expect(seatRecordDecision).toContain("Token ID 2 in SyndicateArchive1155 remains reserved and disabled in V1");
+    expect(seatRecordDecision).toContain("## 13. Forbidden Wording");
+
+    expect(contractRegistry).toContain('"SEAT_RECORD_721"');
+    expect(contractRegistry).toContain('"seat-record-721"');
+    expect(contractRegistry).toContain('"PENDING"');
+  });
+
+  it("keeps the contract-system map aligned with active V2b and pending future systems", () => {
+    const map = read("docs/SMART_CONTRACT_SYSTEM_MAP.md");
+    const contractsReadme = read("contracts/README.md");
+    const registry = read("src/components/syndicate/ContractDossiers.tsx");
+    const contractRegistry = read("src/lib/contract-registry.ts");
+    const eventRegistry = read("src/lib/protocol-event-registry.ts");
+
+    expect(map).toContain("Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY");
+    expect(map).toContain("Membership Sale V1 | LIVE / SEALED HISTORICAL");
+    expect(map).toContain("Membership Sale V2a | LIVE / SEALED HISTORICAL");
+    expect(map).toContain("CommissionRouterV1 | CANDIDATE / PENDING");
+    expect(map).toContain("SeatRecord721 | FUTURE / RESERVED");
+    expect(map).toContain("CommissionRouterV1 must not receive or affect Vault or Liquidity funds");
+    expect(map).toContain("No deployment is authorized by this document");
+
+    expect(contractsReadme).toContain("Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY");
+    expect(contractsReadme).toContain("`CommissionRouterV1` | CANDIDATE / NOT DEPLOYED / NOT LIVE");
+    expect(contractsReadme).not.toMatch(/Sale V2 \+ CommissionRouter V1 \(Production Solidity\)[\s\S]{0,300}NOT DEPLOYED/);
+
+    expect(registry).toContain("SyndicateMembershipSale V2b (active)");
+    expect(registry).toContain("SyndicateMembershipSale V2a (sealed historical)");
+    expect(registry).toContain("SyndicateMembershipSale V1 (sealed historical)");
+    expect(registry).toContain("frontend does not route new buys to it");
+    expect(registry).not.toMatch(/Accepts USDC and dispatches SYN from the Membership Distribution wallet/);
+
+    expect(contractRegistry).toContain("Future ERC-721 identity record derived from SYN seat truth");
+    expect(eventRegistry).toContain("future non-transferable identity record derived from SYN seat truth");
+    expect(eventRegistry).not.toMatch(/future non-transferable seat-record token/i);
   });
 
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {

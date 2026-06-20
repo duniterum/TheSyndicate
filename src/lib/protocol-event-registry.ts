@@ -217,7 +217,7 @@ export const FUTURE_EVENT_NAMESPACES: readonly FutureEventNamespace[] = [
     label: "SeatRecord721",
     status: "PENDING",
     description:
-      "Reserved namespace for a future non-transferable seat-record token. No contract deployed.",
+      "Reserved namespace for a future non-transferable identity record derived from SYN seat truth and the Holder Index. No contract deployed.",
   },
   {
     id: "governance",

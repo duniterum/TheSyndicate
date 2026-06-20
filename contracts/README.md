@@ -1,112 +1,164 @@
-# The Syndicate — Sale V2 + CommissionRouter V1 (Production Solidity)
+# The Syndicate - Contracts
 
-Isolated [Foundry](https://book.getfoundry.sh/) project holding the **production-candidate**
-Solidity for the Sale V2 membership engine and its referral CommissionRouter, hardened from the
-frozen architecture drafts.
+Isolated Foundry project for the smart-contract layer of The Syndicate.
 
-> **STATUS: UNAUDITED — NOT DEPLOYED.** These contracts must NOT be deployed (mainnet **or**
-> testnet) or wired into the frontend until: external line-by-line review → independent audit →
-> local/forked-mainnet rehearsal (no Fuji/testnet) → founder/admin EOA owner accepts `Ownable2Step`
-> ownership + timelock sign-off (Ledger/multisig recommended as future hardening). See the deployment checklist
-> in `docs/proposals/SALE_V2_COMMISSION_ROUTER_V1_REVIEWER_PACKET.md` §7.
+This folder contains both historical live-contract source/context and
+production-candidate code that is not yet deployed. Deployment status must be
+read from the frontend contract registry and the deployment-readiness docs, not
+from file presence alone.
 
-## What's here
+## Current Contract Truth
+
+| Contract | Status | Role |
+| --- | --- | --- |
+| `SYN` ERC-20 | LIVE | Fixed-supply V1 membership seat token. No admin mint, no tax, no blacklist. |
+| Membership Sale V1 | LIVE / SEALED HISTORICAL | Original sale. Paused/closed with no active inventory. Kept for proof and holder history. |
+| Membership Sale V2a | LIVE / SEALED HISTORICAL | Superseded V2 sale. Scanned for seats #3-#5 and Holder Index continuity. Not the active buy target. |
+| Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY | Current self-service membership sale. Routes USDC 70% Vault, 20% Liquidity, 10% Operations. External CommissionRouter is unset. |
+| `SyndicateArchive1155` | LIVE | Protocol-memory ERC-1155. ID 1 is public-open; ID 3 is active/read-gated; ID 2 is a disabled pointer to future SeatRecord721. |
+| `CommissionRouterV1` | CANDIDATE / NOT DEPLOYED / NOT LIVE | Future Operations-slice commission router. No address, no live referral, no claim UI. |
+| `SeatRecord721` | FUTURE / NOT IMPLEMENTED / NOT DEPLOYED | Future identity record. SYN remains the V1 seat today. |
+
+Hard rule: do not treat Solidity files in `contracts/src/` as deployed simply
+because they exist. `CommissionRouterV1.sol` is a reviewed candidate only.
+
+## What's Here
 
 | Path | Role |
-|---|---|
-| `src/SyndicateSaleV2.sol` | Production membership sale engine (era table, caps, reserve, 70/20/10, Merkle V1 recognition, timelocked router wiring). |
-| `src/CommissionRouterV1.sol` | Production referral router (Operations-slice-only, tier ladder, push/escrow, RAL `Attribution` event). |
-| `test/SyndicateSaleV2.t.sol` | 50 tests (incl. fuzz) — constructor validation, buy path, era engine, caps, reserve, Merkle, router glue, pause/recovery, reentrancy. |
-| `test/CommissionRouterV1.t.sol` | 21 tests (incl. fuzz) — tier ladder/boundaries, split conservation, H4 guard, source allow-list, push/escrow/claim, full RAL reconstruction. |
-| `test/mocks/` | `MockERC20` (configurable decimals), `BlocklistERC20` (USDC-blocklist sim), `MockSource` (allow-listed sale), `RevertingRouter` / `ReentrantRouter` (router fallback + reentrancy). |
-| `audit/slither-report.txt` | Saved Slither output (see "Static analysis" below). |
-| `tools/gen-v1-root.mjs` | Reproducible `V1_MEMBER_ROOT` (+ per-member proof) generator. |
-
-The **frozen design drafts** remain byte-identical at `docs/proposals/drafts/*.draft.sol` and are NOT
-edited by this project. These `src/` files are NEW; they differ from the drafts by the
-named, frozen-scope hardening (audited OpenZeppelin primitives, double-hashed Merkle leaf, and the
-H4 split-integrity guard) **and by the founder-ratified F4 parameter lock — both
-`RECOVERY_TIMELOCK` and `ROUTER_TIMELOCK` are `14 days` here vs the drafts' `7 days`** (a governance
-delay only). No economics, referral, era, reserve, or doctrine change.
+| --- | --- |
+| `src/SyndicateSaleV2.sol` | Sale V2 source used for the active V2b membership sale: era table, caps, reserve floor, V1 recognition, 70/20/10 routing, and timelocked router wiring. |
+| `src/CommissionRouterV1.sol` | Production-candidate referral router: Operations-slice-only, tier ladder, push/escrow, RAL `Attribution` event. Not deployed. |
+| `test/SyndicateSaleV2.t.sol` | Sale tests covering constructor validation, buy path, era engine, caps, reserve, Merkle recognition, router glue, pause/recovery, and reentrancy fallback. |
+| `test/CommissionRouterV1.t.sol` | Router tests covering source allow-list, ABI parity, Operations-slice conservation, tier ladder, push/escrow/claim, remove/re-add lifecycle, and event reconstruction. |
+| `test/RehearsalForkV2b.t.sol` | Fork rehearsal for the V2b sale topology. Requires `AVAX_RPC`; no broadcast. |
+| `test/mocks/` | Mock ERC-20, blocklist simulation, source mock, reverting/reentrant router mocks. |
+| `script/Deploy.s.sol` | Sale V2 deployment script. Forces `initialRouter = address(0)`. Not used for CommissionRouter deployment. |
+| `script/deploy-params*.json` | Historical/current sale deployment parameter records and templates. |
+| `audit/slither-report.txt` | Prior static-analysis artifact. |
+| `audit/slither-report-14day.txt` | Current saved Slither artifact after 14-day timelock parameter lock. |
+| `tools/` | V1/V2 member snapshot and Merkle-root tools. |
 
 ## Toolchain
 
-- **solc** `0.8.24` (pinned), **evm** `paris` (conservative for Avalanche C-Chain; revisit at deploy).
-- **optimizer** on, `runs = 200`, **`via_ir = true`** — `buy()` exceeds the legacy stack limit; the
-  IR pipeline resolves it and emits better-optimized bytecode.
-- **OpenZeppelin Contracts v5.1.0**, vendored under `lib/openzeppelin-contracts/` (pinned, offline).
-- **forge-std** vendored under `lib/forge-std/`.
+- solc `0.8.24` pinned.
+- EVM `paris` in `foundry.toml` unless a rehearsal explicitly overrides it.
+- Optimizer on, `runs = 200`, `via_ir = true`.
+- OpenZeppelin Contracts v5.1.0 vendored under `lib/openzeppelin-contracts/`.
+- forge-std vendored under `lib/forge-std/`.
 
-Config: `foundry.toml`. Fuzz runs default to 512.
+## Build And Test
 
-## Build & test
+From this directory:
 
 ```bash
-# one-time per shell (Foundry lives outside the default PATH here)
-export PATH="/home/runner/workspace/.config/.foundry/bin:$PATH"
-export FOUNDRY_DIR=/home/runner/workspace/.config/.foundry
+forge build
+forge test
+forge test --gas-report
+forge test --match-contract SyndicateSaleV2Test -vvv
+```
 
+Latest validated result in this workspace lineage:
+
+- Foundry: 76 passed, 0 failed, 2 skipped.
+- Frontend/release guards are run from the repository root with
+  `npm run check-release`.
+
+## Static Analysis
+
+Saved reports:
+
+- `audit/slither-report.txt`
+- `audit/slither-report-14day.txt`
+
+Fresh static analysis is still a blocker before CommissionRouter deployment.
+
+Command shape once Slither is available:
+
+```bash
 cd contracts
-forge build                 # compile
-forge test                  # run all 71 tests
-forge test --gas-report     # tests + gas table
-forge test --match-contract SyndicateSaleV2Test -vvv   # focused, verbose
+slither . --exclude-dependencies
 ```
 
-Expected: **71 passed; 0 failed** (21 router + 50 sale).
+CommissionRouter deployment remains blocked until:
 
-## Static analysis (Slither)
+- fresh Slither is green or dispositioned,
+- a second static-analysis tool is green or dispositioned,
+- fork rehearsal is green with a reliable Avalanche RPC,
+- final owner/final-owner model is decided,
+- external review is complete,
+- legal/product signoff is final.
 
-```bash
-pip install slither-analyzer solc-select
-solc-select install 0.8.24 && solc-select use 0.8.24
-export PATH="/home/runner/workspace/.config/.foundry/bin:$PATH"
-cd contracts
-slither .                   # full output saved to audit/slither-report.txt
+## V2b Sale Topology
+
+V2b is a fresh active sale contract, not an upgrade proxy. The frontend:
+
+- writes new purchases to V2b,
+- scans V1, V2a, and V2b for Holder Index continuity,
+- treats V1 and V2a as sealed historical event sources,
+- keeps CommissionRouter unset until a future deployment decision.
+
+Sale V2b routes money in the buy transaction:
+
+```text
+buyer USDC -> Sale V2b
+  70% -> Vault wallet
+  20% -> Liquidity wallet
+  10% -> Operations wallet
+       or, only after future router activation:
+       Operations slice -> CommissionRouterV1 -> referrer escrow/payout + Operations remainder
 ```
 
-Result: **no high/medium severity findings in `src/`.** The latest **post-F4** run (both timelocks
-= `14 days`, 2026-06-15 parameter-lock) is saved at `audit/slither-report-14day.txt` — the
-authoritative current artifact; `audit/slither-report.txt` is the prior pre-F4 run. All results are informational and either
-live in vendored OpenZeppelin (the `^0.8.20` pragma notice, `Address` low-level calls in `SafeERC20`,
-unindexed `Pausable` events) or are by-design notes on our code:
-- `buy()` cyclomatic complexity — intentional (dual-bound era engine + caps + reserve in one CEI path).
-- UPPERCASE immutable names (`USDC`, `VAULT`, …) — deliberate constant-style naming.
-- "missing-inheritance" (`CommissionRouterV1` vs `ICommissionRouter`) — intentional: the router is
-  decoupled from the sale to avoid a circular import; the `CommissionRouteInput` struct is duplicated
-  **byte-for-byte** in both files (verify ABI parity at integration) rather than shared via import.
+CommissionRouter can never receive Vault or Liquidity funds under the current
+Sale V2 design.
 
-## Generating `V1_MEMBER_ROOT`
+## CommissionRouterV1 Deployment Boundary
 
-The sale recognizes V1 members via an OpenZeppelin `MerkleProof.verify` over a **double-hashed leaf**:
+`CommissionRouterV1` is review/audit-prep ready but not deployment-ready.
 
-```
-leaf = keccak256(bytes.concat(keccak256(abi.encode(memberAddress))))
-```
+Do not:
 
-This is exactly the leaf-hashing used by [`@openzeppelin/merkle-tree`](https://github.com/OpenZeppelin/merkle-tree)
-`StandardMerkleTree` with leaf encoding `["address"]`, so the canonical, reproducible generator is:
+- deploy the router,
+- add a router address,
+- activate referral,
+- add claim UI,
+- add referral write UI,
+- imply rewards/yield/passive income,
+- describe a flat 5% commission unless Solidity changes to implement it.
 
-```bash
-# isolated from the main app — install only in this tools dir (or use npx)
-cd contracts/tools
-npm init -y >/dev/null 2>&1
-npm i @openzeppelin/merkle-tree
-node gen-v1-root.mjs members.json   # members.json = ["0xabc…", "0xdef…"]
-#   -> prints V1_MEMBER_ROOT, writes v1-merkle.json { root, count, proofs, tree }
-```
+Use these docs before any deployment decision:
 
-`members.json` is a JSON array of addresses (or a `members.txt` with one address per line).
-Addresses are de-duplicated case-insensitively (a duplicate leaf would corrupt proofs). The emitted
-`proofs[address]` array is what each member passes to `claimV1Membership(proof)` / `buy(..., v1Proof)`.
+- `docs/COMMISSION_ROUTER_V1_REVIEW_READINESS.md`
+- `docs/COMMISSION_ROUTER_V1_DEPLOYMENT_FREEZE.md`
+- `docs/COMMISSION_ROUTER_V1_REMIX_DEPLOYMENT_READINESS.md`
 
-The leaf formula is also asserted on-chain by the test suite (`_leaf()` in
-`test/SyndicateSaleV2.t.sol`), so the generator and the contract are provably in lockstep.
+Preferred future signing path: Remix IDE + MetaMask. Foundry remains the
+compile/test/fork/readback preparation tool unless the founder explicitly
+approves a Foundry broadcast path.
 
-## Scope guardrails (unchanged in this sprint)
+## SeatRecord721 Boundary
 
-Economics, referral doctrine, era/reserve tables, the 70/20/10 split, and all canon are **frozen**.
-SYN funding is a SEPARATE post-review transaction (the constructor does not pull SYN). Owner is the
-deployer at construction; the **founder/admin EOA** accepts ownership via the `Ownable2Step` two-step
-flow post-deploy (Ledger/multisig recommended as future hardening — an EOA owner is higher-risk; see
-the reviewer packet §7a deploy blockers / §7b EOA risk note).
+No SeatRecord721 Solidity exists today. Do not add it casually.
+
+Binding doctrine:
+
+- SYN is the V1 seat.
+- Archive1155 artifacts are protocol memory, not seats.
+- SeatRecord721 is reserved for a future identity record.
+- Archive1155 ID 2 is a disabled pointer only.
+
+Spec freeze:
+
+- `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`
+
+## Source Of Truth
+
+Contract status and public truth are locked across:
+
+- `src/lib/contract-registry.ts`
+- `src/lib/syndicate-config.ts`
+- `src/lib/archive-id-registry.ts`
+- `docs/SMART_CONTRACT_SYSTEM_MAP.md`
+- `docs/COMMISSION_ROUTER_V1_DEPLOYMENT_FREEZE.md`
+- `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`
+
+If these disagree, stop and reconcile before implementation or deployment.
