@@ -27,7 +27,7 @@ export const Route = createFileRoute("/whitepaper")({
       {
         name: "description",
         content:
-          "The Syndicate protocol reference: SYN token, allocation model, wallet registry, Membership Sale, Vault architecture, governance, NFT and AI layers, roadmap. Every address public.",
+          "The Syndicate protocol reference: SYN token, allocation model, wallet registry, Membership Sale, Vault architecture, reserved governance, Archive memory, AI layer, roadmap. Every address public.",
       },
       { property: "og:title", content: "The Syndicate — Whitepaper" },
       {
@@ -53,7 +53,7 @@ const SECTIONS: Array<{ id: string; label: string }> = [
   { id: "vault",       label: "07 — Vault Architecture" },
   { id: "liquidity",   label: "08 — Liquidity Strategy" },
   { id: "governance",  label: "09 — Governance" },
-  { id: "nft",         label: "10 — NFT Layer" },
+  { id: "nft",         label: "10 — Archive Memory" },
   { id: "archive",     label: "10b — Archive" },
   { id: "ai",          label: "11 — AI Layer" },
   { id: "roadmap",     label: "12 — Roadmap" },
@@ -264,11 +264,11 @@ function WhitepaperPage() {
       </Section>
 
       <Section id="nft">
-        <SectionHeader eyebrow="10 — NFT Layer" title="NFT layer — open plus read-gated artifacts" />
+        <SectionHeader eyebrow="10 — Archive Memory" title="Archive memory — open plus read-gated artifacts" />
         <GlassCard className="p-6 text-sm text-foreground/85 leading-relaxed space-y-2">
           <p>The Archive1155 contract is <StatusBadge status="live" /> on Avalanche. The First Signal (ID 1) is OPEN for public mint. Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155 reads. Other Archive1155 artifacts are owner-only, sealed, reserved, or future-contract surfaces.</p>
           <p className="text-muted-foreground text-xs">
-            The live NFT layer is implemented as the <a href="/nft" className="underline-offset-4 hover:underline text-foreground">NFT Collection</a> — the collectible memory layer (The First Signal, Patron Seal, and future sealed memory artifacts). SeatRecord721 is separate future identity infrastructure. Artifacts do not grant equity, debt, Vault ownership, dividends, revenue share, governance rights, or promises of profit.
+            The live Archive memory surface is implemented through <a href="/nft" className="underline-offset-4 hover:underline text-foreground">The First Signal</a> and related Archive1155 artifacts. It is a collectible memory layer — not the seat, not a shop, and not a financial right. SeatRecord721 is separate future identity infrastructure. Artifacts do not grant equity, debt, Vault ownership, dividends, revenue share, governance rights, or promises of profit.
           </p>
         </GlassCard>
       </Section>

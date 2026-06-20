@@ -23,7 +23,7 @@ const ENTRIES: Entry[] = [
   { cat: "Basics", q: "What is the Signal Chamber?", a: "A planned future module that would surface member signals derived from on-chain activity. It is advisory only and clearly labeled PENDING — not live, conferring no rights, and never influencing the sale rate, rank, or any value. It would only describe what is already on-chain — never predict price or promise a return." },
 
   // SYN
-  { cat: "SYN Token", q: "What is SYN?", a: "A fixed-supply ERC20 utility token on Avalanche C-Chain. SYN powers membership rank, identity in the archive, future governance, and access to Syndicate participation. It is not equity, not a security, and not a claim on Vault assets." },
+  { cat: "SYN Token", q: "What is SYN?", a: "A fixed-supply ERC20 utility token on Avalanche C-Chain. SYN is the V1 membership seat: it powers rank, identity in the archive, and access to Syndicate participation. Any future governance or identity contract remains reserved until deployed. It is not equity, not a security, and not a claim on Vault assets." },
   { cat: "SYN Token", q: "Is SYN live?", a: "Yes. SYN is deployed at 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 on Avalanche C-Chain and verified on Avascan, Sourcify, and Routescan." },
   { cat: "SYN Token", q: "Is the token mintable?", a: "No. Fixed supply of 1,000,000,000 SYN. No mint function exists." },
   { cat: "SYN Token", q: "Can the owner change the token?", a: "No. The ERC20 has no owner, no admin, no upgrade path, no pause, no blacklist, no whitelist, no max wallet, no max tx, and 0% tax." },

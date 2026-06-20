@@ -135,7 +135,7 @@ export const PROTOCOL_HEALTH_REGISTRY: ProtocolModule[] = [
   },
   {
     moduleId: "nft-archive",
-    moduleName: "NFT Collection / Archive1155",
+    moduleName: "Archive memory / Archive1155",
     sources: [
       "src/lib/archive-id-registry.ts",
       "src/lib/archive-config.ts",
@@ -172,7 +172,7 @@ export const PROTOCOL_HEALTH_REGISTRY: ProtocolModule[] = [
   },
   {
     moduleId: "my-syndicate",
-    moduleName: "My Syndicate / dashboard",
+    moduleName: "My Syndicate / Member OS",
     sources: ["src/routes/my-syndicate.tsx", "src/lib/archive-balances-hook.ts"],
     dataSources: ["useArchiveBalances", "wagmi"],
     routes: ["/my-syndicate"],

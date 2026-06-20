@@ -178,6 +178,33 @@ describe("production coherence guards", () => {
     }
   });
 
+  it("keeps education surfaces in Archive-memory and Member-OS language", () => {
+    const whitepaper = read("src/routes/whitepaper.tsx");
+    const gallery = read("src/components/syndicate/ArchiveGalleryPreview.tsx");
+    const transparency = read("src/components/syndicate/TransparencyCenter.tsx");
+    const health = read("src/lib/protocol-health-registry.ts");
+    const walletChip = read("src/components/syndicate/HeaderWalletChip.tsx");
+    const faq = read("src/components/syndicate/FaqRebuilt.tsx");
+
+    expect(whitepaper).toContain("10 — Archive Memory");
+    expect(whitepaper).toContain("Archive memory — open plus read-gated artifacts");
+    expect(whitepaper).toContain("not the seat, not a shop, and not a financial right");
+    expect(gallery).toContain("Archive memory shelf");
+    expect(transparency).toContain("One honest verification center");
+    expect(health).toContain("Archive memory / Archive1155");
+    expect(health).toContain("My Syndicate / Member OS");
+    expect(walletChip).toContain("Your Member OS");
+    expect(faq).toContain("SYN is the V1 membership seat");
+    expect(faq).toContain("Any future governance or identity contract remains reserved until deployed");
+
+    for (const [name, src] of Object.entries({ whitepaper, gallery, transparency, health, walletChip })) {
+      expect(src, name).not.toMatch(/NFT Collection/i);
+      expect(src, name).not.toMatch(/NFT layer/i);
+      expect(src, name).not.toMatch(/member dashboard/i);
+      expect(src, name).not.toMatch(/One honest dashboard/i);
+    }
+  });
+
   it("keeps Registry distinctions explicit: Archive1155 live, SeatRecord721 future", () => {
     const registry = read("src/routes/registry.tsx");
     const dossiers = read("src/components/syndicate/ContractDossiers.tsx");

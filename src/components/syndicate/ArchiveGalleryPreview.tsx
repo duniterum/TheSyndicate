@@ -86,8 +86,8 @@ export function ArchiveGalleryPreview() {
         <Pill tone="muted">IDS 4–9 · PROTOCOL MEMORY</Pill>
       </div>
       <SectionHeader
-        eyebrow="The Collection"
-        title={<>The rest of the <span className="text-gradient-gold">NFT Collection</span></>}
+        eyebrow="Archive memory shelf"
+        title={<>The rest of the <span className="text-gradient-gold">Archive</span></>}
         description="One contract on Avalanche. The First Signal is open; Patron Seal is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155 reads. The remaining slots are protocol-memory artifacts sealed by on-chain events — no public mint, no price urgency."
       />
 

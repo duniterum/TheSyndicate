@@ -46,7 +46,7 @@ export function TransparencyCenter() {
             What is live, what is partial, what is pending
           </h2>
           <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl">
-            One honest dashboard. SYN, the Membership Sale, routing, and LP are live
+            One honest verification center. SYN, the Membership Sale, routing, and LP are live
             onchain. Partial systems identify their source and limits. Pending modules
             are not counted until deployed.
           </p>

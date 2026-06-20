@@ -73,7 +73,7 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
 
   });
 
-  it("NFT Collection hierarchy pills stay exactly worded", () => {
+  it("Archive memory hierarchy pills stay exactly worded", () => {
     const src = read("src/components/syndicate/ArchiveGalleryPreview.tsx");
     // Post-read-gate doctrine: ID 1 is the static public mint; ID 3 is
     // surfaced only through live Archive1155 reads. IDs 4–9 are protocol-memory.
@@ -278,4 +278,3 @@ describe("Archive + Seat Record truth copy (regression guard)", () => {
     expect(src).toContain("const PATRON_SEAL_ID = 3n;");
   });
 });
-
