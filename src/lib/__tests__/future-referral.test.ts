@@ -41,4 +41,10 @@ describe("future-referral", () => {
     const kinds = Object.keys(CATEGORY_FOR_KIND);
     expect(kinds.some((k) => k.includes("referral"))).toBe(false);
   });
+
+  it("distinguishes contract candidate work from live deployed routing", () => {
+    const src = FUTURE_REFERRAL_NOTE;
+    expect(src).toContain("verified on-chain referral router is deployed and wired live");
+    expect(src).not.toMatch(/until an on-chain referral contract is deployed/i);
+  });
 });

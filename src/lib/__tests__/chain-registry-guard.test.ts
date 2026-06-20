@@ -160,6 +160,14 @@ describe("CONTRACT_REGISTRY", () => {
     expect(e.address).toBeNull();
   });
 
+  it("COMMISSION_ROUTER_V1 is PENDING with address null until deployed", () => {
+    const e = contractByKey("COMMISSION_ROUTER_V1")!;
+    expect(e.status).toBe("PENDING");
+    expect(e.address).toBeNull();
+    expect(e.notes).toContain("no router is deployed or wired live");
+    expect(e.abiSource).toBe("contracts/src/CommissionRouterV1.sol");
+  });
+
   it("Archive1155 + SYN + USDC + Sale + LP are LIVE", () => {
     for (const k of ["ARCHIVE_1155", "SYN_TOKEN", "USDC", "MEMBERSHIP_SALE", "LP_PAIR"]) {
       expect(contractByKey(k)?.status, k).toBe("LIVE");

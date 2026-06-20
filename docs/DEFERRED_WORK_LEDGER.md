@@ -45,7 +45,7 @@ revisit · prerequisite · owner/surface.
 | Chronicle Phase 2 (entry pipeline + per-entry OG)    | Chronicle MVP spec §Phase 2            | DEFER    | Phase 1 must teach us before Phase 2 is designed   | After first real on-chain predicate fires post-launch   | Live milestone observed in production | `/chronicle`                     |
 | Notification Bell → Chronicle routing                | Chronicle close-out                    | LOW      | Bell remains count-only; routing needs block tracker | When Phase 2 entry pipeline exists                     | Phase 2 + per-entry blocks            | `NotificationBell.tsx`           |
 | Chronicle share features (per-entry OG, copy-link)   | Chronicle close-out                    | LOW      | Doctrine: Chronicle is read-only protocol record   | After Phase 2                                           | Phase 2                               | `/chronicle`                     |
-| Referral / invite / reward system                    | Pre-referral readiness sweep           | DEFER    | Not yet designed; no doctrine, no contract, no UI  | After referral doctrine + contract architecture lock-in | Doctrine + on-chain mechanism         | new system                       |
+| Referral / invite / reward system                    | Pre-referral readiness sweep           | DEFER    | Contract candidate exists, but no deployed router or live payout path | After review, audit, deployment, verified address, and frontend read/write gates | `CommissionRouterV1` deployed + verified | referral surfaces / new contract |
 
 ## How to use
 

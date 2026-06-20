@@ -23,6 +23,7 @@ export type ContractRole =
   | "token"          // ERC-20
   | "stablecoin"     // ERC-20 stablecoin (USDC)
   | "sale"           // Membership Sale contract
+  | "commission-router" // future referral routing contract
   | "archive1155"    // SyndicateArchive1155
   | "seat-record-721"// future ERC-721
   | "lp-pair"        // Trader Joe LP pair
@@ -109,6 +110,15 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
     "Model 2 continuation sale (per-era SYN caps, V1 recognition; external CommissionRouter currently UNSET — referral pending). DEPLOYED + funded + active self-service sale, but the V2 contract is UNAUDITED — treat as live-but-unaudited / early. Continues Genesis numbering via the Holder Index, never a new member registry. Sealed V1 history remains independently verifiable.",
     "src/lib/sale-abi.ts",
+  ),
+  entry(
+    "COMMISSION_ROUTER_V1",
+    "CommissionRouterV1",
+    "commission-router",
+    "PENDING",
+    null,
+    "Production-candidate referral router exists in contracts/src/CommissionRouterV1.sol, but no router is deployed or wired live. Referral remains REQUIRES CONTRACT until a real address is verified.",
+    "contracts/src/CommissionRouterV1.sol",
   ),
   entry(
     "ARCHIVE_1155",

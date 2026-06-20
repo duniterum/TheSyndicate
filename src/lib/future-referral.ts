@@ -1,6 +1,7 @@
 // ─── Future Referral Event Model (RESERVED — attribution-first) ─────────────
-// Reserves the SHAPE of a future referral attribution event. No referral
-// contract exists; nothing here is scanned, emitted, or paid. This is the
+// Reserves the SHAPE of a future referral attribution event. A production-
+// candidate CommissionRouter exists in contracts/, but no router is deployed
+// or wired live; nothing here is scanned, emitted, or paid. This is the
 // canonical reserved MODEL — distinct from the SIMULATED UX preview in
 // src/lib/preview/referral.ts (which is for design only).
 //
@@ -37,8 +38,8 @@ export type FutureReferralAttribution = {
 
 export const FUTURE_REFERRAL_NOTE =
   "Attribution only — a verified growth contribution and member recognition. " +
-  "No reward is implied or paid. Reward status remains PENDING until an " +
-  "on-chain referral contract is deployed.";
+  "No reward is implied or paid. Reward status remains PENDING until a " +
+  "verified on-chain referral router is deployed and wired live.";
 
 /**
  * Build a reserved attribution record. `rewardStatus` is forced to PENDING and
