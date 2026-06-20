@@ -9,6 +9,7 @@
     "check-archive-abi": "node scripts/check-archive-abi.mjs",
     "check-explorer-urls": "node scripts/check-explorer-urls.mjs",
     "check-execution-gates": "node scripts/check-execution-gates.mjs",
+    "check-commission-router-freeze": "node scripts/check-commission-router-freeze.mjs",
     "check-release": "node scripts/check-release.mjs",
     "check-preview-labels": "node scripts/check-preview-labels.mjs",
     "check-ownership-wording": "node scripts/check-ownership-wording.mjs",

@@ -1,6 +1,6 @@
 # CommissionRouterV1 Review Readiness
 
-Status: REVIEW READY / NOT DEPLOYED / NOT LIVE
+Status: REVIEW READY / DEPLOYMENT BLOCKED BY FREEZE GATES / NOT DEPLOYED / NOT LIVE
 
 This packet summarizes the actual repository truth for `CommissionRouterV1`.
 It is not a deployment approval. It is the checklist for deciding whether a
@@ -263,7 +263,9 @@ The contract is not ready for deployment until:
 
 Conclusion: CommissionRouterV1 is ready for serious review. It is not ready for
 mainnet deployment or live frontend wiring yet. The deployment freeze checklist
-lives in `docs/COMMISSION_ROUTER_V1_DEPLOYMENT_FREEZE.md`.
+in `docs/COMMISSION_ROUTER_V1_DEPLOYMENT_FREEZE.md` is the authoritative
+go/no-go artifact: fresh static analysis, fork rehearsal, owner selection,
+external review, and founder sign-off must clear there before deployment.
 
 ## 16. Model Evaluation
 
