@@ -5,8 +5,7 @@ Status: EXTERNAL REVIEW PACKAGE READY / NO DEPLOYMENT AUTHORIZED / V3 NOT LIVE
 Current reviewer-findings disposition state:
 
 ```text
-Pending commit at document update time.
-See REVIEW_CONTEXT.md in the refreshed review bundle for the exact commit hash.
+Historical-member migration patch committed at 664cdd0b185104c0665549c841e1fd492bc6e287.
 ```
 
 This package is the reviewer front door for the V3 candidate contracts. It does
@@ -102,7 +101,7 @@ RehearsalForkV3 real QuickNode fork after historical-member migration patch: 4 p
 ```
 
 The real QuickNode fork was rerun after the historical-member migration patch.
-The final patch commit hash must be recorded when this patch is committed.
+Historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
 The local/skip path remains useful when `AVAX_RPC` is unset.
 
 Full unfiltered Foundry suite status:
@@ -253,8 +252,7 @@ The fork rehearsal checks:
 - member number / first-seat behavior.
 
 Real QuickNode fork rehearsal was rerun after the historical-member migration
-patch. The final patch commit hash must be recorded when this patch is
-committed.
+patch. Historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
 
 Result:
 

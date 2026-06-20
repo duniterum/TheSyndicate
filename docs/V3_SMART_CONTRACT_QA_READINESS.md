@@ -315,8 +315,7 @@ The rehearsal should prove:
 - no V3 frontend activation happens as part of rehearsal.
 
 Real QuickNode fork rehearsal was rerun after the historical-member migration
-patch. The final patch commit hash must be recorded when this patch is
-committed.
+patch. Historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
 
 Result:
 
