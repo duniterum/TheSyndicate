@@ -71,6 +71,24 @@ describe("CHAIN_REGISTRY", () => {
     expect(CHAIN_REGISTRY.rpc.fallback).toMatch(/^https:\/\//);
   });
 
+  it("supports VITE_AVALANCHE_RPC_URL as preferred primary with public fallback", () => {
+    const config = readFileSync(join(ROOT, "src/lib/syndicate-config.ts"), "utf8");
+    const envExample = readFileSync(join(ROOT, ".env.example"), "utf8");
+
+    expect(config).toContain("import.meta.env.VITE_AVALANCHE_RPC_URL");
+    expect(config).toContain("import.meta.env.VITE_AVALANCHE_RPC_PRIMARY");
+    expect(config.indexOf("VITE_AVALANCHE_RPC_URL")).toBeLessThan(
+      config.indexOf("VITE_AVALANCHE_RPC_PRIMARY"),
+    );
+    expect(config).toContain("DEFAULT_AVALANCHE_RPC_URL_FALLBACK");
+    expect(config).toContain("Configured primary RPC (env)");
+    expect(config).toContain('u.protocol === "https:"');
+
+    expect(envExample).toContain("VITE_AVALANCHE_RPC_URL=");
+    expect(envExample).toContain("QuickNode Avalanche C-Chain HTTPS endpoint");
+    expect(envExample).not.toMatch(/quicknode[a-z0-9.-]*\/[a-z0-9]{16,}/i);
+  });
+
   it("wagmi default explorer is a bare origin (MetaMask-safe)", () => {
     const u = new URL(avalanche.blockExplorers.default.url);
     expect(u.pathname).toBe("/");

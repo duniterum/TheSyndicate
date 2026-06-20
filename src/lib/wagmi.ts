@@ -9,8 +9,7 @@ import { fallback, http } from "viem";
 import { avalanche as wagmiAvalanche } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
 import {
-  AVALANCHE_RPC_URL,
-  AVALANCHE_RPC_URL_FALLBACK,
+  AVALANCHE_RPC_ENDPOINTS,
 } from "./syndicate-config";
 
 // IMPORTANT: blockExplorers.default MUST be a bare origin (no path).
@@ -50,8 +49,9 @@ export const wagmiConfig = createConfig({
   transports: {
     [avalanche.id]: fallback(
       [
-        http(AVALANCHE_RPC_URL, { name: "Avalanche public RPC" }),
-        http(AVALANCHE_RPC_URL_FALLBACK, { name: "Ankr public RPC" }),
+        ...AVALANCHE_RPC_ENDPOINTS.map((endpoint) =>
+          http(endpoint.url, { name: endpoint.label }),
+        ),
       ],
       { rank: false, retryCount: 1 },
     ),

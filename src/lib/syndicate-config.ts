@@ -446,16 +446,16 @@ export const SALE_MIN_USDC = 5;
 
 // RPC + chain (Avalanche C-Chain).
 // Defaults: Avalanche public RPC (primary) + Ankr public RPC (fallback).
-// Both are OPTIONALLY overridable via env so a dedicated provider (e.g.
-// Chainstack) can be used as the primary without code changes. With no env set,
-// behaviour is byte-for-byte identical to the public-only defaults below.
+// VITE_AVALANCHE_RPC_URL is the preferred primary override for a dedicated
+// provider such as QuickNode. With no env set, behaviour remains public-only.
 //
 // ── VITE_ env vars are PUBLIC (browser-exposed) ──────────────────────────────
 // Vite inlines any VITE_-prefixed value into the client bundle, so whatever URL
 // is set here is visible to anyone who loads the site. Only point these at
 // endpoints that are safe to expose (e.g. origin/domain-allowlisted). NEVER put
 // a secret/keyed RPC URL here unless the provider restricts that key by origin.
-//   VITE_AVALANCHE_RPC_PRIMARY  — optional custom primary (e.g. Chainstack)
+//   VITE_AVALANCHE_RPC_URL      — preferred custom primary (e.g. QuickNode)
+//   VITE_AVALANCHE_RPC_PRIMARY  — legacy alias for custom primary
 //   VITE_AVALANCHE_RPC_FALLBACK — optional custom secondary (defaults to Ankr)
 //
 // Used by wagmi via viem's `fallback` transport (see src/lib/wagmi.ts) and by
@@ -463,14 +463,25 @@ export const SALE_MIN_USDC = 5;
 const DEFAULT_AVALANCHE_RPC_URL = "https://api.avax.network/ext/bc/C/rpc";
 const DEFAULT_AVALANCHE_RPC_URL_FALLBACK = "https://rpc.ankr.com/avalanche";
 
-const readEnvUrl = (v: unknown): string | undefined =>
-  typeof v === "string" && v.trim() ? v.trim() : undefined;
+const readEnvUrl = (v: unknown): string | undefined => {
+  if (typeof v !== "string") return undefined;
+  const value = v.trim();
+  if (!value) return undefined;
+  try {
+    const u = new URL(value);
+    return u.protocol === "https:" ? value : undefined;
+  } catch {
+    return undefined;
+  }
+};
 
-const ENV_AVALANCHE_RPC_PRIMARY = readEnvUrl(import.meta.env.VITE_AVALANCHE_RPC_PRIMARY);
+const ENV_AVALANCHE_RPC_PRIMARY =
+  readEnvUrl(import.meta.env.VITE_AVALANCHE_RPC_URL) ??
+  readEnvUrl(import.meta.env.VITE_AVALANCHE_RPC_PRIMARY);
 const ENV_AVALANCHE_RPC_FALLBACK = readEnvUrl(import.meta.env.VITE_AVALANCHE_RPC_FALLBACK);
 
 // Effective endpoints — env override wins; public endpoints are the defaults.
-// Setting only VITE_AVALANCHE_RPC_PRIMARY keeps the public Ankr fallback active;
+// Setting only VITE_AVALANCHE_RPC_URL keeps the public Ankr fallback active;
 // VITE_AVALANCHE_RPC_FALLBACK, if set, replaces that secondary endpoint.
 // Exported names and shapes are unchanged so every consumer keeps working.
 export const AVALANCHE_RPC_URL = ENV_AVALANCHE_RPC_PRIMARY ?? DEFAULT_AVALANCHE_RPC_URL;
@@ -478,11 +489,11 @@ export const AVALANCHE_RPC_URL_FALLBACK =
   ENV_AVALANCHE_RPC_FALLBACK ?? DEFAULT_AVALANCHE_RPC_URL_FALLBACK;
 export const AVALANCHE_RPC_ENDPOINTS = [
   {
-    label: ENV_AVALANCHE_RPC_PRIMARY ? "Custom primary RPC (env)" : "Avalanche public RPC",
+    label: ENV_AVALANCHE_RPC_PRIMARY ? "Configured primary RPC (env)" : "Avalanche public RPC",
     url: AVALANCHE_RPC_URL,
   },
   {
-    label: ENV_AVALANCHE_RPC_FALLBACK ? "Custom fallback RPC (env)" : "Ankr public RPC",
+    label: ENV_AVALANCHE_RPC_FALLBACK ? "Configured fallback RPC (env)" : "Ankr public RPC",
     url: AVALANCHE_RPC_URL_FALLBACK,
   },
 ] as const;

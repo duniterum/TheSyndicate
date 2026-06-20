@@ -4,9 +4,8 @@
 // rendererMode, maxSupply, walletLimit, totalMinted, uri) with PASS /
 // PENDING / FAIL plus the exact error or revert reason when it fails.
 //
-// Also surfaces the two configured RPC endpoints (primary + fallback) and
-// which one is currently reachable, so the truth model isn't hidden behind
-// wagmi's transport.
+// Also surfaces configured RPC health (primary + fallback) by label only. The
+// endpoint URLs are not rendered in the UI.
 //
 // READ-ONLY. No write paths. Refetches under the hood every 60s; users can
 // also press "Recheck" to force a fresh probe.

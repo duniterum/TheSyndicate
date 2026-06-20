@@ -1,9 +1,9 @@
 // Lightweight RPC reachability probe for both Avalanche endpoints.
 //
 // Independent of wagmi's transport — we directly POST eth_chainId to each
-// configured endpoint and report which ones are reachable. Used by the
-// /nft on-chain read-health panel so visitors can see *which* endpoint is
-// answering and whether the fallback is also healthy.
+// configured endpoint and report which label is reachable. Used by the /nft
+// on-chain read-health panel so visitors can see primary/fallback health
+// without rendering private provider URLs in the UI.
 //
 // READ-ONLY. No write paths. No secrets used. ~10s timeout, refresh every 60s.
 import { useEffect, useState } from "react";
