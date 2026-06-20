@@ -100,6 +100,45 @@ describe("production coherence guards", () => {
     expect(hero).toContain("Your seat is on-chain");
   });
 
+  it("keeps homepage first-scroll optimized for quick answers before deep protocol systems", () => {
+    const home = read("src/routes/index.tsx");
+    const quick = read("src/components/syndicate/HomeQuickAnswerRail.tsx");
+    const archiveTeaser = read("src/components/syndicate/HomeArchiveTeaser.tsx");
+    const header = read("src/components/syndicate/Header.tsx");
+
+    expect(home).toContain("<HomeQuickAnswerRail />");
+    expect(home).toContain("<TrustBar />");
+    expect(home).toContain("<HomeArchiveTeaser />");
+    expect(home.indexOf("<ProtocolHero />")).toBeLessThan(home.indexOf("<HomeQuickAnswerRail />"));
+    expect(home.indexOf("<HomeQuickAnswerRail />")).toBeLessThan(home.indexOf("<TrustBar />"));
+    expect(home.indexOf("<TrustBar />")).toBeLessThan(home.indexOf("<HeroEntryStrip />"));
+    expect(home.indexOf("<HeroEntryStrip />")).toBeLessThan(home.indexOf("<HomeArchiveTeaser />"));
+    expect(home.indexOf("<HomeArchiveTeaser />")).toBeLessThan(home.indexOf("<ProtocolEnginesPanel />"));
+
+    expect(quick).toContain("What is this?");
+    expect(quick).toContain("What do I receive?");
+    expect(quick).toContain("Where does USDC go?");
+    expect(quick).toContain("How do I verify it?");
+    expect(quick).toContain("Where does SYN trade?");
+    expect(quick).toContain("What is future?");
+    expect(quick).toContain("SYN token");
+    expect(quick).toContain("Sale contract");
+    expect(quick).toContain("Archive1155");
+    expect(quick).toContain("SYN/USDC LP");
+    expect(quick).toContain("Trade SYN");
+    expect(quick).toContain("The whole product in one scan.");
+
+    expect(archiveTeaser).toContain("Archive1155 is deployed and live");
+    expect(archiveTeaser).toContain("READ GATED");
+    expect(archiveTeaser).toContain("RESERVED MEMORY");
+    expect(archiveTeaser).toContain("Artifacts are the memory");
+
+    expect(header).toContain('{ label: "Registry", to: "/registry"');
+    expect(header).toContain('{ label: "Liquidity", to: "/liquidity"');
+    expect(header).toContain('{ label: "Transparency", to: "/transparency"');
+    expect(header).toContain('{ label: "Members", to: "/members"');
+  });
+
   it("keeps public Archive1155 / SeatRecord721 truth from regressing to pre-deployment copy", () => {
     const files = [
       ...walkPublicSource(join(ROOT, "src/routes")),

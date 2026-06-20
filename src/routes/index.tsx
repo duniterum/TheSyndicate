@@ -20,6 +20,9 @@ import { RiskDisclaimer } from "@/components/syndicate/RiskDisclaimer";
 import { Section, SectionHeader, CTAButton } from "@/components/syndicate/Primitives";
 import { ProtocolJourneySpine, ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
 import { AnticipationLine } from "@/components/syndicate/AnticipationLine";
+import { HomeQuickAnswerRail } from "@/components/syndicate/HomeQuickAnswerRail";
+import { TrustBar } from "@/components/syndicate/TrustBar";
+import { HomeArchiveTeaser } from "@/components/syndicate/HomeArchiveTeaser";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -92,10 +95,12 @@ function Index() {
           Each panel self-labels via its own SectionHeader; no act markers up here. */}
       <ProtocolIntelligenceBar cells={HOME_TICKER_CELLS} mobilePriority={4} />
       <ProtocolHero />
+      <HomeQuickAnswerRail />
+      <TrustBar />
+      <HeroEntryStrip />
       <AnticipationLine />
       <ProtocolJourneySpine current="visitor" />
       <HomeKpiGrid />
-      <ProtocolEnginesPanel />
 
       {/* Raised live heartbeat — nearest milestone, vitals, and the activity tape.
           Honest empty / PARTIAL states come from the components themselves. */}
@@ -103,7 +108,7 @@ function Index() {
       <LivePulseStrip />
       <HomeActivityTape />
       <ProtocolMemoryPipeline compact />
-      <HeroEntryStrip />
+      <HomeArchiveTeaser />
 
       {/* ── HOW IT WORKS ── prose, demoted into one compressed band below the
           cockpit. Gated narrative surfaces (Flywheel, ProtocolStorySoFar) live here. */}
@@ -126,6 +131,7 @@ function Index() {
         kicker="Verify"
         title="Don't trust — verify. Every public claim maps to an on-chain read."
       />
+      <ProtocolEnginesPanel />
       <StoryTimeline />
       <HomeTransparencySnapshot />
 

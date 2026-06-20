@@ -17,9 +17,9 @@ const PRIMARY: Item[] = [
   { label: "My Syndicate", to: "/my-syndicate", hint: "Your seat, proof, and memory" },
   { label: "Activity", to: "/activity", hint: "Protocol heartbeat" },
   { label: "Archive", to: "/archive", hint: "Artifacts as protocol memory" },
-  { label: "Verify", to: "/transparency", hint: "Verify every claim" },
-  { label: "Members", to: "/members", hint: "Who is seated" },
+  { label: "Registry", to: "/registry", hint: "Contracts and wallets" },
   { label: "SYN", to: "/token", hint: "The V1 membership seat" },
+  { label: "Liquidity", to: "/liquidity", hint: "Trade and LP proof" },
 ];
 
 const GROUPS: Group[] = [
@@ -29,11 +29,11 @@ const GROUPS: Group[] = [
       { label: "Vault", to: "/vault", hint: "70% routing destination" },
       { label: "First Signal Mint", to: "/nft", hint: "Archive1155 artifact mint" },
       { label: "Archive", to: "/archive", hint: "Museum · every Artifact & seal" },
+      { label: "Transparency", to: "/transparency", hint: "70 / 20 / 10 routing proof" },
+      { label: "Members", to: "/members", hint: "Who is seated" },
       { label: "Roadmap", to: "/roadmap", hint: "Live · Next · Pending · Future" },
       { label: "Referral Reserved", to: "/referral", hint: "Requires contract before live" },
       { label: "Tokenomics", to: "/tokenomics", hint: "Allocation & supply" },
-      { label: "Liquidity", to: "/liquidity", hint: "SYN/USDC pool" },
-      { label: "Contract Registry", to: "/registry", hint: "Every contract & wallet address" },
       { label: "Founders", to: "/founders", hint: "Who was here first" },
       { label: "Chapters", to: "/chapters", hint: "How the protocol formed" },
       { label: "Ranks", to: "/ranks", hint: "Where you fit" },
@@ -116,7 +116,7 @@ export function Header({ wide = false }: { wide?: boolean } = {}) {
               className={NAV_BASE}
               activeProps={{ className: `${NAV_BASE} ${NAV_ACTIVE}` }}
               onClick={
-                it.to === "/transparency"
+                it.to === "/registry"
                   ? () => track("verify_click", { surface: "header" })
                   : undefined
               }

@@ -156,6 +156,7 @@ function MySyndicatePage() {
       hideHeader
     >
       <MemberCockpit />
+      <MemberOSMap />
       <ProtocolJourneySpine
         current="home"
         compact
@@ -173,6 +174,61 @@ function MySyndicatePage() {
       <ProofZone />
       <BuildingZone />
     </PageShell>
+  );
+}
+
+const MEMBER_OS_MAP = [
+  { label: "Overview", href: "#my-seat", status: "LIVE", body: "Seat, wallet, SYN, and action dock." },
+  { label: "Passport", href: "#seat-passport", status: "DERIVED", body: "Identity, chapter, proof, and legacy context." },
+  { label: "Wallet", href: "#my-assets", status: "LIVE", body: "SYN, purchases, routing, and artifact reads." },
+  { label: "Activity", href: "#memory", status: "LIVE", body: "What changed and what entered history." },
+  { label: "Archive", href: "#memory-path", status: "READ-GATED", body: "Memories connected to the seat." },
+  { label: "Referral", href: "#parked", status: "RESERVED", body: "Attribution only until contracts ship." },
+  { label: "Horizon", href: "#horizon-watch", status: "WATCHING", body: "Truthful anticipation, no fake rewards." },
+  { label: "Verify", href: "#proof", status: "LIVE", body: "Registry, contracts, receipts, and explorers." },
+] as const;
+
+function MemberOSMap() {
+  return (
+    <Section id="member-os-map" width="data" className="py-3 md:py-4">
+      <GlassCard className="p-3 md:p-4">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <div className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--gold)]">
+              Member OS map
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              One home for identity, wallet position, receipts, activity, memory, pending systems, and proof.
+            </p>
+          </div>
+          <Link
+            to="/registry"
+            className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline"
+          >
+            Verify contracts →
+          </Link>
+        </div>
+        <nav aria-label="Member operating system sections" className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {MEMBER_OS_MAP.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="group rounded-md border border-border/50 bg-background/40 p-3 hover:border-[var(--gold)]/60"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-semibold text-foreground">{item.label}</span>
+                <span className="mono text-[8px] uppercase tracking-[0.16em] text-muted-foreground group-hover:text-[var(--gold)]">
+                  {item.status}
+                </span>
+              </div>
+              <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
+                {item.body}
+              </p>
+            </a>
+          ))}
+        </nav>
+      </GlassCard>
+    </Section>
   );
 }
 

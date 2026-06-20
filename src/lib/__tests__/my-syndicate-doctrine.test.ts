@@ -57,10 +57,32 @@ describe("/my-syndicate doctrine — narrative arc", () => {
     const matches = ROUTE.match(/<MemberCockpit\s*\/>/g) ?? [];
     expect(matches.length).toBe(1);
     const cockpitIdx = ROUTE.indexOf("<MemberCockpit");
+    const mapIdx = ROUTE.indexOf("<MemberOSMap");
     const memoryIdx = ROUTE.indexOf('id="memory"');
     expect(cockpitIdx).toBeGreaterThan(-1);
+    expect(mapIdx).toBeGreaterThan(cockpitIdx);
+    expect(mapIdx).toBeLessThan(memoryIdx);
     // The cockpit sits above the route-level arc tail.
     expect(memoryIdx).toBeGreaterThan(cockpitIdx);
+  });
+
+  it("exposes a compact Member OS map before the long narrative sections", () => {
+    expect(ROUTE).toContain("MEMBER_OS_MAP");
+    expect(ROUTE).toContain("Member OS map");
+    expect(ROUTE).toContain("Overview");
+    expect(ROUTE).toContain("Passport");
+    expect(ROUTE).toContain("Wallet");
+    expect(ROUTE).toContain("Activity");
+    expect(ROUTE).toContain("Archive");
+    expect(ROUTE).toContain("Referral");
+    expect(ROUTE).toContain("Horizon");
+    expect(ROUTE).toContain("Verify");
+    expectInOrder(ROUTE, [
+      "<MemberCockpit",
+      "<MemberOSMap",
+      "<ProtocolJourneySpine",
+      "<ReturnBriefing",
+    ]);
   });
 
   it("does not reintroduce the retired v2 seat/assets route layout", () => {
