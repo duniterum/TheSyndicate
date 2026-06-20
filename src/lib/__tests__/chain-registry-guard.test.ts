@@ -89,6 +89,38 @@ describe("CHAIN_REGISTRY", () => {
     expect(envExample).not.toMatch(/quicknode[a-z0-9.-]*\/[a-z0-9]{16,}/i);
   });
 
+  it("keeps active frontend RPC consumers on the canonical endpoint registry", () => {
+    const metamaskFix = readFileSync(join(ROOT, "src/components/syndicate/MetaMaskExplorerFix.tsx"), "utf8");
+    const ogData = readFileSync(join(ROOT, "src/lib/og-data.server.ts"), "utf8");
+
+    expect(metamaskFix).toContain("CHAIN_REGISTRY.rpc.all");
+    expect(metamaskFix).not.toContain("https://api.avax.network/ext/bc/C/rpc");
+
+    expect(ogData).toContain("AVALANCHE_RPC_ENDPOINTS");
+    expect(ogData).toContain("fallback(");
+    expect(ogData).not.toContain("transport: http(AVALANCHE_RPC_URL)");
+  });
+
+  it("does not redeclare Avalanche RPC literals outside syndicate-config.ts", () => {
+    const offenders: Array<{ file: string; match: string }> = [];
+    const patterns = [
+      /https:\/\/api\.avax\.network\/ext\/bc\/C\/rpc/,
+      /https:\/\/rpc\.ankr\.com\/avalanche/,
+      /https:\/\/avalanche-c-chain-rpc\.publicnode\.com/,
+    ];
+    for (const file of SRC_FILES) {
+      const rel = relative(ROOT, file).replace(/\\/g, "/");
+      if (rel === "src/lib/syndicate-config.ts") continue;
+      if (rel.includes("__tests__")) continue;
+      const src = readFileSync(file, "utf8");
+      for (const p of patterns) {
+        const m = src.match(p);
+        if (m) offenders.push({ file: rel, match: m[0] });
+      }
+    }
+    expect(offenders, JSON.stringify(offenders, null, 2)).toEqual([]);
+  });
+
   it("wagmi default explorer is a bare origin (MetaMask-safe)", () => {
     const u = new URL(avalanche.blockExplorers.default.url);
     expect(u.pathname).toBe("/");

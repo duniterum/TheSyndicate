@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { archiveTxUrl } from "@/lib/explorer-guard";
 import { isTxHash } from "@/lib/syndicate-config";
-import { txUrls } from "@/lib/chain-registry";
+import { CHAIN_REGISTRY, txUrls } from "@/lib/chain-registry";
 import { useExplorerPreference, EXPLORER_IDS, type ExplorerId } from "@/lib/explorer-preference";
 import { track } from "@/lib/analytics";
 
@@ -101,7 +101,7 @@ export function MetaMaskExplorerFix() {
             chainId: AVAX_CHAIN_ID_HEX,
             chainName: "Avalanche C-Chain",
             nativeCurrency: { name: "AVAX", symbol: "AVAX", decimals: 18 },
-            rpcUrls: ["https://api.avax.network/ext/bc/C/rpc"],
+            rpcUrls: CHAIN_REGISTRY.rpc.all.map(({ url }) => url),
             blockExplorerUrls: [SNOWTRACE_ORIGIN],
           },
         ],

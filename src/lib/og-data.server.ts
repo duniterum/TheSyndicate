@@ -7,11 +7,11 @@
 // derived from on-chain reads. If the chain cannot be reached we render a
 // PENDING card rather than fabricating values.
 
-import { createPublicClient, http, parseAbiItem, formatUnits, isAddress } from "viem";
+import { createPublicClient, fallback, http, parseAbiItem, formatUnits, isAddress } from "viem";
 import { avalanche } from "viem/chains";
 import {
   CONTRACTS,
-  AVALANCHE_RPC_URL,
+  AVALANCHE_RPC_ENDPOINTS,
   USDC_DECIMALS,
   SYN_DECIMALS,
   SALE_DEPLOYMENT_BLOCK,
@@ -28,7 +28,15 @@ const TOKENS_PURCHASED = parseAbiItem(
 );
 
 function client() {
-  return createPublicClient({ chain: avalanche, transport: http(AVALANCHE_RPC_URL) });
+  return createPublicClient({
+    chain: avalanche,
+    transport: fallback(
+      AVALANCHE_RPC_ENDPOINTS.map((endpoint) =>
+        http(endpoint.url, { name: endpoint.label }),
+      ),
+      { rank: false, retryCount: 1 },
+    ),
+  });
 }
 
 type RawLog = {
