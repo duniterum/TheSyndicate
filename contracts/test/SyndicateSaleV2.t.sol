@@ -119,6 +119,36 @@ contract SyndicateSaleV2Test is Test {
         s.buy(usdcIn, ref, 0, proof);
     }
 
+    function _uniqueBuyer(string memory salt, uint256 i) internal pure returns (address) {
+        return address(uint160(uint256(keccak256(abi.encodePacked(salt, i)))));
+    }
+
+    function _seedReferralCount(SyndicateSaleV2 s, address ref, uint256 start, uint256 count) internal {
+        for (uint256 i = 0; i < count; ++i) {
+            address buyerSeed = _uniqueBuyer("tier-seed", start + i);
+            _approve(s, buyerSeed, USDC_10);
+            _buy(s, buyerSeed, USDC_10, ref, _noProof());
+        }
+    }
+
+    function _assertNextReferralPct(
+        SyndicateSaleV2 s,
+        address ref,
+        uint256 buyerSalt,
+        uint256 expectedOpsPct
+    ) internal {
+        address buyerNext = _uniqueBuyer("tier-assert", buyerSalt);
+        uint256 refBefore = usdc.balanceOf(ref);
+        uint256 opsBefore = usdc.balanceOf(operations);
+        _approve(s, buyerNext, USDC_100);
+        _buy(s, buyerNext, USDC_100, ref, _noProof());
+
+        uint256 opsSlice = 10_000_000;
+        uint256 expectedRef = (opsSlice * expectedOpsPct) / 100;
+        assertEq(usdc.balanceOf(ref) - refBefore, expectedRef, "tier referrer amount");
+        assertEq(usdc.balanceOf(operations) - opsBefore, opsSlice - expectedRef, "tier ops remainder");
+    }
+
     // ============================================================ constructor
     function test_ctor_zeroAddressReverts() public {
         vm.expectRevert(SyndicateSaleV2.ZeroAddress.selector);
@@ -508,6 +538,41 @@ contract SyndicateSaleV2Test is Test {
         assertEq(usdc.balanceOf(liquidity), 20_000_000);
         assertEq(r.referredCount(v1A), 1);
         assertEq(usdc.balanceOf(address(s)), 0);
+    }
+
+    function test_router_integrationAllTiersFromOperationsOnly() public {
+        CommissionRouterV1 r = new CommissionRouterV1(address(usdc));
+        SyndicateSaleV2 s = _deploy(GEN, _addrCaps(), MAXTX, 0, _eraCaps(), address(r), root);
+        syn.mint(address(s), FUND);
+        r.addSource(address(s), keccak256("SALE_V2"), operations);
+
+        vm.prank(v1A);
+        s.claimV1Membership(_proof2(v1B));
+
+        _assertNextReferralPct(s, v1A, 0, 30);
+        assertEq(r.referredCount(v1A), 1);
+
+        _seedReferralCount(s, v1A, 0, 4);
+        assertEq(r.referredCount(v1A), 5);
+        _assertNextReferralPct(s, v1A, 5, 40);
+
+        _seedReferralCount(s, v1A, 4, 14);
+        assertEq(r.referredCount(v1A), 20);
+        _assertNextReferralPct(s, v1A, 20, 55);
+
+        _seedReferralCount(s, v1A, 18, 29);
+        assertEq(r.referredCount(v1A), 50);
+        _assertNextReferralPct(s, v1A, 50, 70);
+
+        _seedReferralCount(s, v1A, 47, 49);
+        assertEq(r.referredCount(v1A), 100);
+        _assertNextReferralPct(s, v1A, 100, 80);
+
+        uint256 totalGross = (5 * USDC_100) + (96 * USDC_10);
+        assertEq(usdc.balanceOf(vault), (totalGross * 70) / 100, "vault always receives full 70%");
+        assertEq(usdc.balanceOf(liquidity), (totalGross * 20) / 100, "liquidity always receives full 20%");
+        assertEq(usdc.balanceOf(address(s)), 0, "sale retains no USDC");
+        assertEq(usdc.balanceOf(address(r)), 0, "router retains no USDC without escrow");
     }
 
     function test_router_proposeConfirmTimelock() public {

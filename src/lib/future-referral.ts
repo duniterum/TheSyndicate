@@ -8,8 +8,8 @@
 // Doctrine:
 //   • Referral is ATTRIBUTION FIRST, payout later. It records who brought whom
 //     — a verified growth contribution and member recognition.
-//   • Reward status is ALWAYS PENDING until an on-chain referral contract is
-//     deployed. No live commission is implied now.
+//   • Reward status is ALWAYS PENDING until a verified on-chain referral router
+//     is deployed and wired live. No live commission is implied now.
 //   • This namespace is intentionally kept OUT of `ProtocolEventKind` so no
 //     pipeline consumer must handle it. See FUTURE_EVENT_NAMESPACES
 //     ("referral-attribution" / "referral-reward") in protocol-event-registry.

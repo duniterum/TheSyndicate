@@ -176,6 +176,9 @@ describe("production coherence guards", () => {
       /non-ID-1 artifacts inactive/i,
       /Milestone reward pool/i,
       /Referral rewards are commissions/i,
+      /flat\s+5%\s+(?:referral|commission)/i,
+      /default\s+5%\s+(?:referral|commission)/i,
+      /5%\s+referral\s+commission/i,
       /Proposals open, members vote/i,
       /supply unlocks/i,
     ];

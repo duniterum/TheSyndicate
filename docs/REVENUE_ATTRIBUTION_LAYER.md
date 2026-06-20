@@ -1,6 +1,8 @@
 # Revenue Attribution Layer (RAL) — Doctrine
 
-**Status:** Doctrine. Not implemented. The `/referral` route is a SIMULATED visual prototype only — no contract is deployed.
+**Status:** Doctrine + production-candidate Solidity. `CommissionRouterV1` exists
+under `contracts/src`, but no router is deployed or wired live. The `/referral`
+route remains reserved/read-only until a verified router address exists.
 
 Public name: **Referral**. Internal name: **Revenue Attribution Layer**.
 
@@ -31,9 +33,9 @@ The `source` field is `bytes32` and the allow-list is governance-gated — this 
 ## Split rules (constitutional)
 
 - 70% Vault and 20% Liquidity are **untouched** by referrals.
-- Referrer commission comes only from the 10% Operations slice.
+- Referrer commission, if activated, comes only from the 10% Operations slice.
 - If no referrer: Operations keeps the full 10%.
-- If referrer present: `referrer = OperationsSlice × tierTable[tier]`, `operations = OperationsSlice − referrer`.
+- If a verified router is deployed and a valid referrer is present: `referrer = OperationsSlice × tierTable[tier]`, `operations = OperationsSlice − referrer`.
 
 ## Attribution model
 
@@ -42,16 +44,18 @@ The `source` field is `bytes32` and the allow-list is governance-gated — this 
 
 ## Payout pattern
 
-- Default: **push payout** to referrer in the same tx.
-- Fallback: **escrowed** if push fails (smart-contract referrer that reverts, gas griefing). Funds become claimable.
+- Default, once live: **push payout** to referrer in the same tx.
+- Fallback, once live: **escrowed** if push fails (smart-contract referrer that reverts, gas griefing). Funds become claimable.
 - This is the mandatory pattern for supporting contract referrers (smart wallets / DAOs).
 
 ## What V1 does NOT include
 
 - No CampaignRegistry contract (use repo config + `refTag` filter).
 - No AcceptedTokenRegistry contract (inline allow-list).
-- No TierOracle (read `useHolderIndex` at tx time).
+- No TierOracle. The production-candidate router uses verified referred-member
+  count only.
 - No on-chain Reputation. No Builder Score contract. No automatic Chronicle entries.
+- No flat 5% default commission. The current production-candidate router is tiered and count-based.
 
 ## Forward-compatibility
 

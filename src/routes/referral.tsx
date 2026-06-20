@@ -43,7 +43,7 @@ const RESERVED_SYSTEMS = [
     title: "CommissionRouter",
     status: "REQUIRES CONTRACT",
     body:
-      "No router contract is deployed. Until a contract exists, no referral commission accrues, no balances exist, and no claim action can be shown.",
+      "No router contract is deployed or wired live. Until a verified router address exists, no referral commission accrues, no balances exist, and no claim action can be shown.",
   },
   {
     title: "Reputation records",
@@ -74,7 +74,8 @@ function ReferralPage() {
           </div>
           <p className="mt-4 text-sm leading-relaxed text-foreground/85">
             The Syndicate can remember who introduced whom, but memory is not
-            money. Until CommissionRouter exists and is publicly verifiable,
+            money. Until a verified CommissionRouter is deployed, wired live,
+            and publicly verifiable,
             there is no referral balance, no earned commission, no tier, no
             leaderboard, and no claim button.
           </p>

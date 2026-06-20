@@ -3,6 +3,7 @@ pragma solidity 0.8.24;
 
 import {Test} from "forge-std/Test.sol";
 import {CommissionRouterV1, CommissionRouteInput} from "../src/CommissionRouterV1.sol";
+import {ICommissionRouter} from "../src/SyndicateSaleV2.sol";
 import {BlocklistERC20} from "./mocks/Tokens.sol";
 import {MockSource} from "./mocks/SourceMock.sol";
 
@@ -108,6 +109,15 @@ contract CommissionRouterV1Test is Test {
         CommissionRouteInput memory p = _input(buyer, address(0), GROSS, true);
         vm.expectRevert(CommissionRouterV1.NotAuthorizedSource.selector);
         router.route(p);
+    }
+
+    function test_routeSelector_matchesSaleInterfaceTupleAbi() public pure {
+        bytes4 expected = bytes4(
+            keccak256("route((address,address,uint256,uint256,uint256,uint256,bool,bytes32,bytes32))")
+        );
+        assertEq(CommissionRouterV1.route.selector, expected, "router tuple selector drifted");
+        assertEq(ICommissionRouter.route.selector, expected, "sale interface tuple selector drifted");
+        assertEq(CommissionRouterV1.route.selector, ICommissionRouter.route.selector, "router/sale ABI mismatch");
     }
 
     // ============================================================== integrity
@@ -230,6 +240,39 @@ contract CommissionRouterV1Test is Test {
         assertEq(usdc.balanceOf(address(router)), 0);
     }
 
+    function test_escrowBalanceEqualsKnownOwedAcrossMultipleReferrersAndClaims() public {
+        address referrer2 = makeAddr("referrer2");
+        address buyer2 = makeAddr("buyer2");
+        source.setKnown(referrer2, true);
+
+        usdc.setBlocked(referrer, true);
+        usdc.setBlocked(referrer2, true);
+
+        uint256 expectedRef1 = (OPS * 30) / 100;
+        source.doRoute(router, _input(buyer, referrer, GROSS, true));
+        assertEq(usdc.balanceOf(address(router)), router.referralOwed(referrer), "single owed balance");
+
+        uint256 expectedRef2 = (OPS * 30) / 100;
+        source.doRoute(router, _input(buyer2, referrer2, GROSS, true));
+        assertEq(router.referralOwed(referrer), expectedRef1);
+        assertEq(router.referralOwed(referrer2), expectedRef2);
+        assertEq(
+            usdc.balanceOf(address(router)),
+            router.referralOwed(referrer) + router.referralOwed(referrer2),
+            "router balance must equal tracked escrow obligations"
+        );
+
+        usdc.setBlocked(referrer, false);
+        vm.prank(referrer);
+        router.claimReferral();
+        assertEq(router.referralOwed(referrer), 0);
+        assertEq(
+            usdc.balanceOf(address(router)),
+            router.referralOwed(referrer2),
+            "claim must reduce balance to remaining escrow obligation"
+        );
+    }
+
     function test_claimReferral_nothingReverts() public {
         vm.prank(referrer);
         vm.expectRevert(CommissionRouterV1.NothingToClaim.selector);
@@ -290,6 +333,27 @@ contract CommissionRouterV1Test is Test {
         assertTrue(enabled);
         assertEq(id, SOURCE_ID);
         assertEq(ow, opsWallet);
+    }
+
+    function test_source_removeThenReAddLifecycle() public {
+        router.removeSource(address(source));
+        CommissionRouteInput memory p = _input(buyer, address(0), GROSS, true);
+        vm.expectRevert(CommissionRouterV1.NotAuthorizedSource.selector);
+        source.doRoute(router, p);
+
+        address opsWallet2 = makeAddr("opsWallet2");
+        bytes32 sourceId2 = keccak256("SALE_V2_REAUTHORIZED");
+        router.addSource(address(source), sourceId2, opsWallet2);
+
+        (bool enabled, bytes32 id, address ow) = router.sourceConfig(address(source));
+        assertTrue(enabled);
+        assertEq(id, sourceId2);
+        assertEq(ow, opsWallet2);
+
+        (, uint256 ops) = source.doRoute(router, p);
+        assertEq(ops, OPS);
+        assertEq(usdc.balanceOf(opsWallet2), OPS);
+        assertEq(usdc.balanceOf(opsWallet), 0, "removed source wallet receives nothing after re-add");
     }
 
     // ===================================================================== fuzz
