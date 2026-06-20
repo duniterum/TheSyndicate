@@ -1,58 +1,589 @@
-# V3 External Review Package
+# V3 External Review Handoff Package
 
-Status: EXTERNAL REVIEW PACKAGE READY / NO DEPLOYMENT AUTHORIZED / V3 NOT LIVE
+Status: EXTERNAL REVIEW READY / NO DEPLOYMENT AUTHORIZED / V3 NOT LIVE
 
-Current security-readiness commit:
+This is the reviewer front door for The Syndicate V3 candidate. It is designed
+for a reviewer who knows nothing about the project and needs to understand,
+attack, and disposition V3 efficiently.
 
-```text
-c8aad49 Add V3 fork rehearsal and attribution adversarial tests
-```
+This package does not deploy, activate, register, frontend-wire, or publish V3.
+V2b remains the live buy path until a separate deployment, verification,
+funding, readback, registry update, and product activation pass is explicitly
+approved.
 
-This package is the reviewer front door for the V3 candidate contracts. It does
-not deploy, activate, register, frontend-wire, or publish V3. V2b remains the
-live buy path until a separate deployment, verification, funding, readback,
-registry update, and product activation pass is explicitly approved.
+## 1. Executive Summary
 
-## No-Deployment Statement
+The Syndicate is a verifiable on-chain membership institution.
 
-Do not deploy from this package.
+V3 introduces a candidate sale engine that keeps SYN as the V1 seat while
+adding:
 
-Do not:
+- deterministic era pricing,
+- acquisition-first routing,
+- source attribution,
+- source payout with escrow fallback,
+- richer receipt events,
+- explicit source-policy records,
+- clearer future read-model support for Activity, Register, Chronicle, Archive,
+  My Syndicate, and notifications.
 
-- broadcast transactions,
-- use private keys,
-- switch the frontend registry,
-- add a V3 sale address to live product surfaces,
-- activate referral, source, or claim UI,
-- mark V3 as live,
-- change V2b live-sale posture,
-- change Archive1155 or SeatRecord721 posture.
-
-Reviewers should evaluate the contracts, tests, docs, and blocker table only.
-
-## Review Scope
-
-Primary contracts:
+Primary candidate contracts:
 
 - `contracts/src/SourceRegistryV1.sol`
 - `contracts/src/MembershipSaleV3.sol`
 
-Primary tests:
+Primary candidate tests:
 
 - `contracts/test/SourceRegistryV1.t.sol`
 - `contracts/test/MembershipSaleV3.t.sol`
 - `contracts/test/RehearsalForkV3.t.sol`
 
-Supporting current contracts/tests:
+Current internal verification status:
 
-- `contracts/src/SyndicateSaleV2.sol`
-- `contracts/src/CommissionRouterV1.sol`
-- `contracts/test/SyndicateSaleV2.t.sol`
-- `contracts/test/CommissionRouterV1.t.sol`
-- `contracts/test/RehearsalForkV2b.t.sol`
+- QuickNode-backed Avalanche fork rehearsal: PASS
+- SourceRegistryV1 targeted tests: PASS
+- MembershipSaleV3 targeted tests: PASS
+- frontend/release gate: PASS
+- Slither: ran, findings require reviewer disposition
+- Solhint second analyzer: ran, warnings only, no errors
 
-Canonical docs:
+Current deployment status:
 
+- V3 is not deployed.
+- V3 is not activated.
+- No V3 address is in the live frontend registry.
+- No referral or claim UI is live.
+- No V3 buy path is live.
+
+## 2. Protocol Purpose
+
+The Syndicate product is not a token sale, NFT drop, dashboard, governance
+portal, or yield product.
+
+It is a membership institution where:
+
+- holding SYN seats a wallet,
+- the seat is binary,
+- contribution is variable,
+- USDC routing is transparent,
+- Activity turns events into visibility,
+- Register preserves institutional truth,
+- Chronicle turns meaningful change into story,
+- Archive1155 preserves protocol memory,
+- future systems remain pending until deployed and verified.
+
+V3 is intended to improve the membership entry engine while preserving that
+doctrine.
+
+## 3. Current Live Contracts
+
+The live product remains on the current canonical contracts. V3 does not replace
+them until a future activation pass.
+
+| Contract / system | Status | Purpose |
+| --- | --- | --- |
+| SYN ERC-20 | LIVE | V1 membership seat token. Holding SYN seats the wallet. |
+| Membership Sale V2b | LIVE BUY PATH | Current live membership purchase route. |
+| Archive1155 | LIVE | Protocol memory artifacts. NFTs are memories, not seats. |
+| CommissionRouterV1 | CANDIDATE / NOT LIVE | Older Operations-slice commission router, not the V3 acquisition engine. |
+| SeatRecord721 | FUTURE / RESERVED | Future identity record. Not deployed. Does not replace SYN as the seat. |
+
+Reviewer note: V3 must not mutate live contract truth during review.
+
+## 4. Candidate Contracts
+
+### SourceRegistryV1
+
+Purpose:
+
+- stores source policy terms,
+- stores source class, status, scope, caps, window, commission bps, payout
+  wallet, and metadata hash,
+- emits visible source-policy events,
+- does not move money,
+- does not mint SYN,
+- does not count seats,
+- does not activate referral UI.
+
+Owner powers:
+
+- create source,
+- update terms,
+- update source wallet,
+- update payout wallet,
+- pause/revoke/reactivate source.
+
+### MembershipSaleV3
+
+Purpose:
+
+- sells SYN using deterministic era pricing,
+- validates source attribution through SourceRegistryV1,
+- routes acquisition-first USDC,
+- transfers SYN to the recipient,
+- emits reconstructable receipt events,
+- supports escrow fallback when source payout fails,
+- preserves first-seat/member-number behavior,
+- remains a candidate until deployed, funded, verified, and activated.
+
+## 5. Architecture Diagram
+
+```mermaid
+flowchart TD
+  Buyer["Buyer / payer wallet"]
+  Recipient["Recipient wallet"]
+  Source["Source / referrer wallet"]
+  Registry["SourceRegistryV1<br/>source policy terms"]
+  Sale["MembershipSaleV3<br/>candidate sale engine"]
+  SYN["SYN ERC-20<br/>V1 seat token"]
+  Vault["Vault wallet"]
+  Liquidity["Liquidity wallet"]
+  Ops["Operations wallet"]
+  Escrow["Sale V3 escrow ledger<br/>only if source payout fails"]
+  Receipt["MembershipPurchasedV3 receipt event"]
+  Activity["Activity / Register / Chronicle / Archive read models"]
+
+  Buyer -->|"approves and pays USDC"| Sale
+  Buyer -->|"optional sourceId"| Sale
+  Sale -->|"reads source terms"| Registry
+  Registry -->|"eligible terms / status / caps"| Sale
+  Sale -->|"SYN delivered"| Recipient
+  Sale -->|"acquisition commission if valid"| Source
+  Sale -->|"fallback if payout reverts"| Escrow
+  Sale -->|"70% of Net USDC Routed"| Vault
+  Sale -->|"20% of Net USDC Routed"| Liquidity
+  Sale -->|"10% of Net USDC Routed"| Ops
+  Sale -->|"receipt event"| Receipt
+  Receipt --> Activity
+  SYN -->|"holding SYN seats wallet"| Recipient
+```
+
+## 6. Money Flow Diagram
+
+```mermaid
+flowchart LR
+  Gross["Gross USDC paid"]
+  Acquisition["Acquisition commission<br/>only if eligible source"]
+  Net["Net USDC Routed"]
+  Vault["70% Vault"]
+  Liquidity["20% Liquidity"]
+  Operations["10% Operations"]
+  SourcePayout["Source payout"]
+  SourceEscrow["Escrow fallback<br/>if payout fails"]
+
+  Gross --> Acquisition
+  Gross --> Net
+  Acquisition --> SourcePayout
+  SourcePayout -->|"transfer reverts"| SourceEscrow
+  Net --> Vault
+  Net --> Liquidity
+  Net --> Operations
+```
+
+Formula:
+
+```text
+grossUsdc - acquisitionCost = netUsdcRouted
+netUsdcRouted * 70% = vaultAmount
+netUsdcRouted * 20% = liquidityAmount
+netUsdcRouted - vaultAmount - liquidityAmount = operationsAmount
+```
+
+Conservation invariant:
+
+```text
+acquisitionCost + vaultAmount + liquidityAmount + operationsAmount == grossUsdc
+```
+
+## 7. Acquisition Flow Diagram
+
+```mermaid
+flowchart TD
+  Start["Buyer enters with optional sourceId"]
+  Existing["Buyer already has active attribution?"]
+  Explicit["Explicit sourceId provided?"]
+  Validate["Validate source in SourceRegistryV1"]
+  Seated["If member introduction:<br/>source wallet must hold SYN"]
+  Eligible["Eligible, active, in window, under caps?"]
+  Link["Link attribution if allowed"]
+  Commission["Compute commission bps and acquisition cost"]
+  Zero["No commission; purchase continues when safe"]
+  Revert["Revert only for explicit invalid source intent"]
+  Buy["Complete purchase and emit receipt"]
+
+  Start --> Existing
+  Existing -->|"yes"| Validate
+  Existing -->|"no"| Explicit
+  Explicit -->|"yes"| Validate
+  Explicit -->|"no"| Zero
+  Validate --> Seated
+  Seated --> Eligible
+  Eligible -->|"yes"| Link
+  Link --> Commission
+  Commission --> Buy
+  Eligible -->|"auto-linked stale/capped/paused"| Zero
+  Eligible -->|"explicit invalid"| Revert
+  Zero --> Buy
+```
+
+Reviewer focus:
+
+- explicit invalid source behavior,
+- stale auto-linked source behavior,
+- cap boundary behavior,
+- attribution hijack protection,
+- referrer losing seat after attribution,
+- source pause/revoke after attribution.
+
+## 8. Identity Model
+
+Binding identity doctrine:
+
+- SYN is the V1 seat.
+- A wallet is seated when it holds SYN.
+- The seat is binary.
+- Contribution is variable.
+- A buyer and recipient can differ.
+- Repeat contribution does not create a second seat.
+- SeatRecord721 is future identity-record infrastructure only; it is not part
+  of V3 and does not replace SYN.
+
+V3 contract identity behavior:
+
+- first purchase for a new recipient assigns a member number,
+- repeat purchase preserves the existing member identity,
+- receipt emits `firstSeat`,
+- V1 historical recognition can be included through proof root behavior,
+- no source or referrer owns a member relationship.
+
+## 9. Attribution Model
+
+Attribution is proof of introduction/source contribution. It is not ownership of
+a member, not a downline, not yield, not passive income, and not governance.
+
+Core V3 attribution rules:
+
+- source terms live in SourceRegistryV1,
+- source must be active and eligible,
+- source class determines validation context,
+- public member introduction requires the source wallet to remain seated,
+- self-referral is blocked,
+- active attribution cannot be silently overwritten,
+- repeat purchases can use linked attribution only inside configured terms,
+- paused/revoked/capped/stale auto-linked sources do not block safe purchases,
+- explicit invalid source intent can revert,
+- source payout wallet can be updated through visible policy action,
+- history is not rewritten when source state changes.
+
+## 10. Admin Powers
+
+Current owner model: hardware-wallet-first, founder-led, before protocol
+maturity. Safe/multisig/timelock are future control-evolution stages.
+
+### SourceRegistryV1 powers
+
+| Power | Exists? | Visibility | Reviewer focus |
+| --- | --- | --- | --- |
+| Create source | Yes | Event-backed | Can owner create unsafe terms? Are caps enforced? |
+| Update source terms | Yes | Event-backed | Can terms exceed caps or silently change source wallet? |
+| Pause source | Yes | Event-backed | Does pause stop future commission safely? |
+| Revoke source | Yes | Event-backed | Does revoke stop new attribution without rewriting history? |
+| Update source wallet | Yes | Event-backed | Is compromise/recovery flow bounded? |
+| Update payout wallet | Yes | Event-backed | Does escrow claim use current payout wallet safely? |
+
+### MembershipSaleV3 powers
+
+| Power | Exists? | Visibility | Reviewer focus |
+| --- | --- | --- | --- |
+| Pause / unpause sale | Yes | Contract state | Emergency control acceptable? |
+| Recover unsold SYN | Yes, constrained | Contract state / tx | Can owner drain live sale inventory early? |
+| Rescue tokens | Yes, excludes USDC/SYN | Contract state / tx | Can owner steal buyer funds or seat inventory? |
+
+Reviewer should confirm owner powers match the hardware-wallet deployment
+package and do not contradict public product truth.
+
+## 11. Security Assumptions
+
+Assumptions that must hold:
+
+- Avalanche USDC behaves as a standard ERC-20 for transfer/transferFrom.
+- SYN behaves as expected for seat-token transfer.
+- V3 is funded with approved SYN inventory before activation.
+- Owner wallet is a dedicated hardware wallet.
+- Source policy actions are publicly recorded and operationally logged.
+- Frontend does not point to V3 before deployment/readback/activation.
+- Legal/product copy does not frame acquisition as yield, passive income,
+  employment, agency, MLM, or guaranteed returns.
+
+Non-assumptions:
+
+- V3 does not assume a source owns a buyer.
+- V3 does not assume source wallets are always safe.
+- V3 does not assume payout wallets cannot fail.
+- V3 does not assume the frontend is the source of truth.
+
+## 12. Test Coverage Summary
+
+Targeted V3 tests currently pass:
+
+```text
+SourceRegistryV1Test: 18 passed
+MembershipSaleV3Test: 22 passed
+RehearsalForkV3Test: 4 passed
+```
+
+Release gate currently passes:
+
+```text
+npm run check-release
+92 frontend test files passed
+1,794 frontend tests passed
+production build passed
+release gate passed
+```
+
+Key tested areas:
+
+- source creation/update/status lifecycle,
+- source caps and per-buyer caps,
+- commission cap enforcement,
+- source payout wallet updates,
+- source wallet recovery visibility,
+- no-source purchase routing,
+- acquisition-first source purchase routing,
+- gross/net/routing conservation,
+- fuzzed conservation and rounding,
+- smart-contract payout wallet compatibility,
+- blocked payout escrow fallback,
+- escrow claim using current registry payout wallet,
+- repeat purchase inside and after attribution window,
+- paused/revoked linked source behavior,
+- explicit invalid source behavior,
+- referrer losing seat,
+- attribution hijack protection,
+- self-referral block,
+- unseated public referrer rejection,
+- receipt event reconstruction,
+- buyer/recipient distinction,
+- member number and first-seat behavior.
+
+Full unfiltered Foundry suite note:
+
+- the full suite timed out locally in the Windows shell twice, ending with a
+  Windows pipe-close error rather than a Solidity assertion failure,
+- the V3-critical suites above passed,
+- a clean full-suite run in CI/Linux/WSL/reviewer environment is still
+  recommended before deployment.
+
+## 13. Fork Rehearsal Summary
+
+Real QuickNode-backed Avalanche fork rehearsal was run with:
+
+```text
+cd contracts
+AVAX_RPC=<QuickNode HTTPS endpoint> forge test --match-contract RehearsalForkV3 --evm-version cancun -vv
+```
+
+No private keys. No broadcast. No deployment.
+
+Result:
+
+```text
+4 passed
+0 failed
+0 skipped
+```
+
+Passed fork checks:
+
+- Avalanche fork started through QuickNode,
+- live USDC/SYN/protocol wallet constants matched rehearsal assumptions,
+- SourceRegistryV1 deploy/readback worked on fork,
+- MembershipSaleV3 deploy/readback worked on fork,
+- no-source buy worked,
+- source-attributed buy worked,
+- acquisition-first routing worked,
+- normal source payout worked,
+- blocked source payout escrowed without blocking buy,
+- smart-wallet payout compatibility shape passed,
+- receipt reconstruction passed,
+- member number / first-seat behavior passed,
+- V2b / Archive posture stayed historical/live as expected,
+- no registry activation was performed.
+
+Known fork noise:
+
+- Foundry printed an RPC cache-file warning. This is not a contract failure.
+
+## 14. Known Findings
+
+### Slither
+
+Slither ran successfully after adding Foundry to PATH for that process.
+
+Findings requiring reviewer disposition:
+
+- benign reentrancy-sensitive shape around `MembershipSaleV3` payout/escrow
+  fallback,
+- strict equality checks around seated-source validation and zero amount sends,
+- timestamp comparisons for attribution windows, caps, and recovery timelocks,
+- uninitialized locals that default to false/zero in intended paths,
+- unused tuple return values in preview reads,
+- complexity/style/naming/pragma findings.
+
+Current internal disposition:
+
+- no critical exploit confirmed by tests,
+- payout/escrow reentrancy remains the most important reviewer item,
+- strict equality around `SYN.balanceOf(sourceWallet) == 0` appears intentional
+  because public member introductions require a seated source wallet,
+- timestamp/window checks are policy logic, but still require review.
+
+### Solhint
+
+Solhint ran as the second analyzer using a temporary recommended-rule config.
+
+Result:
+
+```text
+0 errors
+210 warnings
+```
+
+Warning categories:
+
+- NatSpec/documentation coverage,
+- gas/style suggestions,
+- function length / empty block / strict-inequality style warnings,
+- import-path-check false positives because the temporary Solhint config does
+  not understand Foundry remappings.
+
+No direct exploit-class issue was reported by Solhint.
+
+### Aderyn
+
+Aderyn was not run because Rust/Cargo is not available in the current Windows
+environment. Solhint is the current second-analyzer substitute.
+
+## 15. Known Blockers
+
+### Critical
+
+None confirmed by internal tests or fork rehearsal.
+
+### High
+
+| Blocker | Why it matters | Required action | Blocks |
+| --- | --- | --- | --- |
+| External human review not complete | V3 moves USDC, controls source terms, and manages escrow. | Send this package to reviewer and resolve findings. | Deployment |
+| Owner hardware-wallet addresses not frozen | Owner powers are material before maturity. | Freeze deployment wallet and owner wallet addresses; rehearse Ownable2Step readback. | Deployment |
+| Legal/product signoff not complete | Acquisition copy must avoid yield/passive income/agency/MLM drift. | Legal/product review of source/referral language and receipts. | Activation |
+| Clean full Foundry run in stable environment still recommended | Local Windows shell timed out on full unfiltered run. | Run full suite in CI/Linux/WSL/reviewer environment. | Deployment confidence |
+
+### Medium
+
+| Blocker | Why it matters | Required action | Blocks |
+| --- | --- | --- | --- |
+| Slither payout/escrow warning needs disposition | Direct payout is the most sensitive money path. | Reviewer signs off or recommends patch. | Deployment |
+| NatSpec/reviewer readability gaps | External review is easier with richer contract comments. | Optional documentation pass if reviewer requests it. | Review quality, not current tests |
+| Aderyn unavailable | Solhint ran as substitute, but Aderyn remains useful. | Optional run in Rust-ready environment. | Extra assurance |
+
+### Low
+
+| Item | Why it matters | Required action | Blocks |
+| --- | --- | --- | --- |
+| Vite third-party `"use client"` warnings | Build logs are noisy. | No action unless dependencies change. | Nothing current |
+| Foundry RPC cache warning | Fork run logs include cache noise. | No action. | Nothing current |
+
+## 16. Reviewer Questions
+
+Reviewer should explicitly answer:
+
+1. Can `MembershipSaleV3` direct payout and escrow fallback be deployed as-is?
+2. Can a source payout wallet grief a normal purchase?
+3. Can escrow be stolen, orphaned, double-claimed, or made unrecoverable?
+4. Can acquisition cost ever exceed source terms or V3 caps?
+5. Can active attribution be hijacked by a later source?
+6. Can an existing seated member be captured by a new source?
+7. Does referrer losing SYN stop future public-member commission correctly?
+8. Are paused and revoked source behaviors safe for both explicit and
+   auto-linked purchase paths?
+9. Are receipt events sufficient to reconstruct every USDC/SYN movement?
+10. Does `firstSeat` / `memberNumber` preserve the binary seat doctrine?
+11. Can owner powers drain USDC, steal SYN, mutate pricing, or hide source
+    policy changes contrary to docs?
+12. Are pause/recovery powers acceptable for the current hardware-wallet-first
+    founder-led stage?
+13. Is deterministic era pricing implemented consistently with docs/tests?
+14. Do source terms create legal/UX risk that should be mitigated before
+    activation?
+15. Is V3 safe for deployment preparation after review fixes, without live
+    activation?
+
+## 17. Go / No-Go Boundaries
+
+### External review
+
+GO.
+
+V3 is ready to send to external review as a candidate package.
+
+### Deployment preparation
+
+CONDITIONAL GO.
+
+Allowed:
+
+- freeze hardware-wallet addresses,
+- prepare constructor parameter sheet,
+- rerun static analysis,
+- rerun fork rehearsal,
+- prepare source verification materials.
+
+Not allowed:
+
+- broadcast deployment,
+- fund sale,
+- update frontend registry,
+- mark V3 live,
+- activate referral/source UI,
+- add claim UI.
+
+### Deployment
+
+NO-GO until:
+
+- external review complete,
+- Slither payout/escrow warning dispositioned,
+- owner/deployment hardware wallet addresses frozen,
+- full suite run in stable environment or reviewer accepts targeted evidence,
+- legal/product signoff complete,
+- deployment parameter sheet frozen,
+- founder explicitly approves deployment transaction.
+
+### Activation
+
+NO-GO until:
+
+- V3 deployed,
+- source verified,
+- ownership read back,
+- sale inventory funded,
+- constructor state read back,
+- frontend registry updated through a reviewed commit,
+- release gate green,
+- product activation copy reviewed,
+- founder explicitly approves live cutover.
+
+## 18. Reviewer File Map
+
+Review these first:
+
+- `contracts/src/SourceRegistryV1.sol`
+- `contracts/src/MembershipSaleV3.sol`
+- `contracts/test/SourceRegistryV1.t.sol`
+- `contracts/test/MembershipSaleV3.t.sol`
+- `contracts/test/RehearsalForkV3.t.sol`
 - `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md`
 - `docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md`
 - `docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md`
@@ -61,242 +592,49 @@ Canonical docs:
 - `docs/DOCUMENTATION_AUTHORITY_MAP.md`
 - `docs/SMART_CONTRACT_SYSTEM_MAP.md`
 
-## Current V3 Candidate Model
+Supporting context:
 
-`SourceRegistryV1` stores visible source policy terms. It does not move funds,
-mint SYN, count seats, or activate referral UI.
+- `contracts/src/SyndicateSaleV2.sol`
+- `contracts/src/CommissionRouterV1.sol`
+- `contracts/test/SyndicateSaleV2.t.sol`
+- `contracts/test/CommissionRouterV1.t.sol`
+- `src/lib/contract-registry.ts`
+- `src/routes/v3-preview.tsx`
 
-`MembershipSaleV3` performs the candidate acquisition-first membership sale:
+## 19. Exact Reviewer Workflow
+
+1. Read this file.
+2. Read the two candidate contracts.
+3. Read the three V3 test files.
+4. Run targeted V3 tests:
 
 ```text
-gross USDC paid
-  -> acquisition commission, if an eligible source applies
-  -> Net USDC Routed
-  -> 70% Vault / 20% Liquidity / 10% Operations
-  -> SYN delivered at deterministic era pricing
-  -> reconstructable V3 receipt event
+cd contracts
+forge test --match-contract SourceRegistryV1Test -vv
+forge test --match-contract MembershipSaleV3Test -vv
+AVAX_RPC=<QuickNode HTTPS endpoint> forge test --match-contract RehearsalForkV3 --evm-version cancun -vv
 ```
 
-SYN remains the V1 seat. The seat is binary. Contribution is variable. V3 does
-not deploy SeatRecord721 and does not modify Archive1155.
-
-## Latest Validation
-
-From the GitHub Desktop clone before commit `c8aad49`:
+5. Run full Foundry suite in reviewer environment:
 
 ```text
 cd contracts
 forge test
 ```
 
-Result:
-
-```text
-119 passed
-0 failed
-3 skipped
-```
-
-The skipped tests are fork rehearsals that require `AVAX_RPC`.
-
-Root validation:
-
-```text
-npm run typecheck
-npm run test
-npm run build
-npm run check-release
-```
-
-Result:
-
-```text
-typecheck passed
-92 frontend test files passed
-1,792 frontend tests passed
-production build passed
-release gate passed
-```
-
-Known build warning: Vite reports third-party `"use client"` directives from
-dependencies. This is existing dependency noise, not a V3 blocker.
-
-## Slither / Static Analysis Status
-
-Slither was installed and run in the development environment during the
-security-readiness phase. It produced findings that require disposition before
-deployment.
-
-Important reviewer item:
-
-- Slither flagged the `MembershipSaleV3` source payout / escrow fallback path
-  as benign reentrancy-sensitive.
-
-Current mitigating design:
-
-- `buy` is `nonReentrant`,
-- `claimSourceEscrow` is `nonReentrant`,
-- `pushSourcePayout` is callable only by `address(this)`,
-- source payout is push-first but falls back to escrow on token transfer revert,
-- blocked payout wallets do not block purchases,
-- smart-contract payout wallets are tested,
-- USDC and SYN are protected from owner rescue.
-
-Reviewer disposition required:
-
-- confirm the direct payout / escrow fallback model is acceptable for Avalanche
-  native USDC,
-- confirm no source payout wallet can grief a purchase,
-- confirm escrow accounting cannot be stolen, orphaned, or double-claimed,
-- confirm total USDC conservation across direct payout and escrow states.
-
-Other Slither findings observed during the earlier run:
-
-- strict equality checks around seated-source validation and zero-amount sends,
-- timestamp use for attribution windows and recovery timelocks,
-- uninitialized local variables that default to false/zero in intended paths,
-- unused tuple returns in preview-only source term reads,
-- naming/pragma/cyclomatic-complexity style warnings.
-
-Current disposition:
-
-- not classified as critical by current internal review,
-- still requires external review signoff before deployment.
-
-## Second Analyzer Status
-
-Aderyn has not run.
-
-Blocker:
-
-```text
-Rust/Cargo is not available in the current Windows environment.
-```
-
-No second static analyzer should be marked complete until a credible second
-tool is installed and its findings are dispositioned.
-
-## Windows Slither Tooling Note
-
-A follow-up Slither rerun hit a Windows `crytic-compile` / Foundry PATH issue:
-
-```text
-Cannot execute `forge`, is it installed and in PATH?
-KeyError: 'output'
-```
-
-Foundry itself is installed and `forge test` passes, so this is a local Slither
-toolchain handoff issue, not a Solidity test failure. It must still be resolved
-or worked around before deployment, preferably in a clean shell, CI, WSL, or a
-reviewer-controlled environment.
-
-## Fork Rehearsal Status
-
-`contracts/test/RehearsalForkV3.t.sol` now exists.
-
-Default local behavior:
-
-- skips the live fork test when `AVAX_RPC` is unset,
-- still runs local shape tests for blocked payout escrow and smart-wallet payout
-  compatibility.
-
-Required command for real Avalanche fork rehearsal:
+6. Run Slither:
 
 ```text
 cd contracts
-AVAX_RPC=<QuickNode Avalanche C-Chain HTTPS endpoint> forge test --match-contract RehearsalForkV3 --evm-version cancun -vv
+slither . --exclude-dependencies
 ```
 
-Optional pinned block:
+7. Run a second analyzer of reviewer choice.
+8. Disposition every finding.
+9. Answer the reviewer questions.
+10. Return one of:
+    - safe for deployment preparation,
+    - safe only after fixes,
+    - reject deployment until redesign.
 
-```text
-AVAX_FORK_BLOCK=<block-number>
-```
-
-No private keys. No broadcast.
-
-The fork rehearsal checks:
-
-- Avalanche USDC address,
-- live SYN address,
-- Vault / Liquidity / Operations addresses,
-- V2b live-sale contract posture,
-- Archive1155 live memory-contract posture,
-- SourceRegistryV1 deploy/readback on fork,
-- MembershipSaleV3 deploy/readback on fork,
-- Ownable2Step transfer/acceptance shape,
-- SYN inventory funding through rehearsal cheatcode,
-- quote,
-- no-source buy,
-- source-attributed buy,
-- acquisition-first routing,
-- source payout,
-- receipt event reconstruction,
-- member number / first-seat behavior.
-
-The real fork path has not been run because `AVAX_RPC` was not available in the
-current shell.
-
-## Blocker Table
-
-### Critical
-
-None currently confirmed by internal tests.
-
-### High
-
-| Blocker | Why it matters | Required action | Blocks |
-| --- | --- | --- | --- |
-| Second analyzer not run | Slither alone is not enough for deployment-quality confidence. | Install/run Aderyn or another credible Solidity analyzer and disposition findings. | Deployment |
-| Real Avalanche fork rehearsal not run | V3 must be rehearsed against live Avalanche token behavior and live address posture. | Set `AVAX_RPC` and run `RehearsalForkV3`. | Deployment |
-| External review not complete | V3 moves USDC, attributes sources, and controls escrow. | Send this package to reviewer and resolve findings. | Deployment |
-| Owner hardware-wallet addresses not frozen | Owner powers are material before protocol maturity. | Freeze deployment and owner hardware-wallet addresses and rehearse Ownable2Step acceptance. | Deployment |
-
-### Medium
-
-| Blocker | Why it matters | Required action | Blocks |
-| --- | --- | --- | --- |
-| Slither payout/escrow warning needs disposition | Direct payout is the most sensitive V3 money path. | External reviewer signs off or recommends patch. | Deployment |
-| Windows Slither PATH/crytic issue | Repeatable local static analysis is currently brittle. | Run Slither in clean shell/WSL/CI/reviewer env. | Deployment-quality process |
-
-### Low
-
-| Item | Why it matters | Required action | Blocks |
-| --- | --- | --- | --- |
-| Quote is preview-only | Final buy validates payer/source conditions more fully than quote can. | Keep frontend copy clear when read-only quote UI is later added. | UI polish |
-| Vite third-party warnings | Build logs are noisy. | No action unless dependency behavior changes. | Nothing current |
-
-## Reviewer Questions
-
-Reviewers should explicitly answer:
-
-1. Can `MembershipSaleV3` direct payout and escrow fallback be deployed as-is?
-2. Can any payout wallet, source wallet, or token behavior block a normal buy?
-3. Can source attribution be hijacked after a buyer is already linked?
-4. Are pause, source update, source revoke, and payout-wallet recovery powers
-   bounded and visible enough for the current founder-led stage?
-5. Are receipt events sufficient to reconstruct every USDC/SYN movement?
-6. Are caps and attribution windows enforced correctly across explicit and
-   auto-linked source paths?
-7. Does any path let acquisition cost exceed the approved source terms?
-8. Does any path create a second seat for the same recipient?
-9. Does any path endanger Vault/Liquidity/Operations routing conservation?
-10. Is V3 safe to rehearse on fork after review fixes, without deployment?
-
-## Exact Next Workflow
-
-1. Resolve local Slither repeatability or run Slither in reviewer/CI/WSL.
-2. Install/run Aderyn or another second analyzer.
-3. Run real fork rehearsal:
-
-```text
-cd contracts
-AVAX_RPC=<QuickNode Avalanche C-Chain HTTPS endpoint> forge test --match-contract RehearsalForkV3 --evm-version cancun -vv
-```
-
-4. Send this package and canonical docs to external reviewer.
-5. Resolve reviewer findings.
-6. Freeze hardware-wallet deployment and owner addresses.
-7. Only then prepare a deployment-decision meeting.
-
-No step above authorizes deployment or live activation.
+No step in this workflow authorizes deployment or live activation.

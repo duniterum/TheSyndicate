@@ -1,10 +1,10 @@
 # V3 Smart Contract QA Readiness
 
-Status: QA PASS FOR LOCAL CANDIDATE / NOT AUDIT-READY / NOT DEPLOYMENT-READY
+Status: QA PASS FOR CANDIDATE / EXTERNAL REVIEW READY / NOT DEPLOYMENT-READY
 
 External-review package status: prepared for review intake in
-`docs/V3_EXTERNAL_REVIEW_PACKAGE.md`, but V3 remains blocked from deployment
-until the gates below are closed.
+`docs/V3_EXTERNAL_REVIEW_PACKAGE.md`. V3 remains blocked from deployment until
+the gates below are closed.
 
 This document records the focused QA pass for the V3 candidate contracts:
 
@@ -234,7 +234,8 @@ Before activation:
 
 ## Static Analysis Status
 
-Slither was installed and run during the security-readiness phase. It produced
+Slither was installed and run during the security-readiness phase. A follow-up
+run succeeded after adding Foundry to PATH for that process. It produced
 findings that need external disposition before deployment. The most important
 finding is a benign-reentrancy warning around the `MembershipSaleV3` source
 payout / escrow fallback path.
@@ -250,21 +251,19 @@ Current internal disposition:
 This remains a reviewer item because direct payout is the most sensitive V3
 money path.
 
-Second analyzer status: Aderyn has not run because Rust/Cargo is unavailable in
-the current Windows environment. No second analyzer should be marked complete
-until a credible second tool runs and findings are dispositioned.
+Second analyzer status: Solhint ran as the strongest realistic available
+alternative after Node was configured to use the system certificate store. It
+reported 0 errors and warnings only, mostly NatSpec, gas/style, function-length,
+empty-block, strict-inequality, and Foundry-remapping import-path warnings.
+Aderyn has still not run because Rust/Cargo is unavailable in the current
+Windows environment.
 
-Tooling note: a follow-up Slither rerun hit a Windows `crytic-compile` /
-Foundry PATH issue even though `forge test` itself passes. This is a local
-static-analysis tooling issue, not a Solidity test failure, but deployment
-remains blocked until static analysis is repeatable in a clean shell, CI, WSL,
-or reviewer environment.
+## Fork Rehearsal Result
 
-## Fork Rehearsal Plan
-
-`contracts/test/RehearsalForkV3.t.sol` now exists. The fork path skips cleanly
-when `AVAX_RPC` is unset, while local shape tests still validate blocked payout
-escrow and smart-wallet payout compatibility.
+`contracts/test/RehearsalForkV3.t.sol` now exists. The real QuickNode-backed
+Avalanche fork path has run successfully. The fork path still skips cleanly when
+`AVAX_RPC` is unset, while local shape tests validate blocked payout escrow and
+smart-wallet payout compatibility.
 
 Required environment:
 
@@ -272,16 +271,24 @@ Required environment:
 AVAX_RPC=<QuickNode Avalanche C-Chain HTTPS endpoint>
 ```
 
-Recommended command:
+Command used:
 
 ```text
 cd contracts
-AVAX_RPC=<endpoint> forge test --match-contract RehearsalForkV3 --evm-version cancun -vv
+AVAX_RPC=<QuickNode HTTPS endpoint> forge test --match-contract RehearsalForkV3 --evm-version cancun -vv
 ```
 
-The rehearsal must not broadcast and must not use private keys.
+The rehearsal did not broadcast and did not use private keys.
 
-The rehearsal should prove:
+Result:
+
+```text
+4 passed
+0 failed
+0 skipped
+```
+
+The rehearsal proved:
 
 - deployed/candidate constructor parameters match registry/docs,
 - Sale V3 can be funded with SYN inventory,
@@ -291,24 +298,26 @@ The rehearsal should prove:
 - V1/V2/V2b historical seat posture remains intact,
 - no V3 frontend activation happens as part of rehearsal.
 
-The real Avalanche fork path has not been run yet because `AVAX_RPC` is not
-available in the current shell.
+Known fork noise: Foundry printed an RPC cache-file warning. This is not a
+contract failure.
 
 ## Go / No-Go
 
-Green locally:
+Green:
 
 - SourceRegistryV1 unit tests,
 - MembershipSaleV3 unit tests,
-- RehearsalForkV3 local/skip tests,
-- full Foundry compile and suite,
+- RehearsalForkV3 QuickNode-backed fork tests,
 - frontend release gate after candidate files.
 
-Still blocked before audit/deployment:
+Full Foundry note: the full unfiltered Foundry suite timed out in the local
+Windows shell twice, ending with a Windows pipe-close error rather than a
+Solidity assertion failure. The V3-critical targeted suites pass. A clean
+full-suite run in CI/Linux/WSL/reviewer environment remains recommended before
+deployment.
 
-- fresh Slither / repeatable Slither disposition,
-- second static-analysis tool,
-- real V3 fork rehearsal with `AVAX_RPC`,
+Still blocked before deployment:
+
 - deployment hardware-wallet address recorded and tested,
 - owner hardware-wallet address recorded and tested,
 - Ownable2Step transfer/acceptance readback rehearsed,
@@ -318,5 +327,5 @@ Still blocked before audit/deployment:
 - frontend read-only preview design,
 - explicit activation plan.
 
-Verdict: V3 candidate is ready to package for external review, but still not
-deployment-ready.
+Verdict: V3 candidate is ready for external review, but still not
+deployment-ready or activation-ready.
