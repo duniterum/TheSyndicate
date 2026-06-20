@@ -78,6 +78,8 @@ The doctrine layer. Vision, gates, decision frameworks.
 
 - `docs/EMOTIONAL_ARCHITECTURE_AUDIT.md` — behavioral-loop research catalog; subordinate to the North Star six-loop registry. *(Registered 2026-06-09.)*
 - `docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md` — product-memory record protecting salvageable concepts and entity distinctions. *(Registered 2026-06-09.)*
+- `docs/SYNDICATE_PROTOCOL_MODEL.md` — canonical economic model: SYN seat doctrine, contribution depth, economic scale, 70/20/10 routing, and institutional trust capital. *(Reclassified HISTORICAL -> CANONICAL 2026-06-20.)*
+- `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md` — canonical V3 pre-Solidity specification: deterministic era pricing, acquisition-first routing, public/approved source policy, source registry requirements, receipt schema, and V3 boundaries. *(Registered 2026-06-20.)*
 - `docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md` — knowledge-map index: where each kind of protocol knowledge lives (Protocol Knowledge vs Institutional Register Memory). Defers to the code registry `src/lib/protocol-knowledge-map.ts`. *(Registered 2026-06-12.)*
 
 ### Consolidated canon set (`docs/canon/`)
@@ -146,6 +148,7 @@ specs that match the deployed reality. Safe to reference for current work.
 - `docs/FULL_SITE_MAP.md`
 - `docs/NFT_ARCHIVE_DESIGN_REFERENCES.md`
 - `docs/NFT_ARCHIVE_VERIFIABILITY_MATRIX.md`
+- `docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md`
 
 > Docs that were previously treated as operational but still carry
 > pre-doctrine vocabulary (NFT_ARCHIVE V1 specs, ARCHIVE_9_SLOT_READINESS_AUDIT,
@@ -221,7 +224,6 @@ carry a `Historical note` header.
 - `docs/STATUS_EMPTY_PENDING_AUDIT.md`
 - `docs/STEP_BY_STEP_FROM_HERE.md`
 - `docs/STORY_ENGINE_AUDIT.md`
-- `docs/SYNDICATE_PROTOCOL_MODEL.md`
 - `docs/TECHNICAL_DEBT_AND_LAUNCH_RISK_REPORT.md`
 - `docs/TRANSPARENCY_ROUTE_TRUTH_REPAIR_REPORT.md`
 - `docs/UX_CTA_FLOW_AUDIT.md`

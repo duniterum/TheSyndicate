@@ -211,6 +211,8 @@ const CANONICAL_DOCS = [
   "docs/RANK_CONSTITUTIONAL_RULING.md",
   "docs/EMOTIONAL_ARCHITECTURE_AUDIT.md",
   "docs/PRODUCT_MEMORY_AND_FUTURE_LOOPS.md",
+  "docs/SYNDICATE_PROTOCOL_MODEL.md",
+  "docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md",
   "docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md",
   // ── Coupled to the Authority Map's CANONICAL class (2026-06-12, Batch 8) ──
   // Classified CANONICAL in docs/DOCUMENTATION_AUTHORITY_MAP.md but not
@@ -307,4 +309,3 @@ describe("Doctrine guard — canonical docs scan", () => {
     }
   });
 });
-

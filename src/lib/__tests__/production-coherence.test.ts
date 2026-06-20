@@ -247,6 +247,88 @@ describe("production coherence guards", () => {
     }
   });
 
+  it("keeps the canonical seat/contribution doctrine visible without financial entitlement drift", () => {
+    const model = read("docs/SYNDICATE_PROTOCOL_MODEL.md");
+    const faq = read("src/components/syndicate/FaqRebuilt.tsx");
+    const join = read("src/routes/join.tsx");
+    const my = read("src/routes/my-syndicate.tsx");
+    const docs = read("src/routes/docs.tsx");
+    const ral = read("docs/REVENUE_ATTRIBUTION_LAYER.md");
+    const seatRecord = read("docs/SEAT_RECORD_ARCHITECTURE_DECISION.md");
+
+    expect(model).toContain("The membership seat is binary. Contribution is variable.");
+    expect(model).toContain("One seated wallet has one seat identity.");
+    expect(model).toContain("Do not collapse member count into economic scale.");
+    expect(model).toContain("Ranks must never become a wealth leaderboard.");
+    expect(model).toContain("institutional trust capital");
+    expect(model).toContain("Referral remains one acquisition layer.");
+    expect(model).toContain("The protocol and company are distinct, but narratively connected.");
+
+    expect(faq).toContain("Can I buy multiple seats?");
+    expect(faq).toContain("The seat is binary.");
+    expect(faq).toContain("Is member count the same as economic scale?");
+    expect(faq).toContain("What is institutional trust capital?");
+    expect(join).toContain("The seat is binary; contribution depth is variable.");
+    expect(join).toContain("A 5 USDC entrant and a 10,000 USDC entrant both have one seat.");
+    expect(my).toContain("one seat identity");
+    expect(my).toContain("SYN acquired; seat stays singular");
+    expect(docs).toContain("Seat vs contribution");
+    expect(docs).toContain("not a wealth leaderboard");
+    expect(ral).toContain("Referral is one acquisition layer, not the business model");
+    expect(seatRecord).toContain("institutional trust capital");
+
+    for (const [name, src] of Object.entries({ faq, join, my, docs })) {
+      expect(src, name).not.toMatch(/buy more seats/i);
+      expect(src, name).not.toMatch(/extra seats/i);
+      expect(src, name).not.toMatch(/member count\s*=\s*(?:revenue|economic scale)/i);
+      expect(src, name).not.toMatch(/referral is the business model/i);
+      expect(src, name).not.toMatch(/rank(?:s)? (?:are|is) (?:a )?wealth leaderboard/i);
+      expect(src, name).not.toMatch(/SYN (?:is|means) equity/i);
+      expect(src, name).not.toMatch(/SYN (?:is|means) yield/i);
+      expect(src, name).not.toMatch(/SeatRecord721 replaces SYN/i);
+    }
+  });
+
+  it("freezes the V3 acquisition engine without making it live", () => {
+    const v3 = read("docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md");
+    const testPlan = read("docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md");
+    const contractRegistry = read("src/lib/contract-registry.ts");
+    const referral = read("src/routes/referral.tsx");
+
+    expect(v3).toContain("Status: CANONICAL V3 SPECIFICATION / NO DEPLOYMENT AUTHORIZED");
+    expect(v3).toContain("Chapter is historical identity and belonging.");
+    expect(v3).toContain("Era is pricing.");
+    expect(v3).toContain("grossUsdc - acquisitionCost = protocolContribution");
+    expect(v3).toContain("MEMBER_INTRODUCTION");
+    expect(v3).toContain("BUILDER_SOURCE");
+    expect(v3).toContain("AFFILIATE");
+    expect(v3).toContain("BD_NETWORK");
+    expect(v3).toContain("WHITELABEL");
+    expect(v3).toContain("SPONSORSHIP");
+    expect(v3).toContain("TREASURY_DEAL");
+    expect(v3).toContain("Signal");
+    expect(v3).toContain("Advocate");
+    expect(v3).toContain("Connector");
+    expect(v3).toContain("Catalyst");
+    expect(v3).toContain("Ambassador");
+    expect(v3).toContain("Chapter Source");
+    expect(v3).toContain("approved source terms may go up to 30%");
+    expect(v3).toContain("public maximum automatic rate: 12%");
+    expect(v3).toContain("Every action must emit an event and be visible");
+    expect(v3).toContain("Recommended technical event");
+    expect(v3).toContain("preserved as a reviewed candidate");
+    expect(v3).toContain("strategically superseded");
+
+    expect(testPlan).toContain("exact V3 era price schedule");
+    expect(testPlan).toContain("repeat purchase inside attribution window pays commission");
+    expect(testPlan).toContain("30%");
+    expect(testPlan).toContain("no MLM/downline language");
+
+    expect(contractRegistry).toContain('"COMMISSION_ROUTER_V1"');
+    expect(contractRegistry).toContain('"PENDING"');
+    expect(referral).toContain("No router. No commission.");
+  });
+
   it("keeps Registry distinctions explicit: Archive1155 live, SeatRecord721 future", () => {
     const registry = read("src/routes/registry.tsx");
     const dossiers = read("src/components/syndicate/ContractDossiers.tsx");
