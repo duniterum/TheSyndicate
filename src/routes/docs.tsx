@@ -36,11 +36,12 @@ const GROUPS: Group[] = [
   {
     eyebrow: "Start here",
     title: "First steps",
-    description: "Read these first — they explain what The Syndicate is and what it is not.",
+    description: "Read these first — they explain what The Syndicate is, what the seat means, and what it is not.",
     cards: [
       { title: "Vision", purpose: "Highest source of truth: mission, principles, what we refuse to build.", href: "/whitepaper", status: "REFERENCE", audience: ["Beginner", "Member", "Builder", "Verifier"] },
       { title: "Why join", purpose: "Mission, membership, and why a long-term builder would care.", href: "/#why-join", status: "LIVE", audience: ["Beginner", "Member"] },
       { title: "How to join", purpose: "Wallet → USDC → SYN → member archive, in six plain steps.", href: "/#how-to-join", status: "LIVE", audience: ["Beginner", "Member"] },
+      { title: "Seat vs contribution", purpose: "One wallet becomes seated by holding SYN; contribution depth and economic scale are separate signals.", href: "/faq", status: "LIVE", audience: ["Beginner", "Member", "Verifier"] },
       { title: "Risk notice", purpose: "What you can lose, what is non-custodial, what is not investment.", href: "/faq#risks", status: "LIVE", audience: ["Beginner", "Member"] },
     ],
   },
@@ -60,7 +61,7 @@ const GROUPS: Group[] = [
   {
     eyebrow: "Identity",
     title: "Members & ranks",
-    description: "How identity, ranks, and reputation work — and what is not gamified.",
+    description: "How identity, ranks, and recognition work — and why the product is not a wealth leaderboard.",
     cards: [
       { title: "Member identity", purpose: "What changes after joining: wallet-readable rank, chapter, and archive identity.", href: "/#what-changes-after-joining", status: "LIVE", audience: ["Member"] },
       { title: "Ranks", purpose: "Identity tiers from wallet-readable SYN balance. No payouts, no yield.", href: "/ranks", status: "LIVE", audience: ["Member"] },
@@ -84,6 +85,7 @@ const GROUPS: Group[] = [
     description: "Where the protocol is going, and answers to the questions visitors ask most.",
     cards: [
       { title: "Roadmap", purpose: "Live · Next · Pending · Future · Never — no fake dates.", href: "/roadmap", status: "LIVE", audience: ["Beginner", "Member", "Builder", "Verifier"] },
+      { title: "V3 Preview", purpose: "Read-only candidate model for quote, receipt, acquisition routing, source attribution, era pricing, and source progression. Not live.", href: "/v3-preview", status: "PENDING", audience: ["Builder", "Verifier"] },
       { title: "FAQ", purpose: "Basics, SYN, joining, routing, vault, liquidity, ranks, verification, risks.", href: "/faq", status: "LIVE", audience: ["Beginner", "Member"] },
       { title: "Whitepaper", purpose: "Long-form protocol reference. Mission, mechanics, modules.", href: "/whitepaper", status: "REFERENCE", audience: ["Builder", "Verifier"] },
     ],

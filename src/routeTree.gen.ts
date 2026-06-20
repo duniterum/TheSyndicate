@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as VaultRouteImport } from './routes/vault'
+import { Route as V3PreviewRouteImport } from './routes/v3-preview'
 import { Route as TransparencyRouteImport } from './routes/transparency'
 import { Route as TokenomicsRouteImport } from './routes/tokenomics'
 import { Route as TokenRouteImport } from './routes/token'
@@ -79,6 +80,11 @@ const WhitepaperRoute = WhitepaperRouteImport.update({
 const VaultRoute = VaultRouteImport.update({
   id: '/vault',
   path: '/vault',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const V3PreviewRoute = V3PreviewRouteImport.update({
+  id: '/v3-preview',
+  path: '/v3-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TransparencyRoute = TransparencyRouteImport.update({
@@ -412,6 +418,7 @@ export interface FileRoutesByFullPath {
   '/token': typeof TokenRoute
   '/tokenomics': typeof TokenomicsRoute
   '/transparency': typeof TransparencyRoute
+  '/v3-preview': typeof V3PreviewRoute
   '/vault': typeof VaultRoute
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
@@ -474,6 +481,7 @@ export interface FileRoutesByTo {
   '/token': typeof TokenRoute
   '/tokenomics': typeof TokenomicsRoute
   '/transparency': typeof TransparencyRoute
+  '/v3-preview': typeof V3PreviewRoute
   '/vault': typeof VaultRoute
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
@@ -538,6 +546,7 @@ export interface FileRoutesById {
   '/token': typeof TokenRoute
   '/tokenomics': typeof TokenomicsRoute
   '/transparency': typeof TransparencyRoute
+  '/v3-preview': typeof V3PreviewRoute
   '/vault': typeof VaultRoute
   '/whitepaper': typeof WhitepaperRoute
   '/api/chat': typeof ApiChatRoute
@@ -603,6 +612,7 @@ export interface FileRouteTypes {
     | '/token'
     | '/tokenomics'
     | '/transparency'
+    | '/v3-preview'
     | '/vault'
     | '/whitepaper'
     | '/api/chat'
@@ -665,6 +675,7 @@ export interface FileRouteTypes {
     | '/token'
     | '/tokenomics'
     | '/transparency'
+    | '/v3-preview'
     | '/vault'
     | '/whitepaper'
     | '/api/chat'
@@ -728,6 +739,7 @@ export interface FileRouteTypes {
     | '/token'
     | '/tokenomics'
     | '/transparency'
+    | '/v3-preview'
     | '/vault'
     | '/whitepaper'
     | '/api/chat'
@@ -792,6 +804,7 @@ export interface RootRouteChildren {
   TokenRoute: typeof TokenRoute
   TokenomicsRoute: typeof TokenomicsRoute
   TransparencyRoute: typeof TransparencyRoute
+  V3PreviewRoute: typeof V3PreviewRoute
   VaultRoute: typeof VaultRoute
   WhitepaperRoute: typeof WhitepaperRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -820,6 +833,13 @@ declare module '@tanstack/react-router' {
       path: '/vault'
       fullPath: '/vault'
       preLoaderRoute: typeof VaultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/v3-preview': {
+      id: '/v3-preview'
+      path: '/v3-preview'
+      fullPath: '/v3-preview'
+      preLoaderRoute: typeof V3PreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/transparency': {
@@ -1338,6 +1358,7 @@ const rootRouteChildren: RootRouteChildren = {
   TokenRoute: TokenRoute,
   TokenomicsRoute: TokenomicsRoute,
   TransparencyRoute: TransparencyRoute,
+  V3PreviewRoute: V3PreviewRoute,
   VaultRoute: VaultRoute,
   WhitepaperRoute: WhitepaperRoute,
   ApiChatRoute: ApiChatRoute,

@@ -367,6 +367,38 @@ describe("production coherence guards", () => {
     expect(identity).not.toMatch(/SeatRecord721 replaces SYN/i);
   });
 
+  it("keeps the V3 preview route read-only, candidate, pending, and not live", () => {
+    const route = read("src/routes/v3-preview.tsx");
+    const model = read("src/lib/v3-preview.ts");
+    const docs = read("src/routes/docs.tsx");
+
+    expect(route).toContain('createFileRoute("/v3-preview")');
+    expect(route).toContain("CANDIDATE");
+    expect(route).toContain("PENDING");
+    expect(route).toContain("NOT LIVE");
+    expect(route).toContain("No writes. No deployment. No registry switch.");
+    expect(route).toContain("The live buy path");
+    expect(route).toContain("Membership Sale V2b");
+    expect(route).toContain("Read-only quote");
+    expect(route).toContain("Acquisition-first routing");
+    expect(route).toContain("Receipt example");
+    expect(route).toContain("Source attribution");
+    expect(route).toContain("Chapter pricing visualization");
+    expect(route).toContain("Source progression visualization");
+    expect(route).toContain("source owns a member");
+
+    expect(model).toContain("V3_ERA_PREVIEW");
+    expect(model).toContain("previewV3Quote");
+    expect(model).toContain("MEMBER_INTRODUCTION");
+    expect(model).toContain("Chapter Source");
+    expect(docs).toContain("V3 Preview");
+    expect(docs).toContain("Read-only candidate model");
+
+    expect(route).not.toMatch(/useWriteContract|writeContract|sendTransaction|useSendTransaction|claimSourceEscrow|buy\(/);
+    expect(route).not.toMatch(/router address|live V3 buy path/i);
+    expect(route).not.toMatch(/earned commission|claimable|claim button/i);
+  });
+
   it("keeps Registry distinctions explicit: Archive1155 live, SeatRecord721 future", () => {
     const registry = read("src/routes/registry.tsx");
     const dossiers = read("src/components/syndicate/ContractDossiers.tsx");
