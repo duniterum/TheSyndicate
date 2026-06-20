@@ -58,7 +58,10 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
     error NothingToClaim();
     error OnlySelf();
     error UnknownHistoricalMemberNumber(address member);
+    error InvalidHistoricalMemberNumber(uint256 memberNumber);
+    error HistoricalMemberNumberTaken(uint256 memberNumber);
     error SourceEscrowLocked();
+    error DuplicateRouteWallet();
 
     // ----------------------------------------------- era-advance reason codes
     uint8 internal constant REASON_RANGE = 0;
@@ -95,6 +98,7 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
 
     event EraAdvanced(uint16 indexed fromEra, uint16 indexed toEra, uint256 atSeatNumber, uint8 reason);
     event V1MembershipRecognized(address indexed member);
+    event HistoricalMembershipRecognized(address indexed member, uint256 indexed memberNumber);
     event UnsoldSynRecovered(address indexed to, uint256 amount);
     event SourceAttributionLinked(bytes32 indexed sourceId, address indexed buyer, uint64 expiresAt);
     // Reserved for a future indexer/maintenance transition. Expiry is read-time
@@ -137,6 +141,7 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
 
     mapping(address => bool) public knownMember;
     mapping(address => uint256) public memberNumberOf;
+    mapping(uint256 => address) public memberByNumber;
     mapping(address => uint256) public grossContributed;
     mapping(address => mapping(uint16 => uint256)) public usdcByAddressEra;
 
@@ -199,6 +204,7 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
             usdc == address(0) || syn == address(0) || sourceRegistry == address(0) ||
             vault == address(0) || liquidity == address(0) || operations == address(0)
         ) revert ZeroAddress();
+        if (vault == liquidity || vault == operations || liquidity == operations) revert DuplicateRouteWallet();
         if (genesisOffset >= FINAL_SEAT) revert BadGenesisOffset();
         if (maxUsdcPerTx == 0) revert BadEraCaps();
         if (
@@ -242,11 +248,13 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
     }
 
     // ========================================================= membership
-    function claimV1Membership(bytes32[] calldata proof) external {
-        if (knownMember[msg.sender]) revert AlreadyKnown();
-        if (!_verifyV1(proof, msg.sender)) revert InvalidProof();
-        knownMember[msg.sender] = true;
-        emit V1MembershipRecognized(msg.sender);
+    function claimV1Membership(bytes32[] calldata proof) external pure {
+        proof;
+        revert InvalidProof();
+    }
+
+    function claimHistoricalMembership(uint256 memberNumber, bytes32[] calldata proof) external {
+        _claimHistoricalMembership(msg.sender, memberNumber, proof);
     }
 
     // ============================================================ purchase
@@ -259,10 +267,7 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
     ) external nonReentrant whenNotPaused {
         if (recipient == address(0)) revert ZeroAddress();
 
-        if (v1Proof.length > 0 && !knownMember[recipient] && _verifyV1(v1Proof, recipient)) {
-            knownMember[recipient] = true;
-            emit V1MembershipRecognized(recipient);
-        }
+        if (v1Proof.length > 0) revert InvalidProof();
 
         PurchaseContext memory p = _preparePurchase(grossUsdc, recipient, minSynOut);
         SourceContext memory s = _resolveSource(sourceId, p);
@@ -503,6 +508,7 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
             knownMember[p.recipient] = true;
             memberCount += 1;
             memberNumberOf[p.recipient] = memberCount;
+            memberByNumber[memberCount] = p.recipient;
         }
 
         soldInEra[p.era] += p.synOut;
@@ -758,9 +764,22 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
         }
     }
 
-    function _verifyV1(bytes32[] calldata proof, address who) internal view returns (bool) {
+    function _claimHistoricalMembership(address member, uint256 memberNumber, bytes32[] calldata proof) internal {
+        if (knownMember[member]) revert AlreadyKnown();
+        if (memberNumber == 0 || memberNumber > GENESIS_OFFSET) revert InvalidHistoricalMemberNumber(memberNumber);
+        if (!_verifyHistoricalMember(proof, member, memberNumber)) revert InvalidProof();
+        if (memberByNumber[memberNumber] != address(0)) revert HistoricalMemberNumberTaken(memberNumber);
+
+        knownMember[member] = true;
+        memberNumberOf[member] = memberNumber;
+        memberByNumber[memberNumber] = member;
+        emit HistoricalMembershipRecognized(member, memberNumber);
+        emit V1MembershipRecognized(member);
+    }
+
+    function _verifyHistoricalMember(bytes32[] calldata proof, address who, uint256 memberNumber) internal view returns (bool) {
         if (V1_MEMBER_ROOT == bytes32(0)) return false;
-        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(who))));
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(who, memberNumber))));
         return MerkleProof.verify(proof, V1_MEMBER_ROOT, leaf);
     }
 

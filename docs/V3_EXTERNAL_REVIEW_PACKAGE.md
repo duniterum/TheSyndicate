@@ -96,12 +96,13 @@ Result:
 
 ```text
 SourceRegistryV1Test: 20 passed
-MembershipSaleV3Test: 35 passed
+MembershipSaleV3Test: 39 passed
 RehearsalForkV3 local/skip path: 3 passed, 1 skipped
-RehearsalForkV3 real QuickNode fork after reviewer-finding patches: 4 passed, 0 failed, 0 skipped
+RehearsalForkV3 real QuickNode fork after historical-member migration patch: 4 passed, 0 failed, 0 skipped
 ```
 
-The real QuickNode fork was run against patched commit `48007bc6200583d0d3df382f15678d48cd31cdb6`.
+The real QuickNode fork was rerun after the historical-member migration patch.
+The final patch commit hash must be recorded when this patch is committed.
 The local/skip path remains useful when `AVAX_RPC` is unset.
 
 Full unfiltered Foundry suite status:
@@ -251,8 +252,9 @@ The fork rehearsal checks:
 - receipt event reconstruction,
 - member number / first-seat behavior.
 
-Real QuickNode fork rehearsal was rerun after reviewer-finding patches against
-patched commit `48007bc6200583d0d3df382f15678d48cd31cdb6`.
+Real QuickNode fork rehearsal was rerun after the historical-member migration
+patch. The final patch commit hash must be recorded when this patch is
+committed.
 
 Result:
 

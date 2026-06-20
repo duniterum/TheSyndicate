@@ -120,8 +120,8 @@ contract MembershipSaleV3Test is Test {
         );
     }
 
-    function _v1Leaf(address who) internal pure returns (bytes32) {
-        return keccak256(bytes.concat(keccak256(abi.encode(who))));
+    function _historicalLeaf(address who, uint256 memberNumber) internal pure returns (bytes32) {
+        return keccak256(bytes.concat(keccak256(abi.encode(who, memberNumber))));
     }
 
     function _hashPair(bytes32 a, bytes32 b) internal pure returns (bytes32) {
@@ -150,10 +150,12 @@ contract MembershipSaleV3Test is Test {
 
     function _createSource(uint16 bps, uint256 perBuyerCap) internal {
         sources.createSource(SOURCE_ID, _memberTerms(bps, perBuyerCap));
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
     }
 
     function _createSource(SourceRegistryV1.SourceTerms memory terms) internal {
         sources.createSource(SOURCE_ID, terms);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
     }
 
     function _approve(address buyer, uint256 amount) internal {
@@ -175,6 +177,24 @@ contract MembershipSaleV3Test is Test {
             + usdc.balanceOf(address(sale));
         assertEq(routed, expectedGross, "all USDC is paid or escrowed");
         assertEq(usdc.balanceOf(address(sale)), sale.totalAcquisitionEscrowed(), "sale only holds escrowed acquisition");
+    }
+
+    function test_constructor_rejectsDuplicateRouteWallets() public {
+        vm.expectRevert(MembershipSaleV3.DuplicateRouteWallet.selector);
+        new MembershipSaleV3(
+            address(usdc),
+            address(syn),
+            address(sources),
+            vault,
+            vault,
+            operations,
+            GEN,
+            bytes32(0),
+            _addrCaps(),
+            MAXTX,
+            0,
+            _eraCaps()
+        );
     }
 
     // ============================================================= no source
@@ -209,9 +229,9 @@ contract MembershipSaleV3Test is Test {
         assertTrue(sale.knownMember(bob));
     }
 
-    function test_buy_validV1ProofWithoutHistoricalNumberRevertsBeforeZeroReceipt() public {
-        bytes32 aliceLeaf = _v1Leaf(alice);
-        bytes32 bobLeaf = _v1Leaf(bob);
+    function test_buy_addressOnlyHistoricalProofRevertsWithoutPartialState() public {
+        bytes32 aliceLeaf = keccak256(bytes.concat(keccak256(abi.encode(alice))));
+        bytes32 bobLeaf = keccak256(bytes.concat(keccak256(abi.encode(bob))));
         sale = _deployWithRoot(_hashPair(aliceLeaf, bobLeaf));
         syn.mint(address(sale), FUND);
         _approve(alice, USDC_100);
@@ -219,33 +239,122 @@ contract MembershipSaleV3Test is Test {
         proof[0] = bobLeaf;
 
         vm.prank(alice);
-        vm.expectRevert(abi.encodeWithSelector(MembershipSaleV3.UnknownHistoricalMemberNumber.selector, alice));
+        vm.expectRevert(MembershipSaleV3.InvalidProof.selector);
         sale.buy(USDC_100, alice, bytes32(0), 0, proof);
 
         assertEq(sale.memberNumberOf(alice), 0);
-        assertFalse(sale.knownMember(alice), "reverted proof does not leave partial state");
+        assertFalse(sale.knownMember(alice), "obsolete proof does not leave partial state");
         assertEq(sale.receiptCount(), 0);
     }
 
-    function test_buy_knownMemberWithZeroMemberNumberRevertsBeforeZeroReceipt() public {
-        bytes32 aliceLeaf = _v1Leaf(alice);
-        bytes32 bobLeaf = _v1Leaf(bob);
+    function test_claimV1Membership_addressOnlyPathDisabled() public {
+        bytes32 aliceLeaf = keccak256(bytes.concat(keccak256(abi.encode(alice))));
+        bytes32 bobLeaf = keccak256(bytes.concat(keccak256(abi.encode(bob))));
         sale = _deployWithRoot(_hashPair(aliceLeaf, bobLeaf));
         syn.mint(address(sale), FUND);
         bytes32[] memory proof = new bytes32[](1);
         proof[0] = bobLeaf;
 
         vm.prank(alice);
+        vm.expectRevert(MembershipSaleV3.InvalidProof.selector);
         sale.claimV1Membership(proof);
-        assertTrue(sale.knownMember(alice));
+
+        assertFalse(sale.knownMember(alice));
         assertEq(sale.memberNumberOf(alice), 0);
-
-        _approve(alice, USDC_100);
-        vm.prank(alice);
-        vm.expectRevert(abi.encodeWithSelector(MembershipSaleV3.UnknownHistoricalMemberNumber.selector, alice));
-        sale.buy(USDC_100, alice, bytes32(0), 0, new bytes32[](0));
-
         assertEq(sale.receiptCount(), 0);
+    }
+
+    function test_claimHistoricalMembership_setsKnownMemberAndNumber() public {
+        uint256 historicalNumber = 42;
+        bytes32 aliceLeaf = _historicalLeaf(alice, historicalNumber);
+        bytes32 bobLeaf = _historicalLeaf(bob, 43);
+        sale = _deployWithRoot(_hashPair(aliceLeaf, bobLeaf));
+        syn.mint(address(sale), FUND);
+        bytes32[] memory proof = new bytes32[](1);
+        proof[0] = bobLeaf;
+
+        vm.prank(alice);
+        sale.claimHistoricalMembership(historicalNumber, proof);
+
+        assertTrue(sale.knownMember(alice));
+        assertEq(sale.memberNumberOf(alice), historicalNumber);
+        assertEq(sale.memberByNumber(historicalNumber), alice);
+        assertEq(sale.memberCount(), GEN, "historical recognition does not create a new seat");
+    }
+
+    function test_buy_existingSynHolderWithHistoricalProofCanBuyWithoutFirstSeat() public {
+        uint256 historicalNumber = 42;
+        bytes32 aliceLeaf = _historicalLeaf(alice, historicalNumber);
+        bytes32 bobLeaf = _historicalLeaf(bob, 43);
+        sale = _deployWithRoot(_hashPair(aliceLeaf, bobLeaf));
+        syn.mint(address(sale), FUND);
+        syn.mint(alice, 1 ether);
+        _approve(alice, USDC_100);
+        bytes32[] memory proof = new bytes32[](1);
+        proof[0] = bobLeaf;
+
+        vm.prank(alice);
+        sale.claimHistoricalMembership(historicalNumber, proof);
+
+        bytes32 expectedReceiptId = keccak256(abi.encode(block.chainid, address(sale), uint256(1)));
+        vm.expectEmit(true, true, true, true, address(sale));
+        emit MembershipPurchasedV3(
+            expectedReceiptId,
+            alice,
+            alice,
+            historicalNumber,
+            USDC_100,
+            0,
+            USDC_100,
+            70_000_000,
+            20_000_000,
+            10_000_000,
+            USDC_100 * 50 * 1e12,
+            50,
+            2,
+            1,
+            bytes32(0),
+            0,
+            address(0),
+            0,
+            0,
+            0,
+            0,
+            0,
+            false,
+            sale.RECEIPT_VERSION()
+        );
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(sale.memberNumberOf(alice), historicalNumber);
+        assertEq(sale.memberCount(), GEN, "historical member does not increment V3 seat count");
+        assertEq(sale.receiptCount(), 1);
+    }
+
+    function test_claimHistoricalMembership_rejectsZeroDuplicateAndChangedNumber() public {
+        bytes32 aliceLeaf = _historicalLeaf(alice, 42);
+        bytes32 bobLeaf = _historicalLeaf(bob, 42);
+        sale = _deployWithRoot(_hashPair(aliceLeaf, bobLeaf));
+        syn.mint(address(sale), FUND);
+        bytes32[] memory aliceProof = new bytes32[](1);
+        aliceProof[0] = bobLeaf;
+        bytes32[] memory bobProof = new bytes32[](1);
+        bobProof[0] = aliceLeaf;
+
+        vm.prank(alice);
+        vm.expectRevert(abi.encodeWithSelector(MembershipSaleV3.InvalidHistoricalMemberNumber.selector, 0));
+        sale.claimHistoricalMembership(0, aliceProof);
+
+        vm.prank(alice);
+        sale.claimHistoricalMembership(42, aliceProof);
+
+        vm.prank(alice);
+        vm.expectRevert(MembershipSaleV3.AlreadyKnown.selector);
+        sale.claimHistoricalMembership(43, aliceProof);
+
+        vm.prank(bob);
+        vm.expectRevert(abi.encodeWithSelector(MembershipSaleV3.HistoricalMemberNumberTaken.selector, 42));
+        sale.claimHistoricalMembership(42, bobProof);
     }
 
     function test_buy_existingSynHolderWithoutV3MemberNumberRevertsBeforeDuplicateSeat() public {
@@ -383,6 +492,7 @@ contract MembershipSaleV3Test is Test {
         SourceRegistryV1.SourceTerms memory terms = _memberTerms(1_200, 10_000e6);
         terms.payoutWallet = address(contractWallet);
         sources.createSource(SOURCE_ID, terms);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         _approve(alice, USDC_100);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
@@ -608,6 +718,7 @@ contract MembershipSaleV3Test is Test {
         secondTerms.payoutWallet = secondPayoutWallet;
         secondTerms.endTime = uint64(block.timestamp + 730 days);
         sources.createSource(secondSourceId, secondTerms);
+        sources.setSourceStatus(secondSourceId, SourceRegistryV1.SourceStatus.ACTIVE);
         syn.mint(secondSourceWallet, 1 ether);
         _approve(alice, USDC_100 * 3);
 
@@ -641,6 +752,7 @@ contract MembershipSaleV3Test is Test {
         secondTerms.sourceWallet = secondSourceWallet;
         secondTerms.payoutWallet = secondPayoutWallet;
         sources.createSource(secondSourceId, secondTerms);
+        sources.setSourceStatus(secondSourceId, SourceRegistryV1.SourceStatus.ACTIVE);
         syn.mint(secondSourceWallet, 1 ether);
         _approve(alice, USDC_100 * 3);
 
@@ -664,6 +776,7 @@ contract MembershipSaleV3Test is Test {
         secondTerms.sourceWallet = secondSourceWallet;
         secondTerms.payoutWallet = secondPayoutWallet;
         sources.createSource(secondSourceId, secondTerms);
+        sources.setSourceStatus(secondSourceId, SourceRegistryV1.SourceStatus.ACTIVE);
         syn.mint(secondSourceWallet, 1 ether);
         _approve(alice, USDC_100 * 2);
 
@@ -685,6 +798,7 @@ contract MembershipSaleV3Test is Test {
         secondTerms.sourceWallet = secondSourceWallet;
         secondTerms.payoutWallet = secondPayoutWallet;
         sources.createSource(secondSourceId, secondTerms);
+        sources.setSourceStatus(secondSourceId, SourceRegistryV1.SourceStatus.ACTIVE);
         syn.mint(secondSourceWallet, 1 ether);
         _approve(alice, USDC_100 * 2);
 
@@ -727,6 +841,7 @@ contract MembershipSaleV3Test is Test {
         terms.sourceWallet = alice;
         terms.payoutWallet = alice;
         sources.createSource(SOURCE_ID, terms);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         syn.mint(alice, 1 ether);
         _approve(alice, USDC_100);
 
@@ -739,6 +854,7 @@ contract MembershipSaleV3Test is Test {
         SourceRegistryV1.SourceTerms memory terms = _memberTerms(500, 10_000e6);
         terms.payoutWallet = alice;
         sources.createSource(SOURCE_ID, terms);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         _approve(alice, USDC_100);
 
         vm.prank(alice);
@@ -750,6 +866,7 @@ contract MembershipSaleV3Test is Test {
         SourceRegistryV1.SourceTerms memory terms = _memberTerms(500, 10_000e6);
         terms.payoutWallet = bob;
         sources.createSource(SOURCE_ID, terms);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         _approve(alice, USDC_100);
 
         vm.prank(alice);
@@ -762,6 +879,7 @@ contract MembershipSaleV3Test is Test {
         address unseated = makeAddr("unseated");
         terms.sourceWallet = unseated;
         sources.createSource(SOURCE_ID, terms);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         _approve(alice, USDC_100);
 
         vm.prank(alice);

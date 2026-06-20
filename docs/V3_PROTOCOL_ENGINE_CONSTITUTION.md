@@ -296,8 +296,19 @@ Minimum requirements:
 - max acquisition cap enforcement,
 - pause,
 - Holder Index compatibility,
-- V1/V2/V2b migration posture,
+- V1/V2/V2b migration posture through numbered historical-member proofs,
 - rich receipt event.
+
+Historical member migration rule:
+
+- address-only V1 proofs are not sufficient for V3 receipts,
+- historical proofs must include both member wallet and historical member number,
+- V3 must never emit `memberNumber = 0`,
+- existing SYN holders with a valid historical-member-number proof may make
+  additional V3 purchases without creating a second first seat,
+- existing SYN holders without a historical-member-number proof must fail
+  closed until the historical member number is known,
+- assigned historical member numbers must not be overwritten or duplicated.
 
 V3 should not begin by deploying a standalone commission router. The existing
 `CommissionRouterV1` is Operations-slice-only and is strategically superseded

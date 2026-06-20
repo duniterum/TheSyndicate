@@ -198,6 +198,8 @@ contract RehearsalForkV3Test is Test {
 
         vm.prank(ownerCandidate);
         sources.createSource(SOURCE_ID, _sourceTerms(1_200));
+        vm.prank(ownerCandidate);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         SourceRegistryV1.SourceRecord memory record = sources.sourceConfig(SOURCE_ID);
         assertEq(record.sourceWallet, sourceWallet);
         assertEq(record.payoutWallet, payoutWallet);
@@ -280,6 +282,7 @@ contract RehearsalForkV3Test is Test {
 
         vm.prank(address(this));
         sources.createSource(SOURCE_ID, _sourceTerms(1_200));
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         rehearsalSyn.mint(sourceWallet, 1 ether);
         rehearsalUsdc.setBlocked(payoutWallet, true);
         rehearsalUsdc.mint(sourceBuyer, USDC_100);
@@ -308,6 +311,7 @@ contract RehearsalForkV3Test is Test {
         SourceRegistryV1.SourceTerms memory terms = _sourceTerms(1_200);
         terms.payoutWallet = address(contractWallet);
         sources.createSource(SOURCE_ID, terms);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         rehearsalSyn.mint(sourceWallet, 1 ether);
         rehearsalUsdc.mint(sourceBuyer, USDC_100);
         vm.prank(sourceBuyer);

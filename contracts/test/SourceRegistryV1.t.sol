@@ -88,6 +88,7 @@ contract SourceRegistryV1Test is Test {
 
     function _createMemberSource(uint16 bps) internal {
         registry.createSource(SOURCE_ID, _memberTerms(bps));
+        registry.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
     }
 
     // ============================================================= constants
@@ -108,7 +109,7 @@ contract SourceRegistryV1Test is Test {
             sourceWallet,
             uint8(SourceRegistryV1.SourceClass.MEMBER_INTRODUCTION),
             1_200,
-            uint8(SourceRegistryV1.SourceStatus.ACTIVE),
+            uint8(SourceRegistryV1.SourceStatus.PAUSED),
             uint8(SourceRegistryV1.AttributionScope.WINDOWED),
             payoutWallet,
             META
@@ -119,7 +120,7 @@ contract SourceRegistryV1Test is Test {
         assertEq(record.sourceWallet, sourceWallet);
         assertEq(uint8(record.sourceClass), uint8(SourceRegistryV1.SourceClass.MEMBER_INTRODUCTION));
         assertEq(record.commissionBps, 1_200);
-        assertEq(uint8(record.status), uint8(SourceRegistryV1.SourceStatus.ACTIVE));
+        assertEq(uint8(record.status), uint8(SourceRegistryV1.SourceStatus.PAUSED));
         assertEq(uint8(record.scope), uint8(SourceRegistryV1.AttributionScope.WINDOWED));
         assertEq(record.grossCap, 100_000e6);
         assertEq(record.perBuyerCap, 10_000e6);
@@ -129,6 +130,9 @@ contract SourceRegistryV1Test is Test {
         assertEq(record.createdBy, address(this));
         assertEq(record.updatedAt, uint64(block.timestamp));
         assertTrue(registry.sourceExists(SOURCE_ID));
+        assertFalse(registry.isActive(SOURCE_ID));
+
+        registry.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         assertTrue(registry.isActive(SOURCE_ID));
     }
 
@@ -171,6 +175,7 @@ contract SourceRegistryV1Test is Test {
         registry.createSource(BUILDER_ID, _builderTerms(3_001));
 
         registry.createSource(BUILDER_ID, _builderTerms(3_000));
+        registry.setSourceStatus(BUILDER_ID, SourceRegistryV1.SourceStatus.ACTIVE);
         SourceRegistryV1.SourceRecord memory record = registry.sourceConfig(BUILDER_ID);
         assertEq(record.commissionBps, 3_000);
     }
@@ -384,6 +389,7 @@ contract SourceRegistryV1Test is Test {
         terms.startTime = uint64(block.timestamp + 1 days);
         terms.endTime = uint64(block.timestamp + 2 days);
         registry.createSource(SOURCE_ID, terms);
+        registry.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
 
         (bool eligible,,,,,) = registry.attributionTerms(SOURCE_ID, 1, 1);
         assertFalse(eligible, "not active before start");

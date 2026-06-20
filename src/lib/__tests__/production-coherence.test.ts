@@ -319,6 +319,9 @@ describe("production coherence guards", () => {
     expect(v3).toContain("public maximum automatic rate: 12%");
     expect(v3).toContain("Every action must emit an event and be visible");
     expect(v3).toContain("Recommended technical event");
+    expect(v3).toContain("V1/V2/V2b migration posture through numbered historical-member proofs");
+    expect(v3).toContain("V3 must never emit `memberNumber = 0`");
+    expect(v3).toContain("existing SYN holders with a valid historical-member-number proof");
     expect(v3).toContain("preserved as a reviewed candidate");
     expect(v3).toContain("strategically superseded");
 
@@ -330,8 +333,11 @@ describe("production coherence guards", () => {
 
     expect(qa).toContain("Status: QA PASS FOR CANDIDATE / EXTERNAL REVIEW READY / NOT DEPLOYMENT-READY");
     expect(qa).toContain("blocked payout wallet cannot grief normal purchases");
+    expect(qa).toContain("address-only V1 proofs are disabled");
+    expect(qa).toContain("numbered historical-member proofs set both `knownMember` and `memberNumberOf`");
+    expect(qa).toContain("historical-member migration");
     expect(qa).toContain("Slither was installed and run");
-    expect(qa).toContain("Real QuickNode fork rehearsal was rerun after reviewer-finding patches");
+    expect(qa).toContain("Real QuickNode fork rehearsal was rerun after the historical-member migration");
     expect(qa).toContain("RehearsalForkV3: 4 passed, 0 failed, 0 skipped");
     expect(qa).toContain("V2b remains the live buy path");
     expect(qa).toContain("hardware-wallet-first owner");

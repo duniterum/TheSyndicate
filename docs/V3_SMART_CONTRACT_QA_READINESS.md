@@ -75,8 +75,11 @@ The V3 candidate test suite now covers:
 - revoked linked source auto-fallback and explicit-source rejection,
 - stale linked source replacement after expiry, pause, revoke, and cap exhaustion,
 - existing seated unlinked members cannot be captured by a new source,
-- V1-proof / existing-SYN historical wallets cannot emit a member-number-zero
-  V3 receipt,
+- address-only V1 proofs are disabled so they cannot create member-number-zero
+  V3 receipts,
+- numbered historical-member proofs set both `knownMember` and `memberNumberOf`,
+- existing SYN holders with valid historical-member-number proofs can buy
+  through V3 without creating a new first seat,
 - source payout wallet cannot equal the buyer or recipient,
 - escrow claim is blocked while a source is PAUSED or REVOKED,
 - public `MEMBER_INTRODUCTION` source terms are capped at 12%,
@@ -231,7 +234,8 @@ Sale V3 preserves the seat doctrine:
 - payer and recipient can differ,
 - SYN is delivered to the recipient,
 - `firstSeat` is emitted in the receipt,
-- V1 proof recognition can mark a historical member without issuing a new seat.
+- historical-member proof recognition can mark a historical member with a
+  nonzero member number without issuing a new seat.
 
 ## V2b Migration Posture
 
@@ -241,6 +245,9 @@ Before activation:
 
 - V2b remains the live buy target,
 - V1/V2a/V2b remain historical Holder Index sources,
+- historical V1/V2/V2b members must be imported through numbered
+  historical-member proofs before V3 can treat their repeat purchases as
+  non-first-seat contributions,
 - frontend registry must not point to V3,
 - no V3 quote/write UI should appear as live,
 - V3 deployment must be registered as a new era of sale truth only after
@@ -307,8 +314,9 @@ The rehearsal should prove:
 - V1/V2/V2b historical seat posture remains intact,
 - no V3 frontend activation happens as part of rehearsal.
 
-Real QuickNode fork rehearsal was rerun after reviewer-finding patches against
-patched commit `48007bc6200583d0d3df382f15678d48cd31cdb6`.
+Real QuickNode fork rehearsal was rerun after the historical-member migration
+patch. The final patch commit hash must be recorded when this patch is
+committed.
 
 Result:
 

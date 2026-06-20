@@ -151,6 +151,8 @@ contract SourceRegistryV1 is Ownable2Step {
     constructor() Ownable(msg.sender) {}
 
     // ========================================================== governance
+    /// @notice Creates source terms in PAUSED status. A separate explicit
+    ///         activation step keeps money-routing terms reviewable before use.
     function createSource(bytes32 sourceId, SourceTerms calldata terms) external onlyOwner {
         if (sourceId == bytes32(0)) revert ZeroSourceId();
         if (_sources[sourceId].sourceWallet != address(0)) revert SourceExists();
@@ -160,7 +162,7 @@ contract SourceRegistryV1 is Ownable2Step {
             sourceWallet: terms.sourceWallet,
             sourceClass: terms.sourceClass,
             commissionBps: terms.commissionBps,
-            status: SourceStatus.ACTIVE,
+            status: SourceStatus.PAUSED,
             scope: terms.scope,
             startTime: terms.startTime,
             endTime: terms.endTime,
@@ -178,7 +180,7 @@ contract SourceRegistryV1 is Ownable2Step {
             terms.sourceWallet,
             uint8(terms.sourceClass),
             terms.commissionBps,
-            uint8(SourceStatus.ACTIVE),
+            uint8(SourceStatus.PAUSED),
             uint8(terms.scope),
             terms.payoutWallet,
             terms.metadataHash
