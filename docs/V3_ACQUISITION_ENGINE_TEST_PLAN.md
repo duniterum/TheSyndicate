@@ -1,10 +1,15 @@
 # V3 Acquisition Engine Test Plan
 
-Status: REQUIRED BEFORE SOLIDITY / NO DEPLOYMENT AUTHORIZED
+Status: V3 CANDIDATE QA CHECKLIST / NO DEPLOYMENT AUTHORIZED
 
 This test plan converts `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md` into
-implementation gates. It should be used before and during the future
-`SourceRegistryV1` and `MembershipSaleV3` Solidity sprint.
+implementation gates. `SourceRegistryV1` and `MembershipSaleV3` now exist as
+local candidate contracts, but they are not deployed, not registered, not
+frontend-wired, and not audit-ready.
+
+Current QA companion:
+
+- `docs/V3_SMART_CONTRACT_QA_READINESS.md`
 
 ## 1. Pricing And Chapter Tests
 
@@ -108,6 +113,18 @@ implementation gates. It should be used before and during the future
   history,
 - no test implies full wallet recovery is live.
 
+## 7A. Payout Escrow And Smart-Wallet Tests
+
+- direct payout succeeds for a normal EOA payout wallet,
+- direct payout succeeds for a passive smart-contract payout wallet,
+- blocked payout wallet does not revert the buy,
+- blocked payout wallet records `sourceEscrowOwed`,
+- Sale V3 USDC balance equals total acquisition escrow owed,
+- escrow claim uses the current registry payout wallet,
+- escrow claim reverts when nothing is owed,
+- failed escrow claim does not affect future purchases,
+- no source payout failure can block Vault/Liquidity/Operations/SYN routing.
+
 ## 8. Receipt Event Tests
 
 - receipt contains gross USDC,
@@ -132,7 +149,11 @@ implementation gates. It should be used before and during the future
 - emitted fields reconstruct all money movement,
 - emitted fields reconstruct source attribution,
 - emitted fields can feed Activity, Register, Chronicle candidates, Archive
-  candidates, My Syndicate, and notifications.
+  candidates, My Syndicate, and notifications,
+- blocked payout wallet emits escrow companion event,
+- escrow claim emits claim companion event,
+- receipt accounting remains reconstructable when acquisition payout is
+  escrowed rather than pushed.
 
 ## 9. Migration And Compatibility Tests
 
@@ -145,6 +166,17 @@ implementation gates. It should be used before and during the future
 - SeatRecord721 remains future and is not required for V3 purchase,
 - Archive1155 remains memory and is not touched by V3 sale logic,
 - CommissionRouterV1 remains pending/superseded unless separately activated.
+
+## 9A. External Review Gates
+
+- fresh Slither is green or dispositioned,
+- second static-analysis tool is green or dispositioned,
+- V3 fork rehearsal runs against Avalanche RPC,
+- deployment parameters are frozen,
+- owner/final-owner model is decided,
+- legal/product signoff is complete,
+- external reviewer/auditor signs off,
+- frontend registry remains pending until deployment readback passes.
 
 ## 10. Doctrine And Product Guard Tests
 

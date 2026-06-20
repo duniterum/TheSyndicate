@@ -10,6 +10,8 @@ Binding doctrine:
 - Holding SYN means the wallet is seated.
 - Archive1155 artifacts are protocol memory, not seats.
 - SeatRecord721 is reserved for a future identity record.
+- Wallet migration, recovery, and historical identity continuity must follow
+  `docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md`.
 - No SeatRecord721 balance, claim, mint, eligibility, or address exists today.
 
 ## 1. Decision
@@ -46,6 +48,13 @@ It should answer:
 
 SeatRecord721 should make identity more durable. It must not become a speculative
 NFT product.
+
+Future design may include historical footprint and institutional trust capital:
+what the seat helped the institution become through verified building,
+operations, legal/compliance work, audits, infrastructure, documentation,
+security, introductions, preservation, or other historically meaningful
+contributions. Those fields must remain non-financial identity/history signals;
+they must not create governance rights, revenue rights, claim rights, or yield.
 
 ## 3. What SeatRecord721 Is Not
 

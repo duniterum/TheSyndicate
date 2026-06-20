@@ -22,6 +22,8 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | Burned supply | `protocol-metrics-registry.ts` `burnedSupply`, `treasury-hooks.ts` `useSynSupply` | SYN ERC-20 `balanceOf(0x…dEaD)` | glossary | LIVE | High (Proof of Burn #001 · 1,000 SYN) | Med (one verified Founder Burn; no automated burn — a burn is a transfer, totalSupply unchanged) |
 | Allocation wallets | `ALLOCATION_WALLETS`, `nonCirculating` | 7 wallets | `DATA_SOURCE_MAP.md` | LIVE | High | Low |
 | Member number | `holder-index.ts` | derived from sale events | `HOLDER_INDEX_ARCHITECTURE.md` | LIVE | High | Low |
+| Current seat status | `holder-index.ts`, SYN balance reads | SYN ERC-20 | `IDENTITY_ATTRIBUTION_CONSTITUTION.md` | LIVE | High | Med (transfers change current seat status) |
+| Historical identity | Holder Index, receipts, Activity/Register reads | sale events; future SeatRecord721 pending | `IDENTITY_ATTRIBUTION_CONSTITUTION.md` | PARTIAL | High | Med (future wallet migration policy not built) |
 | Chapters | `chapters.ts` | derived | authority map | LIVE | High | Low |
 | Ranks | `RANKS_V2`, `rankForUsdc` | derived (cumulative USDC) | `RANK_CONSTITUTIONAL_RULING.md` | LIVE | High (code) / Med (glossary) | Med |
 | Artifacts | `archive-id-registry.ts` | Archive1155 | `ARCHIVE1155_CANONICAL_ARCHITECTURE.md` | PARTIAL | High | Med |
@@ -35,7 +37,7 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | Activity | `protocol-events.ts` | reads chain | `STORY_ENGINE_*` | LIVE | High | Low |
 | Chronicle | `chronicle-entries.ts`, `validateChronicleEntry` | — | `PROTOCOL_CHRONICLE_*` | PARTIAL (curated) | Low | High (vs Activity) |
 | Members metric | `MEMBER_DEFINITION` (`syndicate-config.ts`) — read by both `protocol-truth.ts` & `data-verification-registry.ts` | sale events | `DATA_VERIFICATION_REGISTRY.md` | PARTIAL (until first buy) | High | Low — unified to one shared definition 2026-06-11 |
-| Referral | `preview/referral.ts` (labs stub) | none | `REVENUE_ATTRIBUTION_LAYER.md` | PENDING | Low | High |
+| Referral / Source attribution | `future-referral.ts`, `preview/referral.ts`, SourceRegistryV1 candidate | SourceRegistryV1 candidate; no live address | `IDENTITY_ATTRIBUTION_CONSTITUTION.md`, `V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `REVENUE_ATTRIBUTION_LAYER.md` | PENDING / CANDIDATE | Med | High (must not imply source owns member or referral is live) |
 | Reward / Reputation | `quest-hooks.ts` (labs) | none | `REPUTATION_FORMULA_DOCTRINE.md` | FUTURE | Low | High |
 | Burn mechanism (automated) | *(none)* | none | — | FUTURE | High (none) | Med (the one-time Founder Burn is real and surfaces as *Burned supply* above; no recurring/automated burn mechanism) |
 | SeatRecord721 | `contract-registry.ts` (null) | none | `SEAT_RECORD_ARCHITECTURE_DECISION.md` | PENDING | High | Low (correctly null) |

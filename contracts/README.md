@@ -17,10 +17,13 @@ from file presence alone.
 | Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY | Current self-service membership sale. Routes USDC 70% Vault, 20% Liquidity, 10% Operations. External CommissionRouter is unset. |
 | `SyndicateArchive1155` | LIVE | Protocol-memory ERC-1155. ID 1 is public-open; ID 3 is active/read-gated; ID 2 is a disabled pointer to future SeatRecord721. |
 | `CommissionRouterV1` | CANDIDATE / NOT DEPLOYED / NOT LIVE | Future Operations-slice commission router. No address, no live referral, no claim UI. |
+| `SourceRegistryV1` | V3 CANDIDATE / NOT DEPLOYED / NOT LIVE | Source-term registry for future acquisition-first Sale V3. Stores source policy only; moves no money. |
+| `MembershipSaleV3` | V3 CANDIDATE / NOT DEPLOYED / NOT LIVE | Acquisition-first membership sale candidate. Not funded, not registered, not frontend-wired. |
 | `SeatRecord721` | FUTURE / NOT IMPLEMENTED / NOT DEPLOYED | Future identity record. SYN remains the V1 seat today. |
 
 Hard rule: do not treat Solidity files in `contracts/src/` as deployed simply
-because they exist. `CommissionRouterV1.sol` is a reviewed candidate only.
+because they exist. `CommissionRouterV1.sol`, `SourceRegistryV1.sol`, and
+`MembershipSaleV3.sol` are candidates only.
 
 ## What's Here
 
@@ -28,8 +31,12 @@ because they exist. `CommissionRouterV1.sol` is a reviewed candidate only.
 | --- | --- |
 | `src/SyndicateSaleV2.sol` | Sale V2 source used for the active V2b membership sale: era table, caps, reserve floor, V1 recognition, 70/20/10 routing, and timelocked router wiring. |
 | `src/CommissionRouterV1.sol` | Production-candidate referral router: Operations-slice-only, tier ladder, push/escrow, RAL `Attribution` event. Not deployed. |
+| `src/SourceRegistryV1.sol` | V3 candidate source-term registry: source class, commission bps, caps, windows, payout wallet, status, and visible policy events. Not deployed. |
+| `src/MembershipSaleV3.sol` | V3 candidate sale engine: deterministic era pricing, acquisition-first routing, source validation, payout escrow fallback, and rich receipt event. Not deployed. |
 | `test/SyndicateSaleV2.t.sol` | Sale tests covering constructor validation, buy path, era engine, caps, reserve, Merkle recognition, router glue, pause/recovery, and reentrancy fallback. |
 | `test/CommissionRouterV1.t.sol` | Router tests covering source allow-list, ABI parity, Operations-slice conservation, tier ladder, push/escrow/claim, remove/re-add lifecycle, and event reconstruction. |
+| `test/SourceRegistryV1.t.sol` | V3 registry tests covering source creation, term updates, caps, windows, status, wallet recovery, and source validation. |
+| `test/MembershipSaleV3.t.sol` | V3 sale tests covering acquisition-first conservation, source caps, payout escrow, smart-wallet payouts, member numbering, and receipt reconstruction. |
 | `test/RehearsalForkV2b.t.sol` | Fork rehearsal for the V2b sale topology. Requires `AVAX_RPC`; no broadcast. |
 | `test/mocks/` | Mock ERC-20, blocklist simulation, source mock, reverting/reentrant router mocks. |
 | `script/Deploy.s.sol` | Sale V2 deployment script. Forces `initialRouter = address(0)`. Not used for CommissionRouter deployment. |
@@ -59,7 +66,7 @@ forge test --match-contract SyndicateSaleV2Test -vvv
 
 Latest validated result in this workspace lineage:
 
-- Foundry: 76 passed, 0 failed, 2 skipped.
+- Foundry: 111 passed, 0 failed, 2 skipped after V3 QA hardening.
 - Frontend/release guards are run from the repository root with
   `npm run check-release`.
 
@@ -87,6 +94,17 @@ CommissionRouter deployment remains blocked until:
 - final owner/final-owner model is decided,
 - external review is complete,
 - legal/product signoff is final.
+
+V3 SourceRegistry/Sale deployment remains blocked until:
+
+- `docs/V3_SMART_CONTRACT_QA_READINESS.md` blockers are resolved,
+- fresh Slither is green or dispositioned,
+- a second static-analysis tool is green or dispositioned,
+- V3 fork rehearsal is green against Avalanche RPC,
+- final owner/final-owner model is decided,
+- external review is complete,
+- legal/product signoff is final,
+- frontend read-only preview and registry activation sequence are approved.
 
 ## V2b Sale Topology
 

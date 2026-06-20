@@ -2,10 +2,11 @@
 
 Status: CANONICAL V3 SPECIFICATION / NO DEPLOYMENT AUTHORIZED
 
-This document freezes the V3 design direction before Solidity implementation.
-It does not deploy, activate, or register any V3 contract. V2b remains the live
-buy target until a future V3 deployment is reviewed, verified, funded, and
-intentionally activated.
+This document freezes the V3 design direction. `SourceRegistryV1` and
+`MembershipSaleV3` now exist as local candidate contracts, but this document
+does not deploy, activate, register, or frontend-wire any V3 contract. V2b
+remains the live buy target until a future V3 deployment is reviewed, verified,
+funded, and intentionally activated.
 
 ## 1. Binding Doctrine
 
@@ -29,6 +30,8 @@ Binding rules:
 - Archive1155 artifacts are protocol memory, not seats.
 - SeatRecord721 is a future identity record, not the live seat.
 - Referral/acquisition is one growth layer, not the business model.
+- Source attribution is not ownership of a member and must obey
+  `docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md`.
 - Recognition and money terms are separate.
 - Ranks and recognition must not become wealth leaderboards.
 - Protocol and company are distinct but narratively connected.
@@ -60,7 +63,7 @@ V3 resolution:
 ## 3. Deterministic Era Pricing
 
 V3 uses the current Sale V2 stepped schedule as the baseline unless the founder
-changes this document before Solidity is written.
+changes this document before deployment review.
 
 | Era | Seat range | SYN per 1 USDC | Implied SYN price | Minimum USDC |
 | --- | --- | ---: | ---: | ---: |
@@ -297,7 +300,7 @@ if acquisition-first V3 proceeds.
 
 ## 11. Attribution Rules
 
-V3 must freeze these rules before Solidity:
+V3 must freeze these rules before deployment review:
 
 - no source/referrer: acquisition cost is zero,
 - self-referral is blocked,
@@ -313,6 +316,11 @@ V3 must freeze these rules before Solidity:
 - purchase must never revert only because a non-critical notification/read-model
   would fail,
 - money movement must be atomic and reconstructable from the receipt.
+
+Attribution ownership, existing-member capture, expiry, transfer, pause,
+revocation, recovery, and payout-wallet updates are governed by
+`docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md`. The sale may execute source terms,
+but it must not imply a source owns a member relationship.
 
 ## 12. Wallet Compromise Policy
 
@@ -439,14 +447,19 @@ separately deployed and activated for a non-V3 purpose.
 - no Archive as NFT speculation,
 - no SeatRecord721 replacing SYN as the seat.
 
-## 17. Next Solidity Files After Approval
+## 17. Current V3 Candidate Files
 
-After founder approval, the next coding sprint should create:
+The first V3 candidate contracts now exist locally and in GitHub:
 
 - `contracts/src/SourceRegistryV1.sol`
 - `contracts/src/MembershipSaleV3.sol`
 - `contracts/test/SourceRegistryV1.t.sol`
 - `contracts/test/MembershipSaleV3.t.sol`
 
-No Solidity should be written before this spec and the V3 test plan are
-accepted.
+They remain candidates only. Before deployment or frontend activation, use:
+
+- `docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md`
+- `docs/V3_SMART_CONTRACT_QA_READINESS.md`
+
+Do not add router addresses, live registry entries, claim UI, or V3 buy UI until
+the deployment and readback gates are complete.

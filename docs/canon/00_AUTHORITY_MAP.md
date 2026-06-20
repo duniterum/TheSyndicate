@@ -96,7 +96,8 @@ Full per-document classification lives in `docs/DOCUMENTATION_AUTHORITY_MAP.md`
 9. `docs/canon/06_FINANCIAL_TRACE_AND_GUARDRAILS.md` — how economic data may surface; the money≠prestige guardrail.
 10. `docs/canon/07_FOUNDER_PRINCIPLE.md` — approved-but-unbuilt strategic direction (the intent register).
 11. `docs/canon/08_PROTOCOL_OPERATING_PRINCIPLE.md` — derive, don't invent: build new capability from existing truth, never new stores of duplicated truth.
-12. `docs/DOCUMENTATION_AUTHORITY_MAP.md` — full precedence + vocabulary + per-doc classification.
+12. `docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md` — current seat status, historical identity, recovery, Privy, SeatRecord721, and source attribution boundaries.
+13. `docs/DOCUMENTATION_AUTHORITY_MAP.md` — full precedence + vocabulary + per-doc classification.
 
 ---
 

@@ -39,6 +39,12 @@ The membership seat is binary. Contribution is variable.
   routed, rank progression, historical footprint, chapter position, and future
   recognition candidates.
 
+Current seat status, historical identity, and acquisition attribution are
+separate layers. Seat truth follows SYN balance, historical identity follows
+receipts and Holder Index, and source attribution records introduction under
+explicit terms. The canonical boundary is
+`docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md`.
+
 Do not collapse member count into economic scale.
 
 - Member count answers: how many seated wallets exist?

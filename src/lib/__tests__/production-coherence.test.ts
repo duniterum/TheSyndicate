@@ -292,6 +292,7 @@ describe("production coherence guards", () => {
   it("freezes the V3 acquisition engine without making it live", () => {
     const v3 = read("docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md");
     const testPlan = read("docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md");
+    const qa = read("docs/V3_SMART_CONTRACT_QA_READINESS.md");
     const contractRegistry = read("src/lib/contract-registry.ts");
     const referral = read("src/routes/referral.tsx");
 
@@ -323,10 +324,47 @@ describe("production coherence guards", () => {
     expect(testPlan).toContain("repeat purchase inside attribution window pays commission");
     expect(testPlan).toContain("30%");
     expect(testPlan).toContain("no MLM/downline language");
+    expect(testPlan).toContain("Payout Escrow And Smart-Wallet Tests");
+
+    expect(qa).toContain("Status: QA PASS FOR LOCAL CANDIDATE / NOT AUDIT-READY / NOT DEPLOYMENT-READY");
+    expect(qa).toContain("blocked payout wallet cannot grief normal purchases");
+    expect(qa).toContain("fresh Slither");
+    expect(qa).toContain("V3 fork rehearsal");
+    expect(qa).toContain("V2b remains the live buy path");
 
     expect(contractRegistry).toContain('"COMMISSION_ROUTER_V1"');
     expect(contractRegistry).toContain('"PENDING"');
     expect(referral).toContain("No router. No commission.");
+  });
+
+  it("freezes identity and attribution before referral, Privy, or SeatRecord721 activation", () => {
+    const identity = read("docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+    const sourceTruth = read("docs/canon/02_SOURCE_OF_TRUTH_TABLE.md");
+    const protocolModel = read("docs/SYNDICATE_PROTOCOL_MODEL.md");
+    const v3 = read("docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md");
+    const seatRecord = read("docs/SEAT_RECORD_ARCHITECTURE_DECISION.md");
+
+    expect(identity).toContain("Status: CANONICAL CONSTITUTION / NO DEPLOYMENT AUTHORIZED");
+    expect(identity).toContain("A seat owner is the wallet that currently holds SYN.");
+    expect(identity).toContain("A source never owns a member.");
+    expect(identity).toContain("Existing members must not be captured by a new source retroactively.");
+    expect(identity).toContain("Privy is an onboarding and account-management layer.");
+    expect(identity).toContain("SeatRecord721 must not:");
+    expect(identity).toContain("No-go until explicit future approval:");
+
+    expect(authority).toContain("docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md");
+    expect(sourceTruth).toContain("Current seat status");
+    expect(sourceTruth).toContain("Historical identity");
+    expect(sourceTruth).toContain("Referral / Source attribution");
+    expect(protocolModel).toContain("Current seat status, historical identity, and acquisition attribution are");
+    expect(v3).toContain("Source attribution is not ownership of a member");
+    expect(seatRecord).toContain("Wallet migration, recovery, and historical identity continuity must follow");
+
+    expect(identity).toContain("Forbidden framing:");
+    expect(identity).toContain("source owns member");
+    expect(identity).not.toMatch(/Privy (?:is|becomes) membership truth/i);
+    expect(identity).not.toMatch(/SeatRecord721 replaces SYN/i);
   });
 
   it("keeps Registry distinctions explicit: Archive1155 live, SeatRecord721 future", () => {

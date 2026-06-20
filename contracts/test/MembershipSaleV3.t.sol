@@ -33,6 +33,33 @@ contract MembershipSaleV3Test is Test {
     uint256 internal constant MAXTX = 1_000_000_000_000;
     uint256 internal constant FUND = 1e27;
 
+    event MembershipPurchasedV3(
+        bytes32 indexed receiptId,
+        address indexed buyer,
+        address indexed recipient,
+        uint256 memberNumber,
+        uint256 grossUsdc,
+        uint256 acquisitionCost,
+        uint256 protocolContribution,
+        uint256 vaultAmount,
+        uint256 liquidityAmount,
+        uint256 operationsAmount,
+        uint256 synOut,
+        uint64 synPerUsdc,
+        uint16 era,
+        uint16 chapter,
+        bytes32 sourceId,
+        uint8 sourceClass,
+        address sourceWallet,
+        uint16 commissionBps,
+        uint8 attributionScope,
+        uint256 attributionWindowEndsAt,
+        uint256 sourceGrossRemaining,
+        uint256 buyerGrossRemaining,
+        bool firstSeat,
+        uint8 receiptVersion
+    );
+
     function setUp() public {
         usdc = new BlocklistERC20("USD Coin", "USDC", 6);
         syn = new MockERC20("Syndicate", "SYN", 18);
@@ -100,6 +127,10 @@ contract MembershipSaleV3Test is Test {
         sources.createSource(SOURCE_ID, _memberTerms(bps, perBuyerCap));
     }
 
+    function _createSource(SourceRegistryV1.SourceTerms memory terms) internal {
+        sources.createSource(SOURCE_ID, terms);
+    }
+
     function _approve(address buyer, uint256 amount) internal {
         usdc.mint(buyer, amount);
         vm.prank(buyer);
@@ -109,6 +140,16 @@ contract MembershipSaleV3Test is Test {
     function _buy(address buyer, address recipient, uint256 gross, bytes32 sourceId) internal {
         vm.prank(buyer);
         sale.buy(gross, recipient, sourceId, 0, new bytes32[](0));
+    }
+
+    function _assertUsdcConservation(uint256 expectedGross) internal view {
+        uint256 routed = usdc.balanceOf(payoutWallet)
+            + usdc.balanceOf(vault)
+            + usdc.balanceOf(liquidity)
+            + usdc.balanceOf(operations)
+            + usdc.balanceOf(address(sale));
+        assertEq(routed, expectedGross, "all USDC is paid or escrowed");
+        assertEq(usdc.balanceOf(address(sale)), sale.totalAcquisitionEscrowed(), "sale only holds escrowed acquisition");
     }
 
     // ============================================================= no source
@@ -161,6 +202,90 @@ contract MembershipSaleV3Test is Test {
         assertEq(sale.buyerSourceId(alice), SOURCE_ID);
         assertEq(sale.totalAcquisitionCost(), 15_000_000);
         assertEq(sale.totalProtocolContribution(), 85_000_000);
+    }
+
+    function test_buy_receiptEventReconstructsPurchase() public {
+        _createSource(1_500, 10_000e6);
+        _approve(alice, USDC_100);
+        bytes32 expectedReceiptId = keccak256(abi.encode(block.chainid, address(sale), uint256(1)));
+
+        vm.expectEmit(true, true, true, true, address(sale));
+        emit MembershipPurchasedV3(
+            expectedReceiptId,
+            alice,
+            alice,
+            GEN + 1,
+            USDC_100,
+            15_000_000,
+            85_000_000,
+            59_500_000,
+            17_000_000,
+            8_500_000,
+            USDC_100 * 50 * 1e12,
+            50,
+            2,
+            2,
+            SOURCE_ID,
+            uint8(SourceRegistryV1.SourceClass.MEMBER_INTRODUCTION),
+            sourceWallet,
+            1_500,
+            uint8(SourceRegistryV1.AttributionScope.WINDOWED),
+            block.timestamp + 365 days,
+            999_900e6,
+            9_900e6,
+            true,
+            sale.RECEIPT_VERSION()
+        );
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+    }
+
+    function test_buy_sourceGrossCapBoundaryAllowsExactCapThenStopsAutoCommission() public {
+        SourceRegistryV1.SourceTerms memory terms = _memberTerms(1_500, 0);
+        terms.grossCap = USDC_100;
+        terms.perBuyerCap = 0;
+        _createSource(terms);
+        _approve(alice, USDC_100 * 2);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "cap boundary pays once");
+        assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "capped auto source does not keep accruing");
+        assertEq(sale.totalGrossUsdc(), USDC_100 * 2);
+        assertEq(sale.totalAcquisitionCost(), 15_000_000);
+        _assertUsdcConservation(USDC_100 * 2);
+    }
+
+    function testFuzz_acquisitionFirstConservationAndRounding(uint96 rawGross, uint16 rawBps) public {
+        uint256 gross = bound(uint256(rawGross), USDC_10, MAXTX);
+        uint16 bps = uint16(bound(uint256(rawBps), 0, 3_000));
+        SourceRegistryV1.SourceTerms memory terms = _memberTerms(bps, type(uint256).max);
+        if (bps > sources.MAX_MEMBER_INTRO_BPS()) {
+            terms.sourceClass = SourceRegistryV1.SourceClass.BUILDER_SOURCE;
+        }
+        terms.grossCap = type(uint256).max;
+        terms.perBuyerCap = type(uint256).max;
+        _createSource(terms);
+        _approve(alice, gross);
+
+        _buy(alice, alice, gross, SOURCE_ID);
+
+        uint256 acquisitionCost = (gross * bps) / 10_000;
+        uint256 protocolContribution = gross - acquisitionCost;
+        uint256 vaultAmount = (protocolContribution * 70) / 100;
+        uint256 liquidityAmount = (protocolContribution * 20) / 100;
+        uint256 operationsAmount = protocolContribution - vaultAmount - liquidityAmount;
+
+        assertEq(acquisitionCost + vaultAmount + liquidityAmount + operationsAmount, gross, "rounding conserved");
+        assertEq(usdc.balanceOf(payoutWallet), acquisitionCost);
+        assertEq(usdc.balanceOf(vault), vaultAmount);
+        assertEq(usdc.balanceOf(liquidity), liquidityAmount);
+        assertEq(usdc.balanceOf(operations), operationsAmount);
+        assertEq(sale.totalGrossUsdc(), gross);
+        assertEq(sale.totalAcquisitionCost(), acquisitionCost);
+        assertEq(sale.totalProtocolContribution(), protocolContribution);
+        _assertUsdcConservation(gross);
     }
 
     function test_buy_smartContractPayoutWalletWorksWithoutEscrow() public {
