@@ -57,6 +57,8 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
     error SourceAlreadyLinked();
     error NothingToClaim();
     error OnlySelf();
+    error UnknownHistoricalMemberNumber(address member);
+    error SourceEscrowLocked();
 
     // ----------------------------------------------- era-advance reason codes
     uint8 internal constant REASON_RANGE = 0;
@@ -95,6 +97,8 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
     event V1MembershipRecognized(address indexed member);
     event UnsoldSynRecovered(address indexed to, uint256 amount);
     event SourceAttributionLinked(bytes32 indexed sourceId, address indexed buyer, uint64 expiresAt);
+    // Reserved for a future indexer/maintenance transition. Expiry is read-time
+    // in this V3 candidate and is not emitted during normal purchases.
     event SourceAttributionExpired(bytes32 indexed sourceId, address indexed buyer);
     event SourcePayoutEscrowed(bytes32 indexed sourceId, address indexed payoutWallet, uint256 amount);
     event SourcePayoutClaimed(bytes32 indexed sourceId, address indexed payoutWallet, uint256 amount);
@@ -284,6 +288,7 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
 
         SourceRegistryV1.SourceRecord memory record = SOURCE_REGISTRY.sourceConfig(sourceId);
         if (record.payoutWallet == address(0)) revert ZeroAddress();
+        if (record.status != SourceRegistryV1.SourceStatus.ACTIVE) revert SourceEscrowLocked();
 
         sourceEscrowOwed[sourceId] = 0;
         totalAcquisitionEscrowed -= amount;
@@ -315,8 +320,9 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
         if (concluded || memberCount >= FINAL_SEAT) revert SaleConcluded();
         (synPerUsdc,,) = _eraParams(era);
         synOut = grossUsdc * uint256(synPerUsdc) * SCALE_6_TO_18;
-        seatIfFirst = knownMember[recipient] ? memberNumberOf[recipient] : memberCount + 1;
-        uint16 bps = _previewCommissionBps(sourceId, recipient, grossUsdc, !knownMember[recipient]);
+        bool firstSeat;
+        (firstSeat, seatIfFirst) = _membershipState(recipient);
+        uint16 bps = _previewCommissionBps(sourceId, recipient, grossUsdc, firstSeat);
         acquisitionCost = (grossUsdc * bps) / BPS_DENOMINATOR;
         protocolContribution = grossUsdc - acquisitionCost;
     }
@@ -389,12 +395,13 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
         uint256 available = SYN.balanceOf(address(this));
         if (synOut > available) revert InsufficientInventory(available);
 
-        bool firstSeat = !knownMember[recipient];
+        bool firstSeat;
+        uint256 assignedNumber;
+        (firstSeat, assignedNumber) = _membershipState(recipient);
         uint256 reserveAfter = _reserveSyn(memberCount + (firstSeat ? 1 : 0));
         uint256 sellableNow = available > reserveAfter ? available - reserveAfter : 0;
         if (synOut > sellableNow) revert ReserveFloorViolation(sellableNow);
 
-        uint256 assignedNumber = firstSeat ? memberCount + 1 : memberNumberOf[recipient];
         p = PurchaseContext({
             buyer: msg.sender,
             recipient: recipient,
@@ -415,7 +422,8 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
         bool explicitSource = requestedSourceId != bytes32(0);
         bool autoLinked;
         bytes32 linked = buyerSourceId[p.recipient];
-        if (requestedSourceId == bytes32(0) && _linkedSourceStillOpen(p.recipient)) {
+        bool linkedCanApply = _sourceCanApply(linked, p);
+        if (requestedSourceId == bytes32(0) && linkedCanApply) {
             requestedSourceId = linked;
             autoLinked = requestedSourceId != bytes32(0);
         }
@@ -423,7 +431,7 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
             requestedSourceId != bytes32(0) &&
             linked != bytes32(0) &&
             linked != requestedSourceId &&
-            _linkedSourceStillOpen(p.recipient)
+            linkedCanApply
         ) revert SourceAlreadyLinked();
         if (requestedSourceId == bytes32(0)) return s;
 
@@ -432,6 +440,7 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
             if (autoLinked && !explicitSource) return s;
             revert SourceNotEligible();
         }
+        if (!p.firstSeat && linked == bytes32(0) && explicitSource) revert SourceNotEligible();
         if (record.sourceWallet == p.buyer || record.sourceWallet == p.recipient) revert SelfReferral();
         if (
             record.sourceClass == SourceRegistryV1.SourceClass.MEMBER_INTRODUCTION &&
@@ -459,8 +468,9 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
             if (autoLinked && !explicitSource) return s;
             revert SourceNotEligible();
         }
+        if (payoutWallet == p.buyer || payoutWallet == p.recipient) revert SelfReferral();
 
-        if (linked == bytes32(0)) {
+        if (!autoLinked && (linked == bytes32(0) || linked != requestedSourceId)) {
             buyerSourceId[p.recipient] = requestedSourceId;
             buyerSourceExpiresAt[p.recipient] = record.endTime;
             emit SourceAttributionLinked(requestedSourceId, p.recipient, record.endTime);
@@ -572,9 +582,45 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
 
         uint256 projectedSourceGross = sourceGrossAttributed[sourceId] + grossUsdc;
         uint256 projectedBuyerGross = buyerGrossAttributedToSource[sourceId][recipient] + grossUsdc;
-        (bool eligible, uint16 bps,,,, SourceRegistryV1.SourceStatus status) =
+        (bool eligible, uint16 bps, address payoutWallet,,, SourceRegistryV1.SourceStatus status) =
             SOURCE_REGISTRY.attributionTerms(sourceId, projectedSourceGross, projectedBuyerGross);
+        if (payoutWallet == recipient) return 0;
         return eligible && status == SourceRegistryV1.SourceStatus.ACTIVE ? bps : 0;
+    }
+
+    function _membershipState(address recipient) internal view returns (bool firstSeat, uint256 assignedNumber) {
+        if (knownMember[recipient]) {
+            assignedNumber = memberNumberOf[recipient];
+            if (assignedNumber == 0) revert UnknownHistoricalMemberNumber(recipient);
+            return (false, assignedNumber);
+        }
+        if (SYN.balanceOf(recipient) != 0) revert UnknownHistoricalMemberNumber(recipient);
+        return (true, memberCount + 1);
+    }
+
+    function _sourceCanApply(bytes32 sourceId, PurchaseContext memory p) internal view returns (bool) {
+        if (sourceId == bytes32(0)) return false;
+        uint64 expiresAt = buyerSourceExpiresAt[p.recipient];
+        if (expiresAt != 0 && block.timestamp > expiresAt) return false;
+
+        SourceRegistryV1.SourceRecord memory record = SOURCE_REGISTRY.sourceConfig(sourceId);
+        if (record.sourceWallet == address(0)) return false;
+        if (record.sourceWallet == p.buyer || record.sourceWallet == p.recipient) return false;
+        if (
+            record.sourceClass == SourceRegistryV1.SourceClass.MEMBER_INTRODUCTION &&
+            SYN.balanceOf(record.sourceWallet) == 0
+        ) return false;
+        if (!p.firstSeat && !record.appliesToRepeatPurchases) return false;
+
+        uint256 projectedSourceGross = sourceGrossAttributed[sourceId] + p.grossUsdc;
+        uint256 projectedBuyerGross = buyerGrossAttributedToSource[sourceId][p.recipient] + p.grossUsdc;
+        (bool eligible,, address payoutWallet,,, SourceRegistryV1.SourceStatus status) =
+            SOURCE_REGISTRY.attributionTerms(sourceId, projectedSourceGross, projectedBuyerGross);
+
+        return eligible &&
+            status == SourceRegistryV1.SourceStatus.ACTIVE &&
+            payoutWallet != p.buyer &&
+            payoutWallet != p.recipient;
     }
 
     function _linkedSourceStillOpen(address recipient) internal view returns (bool) {

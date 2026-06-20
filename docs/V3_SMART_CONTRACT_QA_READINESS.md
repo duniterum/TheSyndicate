@@ -3,8 +3,8 @@
 Status: QA PASS FOR CANDIDATE / EXTERNAL REVIEW READY / NOT DEPLOYMENT-READY
 
 External-review package status: prepared for review intake in
-`docs/V3_EXTERNAL_REVIEW_PACKAGE.md`. V3 remains blocked from deployment until
-the gates below are closed.
+`docs/V3_EXTERNAL_REVIEW_PACKAGE.md`, but V3 remains blocked from deployment
+until the gates below are closed.
 
 This document records the focused QA pass for the V3 candidate contracts:
 
@@ -73,6 +73,15 @@ The V3 candidate test suite now covers:
 - repeat purchase after attribution-window expiry,
 - paused linked source auto-fallback and explicit-source rejection,
 - revoked linked source auto-fallback and explicit-source rejection,
+- stale linked source replacement after expiry, pause, revoke, and cap exhaustion,
+- existing seated unlinked members cannot be captured by a new source,
+- V1-proof / existing-SYN historical wallets cannot emit a member-number-zero
+  V3 receipt,
+- source payout wallet cannot equal the buyer or recipient,
+- escrow claim is blocked while a source is PAUSED or REVOKED,
+- public `MEMBER_INTRODUCTION` source terms are capped at 12%,
+- high-rate / non-member / lifetime / custom source terms require metadata,
+- payout wallet changes must use `updatePayoutWallet`, not silent terms update,
 - referrer losing SYN seat after attribution,
 - active attribution hijack protection,
 - V3 fork rehearsal readback shape and skip behavior.
@@ -92,20 +101,23 @@ Behavior:
    - `SourcePayoutEscrowed(sourceId, payoutWallet, amount)`
 5. The buy continues and routes Vault/Liquidity/Operations/SYN.
 6. Anyone may later call `claimSourceEscrow(sourceId)`.
-7. Claimed funds always go to the current payout wallet in `SourceRegistryV1`.
+7. Claiming is allowed only while the source is ACTIVE.
+8. Claimed funds always go to the current payout wallet in `SourceRegistryV1`.
 
 This means:
 
 - a blocked payout wallet cannot grief normal purchases,
 - a smart-contract payout wallet works if it can receive ERC-20 balances,
 - payout recovery after compromise can happen through visible registry action,
+- PAUSED or REVOKED sources cannot claim escrow until source status is reviewed,
 - the sale contract may hold USDC only as acquisition escrow,
 - receipt accounting remains reconstructable because acquisition cost is still
   emitted in the purchase receipt and escrow mode is emitted separately.
 
 Remaining deployment-review note: escrow claims can still revert while the
 current payout wallet remains blocked. That is acceptable because it does not
-block buys, but operations must update the payout wallet before claiming.
+block buys, but operations must update the payout wallet and explicitly return
+the source to ACTIVE before claiming.
 
 ## Source Cap Math
 
@@ -168,7 +180,9 @@ Current risk assessment:
 - update payout wallet,
 - set source status ACTIVE / PAUSED / REVOKED.
 
-All source policy actions emit events.
+All source policy actions emit events. `updateSourceTerms` cannot silently
+change the payout wallet; payout recovery must use `updatePayoutWallet` so
+indexers see `SourcePayoutWalletUpdated`.
 
 `MembershipSaleV3` owner powers:
 
@@ -234,8 +248,7 @@ Before activation:
 
 ## Static Analysis Status
 
-Slither was installed and run during the security-readiness phase. A follow-up
-run succeeded after adding Foundry to PATH for that process. It produced
+Slither was installed and run during the security-readiness phase. It produced
 findings that need external disposition before deployment. The most important
 finding is a benign-reentrancy warning around the `MembershipSaleV3` source
 payout / escrow fallback path.
@@ -245,25 +258,29 @@ Current internal disposition:
 - `buy` and `claimSourceEscrow` are `nonReentrant`,
 - `pushSourcePayout` is callable only by `address(this)`,
 - blocked payout wallets fall back to escrow without blocking the buy,
+- escrow claims are status-gated and cannot be pulled while a source is PAUSED
+  or REVOKED,
 - smart-contract payout wallets are covered by tests,
 - USDC and SYN are protected from owner rescue.
 
 This remains a reviewer item because direct payout is the most sensitive V3
 money path.
 
-Second analyzer status: Solhint ran as the strongest realistic available
-alternative after Node was configured to use the system certificate store. It
-reported 0 errors and warnings only, mostly NatSpec, gas/style, function-length,
-empty-block, strict-inequality, and Foundry-remapping import-path warnings.
-Aderyn has still not run because Rust/Cargo is unavailable in the current
-Windows environment.
+Second analyzer status: Aderyn has not run because Rust/Cargo is unavailable in
+the current Windows environment. No second analyzer should be marked complete
+until a credible second tool runs and findings are dispositioned.
 
-## Fork Rehearsal Result
+Tooling note: a follow-up Slither rerun hit a Windows `crytic-compile` /
+Foundry PATH issue even though `forge test` itself passes. This is a local
+static-analysis tooling issue, not a Solidity test failure, but deployment
+remains blocked until static analysis is repeatable in a clean shell, CI, WSL,
+or reviewer environment.
 
-`contracts/test/RehearsalForkV3.t.sol` now exists. The real QuickNode-backed
-Avalanche fork path has run successfully. The fork path still skips cleanly when
-`AVAX_RPC` is unset, while local shape tests validate blocked payout escrow and
-smart-wallet payout compatibility.
+## Fork Rehearsal Plan
+
+`contracts/test/RehearsalForkV3.t.sol` now exists. The fork path skips cleanly
+when `AVAX_RPC` is unset, while local shape tests still validate blocked payout
+escrow and smart-wallet payout compatibility.
 
 Required environment:
 
@@ -271,24 +288,16 @@ Required environment:
 AVAX_RPC=<QuickNode Avalanche C-Chain HTTPS endpoint>
 ```
 
-Command used:
+Recommended command:
 
 ```text
 cd contracts
-AVAX_RPC=<QuickNode HTTPS endpoint> forge test --match-contract RehearsalForkV3 --evm-version cancun -vv
+AVAX_RPC=<endpoint> forge test --match-contract RehearsalForkV3 --evm-version cancun -vv
 ```
 
-The rehearsal did not broadcast and did not use private keys.
+The rehearsal must not broadcast and must not use private keys.
 
-Result:
-
-```text
-4 passed
-0 failed
-0 skipped
-```
-
-The rehearsal proved:
+The rehearsal should prove:
 
 - deployed/candidate constructor parameters match registry/docs,
 - Sale V3 can be funded with SYN inventory,
@@ -298,26 +307,25 @@ The rehearsal proved:
 - V1/V2/V2b historical seat posture remains intact,
 - no V3 frontend activation happens as part of rehearsal.
 
-Known fork noise: Foundry printed an RPC cache-file warning. This is not a
-contract failure.
+Real QuickNode fork rehearsal must be rerun after reviewer-finding patches. Any
+earlier fork result predates the patched contracts and must not be treated as
+final proof for the current candidate.
 
 ## Go / No-Go
 
-Green:
+Green locally:
 
 - SourceRegistryV1 unit tests,
 - MembershipSaleV3 unit tests,
-- RehearsalForkV3 QuickNode-backed fork tests,
+- RehearsalForkV3 local/skip tests,
+- targeted V3 Foundry compile and suites,
 - frontend release gate after candidate files.
 
-Full Foundry note: the full unfiltered Foundry suite timed out in the local
-Windows shell twice, ending with a Windows pipe-close error rather than a
-Solidity assertion failure. The V3-critical targeted suites pass. A clean
-full-suite run in CI/Linux/WSL/reviewer environment remains recommended before
-deployment.
+Still blocked before audit/deployment:
 
-Still blocked before deployment:
-
+- fresh Slither / repeatable Slither disposition,
+- second static-analysis tool,
+- real V3 fork rehearsal with `AVAX_RPC` after reviewer-finding patches,
 - deployment hardware-wallet address recorded and tested,
 - owner hardware-wallet address recorded and tested,
 - Ownable2Step transfer/acceptance readback rehearsed,
@@ -327,5 +335,5 @@ Still blocked before deployment:
 - frontend read-only preview design,
 - explicit activation plan.
 
-Verdict: V3 candidate is ready for external review, but still not
-deployment-ready or activation-ready.
+Verdict: V3 candidate is ready to package for external review, but still not
+deployment-ready.

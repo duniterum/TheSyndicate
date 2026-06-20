@@ -103,6 +103,31 @@ contract MembershipSaleV3Test is Test {
         );
     }
 
+    function _deployWithRoot(bytes32 root) internal returns (MembershipSaleV3 s) {
+        s = new MembershipSaleV3(
+            address(usdc),
+            address(syn),
+            address(sources),
+            vault,
+            liquidity,
+            operations,
+            GEN,
+            root,
+            _addrCaps(),
+            MAXTX,
+            0,
+            _eraCaps()
+        );
+    }
+
+    function _v1Leaf(address who) internal pure returns (bytes32) {
+        return keccak256(bytes.concat(keccak256(abi.encode(who))));
+    }
+
+    function _hashPair(bytes32 a, bytes32 b) internal pure returns (bytes32) {
+        return a < b ? keccak256(bytes.concat(a, b)) : keccak256(bytes.concat(b, a));
+    }
+
     function _memberTerms(uint16 bps, uint256 perBuyerCap)
         internal
         view
@@ -184,28 +209,93 @@ contract MembershipSaleV3Test is Test {
         assertTrue(sale.knownMember(bob));
     }
 
+    function test_buy_validV1ProofWithoutHistoricalNumberRevertsBeforeZeroReceipt() public {
+        bytes32 aliceLeaf = _v1Leaf(alice);
+        bytes32 bobLeaf = _v1Leaf(bob);
+        sale = _deployWithRoot(_hashPair(aliceLeaf, bobLeaf));
+        syn.mint(address(sale), FUND);
+        _approve(alice, USDC_100);
+        bytes32[] memory proof = new bytes32[](1);
+        proof[0] = bobLeaf;
+
+        vm.prank(alice);
+        vm.expectRevert(abi.encodeWithSelector(MembershipSaleV3.UnknownHistoricalMemberNumber.selector, alice));
+        sale.buy(USDC_100, alice, bytes32(0), 0, proof);
+
+        assertEq(sale.memberNumberOf(alice), 0);
+        assertFalse(sale.knownMember(alice), "reverted proof does not leave partial state");
+        assertEq(sale.receiptCount(), 0);
+    }
+
+    function test_buy_knownMemberWithZeroMemberNumberRevertsBeforeZeroReceipt() public {
+        bytes32 aliceLeaf = _v1Leaf(alice);
+        bytes32 bobLeaf = _v1Leaf(bob);
+        sale = _deployWithRoot(_hashPair(aliceLeaf, bobLeaf));
+        syn.mint(address(sale), FUND);
+        bytes32[] memory proof = new bytes32[](1);
+        proof[0] = bobLeaf;
+
+        vm.prank(alice);
+        sale.claimV1Membership(proof);
+        assertTrue(sale.knownMember(alice));
+        assertEq(sale.memberNumberOf(alice), 0);
+
+        _approve(alice, USDC_100);
+        vm.prank(alice);
+        vm.expectRevert(abi.encodeWithSelector(MembershipSaleV3.UnknownHistoricalMemberNumber.selector, alice));
+        sale.buy(USDC_100, alice, bytes32(0), 0, new bytes32[](0));
+
+        assertEq(sale.receiptCount(), 0);
+    }
+
+    function test_buy_existingSynHolderWithoutV3MemberNumberRevertsBeforeDuplicateSeat() public {
+        syn.mint(alice, 1 ether);
+        _approve(alice, USDC_100);
+
+        vm.prank(alice);
+        vm.expectRevert(abi.encodeWithSelector(MembershipSaleV3.UnknownHistoricalMemberNumber.selector, alice));
+        sale.buy(USDC_100, alice, bytes32(0), 0, new bytes32[](0));
+
+        assertEq(sale.memberNumberOf(alice), 0);
+        assertEq(sale.memberCount(), GEN);
+        assertEq(sale.receiptCount(), 0);
+    }
+
+    function test_buy_repeatBuyerKeepsExistingNonzeroMemberNumber() public {
+        _approve(alice, USDC_100 * 2);
+
+        _buy(alice, alice, USDC_100, bytes32(0));
+        uint256 memberNumber = sale.memberNumberOf(alice);
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(memberNumber, GEN + 1);
+        assertEq(sale.memberNumberOf(alice), memberNumber);
+        assertEq(sale.memberCount(), GEN + 1);
+        assertEq(sale.receiptCount(), 2);
+    }
+
     // ====================================================== acquisition-first
     function test_buy_source_acquisitionFirstRoutesNetAndPaysSource() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         _approve(alice, USDC_100);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
 
-        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "15% acquisition cost");
-        assertEq(usdc.balanceOf(vault), 59_500_000, "70% of net contribution");
-        assertEq(usdc.balanceOf(liquidity), 17_000_000, "20% of net contribution");
-        assertEq(usdc.balanceOf(operations), 8_500_000, "10% of net contribution");
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "12% acquisition cost");
+        assertEq(usdc.balanceOf(vault), 61_600_000, "70% of net contribution");
+        assertEq(usdc.balanceOf(liquidity), 17_600_000, "20% of net contribution");
+        assertEq(usdc.balanceOf(operations), 8_800_000, "10% of net contribution");
         assertEq(usdc.balanceOf(payoutWallet) + usdc.balanceOf(vault) + usdc.balanceOf(liquidity) + usdc.balanceOf(operations), USDC_100);
         assertEq(syn.balanceOf(alice), USDC_100 * 50 * 1e12, "SYN remains priced on gross");
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100);
         assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100);
         assertEq(sale.buyerSourceId(alice), SOURCE_ID);
-        assertEq(sale.totalAcquisitionCost(), 15_000_000);
-        assertEq(sale.totalProtocolContribution(), 85_000_000);
+        assertEq(sale.totalAcquisitionCost(), 12_000_000);
+        assertEq(sale.totalProtocolContribution(), 88_000_000);
     }
 
     function test_buy_receiptEventReconstructsPurchase() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         _approve(alice, USDC_100);
         bytes32 expectedReceiptId = keccak256(abi.encode(block.chainid, address(sale), uint256(1)));
 
@@ -216,11 +306,11 @@ contract MembershipSaleV3Test is Test {
             alice,
             GEN + 1,
             USDC_100,
-            15_000_000,
-            85_000_000,
-            59_500_000,
-            17_000_000,
-            8_500_000,
+            12_000_000,
+            88_000_000,
+            61_600_000,
+            17_600_000,
+            8_800_000,
             USDC_100 * 50 * 1e12,
             50,
             2,
@@ -228,7 +318,7 @@ contract MembershipSaleV3Test is Test {
             SOURCE_ID,
             uint8(SourceRegistryV1.SourceClass.MEMBER_INTRODUCTION),
             sourceWallet,
-            1_500,
+            1_200,
             uint8(SourceRegistryV1.AttributionScope.WINDOWED),
             block.timestamp + 365 days,
             999_900e6,
@@ -241,7 +331,7 @@ contract MembershipSaleV3Test is Test {
     }
 
     function test_buy_sourceGrossCapBoundaryAllowsExactCapThenStopsAutoCommission() public {
-        SourceRegistryV1.SourceTerms memory terms = _memberTerms(1_500, 0);
+        SourceRegistryV1.SourceTerms memory terms = _memberTerms(1_200, 0);
         terms.grossCap = USDC_100;
         terms.perBuyerCap = 0;
         _createSource(terms);
@@ -250,10 +340,10 @@ contract MembershipSaleV3Test is Test {
         _buy(alice, alice, USDC_100, SOURCE_ID);
         _buy(alice, alice, USDC_100, bytes32(0));
 
-        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "cap boundary pays once");
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "cap boundary pays once");
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "capped auto source does not keep accruing");
         assertEq(sale.totalGrossUsdc(), USDC_100 * 2);
-        assertEq(sale.totalAcquisitionCost(), 15_000_000);
+        assertEq(sale.totalAcquisitionCost(), 12_000_000);
         _assertUsdcConservation(USDC_100 * 2);
     }
 
@@ -290,21 +380,21 @@ contract MembershipSaleV3Test is Test {
 
     function test_buy_smartContractPayoutWalletWorksWithoutEscrow() public {
         PassivePayoutWallet contractWallet = new PassivePayoutWallet();
-        SourceRegistryV1.SourceTerms memory terms = _memberTerms(1_500, 10_000e6);
+        SourceRegistryV1.SourceTerms memory terms = _memberTerms(1_200, 10_000e6);
         terms.payoutWallet = address(contractWallet);
         sources.createSource(SOURCE_ID, terms);
         _approve(alice, USDC_100);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
 
-        assertEq(usdc.balanceOf(address(contractWallet)), 15_000_000);
+        assertEq(usdc.balanceOf(address(contractWallet)), 12_000_000);
         assertEq(sale.sourceEscrowOwed(SOURCE_ID), 0);
         assertEq(sale.totalAcquisitionEscrowed(), 0);
         assertEq(usdc.balanceOf(address(sale)), 0);
     }
 
     function test_buy_blockedPayoutEscrowsAcquisitionWithoutBlockingPurchase() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         usdc.setBlocked(payoutWallet, true);
         _approve(alice, USDC_100);
 
@@ -313,18 +403,18 @@ contract MembershipSaleV3Test is Test {
         assertEq(syn.balanceOf(alice), USDC_100 * 50 * 1e12, "seat still receives SYN");
         assertEq(sale.memberCount(), GEN + 1, "buy still seats recipient");
         assertEq(usdc.balanceOf(payoutWallet), 0, "blocked payout not delivered");
-        assertEq(usdc.balanceOf(vault), 59_500_000);
-        assertEq(usdc.balanceOf(liquidity), 17_000_000);
-        assertEq(usdc.balanceOf(operations), 8_500_000);
-        assertEq(sale.sourceEscrowOwed(SOURCE_ID), 15_000_000);
-        assertEq(sale.totalAcquisitionEscrowed(), 15_000_000);
+        assertEq(usdc.balanceOf(vault), 61_600_000);
+        assertEq(usdc.balanceOf(liquidity), 17_600_000);
+        assertEq(usdc.balanceOf(operations), 8_800_000);
+        assertEq(sale.sourceEscrowOwed(SOURCE_ID), 12_000_000);
+        assertEq(sale.totalAcquisitionEscrowed(), 12_000_000);
         assertEq(usdc.balanceOf(address(sale)), sale.totalAcquisitionEscrowed(), "escrow stays conserved");
-        assertEq(sale.totalAcquisitionCost(), 15_000_000, "receipt accounting still records acquisition cost");
-        assertEq(sale.totalProtocolContribution(), 85_000_000);
+        assertEq(sale.totalAcquisitionCost(), 12_000_000, "receipt accounting still records acquisition cost");
+        assertEq(sale.totalProtocolContribution(), 88_000_000);
     }
 
     function test_claimSourceEscrow_usesUpdatedRegistryPayoutWallet() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         usdc.setBlocked(payoutWallet, true);
         _approve(alice, USDC_100);
         _buy(alice, alice, USDC_100, SOURCE_ID);
@@ -334,10 +424,48 @@ contract MembershipSaleV3Test is Test {
 
         sale.claimSourceEscrow(SOURCE_ID);
 
-        assertEq(usdc.balanceOf(recoveredPayout), 15_000_000);
+        assertEq(usdc.balanceOf(recoveredPayout), 12_000_000);
         assertEq(sale.sourceEscrowOwed(SOURCE_ID), 0);
         assertEq(sale.totalAcquisitionEscrowed(), 0);
         assertEq(usdc.balanceOf(address(sale)), 0);
+    }
+
+    function test_claimSourceEscrow_revertsWhileSourcePausedOrRevoked() public {
+        _createSource(1_200, 10_000e6);
+        usdc.setBlocked(payoutWallet, true);
+        _approve(alice, USDC_100);
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.PAUSED);
+        vm.expectRevert(MembershipSaleV3.SourceEscrowLocked.selector);
+        sale.claimSourceEscrow(SOURCE_ID);
+
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.REVOKED);
+        vm.expectRevert(MembershipSaleV3.SourceEscrowLocked.selector);
+        sale.claimSourceEscrow(SOURCE_ID);
+
+        assertEq(sale.sourceEscrowOwed(SOURCE_ID), 12_000_000, "historical escrow remains readable");
+        assertEq(sale.totalAcquisitionEscrowed(), 12_000_000);
+    }
+
+    function test_claimSourceEscrow_requiresActiveSourceAfterPayoutRecovery() public {
+        _createSource(1_200, 10_000e6);
+        usdc.setBlocked(payoutWallet, true);
+        _approve(alice, USDC_100);
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+
+        address recoveredPayout = makeAddr("recoveredPayout");
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.PAUSED);
+        sources.updatePayoutWallet(SOURCE_ID, recoveredPayout);
+        vm.expectRevert(MembershipSaleV3.SourceEscrowLocked.selector);
+        sale.claimSourceEscrow(SOURCE_ID);
+
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.ACTIVE);
+        sale.claimSourceEscrow(SOURCE_ID);
+
+        assertEq(usdc.balanceOf(recoveredPayout), 12_000_000);
+        assertEq(sale.sourceEscrowOwed(SOURCE_ID), 0);
+        assertEq(sale.totalAcquisitionEscrowed(), 0);
     }
 
     function test_claimSourceEscrow_revertsWhenNothingOwed() public {
@@ -346,35 +474,35 @@ contract MembershipSaleV3Test is Test {
     }
 
     function test_buy_repeatPurchaseUsesLinkedSourceUntilCap() public {
-        _createSource(1_500, 200e6);
+        _createSource(1_200, 200e6);
         _approve(alice, USDC_100 * 2);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
         _buy(alice, alice, USDC_100, bytes32(0));
 
         assertEq(sale.memberCount(), GEN + 1, "repeat does not mint second seat");
-        assertEq(usdc.balanceOf(payoutWallet), 30_000_000, "linked source paid on repeat inside cap");
+        assertEq(usdc.balanceOf(payoutWallet), 24_000_000, "linked source paid on repeat inside cap");
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100 * 2);
         assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100 * 2);
     }
 
     function test_buy_linkedSourceCapStopsCommissionButNotPurchase() public {
-        _createSource(1_500, 100e6);
+        _createSource(1_200, 100e6);
         _approve(alice, USDC_100 * 2);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
         _buy(alice, alice, USDC_100, bytes32(0));
 
-        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "second buy pays no capped commission");
-        assertEq(usdc.balanceOf(vault), 70_000_000 + 59_500_000, "second buy routes full gross protocol split");
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "second buy pays no capped commission");
+        assertEq(usdc.balanceOf(vault), 70_000_000 + 61_600_000, "second buy routes full gross protocol split");
         assertEq(sale.totalGrossUsdc(), USDC_100 * 2);
-        assertEq(sale.totalAcquisitionCost(), 15_000_000);
-        assertEq(sale.totalProtocolContribution(), 185_000_000);
+        assertEq(sale.totalAcquisitionCost(), 12_000_000);
+        assertEq(sale.totalProtocolContribution(), 188_000_000);
         assertEq(sale.receiptCount(), 2);
     }
 
     function test_buy_repeatAfterAttributionWindowExpiresDoesNotPayOrRewriteHistory() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         _approve(alice, USDC_100 * 2);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
@@ -383,20 +511,20 @@ contract MembershipSaleV3Test is Test {
         vm.warp(linkedExpiry + 1);
         _buy(alice, alice, USDC_100, bytes32(0));
 
-        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "expired attribution pays only first buy");
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "expired attribution pays only first buy");
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "historical source gross is not rewritten");
         assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100, "buyer source history is preserved");
         assertEq(sale.buyerSourceId(alice), SOURCE_ID, "historical source link remains readable");
         assertEq(sale.buyerSourceExpiresAt(alice), linkedExpiry, "expiry record remains stable");
         assertEq(sale.totalGrossUsdc(), USDC_100 * 2);
-        assertEq(sale.totalAcquisitionCost(), 15_000_000);
-        assertEq(sale.totalProtocolContribution(), 185_000_000);
+        assertEq(sale.totalAcquisitionCost(), 12_000_000);
+        assertEq(sale.totalProtocolContribution(), 188_000_000);
         assertEq(sale.receiptCount(), 2);
         _assertUsdcConservation(USDC_100 * 2);
     }
 
     function test_buy_pausedLinkedSourceReceivesNoAutoCommissionButExplicitPausedReverts() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         _approve(alice, USDC_100 * 3);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
@@ -404,7 +532,7 @@ contract MembershipSaleV3Test is Test {
 
         _buy(alice, alice, USDC_100, bytes32(0));
 
-        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "paused linked source receives no new auto commission");
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "paused linked source receives no new auto commission");
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "paused source history remains unchanged");
         assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100);
         assertEq(sale.receiptCount(), 2);
@@ -415,7 +543,7 @@ contract MembershipSaleV3Test is Test {
     }
 
     function test_buy_revokedLinkedSourceReceivesNoAutoCommissionAndCreatesNoNewAttribution() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         _approve(alice, USDC_100 * 3);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
@@ -423,11 +551,11 @@ contract MembershipSaleV3Test is Test {
 
         _buy(alice, alice, USDC_100, bytes32(0));
 
-        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "revoked source receives no new commission");
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "revoked source receives no new commission");
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "old receipt attribution remains readable");
         assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100, "old buyer-source record remains readable");
         assertEq(sale.buyerSourceId(alice), SOURCE_ID, "revocation does not erase history");
-        assertEq(sale.totalAcquisitionCost(), 15_000_000);
+        assertEq(sale.totalAcquisitionCost(), 12_000_000);
         assertEq(sale.receiptCount(), 2);
 
         vm.prank(alice);
@@ -436,7 +564,7 @@ contract MembershipSaleV3Test is Test {
     }
 
     function test_buy_referrerLosesSeatStopsFutureCommissionWithoutRewritingHistory() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         _approve(alice, USDC_100 * 2);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
@@ -447,18 +575,34 @@ contract MembershipSaleV3Test is Test {
         _buy(alice, alice, USDC_100, bytes32(0));
 
         assertEq(syn.balanceOf(sourceWallet), 0, "source wallet is no longer seated");
-        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "future commission stops");
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "future commission stops");
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "historical attribution preserved");
         assertEq(sale.buyerSourceId(alice), SOURCE_ID, "no fake recovery or history rewrite");
-        assertEq(sale.totalAcquisitionCost(), 15_000_000);
+        assertEq(sale.totalAcquisitionCost(), 12_000_000);
         assertEq(sale.receiptCount(), 2);
     }
 
-    function test_buy_attributionHijackBlockedWhileActiveAndAllowedOnlyAfterWindowByExplicitRule() public {
+    function test_buy_firstPurchaseSourceDoesNotPayRepeatPurchase() public {
+        SourceRegistryV1.SourceTerms memory terms = _memberTerms(1_200, 10_000e6);
+        terms.scope = SourceRegistryV1.AttributionScope.FIRST_PURCHASE;
+        terms.appliesToRepeatPurchases = false;
+        _createSource(terms);
+        _approve(alice, USDC_100 * 2);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "first-purchase source pays once");
+        assertEq(sale.buyerSourceId(alice), SOURCE_ID, "historical first source remains readable");
+        assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100);
+        assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100);
+    }
+
+    function test_buy_attributionHijackBlockedWhileActiveAndReplacementBecomesCurrentAfterWindow() public {
         bytes32 secondSourceId = keccak256("SECOND_MEMBER_INTRODUCTION");
         address secondSourceWallet = makeAddr("secondSourceWallet");
         address secondPayoutWallet = makeAddr("secondPayoutWallet");
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
         SourceRegistryV1.SourceTerms memory secondTerms = _memberTerms(1_000, 10_000e6);
         secondTerms.sourceWallet = secondSourceWallet;
         secondTerms.payoutWallet = secondPayoutWallet;
@@ -476,19 +620,99 @@ contract MembershipSaleV3Test is Test {
         uint256 linkedExpiry = sale.buyerSourceExpiresAt(alice);
         vm.warp(linkedExpiry + 1);
         _buy(alice, alice, USDC_100, secondSourceId);
+        _buy(alice, alice, USDC_100, bytes32(0));
 
-        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "original source paid once");
-        assertEq(usdc.balanceOf(secondPayoutWallet), 10_000_000, "new source can apply only after old window closes");
-        assertEq(sale.buyerSourceId(alice), SOURCE_ID, "historical first source is not silently overwritten");
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "original source paid once");
+        assertEq(usdc.balanceOf(secondPayoutWallet), 20_000_000, "new current source applies after replacement");
+        assertEq(sale.buyerSourceId(alice), secondSourceId, "expired source no longer blocks current attribution");
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100);
-        assertEq(sale.sourceGrossAttributed(secondSourceId), USDC_100);
+        assertEq(sale.sourceGrossAttributed(secondSourceId), USDC_100 * 2);
         assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100);
-        assertEq(sale.buyerGrossAttributedToSource(secondSourceId, alice), USDC_100);
-        assertEq(sale.receiptCount(), 2);
+        assertEq(sale.buyerGrossAttributedToSource(secondSourceId, alice), USDC_100 * 2);
+        assertEq(sale.receiptCount(), 3);
+    }
+
+    function test_buy_cappedLinkedSourceCanBeReplacedByExplicitValidSource() public {
+        bytes32 secondSourceId = keccak256("SECOND_MEMBER_INTRODUCTION");
+        address secondSourceWallet = makeAddr("secondSourceWallet");
+        address secondPayoutWallet = makeAddr("secondPayoutWallet");
+        _createSource(1_200, 100e6);
+        SourceRegistryV1.SourceTerms memory secondTerms = _memberTerms(1_000, 10_000e6);
+        secondTerms.sourceWallet = secondSourceWallet;
+        secondTerms.payoutWallet = secondPayoutWallet;
+        sources.createSource(secondSourceId, secondTerms);
+        syn.mint(secondSourceWallet, 1 ether);
+        _approve(alice, USDC_100 * 3);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        _buy(alice, alice, USDC_100, secondSourceId);
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000, "capped original source paid only once");
+        assertEq(usdc.balanceOf(secondPayoutWallet), 20_000_000, "replacement source becomes current");
+        assertEq(sale.buyerSourceId(alice), secondSourceId);
+        assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100);
+        assertEq(sale.sourceGrossAttributed(secondSourceId), USDC_100 * 2);
+    }
+
+    function test_buy_pausedLinkedSourceCanBeReplacedByExplicitValidSource() public {
+        bytes32 secondSourceId = keccak256("SECOND_MEMBER_INTRODUCTION");
+        address secondSourceWallet = makeAddr("secondSourceWallet");
+        address secondPayoutWallet = makeAddr("secondPayoutWallet");
+        _createSource(1_200, 10_000e6);
+        SourceRegistryV1.SourceTerms memory secondTerms = _memberTerms(1_000, 10_000e6);
+        secondTerms.sourceWallet = secondSourceWallet;
+        secondTerms.payoutWallet = secondPayoutWallet;
+        sources.createSource(secondSourceId, secondTerms);
+        syn.mint(secondSourceWallet, 1 ether);
+        _approve(alice, USDC_100 * 2);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.PAUSED);
+        _buy(alice, alice, USDC_100, secondSourceId);
+
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000);
+        assertEq(usdc.balanceOf(secondPayoutWallet), 10_000_000);
+        assertEq(sale.buyerSourceId(alice), secondSourceId);
+    }
+
+    function test_buy_revokedLinkedSourceCanBeReplacedByExplicitValidSource() public {
+        bytes32 secondSourceId = keccak256("SECOND_MEMBER_INTRODUCTION");
+        address secondSourceWallet = makeAddr("secondSourceWallet");
+        address secondPayoutWallet = makeAddr("secondPayoutWallet");
+        _createSource(1_200, 10_000e6);
+        SourceRegistryV1.SourceTerms memory secondTerms = _memberTerms(1_000, 10_000e6);
+        secondTerms.sourceWallet = secondSourceWallet;
+        secondTerms.payoutWallet = secondPayoutWallet;
+        sources.createSource(secondSourceId, secondTerms);
+        syn.mint(secondSourceWallet, 1 ether);
+        _approve(alice, USDC_100 * 2);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.REVOKED);
+        _buy(alice, alice, USDC_100, secondSourceId);
+
+        assertEq(usdc.balanceOf(payoutWallet), 12_000_000);
+        assertEq(usdc.balanceOf(secondPayoutWallet), 10_000_000);
+        assertEq(sale.buyerSourceId(alice), secondSourceId);
+    }
+
+    function test_buy_existingSeatedUnlinkedMemberCannotBeCapturedByNewSource() public {
+        _createSource(1_200, 10_000e6);
+        _approve(alice, USDC_100 * 2);
+
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        vm.prank(alice);
+        vm.expectRevert(MembershipSaleV3.SourceNotEligible.selector);
+        sale.buy(USDC_100, alice, SOURCE_ID, 0, new bytes32[](0));
+
+        assertEq(sale.buyerSourceId(alice), bytes32(0));
+        assertEq(usdc.balanceOf(payoutWallet), 0);
     }
 
     function test_buy_explicitCappedSourceReverts() public {
-        _createSource(1_500, 100e6);
+        _createSource(1_200, 100e6);
         _approve(alice, USDC_100 * 2);
 
         _buy(alice, alice, USDC_100, SOURCE_ID);
@@ -508,7 +732,29 @@ contract MembershipSaleV3Test is Test {
 
         vm.prank(alice);
         vm.expectRevert(MembershipSaleV3.SelfReferral.selector);
-        sale.buy(USDC_100, alice, SOURCE_ID, 0, new bytes32[](0));
+        sale.buy(USDC_100, bob, SOURCE_ID, 0, new bytes32[](0));
+    }
+
+    function test_buy_payoutWalletCannotEqualBuyer() public {
+        SourceRegistryV1.SourceTerms memory terms = _memberTerms(500, 10_000e6);
+        terms.payoutWallet = alice;
+        sources.createSource(SOURCE_ID, terms);
+        _approve(alice, USDC_100);
+
+        vm.prank(alice);
+        vm.expectRevert(MembershipSaleV3.SelfReferral.selector);
+        sale.buy(USDC_100, bob, SOURCE_ID, 0, new bytes32[](0));
+    }
+
+    function test_buy_payoutWalletCannotEqualRecipient() public {
+        SourceRegistryV1.SourceTerms memory terms = _memberTerms(500, 10_000e6);
+        terms.payoutWallet = bob;
+        sources.createSource(SOURCE_ID, terms);
+        _approve(alice, USDC_100);
+
+        vm.prank(alice);
+        vm.expectRevert(MembershipSaleV3.SelfReferral.selector);
+        sale.buy(USDC_100, bob, SOURCE_ID, 0, new bytes32[](0));
     }
 
     function test_buy_unseatedPublicReferrerExplicitSourceReverts() public {
@@ -535,7 +781,7 @@ contract MembershipSaleV3Test is Test {
 
     // ================================================================ views
     function test_quote_reportsAcquisitionFirstAmounts() public {
-        _createSource(1_500, 10_000e6);
+        _createSource(1_200, 10_000e6);
 
         (
             uint256 synOut,
@@ -550,7 +796,8 @@ contract MembershipSaleV3Test is Test {
         assertEq(era, 2);
         assertEq(synPerUsdc, 50);
         assertEq(seatIfFirst, GEN + 1);
-        assertEq(acquisitionCost, 15_000_000);
-        assertEq(protocolContribution, 85_000_000);
+        assertEq(acquisitionCost, 12_000_000);
+        assertEq(protocolContribution, 88_000_000);
     }
 }
+

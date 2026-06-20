@@ -331,8 +331,8 @@ describe("production coherence guards", () => {
     expect(qa).toContain("Status: QA PASS FOR CANDIDATE / EXTERNAL REVIEW READY / NOT DEPLOYMENT-READY");
     expect(qa).toContain("blocked payout wallet cannot grief normal purchases");
     expect(qa).toContain("Slither was installed and run");
-    expect(qa).toContain("real QuickNode-backed");
-    expect(qa).toContain("Avalanche fork path has run successfully");
+    expect(qa).toContain("Real QuickNode fork rehearsal must be rerun after reviewer-finding patches");
+    expect(qa).toContain("real V3 fork rehearsal with `AVAX_RPC` after reviewer-finding patches");
     expect(qa).toContain("V2b remains the live buy path");
     expect(qa).toContain("hardware-wallet-first owner");
     expect(qa).toContain("deployment hardware-wallet address recorded and tested");

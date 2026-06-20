@@ -151,7 +151,7 @@ Recommended autonomous progression:
 | Connector | 20 seated members introduced and source health clean | 8% |
 | Catalyst | 75 seated members introduced and source health clean | 10% |
 | Steward | 250 seated members introduced, source health clean, review flag clear | 12% |
-| Reviewed Source Terms | 1,000 seated members introduced, clean history, founder review required | 15% |
+| Reviewed Source Terms | 1,000 seated members introduced, clean history, founder review required | source-policy terms |
 
 `Initiator` replaces Signal to avoid collision with Protocol Signals, First
 Signal, and Genesis Signal. `Steward` replaces Ambassador to avoid implying
@@ -190,9 +190,10 @@ Recommended defaults:
 - public maximum automatic rate: 12%,
 - public rate above 12% requires founder/operator review.
 
-`Reviewed Source Terms` at 15% must require review even though the progression
-threshold is automatic. This keeps large public sources from silently becoming
-institutional representatives.
+`Reviewed Source Terms` must move out of autonomous `MEMBER_INTRODUCTION`
+terms and into an explicit founder/operator source-policy class if money terms
+exceed the public automatic 12% cap. This keeps large public sources from
+silently becoming institutional representatives.
 
 ## 8. Founder / Operator Source Policy Actions
 
@@ -220,7 +221,8 @@ Approved source policy:
 
 - approved source terms may go up to 30%,
 - 30% is an absolute V3 cap,
-- rates above 15% require explicit approved-source class and metadata,
+- rates above the public automatic 12% cap require explicit approved-source
+  class and metadata,
 - lifetime/custom scopes require explicit source policy,
 - all custom terms must be visible in receipt reconstruction.
 

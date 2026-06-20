@@ -33,8 +33,8 @@ contract SourceRegistryV1 is Ownable2Step {
     // --------------------------------------------------------------- constants
     uint16 public constant BPS_DENOMINATOR = 10_000;
     uint16 public constant MAX_COMMISSION_BPS = 3_000;       // 30% absolute V3 cap
-    uint16 public constant MAX_MEMBER_INTRO_BPS = 1_500;     // Chapter Source review cap
-    uint16 public constant PUBLIC_AUTOMATIC_MAX_BPS = 1_200; // Ambassador automatic cap
+    uint16 public constant MAX_MEMBER_INTRO_BPS = 1_200;     // public member-introduction cap
+    uint16 public constant PUBLIC_AUTOMATIC_MAX_BPS = 1_200; // public automatic cap
 
     // --------------------------------------------------------------- enums
     enum SourceClass {
@@ -105,6 +105,7 @@ contract SourceRegistryV1 is Ownable2Step {
     error InvalidScope();
     error MissingMetadata();
     error SourceWalletMismatch();
+    error PayoutWalletChangeRequiresRecovery();
 
     // --------------------------------------------------------------- events
     event SourceCreated(
@@ -188,6 +189,7 @@ contract SourceRegistryV1 is Ownable2Step {
         SourceRecord storage record = _requireSource(sourceId);
         _validateTerms(terms);
         if (terms.sourceWallet != record.sourceWallet) revert SourceWalletMismatch();
+        if (terms.payoutWallet != record.payoutWallet) revert PayoutWalletChangeRequiresRecovery();
 
         record.sourceClass = terms.sourceClass;
         record.commissionBps = terms.commissionBps;
@@ -307,7 +309,7 @@ contract SourceRegistryV1 is Ownable2Step {
         if (terms.commissionBps > MAX_COMMISSION_BPS) revert InvalidCommission();
         if (
             terms.sourceClass == SourceClass.MEMBER_INTRODUCTION &&
-            terms.commissionBps > MAX_MEMBER_INTRO_BPS
+            terms.commissionBps > PUBLIC_AUTOMATIC_MAX_BPS
         ) {
             revert InvalidCommission();
         }
@@ -323,7 +325,15 @@ contract SourceRegistryV1 is Ownable2Step {
         if (terms.scope == AttributionScope.CAPPED && terms.grossCap == 0 && terms.perBuyerCap == 0) {
             revert InvalidScope();
         }
-        if (terms.scope == AttributionScope.CUSTOM && terms.metadataHash == bytes32(0)) {
+        if (
+            (
+                terms.sourceClass != SourceClass.MEMBER_INTRODUCTION ||
+                terms.commissionBps > MAX_MEMBER_INTRO_BPS ||
+                terms.scope == AttributionScope.LIFETIME ||
+                terms.scope == AttributionScope.CUSTOM
+            ) &&
+            terms.metadataHash == bytes32(0)
+        ) {
             revert MissingMetadata();
         }
     }

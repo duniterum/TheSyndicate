@@ -94,7 +94,7 @@ contract SourceRegistryV1Test is Test {
     function test_constants_freezeV3Caps() public view {
         assertEq(registry.BPS_DENOMINATOR(), 10_000);
         assertEq(registry.MAX_COMMISSION_BPS(), 3_000);
-        assertEq(registry.MAX_MEMBER_INTRO_BPS(), 1_500);
+        assertEq(registry.MAX_MEMBER_INTRO_BPS(), 1_200);
         assertEq(registry.PUBLIC_AUTOMATIC_MAX_BPS(), 1_200);
     }
 
@@ -160,8 +160,12 @@ contract SourceRegistryV1Test is Test {
     }
 
     function test_createSource_enforcesCommissionCaps() public {
+        registry.createSource(SOURCE_ID, _memberTerms(1_200));
+        SourceRegistryV1.SourceRecord memory memberRecord = registry.sourceConfig(SOURCE_ID);
+        assertEq(memberRecord.commissionBps, 1_200);
+
         vm.expectRevert(SourceRegistryV1.InvalidCommission.selector);
-        registry.createSource(SOURCE_ID, _memberTerms(1_501));
+        registry.createSource(keccak256("MEMBER_OVER_PUBLIC_CAP"), _memberTerms(1_201));
 
         vm.expectRevert(SourceRegistryV1.InvalidCommission.selector);
         registry.createSource(BUILDER_ID, _builderTerms(3_001));
@@ -169,6 +173,19 @@ contract SourceRegistryV1Test is Test {
         registry.createSource(BUILDER_ID, _builderTerms(3_000));
         SourceRegistryV1.SourceRecord memory record = registry.sourceConfig(BUILDER_ID);
         assertEq(record.commissionBps, 3_000);
+    }
+
+    function test_createSource_requiresMetadataForReviewedOrHighRateTerms() public {
+        SourceRegistryV1.SourceTerms memory terms = _builderTerms(2_000);
+        terms.metadataHash = bytes32(0);
+        vm.expectRevert(SourceRegistryV1.MissingMetadata.selector);
+        registry.createSource(BUILDER_ID, terms);
+
+        terms = _memberTerms(500);
+        terms.scope = SourceRegistryV1.AttributionScope.LIFETIME;
+        terms.metadataHash = bytes32(0);
+        vm.expectRevert(SourceRegistryV1.MissingMetadata.selector);
+        registry.createSource(SOURCE_ID, terms);
     }
 
     function test_createSource_validatesScopeRules() public {
@@ -246,6 +263,19 @@ contract SourceRegistryV1Test is Test {
 
         SourceRegistryV1.SourceRecord memory record = registry.sourceConfig(SOURCE_ID);
         assertEq(record.sourceWallet, sourceWallet);
+    }
+
+    function test_updateSourceTerms_cannotSilentlyChangePayoutWallet() public {
+        _createMemberSource(500);
+
+        SourceRegistryV1.SourceTerms memory terms = _memberTerms(800);
+        terms.payoutWallet = newPayoutWallet;
+
+        vm.expectRevert(SourceRegistryV1.PayoutWalletChangeRequiresRecovery.selector);
+        registry.updateSourceTerms(SOURCE_ID, terms);
+
+        SourceRegistryV1.SourceRecord memory record = registry.sourceConfig(SOURCE_ID);
+        assertEq(record.payoutWallet, payoutWallet);
     }
 
     function test_updateSourceTerms_unknownReverts() public {

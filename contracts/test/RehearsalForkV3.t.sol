@@ -92,7 +92,7 @@ contract RehearsalForkV3Test is Test {
         c[3] = 3_333_500 ether;
         c[4] = 6_750_000 ether;
         c[5] = 11_250_000 ether;
-        c[6] = 15_000_000 ether;
+        c[6] = 12_000_000 ether;
         c[7] = 60_000_000 ether;
         c[8] = 150_000_000 ether;
     }
@@ -197,11 +197,11 @@ contract RehearsalForkV3Test is Test {
         assertEq(sale.availableSyn(), FUND);
 
         vm.prank(ownerCandidate);
-        sources.createSource(SOURCE_ID, _sourceTerms(1_500));
+        sources.createSource(SOURCE_ID, _sourceTerms(1_200));
         SourceRegistryV1.SourceRecord memory record = sources.sourceConfig(SOURCE_ID);
         assertEq(record.sourceWallet, sourceWallet);
         assertEq(record.payoutWallet, payoutWallet);
-        assertEq(record.commissionBps, 1_500);
+        assertEq(record.commissionBps, 1_200);
         assertEq(uint8(record.status), uint8(SourceRegistryV1.SourceStatus.ACTIVE));
 
         deal(SYN, sourceWallet, 1 ether);
@@ -236,11 +236,11 @@ contract RehearsalForkV3Test is Test {
             sourceBuyer,
             GENESIS_OFFSET + 2,
             USDC_100,
-            15_000_000,
-            85_000_000,
-            59_500_000,
-            17_000_000,
-            8_500_000,
+            12_000_000,
+            88_000_000,
+            61_600_000,
+            17_600_000,
+            8_800_000,
             USDC_100 * 50 * 1e12,
             50,
             2,
@@ -248,7 +248,7 @@ contract RehearsalForkV3Test is Test {
             SOURCE_ID,
             uint8(SourceRegistryV1.SourceClass.MEMBER_INTRODUCTION),
             sourceWallet,
-            1_500,
+            1_200,
             uint8(SourceRegistryV1.AttributionScope.WINDOWED),
             record.endTime,
             record.grossCap - USDC_100,
@@ -259,15 +259,15 @@ contract RehearsalForkV3Test is Test {
         vm.prank(sourceBuyer);
         sale.buy(USDC_100, sourceBuyer, SOURCE_ID, 0, new bytes32[](0));
 
-        assertEq(IERC20Like(USDC).balanceOf(payoutWallet), 15_000_000, "source payout pushed");
+        assertEq(IERC20Like(USDC).balanceOf(payoutWallet), 12_000_000, "source payout pushed");
         assertEq(sale.sourceEscrowOwed(SOURCE_ID), 0, "no escrow on normal payout");
         assertEq(sale.totalAcquisitionEscrowed(), 0);
         assertEq(sale.memberNumberOf(sourceBuyer), GENESIS_OFFSET + 2);
         assertEq(sale.memberCount(), GENESIS_OFFSET + 2);
         assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100);
         assertEq(sale.totalGrossUsdc(), USDC_10 + USDC_100);
-        assertEq(sale.totalAcquisitionCost(), 15_000_000);
-        assertEq(sale.totalProtocolContribution(), USDC_10 + 85_000_000);
+        assertEq(sale.totalAcquisitionCost(), 12_000_000);
+        assertEq(sale.totalProtocolContribution(), USDC_10 + 88_000_000);
 
         console2.log("V3 fork rehearsal OK: readbacks, no-source buy, source buy, receipt, V2b/Archive posture.");
     }
@@ -279,7 +279,7 @@ contract RehearsalForkV3Test is Test {
         rehearsalSyn.mint(address(sale), FUND);
 
         vm.prank(address(this));
-        sources.createSource(SOURCE_ID, _sourceTerms(1_500));
+        sources.createSource(SOURCE_ID, _sourceTerms(1_200));
         rehearsalSyn.mint(sourceWallet, 1 ether);
         rehearsalUsdc.setBlocked(payoutWallet, true);
         rehearsalUsdc.mint(sourceBuyer, USDC_100);
@@ -290,12 +290,12 @@ contract RehearsalForkV3Test is Test {
         sale.buy(USDC_100, sourceBuyer, SOURCE_ID, 0, new bytes32[](0));
 
         assertEq(sale.memberNumberOf(sourceBuyer), GENESIS_OFFSET + 1, "blocked payout does not block seat");
-        assertEq(sale.sourceEscrowOwed(SOURCE_ID), 15_000_000, "source commission escrowed");
-        assertEq(sale.totalAcquisitionEscrowed(), 15_000_000);
-        assertEq(rehearsalUsdc.balanceOf(address(sale)), 15_000_000, "only escrow remains on sale");
-        assertEq(rehearsalUsdc.balanceOf(VAULT), 59_500_000);
-        assertEq(rehearsalUsdc.balanceOf(LIQUIDITY), 17_000_000);
-        assertEq(rehearsalUsdc.balanceOf(OPERATIONS), 8_500_000);
+        assertEq(sale.sourceEscrowOwed(SOURCE_ID), 12_000_000, "source commission escrowed");
+        assertEq(sale.totalAcquisitionEscrowed(), 12_000_000);
+        assertEq(rehearsalUsdc.balanceOf(address(sale)), 12_000_000, "only escrow remains on sale");
+        assertEq(rehearsalUsdc.balanceOf(VAULT), 61_600_000);
+        assertEq(rehearsalUsdc.balanceOf(LIQUIDITY), 17_600_000);
+        assertEq(rehearsalUsdc.balanceOf(OPERATIONS), 8_800_000);
     }
 
     function test_rehearsalV3_smartWalletPayoutCompatibility_shape() public {
@@ -305,7 +305,7 @@ contract RehearsalForkV3Test is Test {
         _deployV3(address(rehearsalUsdc), address(rehearsalSyn));
         rehearsalSyn.mint(address(sale), FUND);
 
-        SourceRegistryV1.SourceTerms memory terms = _sourceTerms(1_500);
+        SourceRegistryV1.SourceTerms memory terms = _sourceTerms(1_200);
         terms.payoutWallet = address(contractWallet);
         sources.createSource(SOURCE_ID, terms);
         rehearsalSyn.mint(sourceWallet, 1 ether);
@@ -316,8 +316,9 @@ contract RehearsalForkV3Test is Test {
         vm.prank(sourceBuyer);
         sale.buy(USDC_100, sourceBuyer, SOURCE_ID, 0, new bytes32[](0));
 
-        assertEq(rehearsalUsdc.balanceOf(address(contractWallet)), 15_000_000);
+        assertEq(rehearsalUsdc.balanceOf(address(contractWallet)), 12_000_000);
         assertEq(sale.sourceEscrowOwed(SOURCE_ID), 0);
         assertEq(sale.totalAcquisitionEscrowed(), 0);
     }
 }
+
