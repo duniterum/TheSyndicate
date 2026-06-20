@@ -262,7 +262,8 @@ The contract is not ready for deployment until:
 - a rollback/disable plan is written and tested
 
 Conclusion: CommissionRouterV1 is ready for serious review. It is not ready for
-mainnet deployment or live frontend wiring yet.
+mainnet deployment or live frontend wiring yet. The deployment freeze checklist
+lives in `docs/COMMISSION_ROUTER_V1_DEPLOYMENT_FREEZE.md`.
 
 ## 16. Model Evaluation
 
