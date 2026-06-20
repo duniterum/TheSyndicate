@@ -373,6 +373,120 @@ contract MembershipSaleV3Test is Test {
         assertEq(sale.receiptCount(), 2);
     }
 
+    function test_buy_repeatAfterAttributionWindowExpiresDoesNotPayOrRewriteHistory() public {
+        _createSource(1_500, 10_000e6);
+        _approve(alice, USDC_100 * 2);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        uint256 linkedExpiry = sale.buyerSourceExpiresAt(alice);
+
+        vm.warp(linkedExpiry + 1);
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "expired attribution pays only first buy");
+        assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "historical source gross is not rewritten");
+        assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100, "buyer source history is preserved");
+        assertEq(sale.buyerSourceId(alice), SOURCE_ID, "historical source link remains readable");
+        assertEq(sale.buyerSourceExpiresAt(alice), linkedExpiry, "expiry record remains stable");
+        assertEq(sale.totalGrossUsdc(), USDC_100 * 2);
+        assertEq(sale.totalAcquisitionCost(), 15_000_000);
+        assertEq(sale.totalProtocolContribution(), 185_000_000);
+        assertEq(sale.receiptCount(), 2);
+        _assertUsdcConservation(USDC_100 * 2);
+    }
+
+    function test_buy_pausedLinkedSourceReceivesNoAutoCommissionButExplicitPausedReverts() public {
+        _createSource(1_500, 10_000e6);
+        _approve(alice, USDC_100 * 3);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.PAUSED);
+
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "paused linked source receives no new auto commission");
+        assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "paused source history remains unchanged");
+        assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100);
+        assertEq(sale.receiptCount(), 2);
+
+        vm.prank(alice);
+        vm.expectRevert(MembershipSaleV3.SourceNotEligible.selector);
+        sale.buy(USDC_100, alice, SOURCE_ID, 0, new bytes32[](0));
+    }
+
+    function test_buy_revokedLinkedSourceReceivesNoAutoCommissionAndCreatesNoNewAttribution() public {
+        _createSource(1_500, 10_000e6);
+        _approve(alice, USDC_100 * 3);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        sources.setSourceStatus(SOURCE_ID, SourceRegistryV1.SourceStatus.REVOKED);
+
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "revoked source receives no new commission");
+        assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "old receipt attribution remains readable");
+        assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100, "old buyer-source record remains readable");
+        assertEq(sale.buyerSourceId(alice), SOURCE_ID, "revocation does not erase history");
+        assertEq(sale.totalAcquisitionCost(), 15_000_000);
+        assertEq(sale.receiptCount(), 2);
+
+        vm.prank(alice);
+        vm.expectRevert(MembershipSaleV3.SourceNotEligible.selector);
+        sale.buy(USDC_100, alice, SOURCE_ID, 0, new bytes32[](0));
+    }
+
+    function test_buy_referrerLosesSeatStopsFutureCommissionWithoutRewritingHistory() public {
+        _createSource(1_500, 10_000e6);
+        _approve(alice, USDC_100 * 2);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+        uint256 sourceSyn = syn.balanceOf(sourceWallet);
+        vm.prank(sourceWallet);
+        syn.transfer(makeAddr("source-exit"), sourceSyn);
+
+        _buy(alice, alice, USDC_100, bytes32(0));
+
+        assertEq(syn.balanceOf(sourceWallet), 0, "source wallet is no longer seated");
+        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "future commission stops");
+        assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100, "historical attribution preserved");
+        assertEq(sale.buyerSourceId(alice), SOURCE_ID, "no fake recovery or history rewrite");
+        assertEq(sale.totalAcquisitionCost(), 15_000_000);
+        assertEq(sale.receiptCount(), 2);
+    }
+
+    function test_buy_attributionHijackBlockedWhileActiveAndAllowedOnlyAfterWindowByExplicitRule() public {
+        bytes32 secondSourceId = keccak256("SECOND_MEMBER_INTRODUCTION");
+        address secondSourceWallet = makeAddr("secondSourceWallet");
+        address secondPayoutWallet = makeAddr("secondPayoutWallet");
+        _createSource(1_500, 10_000e6);
+        SourceRegistryV1.SourceTerms memory secondTerms = _memberTerms(1_000, 10_000e6);
+        secondTerms.sourceWallet = secondSourceWallet;
+        secondTerms.payoutWallet = secondPayoutWallet;
+        secondTerms.endTime = uint64(block.timestamp + 730 days);
+        sources.createSource(secondSourceId, secondTerms);
+        syn.mint(secondSourceWallet, 1 ether);
+        _approve(alice, USDC_100 * 3);
+
+        _buy(alice, alice, USDC_100, SOURCE_ID);
+
+        vm.prank(alice);
+        vm.expectRevert(MembershipSaleV3.SourceAlreadyLinked.selector);
+        sale.buy(USDC_100, alice, secondSourceId, 0, new bytes32[](0));
+
+        uint256 linkedExpiry = sale.buyerSourceExpiresAt(alice);
+        vm.warp(linkedExpiry + 1);
+        _buy(alice, alice, USDC_100, secondSourceId);
+
+        assertEq(usdc.balanceOf(payoutWallet), 15_000_000, "original source paid once");
+        assertEq(usdc.balanceOf(secondPayoutWallet), 10_000_000, "new source can apply only after old window closes");
+        assertEq(sale.buyerSourceId(alice), SOURCE_ID, "historical first source is not silently overwritten");
+        assertEq(sale.sourceGrossAttributed(SOURCE_ID), USDC_100);
+        assertEq(sale.sourceGrossAttributed(secondSourceId), USDC_100);
+        assertEq(sale.buyerGrossAttributedToSource(SOURCE_ID, alice), USDC_100);
+        assertEq(sale.buyerGrossAttributedToSource(secondSourceId, alice), USDC_100);
+        assertEq(sale.receiptCount(), 2);
+    }
+
     function test_buy_explicitCappedSourceReverts() public {
         _createSource(1_500, 100e6);
         _approve(alice, USDC_100 * 2);
