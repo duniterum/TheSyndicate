@@ -1,16 +1,16 @@
-﻿# V3 Deployment Parameter Sheet
+# V3 Deployment Parameter Sheet
 
-Status: DEPLOYED NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED
+Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED DIRECT ON-CHAIN CANDIDATE / NOT PUBLIC FRONTEND LIVE
 
-This sheet now records the completed non-live deployment/readback posture. It does not authorize funding, unpause, frontend activation, registry switch, public V3 buy UI, source-record creation, or any private-key/broadcast action. The readback log is `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`. The next funding/activation boundary plan is `docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md`.
+This sheet records the completed deployment/readback posture plus the later V2b pause and V3 funding ceremonies. It does not authorize recovery, additional funding, pause/unpause, frontend activation, registry switch, public V3 buy UI, source-record creation, or any private-key/broadcast action. The readback log is `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`. The next funding/activation boundary plan is `docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md`.
 
 ## Boundaries
 
 - V3 SourceRegistryV1 and MembershipSaleV3 are deployed non-live and owner-accepted.
-- V3 is not live: MembershipSaleV3 is zero-funded, not registry-wired, not activated, and has no public V3 buy UI.
+- V3 is not public frontend live: MembershipSaleV3 is funded with 7,000,000 SYN and unpaused, but it is not registry-wired, not publicly activated, has no public V3 buy UI, and has no source records.
 - No frontend registry switch is authorized.
-- V2b remains the current live buy target.
-- No funding unless separately approved.
+- The frontend still points to V2b, but V2b is now paused on-chain; the public buy flow may fail until a separate registry/frontend activation ceremony is approved.
+- No additional funding unless separately approved. The recorded V3 funding transaction transferred 7,000,000 SYN from `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8` to MembershipSaleV3.
 - No unpause unless separately approved.
 - No public V3 buy UI unless separately approved after deployment/readback/legal/product signoff.
 - No private keys are required for this document.
@@ -35,17 +35,17 @@ These addresses are derived from repository truth, V2b deployed-lineage paramete
 | Operations wallet | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` |
 | V1 historical sale / proof source | `0x0020Df30C127306f0F5B44E6a6E4368D2855842d` |
 | V2a historical sale | `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48` |
-| V2b current live buy target | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` |
+| V2b paused frontend target | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` |
 | Archive1155 | `0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d` |
 | V3 SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed non-live / owner accepted / no source records |
-| V3 MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed non-live / owner accepted / zero-funded / not registry-wired / not activated |
+| V3 MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded with 7,000,000 SYN / direct on-chain candidate / not registry-wired / not public frontend live |
 
 ## Deployment Candidates
 
 | Candidate | Source file | Status |
 | --- | --- | --- |
 | SourceRegistryV1 | `contracts/src/SourceRegistryV1.sol` | Deployed non-live / owner accepted / no source records |
-| MembershipSaleV3 | `contracts/src/MembershipSaleV3.sol` | Deployed non-live / owner accepted / zero-funded / not registry-wired / not activated |
+| MembershipSaleV3 | `contracts/src/MembershipSaleV3.sol` | Deployed / owner accepted / funded with 7,000,000 SYN / direct on-chain candidate / not registry-wired / not public frontend live |
 
 ## Hardware Wallet Addresses
 
@@ -86,7 +86,7 @@ The founder must provide only public wallet addresses and public parameter decis
 | 9 | Final `eraCaps[9]` | Derived from deployed V2b lineage and live V2b readback; ready to freeze subject final pre-transaction readback |
 | 10 | Final `maxUsdcPerTx` | Derived from deployed V2b lineage: `25000000000` USDC units ($25,000) |
 | 11 | Final `reserveThroughSeat` | Derived from deployed V2b lineage: `10000` |
-| 12 | Initial V3 funding | Confirmed zero initial V3 funding |
+| 12 | Recorded V3 funding | `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2` transferred 7,000,000 SYN from `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8` to MembershipSaleV3 |
 | 13 | V3 remains not live after deployment/readback | Confirmed yes |
 | 14 | Frontend registry remains pointed at V2b | Confirmed yes |
 | 15 | No source records at deployment time | Confirmed yes |
@@ -263,7 +263,7 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 
 `MembershipSaleV3` does not pause itself in the constructor. The deployed non-live contract currently has `paused() = false`; pause is deferred intentionally. The safety boundary is:
 
-- zero SYN funding,
+- recorded SYN funding of 7,000,000 SYN, no additional funding without approval,
 - no USDC funding,
 - no frontend registry switch,
 - no public V3 UI,
@@ -321,7 +321,7 @@ This checklist is preparation only. It is not permission to deploy.
 12. Read back MembershipSaleV3 constructor constants.
 13. Transfer MembershipSaleV3 ownership to owner hardware wallet if separately approved.
 14. Owner hardware wallet accepts MembershipSaleV3 ownership before any funding/activation.
-15. Keep zero SYN funding unless separately approved.
+15. Recorded V3 funding is 7,000,000 SYN; keep no additional SYN funding unless separately approved.
 16. Keep no source records unless separately approved.
 17. Keep frontend registry pointed at V2b.
 18. Keep V3 public buy UI disabled / candidate-only.
@@ -334,14 +334,14 @@ This checklist is preparation only. It is not permission to deploy.
 
 - Completed: SourceRegistryV1 deployed/readback green and owner accepted.
 - Completed for deployment/readback: final freeze/readback used `genesisOffset = 8` and root `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`.
-- Completed/recorded: MembershipSaleV3 deployed/readback green, owner accepted, `paused() = false`, zero-funded, no source records, no registry switch, no public UI; pause deferred intentionally.
+- Completed/recorded: MembershipSaleV3 deployed/readback green, owner accepted, `paused() = false`, funded with 7,000,000 SYN, no source records, no registry switch, no public UI; V3 is a funded direct on-chain candidate, not public frontend live.
 
 ### Blocks Funding, Unpause, Registry Switch, or Public Activation
 
 - External review final signoff.
 - Second static analyzer or documented reviewer-accepted substitute.
 - Repeatable Slither / payout-escrow disposition.
-- Any funding ceremony; no SYN funding is authorized yet.
+- Any additional funding ceremony; the 7,000,000 SYN V3 funding transaction is recorded, but no further funding is authorized.
 - Legal/product signoff.
 - Clean full Foundry run in stable CI/Linux/WSL/reviewer environment.
 - Frontend registry update, read-only verification, and activation plan approval.

@@ -17,9 +17,9 @@ PENDING (not deployed) Â· FUTURE (not built) Â· MOCK (placeholder data â€
 | SYN token | `syndicate-config.ts` `TOKEN_SPEC` | SYN ERC-20 | `SYNDICATE_PROTOCOL_MODEL.md` | LIVE | High | Low |
 | Membership sale V1 | `CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS`, historical scanners | Original Membership Sale | `SALE_FLOW_INVARIANTS.md`, `SYNDICATE_PROTOCOL_MODEL.md` | LIVE / HISTORICAL ONLY | High | Med (must not be treated as current buy target) |
 | Membership sale V2a | `MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS`, historical scanners | SyndicateMembershipSale V2a | `SYNDICATE_PROTOCOL_MODEL.md`, `SMART_CONTRACT_SYSTEM_MAP.md` | LIVE / HISTORICAL ONLY | High | Med (kept for seats #3-#5 continuity; never current buy target) |
-| Membership sale V2b | `MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS`, sale hooks | SyndicateMembershipSale V2b | `SYNDICATE_PROTOCOL_MODEL.md`, `SMART_CONTRACT_SYSTEM_MAP.md` | LIVE / CURRENT BUY PATH / UNAUDITED EARLY | High | Low (active frontend buy target) |
+| Membership sale V2b | `MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS`, sale hooks | SyndicateMembershipSale V2b | `SYNDICATE_PROTOCOL_MODEL.md`, `SMART_CONTRACT_SYSTEM_MAP.md`, `V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md` | PAUSED ON-CHAIN / FRONTEND STILL POINTS HERE | High | High (frontend target is paused; public buy may fail until registry switch) |
 | V3 SourceRegistry | Docs/readback log only; not wired in `contract-registry.ts` live registry | SourceRegistryV1 `0x780013bB358be6be95b401901264FC7c22a595a6` | `V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`, `V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `V3_EXTERNAL_REVIEW_PACKAGE.md` | DEPLOYED / NON-LIVE / OWNER ACCEPTED / NO SOURCE RECORDS | High | High (must not be treated as live source UI) |
-| V3 MembershipSale | `/v3-preview` read-only; not wired in frontend registry | MembershipSaleV3 `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` | `V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`, `V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `V3_DEPLOYMENT_READINESS_PACKAGE.md` | DEPLOYED / NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED / NOT REGISTRY-WIRED / NOT ACTIVATED | High | High (must not replace V2b before funding/activation/registry switch) |
+| V3 MembershipSale | `/v3-preview` read-only; not wired in frontend registry | MembershipSaleV3 `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` | `V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`, `V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `V3_DEPLOYMENT_READINESS_PACKAGE.md` | DEPLOYED / OWNER ACCEPTED / FUNDED DIRECT ON-CHAIN CANDIDATE / NOT REGISTRY-WIRED / NOT PUBLIC FRONTEND LIVE | High | High (must not be called public frontend live before registry switch/public UI activation) |
 | 70/20/10 routing | `USDC_ROUTING`, `vaultFlow()` | sale contract | `REVENUE_ATTRIBUTION_LAYER.md` | LIVE | High | Med (applied beyond sale) |
 | Total supply | `TOKEN_SPEC.totalSupply` | SYN ERC-20 | glossary | LIVE | High | Low |
 | Circulating supply | `treasury-hooks.ts` `useCirculatingSupply` | derived (total âˆ’ reserved) | `TREASURY_LEDGER_DOCTRINE.md` | PARTIAL | Med | Med (estimate) |
@@ -63,9 +63,9 @@ PENDING (not deployed) Â· FUTURE (not built) Â· MOCK (placeholder data â€
 | USDC | `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E` |
 | Membership Sale V1 (historical proof source only) | `0x0020Df30C127306f0F5B44E6a6E4368D2855842d` (deploy block 87,157,852; not the current buy target) |
 | Membership Sale V2a (historical proof source only) | `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48` (sealed/superseded; scanned for member continuity) |
-| Membership Sale V2b (current live buy target) | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` (active self-service sale; live-but-unaudited / early) |
+| Membership Sale V2b (paused frontend target) | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` (paused on-chain by tx `0x74ccaa2fb80c266a54f57387021cc5ff634c0853f396b4a12d2654b64a05fede`; frontend still points here until registry switch) |
 | V3 SourceRegistry | `0x780013bB358be6be95b401901264FC7c22a595a6` (deployed non-live; owner accepted; no source records; not frontend-wired) |
-| V3 MembershipSale | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` (deployed non-live; owner accepted; zero-funded; not registry-wired; not activated; V2b remains current buy target) |
+| V3 MembershipSale | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` (deployed; owner accepted; funded with 7,000,000 SYN by tx `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2`; direct on-chain candidate; not registry-wired; not public frontend live) |
 | Vault Wallet (70%) **= Vault Reserve** | `0x205DdC8921A4C60106930eE35e1F395c8D13f464` |
 | Liquidity Wallet (20%) | `0xa9b072db8DcDbb470235204B69D37275d74a2e25` |
 | Operations Wallet (10%) | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` |
