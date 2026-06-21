@@ -379,6 +379,8 @@ describe("production coherence guards", () => {
     const livePurchase = read("src/components/syndicate/LivePurchase.tsx");
     const referralRoute = read("src/routes/referral.tsx");
     const futureReferral = read("src/lib/future-referral.ts");
+    const sourcePacket = read("docs/SOURCE_RECORD_PACKET_TEMPLATE.md");
+    const sourceRunbook = read("docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md");
 
     expect(readiness).toContain("Status: NON-LIVE READINESS SPEC / SOURCE RECORDS INACTIVE / NO CLAIM UI");
     expect(readiness).toContain("SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; zero source records");
@@ -399,8 +401,19 @@ describe("production coherence guards", () => {
     expect(referralRoute).toContain("no earned commission, no");
     expect(referralRoute).toContain("no claim button");
     expect(futureReferral).toContain("verified source records are created, read back, legally approved, and wired live");
+    expect(sourcePacket).toContain("Status: TEMPLATE ONLY / NON-TRANSACTIONAL / NO SOURCE CREATION AUTHORIZED");
+    expect(sourcePacket).toContain("Source ID");
+    expect(sourcePacket).toContain("Payout wallet");
+    expect(sourcePacket).toContain("Required SourceRegistry Readback");
+    expect(sourcePacket).toContain("Expected MembershipSaleV3 Behavior");
+    expect(sourcePacket).toContain("Founder Approval Checklist");
+    expect(sourcePacket).toContain("No source record is created without explicit founder approval.");
+    expect(sourceRunbook).toContain("Status: RUNBOOK ONLY / NO TRANSACTION AUTHORIZED / SOURCE RECORDS INACTIVE");
+    expect(sourceRunbook).toContain("createSource(bytes32 sourceId, SourceTerms terms)");
+    expect(sourceRunbook).toContain("The initial status must be `PAUSED`.");
+    expect(sourceRunbook).toContain("No source creation happens without founder approval.");
 
-    for (const [name, src] of Object.entries({ referralRoute, futureReferral })) {
+    for (const [name, src] of Object.entries({ referralRoute, futureReferral, sourcePacket, sourceRunbook })) {
       expect(src, name).not.toMatch(/passive income|yield|downline|MLM/i);
       expect(src, name).not.toMatch(/claimable commission|earned commission now/i);
       expect(src, name).not.toMatch(/source owns (?:a )?member/i);
