@@ -544,6 +544,9 @@ describe("production coherence guards", () => {
     const registry = read("src/components/syndicate/ContractDossiers.tsx");
     const contractRegistry = read("src/lib/contract-registry.ts");
     const eventRegistry = read("src/lib/protocol-event-registry.ts");
+    const sourceTable = read("docs/canon/02_SOURCE_OF_TRUTH_TABLE.md");
+    const syndicateConfig = read("src/lib/syndicate-config.ts");
+    const v3ParameterSheet = read("docs/V3_DEPLOYMENT_PARAMETER_SHEET.md");
 
     expect(map).toContain("Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY");
     expect(map).toContain("Membership Sale V1 | LIVE / SEALED HISTORICAL");
@@ -566,6 +569,31 @@ describe("production coherence guards", () => {
     expect(contractRegistry).toContain("Future ERC-721 identity record derived from SYN seat truth");
     expect(eventRegistry).toContain("future non-transferable identity record derived from SYN seat truth");
     expect(eventRegistry).not.toMatch(/future non-transferable seat-record token/i);
+
+    expect(sourceTable).toContain("Membership Sale V1 (historical proof source only)");
+    expect(sourceTable).toContain("0x0020Df30C127306f0F5B44E6a6E4368D2855842d");
+    expect(sourceTable).toContain("Membership Sale V2a (historical proof source only)");
+    expect(sourceTable).toContain("0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48");
+    expect(sourceTable).toContain("Membership Sale V2b (current live buy target)");
+    expect(sourceTable).toContain("0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b");
+    expect(sourceTable).toContain("V3 SourceRegistry | `PENDING` / no address");
+    expect(sourceTable).toContain("V3 MembershipSale | `PENDING` / no address");
+    expect(sourceTable).not.toMatch(/\| Membership Sale \| `0x0020Df30C127306f0F5B44E6a6E4368D2855842d`/);
+    expect(sourceTable).not.toMatch(/V3 SourceRegistry \| `0x[a-fA-F0-9]{40}`/);
+    expect(sourceTable).not.toMatch(/V3 MembershipSale \| `0x[a-fA-F0-9]{40}`/);
+    expect(syndicateConfig).toContain('label: "Membership Sale V2b"');
+    expect(syndicateConfig).toContain("Current live buy target");
+    expect(syndicateConfig).toContain("explorerUrlForAddress(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS");
+    expect(syndicateConfig).not.toMatch(/label: "Membership Sale",\s+status: "live",\s+detail: "SyndicateMembershipSale deployed/);
+    expect(syndicateConfig).not.toMatch(/explorerUrlFor\("MEMBERSHIP_SALE_CONTRACT_ADDRESS"\) \?\? undefined/);
+    expect(v3ParameterSheet).toContain("Status: NON-LIVE PREPARATION ONLY");
+    expect(v3ParameterSheet).toContain("V2b remains the current live buy target");
+    expect(v3ParameterSheet).toContain("SourceRegistryV1 | `PENDING` / no address");
+    expect(v3ParameterSheet).toContain("MembershipSaleV3 | `PENDING` / no address");
+    expect(v3ParameterSheet).toContain("No public V3 buy UI");
+    expect(v3ParameterSheet).not.toContain("- V3 is live.");
+    expect(v3ParameterSheet).not.toContain("- Frontend registry switch is authorized.");
+    expect(v3ParameterSheet).not.toContain("- Public V3 buy UI is authorized.");
   });
 
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {

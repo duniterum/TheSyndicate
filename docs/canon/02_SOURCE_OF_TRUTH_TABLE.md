@@ -15,7 +15,11 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 | Concept | Code source | Contract source | Doc source | Status | Confidence | Drift risk |
 |---|---|---|---|---|---|---|
 | SYN token | `syndicate-config.ts` `TOKEN_SPEC` | SYN ERC-20 | `SYNDICATE_PROTOCOL_MODEL.md` | LIVE | High | Low |
-| Membership sale | `sale-abi.ts`, sale hooks | Membership Sale | `SALE_FLOW_INVARIANTS.md` | LIVE | High | Low |
+| Membership sale V1 | `CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS`, historical scanners | Original Membership Sale | `SALE_FLOW_INVARIANTS.md`, `SYNDICATE_PROTOCOL_MODEL.md` | LIVE / HISTORICAL ONLY | High | Med (must not be treated as current buy target) |
+| Membership sale V2a | `MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS`, historical scanners | SyndicateMembershipSale V2a | `SYNDICATE_PROTOCOL_MODEL.md`, `SMART_CONTRACT_SYSTEM_MAP.md` | LIVE / HISTORICAL ONLY | High | Med (kept for seats #3-#5 continuity; never current buy target) |
+| Membership sale V2b | `MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS`, sale hooks | SyndicateMembershipSale V2b | `SYNDICATE_PROTOCOL_MODEL.md`, `SMART_CONTRACT_SYSTEM_MAP.md` | LIVE / CURRENT BUY PATH / UNAUDITED EARLY | High | Low (active frontend buy target) |
+| V3 SourceRegistry | `contract-registry.ts` pending entry, `contracts/src/SourceRegistryV1.sol` candidate | none deployed | `V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `V3_EXTERNAL_REVIEW_PACKAGE.md` | CANDIDATE / PENDING / NOT LIVE | High | High (must not receive a fake address) |
+| V3 MembershipSale | `contracts/src/MembershipSaleV3.sol` candidate, `/v3-preview` read-only | none deployed | `V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `V3_DEPLOYMENT_READINESS_PACKAGE.md` | CANDIDATE / PENDING / NOT LIVE | High | High (must not replace V2b before deployment/readback/activation) |
 | 70/20/10 routing | `USDC_ROUTING`, `vaultFlow()` | sale contract | `REVENUE_ATTRIBUTION_LAYER.md` | LIVE | High | Med (applied beyond sale) |
 | Total supply | `TOKEN_SPEC.totalSupply` | SYN ERC-20 | glossary | LIVE | High | Low |
 | Circulating supply | `treasury-hooks.ts` `useCirculatingSupply` | derived (total − reserved) | `TREASURY_LEDGER_DOCTRINE.md` | PARTIAL | Med | Med (estimate) |
@@ -57,7 +61,11 @@ PENDING (not deployed) · FUTURE (not built) · MOCK (placeholder data — not r
 |---|---|
 | SYN token (ERC-20) | `0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170` |
 | USDC | `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E` |
-| Membership Sale | `0x0020Df30C127306f0F5B44E6a6E4368D2855842d` (deploy block 87,157,852) |
+| Membership Sale V1 (historical proof source only) | `0x0020Df30C127306f0F5B44E6a6E4368D2855842d` (deploy block 87,157,852; not the current buy target) |
+| Membership Sale V2a (historical proof source only) | `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48` (sealed/superseded; scanned for member continuity) |
+| Membership Sale V2b (current live buy target) | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` (active self-service sale; live-but-unaudited / early) |
+| V3 SourceRegistry | `PENDING` / no address (candidate contract exists; not deployed, not live) |
+| V3 MembershipSale | `PENDING` / no address (candidate contract exists; not deployed, not live) |
 | Vault Wallet (70%) **= Vault Reserve** | `0x205DdC8921A4C60106930eE35e1F395c8D13f464` |
 | Liquidity Wallet (20%) | `0xa9b072db8DcDbb470235204B69D37275d74a2e25` |
 | Operations Wallet (10%) | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` |
