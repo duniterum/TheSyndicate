@@ -14,7 +14,6 @@ import {
   SALE_MIN_USDC,
   USDC_DECIMALS,
   SYN_DECIMALS,
-  SALE_V2_LIVE,
   rankForUsdc,
   vaultFlow,
   explorerUrlFor,
@@ -24,9 +23,11 @@ import {
   extrasForAddress,
 } from "@/lib/syndicate-config";
 import { ContractLink, ProofButton } from "./Primitives";
-import { SALE_ABI, SALE_V2_ABI, ERC20_ABI } from "@/lib/sale-abi";
+import { SALE_ABI, SALE_V2_ABI, SALE_V3_ABI, ERC20_ABI } from "@/lib/sale-abi";
 import {
   ACTIVE_SALE,
+  ACTIVE_SALE_VERSION,
+  ZERO_SOURCE_ID,
   useSaleStats,
   useUserBalances,
   useWalletEraCap,
@@ -49,8 +50,8 @@ import { CANONICAL_ORIGIN } from "@/lib/canonical-origin";
 import { buildReferralShareUrl } from "@/lib/referral-attribution";
 import { ShareActions } from "./ShareActions";
 
-// The active self-service sale (V2 when live, else V1) — every approve/buy/
-// persistence path targets this address.
+// The active self-service sale. Every approve/buy/persistence path targets this
+// one address so approval can never point at one sale while buy points at another.
 const SALE = ACTIVE_SALE;
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
 const fmtUsd = (n: number) =>
@@ -79,6 +80,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
 
   const stats = useSaleStats();
   const userBal = useUserBalances();
+  const refetchAllowance = () => userBal.refetch();
   // Live anti-whale headroom for the connected wallet in the active era.
   const eraCap = useWalletEraCap(stats.currentEra, address);
 
@@ -98,7 +100,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
   // drives BOTH the SYN-received figure and the minSynOut floor. We NEVER fall
   // back to a hardcoded Genesis-rate mirror: a missing quote is "unknown"
   // (neutral UI + blocked submit), never zero and never a guess.
-  const quote = useQuoteSyn(usdcRaw);
+  const quote = useQuoteSyn(usdcRaw, address);
   const v1Proof = useV1Proof();
 
   // Live, era-correct SYN output (raw, 18dp) straight from the contract.
@@ -153,7 +155,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
   // Refetch balances after confirms
   useEffect(() => {
     if (approveReceipt.isSuccess) {
-      userBal.refetch();
+      refetchAllowance();
       setPhase("idle");
     }
   }, [approveReceipt.isSuccess]); // eslint-disable-line
@@ -342,7 +344,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
         }
       },
     };
-  } else if (SALE_V2_LIVE && memberProofPending) {
+  } else if (ACTIVE_SALE_VERSION === "v2" && memberProofPending) {
     // ONLY a recognized member reaches here: their canonical proof artifact must
     // be in hand before buying, or V2 would mint them a DUPLICATE seat. A fresh
     // buyer never blocks on the artifact (it isn't theirs to need). Keep the
@@ -373,7 +375,26 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
         }
         try {
           let hash: `0x${string}`;
-          if (SALE_V2_LIVE) {
+          if (ACTIVE_SALE_VERSION === "v3") {
+            const fresh = await quote.refetch();
+            const freshSynRaw = fresh.data as bigint | undefined;
+            if (freshSynRaw === undefined) {
+              setWalletGuardError(
+                "Live quote unavailable. Please retry before purchasing.",
+              );
+              setPhase("idle");
+              return;
+            }
+            const minSynOut = freshSynRaw;
+            setPurchasedSynRaw(minSynOut);
+            hash = (await buyTx.writeContractAsync({
+              address: SALE,
+              abi: SALE_V3_ABI,
+              functionName: "buy",
+              account: address,
+              args: [usdcRaw, address!, ZERO_SOURCE_ID, minSynOut, []],
+            })) as `0x${string}`;
+          } else if (ACTIVE_SALE_VERSION === "v2") {
             // Classify the buyer against the canonical V1 snapshot (fail-closed):
             // a recognized member passes THEIR proof so V2 continues their seat; a
             // fresh buyer (not in the root-committed set) passes `[]` and is issued
@@ -463,7 +484,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
   const purchaseDone = buyReceipt.isSuccess || phase === "success";
   const approveErrored = Boolean(approveTx.error || approveReceipt.error);
   const buyErrored = Boolean(buyTx.error || buyReceipt.error);
-  const buyReady = SALE_V2_LIVE ? v1Proof.readyForBuy(address) : true;
+  const buyReady = ACTIVE_SALE_VERSION === "v2" ? v1Proof.readyForBuy(address) : true;
   // Wallet reads are tri-state (undefined = still loading). Until BOTH allowance
   // and balance are known we cannot honestly say approval is/ isn't needed, so
   // the sale is not yet actionable and the steps stay "Waiting".
@@ -547,7 +568,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
             />
 
             {/* V2 active-sale status (era / live rate / min / your cap / next seat / reserve / balance) */}
-            {stats.isV2 && (
+            {(stats.isV2 || stats.isV3) && (
               <SaleV2StatusStrip
                 stats={stats}
                 ratePerUsdc={quote.quoteSynPerUsdc}

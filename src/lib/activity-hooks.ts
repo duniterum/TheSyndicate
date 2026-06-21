@@ -12,6 +12,9 @@ import {
   SALE_V2_LIVE,
   MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS,
   SALE_V2A_DEPLOYMENT_BLOCK,
+  MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS,
+  SALE_V3_DEPLOYMENT_BLOCK,
+  SALE_V3_FRONTEND_BUY_TARGET,
 } from "./syndicate-config";
 import {
   loadPurchaseEventsSnapshot,
@@ -38,9 +41,12 @@ const V2_PURCHASED = parseAbiItem(
 const V2_ROUTED = parseAbiItem(
   "event Routed(uint256 indexed memberNumber, uint256 vaultAmount, uint256 liquidityAmount, uint256 operationsAmount, uint256 referralAmount)",
 );
+const V3_PURCHASED = parseAbiItem(
+  "event MembershipPurchasedV3(bytes32 indexed receiptId, address indexed buyer, address indexed recipient, uint256 memberNumber, uint256 grossUsdc, uint256 acquisitionCost, uint256 protocolContribution, uint256 vaultAmount, uint256 liquidityAmount, uint256 operationsAmount, uint256 synOut, uint64 synPerUsdc, uint16 era, uint16 chapter, bytes32 sourceId, uint8 sourceClass, address sourceWallet, uint16 commissionBps, uint8 attributionScope, uint256 attributionWindowEndsAt, uint256 sourceGrossRemaining, uint256 buyerGrossRemaining, bool firstSeat, uint8 receiptVersion)",
+);
 
 /** Which sale contract a normalized purchase originated from. */
-export type PurchaseSource = "v1" | "v2";
+export type PurchaseSource = "v1" | "v2" | "v3";
 
 export type PurchaseEvent = {
   /** Originating sale contract. V1 has no on-chain firstSeat/era/referral. */
@@ -80,7 +86,7 @@ export type PurchaseEvent = {
  * Render-only — identity is always the Holder Index, never this field.
  */
 export function purchaseLabel(ev: PurchaseEvent): string {
-  if (ev.source === "v2") {
+  if (ev.source === "v2" || ev.source === "v3") {
     return ev.firstSeat ? `Seat #${ev.purchaseId.toString()}` : "Repeat purchase";
   }
   return `Purchase #${ev.purchaseId.toString()}`;
@@ -371,8 +377,68 @@ async function scanV2Purchases(args: {
   return merged;
 }
 
+async function scanV3Purchases(args: {
+  publicClient: WagmiPublicClient;
+  chainId: number;
+  saleV3: `0x${string}`;
+  fromBlock: bigint;
+  tip: bigint;
+}): Promise<PurchaseEvent[]> {
+  const { publicClient, chainId, saleV3, fromBlock, tip } = args;
+  const cacheKey = purchaseEventsCacheKey({ chainId, sale: saleV3, fromBlock });
+  const cached = loadPurchaseEventsSnapshot(cacheKey);
+  const scanStart = computeIncrementalScanStart({
+    fromBlock,
+    tip,
+    lastScannedBlock: cached?.lastScannedBlock,
+    overlap: REORG_OVERLAP,
+  });
+
+  const fresh: PurchaseEvent[] = [];
+  const anyChunkFailed = await scanChunked(scanStart, tip, async (start, end) => {
+    const logs = await publicClient.getLogs({ address: saleV3, event: V3_PURCHASED, fromBlock: start, toBlock: end });
+    for (const l of logs) {
+      const a = l.args as {
+        buyer?: string;
+        memberNumber?: bigint;
+        grossUsdc?: bigint;
+        vaultAmount?: bigint;
+        liquidityAmount?: bigint;
+        operationsAmount?: bigint;
+        synOut?: bigint;
+        era?: number;
+        firstSeat?: boolean;
+      };
+      if (!a.buyer || a.memberNumber === undefined || a.grossUsdc === undefined || a.vaultAmount === undefined || a.liquidityAmount === undefined || a.operationsAmount === undefined || a.synOut === undefined || a.era === undefined || a.firstSeat === undefined) continue;
+      fresh.push({
+        source: "v3",
+        buyer: a.buyer,
+        purchaseId: a.memberNumber,
+        usdcAmount: Number(formatUnits(a.grossUsdc, USDC_DECIMALS)),
+        synAmount: Number(formatUnits(a.synOut, SYN_DECIMALS)),
+        vaultAmount: Number(formatUnits(a.vaultAmount, USDC_DECIMALS)),
+        liquidityAmount: Number(formatUnits(a.liquidityAmount, USDC_DECIMALS)),
+        operationsAmount: Number(formatUnits(a.operationsAmount, USDC_DECIMALS)),
+        referralAmount: 0,
+        era: Number(a.era),
+        firstSeat: a.firstSeat,
+        blockNumber: l.blockNumber ?? 0n,
+        txHash: l.transactionHash ?? "",
+        logIndex: l.logIndex ?? 0,
+      });
+    }
+  });
+
+  const merged = mergePurchaseEvents(cached?.events ?? [], fresh);
+  if (!anyChunkFailed && merged.length > 0) {
+    const nextLastScanned = cached && cached.lastScannedBlock > tip ? cached.lastScannedBlock : tip;
+    savePurchaseEventsSnapshot(cacheKey, merged, nextLastScanned);
+  }
+  return merged;
+}
+
 /**
- * Canonical multi-source purchase scan (V1 + V2a history + V2b active). Returns
+ * Canonical multi-source purchase scan (V1 + V2a + V2b history, V3 active). Returns
  * the FULL newest-first NormalizedPurchase list across EVERY sale contract a
  * member can live on; callers narrow via `select`.
  *
@@ -396,6 +462,10 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
     SALE_V2_LIVE && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
       ? (MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS as `0x${string}`)
       : null;
+  const saleV3 =
+    SALE_V3_FRONTEND_BUY_TARGET && MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS
+      ? (MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS as `0x${string}`)
+      : null;
 
   // V2a is the SUPERSEDED/SEALED earlier V2 deploy. It is NEVER the active buy
   // target, but its `Purchased`/`Routed` history holds members (seats #3–#5) who
@@ -418,7 +488,7 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
   return useQuery({
     // V2 address is part of the key so the query refetches cleanly the moment
     // V2 goes live; "v2-pending" keeps the dormant key stable (== old behavior).
-    queryKey: ["live-purchases", String(fromBlock), SALE, saleV2a ?? "no-v2a", saleV2 ?? "v2-pending"],
+    queryKey: ["live-purchases", String(fromBlock), SALE, saleV2a ?? "no-v2a", saleV2 ?? "v2-pending", saleV3 ?? "v3-pending"],
     enabled: Boolean(publicClient),
     refetchInterval: 60_000,
     staleTime: 30_000,
@@ -432,7 +502,8 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
       // sale contract a member can live on:
       //   V1  → historical (sealed)
       //   V2a → historical (sealed/superseded — seats #3–#5 live ONLY here)
-      //   V2b → ACTIVE     (current buy target — new seats land here)
+      //   V2b → paused historical (seats #6-#8 + recovery boundary)
+      //   V3  → active buy target (new seats land here)
       // mergePurchaseEvents is an order-independent union deduped by tx:logIndex,
       // and tx hashes never collide across contracts, so chaining merges is safe.
       let merged = await scanV1Purchases({ publicClient, chainId, fromBlock, tip });
@@ -450,17 +521,30 @@ export function useLivePurchaseEvents(opts?: { fromBlock?: bigint; limit?: numbe
         merged = mergePurchaseEvents(merged, v2a);
       }
 
-      // Active V2b. Dormant (V1 + V2a only) until V2b is live.
-      if (!saleV2 || SALE_V2_DEPLOYMENT_BLOCK === null) return merged;
+      // Paused historical V2b. Kept as a scan source for seats #6-#8 and the
+      // recovery boundary, but no longer the active buy target.
+      if (saleV2 && SALE_V2_DEPLOYMENT_BLOCK !== null) {
+        const v2b = await scanV2Purchases({
+          publicClient,
+          chainId,
+          saleV2,
+          fromBlock: SALE_V2_DEPLOYMENT_BLOCK,
+          tip,
+        });
+        merged = mergePurchaseEvents(merged, v2b);
+      }
 
-      const v2b = await scanV2Purchases({
-        publicClient,
-        chainId,
-        saleV2,
-        fromBlock: SALE_V2_DEPLOYMENT_BLOCK,
-        tip,
-      });
-      return mergePurchaseEvents(merged, v2b);
+      if (saleV3 && SALE_V3_DEPLOYMENT_BLOCK !== null) {
+        const v3 = await scanV3Purchases({
+          publicClient,
+          chainId,
+          saleV3,
+          fromBlock: SALE_V3_DEPLOYMENT_BLOCK,
+          tip,
+        });
+        merged = mergePurchaseEvents(merged, v3);
+      }
+      return merged;
     },
     select,
   });

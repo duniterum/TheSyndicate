@@ -1,24 +1,25 @@
-# THE SYNDICATE — PROTOCOL MODEL (CANONICAL)
+﻿# THE SYNDICATE â€” PROTOCOL MODEL (CANONICAL)
 
 This document defines the **canonical economic and contract model** for The Syndicate.
 Every page, component, FAQ, doc, and marketing surface must conform to this file.
 If a UI label disagrees with this document, the UI is wrong.
 
-Source of truth in code: `src/lib/syndicate-config.ts` (`VAULT_ALLOCATION`, `USDC_ROUTING`, `CONTRACTS`, V2 sale addresses) and `src/lib/contract-registry.ts`. Live-contract truth takes precedence over historical fixed-price copy.
+Source of truth in code: `src/lib/syndicate-config.ts` (`VAULT_ALLOCATION`, `USDC_ROUTING`, `CONTRACTS`, active sale addresses) and `src/lib/contract-registry.ts`. Live-contract truth takes precedence over historical fixed-price copy.
 
 ---
 
 ## 1. The SYN token
 
 - Address: `0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170` (Avalanche C-Chain)
-- Fixed supply: **1,000,000,000 SYN** — minted once, no future mint.
+- Fixed supply: **1,000,000,000 SYN** â€” minted once, no future mint.
 - No tax, no blacklist, no transfer restrictions, no admin powers, no pause.
 - All "policy" (routing, sale, vesting) lives in **separate contracts**, never inside the SYN ERC20.
 
 ## 2. The Membership Sale
 
-- Contract: `SyndicateMembershipSale` — `0x0020Df30C127306f0F5B44E6a6E4368D2855842d` — **LIVE**.
-- Active V2b buy target: `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` (**LIVE / ACTIVE / UNAUDITED EARLY**). The original `SyndicateMembershipSale` address above is retained as V1 historical proof, not the active V3 model.
+- Contract: `SyndicateMembershipSale` â€” `0x0020Df30C127306f0F5B44E6a6E4368D2855842d` â€” **LIVE**.
+- Paused V2b historical source: `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` - **LIVE / PAUSED HISTORICAL**. It is retained for seats #6-#8, Holder Index continuity, and recovery boundary.
+- Active V3 direct-buy target: `MembershipSaleV3` - `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`. Public buys use zero sourceId. SourceRegistryV1 has no source records; referral/source UI and claim UI remain inactive.
 - Payment token: USDC (`0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E`).
 - Current/V3 pricing doctrine: deterministic era pricing. Chapter is historical identity / belonging; era is pricing. No private allocations, no insider pricing, no admin price switch, no oracle, and no market-linked price.
 - V3 schedule and receipt requirements are frozen in `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md`.
@@ -77,7 +78,7 @@ materially increase institutional trust, capability, history, or resilience.
 Not every invoice, expense, vendor payment, or operational task belongs in the
 protocol story.
 
-## 4. THE CANONICAL USDC ROUTING SPLIT — **70 / 20 / 10**
+## 4. THE CANONICAL USDC ROUTING SPLIT â€” **70 / 20 / 10**
 
 Every USDC paid into the Membership Sale is split atomically, on-chain, by the Sale contract, in the **same transaction** as the SYN delivery. No multisig, no manual transfer, no delay.
 
@@ -89,16 +90,16 @@ Every USDC paid into the Membership Sale is split atomically, on-chain, by the S
 
 **This split is the canonical truth. It must appear identically on every page, FAQ entry, tooltip, doc, and component.** Any deviation (e.g. "70% liquidity / 20% vault") is a bug.
 
-## 5. Vault vs Treasury vs Protocol-Controlled Assets — terminology
+## 5. Vault vs Treasury vs Protocol-Controlled Assets â€” terminology
 
 To prevent drift, these terms have **fixed meaning**:
 
-- **Vault Wallet** — the EOA receiving 70% of every USDC purchase. **LIVE**. Visible on Avascan today.
-- **Vault Reserve (SYN allocation)** — 250,000,000 SYN held aside for long-term backing.
-- **Programmatic Vault contract** — a future on-chain contract that will own, account for, and report Vault assets with deposit/withdraw policy. **PENDING**. Not deployed.
-- **Liquidity Wallet** — the EOA receiving 20% of every USDC purchase. **LIVE**.
-- **Operations Wallet** — the EOA receiving 10%. **LIVE**.
-- **Protocol-Controlled Assets (PCA)** — the umbrella covering everything the protocol controls: Vault Wallet + Liquidity Wallet + Operations Wallet + token allocation wallets + LP pool reserves.
+- **Vault Wallet** â€” the EOA receiving 70% of every USDC purchase. **LIVE**. Visible on Avascan today.
+- **Vault Reserve (SYN allocation)** â€” 250,000,000 SYN held aside for long-term backing.
+- **Programmatic Vault contract** â€” a future on-chain contract that will own, account for, and report Vault assets with deposit/withdraw policy. **PENDING**. Not deployed.
+- **Liquidity Wallet** â€” the EOA receiving 20% of every USDC purchase. **LIVE**.
+- **Operations Wallet** â€” the EOA receiving 10%. **LIVE**.
+- **Protocol-Controlled Assets (PCA)** â€” the umbrella covering everything the protocol controls: Vault Wallet + Liquidity Wallet + Operations Wallet + token allocation wallets + LP pool reserves.
 
 Rules:
 - Do **not** call all PCA "the Vault".
@@ -106,17 +107,17 @@ Rules:
 - The word "Vault" without a qualifier refers to the **Vault Wallet (70%)**.
 - The word "Treasury" should be used sparingly and only as a synonym for the Vault Wallet.
 
-## 6. Tokenomics — fixed 1B SYN, seven allocations
+## 6. Tokenomics â€” fixed 1B SYN, seven allocations
 
 | % | SYN | Allocation | Wallet |
 |---|---|---|---|
-| 35% | 350,000,000 | Membership Distribution & Achievements | `0x975a…ECec8` |
-| 25% | 250,000,000 | Vault Reserve | `0x205D…f464` |
-| 12% | 120,000,000 | Founder (12-mo cliff, 36-mo vest) | `0x88EC…Dd73` |
-| 10% | 100,000,000 | Liquidity | `0xa9b0…2e25` |
+| 35% | 350,000,000 | Membership Distribution & Achievements | `0x975aâ€¦ECec8` |
+| 25% | 250,000,000 | Vault Reserve | `0x205Dâ€¦f464` |
+| 12% | 120,000,000 | Founder (12-mo cliff, 36-mo vest) | `0x88ECâ€¦Dd73` |
+| 10% | 100,000,000 | Liquidity | `0xa9b0â€¦2e25` |
 | 8%  |  80,000,000 | Partnerships | (governance-approved) |
-| 5%  |  50,000,000 | Contributors | `0xa551…EF7a` |
-| 5%  |  50,000,000 | Future Ecosystem | `0x2530…2963` |
+| 5%  |  50,000,000 | Contributors | `0xa551â€¦EF7a` |
+| 5%  |  50,000,000 | Future Ecosystem | `0x2530â€¦2963` |
 
 The 10% "Liquidity" **token allocation** is distinct from the 20% USDC routing to the Liquidity Wallet. The first is SYN reserved for LP seeding; the second is USDC flowing into the same wallet to deepen LP.
 

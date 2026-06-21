@@ -1,4 +1,4 @@
-# The Syndicate - Contracts
+﻿# The Syndicate - Contracts
 
 Isolated Foundry project for the smart-contract layer of The Syndicate.
 
@@ -14,25 +14,27 @@ from file presence alone.
 | `SYN` ERC-20 | LIVE | Fixed-supply V1 membership seat token. No admin mint, no tax, no blacklist. |
 | Membership Sale V1 | LIVE / SEALED HISTORICAL | Original sale. Paused/closed with no active inventory. Kept for proof and holder history. |
 | Membership Sale V2a | LIVE / SEALED HISTORICAL | Superseded V2 sale. Scanned for seats #3-#5 and Holder Index continuity. Not the active buy target. |
-| Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY | Current self-service membership sale. Routes USDC 70% Vault, 20% Liquidity, 10% Operations. External CommissionRouter is unset. |
+| Membership Sale V2b | LIVE / PAUSED HISTORICAL | Paused on-chain. Retained for seats #6-#8, Holder Index continuity, and recovery boundary. Not the active buy target. |
 | `SyndicateArchive1155` | LIVE | Protocol-memory ERC-1155. ID 1 is public-open; ID 3 is active/read-gated; ID 2 is a disabled pointer to future SeatRecord721. |
 | `CommissionRouterV1` | CANDIDATE / NOT DEPLOYED / NOT LIVE | Future Operations-slice commission router. No address, no live referral, no claim UI. |
-| `SourceRegistryV1` | V3 CANDIDATE / NOT DEPLOYED / NOT LIVE | Source-term registry for future acquisition-first Sale V3. Stores source policy only; moves no money. |
-| `MembershipSaleV3` | V3 CANDIDATE / NOT DEPLOYED / NOT LIVE | Acquisition-first membership sale candidate. Not funded, not registered, not frontend-wired. |
+| `SourceRegistryV1` | DEPLOYED / NO SOURCE RECORDS / REFERRAL UI INACTIVE | V3 source-term registry. Stores source policy only; moves no money. No source records exist. |
+| `MembershipSaleV3` | LIVE DIRECT-BUY TARGET / SOURCE UI INACTIVE | Funded V3 membership sale. Frontend approval/quote/buy target for zero-source public purchases. |
 | `SeatRecord721` | FUTURE / NOT IMPLEMENTED / NOT DEPLOYED | Future identity record. SYN remains the V1 seat today. |
 
 Hard rule: do not treat Solidity files in `contracts/src/` as deployed simply
-because they exist. `CommissionRouterV1.sol`, `SourceRegistryV1.sol`, and
-`MembershipSaleV3.sol` are candidates only.
+because they exist. Current truth is explicit above: `MembershipSaleV3.sol` is
+deployed and funded as the direct-buy target, `SourceRegistryV1.sol` is deployed
+with no source records, and `CommissionRouterV1.sol` remains not deployed.
+File presence never authorizes new source records, referral UI, or claim UI.
 
 ## What's Here
 
 | Path | Role |
 | --- | --- |
-| `src/SyndicateSaleV2.sol` | Sale V2 source used for the active V2b membership sale: era table, caps, reserve floor, V1 recognition, 70/20/10 routing, and timelocked router wiring. |
+| `src/SyndicateSaleV2.sol` | Sale V2 source used for historical V2a/V2b deployments: era table, caps, reserve floor, V1 recognition, 70/20/10 routing, and timelocked router wiring. |
 | `src/CommissionRouterV1.sol` | Production-candidate referral router: Operations-slice-only, tier ladder, push/escrow, RAL `Attribution` event. Not deployed. |
-| `src/SourceRegistryV1.sol` | V3 candidate source-term registry: source class, commission bps, caps, windows, payout wallet, status, and visible policy events. Not deployed. |
-| `src/MembershipSaleV3.sol` | V3 candidate sale engine: deterministic era pricing, acquisition-first routing, source validation, payout escrow fallback, and rich receipt event. Not deployed. |
+| `src/SourceRegistryV1.sol` | Deployed V3 source-term registry: source class, commission bps, caps, windows, payout wallet, status, and visible policy events. No source records exist. |
+| `src/MembershipSaleV3.sol` | Deployed and funded V3 sale engine: deterministic era pricing, acquisition-first routing, source validation, payout escrow fallback, and rich receipt event. Current frontend buy target with zero sourceId. |
 | `test/SyndicateSaleV2.t.sol` | Sale tests covering constructor validation, buy path, era engine, caps, reserve, Merkle recognition, router glue, pause/recovery, and reentrancy fallback. |
 | `test/CommissionRouterV1.t.sol` | Router tests covering source allow-list, ABI parity, Operations-slice conservation, tier ladder, push/escrow/claim, remove/re-add lifecycle, and event reconstruction. |
 | `test/SourceRegistryV1.t.sol` | V3 registry tests covering source creation, term updates, caps, windows, status, wallet recovery, and source validation. |
@@ -95,32 +97,32 @@ CommissionRouter deployment remains blocked until:
 - external review is complete,
 - legal/product signoff is final.
 
-V3 SourceRegistry/Sale deployment remains blocked until:
+V3 source/referral activation remains blocked until:
 
 - `docs/V3_SMART_CONTRACT_QA_READINESS.md` blockers are resolved,
 - `docs/V3_DEPLOYMENT_READINESS_PACKAGE.md` is followed,
 - fresh Slither is green or dispositioned,
 - a second static-analysis tool is green or dispositioned,
-- V3 fork rehearsal is green against Avalanche RPC,
+- V3 fork rehearsal remains documented green against Avalanche RPC after patches,
 - hardware-wallet deployment and owner addresses are recorded and tested,
 - Ownable2Step ownership transfer/acceptance is rehearsed and read back,
 - external review is complete,
 - legal/product signoff is final,
-- frontend read-only preview and registry activation sequence are approved.
+- source-record policy, referral UI, claim UI, and activation sequence are approved.
 
 ## V2b Sale Topology
 
-V2b is a fresh active sale contract, not an upgrade proxy. The frontend:
+V2b is a paused historical sale contract, not an upgrade proxy. The frontend:
 
-- writes new purchases to V2b,
+- writes new direct purchases to MembershipSaleV3 with zero sourceId,
 - scans V1, V2a, and V2b for Holder Index continuity,
 - treats V1 and V2a as sealed historical event sources,
 - keeps CommissionRouter unset until a future deployment decision.
 
-Sale V2b routes money in the buy transaction:
+MembershipSaleV3 routes money in the direct-buy transaction:
 
 ```text
-buyer USDC -> Sale V2b
+buyer USDC -> MembershipSaleV3
   70% -> Vault wallet
   20% -> Liquidity wallet
   10% -> Operations wallet
@@ -129,7 +131,7 @@ buyer USDC -> Sale V2b
 ```
 
 CommissionRouter can never receive Vault or Liquidity funds under the current
-Sale V2 design.
+Sale V3 direct-buy design.
 
 ## CommissionRouterV1 Deployment Boundary
 
@@ -182,3 +184,4 @@ Contract status and public truth are locked across:
 - `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`
 
 If these disagree, stop and reconcile before implementation or deployment.
+

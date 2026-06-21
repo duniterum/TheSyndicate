@@ -1,18 +1,18 @@
 # V3 Non-Live Deployment Readback Log
 
-Status: DEPLOYED / OWNER ACCEPTED / FUNDED DIRECT ON-CHAIN V3 SALE CANDIDATE / NOT REGISTRY-WIRED / NOT PUBLIC FRONTEND LIVE
+Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / SOURCE RECORDS INACTIVE
 
-This log records the V3 deployment, ownership, V2b pause, and V3 funding readbacks. It does not authorize source records, registry switch, public V3 UI, recovery, additional funding, pause/unpause, activation, or any private-key/broadcast action.
+This log records the V3 deployment, ownership, V2b pause, V3 funding readbacks, and the later frontend buy-target wiring. It does not authorize source records, referral UI, claim UI, recovery, additional funding, pause/unpause, or any private-key/broadcast action.
 
-Precise status: MembershipSaleV3 is deployed, owner-accepted, funded with 7,000,000 SYN, not registry-wired, not publicly activated, and not public frontend live. `paused()` is false. Because V3 is funded and unpaused, it is a directly callable on-chain V3 sale candidate / internal working sale path. The public frontend still points to V2b, which is now paused on-chain, so the public buy flow may fail until a separate registry/frontend activation ceremony is approved.
+Precise status: MembershipSaleV3 is deployed, owner-accepted, funded with 7,000,000 SYN, and selected by the frontend buy flow as the active approval/quote/purchase target. `paused()` is false. Public buys use zero sourceId. SourceRegistryV1 has no source records; referral UI, claim UI, and source activation remain inactive. V2b is paused on-chain and retained for history/recovery boundaries.
 
 ## Contracts
 
 | Contract | Address | Deployment tx | Status |
 | --- | --- | --- | --- |
 | SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` | `0x29ae91db4b5868a5b572c315c250cce8b2ab8c438df97f6617a4a8b2bc435a67` | DEPLOYED / NON-LIVE / OWNER ACCEPTED / NO SOURCE RECORDS |
-| MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` | `0x635770ef23a36e4db3d5855b94dc6d6c3b2d72192c59b663e36f312f78bbb42c` | DEPLOYED / OWNER ACCEPTED / FUNDED WITH 7,000,000 SYN / DIRECT ON-CHAIN CANDIDATE / NOT REGISTRY-WIRED / NOT PUBLIC FRONTEND LIVE |
-| Membership Sale V2b | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` | Existing V2b deployment | PAUSED ON-CHAIN / FRONTEND STILL POINTS HERE UNTIL REGISTRY SWITCH |
+| MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` | `0x635770ef23a36e4db3d5855b94dc6d6c3b2d72192c59b663e36f312f78bbb42c` | DEPLOYED / OWNER ACCEPTED / FUNDED WITH 7,000,000 SYN / CURRENT FRONTEND BUY TARGET / ZERO SOURCE ID PUBLIC BUYS |
+| Membership Sale V2b | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` | Existing V2b deployment | PAUSED ON-CHAIN / HISTORICAL SOURCE / RECOVERY BOUNDARY |
 
 ## Ownership Ceremony
 
@@ -112,22 +112,21 @@ Compiler/settings match the intended Remix Standard JSON profile: Solidity `0.8.
 
 ## Current Safety Boundary
 
-V3 is not public frontend live because:
+V3 is now the public frontend buy target, but source/referral activation remains blocked because:
 
-- The frontend registry still points to Membership Sale V2b.
-- The new V3 addresses are not live in frontend registry/config.
-- `/v3-preview` remains candidate/read-only/not-live.
-- No public V3 buy UI exists.
-- No registry switch happened.
+- Public buys use zero sourceId.
+- `/v3-preview` remains a candidate/read-only source preview, not a write surface.
 - No source records exist.
 - No SourceCreated event has been emitted.
-- No public activation happened.
+- No referral UI exists.
+- No claim UI exists.
 
-V3 is now funded and unpaused, so the old zero-funding safety boundary no longer applies. The current boundary is no registry switch, no public V3 UI, no source records, and no activation.
+V3 is funded and unpaused, so the old zero-funding safety boundary no longer applies. The current boundary is V3 direct-buy only, zero sourceId, no source records, no referral/claim UI, and no source activation.
 
 ## Current Truth Classification
 
-- V2b: paused, recovery timelock started, still the public frontend target for now, but public buy flow may fail while frontend remains unchanged.
-- V3: deployed, verified, owner accepted, funded with 7,000,000 SYN, unpaused, directly callable on-chain, not public frontend-wired, no source records, not publicly activated.
+- V2b: paused, recovery timelock started, retained as historical proof and recovery boundary.
+- V3: deployed, verified, owner accepted, funded with 7,000,000 SYN, unpaused, selected as the public frontend buy target, and constrained to zero sourceId public buys.
+- SourceRegistryV1: deployed and owner accepted, but has zero source records. Referral/source/claim UI remains inactive.
 
-Canonical wording: V3 is a funded direct on-chain V3 sale candidate / internal working sale path. Do not call it public frontend live.
+Canonical wording: V3 is the current direct-buy Membership Sale target. Do not call source/referral live.

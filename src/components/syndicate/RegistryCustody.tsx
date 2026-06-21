@@ -1,12 +1,12 @@
 import { useReadContract } from "wagmi";
 import { GlassCard, Section, SectionHeader, ContractLink, Pill } from "@/components/syndicate/Primitives";
-import { SALE_V2_ABI } from "@/lib/sale-abi";
+import { SALE_V2_ABI, SALE_V3_ABI } from "@/lib/sale-abi";
 import { ARCHIVE_NFT_ABI } from "@/lib/archive-nft-abi";
 import {
   AVALANCHE_CHAIN_ID,
   CONTRACTS,
-  MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
-  SALE_V2_LIVE,
+  ACTIVE_MEMBERSHIP_SALE_CONTRACT_ADDRESS,
+  ACTIVE_MEMBERSHIP_SALE_VERSION,
   explorerUrlForAddress,
 } from "@/lib/syndicate-config";
 
@@ -23,9 +23,8 @@ const isAddr = (a?: string): a is `0x${string}` =>
   !!a && /^0x[a-fA-F0-9]{40}$/.test(a);
 
 const ACTIVE_SALE_ADDR =
-  SALE_V2_LIVE && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
-    ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
-    : CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
+  ACTIVE_MEMBERSHIP_SALE_CONTRACT_ADDRESS ?? CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
+const ACTIVE_SALE_ABI = ACTIVE_MEMBERSHIP_SALE_VERSION === "v3" ? SALE_V3_ABI : SALE_V2_ABI;
 
 const ARCHIVE_ADDR = CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS;
 
@@ -71,10 +70,10 @@ function CustodyValue({ row }: { row: CustodyRow }) {
 export function RegistryCustody() {
   const saleOwner = useReadContract({
     address: isAddr(ACTIVE_SALE_ADDR) ? ACTIVE_SALE_ADDR : undefined,
-    abi: SALE_V2_ABI,
+    abi: ACTIVE_SALE_ABI,
     functionName: "owner",
     chainId: AVALANCHE_CHAIN_ID,
-    query: { ...COMMON_QUERY, enabled: SALE_V2_LIVE && isAddr(ACTIVE_SALE_ADDR) },
+    query: { ...COMMON_QUERY, enabled: isAddr(ACTIVE_SALE_ADDR) },
   });
   const archiveOwner = useReadContract({
     address: isAddr(ARCHIVE_ADDR) ? ARCHIVE_ADDR : undefined,
@@ -97,12 +96,12 @@ export function RegistryCustody() {
   const rows: CustodyRow[] = [
     {
       key: "sale-owner",
-      scope: "Active Membership Sale (V2)",
+      scope: ACTIVE_MEMBERSHIP_SALE_VERSION === "v3" ? "Active Membership Sale (V3)" : "Active Membership Sale",
       role: "Owner / admin",
       contractHref: saleHref,
       data: saleOwner.data as `0x${string}` | undefined,
       isLoading: saleOwner.isLoading,
-      enabled: SALE_V2_LIVE && isAddr(ACTIVE_SALE_ADDR),
+      enabled: isAddr(ACTIVE_SALE_ADDR),
     },
     {
       key: "archive-owner",

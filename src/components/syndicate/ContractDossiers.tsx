@@ -16,6 +16,9 @@ import {
   SALE_V2_DEPLOYMENT_BLOCK,
   MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS,
   SALE_V2A_DEPLOYMENT_BLOCK,
+  MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS,
+  SALE_V3_DEPLOYMENT_BLOCK,
+  SOURCE_REGISTRY_V1_CONTRACT_ADDRESS,
 } from "@/lib/syndicate-config";
 import { routescanContractCodeUrl, snowtraceTokenUrl } from "@/lib/chain-registry";
 import { ContractLink, GlassCard, Section, SectionHeader, Pill, StatusPill } from "./Primitives";
@@ -33,7 +36,7 @@ type Dossier = {
   upgradeable: "no" | "yes" | "pending";
   standard: string;
   description: string;
-  status: "live" | "historical" | "pending";
+  status: "live" | "historical" | "deployed" | "pending";
 };
 
 const DOSSIERS: Dossier[] = [
@@ -59,7 +62,72 @@ const DOSSIERS: Dossier[] = [
     status: "live",
   },
   {
-    label: "SyndicateMembershipSale V2b (active)",
+    label: "MembershipSaleV3 (active buy target)",
+    address: MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS ?? "PENDING",
+    explorerHref: MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS
+      ? explorerUrlForAddress(MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS)
+      : null,
+    network: "Avalanche C-Chain",
+    chainId: 43114,
+    deployment: {
+      kind: SALE_V3_DEPLOYMENT_BLOCK ? "block" : "pending",
+      value: SALE_V3_DEPLOYMENT_BLOCK ? `Block ${SALE_V3_DEPLOYMENT_BLOCK.toString()} - active buy target` : "Pending",
+    },
+    verified: "yes",
+    verificationSources: [
+      {
+        label: "Avascan",
+        href: MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS
+          ? explorerUrlForAddress(MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS) ?? ""
+          : "",
+      },
+      {
+        label: "Routescan",
+        href: MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS
+          ? routescanContractCodeUrl(MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS) ?? ""
+          : "",
+      },
+    ],
+    ownerLabel: "Owner hardware wallet controls pause/admin powers; source records remain inactive",
+    upgradeable: "no",
+    standard: "Custom - active membership sale - V3 receipt model - zero sourceId public buys",
+    description:
+      "Current frontend buy target. Accepts USDC, delivers SYN, waits for approval and purchase receipts, and routes net USDC 70% Vault / 20% Liquidity / 10% Operations. Source records, referral UI, and claim UI remain inactive.",
+    status: "live",
+  },
+  {
+    label: "SourceRegistryV1 (deployed, no source records)",
+    address: SOURCE_REGISTRY_V1_CONTRACT_ADDRESS ?? "PENDING",
+    explorerHref: SOURCE_REGISTRY_V1_CONTRACT_ADDRESS
+      ? explorerUrlForAddress(SOURCE_REGISTRY_V1_CONTRACT_ADDRESS)
+      : null,
+    network: "Avalanche C-Chain",
+    chainId: 43114,
+    deployment: { kind: "block", value: "Deployed with owner accepted - no source records" },
+    verified: "yes",
+    verificationSources: [
+      {
+        label: "Avascan",
+        href: SOURCE_REGISTRY_V1_CONTRACT_ADDRESS
+          ? explorerUrlForAddress(SOURCE_REGISTRY_V1_CONTRACT_ADDRESS) ?? ""
+          : "",
+      },
+      {
+        label: "Routescan",
+        href: SOURCE_REGISTRY_V1_CONTRACT_ADDRESS
+          ? routescanContractCodeUrl(SOURCE_REGISTRY_V1_CONTRACT_ADDRESS) ?? ""
+          : "",
+      },
+    ],
+    ownerLabel: "Owner hardware wallet; no SourceCreated events recorded",
+    upgradeable: "no",
+    standard: "Custom - source policy registry - inactive until separate source ceremony",
+    description:
+      "Deployed V3 source policy registry. It has no source records, no referral balances, no claim UI, and no public source activation.",
+    status: "deployed",
+  },
+  {
+    label: "SyndicateMembershipSale V2b (paused historical)",
     address: MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS ?? "PENDING",
     explorerHref: MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
       ? explorerUrlForAddress(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS)
@@ -68,7 +136,7 @@ const DOSSIERS: Dossier[] = [
     chainId: 43114,
     deployment: {
       kind: SALE_V2_DEPLOYMENT_BLOCK ? "block" : "pending",
-      value: SALE_V2_DEPLOYMENT_BLOCK ? `Block ${SALE_V2_DEPLOYMENT_BLOCK.toString()} - active sale` : "Pending",
+      value: SALE_V2_DEPLOYMENT_BLOCK ? `Block ${SALE_V2_DEPLOYMENT_BLOCK.toString()} - historical source` : "Pending",
     },
     verified: "partial",
     verificationSources: [
@@ -87,10 +155,10 @@ const DOSSIERS: Dossier[] = [
     ],
     ownerLabel: "Owner can pause, recover unsold SYN after timelock, and wire a future router after timelock",
     upgradeable: "no",
-    standard: "Custom - active membership sale - V1/V2a recognition - router unset",
+    standard: "Custom - paused historical sale - V1/V2a recognition - router unset",
     description:
-      "Current self-service membership sale. Accepts USDC, delivers SYN, routes 70% Vault / 20% Liquidity / 10% Operations, and preserves member numbering through the Holder Index. CommissionRouter is unset, so referral remains pending.",
-    status: "live",
+      "Paused historical sale. It preserves seats #6-#8 and remains scanned for Activity and the Holder Index, but the frontend no longer routes new buys to it.",
+    status: "historical",
   },
   {
     label: "SyndicateMembershipSale V2a (sealed historical)",
@@ -142,7 +210,7 @@ const DOSSIERS: Dossier[] = [
     upgradeable: "no",
     standard: "Custom - sealed historical sale - 1 SYN = $0.01 USDC fixed",
     description:
-      "Original Membership Sale. Paused/closed with no active inventory; kept for independent verification and historical member identity. Active buys now use V2b.",
+      "Original Membership Sale. Paused/closed with no active inventory; kept for independent verification and historical member identity. Active buys now use MembershipSaleV3.",
     status: "historical",
   },
   {
@@ -336,6 +404,7 @@ function Field({ label, value, href }: { label: string; value: string; href?: st
 
 function StatusBadge({ status }: { status: Dossier["status"] }) {
   if (status === "historical") return <Pill tone="muted">SEALED</Pill>;
+  if (status === "deployed") return <Pill tone="muted">DEPLOYED</Pill>;
   return <StatusPill status={status === "live" ? "LIVE" : "PENDING"} />;
 }
 

@@ -20,18 +20,18 @@ import {
 export const Route = createFileRoute("/v3-preview")({
   head: () => ({
     meta: [
-      { title: "V3 Preview - Candidate / Pending / Not Live | The Syndicate" },
+      { title: "V3 Source Preview - Candidate / Pending / Not Live | The Syndicate" },
       {
         name: "description",
         content:
-          "Read-only V3 preview for quote, acquisition-first routing, receipt schema, source attribution, chapter pricing, and introduction progression. Candidate, pending, not live.",
+          "Read-only preview for V3 source attribution, acquisition-first routing examples, receipt schema, and introduction progression. Source terms are candidate, pending, not live.",
       },
       { name: "robots", content: "noindex,nofollow" },
       { property: "og:title", content: "The Syndicate - V3 Preview" },
       {
         property: "og:description",
         content:
-          "Candidate V3 protocol engine preview. No writes, no deployment, no registry switch.",
+          "Candidate V3 source/acquisition preview. No writes, no source records, no referral activation.",
       },
     ],
     links: [{ rel: "canonical", href: "https://thesyndicate.money/v3-preview" }],
@@ -75,8 +75,8 @@ function V3PreviewPage() {
   return (
     <PageShell
       eyebrow="V3 Preview"
-      title="Candidate protocol engine preview"
-      description="A read-only workbench for the proposed V3 sale engine: quote, acquisition-first routing, receipt reconstruction, source attribution, era pricing, and introduction progression. Nothing here is live."
+      title="Candidate source and acquisition preview"
+      description="A read-only workbench for future V3 source attribution: acquisition-first routing examples, receipt reconstruction, source terms, and introduction progression. The V3 buy path is separate; source records and referral remain pending."
     >
       <Section id="status" width="editorial" className="pt-10 md:pt-12">
         <GlassCard className="p-5 md:p-6">
@@ -86,12 +86,13 @@ function V3PreviewPage() {
                 Safety boundary
               </div>
               <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight">
-                No writes. No deployment. No registry switch.
+                No writes. No source records. No referral activation.
               </h2>
               <p className="mt-3 max-w-3xl text-base leading-relaxed text-foreground/82">
-                This page previews the candidate V3 model only. The live buy path
-                remains Membership Sale V2b. No V3 contract address is registered,
-                no source balance is shown, and no action can create a commission.
+                This page previews source attribution only. The live buy path now
+                uses MembershipSaleV3 with a zero source ID. No source record is
+                created here, no source account is shown, and no action can create
+                a commission.
               </p>
             </div>
             <StatusRail />

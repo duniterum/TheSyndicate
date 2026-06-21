@@ -333,7 +333,7 @@ describe("production coherence guards", () => {
     expect(testPlan).toContain("no member-ownership or network-inventory language");
     expect(testPlan).toContain("Payout Escrow And Smart-Wallet Tests");
 
-    expect(qa).toContain("Status: QA PASS / DEPLOYED NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED / NOT ACTIVATED");
+    expect(qa).toContain("Status: QA PASS / DEPLOYED / OWNER ACCEPTED / FUNDED / DIRECT-BUY TARGET / SOURCE RECORDS INACTIVE");
     expect(qa).toContain("blocked payout wallet cannot grief normal purchases");
     expect(qa).toContain("address-only V1 proofs are disabled");
     expect(qa).toContain("numbered historical-member proofs set both `knownMember` and `memberNumberOf`");
@@ -343,7 +343,7 @@ describe("production coherence guards", () => {
     expect(qa).toContain("Slither was installed and run");
     expect(qa).toContain("Real QuickNode fork rehearsal was rerun after the historical-member migration");
     expect(qa).toContain("RehearsalForkV3: 4 passed, 0 failed, 0 skipped");
-    expect(qa).toContain("V2b remains the live buy path");
+    expect(qa).toContain("MembershipSaleV3 is the direct-buy target");
     expect(qa).toContain("hardware-wallet-first owner");
     expect(qa).toContain("Non-Live Deployment Readback Update");
 
@@ -353,7 +353,9 @@ describe("production coherence guards", () => {
     expect(deployment).toContain("Ownable2Step transfer + owner acceptance readback");
     expect(deployment).toContain("`SourceRegistryV1` Constructor");
     expect(deployment).toContain("`MembershipSaleV3` Constructor Parameters");
-    expect(deployment).toContain("V2b remains the live buy path");
+    expect(deployment).toContain("The frontend direct-buy target is");
+    expect(deployment).toContain("MembershipSaleV3 for zero-source public purchases");
+    expect(deployment).toContain("V2b is now paused on-chain");
     expect(deployment).toContain("slither . --exclude-dependencies");
     expect(deployment).toContain("aderyn .");
     expect(deployment).toContain("AVAX_RPC=<QuickNode Avalanche C-Chain HTTPS endpoint>");
@@ -405,9 +407,9 @@ describe("production coherence guards", () => {
     expect(route).toContain("CANDIDATE");
     expect(route).toContain("PENDING");
     expect(route).toContain("NOT LIVE");
-    expect(route).toContain("No writes. No deployment. No registry switch.");
-    expect(route).toContain("The live buy path");
-    expect(route).toContain("Membership Sale V2b");
+    expect(route).toContain("No writes. No source records. No referral activation.");
+    expect(route).toContain("The live buy path now");
+    expect(route).toContain("MembershipSaleV3 with a zero source ID");
     expect(route).toContain("Read-only quote");
     expect(route).toContain("Acquisition-first routing");
     expect(route).toContain("Receipt example");
@@ -431,7 +433,7 @@ describe("production coherence guards", () => {
     expect(docs).toContain("Read-only candidate model");
 
     expect(route).not.toMatch(/useWriteContract|writeContract|sendTransaction|useSendTransaction|claimSourceEscrow|buy\(/);
-    expect(route).not.toMatch(/router address|live V3 buy path/i);
+    expect(route).not.toMatch(/router address|claimSourceEscrow/i);
     expect(route).not.toMatch(/earned commission|claimable|claim button/i);
     expect(route).not.toMatch(/Protocol contribution|Source rate|source progression/i);
     expect(route).not.toMatch(/passive income|downline|MLM/i);
@@ -538,7 +540,7 @@ describe("production coherence guards", () => {
     expect(contractRegistry).toContain('"PENDING"');
   });
 
-  it("keeps the contract-system map aligned with active V2b and pending future systems", () => {
+  it("keeps the contract-system map aligned with active V3 direct buys and pending source systems", () => {
     const map = read("docs/SMART_CONTRACT_SYSTEM_MAP.md");
     const contractsReadme = read("contracts/README.md");
     const registry = read("src/components/syndicate/ContractDossiers.tsx");
@@ -550,19 +552,25 @@ describe("production coherence guards", () => {
     const v3ReadbackLog = read("docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md");
     const v3NextBoundary = read("docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md");
 
-    expect(map).toContain("Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY");
+    expect(map).toContain("MembershipSaleV3 | LIVE DIRECT-BUY TARGET / SOURCE UI INACTIVE");
+    expect(map).toContain("Membership Sale V2b | LIVE / PAUSED HISTORICAL");
     expect(map).toContain("Membership Sale V1 | LIVE / SEALED HISTORICAL");
     expect(map).toContain("Membership Sale V2a | LIVE / SEALED HISTORICAL");
+    expect(map).toContain("SourceRegistryV1 | DEPLOYED / NO SOURCE RECORDS");
     expect(map).toContain("CommissionRouterV1 | CANDIDATE / PENDING");
     expect(map).toContain("SeatRecord721 | FUTURE / RESERVED");
     expect(map).toContain("CommissionRouterV1 must not receive or affect Vault or Liquidity funds");
     expect(map).toContain("No deployment is authorized by this document");
 
-    expect(contractsReadme).toContain("Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY");
+    expect(contractsReadme).toContain("Membership Sale V2b | LIVE / PAUSED HISTORICAL");
+    expect(contractsReadme).toContain("`MembershipSaleV3` | LIVE DIRECT-BUY TARGET / SOURCE UI INACTIVE");
+    expect(contractsReadme).toContain("`SourceRegistryV1` | DEPLOYED / NO SOURCE RECORDS / REFERRAL UI INACTIVE");
     expect(contractsReadme).toContain("`CommissionRouterV1` | CANDIDATE / NOT DEPLOYED / NOT LIVE");
     expect(contractsReadme).not.toMatch(/Sale V2 \+ CommissionRouter V1 \(Production Solidity\)[\s\S]{0,300}NOT DEPLOYED/);
 
-    expect(registry).toContain("SyndicateMembershipSale V2b (active)");
+    expect(registry).toContain("MembershipSaleV3 (active buy target)");
+    expect(registry).toContain("SourceRegistryV1 (deployed, no source records)");
+    expect(registry).toContain("SyndicateMembershipSale V2b (paused historical)");
     expect(registry).toContain("SyndicateMembershipSale V2a (sealed historical)");
     expect(registry).toContain("SyndicateMembershipSale V1 (sealed historical)");
     expect(registry).toContain("frontend does not route new buys to it");
@@ -576,29 +584,30 @@ describe("production coherence guards", () => {
     expect(sourceTable).toContain("0x0020Df30C127306f0F5B44E6a6E4368D2855842d");
     expect(sourceTable).toContain("Membership Sale V2a (historical proof source only)");
     expect(sourceTable).toContain("0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48");
-    expect(sourceTable).toContain("Membership Sale V2b (paused frontend target)");
+    expect(sourceTable).toContain("Membership Sale V2b (paused historical source)");
     expect(sourceTable).toContain("0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b");
-    expect(sourceTable).toContain("V3 SourceRegistry | `0x780013bB358be6be95b401901264FC7c22a595a6` (deployed non-live");
+    expect(sourceTable).toContain("V3 SourceRegistry | `0x780013bB358be6be95b401901264FC7c22a595a6` (deployed; owner accepted; no source records; referral/source UI inactive)");
     expect(sourceTable).toContain("DEPLOYED NON-LIVE INFRA / REFERRAL UI PENDING");
-    expect(sourceTable).toContain("V3 MembershipSale | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` (deployed;");
-    expect(sourceTable).toContain("not registry-wired");
+    expect(sourceTable).toContain("V3 MembershipSale | `MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS`");
+    expect(sourceTable).toContain("current frontend buy target");
     expect(sourceTable).toContain("funded with 7,000,000 SYN");
     expect(sourceTable).not.toMatch(/\| Membership Sale \| `0x0020Df30C127306f0F5B44E6a6E4368D2855842d`/);
-    expect(syndicateConfig).toContain('label: "Membership Sale V2b"');
+    expect(syndicateConfig).toContain('label: "Membership Sale V3"');
     expect(syndicateConfig).toContain("Current live buy target");
-    expect(syndicateConfig).toContain("explorerUrlForAddress(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS");
+    expect(syndicateConfig).toContain("explorerUrlForAddress(MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS");
     expect(syndicateConfig).not.toMatch(/label: "Membership Sale",\s+status: "live",\s+detail: "SyndicateMembershipSale deployed/);
     expect(syndicateConfig).not.toMatch(/explorerUrlFor\("MEMBERSHIP_SALE_CONTRACT_ADDRESS"\) \?\? undefined/);
-    expect(v3ParameterSheet).toContain("Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED DIRECT ON-CHAIN CANDIDATE / NOT PUBLIC FRONTEND LIVE");
-    expect(v3ParameterSheet).toContain("frontend still points to V2b, but V2b is now paused on-chain");
-    expect(v3ParameterSheet).toContain("SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed non-live");
-    expect(v3ParameterSheet).toContain("MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded with 7,000,000 SYN");
-    expect(v3ParameterSheet).toContain("No public V3 buy UI");
+    expect(v3ParameterSheet).toContain("Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / SOURCE RECORDS INACTIVE");
+    expect(v3ParameterSheet).toContain("MembershipSaleV3 is funded with 7,000,000 SYN, unpaused, and selected as the frontend approval/quote/buy target.");
+    expect(v3ParameterSheet).toContain("Public V3 buys use zero sourceId. No source records exist.");
+    expect(v3ParameterSheet).toContain("SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / no source records / referral UI inactive");
+    expect(v3ParameterSheet).toContain("V3 MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded with 7,000,000 SYN / current frontend buy target / public buys use zero sourceId");
+    expect(v3ParameterSheet).toContain("No public source/referral UI or claim UI");
     expect(v3ParameterSheet).toContain("pause is deferred intentionally");
-    expect(v3ReadbackLog).toContain("MembershipSaleV3 is deployed, owner-accepted, funded with 7,000,000 SYN, not registry-wired, not publicly activated, and not public frontend live.");
+    expect(v3ReadbackLog).toContain("MembershipSaleV3 is deployed, owner-accepted, funded with 7,000,000 SYN, and selected by the frontend buy flow as the active approval/quote/purchase target.");
     expect(v3ReadbackLog).toContain("MembershipSaleV3 `paused()` | `false`");
     expect(v3ReadbackLog).toContain("SourceRegistryV1 PERFECT MATCH; MembershipSaleV3 PERFECT MATCH");
-    expect(v3NextBoundary).toContain("V3 Next Boundary: Registry and Public Activation Are Separate");
+    expect(v3NextBoundary).toContain("V3 Next Boundary: Direct Buy and Source Activation Are Separate");
     expect(v3NextBoundary).toContain("Snowtrace API | VERIFIED | VERIFIED");
     expect(v3NextBoundary).toContain("Sourcify | PERFECT MATCH | PERFECT MATCH");
     expect(v3NextBoundary).toContain("V3 funding | `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2`");
@@ -606,38 +615,50 @@ describe("production coherence guards", () => {
     expect(v3ReadbackLog).toContain("SourceRegistryV1 `SourceCreated` logs since deploy | `0`");
     expect(v3ParameterSheet).not.toContain("- V3 is live.");
     expect(v3ParameterSheet).not.toContain("- Frontend registry switch is authorized.");
-    expect(v3ParameterSheet).not.toContain("- Public V3 buy UI is authorized.");
+    expect(v3ParameterSheet).not.toContain("- Public source/referral UI is authorized.");
   });
 
 
-  it("keeps deployed V3 non-live and blocked from frontend activation", () => {
+  it("keeps V3 direct buys live while source/referral activation stays blocked", () => {
     const contractRegistry = read("src/lib/contract-registry.ts");
     const syndicateConfig = read("src/lib/syndicate-config.ts");
+    const saleHooks = read("src/lib/sale-hooks.ts");
+    const livePurchase = read("src/components/syndicate/LivePurchase.tsx");
     const v3Preview = read("src/routes/v3-preview.tsx");
     const readback = read("docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md");
     const nextBoundary = read("docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md");
 
-    expect(readback).toContain("DEPLOYED / OWNER ACCEPTED / FUNDED DIRECT ON-CHAIN V3 SALE CANDIDATE / NOT REGISTRY-WIRED / NOT PUBLIC FRONTEND LIVE");
+    expect(readback).toContain("DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / SOURCE RECORDS INACTIVE");
     expect(readback).toContain("V3 funding tx | `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2`");
     expect(readback).toContain("SourceCreated` logs since deploy | `0`");
     expect(readback).toContain("MembershipSaleV3 `paused()` | `false`");
-    expect(readback).toContain("V2b: paused, recovery timelock started, still the public frontend target for now");
+    expect(readback).toContain("V2b: paused, recovery timelock started, retained as historical proof and recovery boundary.");
     expect(nextBoundary).toContain("No source records.");
-    expect(nextBoundary).toContain("No registry switch.");
-    expect(nextBoundary).toContain("No public V3 buy UI.");
-    expect(nextBoundary).toContain("No V3 activation.");
-    expect(nextBoundary).toContain("No registry switch.");
+    expect(nextBoundary).toContain("No referral/source UI.");
+    expect(nextBoundary).toContain("No claim UI.");
 
-    expect(syndicateConfig).toContain('"0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b"');
-    expect(syndicateConfig).toContain("Membership Sale V2b");
+    expect(syndicateConfig).toContain('"0x2A6cFc76906e758B934209AFf5A163c9bC20132E"');
+    expect(syndicateConfig).toContain('"0x780013bB358be6be95b401901264FC7c22a595a6"');
+    expect(syndicateConfig).toContain('ACTIVE_MEMBERSHIP_SALE_VERSION = SALE_V3_FRONTEND_BUY_TARGET');
+    expect(syndicateConfig).toContain("Membership Sale V3");
     expect(syndicateConfig).toContain("Current live buy target");
-    expect(contractRegistry).not.toContain("0x2A6cFc76906e758B934209AFf5A163c9bC20132E");
-    expect(contractRegistry).not.toContain("0x780013bB358be6be95b401901264FC7c22a595a6");
-    expect(syndicateConfig).not.toContain("0x2A6cFc76906e758B934209AFf5A163c9bC20132E");
-    expect(syndicateConfig).not.toContain("0x780013bB358be6be95b401901264FC7c22a595a6");
-    expect(v3Preview).toContain("The live buy path");
-    expect(v3Preview).toContain("Membership Sale V2b");
+    expect(contractRegistry).toContain("MEMBERSHIP_SALE_V3");
+    expect(contractRegistry).toContain("SOURCE_REGISTRY_V1");
+    expect(contractRegistry).toContain("no source records exist");
+    expect(saleHooks).toContain("ACTIVE_SALE = (SALE_V3 ?? SALE_V2 ?? SALE_V1)");
+    expect(saleHooks).toContain("ZERO_SOURCE_ID");
+    expect(livePurchase).toContain('functionName: "approve"');
+    expect(livePurchase).toContain("args: [SALE, usdcRaw]");
+    expect(livePurchase).toContain('functionName: "buy"');
+    expect(livePurchase).toContain("abi: SALE_V3_ABI");
+    expect(livePurchase).toContain("args: [usdcRaw, address!, ZERO_SOURCE_ID, minSynOut, []]");
+    expect(livePurchase).toContain("approveReceipt.isSuccess");
+    expect(livePurchase).toContain("buyReceipt.isSuccess");
+    expect(livePurchase).toContain("refetchAllowance()");
+    expect(v3Preview).toContain("The live buy path now");
+    expect(v3Preview).toContain("MembershipSaleV3 with a zero source ID");
     expect(v3Preview).toContain("NOT LIVE");
+    expect(v3Preview).not.toMatch(/claimSourceEscrow|source balance|earned commission/i);
   });
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {
     const activity = read("src/routes/activity.tsx");

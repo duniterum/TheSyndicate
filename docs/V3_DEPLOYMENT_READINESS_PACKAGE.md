@@ -2,11 +2,13 @@
 
 Status: OPERATIONAL READINESS PACKAGE / HARDWARE-WALLET FIRST / NO DEPLOYMENT AUTHORIZED
 
-This package converts the current V3 candidate state into a practical
-deployment-preparation path. It does not deploy, activate, register, frontend
-wire, or publish V3. V2b remains the live buy path until a future deployment,
-verification, funding, readback, registry update, and product activation pass is
-explicitly approved.
+This package originally converted the V3 candidate state into a practical
+deployment-preparation path. Current status update: SourceRegistryV1 and
+MembershipSaleV3 have since been deployed, verified, ownership-accepted, and
+MembershipSaleV3 has been funded. V2b is now paused on-chain and retained as a
+historical scan source/recovery boundary. The frontend direct-buy target is
+MembershipSaleV3 for zero-source public purchases. Source records, referral UI,
+claim UI, and any source activation remain blocked until a separate approval.
 
 Current V3 candidate contracts:
 
@@ -404,9 +406,9 @@ Correct order:
 
 ### Registry / Frontend Checklist
 
-- [ ] Add V3 address only after approval.
-- [ ] Mark V3 as read-only first.
-- [ ] Keep V2b live until cutover is explicitly approved.
+- [x] Add V3 address after approval.
+- [x] Wire direct buys to MembershipSaleV3 for zero-source public purchases.
+- [x] Preserve V2b as paused historical/recovery-boundary truth after cutover.
 - [ ] No referral/claim UI until source terms and readbacks are live.
 - [ ] Run `npm run check-release`.
 - [ ] Visual QA `/v3-preview`, `/join`, `/registry`, `/my-syndicate`.

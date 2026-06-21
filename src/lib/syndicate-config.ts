@@ -320,11 +320,12 @@ const EXPLORER_KIND: Record<ContractKey, "token" | "address"> = {
 export const isLiveAddress = (v: string) =>
   v !== "PENDING" && /^0x[a-fA-F0-9]{40}$/.test(v);
 
-// ── Sale V2 — ACTIVE buy target on Avalanche mainnet (V2b) ────────────────
-// V2b (below) is the LIVE, funded, on-chain-verified self-service sale and the
-// ACTIVE buy / quote / approve target. It SUPERSEDES V2a (an earlier same-source
-// deploy, now PAUSED/SEALED), which is retained ONLY as a historical scan source
-// for member continuity — see MEMBERSHIP_SALE_V2A_* below. V1 is also sealed.
+// ── Sale V2b — PAUSED historical sale on Avalanche mainnet ────────────────
+// V2b (below) was the funded self-service sale and is now paused on-chain after
+// the V3 funding/cutover ceremony. It remains a historical scan source and
+// recovery boundary. It SUPERSEDES V2a (an earlier same-source deploy, now
+// PAUSED/SEALED), which is retained ONLY as a historical scan source for member
+// continuity — see MEMBERSHIP_SALE_V2A_* below. V1 is also sealed.
 // NOTE: the V2 contract is UNAUDITED — describe it as live-but-unaudited / early,
 // never as audited. No placeholder strings, no inferred address (truth doctrine).
 // Kept OUTSIDE `CONTRACTS` so the `as const` map / ContractKey / EXPLORER_KIND
@@ -350,6 +351,32 @@ export const SALE_V2_LIVE: boolean =
   MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS !== null &&
   isLiveAddress(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS) &&
   SALE_V2_DEPLOYMENT_BLOCK !== null;
+
+// V3 sale engine — deployed, owner-accepted, funded, and selected as the public
+// buy target after the V2b pause. Source records/referral/claim UI remain
+// inactive; normal member buys pass bytes32(0) as sourceId.
+export const SOURCE_REGISTRY_V1_CONTRACT_ADDRESS: string | null =
+  "0x780013bB358be6be95b401901264FC7c22a595a6";
+export const MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS: string | null =
+  "0x2A6cFc76906e758B934209AFf5A163c9bC20132E";
+export const SALE_V3_DEPLOYMENT_BLOCK: bigint | null = 88791883n;
+export const SALE_V3_FRONTEND_BUY_TARGET: boolean =
+  MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS !== null &&
+  isLiveAddress(MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS) &&
+  SALE_V3_DEPLOYMENT_BLOCK !== null;
+
+export const ACTIVE_MEMBERSHIP_SALE_VERSION = SALE_V3_FRONTEND_BUY_TARGET
+  ? "v3"
+  : SALE_V2_LIVE
+    ? "v2"
+    : "v1";
+
+export const ACTIVE_MEMBERSHIP_SALE_CONTRACT_ADDRESS =
+  ACTIVE_MEMBERSHIP_SALE_VERSION === "v3"
+    ? MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS
+    : ACTIVE_MEMBERSHIP_SALE_VERSION === "v2"
+      ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
+      : CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
 
 export function explorerUrlFor(key: ContractKey): string | null {
   const addr = CONTRACTS[key];
@@ -509,7 +536,7 @@ export type ReadinessItem = { label: string; ready: boolean };
 export const CONTRACT_READINESS: ReadinessItem[] = [
   { label: "SYN token deployed (Avalanche C-Chain)", ready: isLiveAddress(CONTRACTS.SYN_CONTRACT_ADDRESS) },
   { label: "Membership SYN wallet funded",           ready: isLiveAddress(CONTRACTS.MEMBERSHIP_SYN_WALLET) },
-  { label: "Membership Sale V2b contract deployed",  ready: SALE_V2_LIVE },
+  { label: "Membership Sale V3 contract deployed and funded", ready: SALE_V3_FRONTEND_BUY_TARGET },
   { label: "USDC accepted",                          ready: isLiveAddress(CONTRACTS.USDC_CONTRACT_ADDRESS) },
   { label: "Vault USDC wallet connected",            ready: isLiveAddress(CONTRACTS.VAULT_WALLET) },
   { label: "Liquidity USDC wallet connected",        ready: isLiveAddress(CONTRACTS.LIQUIDITY_WALLET) },
@@ -531,7 +558,7 @@ export const TRANSPARENCY_ITEMS: TransparencyItem[] = [
   { label: "SYN Token",            status: "live",    detail: "ERC20 deployed on Avalanche C-Chain · fixed 1,000,000,000 supply", href: SYN_EXPLORERS.avascan },
   { label: "Allocation Integrity", status: "live",    detail: "7 public allocation wallets · initial mint confirmed",            href: "/registry" },
   { label: "Source Verification",  status: "live",    detail: "Source verified on Sourcify and Routescan",                       href: SYN_EXPLORERS.sourcify },
-  { label: "Membership Sale V2b",  status: "live",    detail: "Current live buy target · accepts USDC, splits 70/20/10, and remains live-but-unaudited / early", href: explorerUrlForAddress(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS ?? "") ?? undefined },
+  { label: "Membership Sale V3",  status: "live",    detail: "Current live buy target. Accepts USDC, delivers SYN, and routes net USDC 70/20/10. Source records remain inactive.", href: explorerUrlForAddress(MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS ?? "") ?? undefined },
   { label: "USDC Routing",         status: "live",    detail: "70% Vault · 20% Liquidity · 10% Operations — enforced onchain",   href: "/registry" },
   { label: "Operations Wallet",    status: "live",    detail: "Receives 10% of every USDC purchase",                              href: explorerUrlFor("OPERATIONS_WALLET") ?? undefined },
   { label: "LP Pool",              status: "live",    detail: "Trader Joe v1 SYN/USDC pair live on Avalanche — reserves read onchain", href: explorerUrlFor("LP_PAIR_ADDRESS") ?? undefined },
@@ -557,7 +584,7 @@ export type ProtocolStatusItem = {
 };
 export const PROTOCOL_STATUS: ProtocolStatusItem[] = [
   { key: "syn",        label: "SYN Token",           status: "live",    summary: "ERC20 deployed and verified on Avalanche C-Chain.", href: "/token" },
-  { key: "sale",       label: "Membership Sale V2b", status: "live",    summary: "Current live buy path. USDC → SYN with 70/20/10 routing onchain.", href: "/join" },
+  { key: "sale",       label: "Membership Sale V3", status: "live",    summary: "Current live buy path. USDC to SYN with transparent V3 receipt routing.", href: "/join" },
   { key: "allocation", label: "Initial Allocation",  status: "live",    summary: "7 public allocation wallets · initial mint confirmed.", href: "/registry" },
   { key: "verify",     label: "Source Verification", status: "live",    summary: "Verified on Sourcify and Routescan.", href: "/transparency" },
   { key: "vault",      label: "Vault Contract",      status: "pending", summary: "Vault is currently a public wallet — programmatic contract not deployed.", href: "/vault" },
@@ -577,7 +604,7 @@ export const WHATS_LIVE = {
     "7 public allocation wallets",
     "Initial mint transfers",
     "Source verified (Sourcify, Routescan)",
-    "Membership Sale V2b contract",
+    "Membership Sale V3 contract",
     "USDC routing 70/20/10",
     "Vault / Liquidity / Operations wallets",
     "Trader Joe SYN/USDC LP pool",

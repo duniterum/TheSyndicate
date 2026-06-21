@@ -35,8 +35,7 @@ import {
   SYN_EXPLORERS,
   SYN_BURN_ADDRESS,
   PROOF_OF_FIRE_001,
-  MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
-  SALE_V2_LIVE,
+  ACTIVE_MEMBERSHIP_SALE_CONTRACT_ADDRESS,
   explorerUrlFor,
   explorerUrlForAddress,
 } from "./syndicate-config";
@@ -47,9 +46,7 @@ import {
  * routing happens); the sealed V1 history still backs the cumulative totals.
  */
 const ACTIVE_SALE_ADDR =
-  SALE_V2_LIVE && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
-    ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
-    : CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
+  ACTIVE_MEMBERSHIP_SALE_CONTRACT_ADDRESS ?? CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
 
 // ─── Taxonomy ──────────────────────────────────────────────────────────────
 

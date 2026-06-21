@@ -1,19 +1,19 @@
-# V3 Next Boundary: Registry and Public Activation Are Separate
+# V3 Next Boundary: Direct Buy and Source Activation Are Separate
 
-Status: POST-FUNDING CONSOLIDATION / V2B PAUSED / V3 FUNDED DIRECT ON-CHAIN CANDIDATE / NOT PUBLIC FRONTEND LIVE
+Status: POST-FUNDING CONSOLIDATION / V2B PAUSED / V3 FRONTEND BUY TARGET / SOURCE RECORDS INACTIVE
 
-This document records the boundary after the V2b pause and V3 funding ceremonies. It does not authorize source records, registry switch, public V3 UI, recovery, additional funding, pause/unpause, activation, or any private-key/broadcast action.
+This document records the boundary after the V2b pause, V3 funding, and frontend buy-target wiring. It does not authorize source records, referral UI, claim UI, recovery, additional funding, pause/unpause, or any private-key/broadcast action.
 
 ## Current State
 
 | Surface | Status |
 | --- | --- |
-| V2b | Paused on-chain; recovery timelock started; frontend still points to V2b until a separate registry/frontend switch is approved |
+| V2b | Paused on-chain; recovery timelock started; retained as historical proof and recovery boundary |
 | SourceRegistryV1 | Deployed, owner accepted, no source records |
-| MembershipSaleV3 | Deployed, owner accepted, funded with 7,000,000 SYN, unpaused, directly callable on-chain, not public frontend-wired |
-| Public frontend | Still points to V2b; no public V3 buy UI; `/v3-preview` remains read-only candidate |
-| Registry switch | Not approved and not performed |
-| Activation | Not approved and not performed |
+| MembershipSaleV3 | Deployed, owner accepted, funded with 7,000,000 SYN, unpaused, current frontend approval/quote/buy target |
+| Public frontend | Direct buy flow points to V3 with zero sourceId; `/v3-preview` remains read-only source/acquisition preview |
+| Source activation | Not approved and not performed |
+| Referral / claim UI | Not approved and not performed |
 
 Owner wallet: `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73`.
 
@@ -71,7 +71,7 @@ Do not call `recoverUnsoldSyn()` until a separate recovery ceremony is approved.
 - Correct V2b pause transaction verified.
 - Mistaken V2a pause attempt recorded as reverted/no effect.
 - V3 funding transaction verified.
-- Frontend remains pointed at V2b.
+- Frontend direct-buy flow is wired to MembershipSaleV3.
 
 ## Still Not Allowed
 
@@ -79,9 +79,9 @@ Do not call `recoverUnsoldSyn()` until a separate recovery ceremony is approved.
 - No additional SYN funding.
 - No USDC funding.
 - No source records.
-- No registry switch.
-- No public V3 buy UI.
-- No V3 activation.
+- No source records.
+- No referral/source UI.
+- No claim UI.
 - No public claim/referral UI.
 - No pause/unpause transaction unless separately approved in a transaction ceremony.
 
@@ -91,12 +91,12 @@ These must remain separate. Completion of one does not authorize the next.
 
 1. V2b recovery decision after timelock eligibility.
 2. Source-record policy decision.
-3. Frontend registry switch plan.
-4. Public UI activation.
+3. Source-record policy plan.
+4. Referral/source UI activation.
 5. Post-activation monitoring.
 
 ## Guardrail
 
-V3 deployed addresses may appear in docs as deployed/funded candidate addresses. They must not appear in the live frontend registry/config until a separate activation ceremony approves registry switch and public UI.
+V3 deployed addresses may appear in the live direct-buy frontend config only for zero-source public purchases. SourceRegistryV1 must remain inactive until a separate source-record ceremony approves source terms and UI.
 
-Canonical wording: V3 is a funded direct on-chain V3 sale candidate / internal working sale path. It is not public frontend live.
+Canonical wording: V3 is the current direct-buy Membership Sale target. Source/referral remains inactive.

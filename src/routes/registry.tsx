@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { RegistryTrustOpener } from "@/components/syndicate/RegistryTrustOpener";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
@@ -15,25 +15,24 @@ import {
   VAULT_ALLOCATION,
   LP_POOL,
   MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS,
-  SALE_V2_LIVE,
+  ACTIVE_MEMBERSHIP_SALE_CONTRACT_ADDRESS,
+  ACTIVE_MEMBERSHIP_SALE_VERSION,
   explorerUrlFor,
   explorerUrlForAddress,
   extrasForAddress,
   txExplorerUrl,
 } from "@/lib/syndicate-config";
 
-// Active membership sale (V2 once live; V1 history stays sealed but verifiable).
+// Active membership sale (V3 after cutover; V1/V2 history stays sealed but verifiable).
 const ACTIVE_SALE_ADDR =
-  SALE_V2_LIVE && MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
-    ? MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS
-    : CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
+  ACTIVE_MEMBERSHIP_SALE_CONTRACT_ADDRESS ?? CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS;
 
 export const Route = createFileRoute("/registry")({
   head: () => ({
     meta: [
-      { title: "Protocol Registry — Contracts, Wallets, Status | The Syndicate" },
+      { title: "Protocol Registry â€” Contracts, Wallets, Status | The Syndicate" },
       { name: "description", content: "Canonical Protocol Registry: every contract address, every allocation wallet, every status, every explorer link for The Syndicate on Avalanche C-Chain." },
-      { property: "og:title", content: "The Syndicate — Protocol Registry" },
+      { property: "og:title", content: "The Syndicate â€” Protocol Registry" },
       { property: "og:description", content: "Single source of truth: contracts, wallets, allocations, statuses." },
       { property: "og:url", content: "https://thesyndicate.money/registry" },
     ],
@@ -65,9 +64,9 @@ const CONTRACT_ROWS: ContractRow[] = [
     status: "live",
     address: ACTIVE_SALE_ADDR,
     href: explorerUrlForAddress(ACTIVE_SALE_ADDR),
-    description: SALE_V2_LIVE
-      ? "USDC → SYN. Splits 70/20/10 onchain to Vault, Liquidity, Operations. Sale V2 (Model 2) — continues member numbering from V1."
-      : "USDC → SYN. Splits 70/20/10 onchain to Vault, Liquidity, Operations.",
+    description: ACTIVE_MEMBERSHIP_SALE_VERSION === "v3"
+      ? "USDC to SYN through MembershipSaleV3. Public buys use zero sourceId, wait for approval and purchase receipts, and route net USDC 70/20/10. Source records, referral UI, and claim UI remain inactive."
+      : "USDC to SYN. Splits 70/20/10 onchain to Vault, Liquidity, Operations.",
   },
   {
     label: "USDC (Avalanche)",
@@ -77,23 +76,23 @@ const CONTRACT_ROWS: ContractRow[] = [
     description: "Payment token. Native USDC on Avalanche C-Chain.",
   },
   {
-    label: "LP Pool (Trader Joe · SYN/USDC · AMM/JLP)",
+    label: "LP Pool (Trader Joe Â· SYN/USDC Â· AMM/JLP)",
     status: "live",
     address: LP_POOL.pairAddress,
     href: explorerUrlFor("LP_PAIR_ADDRESS"),
     description: `Live SYN/USDC ${LP_POOL.poolType} pair on Avalanche. Initial liquidity: ${LP_POOL.initialSyn} SYN + ${LP_POOL.initialUsdc} USDC @ $${LP_POOL.initialPriceUsd}.`,
   },
   { label: "Vault Contract",     status: "pending", address: "PENDING", href: null, description: "Programmatic Vault is not deployed. Vault funds currently sit in a public wallet (see below)." },
-  { label: "SeatRecord721 (future ERC-721)", status: "pending", address: "PENDING", href: null, description: "Future identity record — PENDING CONTRACT. Distinct from the deployed Archive1155 memory contract. It is not live and cannot be inferred from Archive1155." },
-  { label: "Archive Contract (SyndicateArchive1155)", status: "live", address: CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS, href: ARCHIVE_NFT_EXPLORERS.avascan, description: "Deployed on Avalanche · The First Signal (ID 1) is ACTIVE and public mint is OPEN at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED: mintability is shown only from live Archive1155 reads. ID 2 is reserved/disabled for future SeatRecord721 identity." },
+  { label: "SeatRecord721 (future ERC-721)", status: "pending", address: "PENDING", href: null, description: "Future identity record â€” PENDING CONTRACT. Distinct from the deployed Archive1155 memory contract. It is not live and cannot be inferred from Archive1155." },
+  { label: "Archive Contract (SyndicateArchive1155)", status: "live", address: CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS, href: ARCHIVE_NFT_EXPLORERS.avascan, description: "Deployed on Avalanche Â· The First Signal (ID 1) is ACTIVE and public mint is OPEN at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED: mintability is shown only from live Archive1155 reads. ID 2 is reserved/disabled for future SeatRecord721 identity." },
   { label: "Governance Module",  status: "pending", address: "PENDING", href: null, description: "Snapshot / onchain governance. Not deployed yet." },
   { label: "AI Layer",           status: "pending", address: "PENDING", href: null, description: "No AI module is live." },
 ];
 
 const ROUTING_WALLETS: Array<{ label: string; key: keyof typeof CONTRACTS; pct: number }> = [
-  { label: "70% → Vault Wallet",      key: "VAULT_WALLET",      pct: 70 },
-  { label: "20% → Liquidity Wallet",  key: "LIQUIDITY_WALLET",  pct: 20 },
-  { label: "10% → Operations Wallet", key: "OPERATIONS_WALLET", pct: 10 },
+  { label: "70% â†’ Vault Wallet",      key: "VAULT_WALLET",      pct: 70 },
+  { label: "20% â†’ Liquidity Wallet",  key: "LIQUIDITY_WALLET",  pct: 20 },
+  { label: "10% â†’ Operations Wallet", key: "OPERATIONS_WALLET", pct: 10 },
 ];
 
 function StatusPill({ status }: { status: "live" | "pending" }) {
@@ -107,13 +106,13 @@ function RegistryPage() {
       title="Protocol Registry"
       description="One canonical source of truth. Every contract, every wallet, every status, every explorer link."
     >
-      {/* Trust opener — skeptic-friendly canonical cards above all tables */}
+      {/* Trust opener â€” skeptic-friendly canonical cards above all tables */}
       <RegistryTrustOpener />
 
       {/* Protocol Status */}
       <Section id="status">
         <SectionHeader
-          eyebrow="01 — Status"
+          eyebrow="01 â€” Status"
           title="Live and pending modules"
           description="Same source of truth that powers the homepage, Transparency Center, and roadmap."
         />
@@ -133,7 +132,7 @@ function RegistryPage() {
       {/* Contracts */}
       <Section id="contracts">
         <SectionHeader
-          eyebrow="02 — Contracts"
+          eyebrow="02 â€” Contracts"
           title="Smart contracts"
           description="Every deployed contract is listed here. Pending contracts are explicitly marked PENDING."
         />
@@ -174,7 +173,7 @@ function RegistryPage() {
                       rel="noopener noreferrer"
                       className="mono text-xs hover:text-[var(--gold)] underline-offset-4 hover:underline"
                     >
-                      {LP_POOL.creationTx.slice(0, 10)}…{LP_POOL.creationTx.slice(-6)} ↗
+                      {LP_POOL.creationTx.slice(0, 10)}â€¦{LP_POOL.creationTx.slice(-6)} â†—
                     </a>
                   </td>
                   <td className="py-3 px-4 text-xs text-muted-foreground max-w-md">
@@ -192,7 +191,7 @@ function RegistryPage() {
       {/* Allocation Wallets */}
       <Section id="allocations">
         <SectionHeader
-          eyebrow="03 — Allocation Wallets"
+          eyebrow="03 â€” Allocation Wallets"
           title="Seven public allocation wallets"
           description="Initial 1,000,000,000 SYN mint distributed across seven public wallets. Every balance is verifiable on Avascan."
         />
@@ -231,9 +230,9 @@ function RegistryPage() {
       {/* USDC Routing Wallets */}
       <Section id="routing">
         <SectionHeader
-          eyebrow="04 — USDC Routing"
+          eyebrow="04 â€” USDC Routing"
           title="Where USDC goes"
-          description={`Every USDC purchase splits onchain: ${VAULT_ALLOCATION.vaultAssets * 100}% Vault · ${VAULT_ALLOCATION.liquidityReinforcement * 100}% Liquidity · ${VAULT_ALLOCATION.operationsCommunity * 100}% Operations.`}
+          description={`Every USDC purchase splits onchain: ${VAULT_ALLOCATION.vaultAssets * 100}% Vault Â· ${VAULT_ALLOCATION.liquidityReinforcement * 100}% Liquidity Â· ${VAULT_ALLOCATION.operationsCommunity * 100}% Operations.`}
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {ROUTING_WALLETS.map((r) => {
@@ -258,7 +257,7 @@ function RegistryPage() {
       {/* Explorer index */}
       <Section id="explorers">
         <SectionHeader
-          eyebrow="05 — Verification"
+          eyebrow="05 â€” Verification"
           title="Explorers & source"
           description="SYN is verified across multiple explorers. Use any of them to confirm contract bytecode and source."
         />
@@ -270,20 +269,20 @@ function RegistryPage() {
         </div>
       </Section>
 
-      {/* Custody & admin keys — live on-chain reads */}
+      {/* Custody & admin keys â€” live on-chain reads */}
       <RegistryCustody />
 
       {/* Cross-links */}
       <Section id="more">
         <div className="flex flex-wrap gap-3">
           <Pill tone="muted">Cross-references</Pill>
-          <Link to="/transparency" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Transparency Center →</Link>
-          <Link to="/institutional-register" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Institutional Register →</Link>
-          <Link to="/knowledge-map" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Knowledge Map →</Link>
-          <Link to="/tokenomics" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Tokenomics →</Link>
-          <Link to="/liquidity" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Liquidity →</Link>
-          <Link to="/whitepaper" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Whitepaper →</Link>
-          <Link to="/roadmap" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Roadmap →</Link>
+          <Link to="/transparency" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Transparency Center â†’</Link>
+          <Link to="/institutional-register" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Institutional Register â†’</Link>
+          <Link to="/knowledge-map" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Knowledge Map â†’</Link>
+          <Link to="/tokenomics" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Tokenomics â†’</Link>
+          <Link to="/liquidity" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Liquidity â†’</Link>
+          <Link to="/whitepaper" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Whitepaper â†’</Link>
+          <Link to="/roadmap" className="mono text-[11px] uppercase tracking-[0.18em] underline-offset-4 hover:underline">Roadmap â†’</Link>
         </div>
       </Section>
     <RouteFinalCTA preset="verify" />
@@ -300,7 +299,7 @@ function ExplorerCard({ href, label }: { href: string; label: string }) {
       className="surface elevated p-4 flex items-center justify-between hover:border-[var(--gold)]/40 transition-colors"
     >
       <span className="text-sm font-medium">{label}</span>
-      <span className="mono text-xs text-muted-foreground">↗</span>
+      <span className="mono text-xs text-muted-foreground">â†—</span>
     </a>
   );
 }

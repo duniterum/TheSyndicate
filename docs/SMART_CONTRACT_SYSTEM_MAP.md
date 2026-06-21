@@ -1,4 +1,4 @@
-# Smart Contract System Map
+﻿# Smart Contract System Map
 
 Status: CANONICAL RELATIONSHIP REVIEW / NO DEPLOYMENT AUTHORIZED
 
@@ -29,7 +29,7 @@ Membership Sale V1 -------------\
 Membership Sale V2a ---------------> Holder Index / Activity / My Syndicate
   | sealed historical events       /
 Membership Sale V2b -------------/
-  | active buy target
+  | paused historical source
   | routes USDC 70 / 20 / 10
   | transfers SYN to buyer
   | emits purchase + routing events
@@ -60,12 +60,14 @@ SeatRecord721
 | Native USDC | LIVE | `src/lib/syndicate-config.ts` / Circle contract | Payment token for sale and Archive mints. |
 | Membership Sale V1 | LIVE / SEALED HISTORICAL | `CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS` | Original sale. Paused/closed, scanned for early seats and proof. |
 | Membership Sale V2a | LIVE / SEALED HISTORICAL | `MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS` | Superseded sale. Scanned for seats #3-#5 and continuity. |
-| Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY | `MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS` | Current self-service buy target. Router unset. |
+| Membership Sale V2b | LIVE / PAUSED HISTORICAL | `MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS` | Paused on-chain. Historical source for seats #6-#8 and recovery boundary. |
 | Vault wallet | LIVE | `CONTRACTS.VAULT_WALLET` | Receives 70% USDC from sale. EOA, not a programmatic vault contract. |
 | Liquidity wallet | LIVE | `CONTRACTS.LIQUIDITY_WALLET` | Receives 20% USDC from sale. Supports LP operations. |
 | Operations wallet | LIVE | `CONTRACTS.OPERATIONS_WALLET` | Receives 10% USDC while router is unset or disabled. |
 | Trader Joe SYN/USDC LP pair | LIVE | `LP_POOL.pairAddress` | Secondary market access layer. |
 | Archive1155 | LIVE | `CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS` | Protocol-memory ERC-1155. |
+| SourceRegistryV1 | DEPLOYED / NO SOURCE RECORDS | `SOURCE_REGISTRY_V1_CONTRACT_ADDRESS` | V3 source policy registry. No source records; referral/source UI inactive. |
+| MembershipSaleV3 | LIVE DIRECT-BUY TARGET / SOURCE UI INACTIVE | `MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS` | Current frontend approval/quote/buy target. Public buys use zero sourceId. |
 | CommissionRouterV1 | CANDIDATE / PENDING | `address: null` in `contract-registry.ts` | Future Operations-slice commission router. Not live. |
 | SeatRecord721 | FUTURE / RESERVED | `address: null` in `contract-registry.ts` | Future identity record. Not implemented. |
 | Programmatic Vault contract | FUTURE / PENDING | No address | Future accounting/automation. Current Vault is a wallet. |
@@ -74,12 +76,12 @@ SeatRecord721
 
 ### Current live dependencies
 
-- Frontend buy flow writes to Membership Sale V2b.
-- Membership Sale V2b depends on:
+- Frontend direct-buy flow writes to MembershipSaleV3 with zero sourceId.
+- MembershipSaleV3 depends on:
   - SYN inventory already funded into the sale contract,
   - native USDC allowance from buyer,
   - Vault / Liquidity / Operations wallet addresses fixed at deploy,
-  - V1/V2a recognition root and Holder Index continuity.
+  - V3 numbered historical-member root and Holder Index continuity.
 - Archive mint flows write to Archive1155 and depend on:
   - native USDC allowance,
   - per-ID Archive1155 contract reads,
@@ -92,9 +94,9 @@ SeatRecord721
 
 ### Candidate/future dependencies
 
-- CommissionRouterV1 may only be allow-listed by Sale V2b after deployment,
-  source configuration, owner finalization, external review, and frontend
-  read-only verification.
+- SourceRegistryV1 source records may only be created after source policy approval,
+  owner finalization, external review, and frontend
+  read-only verification. CommissionRouterV1 remains separate candidate infrastructure.
 - SeatRecord721 must depend on the Holder Index, not replace it.
 - Future Archive IDs must depend on live Archive1155 config or future contract
   truth, not static eligibility claims.
@@ -106,12 +108,12 @@ SeatRecord721
 ```text
 Buyer signs exact USDC approval
 Buyer signs buy
-Sale V2b pulls USDC
-Sale V2b sends:
+MembershipSaleV3 pulls USDC
+MembershipSaleV3 sends:
   70% -> Vault wallet
   20% -> Liquidity wallet
   10% -> Operations wallet
-Sale V2b transfers SYN to buyer
+MembershipSaleV3 transfers SYN to buyer
 Receipt records the state change
 ```
 
@@ -119,22 +121,22 @@ Receipt records the state change
 
 ```text
 Buyer signs exact USDC approval
-Buyer signs buy with optional referrer
-Sale V2b pulls USDC
-Sale V2b sends:
+Buyer signs V3 buy with zero sourceId today; future source attribution stays disabled until approved
+MembershipSaleV3 pulls USDC
+MembershipSaleV3 sends:
   70% -> Vault wallet
   20% -> Liquidity wallet
-  Operations slice -> CommissionRouterV1
+  Net USDC routed 70/20/10; source commission only if future source terms are approved
 
 CommissionRouterV1:
   validates allow-listed source
-  validates referrer through Sale V2b known-member read
+  validates source terms through SourceRegistryV1
   pays or escrows Operations-slice commission
   forwards remainder to Operations wallet
 
-If router call fails:
-  Sale V2b catches the failure
-  full Operations slice goes to Operations wallet
+If source payout fails in future source-enabled flow:
+  MembershipSaleV3 escrows the source amount
+  public zero-source buys do not use this path
   buy continues
 ```
 
@@ -157,7 +159,8 @@ Archive artifacts do not create seats and do not move membership routing.
 | --- | --- | --- |
 | Sale V1 | `TokensPurchased` | Activity, Holder Index, My Syndicate, Registry proof, historical totals. |
 | Sale V2a | `Purchased`, `Routed` | Activity, Holder Index, My Syndicate, Registry proof, historical totals. |
-| Sale V2b | `Purchased`, `Routed`, router status reads | Join, receipt, Activity, My Syndicate, Transparency, Registry, Holder Index. |
+| Sale V2b | `Purchased`, `Routed` | Historical Activity, Holder Index, My Syndicate, Transparency, Registry. |
+| MembershipSaleV3 | `MembershipPurchasedV3`, quote/readback methods | Join, receipt, Activity, My Syndicate, Transparency, Registry, Holder Index. |
 | CommissionRouterV1 future | `Attribution`, `ReferralEscrowed`, `ReferralClaimed`, `SourceAdded`, `SourceRemoved` | Future Activity, Register, Chronicle candidates, Referral read-only, Member OS. Not scanned live today. |
 | Archive1155 | ERC-1155 transfer/mint reads, per-ID config reads | Archive, NFT route, My Archive Preview, Activity, Chronicle candidates, Register memory. |
 | SYN ERC-20 | balances, transfers, burns | My Syndicate, members/holders, token, activity, supply line. |
@@ -170,9 +173,9 @@ Archive artifacts do not create seats and do not move membership routing.
 | Surface | Contract dependencies |
 | --- | --- |
 | `/` | Registry/config, sale status, SYN, Archive1155, LP, transparency wallets. |
-| `/join` | Sale V2b write path, USDC allowance, SYN quote, receipt model, no referral write path. |
+| `/join` | MembershipSaleV3 write path, USDC allowance, V3 quote, receipt model, no source/referral write path. |
 | `/my-syndicate` | Holder Index, SYN balance, sale event history, Archive1155 balances, future-system status. |
-| `/activity` | V1/V2a/V2b sale events, Archive1155 mints, LP/wallet/burn events. |
+| `/activity` | V1/V2a/V2b historical sale events, V3 purchase events, Archive1155 mints, LP/wallet/burn events. |
 | `/archive` and `/nft` | Archive1155 contract reads/writes, Archive ID registry. |
 | `/registry` | Contract registry, contract dossiers, Archive1155 status, pending future contracts. |
 | `/transparency` | Wallet balances, 70/20/10 doctrine, sale status, LP status, Archive status. |
@@ -185,9 +188,9 @@ Resolved in this review:
 
 - `contracts/README.md` still described Sale V2 and CommissionRouterV1 together
   as "not deployed". That was true for the old review stage but conflicts with
-  the current active V2b sale. It now separates active V2b from pending router.
+  the prior active sale. It now separates paused V2b history, active V3 direct buys, and inactive source/referral infrastructure.
 - `/registry` contract dossiers listed the original Membership Sale as if it
-  were the active sale contract. It now lists V2b as active and V1/V2a as sealed
+  were the active sale contract. It now lists MembershipSaleV3 as active and V1/V2a/V2b as historical.
   historical sources.
 - The future SeatRecord721 event namespace described a "seat-record token",
   which could blur SYN-as-seat doctrine. It should remain identity-record
@@ -195,7 +198,7 @@ Resolved in this review:
 
 Open risks:
 
-- V2b is live but unaudited/early; public copy must keep that trust posture.
+- V3 is live as a direct-buy target, but source/referral remains inactive; public copy must keep that trust posture.
 - Historical audit docs still contain pre-cutover V2a/V2b planning language.
   They are acceptable as historical records, but should not be used as current
   operator instructions without cross-checking this map and the contract
@@ -210,7 +213,7 @@ Open risks:
 ## 8. Recommended Expansion Sequence
 
 1. **Keep current product live-truth aligned.**
-   - Registry, docs, and Activity must keep active V2b vs sealed V1/V2a clear.
+   - Registry, docs, and Activity must keep active V3 vs historical V1/V2a/V2b clear.
 
 2. **Resolve CommissionRouterV1 external blockers.**
    - Fresh Slither.
@@ -255,7 +258,7 @@ Open risks:
 
 ## 9. Drift Guardrails Needed
 
-- Guard that `/registry` names V2b as active and V1/V2a as historical.
+- Guard that `/registry` names MembershipSaleV3 as active and V1/V2a/V2b as historical.
 - Guard that `contracts/README.md` no longer says Sale V2 is not deployed.
 - Guard that CommissionRouter remains pending/null until a verified address is
   intentionally added.
@@ -269,11 +272,12 @@ Open risks:
 The whole system supports safe smart-contract expansion if the sequence stays
 disciplined:
 
-- Sale V2b is the active membership path.
-- V1 and V2a are historical proof sources.
+- MembershipSaleV3 is the active direct-buy membership path.
+- V1, V2a, and V2b are historical proof sources.
 - Archive1155 is live protocol memory.
 - CommissionRouterV1 can fit safely only as an Operations-slice extension after
   external blockers clear.
 - SeatRecord721 should wait until identity policy is fully frozen.
 
 No deployment is authorized by this document.
+

@@ -1,35 +1,36 @@
 ﻿# V3 Smart Contract QA Readiness
 
-Status: QA PASS / DEPLOYED NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED / NOT ACTIVATED
+Status: QA PASS / DEPLOYED / OWNER ACCEPTED / FUNDED / DIRECT-BUY TARGET / SOURCE RECORDS INACTIVE
 
 External-review package status: prepared for review intake in
-`docs/V3_EXTERNAL_REVIEW_PACKAGE.md`, but V3 remains blocked from deployment
-until the gates below are closed.
+`docs/V3_EXTERNAL_REVIEW_PACKAGE.md`. V3 direct-buy is now wired through the
+frontend with zero sourceId; source records, referral UI, and claim UI remain
+blocked until the gates below are closed.
 
 This document records the focused QA pass for the V3 candidate contracts:
 
 - `contracts/src/SourceRegistryV1.sol`
 - `contracts/src/MembershipSaleV3.sol`
 
-Nothing in this document deploys, activates, registers, or frontend-wires V3.
-V2b remains the live buy path until a future deployment, verification, funding,
-registry update, and product activation pass is explicitly approved.
+Nothing in this document authorizes source records, referral UI, claim UI,
+additional funding, recovery, or new transactions. V2b is paused historical
+infrastructure; MembershipSaleV3 is the direct-buy target.
 
 
 ## Non-Live Deployment Readback Update
 
-V3 non-live deployment/readback was completed and owner accepted. This does not make V3 live.
+V3 deployment/readback was completed, owner accepted, V2b paused, and MembershipSaleV3 funded with 7,000,000 SYN.
 
-- SourceRegistryV1: `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / non-live / owner accepted / no source records.
-- MembershipSaleV3: `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / non-live / owner accepted / zero-funded / not registry-wired / not activated.
+- SourceRegistryV1: `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / no source records / referral UI inactive.
+- MembershipSaleV3: `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded / direct-buy target / zero sourceId public buys.
 - Final readback block: `88506731`.
 - Final owner: `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73`.
 - SourceCreated logs since SourceRegistryV1 deployment: `0`.
-- MembershipSaleV3 `availableSyn()`: `0`.
-- MembershipSaleV3 SYN balance: `0`.
+- MembershipSaleV3 `availableSyn()`: `7,000,000 SYN` after recorded funding.
+- MembershipSaleV3 SYN balance: `7,000,000 SYN` after recorded funding.
 - MembershipSaleV3 `paused()`: `false` by deployment default; pause is deferred intentionally.
 
-Next risk boundary: funding. No SYN funding is authorized until a separate funding/activation ceremony is explicitly approved.
+Next risk boundary: source activation. No source records, referral UI, claim UI, or additional funding are authorized until separate approval.
 ## QA Scope
 
 Reviewed areas:

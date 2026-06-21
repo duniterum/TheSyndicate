@@ -84,9 +84,9 @@ describe("P0 · applyPurchaseLimit (slice happens after the fetch)", () => {
 describe("P0 · canonical query key (one scan per chain/sale, not per limit)", () => {
   const src = read("src/lib/activity-hooks.ts");
 
-  it("the live-purchases queryKey does NOT include limit (carries the V2a + V2b addresses)", () => {
+  it("the live-purchases queryKey does NOT include limit (carries the V2a + V2b + V3 addresses)", () => {
     expect(src).toMatch(
-      /queryKey:\s*\["live-purchases",\s*String\(fromBlock\),\s*SALE,\s*saleV2a\s*\?\?\s*"no-v2a",\s*saleV2\s*\?\?\s*"v2-pending"\]/,
+      /queryKey:\s*\["live-purchases",\s*String\(fromBlock\),\s*SALE,\s*saleV2a\s*\?\?\s*"no-v2a",\s*saleV2\s*\?\?\s*"v2-pending",\s*saleV3\s*\?\?\s*"v3-pending"\]/,
     );
     // Anti-regression: the old per-limit key must be gone.
     expect(src).not.toMatch(/\["live-purchases",\s*String\(fromBlock\),\s*limit/);

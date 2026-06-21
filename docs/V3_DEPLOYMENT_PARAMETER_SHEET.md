@@ -1,18 +1,19 @@
 # V3 Deployment Parameter Sheet
 
-Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED DIRECT ON-CHAIN CANDIDATE / NOT PUBLIC FRONTEND LIVE
+Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / SOURCE RECORDS INACTIVE
 
-This sheet records the completed deployment/readback posture plus the later V2b pause and V3 funding ceremonies. It does not authorize recovery, additional funding, pause/unpause, frontend activation, registry switch, public V3 buy UI, source-record creation, or any private-key/broadcast action. The readback log is `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`. The next funding/activation boundary plan is `docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md`.
+This sheet records the completed deployment/readback posture plus the later V2b pause, V3 funding, and frontend buy-target wiring. It does not authorize recovery, additional funding, pause/unpause, source-record creation, referral UI, claim UI, or any private-key/broadcast action. The readback log is `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`. The next boundary plan is `docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md`.
 
 ## Boundaries
 
-- V3 SourceRegistryV1 and MembershipSaleV3 are deployed non-live and owner-accepted.
-- V3 is not public frontend live: MembershipSaleV3 is funded with 7,000,000 SYN and unpaused, but it is not registry-wired, not publicly activated, has no public V3 buy UI, and has no source records.
-- No frontend registry switch is authorized.
-- The frontend still points to V2b, but V2b is now paused on-chain; the public buy flow may fail until a separate registry/frontend activation ceremony is approved.
+- V3 SourceRegistryV1 and MembershipSaleV3 are deployed and owner-accepted.
+- MembershipSaleV3 is funded with 7,000,000 SYN, unpaused, and selected as the frontend approval/quote/buy target.
+- Public V3 buys use zero sourceId. No source records exist.
+- SourceRegistryV1 is not activated for public source/referral use.
+- V2b is paused on-chain and retained as historical proof plus recovery boundary.
 - No additional funding unless separately approved. The recorded V3 funding transaction transferred 7,000,000 SYN from `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8` to MembershipSaleV3.
 - No unpause unless separately approved.
-- No public V3 buy UI unless separately approved after deployment/readback/legal/product signoff.
+- No public source/referral UI or claim UI unless separately approved after source-record policy, legal/product signoff, and readback.
 - No private keys are required for this document.
 
 ## Chain
@@ -35,17 +36,17 @@ These addresses are derived from repository truth, V2b deployed-lineage paramete
 | Operations wallet | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` |
 | V1 historical sale / proof source | `0x0020Df30C127306f0F5B44E6a6E4368D2855842d` |
 | V2a historical sale | `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48` |
-| V2b paused frontend target | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` |
+| V2b paused historical source | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` |
 | Archive1155 | `0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d` |
-| V3 SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed non-live / owner accepted / no source records |
-| V3 MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded with 7,000,000 SYN / direct on-chain candidate / not registry-wired / not public frontend live |
+| V3 SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / no source records / referral UI inactive |
+| V3 MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded with 7,000,000 SYN / current frontend buy target / public buys use zero sourceId |
 
 ## Deployment Candidates
 
 | Candidate | Source file | Status |
 | --- | --- | --- |
-| SourceRegistryV1 | `contracts/src/SourceRegistryV1.sol` | Deployed non-live / owner accepted / no source records |
-| MembershipSaleV3 | `contracts/src/MembershipSaleV3.sol` | Deployed / owner accepted / funded with 7,000,000 SYN / direct on-chain candidate / not registry-wired / not public frontend live |
+| SourceRegistryV1 | `contracts/src/SourceRegistryV1.sol` | Deployed / owner accepted / no source records / referral UI inactive |
+| MembershipSaleV3 | `contracts/src/MembershipSaleV3.sol` | Deployed / owner accepted / funded with 7,000,000 SYN / current frontend buy target / zero sourceId public buys |
 
 ## Hardware Wallet Addresses
 
@@ -87,8 +88,8 @@ The founder must provide only public wallet addresses and public parameter decis
 | 10 | Final `maxUsdcPerTx` | Derived from deployed V2b lineage: `25000000000` USDC units ($25,000) |
 | 11 | Final `reserveThroughSeat` | Derived from deployed V2b lineage: `10000` |
 | 12 | Recorded V3 funding | `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2` transferred 7,000,000 SYN from `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8` to MembershipSaleV3 |
-| 13 | V3 remains not live after deployment/readback | Confirmed yes |
-| 14 | Frontend registry remains pointed at V2b | Confirmed yes |
+| 13 | V3 source/referral systems remain inactive | Confirmed yes |
+| 14 | Frontend direct-buy target | MembershipSaleV3 with zero sourceId public buys |
 | 15 | No source records at deployment time | Confirmed yes |
 | 16 | Ownership transfer timing | Confirmed: deployer temporary owner -> transfer to owner hardware wallet -> owner accepts before funding or activation |
 
@@ -125,7 +126,7 @@ Current derivation status:
 | 7 | `0x3FF01A0c3e70101bFb1dBb3742e135E7eD9e894F` | V2b | `88205043` | `0xc0c7caf0cd7ade2091423f7af5fc3cd3cb526bd5f15e0ec3715b2a2c094e6639` |
 | 8 | `0xAb87e74Ff69Ee0B6C1A73B884a80b737988DE081` | V2b | `88205651` | `0x2eb7ade5dfe9f76c3eb6f073bfef93f176a81c91ce90ed2270a5a5329df7e1e5` |
 
-Because V2b remains live until an approved cutover, this roster, root, and `genesisOffset` must be rerun at the final pre-deploy freeze block.
+V2b is now paused and retained as historical proof plus recovery boundary. The deployed V3 constructor uses the frozen roster/root recorded here.
 
 ## SourceRegistryV1 Constructor
 
@@ -247,9 +248,9 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 | Deployment and owner wallet distinct | Passed | Founder supplied distinct addresses |
 | Deployment/owner wallet not forbidden protocol addresses | Passed | Neither equals USDC, SYN, V1, V2a, V2b, Archive1155, Vault, Liquidity, or Operations |
 | Vault, Liquidity, and Operations distinct | Passed | Canonical route wallets are distinct |
-| Frontend registry remains V2b | Passed | No V3 registry address is live or configured |
-| V3 SourceRegistry and MembershipSale address posture | Passed | Both are deployed non-live; neither is live, funded, registry-wired, or activated |
-| Initial V3 funding | Passed | Founder direction is zero initial funding |
+| Frontend direct-buy target | Passed | MembershipSaleV3 is the current approval/quote/buy target; public buys use zero sourceId |
+| V3 SourceRegistry and MembershipSale address posture | Passed | SourceRegistry has no source records; MembershipSaleV3 is funded and selected for direct buys |
+| Recorded V3 funding | Passed | 7,000,000 SYN funded by `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2` |
 | No source records at deployment | Passed | Founder direction is no records before separate approval |
 | Historical proof root format | Passed by artifact and Foundry test | V3 requires numbered wallet + member number leaves, not address-only leaves |
 | Historical member roster/root currentness | Conditional | Generated root covers 8 historical members as of freeze block `88496414`; rerun if V2b records new members before deploy |
@@ -257,20 +258,18 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 | `maxUsdcPerTx` | Ready | Derived from deployed V2b lineage |
 | `reserveThroughSeat` | Ready | Derived from deployed V2b lineage |
 | `eraCaps[9]` | Ready | Derived from deployed V2b lineage and live V2b readback |
-| MembershipSaleV3 default pause state | Recorded | `paused()` is false by deployment default; pause is deferred intentionally. Non-live safety boundary is zero funding, no source records, no registry switch, and no public UI. |
+| MembershipSaleV3 default pause state | Recorded | `paused()` is false by deployment default; pause is deferred intentionally. Current safety boundary is zero sourceId public buys, no source records, no referral UI, and no claim UI. |
 
-## Non-Live Safety Rule For Unpaused Default State
+## Current Safety Rule For Unpaused Direct-Buy State
 
-`MembershipSaleV3` does not pause itself in the constructor. The deployed non-live contract currently has `paused() = false`; pause is deferred intentionally. The safety boundary is:
+`MembershipSaleV3` does not pause itself in the constructor. The deployed contract currently has `paused() = false`; pause is deferred intentionally. The current safety boundary is:
 
 - recorded SYN funding of 7,000,000 SYN, no additional funding without approval,
 - no USDC funding,
-- no frontend registry switch,
-- no public V3 UI,
-- immediate post-deploy readback,
+- direct frontend buys use zero sourceId,
 - ownership transfer/acceptance before any funding or activation decision,
 - pause remains available as a later owner action, but is intentionally deferred by founder decision,
-- no source records until separately approved.
+- no source records, referral UI, or claim UI until separately approved.
 
 ## Post-Deploy Readback Checklist
 
@@ -299,16 +298,16 @@ Before any funding or activation decision, read back:
 - `maxUsdcPerAddressPerEra(1..9)`
 - source default status behavior
 - rescue restrictions for USDC and SYN
-- frontend registry still points to V2b
-- `/v3-preview` remains read-only and candidate-only
-- V3 still not live
+- frontend direct-buy target is MembershipSaleV3
+- `/v3-preview` remains read-only and candidate/source-only
+- SourceRegistryV1 still has no source records
 
 ## Final Non-Live Deployment/Readback Checklist
 
 This checklist is preparation only. It is not permission to deploy.
 
 1. Confirm GitHub main is clean and matches the reviewed commit.
-2. Confirm no V3 address is configured in frontend registry.
+2. Confirm V3 direct-buy address is configured only for zero-source public buys.
 3. Confirm SourceRegistryV1 bytecode/constructor shape.
 4. Deploy SourceRegistryV1 only if separately approved.
 5. Read back SourceRegistryV1 address, owner, pendingOwner.
@@ -323,8 +322,8 @@ This checklist is preparation only. It is not permission to deploy.
 14. Owner hardware wallet accepts MembershipSaleV3 ownership before any funding/activation.
 15. Recorded V3 funding is 7,000,000 SYN; keep no additional SYN funding unless separately approved.
 16. Keep no source records unless separately approved.
-17. Keep frontend registry pointed at V2b.
-18. Keep V3 public buy UI disabled / candidate-only.
+17. Keep public buys constrained to MembershipSaleV3 with zero sourceId.
+18. Keep source/referral UI disabled / candidate-only.
 19. If owner flow permits and founder approves, pause MembershipSaleV3 immediately after readback.
 20. Record deployment/readback evidence in docs before any next decision.
 
@@ -334,9 +333,9 @@ This checklist is preparation only. It is not permission to deploy.
 
 - Completed: SourceRegistryV1 deployed/readback green and owner accepted.
 - Completed for deployment/readback: final freeze/readback used `genesisOffset = 8` and root `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`.
-- Completed/recorded: MembershipSaleV3 deployed/readback green, owner accepted, `paused() = false`, funded with 7,000,000 SYN, no source records, no registry switch, no public UI; V3 is a funded direct on-chain candidate, not public frontend live.
+- Completed/recorded: MembershipSaleV3 deployed/readback green, owner accepted, `paused() = false`, funded with 7,000,000 SYN, no source records, and selected as the direct frontend buy target with zero sourceId.
 
-### Blocks Funding, Unpause, Registry Switch, or Public Activation
+### Blocks Additional Funding, Source Activation, or Public Referral/Claim UI
 
 - External review final signoff.
 - Second static analyzer or documented reviewer-accepted substitute.
@@ -344,10 +343,10 @@ This checklist is preparation only. It is not permission to deploy.
 - Any additional funding ceremony; the 7,000,000 SYN V3 funding transaction is recorded, but no further funding is authorized.
 - Legal/product signoff.
 - Clean full Foundry run in stable CI/Linux/WSL/reviewer environment.
-- Frontend registry update, read-only verification, and activation plan approval.
+- Source-record policy, read-only verification, and referral/claim activation plan approval.
 
 ### Optional / Process Items
 
 - Backup hardware-wallet public address remains TBD / optional.
-- Deterministic committed V3 numbered-root generator and freeze-block proof artifact now exist; rerun at the final pre-deploy freeze block if V2b remains live before transaction.
+- Deterministic committed V3 numbered-root generator and freeze-block proof artifact exist and were used for deployment; V2b is now paused.
 
