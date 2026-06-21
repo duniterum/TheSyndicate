@@ -1,6 +1,8 @@
-# V3 Final Pre-Broadcast Package
+﻿# V3 Final Pre-Broadcast Package
 
 Status: NON-LIVE DEPLOYMENT/READBACK PREPARATION ONLY
+> Current status update (2026-06-21): the non-live V3 deployment/readback ceremony was completed and recorded in `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`. SourceRegistryV1 is deployed non-live at `0x780013bB358be6be95b401901264FC7c22a595a6`; MembershipSaleV3 is deployed non-live at `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`. Ownership was accepted by `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73`. MembershipSaleV3 is zero-funded, not registry-wired, not activated, and not live. `paused()` is false by deployment default; pause is deferred intentionally. No funding is authorized.
+
 
 Current GitHub baseline before this artifact sprint: `59abd1fa84c91927bc25a77df05532f0d6259382` (`Prepare V3 final pre-broadcast package`).
 
@@ -126,7 +128,7 @@ Constructor readiness: **NOT READY FOR BROADCAST** because `sourceRegistry` cann
 
 ## Deployment Method Decision
 
-### Option A ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Remix / hardware wallet manual deployment
+### Option A ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Remix / hardware wallet manual deployment
 
 Recommended for founder-controlled non-live deployment/readback when blockers are cleared.
 
@@ -146,7 +148,7 @@ Recommended for founder-controlled non-live deployment/readback when blockers ar
 14. Do not activate UI.
 15. Read back all getters.
 
-### Option B ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â V3-specific Foundry script
+### Option B ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â V3-specific Foundry script
 
 Not created in this package.
 
@@ -326,3 +328,4 @@ Broadcast is **NO-GO** until every item below is green.
 ## Explicit Non-Authorization
 
 This document does not authorize deployment, broadcast, funding, unpause, activation, frontend registry switch, public V3 buy UI, or source-record creation.
+

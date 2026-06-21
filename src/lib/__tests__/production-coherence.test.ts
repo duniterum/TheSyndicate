@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+﻿import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -333,7 +333,7 @@ describe("production coherence guards", () => {
     expect(testPlan).toContain("no member-ownership or network-inventory language");
     expect(testPlan).toContain("Payout Escrow And Smart-Wallet Tests");
 
-    expect(qa).toContain("Status: QA PASS FOR CANDIDATE / EXTERNAL REVIEW READY / NOT DEPLOYMENT-READY");
+    expect(qa).toContain("Status: QA PASS / DEPLOYED NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED / NOT ACTIVATED");
     expect(qa).toContain("blocked payout wallet cannot grief normal purchases");
     expect(qa).toContain("address-only V1 proofs are disabled");
     expect(qa).toContain("numbered historical-member proofs set both `knownMember` and `memberNumberOf`");
@@ -345,7 +345,7 @@ describe("production coherence guards", () => {
     expect(qa).toContain("RehearsalForkV3: 4 passed, 0 failed, 0 skipped");
     expect(qa).toContain("V2b remains the live buy path");
     expect(qa).toContain("hardware-wallet-first owner");
-    expect(qa).toContain("deployment hardware-wallet address recorded and tested");
+    expect(qa).toContain("Non-Live Deployment Readback Update");
 
     expect(deployment).toContain("Status: OPERATIONAL READINESS PACKAGE / HARDWARE-WALLET FIRST / NO DEPLOYMENT AUTHORIZED");
     expect(deployment).toContain("No step in this package authorizes deployment, activation, registry switch, or");
@@ -547,6 +547,7 @@ describe("production coherence guards", () => {
     const sourceTable = read("docs/canon/02_SOURCE_OF_TRUTH_TABLE.md");
     const syndicateConfig = read("src/lib/syndicate-config.ts");
     const v3ParameterSheet = read("docs/V3_DEPLOYMENT_PARAMETER_SHEET.md");
+    const v3ReadbackLog = read("docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md");
 
     expect(map).toContain("Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY");
     expect(map).toContain("Membership Sale V1 | LIVE / SEALED HISTORICAL");
@@ -576,26 +577,53 @@ describe("production coherence guards", () => {
     expect(sourceTable).toContain("0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48");
     expect(sourceTable).toContain("Membership Sale V2b (current live buy target)");
     expect(sourceTable).toContain("0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b");
-    expect(sourceTable).toContain("V3 SourceRegistry | `PENDING` / no address");
-    expect(sourceTable).toContain("V3 MembershipSale | `PENDING` / no address");
+    expect(sourceTable).toContain("V3 SourceRegistry | `0x780013bB358be6be95b401901264FC7c22a595a6` (deployed non-live");
+    expect(sourceTable).toContain("V3 MembershipSale | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` (deployed non-live");
+    expect(sourceTable).toContain("not registry-wired");
     expect(sourceTable).not.toMatch(/\| Membership Sale \| `0x0020Df30C127306f0F5B44E6a6E4368D2855842d`/);
-    expect(sourceTable).not.toMatch(/V3 SourceRegistry \| `0x[a-fA-F0-9]{40}`/);
-    expect(sourceTable).not.toMatch(/V3 MembershipSale \| `0x[a-fA-F0-9]{40}`/);
     expect(syndicateConfig).toContain('label: "Membership Sale V2b"');
     expect(syndicateConfig).toContain("Current live buy target");
     expect(syndicateConfig).toContain("explorerUrlForAddress(MEMBERSHIP_SALE_V2_CONTRACT_ADDRESS");
     expect(syndicateConfig).not.toMatch(/label: "Membership Sale",\s+status: "live",\s+detail: "SyndicateMembershipSale deployed/);
     expect(syndicateConfig).not.toMatch(/explorerUrlFor\("MEMBERSHIP_SALE_CONTRACT_ADDRESS"\) \?\? undefined/);
-    expect(v3ParameterSheet).toContain("Status: NON-LIVE PREPARATION ONLY");
+    expect(v3ParameterSheet).toContain("Status: DEPLOYED NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED");
     expect(v3ParameterSheet).toContain("V2b remains the current live buy target");
-    expect(v3ParameterSheet).toContain("SourceRegistryV1 | `PENDING` / no address");
-    expect(v3ParameterSheet).toContain("MembershipSaleV3 | `PENDING` / no address");
+    expect(v3ParameterSheet).toContain("SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed non-live");
+    expect(v3ParameterSheet).toContain("MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed non-live");
     expect(v3ParameterSheet).toContain("No public V3 buy UI");
+    expect(v3ParameterSheet).toContain("pause is deferred intentionally");
+    expect(v3ReadbackLog).toContain("MembershipSaleV3 is deployed, owner-accepted, zero-funded, not registry-wired, not activated, and not live.");
+    expect(v3ReadbackLog).toContain("paused() is false by deployment default; pause is deferred intentionally");
+    expect(v3ReadbackLog).toContain("availableSyn()` | `0`");
+    expect(v3ReadbackLog).toContain("SourceRegistryV1 `SourceCreated` logs since deploy | `0`");
     expect(v3ParameterSheet).not.toContain("- V3 is live.");
     expect(v3ParameterSheet).not.toContain("- Frontend registry switch is authorized.");
     expect(v3ParameterSheet).not.toContain("- Public V3 buy UI is authorized.");
   });
 
+
+  it("keeps deployed V3 non-live and blocked from frontend activation", () => {
+    const contractRegistry = read("src/lib/contract-registry.ts");
+    const syndicateConfig = read("src/lib/syndicate-config.ts");
+    const v3Preview = read("src/routes/v3-preview.tsx");
+    const readback = read("docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md");
+
+    expect(readback).toContain("DEPLOYED / NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED / NOT REGISTRY-WIRED / NOT ACTIVATED");
+    expect(readback).toContain("No SYN funding may happen until a separate funding/activation ceremony is explicitly approved.");
+    expect(readback).toContain("SourceCreated` logs since deploy | `0`");
+    expect(readback).toContain("MembershipSaleV3 `paused()` | `false`");
+
+    expect(syndicateConfig).toContain('"0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b"');
+    expect(syndicateConfig).toContain("Membership Sale V2b");
+    expect(syndicateConfig).toContain("Current live buy target");
+    expect(contractRegistry).not.toContain("0x2A6cFc76906e758B934209AFf5A163c9bC20132E");
+    expect(contractRegistry).not.toContain("0x780013bB358be6be95b401901264FC7c22a595a6");
+    expect(syndicateConfig).not.toContain("0x2A6cFc76906e758B934209AFf5A163c9bC20132E");
+    expect(syndicateConfig).not.toContain("0x780013bB358be6be95b401901264FC7c22a595a6");
+    expect(v3Preview).toContain("The live buy path");
+    expect(v3Preview).toContain("Membership Sale V2b");
+    expect(v3Preview).toContain("NOT LIVE");
+  });
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {
     const activity = read("src/routes/activity.tsx");
     const glossary = read("src/components/syndicate/ArchiveGlossary.tsx");
@@ -606,9 +634,12 @@ describe("production coherence guards", () => {
 
     expect(glossary).toContain("ACTIVE · READ GATED");
     expect(glossary).toContain("ID 3 Patron Seal today");
-    expect(glossary).not.toMatch(/CONFIGURED · NOT ACTIVE[\s\S]{0,120}Patron Seal/i);
+    expect(glossary).not.toMatch(/CONFIGURED Â· NOT ACTIVE[\s\S]{0,120}Patron Seal/i);
 
     expect(readiness).toContain("ACTIVE · READ GATED");
     expect(readiness).not.toMatch(/Patron Seal[\s\S]{0,220}public mint is open/i);
   });
 });
+
+
+

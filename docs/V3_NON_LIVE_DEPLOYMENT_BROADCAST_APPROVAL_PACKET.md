@@ -1,6 +1,8 @@
 ﻿# V3 Non-Live Deployment Broadcast Approval Packet
 
 Status: FOUNDER APPROVAL PACKET / NO BROADCAST YET
+> Current status update (2026-06-21): the non-live V3 deployment/readback ceremony was completed and recorded in `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`. SourceRegistryV1 is deployed non-live at `0x780013bB358be6be95b401901264FC7c22a595a6`; MembershipSaleV3 is deployed non-live at `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`. Ownership was accepted by `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73`. MembershipSaleV3 is zero-funded, not registry-wired, not activated, and not live. `paused()` is false by deployment default; pause is deferred intentionally. No funding is authorized.
+
 
 Prepared from base GitHub commit: `d87d68ac668f7d388da666dcc93e73f15a296695` (`Create V3 historical member proof artifact`).
 
@@ -299,4 +301,5 @@ Stop before or during any future ceremony if:
 Founder approval required before broadcast: YES / NO
 
 Founder approval means only approval for the non-live deployment/readback ceremony described here. It does not approve funding, source records, frontend registry switch, public V3 UI, unpause/activation, or live user routing.
+
 

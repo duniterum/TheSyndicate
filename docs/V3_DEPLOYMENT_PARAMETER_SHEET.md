@@ -1,13 +1,13 @@
-# V3 Deployment Parameter Sheet
+﻿# V3 Deployment Parameter Sheet
 
-Status: NON-LIVE PREPARATION ONLY
+Status: DEPLOYED NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED
 
-This sheet prepares readback-ready public parameters for a future V3 non-live deployment/readback decision. It does not authorize deployment, funding, unpause, frontend activation, registry switch, public V3 buy UI, or any private-key/broadcast action.
+This sheet now records the completed non-live deployment/readback posture. It does not authorize funding, unpause, frontend activation, registry switch, public V3 buy UI, source-record creation, or any private-key/broadcast action. The readback log is `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`.
 
 ## Boundaries
 
-- V3 is not deployed.
-- V3 is not live.
+- V3 SourceRegistryV1 and MembershipSaleV3 are deployed non-live and owner-accepted.
+- V3 is not live: MembershipSaleV3 is zero-funded, not registry-wired, not activated, and has no public V3 buy UI.
 - No frontend registry switch is authorized.
 - V2b remains the current live buy target.
 - No funding unless separately approved.
@@ -37,15 +37,15 @@ These addresses are derived from repository truth, V2b deployed-lineage paramete
 | V2a historical sale | `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48` |
 | V2b current live buy target | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` |
 | Archive1155 | `0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d` |
-| V3 SourceRegistryV1 | `PENDING` / no address |
-| V3 MembershipSaleV3 | `PENDING` / no address |
+| V3 SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed non-live / owner accepted / no source records |
+| V3 MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed non-live / owner accepted / zero-funded / not registry-wired / not activated |
 
 ## Deployment Candidates
 
 | Candidate | Source file | Status |
 | --- | --- | --- |
-| SourceRegistryV1 | `contracts/src/SourceRegistryV1.sol` | Candidate / not deployed / not live |
-| MembershipSaleV3 | `contracts/src/MembershipSaleV3.sol` | Candidate / not deployed / not live |
+| SourceRegistryV1 | `contracts/src/SourceRegistryV1.sol` | Deployed non-live / owner accepted / no source records |
+| MembershipSaleV3 | `contracts/src/MembershipSaleV3.sol` | Deployed non-live / owner accepted / zero-funded / not registry-wired / not activated |
 
 ## Hardware Wallet Addresses
 
@@ -169,7 +169,7 @@ constructor(
 | --- | --- | --- |
 | `usdc_` | `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E` | Canonical Avalanche USDC |
 | `syn_` | `0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170` | Canonical SYN |
-| `sourceRegistry_` | TBD after SourceRegistryV1 deployment/readback | Blocks MembershipSaleV3 constructor until SourceRegistryV1 exists |
+| `sourceRegistry_` | `0x780013bB358be6be95b401901264FC7c22a595a6` | SourceRegistryV1 deployed/readback green |
 | `vault_` | `0x205DdC8921A4C60106930eE35e1F395c8D13f464` | Canonical Vault wallet |
 | `liquidity_` | `0xa9b072db8DcDbb470235204B69D37275d74a2e25` | Canonical Liquidity wallet |
 | `operations_` | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` | Canonical Operations wallet |
@@ -248,7 +248,7 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 | Deployment/owner wallet not forbidden protocol addresses | Passed | Neither equals USDC, SYN, V1, V2a, V2b, Archive1155, Vault, Liquidity, or Operations |
 | Vault, Liquidity, and Operations distinct | Passed | Canonical route wallets are distinct |
 | Frontend registry remains V2b | Passed | No V3 registry address is live or configured |
-| V3 SourceRegistry and MembershipSale live addresses | Passed | No live addresses; both remain pending |
+| V3 SourceRegistry and MembershipSale address posture | Passed | Both are deployed non-live; neither is live, funded, registry-wired, or activated |
 | Initial V3 funding | Passed | Founder direction is zero initial funding |
 | No source records at deployment | Passed | Founder direction is no records before separate approval |
 | Historical proof root format | Passed by artifact and Foundry test | V3 requires numbered wallet + member number leaves, not address-only leaves |
@@ -257,11 +257,11 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 | `maxUsdcPerTx` | Ready | Derived from deployed V2b lineage |
 | `reserveThroughSeat` | Ready | Derived from deployed V2b lineage |
 | `eraCaps[9]` | Ready | Derived from deployed V2b lineage and live V2b readback |
-| MembershipSaleV3 default live state | Operational blocker | If constructor leaves sale unpaused, non-live safety depends on zero funding, no registry switch, no public UI, readback immediately after deploy, and immediate pause if owner flow permits |
+| MembershipSaleV3 default pause state | Recorded | `paused()` is false by deployment default; pause is deferred intentionally. Non-live safety boundary is zero funding, no source records, no registry switch, and no public UI. |
 
 ## Non-Live Safety Rule For Unpaused Default State
 
-`MembershipSaleV3` does not pause itself in the constructor. If a future non-live deployment/readback uses the current contract unchanged, the safety boundary is:
+`MembershipSaleV3` does not pause itself in the constructor. The deployed non-live contract currently has `paused() = false`; pause is deferred intentionally. The safety boundary is:
 
 - zero SYN funding,
 - no USDC funding,
@@ -269,7 +269,7 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 - no public V3 UI,
 - immediate post-deploy readback,
 - ownership transfer/acceptance before any funding or activation decision,
-- pause immediately after deployment/readback if the owner flow permits and the founder explicitly approves that operational step,
+- pause remains available as a later owner action, but is intentionally deferred by founder decision,
 - no source records until separately approved.
 
 ## Post-Deploy Readback Checklist
@@ -330,18 +330,18 @@ This checklist is preparation only. It is not permission to deploy.
 
 ## Remaining Blockers
 
-### Blocks Non-Live Deployment/Readback Transaction
+### Non-Live Deployment/Readback Transaction Status
 
-- SourceRegistryV1 must be deployed/read back first so the MembershipSaleV3 `sourceRegistry_` constructor argument is known.
-- Historical-member roster, `genesisOffset`, and numbered V3 root must be rerun at the final pre-deploy freeze block if V2b remains live before the transaction; committed freeze-block artifact exists for block `88496414`.
-- MembershipSaleV3 unpaused-default handling must be operationally confirmed for a non-live deployment/readback: zero funding, no source records, no registry switch, no public UI, and pause immediately after readback if owner flow permits.
+- Completed: SourceRegistryV1 deployed/readback green and owner accepted.
+- Completed for deployment/readback: final freeze/readback used `genesisOffset = 8` and root `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`.
+- Completed/recorded: MembershipSaleV3 deployed/readback green, owner accepted, `paused() = false`, zero-funded, no source records, no registry switch, no public UI; pause deferred intentionally.
 
 ### Blocks Funding, Unpause, Registry Switch, or Public Activation
 
 - External review final signoff.
 - Second static analyzer or documented reviewer-accepted substitute.
 - Repeatable Slither / payout-escrow disposition.
-- Hardware-wallet deployment ceremony and owner acceptance readback.
+- Any funding ceremony; no SYN funding is authorized yet.
 - Legal/product signoff.
 - Clean full Foundry run in stable CI/Linux/WSL/reviewer environment.
 - Frontend registry update, read-only verification, and activation plan approval.

@@ -1,6 +1,6 @@
-# V3 Smart Contract QA Readiness
+﻿# V3 Smart Contract QA Readiness
 
-Status: QA PASS FOR CANDIDATE / EXTERNAL REVIEW READY / NOT DEPLOYMENT-READY
+Status: QA PASS / DEPLOYED NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED / NOT ACTIVATED
 
 External-review package status: prepared for review intake in
 `docs/V3_EXTERNAL_REVIEW_PACKAGE.md`, but V3 remains blocked from deployment
@@ -15,6 +15,21 @@ Nothing in this document deploys, activates, registers, or frontend-wires V3.
 V2b remains the live buy path until a future deployment, verification, funding,
 registry update, and product activation pass is explicitly approved.
 
+
+## Non-Live Deployment Readback Update
+
+V3 non-live deployment/readback was completed and owner accepted. This does not make V3 live.
+
+- SourceRegistryV1: `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / non-live / owner accepted / no source records.
+- MembershipSaleV3: `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / non-live / owner accepted / zero-funded / not registry-wired / not activated.
+- Final readback block: `88506731`.
+- Final owner: `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73`.
+- SourceCreated logs since SourceRegistryV1 deployment: `0`.
+- MembershipSaleV3 `availableSyn()`: `0`.
+- MembershipSaleV3 SYN balance: `0`.
+- MembershipSaleV3 `paused()`: `false` by deployment default; pause is deferred intentionally.
+
+Next risk boundary: funding. No SYN funding is authorized until a separate funding/activation ceremony is explicitly approved.
 ## QA Scope
 
 Reviewed areas:
@@ -358,10 +373,10 @@ Still blocked before audit/deployment:
 
 - fresh Slither / repeatable Slither disposition,
 - second static-analysis tool,
-- deployment hardware-wallet address recorded and tested,
-- owner hardware-wallet address recorded and tested,
-- Ownable2Step transfer/acceptance readback rehearsed,
-- deployment parameter sheet frozen,
+- deployment hardware-wallet address recorded and used for the non-live deployment ceremony,
+- owner hardware-wallet address recorded and owner acceptance completed,
+- Ownable2Step transfer/acceptance readback completed,
+- deployment parameter sheet and non-live readback log recorded,
 - external review,
 - legal/product signoff,
 - frontend read-only preview design,
@@ -369,4 +384,5 @@ Still blocked before audit/deployment:
 
 Verdict: V3 candidate is ready to package for external review, but still not
 deployment-ready.
+
 
