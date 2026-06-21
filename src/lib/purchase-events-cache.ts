@@ -56,7 +56,7 @@ type StoredEvent = {
   blockNumber: string;
   txHash: string;
   logIndex: number;
-  // v3 (multi-source): "v1" | "v2". Optional v2-only enrichment carried through
+  // v3 (multi-source): "v1" | "v2" | "v3". Optional sale-specific enrichment carried through
   // so a cold reload restores the SAME NormalizedPurchase shape the scan emits.
   source: string;
   era?: number;
@@ -81,6 +81,10 @@ export type PurchaseEventsSnapshot = {
 
 function isFiniteNumber(x: unknown): x is number {
   return typeof x === "number" && Number.isFinite(x);
+}
+
+function parsePurchaseSource(source: unknown): PurchaseEvent["source"] | null {
+  return source === "v1" || source === "v2" || source === "v3" ? source : null;
 }
 
 function toStored(e: PurchaseEvent): StoredEvent {
@@ -125,9 +129,12 @@ function fromStored(raw: unknown): PurchaseEvent | null {
   } catch {
     return null;
   }
-  // source is required in v3; tolerate a legacy/absent value by defaulting to
-  // "v1" (the only source that existed before multi-source indexing).
-  const source = o.source === "v2" ? "v2" : "v1";
+  // source is required in v3. Legacy snapshots without a source are treated as
+  // V1, but invalid/new unknown source labels are rejected so a future sale
+  // version cannot be silently relabeled as V1.
+  const source =
+    typeof o.source === "undefined" ? "v1" : parsePurchaseSource(o.source);
+  if (!source) return null;
   const era = isFiniteNumber(o.era) ? o.era : undefined;
   const firstSeat = typeof o.firstSeat === "boolean" ? o.firstSeat : undefined;
   const referralAmount = isFiniteNumber(o.referralAmount) ? o.referralAmount : undefined;

@@ -37,6 +37,16 @@ function ev(block: number, logIndex: number): PurchaseEvent {
   };
 }
 
+function v3Ev(block: number, logIndex: number): PurchaseEvent {
+  return {
+    ...ev(block, logIndex),
+    source: "v3",
+    era: 1,
+    firstSeat: true,
+    referralAmount: 0,
+  };
+}
+
 // Newest-first, exactly as the scan produces it before slicing.
 const NEWEST_FIRST: PurchaseEvent[] = [ev(500, 0), ev(400, 1), ev(300, 0), ev(200, 0), ev(100, 0)];
 
@@ -92,6 +102,20 @@ describe("P1 · serialize/deserialize preserves data, bigints and order", () => 
       expect(applyPurchaseLimit(snap.events, n)).toEqual(applyPurchaseLimit(NEWEST_FIRST, n));
     }
   });
+
+  it("preserves V3 purchase source and V3 receipt fields after cache restore", () => {
+    const events: PurchaseEvent[] = [v3Ev(700, 2), ev(500, 0)];
+    const snap = deserializePurchaseEvents(serializePurchaseEvents(events, 123, 87_800_000n));
+    expect(snap).toBeDefined();
+    expect(snap!.events[0]).toMatchObject({
+      source: "v3",
+      era: 1,
+      firstSeat: true,
+      referralAmount: 0,
+    });
+    expect(snap!.events[0].blockNumber).toBe(700n);
+    expect(snap!.events[1].source).toBe("v1");
+  });
 });
 
 describe("P1 · corrupt / mismatched cache falls back safely", () => {
@@ -129,6 +153,12 @@ describe("P1 · corrupt / mismatched cache falls back safely", () => {
     const bad = JSON.parse(serializePurchaseEvents(NEWEST_FIRST, 1, 1n));
     bad.lastScannedBlock = "not-a-bigint";
     expect(deserializePurchaseEvents(JSON.stringify(bad))).toBeUndefined();
+  });
+
+  it("rejects unknown future source labels instead of relabeling them as V1", () => {
+    const unknownSource = JSON.parse(serializePurchaseEvents([v3Ev(700, 2)], 1, 1n));
+    unknownSource.events[0].source = "v4";
+    expect(deserializePurchaseEvents(JSON.stringify(unknownSource))).toBeUndefined();
   });
 });
 

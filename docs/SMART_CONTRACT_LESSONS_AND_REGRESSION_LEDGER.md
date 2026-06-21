@@ -519,14 +519,15 @@ This map must be updated whenever a lesson gains, loses, or changes coverage.
 | SCRL-011 Remix settings locked | Remix Standard JSON files, `docs/V3_REMIX_VIA_IR_DEPLOYMENT_CONFIG.md` | Guarded by docs/config | Add bytecode metadata comparison if future deployment is repeated. |
 | SCRL-012 deployment is not activation | Production coherence and source-of-truth docs | Guarded | Add source/referral activation tests before any source UI. |
 | SCRL-013 source records are not referral activation | `SourceRegistryV1.t.sol`, `MembershipSaleV3.t.sol`, production coherence | Guarded | Add frontend read-only source-state tests before source activation. |
-| SCRL-014 public frontend truth explicit | `sale-hooks`, `LivePurchase`, production coherence, V3 historical guard tests | Partially guarded | Fix/guard purchase-event cache preservation for V3 before real public V3 traffic. |
+| SCRL-014 public frontend truth explicit | `sale-hooks`, `LivePurchase`, production coherence, V3 historical guard tests, `purchase-events-cache.test.ts` | Guarded for cache source preservation | Live Replit publish and wallet QA remain required before public confidence. |
 
-Known current gap:
+Resolved cache gap:
 
-- `src/lib/purchase-events-cache.ts` must preserve `"v3"` purchase source during
-  cache restore before public V3 traffic or first V3 purchase QA. Existing scan
-  logic reads V3 events, but cached restored events must not be downgraded to
-  V1/V2 labels.
+- `src/lib/purchase-events-cache.ts` now preserves `"v1"`, `"v2"`, and `"v3"`
+  purchase sources during cache restore and rejects unknown future labels instead
+  of silently relabeling them as V1. `src/lib/__tests__/purchase-events-cache.test.ts`
+  guards V3 purchase source and V3 receipt-field round trips before public V3
+  traffic.
 
 ## 8. Future Smart-Contract Checklist
 
@@ -563,4 +564,3 @@ The intended commit message for the initial ledger is:
 ```text
 Create smart contract lessons and regression ledger
 ```
-
