@@ -44,7 +44,8 @@ describe("future-referral", () => {
 
   it("distinguishes contract candidate work from live deployed routing", () => {
     const src = FUTURE_REFERRAL_NOTE;
-    expect(src).toContain("verified on-chain referral router is deployed and wired live");
+    expect(src).toContain("verified source records are created, read back, legally approved, and wired live");
     expect(src).not.toMatch(/until an on-chain referral contract is deployed/i);
+    expect(src).not.toMatch(/referral router is deployed/i);
   });
 });

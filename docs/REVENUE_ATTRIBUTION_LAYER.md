@@ -1,80 +1,122 @@
-# Revenue Attribution Layer (RAL) — Doctrine
+# Revenue Attribution Layer (RAL) - Doctrine
 
-**Status:** Doctrine + production-candidate Solidity. `CommissionRouterV1` exists
-under `contracts/src`, but no router is deployed or wired live. The `/referral`
-route remains reserved/read-only until a verified router address exists.
+Status: DOCTRINE + DEPLOYED V3 SOURCE INFRASTRUCTURE / SOURCE RECORDS INACTIVE
 
 Public name: **Referral**. Internal name: **Revenue Attribution Layer**.
 
-Doctrine boundary: Referral is one acquisition layer, not the business model
-and not the institution. It may record verified introductions and future
-Operations-slice commission if approved and deployed, but it must never be
-framed as yield, passive income, a rank entitlement, or the primary measure of
+`SourceRegistryV1` and `MembershipSaleV3` are deployed and verified, but
+SourceRegistryV1 has zero source records. Public V3 buys use `ZERO_SOURCE_ID`.
+The `/referral` route remains reserved/read-only until a source record, source
+terms, legal copy, and activation path are separately approved and read back.
+`CommissionRouterV1` remains a reviewed candidate/test reference, not the V3
+acquisition-first engine.
+
+Doctrine boundary: referral/source attribution is one acquisition layer, not the
+business model and not the institution. It may record verified introductions and
+future acquisition commission when live, but it must never be framed as yield,
+passive income, a rank entitlement, a downline, or the primary measure of
 institutional trust capital.
+
+Referral is one acquisition layer, not the business model.
+CommissionRouterV1 remains a reviewed candidate/test reference, not the V3 acquisition-first engine.
 
 ## Purpose
 
-Record who caused every protocol sale and split the gross deterministically, in a single immutable event that downstream surfaces (Treasury Ledger, Activity, Builder Records) can read without re-deriving anything.
+Record who caused a source-attributed protocol sale and split the gross
+deterministically, in a single immutable event that downstream surfaces
+(Activity, My Syndicate, Register, Builder Records) can read without
+re-deriving anything. Until source records are active, direct public buys are
+source-free and use `ZERO_SOURCE_ID`.
 
-## Canonical Attribution event (locked for V1)
+## Canonical V3 Receipt Event
 
-```
-Attribution {
-  source       bytes32   // "MEMBERSHIP_SALE" | "ARCHIVE_SALE" | future B2B sources
-  campaign     bytes32   // optional refTag, "" for none
-  token        address   // payment token (V1: USDC)
-  gross        uint256   // payment amount in token units
-  buyer        address
-  referrer     address   // address(0) if none
-  tier         uint16    // referrer tier at tx time (snapshot)
-  splits       uint256[5] // [vault, liquidity, referrer, operations, protocol]
-  paymentMode  uint8     // 0 = push, 1 = escrowed
-  attribution  uint8     // 0 = last-verified-referrer, 1 = buyer-confirmed override
-  refTag       bytes32   // raw tag for campaign analytics
+```text
+MembershipPurchasedV3 {
+  receiptId
+  buyer
+  recipient
+  memberNumber
+  grossUsdc
+  acquisitionCost
+  protocolContribution
+  vaultAmount
+  liquidityAmount
+  operationsAmount
+  synOut
+  synPerUsdc
+  era
+  chapter
+  sourceId
+  sourceClass
+  sourceWallet
+  commissionBps
+  attributionScope
+  attributionWindowEndsAt
+  sourceGrossRemaining
+  buyerGrossRemaining
+  firstSeat
+  receiptVersion
 }
 ```
 
-The `source` field is `bytes32` and the allow-list is governance-gated — this is the only V3 commitment made today. All B2B and white-label expansion is a config change, not a contract migration.
+This receipt is the V3 source of truth. It reconstructs the paid gross,
+acquisition cost, net routed USDC, Vault/Liquidity/Operations routing, SYN
+delivered, price era, source terms, and member identity impact.
 
-## Split rules (constitutional)
+## Split Rules
 
-- 70% Vault and 20% Liquidity are **untouched** by referrals.
-- Referrer commission, if activated, comes only from the 10% Operations slice.
-- If no referrer: Operations keeps the full 10%.
-- If a verified router is deployed and a valid referrer is present: `referrer = OperationsSlice × tierTable[tier]`, `operations = OperationsSlice − referrer`.
+- If no valid source: `acquisitionCost == 0` and `protocolContribution == grossUsdc`.
+- If a valid source exists: `grossUsdc - acquisitionCost == protocolContribution`.
+- `protocolContribution` splits 70% Vault, 20% Liquidity, 10% Operations.
+- The acquisition cost is explicit in the receipt and does not create member
+  ownership, yield, passive income, or a downline.
+- Vault and Liquidity remain receipt-visible and never hidden.
 
-## Attribution model
+## Attribution Model
 
-- **Last-verified-referrer wins** at point of sale (no retroactive attribution).
-- A buyer may **override** at the point of sale with an explicit confirmation. The choice is recorded in the `attribution` field.
+- Attribution is source-record based, not browser-memory based.
+- Existing members cannot be captured retroactively by a new source.
+- A paused or revoked source receives no new attribution.
+- Source terms do not rewrite historical receipts.
+- Public buys remain zero-source until source records are approved and active.
 
-## Payout pattern
+## Payout Pattern
 
-- Default, once live: **push payout** to referrer in the same tx.
-- Fallback, once live: **escrowed** if push fails (smart-contract referrer that reverts, gas griefing). Funds become claimable.
-- This is the mandatory pattern for supporting contract referrers (smart wallets / DAOs).
+- Default, once live for an active source: direct payout to the source payout
+  wallet during the purchase.
+- Fallback, once live: escrowed if direct payout fails. Purchase must not be
+  blocked by a hostile or incompatible payout wallet.
+- Claim UI remains separate future work and must not appear before escrow state,
+  source status, and legal copy are approved.
 
-## What V1 does NOT include
+## What V1 Does Not Include Today
 
-- No CampaignRegistry contract (use repo config + `refTag` filter).
-- No AcceptedTokenRegistry contract (inline allow-list).
-- No TierOracle. The production-candidate router uses verified referred-member
-  count only.
-- No on-chain Reputation. No Builder Score contract. No automatic Chronicle entries.
-- No flat 5% default commission. The current production-candidate router is tiered and count-based.
+- No live source records.
+- No public source-aware links.
+- No claim UI.
+- No CampaignRegistry contract.
+- No AcceptedTokenRegistry contract.
+- No TierOracle.
+- No on-chain Reputation.
+- No Builder Score contract.
+- No automatic Chronicle entries.
+- No flat 5% default commission.
 
-## Forward-compatibility
+## Forward Compatibility
 
-The schema reserves namespace for: `SPONSORSHIP`, `AFFILIATE`, `BD_NETWORK`, `WHITELABEL`, `TREASURY_DEAL`. Adding any of these requires no contract change — only a governance vote on the source allow-list.
+The schema reserves namespace for `MEMBER_INTRODUCTION`, `BUILDER_SOURCE`,
+`AFFILIATE`, `BD_NETWORK`, `WHITELABEL`, `SPONSORSHIP`, and `TREASURY_DEAL`.
+Activating any source class requires a source metadata packet, an on-chain
+source-record ceremony, and readback.
 
 Builder Records, recognition, Chronicle, Register, and Archive may later read
-referral events as one signal among many. They must answer what a participant
-helped the institution become, not only how much was paid or attributed.
+source-attributed receipts as one signal among many. They must answer what a
+participant helped the institution become, not only how much was paid or
+attributed.
 
-## Cross-references
+## Cross-References
 
-- `docs/UNIFIED_PROTOCOL_DOCTRINE_MAP.md` — neighbor graph.
-- `docs/TREASURY_LEDGER_DOCTRINE.md` — downstream consumer of RAL emissions.
-- `docs/BUILDER_RECORD_DOCTRINE.md` — derived view over RAL events.
-- `docs/REPUTATION_FORMULA_DOCTRINE.md` — score function over Builder Records.
-- `docs/LEGAL_DISCLOSURE_REFERRAL.md` — public disclosure rules for the Referral page.
+- `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md` - current non-live readiness boundary.
+- `docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md` - source attribution is not member ownership.
+- `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md` - V3 acquisition-first receipt doctrine.
+- `docs/LEGAL_DISCLOSURE_REFERRAL.md` - public disclosure rules for the Referral page.

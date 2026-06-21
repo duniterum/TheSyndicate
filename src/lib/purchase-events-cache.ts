@@ -62,6 +62,19 @@ type StoredEvent = {
   era?: number;
   firstSeat?: boolean;
   referralAmount?: number;
+  receiptId?: string;
+  recipient?: string;
+  acquisitionCostAmount?: number;
+  protocolContributionAmount?: number;
+  sourceId?: string;
+  sourceClass?: number;
+  sourceWallet?: string;
+  commissionBps?: number;
+  attributionScope?: number;
+  attributionWindowEndsAt?: number;
+  sourceGrossRemaining?: number;
+  buyerGrossRemaining?: number;
+  receiptVersion?: number;
 };
 
 type StoredSnapshot = {
@@ -103,6 +116,19 @@ function toStored(e: PurchaseEvent): StoredEvent {
     ...(e.era !== undefined ? { era: e.era } : {}),
     ...(e.firstSeat !== undefined ? { firstSeat: e.firstSeat } : {}),
     ...(e.referralAmount !== undefined ? { referralAmount: e.referralAmount } : {}),
+    ...(e.receiptId !== undefined ? { receiptId: e.receiptId } : {}),
+    ...(e.recipient !== undefined ? { recipient: e.recipient } : {}),
+    ...(e.acquisitionCostAmount !== undefined ? { acquisitionCostAmount: e.acquisitionCostAmount } : {}),
+    ...(e.protocolContributionAmount !== undefined ? { protocolContributionAmount: e.protocolContributionAmount } : {}),
+    ...(e.sourceId !== undefined ? { sourceId: e.sourceId } : {}),
+    ...(e.sourceClass !== undefined ? { sourceClass: e.sourceClass } : {}),
+    ...(e.sourceWallet !== undefined ? { sourceWallet: e.sourceWallet } : {}),
+    ...(e.commissionBps !== undefined ? { commissionBps: e.commissionBps } : {}),
+    ...(e.attributionScope !== undefined ? { attributionScope: e.attributionScope } : {}),
+    ...(e.attributionWindowEndsAt !== undefined ? { attributionWindowEndsAt: e.attributionWindowEndsAt } : {}),
+    ...(e.sourceGrossRemaining !== undefined ? { sourceGrossRemaining: e.sourceGrossRemaining } : {}),
+    ...(e.buyerGrossRemaining !== undefined ? { buyerGrossRemaining: e.buyerGrossRemaining } : {}),
+    ...(e.receiptVersion !== undefined ? { receiptVersion: e.receiptVersion } : {}),
   };
 }
 
@@ -138,6 +164,21 @@ function fromStored(raw: unknown): PurchaseEvent | null {
   const era = isFiniteNumber(o.era) ? o.era : undefined;
   const firstSeat = typeof o.firstSeat === "boolean" ? o.firstSeat : undefined;
   const referralAmount = isFiniteNumber(o.referralAmount) ? o.referralAmount : undefined;
+  const receiptId = typeof o.receiptId === "string" ? o.receiptId : undefined;
+  const recipient = typeof o.recipient === "string" ? o.recipient : undefined;
+  const acquisitionCostAmount = isFiniteNumber(o.acquisitionCostAmount) ? o.acquisitionCostAmount : undefined;
+  const protocolContributionAmount = isFiniteNumber(o.protocolContributionAmount)
+    ? o.protocolContributionAmount
+    : undefined;
+  const sourceId = typeof o.sourceId === "string" ? o.sourceId : undefined;
+  const sourceClass = isFiniteNumber(o.sourceClass) ? o.sourceClass : undefined;
+  const sourceWallet = typeof o.sourceWallet === "string" ? o.sourceWallet : undefined;
+  const commissionBps = isFiniteNumber(o.commissionBps) ? o.commissionBps : undefined;
+  const attributionScope = isFiniteNumber(o.attributionScope) ? o.attributionScope : undefined;
+  const attributionWindowEndsAt = isFiniteNumber(o.attributionWindowEndsAt) ? o.attributionWindowEndsAt : undefined;
+  const sourceGrossRemaining = isFiniteNumber(o.sourceGrossRemaining) ? o.sourceGrossRemaining : undefined;
+  const buyerGrossRemaining = isFiniteNumber(o.buyerGrossRemaining) ? o.buyerGrossRemaining : undefined;
+  const receiptVersion = isFiniteNumber(o.receiptVersion) ? o.receiptVersion : undefined;
   return {
     source,
     buyer: o.buyer,
@@ -153,6 +194,19 @@ function fromStored(raw: unknown): PurchaseEvent | null {
     ...(era !== undefined ? { era } : {}),
     ...(firstSeat !== undefined ? { firstSeat } : {}),
     ...(referralAmount !== undefined ? { referralAmount } : {}),
+    ...(receiptId !== undefined ? { receiptId } : {}),
+    ...(recipient !== undefined ? { recipient } : {}),
+    ...(acquisitionCostAmount !== undefined ? { acquisitionCostAmount } : {}),
+    ...(protocolContributionAmount !== undefined ? { protocolContributionAmount } : {}),
+    ...(sourceId !== undefined ? { sourceId } : {}),
+    ...(sourceClass !== undefined ? { sourceClass } : {}),
+    ...(sourceWallet !== undefined ? { sourceWallet } : {}),
+    ...(commissionBps !== undefined ? { commissionBps } : {}),
+    ...(attributionScope !== undefined ? { attributionScope } : {}),
+    ...(attributionWindowEndsAt !== undefined ? { attributionWindowEndsAt } : {}),
+    ...(sourceGrossRemaining !== undefined ? { sourceGrossRemaining } : {}),
+    ...(buyerGrossRemaining !== undefined ? { buyerGrossRemaining } : {}),
+    ...(receiptVersion !== undefined ? { receiptVersion } : {}),
   };
 }
 

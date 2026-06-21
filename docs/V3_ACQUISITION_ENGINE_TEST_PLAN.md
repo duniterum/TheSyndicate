@@ -1,11 +1,12 @@
 # V3 Acquisition Engine Test Plan
 
-Status: V3 CANDIDATE QA CHECKLIST / NO DEPLOYMENT AUTHORIZED
+Status: V3 QA CHECKLIST / DEPLOYED DIRECT-BUY INFRA / SOURCE RECORDS INACTIVE
 
 This test plan converts `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md` into
-implementation gates. `SourceRegistryV1` and `MembershipSaleV3` now exist as
-local candidate contracts, but they are not deployed, not registered, not
-frontend-wired, and not audit-ready.
+implementation gates. `SourceRegistryV1` and `MembershipSaleV3` are deployed;
+MembershipSaleV3 is funded and selected as the frontend direct-buy target with
+`ZERO_SOURCE_ID`. Source records, source-aware links, referral/source UI, and
+claim UI remain inactive.
 
 Current QA companion:
 
@@ -159,7 +160,7 @@ Current QA companion:
 
 - V1 remains historical scan source,
 - V2a remains historical scan source,
-- V2b remains historical/active until V3 activation,
+- V2b remains paused historical proof/recovery boundary,
 - V3 does not double-count known members,
 - Holder Index can distinguish first-seat purchase from repeat contribution,
 - existing SYN holders remain seated,
@@ -202,5 +203,6 @@ After Solidity exists:
 - receipt card displays all V3 fields,
 - Activity reads V3 receipt event,
 - Registry distinguishes V3 from V1/V2a/V2b,
-- Referral remains pending until V3 deployment is verified,
+- Referral/source UI remains pending until source records are created, read
+  back, and legally approved,
 - My Syndicate can show notifications only from verified events/read-models.

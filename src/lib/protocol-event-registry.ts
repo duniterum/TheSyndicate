@@ -201,7 +201,7 @@ export const FUTURE_EVENT_NAMESPACES: readonly FutureEventNamespace[] = [
     label: "Referral attribution",
     status: "PENDING",
     description:
-      "Records who brought whom into The Syndicate (e.g. Member #27 brought Member #456): buyer/member number, USDC routed, SYN sold. Attribution only — a verified growth contribution and member recognition. No commission is implied or paid until a verified referral router is deployed and wired live.",
+      "Records who brought whom into The Syndicate (e.g. Member #27 brought Member #456): buyer/member number, USDC routed, SYN sold. Attribution only — a verified growth contribution and member recognition. No commission is implied or paid until verified source records are created, read back, legally approved, and wired live.",
     forbiddenVocab: REFERRAL_FORBIDDEN,
   },
   {
@@ -209,7 +209,7 @@ export const FUTURE_EVENT_NAMESPACES: readonly FutureEventNamespace[] = [
     label: "Referral commission settlement",
     status: "PENDING",
     description:
-      "Future Operations-slice commission infrastructure for verified referral attribution. Commission status stays PENDING and pays nothing until a verified on-chain referral router is deployed and wired live.",
+      "Future source commission settlement for verified source-attributed purchases. Commission status stays PENDING and pays nothing until verified source records are created, read back, legally approved, and wired live.",
     forbiddenVocab: REFERRAL_FORBIDDEN,
   },
   {

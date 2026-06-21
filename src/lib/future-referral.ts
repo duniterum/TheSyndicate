@@ -1,26 +1,28 @@
-// ─── Future Referral Event Model (RESERVED — attribution-first) ─────────────
-// Reserves the SHAPE of a future referral attribution event. A production-
-// candidate CommissionRouter exists in contracts/, but no router is deployed
-// or wired live; nothing here is scanned, emitted, or paid. This is the
-// canonical reserved MODEL — distinct from the SIMULATED UX preview in
-// src/lib/preview/referral.ts (which is for design only).
+// Future Referral / Source Attribution Event Model (RESERVED).
+//
+// This reserves the shape of future attribution language. SourceRegistryV1 and
+// MembershipSaleV3 exist, but SourceRegistryV1 has zero source records and the
+// public buy path uses ZERO_SOURCE_ID. Nothing here is scanned, emitted, or
+// paid. This is distinct from the SIMULATED UX preview in
+// src/lib/preview/referral.ts.
 //
 // Doctrine:
-//   • Referral is ATTRIBUTION FIRST, payout later. It records who brought whom
-//     — a verified growth contribution and member recognition.
-//   • Reward status is ALWAYS PENDING until a verified on-chain referral router
-//     is deployed and wired live. No live commission is implied now.
-//   • This namespace is intentionally kept OUT of `ProtocolEventKind` so no
-//     pipeline consumer must handle it. See FUTURE_EVENT_NAMESPACES
-//     ("referral-attribution" / "referral-reward") in protocol-event-registry.
+//   - Referral/source attribution is attribution first, payout later.
+//   - It records who helped bring whom into The Syndicate as a verified growth
+//     contribution and member recognition.
+//   - Reward status is ALWAYS PENDING until verified source records are created,
+//     read back, legally approved, and wired live.
+// Canonical gate: verified source records are created, read back, legally approved, and wired live.
+//   - No live commission is implied now.
+//   - This namespace is intentionally kept OUT of ProtocolEventKind.
 
-/** The only allowed reward status until a contract exists. */
+/** The only allowed reward status while source/referral remains inactive. */
 export type FutureReferralRewardStatus = "PENDING";
 
 export const FUTURE_REFERRAL_REWARD_STATUS: FutureReferralRewardStatus = "PENDING";
 
 export type FutureReferralAttribution = {
-  /** Public registry reference of the referrer, e.g. "Member #27". Never identity. */
+  /** Public registry reference of the source member, e.g. "Member #27". Never identity ownership. */
   referrerMember: string;
   /** Public registry reference of the new member, e.g. "Member #456". */
   newMember: string;
@@ -30,20 +32,20 @@ export type FutureReferralAttribution = {
   usdcRouted?: number;
   /** SYN delivered to the new member (when known). */
   synSold?: number;
-  /** ALWAYS "PENDING" — no reward is paid until a contract exists. */
+  /** ALWAYS "PENDING" while no source record is active. */
   rewardStatus: FutureReferralRewardStatus;
   /** Legal-safe note rendered anywhere this model is surfaced. */
   legalNote: string;
 };
 
 export const FUTURE_REFERRAL_NOTE =
-  "Attribution only — a verified growth contribution and member recognition. " +
-  "No reward is implied or paid. Reward status remains PENDING until a " +
-  "verified on-chain referral router is deployed and wired live.";
+  "Attribution only - a verified growth contribution and member recognition. " +
+  "No reward is implied or paid. Reward status remains PENDING until verified " +
+  "source records are created, read back, legally approved, and wired live.";
 
 /**
- * Build a reserved attribution record. `rewardStatus` is forced to PENDING and
- * cannot be overridden — there is no contract to settle against.
+ * Build a reserved attribution record. rewardStatus is forced to PENDING and
+ * cannot be overridden while public source/referral activation is inactive.
  */
 export function buildFutureReferralAttribution(input: {
   referrerMember: string;

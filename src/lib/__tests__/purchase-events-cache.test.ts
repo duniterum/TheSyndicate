@@ -43,7 +43,20 @@ function v3Ev(block: number, logIndex: number): PurchaseEvent {
     source: "v3",
     era: 1,
     firstSeat: true,
-    referralAmount: 0,
+    referralAmount: 0.75,
+    receiptId: `0x${"b".repeat(64)}`,
+    recipient: `0x${"1".repeat(40)}`,
+    acquisitionCostAmount: 0.75,
+    protocolContributionAmount: 4.25,
+    sourceId: `0x${"c".repeat(64)}`,
+    sourceClass: 0,
+    sourceWallet: `0x${"2".repeat(40)}`,
+    commissionBps: 1500,
+    attributionScope: 1,
+    attributionWindowEndsAt: 1_789_000_000,
+    sourceGrossRemaining: 999.25,
+    buyerGrossRemaining: 99.25,
+    receiptVersion: 1,
   };
 }
 
@@ -111,7 +124,18 @@ describe("P1 · serialize/deserialize preserves data, bigints and order", () => 
       source: "v3",
       era: 1,
       firstSeat: true,
-      referralAmount: 0,
+      referralAmount: 0.75,
+      acquisitionCostAmount: 0.75,
+      protocolContributionAmount: 4.25,
+      sourceId: `0x${"c".repeat(64)}`,
+      sourceClass: 0,
+      sourceWallet: `0x${"2".repeat(40)}`,
+      commissionBps: 1500,
+      attributionScope: 1,
+      attributionWindowEndsAt: 1_789_000_000,
+      sourceGrossRemaining: 999.25,
+      buyerGrossRemaining: 99.25,
+      receiptVersion: 1,
     });
     expect(snap!.events[0].blockNumber).toBe(700n);
     expect(snap!.events[1].source).toBe("v1");

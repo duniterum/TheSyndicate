@@ -75,6 +75,22 @@ export type PurchaseEvent = {
   firstSeat?: boolean;
   /** USDC paid to the referrer out of the Operations slice (V2 CommissionRouter). */
   referralAmount?: number;
+  // V3-only source/read-model enrichment. These fields are parsed from the
+  // receipt event but are not rendered as live referral UI while source records
+  // remain inactive and public buys pass ZERO_SOURCE_ID.
+  receiptId?: string;
+  recipient?: string;
+  acquisitionCostAmount?: number;
+  protocolContributionAmount?: number;
+  sourceId?: string;
+  sourceClass?: number;
+  sourceWallet?: string;
+  commissionBps?: number;
+  attributionScope?: number;
+  attributionWindowEndsAt?: number;
+  sourceGrossRemaining?: number;
+  buyerGrossRemaining?: number;
+  receiptVersion?: number;
 };
 
 /**
@@ -399,17 +415,33 @@ async function scanV3Purchases(args: {
     const logs = await publicClient.getLogs({ address: saleV3, event: V3_PURCHASED, fromBlock: start, toBlock: end });
     for (const l of logs) {
       const a = l.args as {
+        receiptId?: string;
         buyer?: string;
+        recipient?: string;
         memberNumber?: bigint;
         grossUsdc?: bigint;
+        acquisitionCost?: bigint;
+        protocolContribution?: bigint;
         vaultAmount?: bigint;
         liquidityAmount?: bigint;
         operationsAmount?: bigint;
         synOut?: bigint;
         era?: number;
+        chapter?: number;
+        sourceId?: string;
+        sourceClass?: number;
+        sourceWallet?: string;
+        commissionBps?: number;
+        attributionScope?: number;
+        attributionWindowEndsAt?: bigint;
+        sourceGrossRemaining?: bigint;
+        buyerGrossRemaining?: bigint;
         firstSeat?: boolean;
+        receiptVersion?: number;
       };
       if (!a.buyer || a.memberNumber === undefined || a.grossUsdc === undefined || a.vaultAmount === undefined || a.liquidityAmount === undefined || a.operationsAmount === undefined || a.synOut === undefined || a.era === undefined || a.firstSeat === undefined) continue;
+      const acquisitionCostAmount =
+        a.acquisitionCost !== undefined ? Number(formatUnits(a.acquisitionCost, USDC_DECIMALS)) : undefined;
       fresh.push({
         source: "v3",
         buyer: a.buyer,
@@ -419,9 +451,28 @@ async function scanV3Purchases(args: {
         vaultAmount: Number(formatUnits(a.vaultAmount, USDC_DECIMALS)),
         liquidityAmount: Number(formatUnits(a.liquidityAmount, USDC_DECIMALS)),
         operationsAmount: Number(formatUnits(a.operationsAmount, USDC_DECIMALS)),
-        referralAmount: 0,
+        referralAmount: acquisitionCostAmount ?? 0,
         era: Number(a.era),
         firstSeat: a.firstSeat,
+        ...(a.receiptId ? { receiptId: a.receiptId } : {}),
+        ...(a.recipient ? { recipient: a.recipient } : {}),
+        ...(acquisitionCostAmount !== undefined ? { acquisitionCostAmount } : {}),
+        ...(a.protocolContribution !== undefined
+          ? { protocolContributionAmount: Number(formatUnits(a.protocolContribution, USDC_DECIMALS)) }
+          : {}),
+        ...(a.sourceId ? { sourceId: a.sourceId } : {}),
+        ...(a.sourceClass !== undefined ? { sourceClass: Number(a.sourceClass) } : {}),
+        ...(a.sourceWallet ? { sourceWallet: a.sourceWallet } : {}),
+        ...(a.commissionBps !== undefined ? { commissionBps: Number(a.commissionBps) } : {}),
+        ...(a.attributionScope !== undefined ? { attributionScope: Number(a.attributionScope) } : {}),
+        ...(a.attributionWindowEndsAt !== undefined ? { attributionWindowEndsAt: Number(a.attributionWindowEndsAt) } : {}),
+        ...(a.sourceGrossRemaining !== undefined
+          ? { sourceGrossRemaining: Number(formatUnits(a.sourceGrossRemaining, USDC_DECIMALS)) }
+          : {}),
+        ...(a.buyerGrossRemaining !== undefined
+          ? { buyerGrossRemaining: Number(formatUnits(a.buyerGrossRemaining, USDC_DECIMALS)) }
+          : {}),
+        ...(a.receiptVersion !== undefined ? { receiptVersion: Number(a.receiptVersion) } : {}),
         blockNumber: l.blockNumber ?? 0n,
         txHash: l.transactionHash ?? "",
         logIndex: l.logIndex ?? 0,

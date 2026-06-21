@@ -55,8 +55,9 @@ describe("production coherence guards", () => {
     expect(join).not.toMatch(/Referral commission \(preview\)/i);
     expect(join).not.toMatch(/SIMULATED/i);
 
-    expect(referral).toContain("REQUIRES CONTRACT");
-    expect(referral).toContain("No router. No commission.");
+    expect(referral).toContain("SOURCE RECORDS INACTIVE");
+    expect(referral).toContain("No source records. No commission.");
+    expect(referral).toContain("V3 public buys currently use the zero source ID");
     expect(referral).not.toMatch(/components\/preview/);
     expect(referral).not.toMatch(/simulated/i);
     expect(referral).not.toMatch(/CommissionByTierChart|SimReferralActivity|ReputationLeaderboard/);
@@ -297,7 +298,7 @@ describe("production coherence guards", () => {
     const contractRegistry = read("src/lib/contract-registry.ts");
     const referral = read("src/routes/referral.tsx");
 
-    expect(v3).toContain("Status: CANONICAL V3 SPECIFICATION / NO DEPLOYMENT AUTHORIZED");
+    expect(v3).toContain("Status: CANONICAL V3 SPECIFICATION / DEPLOYED DIRECT-BUY INFRA / SOURCE RECORDS INACTIVE");
     expect(v3).toContain("Chapter is historical identity and belonging.");
     expect(v3).toContain("Era is pricing.");
     expect(v3).toContain("grossUsdc - acquisitionCost = protocolContribution");
@@ -324,6 +325,8 @@ describe("production coherence guards", () => {
     expect(v3).toContain("existing SYN holders with a valid historical-member-number proof");
     expect(v3).toContain("raw SYN balance alone is current holder/seat status, not sufficient");
     expect(v3).toContain("unknown wallets may buy and receive a new V3 member number even if they");
+    expect(v3).toContain("Public buys target MembershipSaleV3 with `ZERO_SOURCE_ID`");
+    expect(v3).toContain("SourceRegistryV1 has zero source records");
     expect(v3).toContain("preserved as a reviewed candidate");
     expect(v3).toContain("strategically superseded");
 
@@ -365,7 +368,44 @@ describe("production coherence guards", () => {
 
     expect(contractRegistry).toContain('"COMMISSION_ROUTER_V1"');
     expect(contractRegistry).toContain('"PENDING"');
-    expect(referral).toContain("No router. No commission.");
+    expect(referral).toContain("No source records. No commission.");
+  });
+
+  it("keeps referral/source attribution readiness non-live and source-record gated", () => {
+    const readiness = read("docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md");
+    const ral = read("docs/REVENUE_ATTRIBUTION_LAYER.md");
+    const legal = read("docs/LEGAL_DISCLOSURE_REFERRAL.md");
+    const saleHooks = read("src/lib/sale-hooks.ts");
+    const livePurchase = read("src/components/syndicate/LivePurchase.tsx");
+    const referralRoute = read("src/routes/referral.tsx");
+    const futureReferral = read("src/lib/future-referral.ts");
+
+    expect(readiness).toContain("Status: NON-LIVE READINESS SPEC / SOURCE RECORDS INACTIVE / NO CLAIM UI");
+    expect(readiness).toContain("SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; zero source records");
+    expect(readiness).toContain("Public V3 buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active");
+    expect(readiness).toContain("No new smart contract is required");
+    expect(readiness).toContain("Claim UI requires escrow/readback truth");
+    expect(readiness).toContain("This document does not authorize:");
+
+    expect(ral).toContain("SourceRegistryV1 has zero source records");
+    expect(ral).toContain("Public V3 buys use `ZERO_SOURCE_ID`");
+    expect(ral).toContain("CommissionRouterV1 remains a reviewed candidate/test reference, not the V3");
+    expect(ral).toContain("If a valid source exists: `grossUsdc - acquisitionCost == protocolContribution`");
+    expect(legal).toContain("No source-aware public link is active");
+    expect(legal).toContain("No referral/source commission is accruing");
+
+    expect(saleHooks).toContain("ZERO_SOURCE_ID");
+    expect(livePurchase).toContain("args: [usdcRaw, address!, ZERO_SOURCE_ID, minSynOut, []]");
+    expect(referralRoute).toContain("no earned commission, no");
+    expect(referralRoute).toContain("no claim button");
+    expect(futureReferral).toContain("verified source records are created, read back, legally approved, and wired live");
+
+    for (const [name, src] of Object.entries({ referralRoute, futureReferral })) {
+      expect(src, name).not.toMatch(/passive income|yield|downline|MLM/i);
+      expect(src, name).not.toMatch(/claimable commission|earned commission now/i);
+      expect(src, name).not.toMatch(/source owns (?:a )?member/i);
+      expect(src, name).not.toMatch(/referral is the business model/i);
+    }
   });
 
   it("freezes identity and attribution before referral, Privy, or SeatRecord721 activation", () => {

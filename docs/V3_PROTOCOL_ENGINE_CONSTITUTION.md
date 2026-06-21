@@ -1,12 +1,13 @@
 # V3 Protocol Engine Constitution
 
-Status: CANONICAL V3 SPECIFICATION / NO DEPLOYMENT AUTHORIZED
+Status: CANONICAL V3 SPECIFICATION / DEPLOYED DIRECT-BUY INFRA / SOURCE RECORDS INACTIVE
 
-This document freezes the V3 design direction. `SourceRegistryV1` and
-`MembershipSaleV3` now exist as local candidate contracts, but this document
-does not deploy, activate, register, or frontend-wire any V3 contract. V2b
-remains the live buy target until a future V3 deployment is reviewed, verified,
-funded, and intentionally activated.
+This document freezes the V3 design direction and records current V3 truth.
+`SourceRegistryV1` and `MembershipSaleV3` are deployed on Avalanche C-Chain;
+MembershipSaleV3 is funded and selected as the frontend direct-buy target with
+`ZERO_SOURCE_ID`. Source records, source-aware links, referral/source UI, claim
+UI, and any source payout path remain inactive until a separate source-record
+ceremony is approved and read back.
 
 ## 1. Binding Doctrine
 
@@ -281,8 +282,9 @@ belong in docs or metadata referenced by hash.
 
 ## 10. MembershipSaleV3 Requirements
 
-`MembershipSaleV3` should be the first Solidity contract written after this
-spec is approved.
+`MembershipSaleV3` is the deployed V3 sale engine. Public direct buys use
+`ZERO_SOURCE_ID` until a separate source-record activation ceremony approves a
+non-zero source path.
 
 Minimum requirements:
 
@@ -467,19 +469,28 @@ separately deployed and activated for a non-V3 purpose.
 - no Archive as NFT speculation,
 - no SeatRecord721 replacing SYN as the seat.
 
-## 17. Current V3 Candidate Files
+## 17. Current V3 Deployment And Source-Activation Boundary
 
-The first V3 candidate contracts now exist locally and in GitHub:
+Current repository and chain truth:
 
 - `contracts/src/SourceRegistryV1.sol`
 - `contracts/src/MembershipSaleV3.sol`
 - `contracts/test/SourceRegistryV1.t.sol`
 - `contracts/test/MembershipSaleV3.t.sol`
+- SourceRegistryV1 is deployed at
+  `0x780013bB358be6be95b401901264FC7c22a595a6`.
+- MembershipSaleV3 is deployed at
+  `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`.
+- Public buys target MembershipSaleV3 with `ZERO_SOURCE_ID`.
+- SourceRegistryV1 has zero source records.
+- Referral/source UI and claim UI are inactive.
+- V2b is a paused historical proof/recovery boundary, not the active buy target.
 
-They remain candidates only. Before deployment or frontend activation, use:
+Before any source/referral activation, use:
 
 - `docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md`
 - `docs/V3_SMART_CONTRACT_QA_READINESS.md`
+- `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`
 
-Do not add router addresses, live registry entries, claim UI, or V3 buy UI until
-the deployment and readback gates are complete.
+Do not create source records, source-aware public links, claim UI, or public
+source/referral UI until the readiness gates are complete.

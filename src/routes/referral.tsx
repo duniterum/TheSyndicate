@@ -17,14 +17,14 @@ export const Route = createFileRoute("/referral")({
       {
         name: "description",
         content:
-          "Referral and reputation are reserved future protocol systems. No CommissionRouter is deployed, no referral commission is accruing, and no rewards are claimable.",
+          "Referral and source attribution are reserved future protocol systems. SourceRegistryV1 is deployed with zero source records; no referral commission is accruing and no claim is live.",
       },
       { name: "robots", content: "noindex,nofollow" },
       { property: "og:title", content: "The Syndicate - Referral pending" },
       {
         property: "og:description",
         content:
-          "Future referral infrastructure is reserved, not live. No router, no commission, no claim, no displayed balances.",
+          "Future referral infrastructure is reserved, not live. Source records are inactive: no commission, no claim, no displayed balances.",
       },
     ],
     links: [{ rel: "canonical", href: "https://thesyndicate.money/referral" }],
@@ -37,13 +37,13 @@ const RESERVED_SYSTEMS = [
     title: "Referral attribution",
     status: "PENDING",
     body:
-      "A future system may associate an introducing member with a new participant. Today, local attribution is recognition-only and creates no payout or entitlement.",
+      "SourceRegistryV1 exists, but no source records are active. Today, local attribution is recognition-only and creates no payout or entitlement.",
   },
   {
-    title: "CommissionRouter",
-    status: "REQUIRES CONTRACT",
+    title: "Source records",
+    status: "REQUIRES SOURCE RECORD",
     body:
-      "No router contract is deployed or wired live. Until a verified router address exists, no referral commission accrues, no balances exist, and no claim action can be shown.",
+      "No source record has been created. Until source terms are approved, created, read back, and wired into the buy path, no acquisition commission accrues and no claim action can be shown.",
   },
   {
     title: "Reputation records",
@@ -57,31 +57,31 @@ function ReferralPage() {
   return (
     <PageShell
       eyebrow="Referral"
-      title="Pending protocol infrastructure"
-      description="Referral is reserved future growth infrastructure, not affiliate marketing. Nothing is live until a contract, rules, and verification path exist."
+      title="Source attribution pending"
+      description="Referral is reserved future growth infrastructure, not affiliate marketing. SourceRegistryV1 is deployed, but records, source links, commissions, and claims remain inactive until a separate ceremony approves them."
     >
       <Section id="referral-status">
         <SectionHeader
           eyebrow="Current status"
-          title={<>No router. No commission. <span className="text-gradient-gold">No claim.</span></>}
-          description="The live product is membership: buying SYN seats the wallet. Referral belongs to a future contract-gated system and must remain pending until it is verifiable."
+          title={<>No source records. No commission. <span className="text-gradient-gold">No claim.</span></>}
+          description="The live product is membership: buying SYN seats the wallet. Source attribution belongs to a separate contract-gated system and remains pending until source terms are created and verifiable."
         />
         <GlassCard className="p-5">
           <div className="flex flex-wrap items-center gap-2">
             <StatusPill status="PENDING" />
-            <Pill tone="warning">REQUIRES CONTRACT</Pill>
+            <Pill tone="warning">SOURCE RECORDS INACTIVE</Pill>
             <Pill tone="muted">RESERVED</Pill>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-foreground/85">
             The Syndicate can remember who introduced whom, but memory is not
-            money. Until a verified CommissionRouter is deployed, wired live,
-            and publicly verifiable,
-            there is no referral balance, no earned commission, no tier, no
-            leaderboard, and no claim button.
+            money. V3 public buys currently use the zero source ID. Until a
+            SourceRegistry record is created, wired live, and publicly
+            verifiable, there is no referral balance, no earned commission, no
+            active source tier, no leaderboard, and no claim button.
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {[
-              ["Truth first", "No live claim appears before a deployed contract can prove it."],
+              ["Truth first", "No live claim appears before source state can prove it."],
               ["No hidden balances", "The interface will not imply money owed from browser state or off-chain memory."],
               ["Growth without hype", "Attribution may matter later, but membership remains the live product today."],
             ].map(([label, body]) => (
@@ -123,10 +123,11 @@ function ReferralPage() {
         />
         <div className="surface elevated p-5 text-sm text-muted-foreground leading-relaxed">
           <p>
-            Today, every Membership Sale purchase routes on-chain to Vault,
-            Liquidity, and Operations. Referral has no contract and no write path.
-            If it ships later, the site must show the deployed contract, the claim
-            source, and the exact proof path before any action becomes live.
+            Today, every public Membership Sale purchase routes on-chain to
+            Vault, Liquidity, and Operations with the zero source ID. Referral
+            has no public source record and no write path. If source attribution
+            ships later, the site must show the source record, the claim source,
+            and the exact proof path before any action becomes live.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <CTAButton variant="gold" href="/transparency">Verify routing</CTAButton>
