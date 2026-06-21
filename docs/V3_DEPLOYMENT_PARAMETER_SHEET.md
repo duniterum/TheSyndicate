@@ -83,7 +83,7 @@ The founder must provide only public wallet addresses and public parameter decis
 | 6 | Final numbered historical-member proof root | Current derived value: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`; V3 leaf format is numbered wallet + member number, not address-only |
 | 7 | Whether all 8 existing founder/family wallets are included in numbered historical-member proofs | All 8 current historical member wallets from V1/V2a/V2b are included; the founder/family label itself is not independently provable from chain data |
 | 8 | Final `addrCaps[9]` | Derived from deployed V2b lineage; ready to freeze subject final pre-transaction readback |
-| 9 | Final `eraCaps[9]` | Deployed-lineage schedule is known, but V3 fork/test candidate differs at Era VII; founder must freeze deployed-lineage 15,000,000 SYN or explicitly approve the 12,000,000 SYN V3 candidate and update tests/docs |
+| 9 | Final `eraCaps[9]` | Derived from deployed V2b lineage and live V2b readback; ready to freeze subject final pre-transaction readback |
 | 10 | Final `maxUsdcPerTx` | Derived from deployed V2b lineage: `25000000000` USDC units ($25,000) |
 | 11 | Final `reserveThroughSeat` | Derived from deployed V2b lineage: `10000` |
 | 12 | Initial V3 funding | Confirmed zero initial V3 funding |
@@ -173,13 +173,13 @@ constructor(
 | `addrCaps_` | `[25000000000, 1000000000, 2500000000, 5000000000, 10000000000, 15000000000, 20000000000, 25000000000, 25000000000]` | Derived from deployed V2b lineage |
 | `maxUsdcPerTx_` | `25000000000` | Derived from deployed V2b lineage |
 | `reserveThroughSeat_` | `10000` | Derived from deployed V2b lineage |
-| `eraCaps_` | See era-cap reconciliation below | Must resolve Era VII mismatch before deployment transaction |
+| `eraCaps_` | `[0, 416875000000000000000000, 1166500000000000000000000, 3333500000000000000000000, 6750000000000000000000000, 11250000000000000000000000, 15000000000000000000000000, 60000000000000000000000000, 150000000000000000000000000]` | Derived from deployed V2b lineage and live V2b readback |
 
-## Derived Deployed-Lineage Values and V3 Candidate Drift
+## Derived Deployed-Lineage Values
 
 ### Address Caps
 
-`addrCaps[9]` is derived from deployed V2b lineage and matches the V3 rehearsal candidate:
+`addrCaps[9]` is derived from deployed V2b lineage, V2b constructor records, and live V2b readback:
 
 ```text
 [
@@ -199,27 +199,26 @@ constructor(
 
 | Parameter | Value | Source |
 | --- | --- | --- |
-| `maxUsdcPerTx` | `25000000000` | Deployed V2b lineage |
-| `reserveThroughSeat` | `10000` | Deployed V2b lineage |
+| `maxUsdcPerTx` | `25000000000` | Deployed V2b lineage and live V2b readback |
+| `reserveThroughSeat` | `10000` | Deployed V2b lineage and live V2b readback |
 
 ### Era Caps
 
-The deployed V2b lineage and V3 rehearsal candidate differ at Era VII. This is a policy-sensitive V3 candidate drift and must be resolved before any transaction.
+The V3 candidate now matches the deployed V2b lineage. Era I is passed as `0` in constructor records; the contract exposes Era I as unlimited (`type(uint256).max`).
 
-| Index | Deployed-lineage value | V3 fork/test candidate | Status |
-| --- | --- | --- | --- |
-| 0 | `0` constructor input; contract exposes Era I as unlimited | `0` constructor input | Match |
-| 1 | `416875000000000000000000` | `416875000000000000000000` | Match |
-| 2 | `1166500000000000000000000` | `1166500000000000000000000` | Match |
-| 3 | `3333500000000000000000000` | `3333500000000000000000000` | Match |
-| 4 | `6750000000000000000000000` | `6750000000000000000000000` | Match |
-| 5 | `11250000000000000000000000` | `11250000000000000000000000` | Match |
-| 6 | `15000000000000000000000000` | `12000000000000000000000000` | INCONSISTENT - founder must freeze deployed-lineage 15,000,000 SYN or explicitly approve the V3 12,000,000 SYN candidate |
-| 7 | `60000000000000000000000000` | `60000000000000000000000000` | Match |
-| 8 | `150000000000000000000000000` | `150000000000000000000000000` | Match |
+| Era | Deployed V2b lineage cap | Current V3 candidate cap | Human decoded SYN amount | Source |
+| --- | --- | --- | --- | --- |
+| I | `0` constructor input / unlimited on-chain | `0` constructor input | Unlimited by contract rule | V2b constructor records + live readback |
+| II | `416875000000000000000000` | `416875000000000000000000` | 416,875 SYN | V2b constructor records + live readback |
+| III | `1166500000000000000000000` | `1166500000000000000000000` | 1,166,500 SYN | V2b constructor records + live readback |
+| IV | `3333500000000000000000000` | `3333500000000000000000000` | 3,333,500 SYN | V2b constructor records + live readback |
+| V | `6750000000000000000000000` | `6750000000000000000000000` | 6,750,000 SYN | V2b constructor records + live readback |
+| VI | `11250000000000000000000000` | `11250000000000000000000000` | 11,250,000 SYN | V2b constructor records + live readback |
+| VII | `15000000000000000000000000` | `15000000000000000000000000` | 15,000,000 SYN | V2b constructor records + live readback |
+| VIII | `60000000000000000000000000` | `60000000000000000000000000` | 60,000,000 SYN | V2b constructor records + live readback |
+| IX | `150000000000000000000000000` | `150000000000000000000000000` | 150,000,000 SYN | V2b constructor records + live readback |
 
-Do not silently deploy with the V3 candidate value at index 6. The final parameter freeze must either align V3 tests/docs back to deployed lineage or explicitly document founder approval for the V3 change.
-
+The previous V3 fork/test candidate used `12,000,000 SYN` for Era VII. No canonical founder-approved V3 policy change was found for that lower cap, so the candidate has been aligned back to deployed sale lineage.
 ## Deterministic Era Pricing
 
 The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Constructor caps do not change these rates.
@@ -252,7 +251,7 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 | `addrCaps[9]` | Ready | Derived from deployed V2b lineage |
 | `maxUsdcPerTx` | Ready | Derived from deployed V2b lineage |
 | `reserveThroughSeat` | Ready | Derived from deployed V2b lineage |
-| `eraCaps[9]` | Blocking mismatch | V3 candidate differs from deployed lineage at Era VII/index 6 |
+| `eraCaps[9]` | Ready | Derived from deployed V2b lineage and live V2b readback |
 | MembershipSaleV3 default live state | Operational blocker | If constructor leaves sale unpaused, non-live safety depends on zero funding, no registry switch, no public UI, readback immediately after deploy, and immediate pause if owner flow permits |
 
 ## Non-Live Safety Rule For Unpaused Default State
@@ -311,7 +310,7 @@ This checklist is preparation only. It is not permission to deploy.
 6. Transfer SourceRegistryV1 ownership to owner hardware wallet if separately approved.
 7. Owner hardware wallet accepts SourceRegistryV1 ownership.
 8. Rerun historical-member root generation at the final freeze block if V2b is still live.
-9. Resolve Era VII cap mismatch before preparing MembershipSaleV3 constructor args.
+9. Verify final era caps against deployed-lineage values before preparing MembershipSaleV3 constructor args.
 10. Prepare MembershipSaleV3 constructor args in exact contract order.
 11. Deploy MembershipSaleV3 only if separately approved.
 12. Read back MembershipSaleV3 constructor constants.
@@ -330,7 +329,6 @@ This checklist is preparation only. It is not permission to deploy.
 
 - SourceRegistryV1 must be deployed/read back first so the MembershipSaleV3 `sourceRegistry_` constructor argument is known.
 - Historical-member roster, `genesisOffset`, and numbered V3 root must be rerun at the final pre-deploy freeze block if V2b remains live before the transaction.
-- Era VII cap mismatch must be resolved: either freeze the deployed-lineage `15,000,000 SYN` value or explicitly approve the V3 candidate `12,000,000 SYN` value and update tests/docs accordingly.
 - MembershipSaleV3 unpaused-default handling must be operationally confirmed for a non-live deployment/readback: zero funding, no source records, no registry switch, no public UI, and pause immediately after readback if owner flow permits.
 
 ### Blocks Funding, Unpause, Registry Switch, or Public Activation

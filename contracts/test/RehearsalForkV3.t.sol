@@ -92,7 +92,7 @@ contract RehearsalForkV3Test is Test {
         c[3] = 3_333_500 ether;
         c[4] = 6_750_000 ether;
         c[5] = 11_250_000 ether;
-        c[6] = 12_000_000 ether;
+        c[6] = 15_000_000 ether;
         c[7] = 60_000_000 ether;
         c[8] = 150_000_000 ether;
     }
