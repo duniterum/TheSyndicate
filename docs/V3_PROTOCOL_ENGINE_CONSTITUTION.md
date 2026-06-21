@@ -306,8 +306,12 @@ Historical member migration rule:
 - V3 must never emit `memberNumber = 0`,
 - existing SYN holders with a valid historical-member-number proof may make
   additional V3 purchases without creating a second first seat,
-- existing SYN holders without a historical-member-number proof must fail
-  closed until the historical member number is known,
+- raw SYN balance alone is current holder/seat status, not sufficient
+  historical-member identity,
+- unknown wallets may buy and receive a new V3 member number even if they
+  already hold transferred or dusted SYN,
+- existing historical members should use numbered historical proofs to preserve
+  their original member number,
 - assigned historical member numbers must not be overwritten or duplicated.
 
 V3 should not begin by deploying a standalone commission router. The existing

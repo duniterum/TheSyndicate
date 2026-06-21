@@ -322,6 +322,8 @@ describe("production coherence guards", () => {
     expect(v3).toContain("V1/V2/V2b migration posture through numbered historical-member proofs");
     expect(v3).toContain("V3 must never emit `memberNumber = 0`");
     expect(v3).toContain("existing SYN holders with a valid historical-member-number proof");
+    expect(v3).toContain("raw SYN balance alone is current holder/seat status, not sufficient");
+    expect(v3).toContain("unknown wallets may buy and receive a new V3 member number even if they");
     expect(v3).toContain("preserved as a reviewed candidate");
     expect(v3).toContain("strategically superseded");
 
@@ -335,6 +337,8 @@ describe("production coherence guards", () => {
     expect(qa).toContain("blocked payout wallet cannot grief normal purchases");
     expect(qa).toContain("address-only V1 proofs are disabled");
     expect(qa).toContain("numbered historical-member proofs set both `knownMember` and `memberNumberOf`");
+    expect(qa).toContain("raw SYN balance alone is not used as historical-member identity");
+    expect(qa).toContain("dusted balance must not block an otherwise valid buyer");
     expect(qa).toContain("historical-member migration");
     expect(qa).toContain("Slither was installed and run");
     expect(qa).toContain("Real QuickNode fork rehearsal was rerun after the historical-member migration");

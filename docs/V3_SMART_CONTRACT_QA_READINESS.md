@@ -80,6 +80,9 @@ The V3 candidate test suite now covers:
 - numbered historical-member proofs set both `knownMember` and `memberNumberOf`,
 - existing SYN holders with valid historical-member-number proofs can buy
   through V3 without creating a new first seat,
+- unknown wallets with transferred or dusted SYN can still buy and receive a
+  new V3 member number,
+- raw SYN balance alone is not used as historical-member identity,
 - source payout wallet cannot equal the buyer or recipient,
 - escrow claim is blocked while a source is PAUSED or REVOKED,
 - public `MEMBER_INTRODUCTION` source terms are capped at 12%,
@@ -237,6 +240,11 @@ Sale V3 preserves the seat doctrine:
 - historical-member proof recognition can mark a historical member with a
   nonzero member number without issuing a new seat.
 
+`firstSeat` in the V3 receipt means V3 assigned the first protocol-recorded
+primary-sale member number for that recipient. It does not mean the wallet held
+zero SYN before the transaction. This is intentional because SYN is transferable
+and a dusted balance must not block an otherwise valid buyer.
+
 ## V2b Migration Posture
 
 V3 is a fresh candidate, not an upgrade of V2b.
@@ -248,6 +256,8 @@ Before activation:
 - historical V1/V2/V2b members must be imported through numbered
   historical-member proofs before V3 can treat their repeat purchases as
   non-first-seat contributions,
+- raw SYN balance is current holder/seat status only, not sufficient proof of a
+  historical member number,
 - frontend registry must not point to V3,
 - no V3 quote/write UI should appear as live,
 - V3 deployment must be registered as a new era of sale truth only after

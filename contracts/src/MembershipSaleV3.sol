@@ -600,7 +600,6 @@ contract MembershipSaleV3 is Ownable2Step, Pausable, ReentrancyGuard {
             if (assignedNumber == 0) revert UnknownHistoricalMemberNumber(recipient);
             return (false, assignedNumber);
         }
-        if (SYN.balanceOf(recipient) != 0) revert UnknownHistoricalMemberNumber(recipient);
         return (true, memberCount + 1);
     }
 

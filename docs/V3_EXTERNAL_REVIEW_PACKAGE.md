@@ -80,6 +80,12 @@ gross USDC paid
 SYN remains the V1 seat. The seat is binary. Contribution is variable. V3 does
 not deploy SeatRecord721 and does not modify Archive1155.
 
+Historical-member identity is proven by numbered historical-member proof, not by
+raw SYN balance alone. Unknown wallets may buy and receive a new V3 member
+number even if they already hold transferred or dusted SYN; otherwise dust could
+block buyers. Address-only V1 proofs remain disabled, and V3 must never emit
+`memberNumber = 0`.
+
 ## Latest Validation
 
 Latest local reviewer-findings disposition validation:
@@ -250,6 +256,11 @@ The fork rehearsal checks:
 - source payout,
 - receipt event reconstruction,
 - member number / first-seat behavior.
+
+The rehearsal and unit suite distinguish transferable SYN holder status from
+historical member identity. Raw SYN balance is not a recipient membership gate.
+Existing historical members use numbered historical proofs to preserve their
+original member number.
 
 Real QuickNode fork rehearsal was rerun after the historical-member migration
 patch. Historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.

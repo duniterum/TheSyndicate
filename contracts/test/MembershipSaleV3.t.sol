@@ -199,6 +199,7 @@ contract MembershipSaleV3Test is Test {
 
     // ============================================================= no source
     function test_buy_noSource_routesGrossToProtocolAndIssuesSeat() public {
+        assertEq(syn.balanceOf(alice), 0, "unknown zero-SYN wallet starts unseated");
         _approve(alice, USDC_100);
 
         _buy(alice, alice, USDC_100, bytes32(0));
@@ -206,6 +207,7 @@ contract MembershipSaleV3Test is Test {
         assertEq(syn.balanceOf(alice), USDC_100 * 50 * 1e12, "SYN priced on gross");
         assertEq(sale.memberCount(), GEN + 1);
         assertEq(sale.memberNumberOf(alice), GEN + 1);
+        assertGt(sale.memberNumberOf(alice), 0, "V3 never emits or stores memberNumber zero");
         assertEq(sale.grossContributed(alice), USDC_100);
         assertEq(sale.totalGrossUsdc(), USDC_100);
         assertEq(sale.totalAcquisitionCost(), 0);
@@ -357,17 +359,78 @@ contract MembershipSaleV3Test is Test {
         sale.claimHistoricalMembership(42, bobProof);
     }
 
-    function test_buy_existingSynHolderWithoutV3MemberNumberRevertsBeforeDuplicateSeat() public {
+    function test_buy_unknownSynHolderReceivesNewV3MemberNumber() public {
         syn.mint(alice, 1 ether);
+        _approve(alice, USDC_100);
+
+        bytes32 expectedReceiptId = keccak256(abi.encode(block.chainid, address(sale), uint256(1)));
+        vm.expectEmit(true, true, true, true, address(sale));
+        emit MembershipPurchasedV3(
+            expectedReceiptId,
+            alice,
+            alice,
+            GEN + 1,
+            USDC_100,
+            0,
+            USDC_100,
+            70_000_000,
+            20_000_000,
+            10_000_000,
+            USDC_100 * 50 * 1e12,
+            50,
+            2,
+            2,
+            bytes32(0),
+            0,
+            address(0),
+            0,
+            0,
+            0,
+            0,
+            0,
+            true,
+            sale.RECEIPT_VERSION()
+        );
+        vm.prank(alice);
+        sale.buy(USDC_100, alice, bytes32(0), 0, new bytes32[](0));
+
+        assertTrue(sale.knownMember(alice));
+        assertEq(sale.memberNumberOf(alice), GEN + 1);
+        assertEq(sale.memberByNumber(GEN + 1), alice);
+        assertEq(sale.memberCount(), GEN + 1);
+        assertEq(sale.receiptCount(), 1);
+    }
+
+    function test_quote_unknownSynDustHolderDoesNotRevert() public {
+        syn.mint(alice, 1);
+
+        (
+            uint256 synOut,
+            uint16 era,
+            uint64 synPerUsdc,
+            uint256 seatIfFirst,
+            uint256 acquisitionCost,
+            uint256 protocolContribution
+        ) = sale.quote(USDC_100, alice, bytes32(0));
+
+        assertEq(synOut, USDC_100 * 50 * 1e12);
+        assertEq(era, 2);
+        assertEq(synPerUsdc, 50);
+        assertEq(seatIfFirst, GEN + 1);
+        assertEq(acquisitionCost, 0);
+        assertEq(protocolContribution, USDC_100);
+    }
+
+    function test_buy_corruptedKnownMemberWithZeroMemberNumberStillReverts() public {
+        bytes32 knownMemberSlot = keccak256(abi.encode(alice, uint256(14)));
+        vm.store(address(sale), knownMemberSlot, bytes32(uint256(1)));
+        assertTrue(sale.knownMember(alice));
+        assertEq(sale.memberNumberOf(alice), 0);
         _approve(alice, USDC_100);
 
         vm.prank(alice);
         vm.expectRevert(abi.encodeWithSelector(MembershipSaleV3.UnknownHistoricalMemberNumber.selector, alice));
         sale.buy(USDC_100, alice, bytes32(0), 0, new bytes32[](0));
-
-        assertEq(sale.memberNumberOf(alice), 0);
-        assertEq(sale.memberCount(), GEN);
-        assertEq(sale.receiptCount(), 0);
     }
 
     function test_buy_repeatBuyerKeepsExistingNonzeroMemberNumber() public {
