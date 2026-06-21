@@ -2,7 +2,7 @@
 
 Status: NON-LIVE PREPARATION ONLY
 
-This sheet prepares readback-ready parameters for a future V3 deployment rehearsal or deployment decision. It does not authorize deployment, funding, unpause, frontend activation, registry switch, public V3 buy UI, or any private-key/broadcast action.
+This sheet prepares readback-ready public parameters for a future V3 non-live deployment/readback decision. It does not authorize deployment, funding, unpause, frontend activation, registry switch, public V3 buy UI, or any private-key/broadcast action.
 
 ## Boundaries
 
@@ -23,6 +23,8 @@ This sheet prepares readback-ready parameters for a future V3 deployment rehears
 | Chain ID | `43114` |
 
 ## Current Canonical Addresses
+
+These addresses are derived from repository truth, V2b deployed-lineage parameters, and the current fork rehearsal constants. They must remain aligned with `src/lib/syndicate-config.ts`, `contracts/test/RehearsalForkV3.t.sol`, and deployed sale readbacks.
 
 | Role | Address / status |
 | --- | --- |
@@ -47,61 +49,78 @@ This sheet prepares readback-ready parameters for a future V3 deployment rehears
 
 ## Hardware Wallet Addresses
 
-These public addresses must be supplied and recorded before any deployment decision.
+These are public addresses only. No private keys, seed phrases, Ledger recovery words, signer exports, or password manager secrets belong in this repository.
 
-| Role | Value |
-| --- | --- |
-| Deployment hardware-wallet public address | `TBD` |
-| Owner hardware-wallet public address | `TBD` |
-| Optional backup hardware-wallet public address | `TBD` |
+| Role | Address | Status |
+| --- | --- | --- |
+| Deployment hardware wallet | `0xa2E538025B7E100c928c73d4a977Ab9CEaA26e2F` | Supplied by founder and sanity-checked |
+| Final owner hardware wallet | `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73` | Supplied by founder and sanity-checked |
+| Backup hardware wallet | TBD / optional | Not required for first non-live deployment/readback |
 
-Preferred posture: deployment and owner wallets should be dedicated hardware wallets. The owner address should not be a Replit wallet, hot browser wallet, personal daily wallet, Vault wallet, Liquidity wallet, or Operations wallet unless separately approved and documented.
+Read-only Avalanche C-Chain sanity check:
 
-## Founder Inputs Required Before Non-Live V3 Deployment
+| Check | Deployment wallet | Owner wallet |
+| --- | --- | --- |
+| Valid nonzero EVM address | Yes | Yes |
+| Distinct from each other | Yes | Yes |
+| Code at address | Empty EOA-like address | Empty EOA-like address |
+| AVAX balance at readback | `1.472522622265013989 AVAX` | `0.499763025977667064 AVAX` |
+| Not equal to USDC, SYN, V1, V2a, V2b, Archive1155, Vault, Liquidity, or Operations | Yes | Yes |
 
-The founder must provide only public wallet addresses and public parameter decisions. Never paste a seed phrase, private key, Ledger recovery words, signer export, screenshot of recovery words, or password manager secret. Only public addresses and yes/no parameter decisions are required.
+Founder direction: deployment wallet and owner wallet are distinct. Ownership flow remains deployer temporary owner -> transfer ownership to owner hardware wallet -> owner accepts before funding, source records, unpause/activation, or registry switch.
 
-Status:
+## Founder Inputs Required Before Any Transaction
 
-| Track | Status |
-| --- | --- |
-| Non-live deployment/readback | PENDING FOUNDER INPUTS |
-| Public deployment/funding/unpause/activation | NO-GO |
-| V3 frontend registry switch | NO-GO |
-| V3 public buy UI | NO-GO |
+The founder must provide only public wallet addresses and public parameter decisions. Never paste a seed phrase, private key, Ledger recovery words, signer export, screenshot of recovery words, or password manager secret.
 
-Required founder inputs:
-
-| # | Input required | Current status |
-| ---: | --- | --- |
-| 1 | Deployment hardware-wallet public address | TBD / placeholder input is not valid |
-| 2 | Owner hardware-wallet public address | TBD / placeholder input is not valid |
+| # | Input | Current status |
+| --- | --- | --- |
+| 1 | Deployment hardware-wallet public address | Supplied: `0xa2E538025B7E100c928c73d4a977Ab9CEaA26e2F` |
+| 2 | Owner hardware-wallet public address | Supplied: `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73` |
 | 3 | Optional backup hardware-wallet public address | TBD / optional |
-| 4 | Confirm whether deployment wallet and owner wallet are the same or distinct | TBD / `DISTINCT / SAME INTENTIONALLY` placeholder is not a final choice; distinct is preferred for mainnet |
-| 5 | Confirm final `genesisOffset` | TBD; must match V1/V2a/V2b historical member continuity |
-| 6 | Confirm numbered historical-member proof root or the exact source file used to generate it | TBD; must be numbered wallet + member number proof root |
-| 7 | Confirm whether all 8 existing founder/family wallets are included in numbered historical-member proofs | TBD / `YES / NO / LIST PENDING` placeholder is not a final choice |
-| 8 | Confirm final `addrCaps[9]` | TBD; candidate rehearsal values listed below remain unconfirmed |
-| 9 | Confirm final `eraCaps[9]` | TBD; candidate rehearsal values listed below remain unconfirmed |
-| 10 | Confirm final `maxUsdcPerTx` | TBD; candidate rehearsal value listed below remains unconfirmed |
-| 11 | Confirm final `reserveThroughSeat` | TBD; candidate rehearsal value listed below remains unconfirmed |
-| 12 | Confirm initial V3 funding is zero until separately approved | Confirmed: ZERO |
-| 13 | Confirm V3 remains not live after deployment/readback | Confirmed: YES |
-| 14 | Confirm frontend registry remains pointed at V2b | Confirmed: YES |
-| 15 | Confirm no source records are created at deployment time | Confirmed: YES |
-| 16 | Confirm ownership transfer timing | Confirmed: deployer temporary owner -> transfer to owner hardware wallet -> owner accepts before any funding or activation |
+| 4 | Whether deployer and owner are distinct or intentionally same | Confirmed distinct |
+| 5 | Final `genesisOffset` | Current derived value: `8` from V1 + V2a + V2b historical lineage as of block `88492338`; must be rerun if V2b records more members before V3 deployment |
+| 6 | Final numbered historical-member proof root | Current derived value: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`; V3 leaf format is numbered wallet + member number, not address-only |
+| 7 | Whether all 8 existing founder/family wallets are included in numbered historical-member proofs | All 8 current historical member wallets from V1/V2a/V2b are included; the founder/family label itself is not independently provable from chain data |
+| 8 | Final `addrCaps[9]` | Derived from deployed V2b lineage; ready to freeze subject final pre-transaction readback |
+| 9 | Final `eraCaps[9]` | Deployed-lineage schedule is known, but V3 fork/test candidate differs at Era VII; founder must freeze deployed-lineage 15,000,000 SYN or explicitly approve the 12,000,000 SYN V3 candidate and update tests/docs |
+| 10 | Final `maxUsdcPerTx` | Derived from deployed V2b lineage: `25000000000` USDC units ($25,000) |
+| 11 | Final `reserveThroughSeat` | Derived from deployed V2b lineage: `10000` |
+| 12 | Initial V3 funding | Confirmed zero initial V3 funding |
+| 13 | V3 remains not live after deployment/readback | Confirmed yes |
+| 14 | Frontend registry remains pointed at V2b | Confirmed yes |
+| 15 | No source records at deployment time | Confirmed yes |
+| 16 | Ownership transfer timing | Confirmed: deployer temporary owner -> transfer to owner hardware wallet -> owner accepts before funding or activation |
 
-### Latest Founder Input Intake Status
+## Historical Member Derivation
 
-The latest input packet still contains placeholders for public hardware-wallet addresses, historical-member proof material, `genesisOffset`, and final cap/reserve values. Those placeholders are not acceptable deployment parameters. The only freezeable decisions supplied in that packet are:
+V3 historical member identity is proven by numbered historical-member proofs. Raw SYN balance alone is not historical member identity.
 
-- initial V3 funding remains zero,
-- V3 remains not live after any non-live deployment/readback,
-- frontend registry remains pointed at V2b,
-- no source records are created at deployment time,
-- ownership transfer timing is deployer temporary owner -> transfer to owner hardware wallet -> owner accepts before funding or activation.
+Current derivation status:
 
-Until the placeholder fields are replaced with real public addresses and exact public parameter values, non-live deployment/readback remains PENDING FOUNDER INPUTS.
+- QuickNode readbacks succeeded for chain ID, wallet code/balances, and deployed sale getters.
+- QuickNode log scanning was rejected by the RPC provider, so the historical member roster was derived through a public Avalanche RPC event scan and cross-checked against V2b `memberCount`.
+- Public RPC scan head: `88492338`.
+- V1 logs: `5`; V2a logs: `3`; V2b logs: `6`.
+- Distinct first-seen historical members: `8`.
+- V2b on-chain `memberCount`: `8`.
+- Current derived V3 `genesisOffset`: `8`.
+- Current derived numbered root: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`.
+- Leaf format: `keccak256(bytes.concat(keccak256(abi.encode(wallet, memberNumber))))`.
+- Leaf encoding: `['address','uint256']`.
+
+| Member # | Wallet | Source | First block | First transaction |
+| --- | --- | --- | --- | --- |
+| 1 | `0x244531C571966f90f4849e03a507543d90f9C721` | V1 | `87158947` | `0x959bf5f6af6c697aab2fe008a3ee9d5a1596375a43de93ecd51ad32bee9a8d07` |
+| 2 | `0x3488857b003104e2B08A1D198f8a23BFF28B0045` | V1 | `87216573` | `0xab4cc6b681087a808d62ff0c9abb1c5f63bb9bdcbf834561fde1f6ba7e0e89bd` |
+| 3 | `0x03E99f09f0FC8D04864466bc37fd73Dd7ba3C6d0` | V2a | `88105075` | `0x46b38df9403fbb1b1e0f78b2def6d1d83f34ed18db1a055690db2d9290dae0ae` |
+| 4 | `0x3b1396B1ff61b79C742751CfB6f0f04eAc25Ec6a` | V2a | `88151112` | `0xa0acd4ff586623be4d2922b1f3b081e77577e901e082986d00114a3295df8f54` |
+| 5 | `0x5734C19D1907857d1e54F95D12300e2fc7B0C2cD` | V2a | `88151239` | `0xb1e90d6861811f26c359500a25dac8c8e36275131f8b172ef22a697ba74379d2` |
+| 6 | `0x8DeB56b4db62f48A6E1bC226220E24845B592Cb9` | V2b | `88204831` | `0xcfba3dcc7dd0ac8cb76dbb1f9db2e7b94365ba098ad58dd8c509946be63c62dd` |
+| 7 | `0x3FF01A0c3e70101bFb1dBb3742e135E7eD9e894F` | V2b | `88205043` | `0xc0c7caf0cd7ade2091423f7af5fc3cd3cb526bd5f15e0ec3715b2a2c094e6639` |
+| 8 | `0xAb87e74Ff69Ee0B6C1A73B884a80b737988DE081` | V2b | `88205651` | `0x2eb7ade5dfe9f76c3eb6f073bfef93f176a81c91ce90ed2270a5a5329df7e1e5` |
+
+Because V2b remains live until an approved cutover, this roster, root, and `genesisOffset` must be rerun at the final pre-deploy freeze block.
 
 ## SourceRegistryV1 Constructor
 
@@ -122,59 +141,84 @@ Required readback:
 
 ## MembershipSaleV3 Constructor Parameters
 
-| Parameter | Required value / status |
-| --- | --- |
-| `usdc` | `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E` |
-| `syn` | `0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170` |
-| `sourceRegistry` | Deployed and readback-verified `SourceRegistryV1` address, currently `TBD` |
-| `vault` | `0x205DdC8921A4C60106930eE35e1F395c8D13f464` |
-| `liquidity` | `0xa9b072db8DcDbb470235204B69D37275d74a2e25` |
-| `operations` | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` |
-| `genesisOffset` | `TBD` - freeze from Holder Index / V1-V2a-V2b continuity before deployment |
-| `v1MemberRoot` | `TBD` - must be a numbered historical-member proof root if enabled; raw SYN balance alone is not historical member identity |
-| `addrCaps[9]` | Candidate rehearsal values below; final values require founder signoff |
-| `maxUsdcPerTx` | Candidate rehearsal value below; final value requires founder signoff |
-| `reserveThroughSeat` | Candidate rehearsal value below; final value requires founder signoff |
-| `eraCaps[9]` | Candidate rehearsal values below; final values require founder signoff |
+The constructor order in `contracts/src/MembershipSaleV3.sol` is:
 
-## Current Candidate Rehearsal Values
+```solidity
+constructor(
+  address usdc_,
+  address syn_,
+  address sourceRegistry_,
+  address vault_,
+  address liquidity_,
+  address operations_,
+  uint256 genesisOffset_,
+  bytes32 v1MemberRoot_,
+  uint256[9] memory addrCaps_,
+  uint256 maxUsdcPerTx_,
+  uint256 reserveThroughSeat_,
+  uint256[9] memory eraCaps_
+)
+```
 
-These values are used by the current V3 fork rehearsal shape. They are not an activation instruction and must be final-frozen before any mainnet deployment.
+| Parameter | Value | Status |
+| --- | --- | --- |
+| `usdc_` | `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E` | Canonical Avalanche USDC |
+| `syn_` | `0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170` | Canonical SYN |
+| `sourceRegistry_` | TBD after SourceRegistryV1 deployment/readback | Blocks MembershipSaleV3 constructor until SourceRegistryV1 exists |
+| `vault_` | `0x205DdC8921A4C60106930eE35e1F395c8D13f464` | Canonical Vault wallet |
+| `liquidity_` | `0xa9b072db8DcDbb470235204B69D37275d74a2e25` | Canonical Liquidity wallet |
+| `operations_` | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` | Canonical Operations wallet |
+| `genesisOffset_` | Current derived value: `8` | Derived from V1 + V2a + V2b first-seen historical lineage as of block `88492338`; rerun if V2b changes |
+| `v1MemberRoot_` | Current derived value: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329` | V3 numbered historical-member root; rerun if V2b changes |
+| `addrCaps_` | `[25000000000, 1000000000, 2500000000, 5000000000, 10000000000, 15000000000, 20000000000, 25000000000, 25000000000]` | Derived from deployed V2b lineage |
+| `maxUsdcPerTx_` | `25000000000` | Derived from deployed V2b lineage |
+| `reserveThroughSeat_` | `10000` | Derived from deployed V2b lineage |
+| `eraCaps_` | See era-cap reconciliation below | Must resolve Era VII mismatch before deployment transaction |
 
-### `addrCaps[9]`
+## Derived Deployed-Lineage Values and V3 Candidate Drift
 
-| Index | Value |
-| ---: | ---: |
-| 0 | `25000000000` |
-| 1 | `1000000000` |
-| 2 | `2500000000` |
-| 3 | `5000000000` |
-| 4 | `10000000000` |
-| 5 | `15000000000` |
-| 6 | `20000000000` |
-| 7 | `25000000000` |
-| 8 | `25000000000` |
+### Address Caps
 
-### Other scalar values
+`addrCaps[9]` is derived from deployed V2b lineage and matches the V3 rehearsal candidate:
 
-| Parameter | Candidate value |
-| --- | ---: |
-| `maxUsdcPerTx` | `25000000000` |
-| `reserveThroughSeat` | `10000` |
+```text
+[
+  25000000000,
+  1000000000,
+  2500000000,
+  5000000000,
+  10000000000,
+  15000000000,
+  20000000000,
+  25000000000,
+  25000000000
+]
+```
 
-### `eraCaps[9]`
+### Scalar Limits
 
-| Index | Candidate value |
-| ---: | ---: |
-| 0 | `0` |
-| 1 | `416875000000000000000000` |
-| 2 | `1166500000000000000000000` |
-| 3 | `3333500000000000000000000` |
-| 4 | `6750000000000000000000000` |
-| 5 | `11250000000000000000000000` |
-| 6 | `12000000000000000000000000` |
-| 7 | `60000000000000000000000000` |
-| 8 | `150000000000000000000000000` |
+| Parameter | Value | Source |
+| --- | --- | --- |
+| `maxUsdcPerTx` | `25000000000` | Deployed V2b lineage |
+| `reserveThroughSeat` | `10000` | Deployed V2b lineage |
+
+### Era Caps
+
+The deployed V2b lineage and V3 rehearsal candidate differ at Era VII. This is a policy-sensitive V3 candidate drift and must be resolved before any transaction.
+
+| Index | Deployed-lineage value | V3 fork/test candidate | Status |
+| --- | --- | --- | --- |
+| 0 | `0` constructor input; contract exposes Era I as unlimited | `0` constructor input | Match |
+| 1 | `416875000000000000000000` | `416875000000000000000000` | Match |
+| 2 | `1166500000000000000000000` | `1166500000000000000000000` | Match |
+| 3 | `3333500000000000000000000` | `3333500000000000000000000` | Match |
+| 4 | `6750000000000000000000000` | `6750000000000000000000000` | Match |
+| 5 | `11250000000000000000000000` | `11250000000000000000000000` | Match |
+| 6 | `15000000000000000000000000` | `12000000000000000000000000` | INCONSISTENT - founder must freeze deployed-lineage 15,000,000 SYN or explicitly approve the V3 12,000,000 SYN candidate |
+| 7 | `60000000000000000000000000` | `60000000000000000000000000` | Match |
+| 8 | `150000000000000000000000000` | `150000000000000000000000000` | Match |
+
+Do not silently deploy with the V3 candidate value at index 6. The final parameter freeze must either align V3 tests/docs back to deployed lineage or explicitly document founder approval for the V3 change.
 
 ## Deterministic Era Pricing
 
@@ -194,30 +238,22 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 
 ## Parameter Consistency Check
 
-| Parameter | Current source | Classification | Decision needed |
-| --- | --- | --- | --- |
-| Avalanche chain ID | Canonical address table / app config | Ready to freeze | Confirm `43114` before deployment tooling |
-| USDC | Canonical address table / V3 rehearsal | Ready to freeze | Confirm native Avalanche USDC address |
-| SYN | Canonical address table / V3 rehearsal | Ready to freeze | Confirm live SYN address |
-| Vault wallet | Canonical address table / V3 rehearsal | Ready to freeze | Confirm wallet remains intended Vault route |
-| Liquidity wallet | Canonical address table / V3 rehearsal | Ready to freeze | Confirm wallet remains intended Liquidity route |
-| Operations wallet | Canonical address table / V3 rehearsal | Ready to freeze | Confirm wallet remains intended Operations route |
-| SourceRegistryV1 deploy-first order | Constructor dependency in `MembershipSaleV3` | Ready to freeze | Deploy SourceRegistryV1 before MembershipSaleV3 |
-| SourceRegistryV1 owner at construction | `Ownable(msg.sender)` | Ready to freeze | Deployer starts as temporary owner |
-| Ownership transfer to hardware owner | Ownable2Step rehearsal | Partially ready | Timing confirmed; final owner address still TBD |
-| MembershipSaleV3 default pause state | Contract inherits Pausable but constructor does not pause | Needs founder confirmation | If non-live deployment happens unpaused, keep zero-funded and no registry switch; otherwise patching contract would require explicit approval |
-| Initial V3 funding | Deployment boundary doctrine | Ready to freeze | Founder confirmed zero funding until separately approved |
-| Source records at deployment | `SourceRegistryV1.createSource` is owner action after deploy | Ready to freeze | Founder confirmed no source records at deployment time |
-| `genesisOffset` | V3 constructor / fork rehearsal uses `333` | Cannot be derived yet | Must be frozen from Holder Index / V1-V2a-V2b continuity; do not guess |
-| Numbered historical-member proof root | V3 constructor / historical-member proofs | Cannot be derived yet | Must be numbered wallet + member number root, not address-only proof |
-| Historical proof input list/source file | Needed to prove numbered root | Cannot be derived yet | Founder must confirm source file and inclusion policy |
-| Include all 8 existing founder/family wallets | Founder historical continuity decision | Needs founder confirmation | Must be answered before final root freeze |
-| `addrCaps[9]` | Current V3 fork rehearsal values | Needs founder confirmation | Values are test-proven but still policy-sensitive |
-| `eraCaps[9]` | Current V3 fork rehearsal values | Needs founder confirmation | Values are test-proven but still policy-sensitive |
-| `maxUsdcPerTx` | Current V3 fork rehearsal value | Needs founder confirmation | Candidate `25000000000` |
-| `reserveThroughSeat` | Current V3 fork rehearsal value | Needs founder confirmation | Candidate `10000`; must be understood before deployment |
-
-Blocker rule: if any `TBD`, proof-root, ownership, funding, or registry-switch input is unresolved, non-live deployment/readback remains PENDING FOUNDER INPUTS. Public activation remains NO-GO regardless.
+| Check | Status | Notes |
+| --- | --- | --- |
+| Deployment and owner wallet distinct | Passed | Founder supplied distinct addresses |
+| Deployment/owner wallet not forbidden protocol addresses | Passed | Neither equals USDC, SYN, V1, V2a, V2b, Archive1155, Vault, Liquidity, or Operations |
+| Vault, Liquidity, and Operations distinct | Passed | Canonical route wallets are distinct |
+| Frontend registry remains V2b | Passed | No V3 registry address is live or configured |
+| V3 SourceRegistry and MembershipSale live addresses | Passed | No live addresses; both remain pending |
+| Initial V3 funding | Passed | Founder direction is zero initial funding |
+| No source records at deployment | Passed | Founder direction is no records before separate approval |
+| Historical proof root format | Passed conceptually | V3 requires numbered wallet + member number leaves, not address-only leaves |
+| Historical member roster/root currentness | Conditional | Current derived root covers 8 historical members as of block `88492338`; rerun if V2b records new members before deploy |
+| `addrCaps[9]` | Ready | Derived from deployed V2b lineage |
+| `maxUsdcPerTx` | Ready | Derived from deployed V2b lineage |
+| `reserveThroughSeat` | Ready | Derived from deployed V2b lineage |
+| `eraCaps[9]` | Blocking mismatch | V3 candidate differs from deployed lineage at Era VII/index 6 |
+| MembershipSaleV3 default live state | Operational blocker | If constructor leaves sale unpaused, non-live safety depends on zero funding, no registry switch, no public UI, readback immediately after deploy, and immediate pause if owner flow permits |
 
 ## Non-Live Safety Rule For Unpaused Default State
 
@@ -263,12 +299,51 @@ Before any funding or activation decision, read back:
 - `/v3-preview` remains read-only and candidate-only
 - V3 still not live
 
+## Final Non-Live Deployment/Readback Checklist
+
+This checklist is preparation only. It is not permission to deploy.
+
+1. Confirm GitHub main is clean and matches the reviewed commit.
+2. Confirm no V3 address is configured in frontend registry.
+3. Confirm SourceRegistryV1 bytecode/constructor shape.
+4. Deploy SourceRegistryV1 only if separately approved.
+5. Read back SourceRegistryV1 address, owner, pendingOwner.
+6. Transfer SourceRegistryV1 ownership to owner hardware wallet if separately approved.
+7. Owner hardware wallet accepts SourceRegistryV1 ownership.
+8. Rerun historical-member root generation at the final freeze block if V2b is still live.
+9. Resolve Era VII cap mismatch before preparing MembershipSaleV3 constructor args.
+10. Prepare MembershipSaleV3 constructor args in exact contract order.
+11. Deploy MembershipSaleV3 only if separately approved.
+12. Read back MembershipSaleV3 constructor constants.
+13. Transfer MembershipSaleV3 ownership to owner hardware wallet if separately approved.
+14. Owner hardware wallet accepts MembershipSaleV3 ownership before any funding/activation.
+15. Keep zero SYN funding unless separately approved.
+16. Keep no source records unless separately approved.
+17. Keep frontend registry pointed at V2b.
+18. Keep V3 public buy UI disabled / candidate-only.
+19. If owner flow permits and founder approves, pause MembershipSaleV3 immediately after readback.
+20. Record deployment/readback evidence in docs before any next decision.
+
 ## Remaining Blockers
 
-- External review final signoff
-- Second analyzer
-- Repeatable Slither / payout-escrow disposition
-- Hardware-wallet deployment and owner addresses
-- Legal/product signoff
-- Clean full Foundry run in stable CI/Linux/WSL/reviewer environment
-- Final freeze of `genesisOffset`, numbered historical-member proof root, `addrCaps`, `eraCaps`, `maxUsdcPerTx`, and `reserveThroughSeat`
+### Blocks Non-Live Deployment/Readback Transaction
+
+- SourceRegistryV1 must be deployed/read back first so the MembershipSaleV3 `sourceRegistry_` constructor argument is known.
+- Historical-member roster, `genesisOffset`, and numbered V3 root must be rerun at the final pre-deploy freeze block if V2b remains live before the transaction.
+- Era VII cap mismatch must be resolved: either freeze the deployed-lineage `15,000,000 SYN` value or explicitly approve the V3 candidate `12,000,000 SYN` value and update tests/docs accordingly.
+- MembershipSaleV3 unpaused-default handling must be operationally confirmed for a non-live deployment/readback: zero funding, no source records, no registry switch, no public UI, and pause immediately after readback if owner flow permits.
+
+### Blocks Funding, Unpause, Registry Switch, or Public Activation
+
+- External review final signoff.
+- Second static analyzer or documented reviewer-accepted substitute.
+- Repeatable Slither / payout-escrow disposition.
+- Hardware-wallet deployment ceremony and owner acceptance readback.
+- Legal/product signoff.
+- Clean full Foundry run in stable CI/Linux/WSL/reviewer environment.
+- Frontend registry update, read-only verification, and activation plan approval.
+
+### Optional / Process Items
+
+- Backup hardware-wallet public address remains TBD / optional.
+- A deterministic committed V3 numbered-root generator or final proof artifact should be prepared before actual deployment packaging.
