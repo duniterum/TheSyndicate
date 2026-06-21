@@ -2,7 +2,7 @@
 
 Status: DEPLOYED NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED
 
-This sheet now records the completed non-live deployment/readback posture. It does not authorize funding, unpause, frontend activation, registry switch, public V3 buy UI, source-record creation, or any private-key/broadcast action. The readback log is `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`.
+This sheet now records the completed non-live deployment/readback posture. It does not authorize funding, unpause, frontend activation, registry switch, public V3 buy UI, source-record creation, or any private-key/broadcast action. The readback log is `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`. The next funding/activation boundary plan is `docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md`.
 
 ## Boundaries
 
@@ -350,3 +350,4 @@ This checklist is preparation only. It is not permission to deploy.
 
 - Backup hardware-wallet public address remains TBD / optional.
 - Deterministic committed V3 numbered-root generator and freeze-block proof artifact now exist; rerun at the final pre-deploy freeze block if V2b remains live before transaction.
+

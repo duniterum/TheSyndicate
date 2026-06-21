@@ -55,6 +55,18 @@ Final readback block: `88506731`
 | MembershipSaleV3 `memberCount()` | `8` |
 | MembershipSaleV3 `currentEra()` | `1` |
 
+
+## Source Verification Status
+
+Source verification was checked after the non-live deployment/readback ceremony:
+
+- Snowtrace API: SourceRegistryV1 VERIFIED; MembershipSaleV3 VERIFIED.
+- Routescan API: SourceRegistryV1 VERIFIED; MembershipSaleV3 VERIFIED.
+- Sourcify: SourceRegistryV1 PERFECT MATCH; MembershipSaleV3 PERFECT MATCH.
+
+Compiler/settings match the intended Remix Standard JSON profile: Solidity `0.8.24+commit.e11b9ed9`, optimizer enabled, 200 runs, `viaIR: true`, EVM `paris`.
+
+Detailed links and the future funding decision packet are recorded in `docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md`.
 ## Non-Live Safety Boundary
 
 V3 is deployed but not practically live because:
@@ -80,3 +92,4 @@ Until SYN is funded into MembershipSaleV3, V3 cannot sell SYN.
 Funding MembershipSaleV3 is a separate approval ceremony. If funding is approved later, pause/unpause/activation strategy must be decided before funding. Registry switch and public UI remain separate later approvals.
 
 No SYN funding may happen until a separate funding/activation ceremony is explicitly approved.
+

@@ -548,6 +548,7 @@ describe("production coherence guards", () => {
     const syndicateConfig = read("src/lib/syndicate-config.ts");
     const v3ParameterSheet = read("docs/V3_DEPLOYMENT_PARAMETER_SHEET.md");
     const v3ReadbackLog = read("docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md");
+    const v3NextBoundary = read("docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md");
 
     expect(map).toContain("Membership Sale V2b | LIVE / ACTIVE / UNAUDITED EARLY");
     expect(map).toContain("Membership Sale V1 | LIVE / SEALED HISTORICAL");
@@ -578,6 +579,7 @@ describe("production coherence guards", () => {
     expect(sourceTable).toContain("Membership Sale V2b (current live buy target)");
     expect(sourceTable).toContain("0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b");
     expect(sourceTable).toContain("V3 SourceRegistry | `0x780013bB358be6be95b401901264FC7c22a595a6` (deployed non-live");
+    expect(sourceTable).toContain("DEPLOYED NON-LIVE INFRA / REFERRAL UI PENDING");
     expect(sourceTable).toContain("V3 MembershipSale | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` (deployed non-live");
     expect(sourceTable).toContain("not registry-wired");
     expect(sourceTable).not.toMatch(/\| Membership Sale \| `0x0020Df30C127306f0F5B44E6a6E4368D2855842d`/);
@@ -594,6 +596,11 @@ describe("production coherence guards", () => {
     expect(v3ParameterSheet).toContain("pause is deferred intentionally");
     expect(v3ReadbackLog).toContain("MembershipSaleV3 is deployed, owner-accepted, zero-funded, not registry-wired, not activated, and not live.");
     expect(v3ReadbackLog).toContain("paused() is false by deployment default; pause is deferred intentionally");
+    expect(v3ReadbackLog).toContain("SourceRegistryV1 PERFECT MATCH; MembershipSaleV3 PERFECT MATCH");
+    expect(v3NextBoundary).toContain("V3 Next Boundary: Funding and Activation Are Separate");
+    expect(v3NextBoundary).toContain("Snowtrace API | VERIFIED | VERIFIED");
+    expect(v3NextBoundary).toContain("Sourcify | PERFECT MATCH | PERFECT MATCH");
+    expect(v3NextBoundary).toContain("No SYN may be transferred to MembershipSaleV3 until a separate funding/activation ceremony is explicitly approved.");
     expect(v3ReadbackLog).toContain("availableSyn()` | `0`");
     expect(v3ReadbackLog).toContain("SourceRegistryV1 `SourceCreated` logs since deploy | `0`");
     expect(v3ParameterSheet).not.toContain("- V3 is live.");
@@ -607,11 +614,17 @@ describe("production coherence guards", () => {
     const syndicateConfig = read("src/lib/syndicate-config.ts");
     const v3Preview = read("src/routes/v3-preview.tsx");
     const readback = read("docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md");
+    const nextBoundary = read("docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md");
 
     expect(readback).toContain("DEPLOYED / NON-LIVE / OWNER ACCEPTED / ZERO-FUNDED / NOT REGISTRY-WIRED / NOT ACTIVATED");
     expect(readback).toContain("No SYN funding may happen until a separate funding/activation ceremony is explicitly approved.");
     expect(readback).toContain("SourceCreated` logs since deploy | `0`");
     expect(readback).toContain("MembershipSaleV3 `paused()` | `false`");
+    expect(nextBoundary).toContain("No source records.");
+    expect(nextBoundary).toContain("No registry switch.");
+    expect(nextBoundary).toContain("No public V3 buy UI.");
+    expect(nextBoundary).toContain("No V3 activation.");
+    expect(nextBoundary).toContain("Founder decision required. Do not invent amount.");
 
     expect(syndicateConfig).toContain('"0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b"');
     expect(syndicateConfig).toContain("Membership Sale V2b");
@@ -640,6 +653,8 @@ describe("production coherence guards", () => {
     expect(readiness).not.toMatch(/Patron Seal[\s\S]{0,220}public mint is open/i);
   });
 });
+
+
 
 
 

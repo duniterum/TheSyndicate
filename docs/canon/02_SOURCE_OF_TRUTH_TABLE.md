@@ -41,7 +41,7 @@ PENDING (not deployed) Â· FUTURE (not built) Â· MOCK (placeholder data â€
 | Activity | `protocol-events.ts` | reads chain | `STORY_ENGINE_*` | LIVE | High | Low |
 | Chronicle | `chronicle-entries.ts`, `validateChronicleEntry` | â€” | `PROTOCOL_CHRONICLE_*` | PARTIAL (curated) | Low | High (vs Activity) |
 | Members metric | `MEMBER_DEFINITION` (`syndicate-config.ts`) â€” read by both `protocol-truth.ts` & `data-verification-registry.ts` | sale events | `DATA_VERIFICATION_REGISTRY.md` | PARTIAL (until first buy) | High | Low â€” unified to one shared definition 2026-06-11 |
-| Referral / Source attribution | `future-referral.ts`, `preview/referral.ts`, SourceRegistryV1 candidate | SourceRegistryV1 candidate; no live address | `IDENTITY_ATTRIBUTION_CONSTITUTION.md`, `V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `REVENUE_ATTRIBUTION_LAYER.md` | PENDING / CANDIDATE | Med | High (must not imply source owns member or referral is live) |
+| Referral / Source attribution | `future-referral.ts`, `preview/referral.ts`, deployed non-live SourceRegistryV1 docs | SourceRegistryV1 `0x780013bB358be6be95b401901264FC7c22a595a6`; deployed non-live; no source records; not frontend-wired | `IDENTITY_ATTRIBUTION_CONSTITUTION.md`, `V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `REVENUE_ATTRIBUTION_LAYER.md`, `V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md` | DEPLOYED NON-LIVE INFRA / REFERRAL UI PENDING | Med | High (must not imply source owns member or referral is live) |
 | Reward / Reputation | `quest-hooks.ts` (labs) | none | `REPUTATION_FORMULA_DOCTRINE.md` | FUTURE | Low | High |
 | Burn mechanism (automated) | *(none)* | none | â€” | FUTURE | High (none) | Med (the one-time Founder Burn is real and surfaces as *Burned supply* above; no recurring/automated burn mechanism) |
 | SeatRecord721 | `contract-registry.ts` (null) | none | `SEAT_RECORD_ARCHITECTURE_DECISION.md` | PENDING | High | Low (correctly null) |
@@ -88,4 +88,5 @@ PENDING (not deployed) Â· FUTURE (not built) Â· MOCK (placeholder data â€
    They are *conceptually* distinct (70% USDC operating wallet vs 25% SYN long-term
    reserve) but resolve to `0x205DdCâ€¦464` on-chain. This must be disclosed wherever
    either is shown, never presented as two separate balances.
+
 
