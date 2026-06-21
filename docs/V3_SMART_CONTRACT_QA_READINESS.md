@@ -1,4 +1,4 @@
-# V3 Smart Contract QA Readiness
+﻿# V3 Smart Contract QA Readiness
 
 Status: QA PASS FOR CANDIDATE / EXTERNAL REVIEW READY / NOT DEPLOYMENT-READY
 
@@ -324,8 +324,9 @@ The rehearsal should prove:
 - V1/V2/V2b historical seat posture remains intact,
 - no V3 frontend activation happens as part of rehearsal.
 
-Real QuickNode fork rehearsal was rerun after the historical-member migration
-patch. Historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
+Real QuickNode fork rehearsal was rerun after the historical-member migration patch, then rerun again after the SYN-balance-gate patch.
+SYN-balance-gate patch commit: 1581edf6b78f59055b4f618a4655377285a9cd1d.
+Previous historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
 
 Result:
 
@@ -367,3 +368,4 @@ Still blocked before audit/deployment:
 
 Verdict: V3 candidate is ready to package for external review, but still not
 deployment-ready.
+

@@ -1,11 +1,12 @@
-# V3 External Review Package
+﻿# V3 External Review Package
 
 Status: EXTERNAL REVIEW PACKAGE READY / NO DEPLOYMENT AUTHORIZED / V3 NOT LIVE
 
 Current reviewer-findings disposition state:
 
 ```text
-Historical-member migration patch committed at 664cdd0b185104c0665549c841e1fd492bc6e287.
+Latest SYN-balance-gate patch committed at 1581edf6b78f59055b4f618a4655377285a9cd1d.
+Previous historical-member migration patch committed at 664cdd0b185104c0665549c841e1fd492bc6e287.
 ```
 
 This package is the reviewer front door for the V3 candidate contracts. It does
@@ -101,13 +102,14 @@ Result:
 
 ```text
 SourceRegistryV1Test: 20 passed
-MembershipSaleV3Test: 39 passed
+MembershipSaleV3Test: 41 passed
 RehearsalForkV3 local/skip path: 3 passed, 1 skipped
-RehearsalForkV3 real QuickNode fork after historical-member migration patch: 4 passed, 0 failed, 0 skipped
+RehearsalForkV3 real QuickNode fork after SYN-balance-gate patch: 4 passed, 0 failed, 0 skipped
 ```
 
-The real QuickNode fork was rerun after the historical-member migration patch.
-Historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
+The real QuickNode fork was rerun after the SYN-balance-gate patch.
+SYN-balance-gate patch commit: 1581edf6b78f59055b4f618a4655377285a9cd1d.
+Previous historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
 The local/skip path remains useful when `AVAX_RPC` is unset.
 
 Full unfiltered Foundry suite status:
@@ -262,8 +264,9 @@ historical member identity. Raw SYN balance is not a recipient membership gate.
 Existing historical members use numbered historical proofs to preserve their
 original member number.
 
-Real QuickNode fork rehearsal was rerun after the historical-member migration
-patch. Historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
+Real QuickNode fork rehearsal was rerun after the SYN-balance-gate patch.
+SYN-balance-gate patch commit: 1581edf6b78f59055b4f618a4655377285a9cd1d.
+Previous historical-member migration patch commit: 664cdd0b185104c0665549c841e1fd492bc6e287.
 
 Result:
 
@@ -342,3 +345,4 @@ AVAX_RPC=<QuickNode Avalanche C-Chain HTTPS endpoint> forge test --match-contrac
 7. Only then prepare a deployment-decision meeting.
 
 No step above authorizes deployment or live activation.
+
