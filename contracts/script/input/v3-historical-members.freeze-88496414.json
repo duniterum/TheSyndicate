@@ -1,0 +1,87 @@
+﻿{
+  "schema": "syndicate.v3.historical-members.input.v1",
+  "purpose": "V3 numbered historical-member freeze input for MembershipSaleV3 constructor root",
+  "freezeBlock": 88496414,
+  "chainId": 43114,
+  "sourceContracts": {
+    "V1": "0x0020Df30C127306f0F5B44E6a6E4368D2855842d",
+    "V2a": "0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48",
+    "V2b": "0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b"
+  },
+  "readinessScan": {
+    "v1Logs": 5,
+    "v2aLogs": 3,
+    "v2bLogs": 6,
+    "distinctFirstSeenWallets": 8,
+    "v2bMemberCount": 8,
+    "newV2bMemberSincePreviousParameterSheet": false
+  },
+  "orderingRule": "Sort source purchase events by first-seen chain order: firstBlock, logIndex, firstTransaction as final tie-breaker. Dedupe by checksum wallet, keeping first occurrence. Assign memberNumber 1..N in that order.",
+  "leafFormat": "keccak256(bytes.concat(keccak256(abi.encode(wallet, memberNumber))))",
+  "members": [
+    {
+      "memberNumber": 1,
+      "wallet": "0x244531C571966f90f4849e03a507543d90f9C721",
+      "source": "V1",
+      "firstBlock": 87158947,
+      "firstTransaction": "0x959bf5f6af6c697aab2fe008a3ee9d5a1596375a43de93ecd51ad32bee9a8d07",
+      "logIndex": 13
+    },
+    {
+      "memberNumber": 2,
+      "wallet": "0x3488857b003104e2B08A1D198f8a23BFF28B0045",
+      "source": "V1",
+      "firstBlock": 87216573,
+      "firstTransaction": "0xab4cc6b681087a808d62ff0c9abb1c5f63bb9bdcbf834561fde1f6ba7e0e89bd",
+      "logIndex": 45
+    },
+    {
+      "memberNumber": 3,
+      "wallet": "0x03E99f09f0FC8D04864466bc37fd73Dd7ba3C6d0",
+      "source": "V2a",
+      "firstBlock": 88105075,
+      "firstTransaction": "0x46b38df9403fbb1b1e0f78b2def6d1d83f34ed18db1a055690db2d9290dae0ae",
+      "logIndex": 6
+    },
+    {
+      "memberNumber": 4,
+      "wallet": "0x3b1396B1ff61b79C742751CfB6f0f04eAc25Ec6a",
+      "source": "V2a",
+      "firstBlock": 88151112,
+      "firstTransaction": "0xa0acd4ff586623be4d2922b1f3b081e77577e901e082986d00114a3295df8f54",
+      "logIndex": 35
+    },
+    {
+      "memberNumber": 5,
+      "wallet": "0x5734C19D1907857d1e54F95D12300e2fc7B0C2cD",
+      "source": "V2a",
+      "firstBlock": 88151239,
+      "firstTransaction": "0xb1e90d6861811f26c359500a25dac8c8e36275131f8b172ef22a697ba74379d2",
+      "logIndex": 6
+    },
+    {
+      "memberNumber": 6,
+      "wallet": "0x8DeB56b4db62f48A6E1bC226220E24845B592Cb9",
+      "source": "V2b",
+      "firstBlock": 88204831,
+      "firstTransaction": "0xcfba3dcc7dd0ac8cb76dbb1f9db2e7b94365ba098ad58dd8c509946be63c62dd",
+      "logIndex": 6
+    },
+    {
+      "memberNumber": 7,
+      "wallet": "0x3FF01A0c3e70101bFb1dBb3742e135E7eD9e894F",
+      "source": "V2b",
+      "firstBlock": 88205043,
+      "firstTransaction": "0xc0c7caf0cd7ade2091423f7af5fc3cd3cb526bd5f15e0ec3715b2a2c094e6639",
+      "logIndex": 6
+    },
+    {
+      "memberNumber": 8,
+      "wallet": "0xAb87e74Ff69Ee0B6C1A73B884a80b737988DE081",
+      "source": "V2b",
+      "firstBlock": 88205651,
+      "firstTransaction": "0x2eb7ade5dfe9f76c3eb6f073bfef93f176a81c91ce90ed2270a5a5329df7e1e5",
+      "logIndex": 7
+    }
+  ]
+}

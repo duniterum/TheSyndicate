@@ -1,4 +1,4 @@
-﻿# V3 Smart Contract QA Readiness
+# V3 Smart Contract QA Readiness
 
 Status: QA PASS FOR CANDIDATE / EXTERNAL REVIEW READY / NOT DEPLOYMENT-READY
 
@@ -78,6 +78,7 @@ The V3 candidate test suite now covers:
 - address-only V1 proofs are disabled so they cannot create member-number-zero
   V3 receipts,
 - numbered historical-member proofs set both `knownMember` and `memberNumberOf`,
+- `V3HistoricalMemberRootTest` verifies the committed freeze-block `88496414` root artifact, all 8 generated proofs, wrong-wallet/wrong-number/root-mismatch failures, duplicate-number protection, historical-member post-claim buy behavior, and unknown-wallet V3 member numbering,
 - existing SYN holders with valid historical-member-number proofs can buy
   through V3 without creating a new first seat,
 - unknown wallets with transferred or dusted SYN can still buy and receive a

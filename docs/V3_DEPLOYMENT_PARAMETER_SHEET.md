@@ -79,8 +79,8 @@ The founder must provide only public wallet addresses and public parameter decis
 | 2 | Owner hardware-wallet public address | Supplied: `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73` |
 | 3 | Optional backup hardware-wallet public address | TBD / optional |
 | 4 | Whether deployer and owner are distinct or intentionally same | Confirmed distinct |
-| 5 | Final `genesisOffset` | Current derived value: `8` from V1 + V2a + V2b historical lineage as of block `88492338`; must be rerun if V2b records more members before V3 deployment |
-| 6 | Final numbered historical-member proof root | Current derived value: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`; V3 leaf format is numbered wallet + member number, not address-only |
+| 5 | Final `genesisOffset` | Generated artifact value: `8` from V1 + V2a + V2b historical lineage as of freeze block `88496414`; must be rerun if V2b records more members before V3 deployment |
+| 6 | Final numbered historical-member proof root | Generated artifact value: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`; input hash `sha256:72541a446315f30d4b51297a570530d607970700d9b3165050359edfe4669765`; V3 leaf format is numbered wallet + member number, not address-only |
 | 7 | Whether all 8 existing founder/family wallets are included in numbered historical-member proofs | All 8 current historical member wallets from V1/V2a/V2b are included; the founder/family label itself is not independently provable from chain data |
 | 8 | Final `addrCaps[9]` | Derived from deployed V2b lineage; ready to freeze subject final pre-transaction readback |
 | 9 | Final `eraCaps[9]` | Derived from deployed V2b lineage and live V2b readback; ready to freeze subject final pre-transaction readback |
@@ -100,12 +100,17 @@ Current derivation status:
 
 - QuickNode readbacks succeeded for chain ID, wallet code/balances, and deployed sale getters.
 - QuickNode log scanning was rejected by the RPC provider, so the historical member roster was derived through a public Avalanche RPC event scan and cross-checked against V2b `memberCount`.
-- Public RPC scan head: `88492338`.
+- Readiness scan / freeze block: `88496414`.
 - V1 logs: `5`; V2a logs: `3`; V2b logs: `6`.
 - Distinct first-seen historical members: `8`.
 - V2b on-chain `memberCount`: `8`.
-- Current derived V3 `genesisOffset`: `8`.
-- Current derived numbered root: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`.
+- Generated artifact V3 `genesisOffset`: `8`.
+- Generated numbered root: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`.
+- Generator: `contracts/script/generate-v3-historical-members-root.mjs`.
+- Input artifact: `contracts/script/input/v3-historical-members.freeze-88496414.json`.
+- Output artifact: `contracts/script/output/v3-historical-members-root.freeze-88496414.json`.
+- Input hash: `sha256:72541a446315f30d4b51297a570530d607970700d9b3165050359edfe4669765`.
+- Generated root matches previously documented root: yes.
 - Leaf format: `keccak256(bytes.concat(keccak256(abi.encode(wallet, memberNumber))))`.
 - Leaf encoding: `['address','uint256']`.
 
@@ -168,8 +173,8 @@ constructor(
 | `vault_` | `0x205DdC8921A4C60106930eE35e1F395c8D13f464` | Canonical Vault wallet |
 | `liquidity_` | `0xa9b072db8DcDbb470235204B69D37275d74a2e25` | Canonical Liquidity wallet |
 | `operations_` | `0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80` | Canonical Operations wallet |
-| `genesisOffset_` | Current derived value: `8` | Derived from V1 + V2a + V2b first-seen historical lineage as of block `88492338`; rerun if V2b changes |
-| `v1MemberRoot_` | Current derived value: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329` | V3 numbered historical-member root; rerun if V2b changes |
+| `genesisOffset_` | Generated artifact value: `8` | Derived from V1 + V2a + V2b first-seen historical lineage as of freeze block `88496414`; rerun if V2b changes |
+| `v1MemberRoot_` | Generated artifact value: `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329` | V3 numbered historical-member root from committed artifact; rerun if V2b changes |
 | `addrCaps_` | `[25000000000, 1000000000, 2500000000, 5000000000, 10000000000, 15000000000, 20000000000, 25000000000, 25000000000]` | Derived from deployed V2b lineage |
 | `maxUsdcPerTx_` | `25000000000` | Derived from deployed V2b lineage |
 | `reserveThroughSeat_` | `10000` | Derived from deployed V2b lineage |
@@ -246,8 +251,8 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 | V3 SourceRegistry and MembershipSale live addresses | Passed | No live addresses; both remain pending |
 | Initial V3 funding | Passed | Founder direction is zero initial funding |
 | No source records at deployment | Passed | Founder direction is no records before separate approval |
-| Historical proof root format | Passed conceptually | V3 requires numbered wallet + member number leaves, not address-only leaves |
-| Historical member roster/root currentness | Conditional | Current derived root covers 8 historical members as of block `88492338`; rerun if V2b records new members before deploy |
+| Historical proof root format | Passed by artifact and Foundry test | V3 requires numbered wallet + member number leaves, not address-only leaves |
+| Historical member roster/root currentness | Conditional | Generated root covers 8 historical members as of freeze block `88496414`; rerun if V2b records new members before deploy |
 | `addrCaps[9]` | Ready | Derived from deployed V2b lineage |
 | `maxUsdcPerTx` | Ready | Derived from deployed V2b lineage |
 | `reserveThroughSeat` | Ready | Derived from deployed V2b lineage |
@@ -328,7 +333,7 @@ This checklist is preparation only. It is not permission to deploy.
 ### Blocks Non-Live Deployment/Readback Transaction
 
 - SourceRegistryV1 must be deployed/read back first so the MembershipSaleV3 `sourceRegistry_` constructor argument is known.
-- Historical-member roster, `genesisOffset`, and numbered V3 root must be rerun at the final pre-deploy freeze block if V2b remains live before the transaction.
+- Historical-member roster, `genesisOffset`, and numbered V3 root must be rerun at the final pre-deploy freeze block if V2b remains live before the transaction; committed freeze-block artifact exists for block `88496414`.
 - MembershipSaleV3 unpaused-default handling must be operationally confirmed for a non-live deployment/readback: zero funding, no source records, no registry switch, no public UI, and pause immediately after readback if owner flow permits.
 
 ### Blocks Funding, Unpause, Registry Switch, or Public Activation
@@ -344,4 +349,4 @@ This checklist is preparation only. It is not permission to deploy.
 ### Optional / Process Items
 
 - Backup hardware-wallet public address remains TBD / optional.
-- A deterministic committed V3 numbered-root generator or final proof artifact should be prepared before actual deployment packaging.
+- Deterministic committed V3 numbered-root generator and freeze-block proof artifact now exist; rerun at the final pre-deploy freeze block if V2b remains live before transaction.
