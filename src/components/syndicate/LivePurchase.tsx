@@ -45,6 +45,7 @@ import { recordTx } from "@/lib/tx-history";
 import { useMintHashPersistence } from "@/lib/mint-persistence";
 import { classifyTxError } from "@/lib/tx-errors";
 import { useHolderIndex } from "@/lib/holder-index";
+import { getV3HistoricalMember } from "@/lib/v3-historical-members";
 import { buildMembershipCommerceReceipt } from "@/lib/protocol-commerce-receipt";
 import { CANONICAL_ORIGIN } from "@/lib/canonical-origin";
 import { buildReferralShareUrl } from "@/lib/referral-attribution";
@@ -227,6 +228,11 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
     quotedSynRaw !== undefined &&
     quotedSynRaw > stats.availableSyn;
   const isPaused = stats.paused === true;
+  const v3HistoricalMember =
+    ACTIVE_SALE_VERSION === "v3" ? getV3HistoricalMember(address) : undefined;
+  const historicalMemberBlocked = v3HistoricalMember !== undefined;
+  const historicalMemberGuardMessage =
+    "Historical member wallet detected. V3 direct buy requires historical-member recognition to preserve your member number. Use a new wallet for a new V3 seat, or wait for historical-member proof flow.";
 
   // ── On-chain per-wallet per-era cumulative cap (anti-whale) ──────────────
   // A buy whose USDC amount exceeds this wallet's remaining era headroom reverts
@@ -289,6 +295,12 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
       disabled: switchPending,
       tone: "gold",
       onClick: () => void gate.switchToAvalanche(),
+    };
+  } else if (historicalMemberBlocked) {
+    state = {
+      label: "Historical member recognition required",
+      disabled: true,
+      tone: "muted",
     };
   } else if (isPaused) {
     state = { label: "Sale Paused", disabled: true, tone: "muted" };
@@ -492,7 +504,8 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
     userBal.usdcAllowance !== undefined && userBal.usdcBalance !== undefined;
   const saleActionable =
     isConnected && !wrongChain && walletReady && !isPaused && !noInventory &&
-    !belowMin && quoteReady && !exceedsInventory && !exceedsEraCap && !insufficientUsdc;
+    !historicalMemberBlocked && !belowMin && quoteReady && !exceedsInventory &&
+    !exceedsEraCap && !insufficientUsdc;
 
   const approveStatus: PurchaseStepStatus = approveErrored
     ? "failed"
@@ -690,6 +703,20 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
 
             {/* Pre-signature explainer: what the two wallet prompts actually do */}
             {isConnected && !wrongChain && <WalletAskExplainer />}
+
+            {historicalMemberBlocked && (
+              <div className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3">
+                <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
+                  Historical member wallet detected
+                </p>
+                <p className="mt-1.5 text-xs leading-relaxed text-amber-900/85 dark:text-amber-200/85">
+                  {historicalMemberGuardMessage}
+                </p>
+                <p className="mt-2 mono text-[10px] uppercase tracking-[0.14em] text-amber-900/70 dark:text-amber-200/70">
+                  Preserves Member #{v3HistoricalMember.memberNumber}
+                </p>
+              </div>
+            )}
 
             {/* Recovery / post-approve guidance: allowance is on-chain, seat is not */}
             {showBuyGuidance && (

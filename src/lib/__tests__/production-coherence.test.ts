@@ -624,6 +624,8 @@ describe("production coherence guards", () => {
     const syndicateConfig = read("src/lib/syndicate-config.ts");
     const saleHooks = read("src/lib/sale-hooks.ts");
     const livePurchase = read("src/components/syndicate/LivePurchase.tsx");
+    const v3HistoricalMembers = read("src/lib/v3-historical-members.ts");
+    const membershipSaleV3 = read("contracts/src/MembershipSaleV3.sol");
     const v3Preview = read("src/routes/v3-preview.tsx");
     const readback = read("docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md");
     const nextBoundary = read("docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md");
@@ -652,9 +654,22 @@ describe("production coherence guards", () => {
     expect(livePurchase).toContain('functionName: "buy"');
     expect(livePurchase).toContain("abi: SALE_V3_ABI");
     expect(livePurchase).toContain("args: [usdcRaw, address!, ZERO_SOURCE_ID, minSynOut, []]");
+    expect(livePurchase).toContain("getV3HistoricalMember");
+    expect(livePurchase).toContain("Historical member recognition required");
+    expect(livePurchase).toContain("Historical member wallet detected");
+    expect(livePurchase).toContain("V3 direct buy requires historical-member recognition");
+    expect(livePurchase).toContain("Preserves Member #");
     expect(livePurchase).toContain("approveReceipt.isSuccess");
     expect(livePurchase).toContain("buyReceipt.isSuccess");
     expect(livePurchase).toContain("refetchAllowance()");
+    expect(v3HistoricalMembers).toContain(
+      "0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329",
+    );
+    expect(v3HistoricalMembers).toContain("V3_HISTORICAL_MEMBERS");
+    expect(v3HistoricalMembers).toContain("memberNumber: 8");
+    expect(v3HistoricalMembers).toContain("0xAb87e74Ff69Ee0B6C1A73B884a80b737988DE081");
+    expect(membershipSaleV3).toContain("claimHistoricalMembership");
+    expect(membershipSaleV3).toContain("if (v1Proof.length > 0) revert InvalidProof();");
     expect(v3Preview).toContain("The live buy path now");
     expect(v3Preview).toContain("MembershipSaleV3 with a zero source ID");
     expect(v3Preview).toContain("NOT LIVE");
