@@ -38,7 +38,7 @@ const PRESETS: Record<Preset, PresetConfig> = {
       </>
     ),
     description:
-      "Buy SYN on the live Membership Sale. Same rate for everyone — every USDC routes 70% Vault, 20% Liquidity, 10% Operations, all on-chain.",
+      "Buy SYN on the live V3 Membership Sale. The current era sets the SYN per USDC quote; every USDC routes 70% Vault, 20% Liquidity, 10% Operations, all on-chain.",
     primary: { label: "Join The Syndicate →", href: "/join" },
     secondary: { label: "Verify on Avascan", href: "/transparency" },
   },

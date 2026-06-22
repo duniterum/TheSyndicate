@@ -96,7 +96,7 @@ export function EditorialHero() {
             </div>
 
             <div className="mt-5 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Live on Avalanche · Same rate for everyone · Every transaction verifiable
+              Live on Avalanche · V3 era pricing · Every transaction verifiable
             </div>
           </div>
 

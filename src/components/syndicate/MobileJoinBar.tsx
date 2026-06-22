@@ -87,7 +87,7 @@ export function MobileJoinBar() {
             {next !== undefined ? <>Next: Member #{next}</> : "Live on Avalanche"}
           </div>
           <div className="text-muted-foreground/80 truncate">
-            From ${SALE_MIN_USDC} · same rate for everyone
+            From ${SALE_MIN_USDC} · era-priced V3
           </div>
         </div>
         <Link

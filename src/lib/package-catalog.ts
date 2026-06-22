@@ -7,13 +7,13 @@
 // RANKS_V2 only; this catalog follows automatically.
 //
 // DOCTRINE:
-//   • A package shows: entry USDC · SYN at the live Genesis rate · the rank it
-//     unlocks · a recognition-only tagline · who the path is for. No returns,
+//   • A package shows: entry USDC · SYN at the current V3 era rate · the rank it
+//     maps to · a recognition-only tagline · who the path is for. No returns,
 //     no payouts, no yield.
 //   • Rank is recognition only — derived from cumulative USDC. A package does
 //     not buy rights, discounts, or governance.
 //   • Every tier is self-service: any amount above the $5 minimum is taken
-//     online via wallet checkout at the same fixed rate, up to the sale's
+//     online via wallet checkout at the current deterministic era price, up to the sale's
 //     remaining on-chain SYN inventory. No tier is gated, manual, or off-site.
 //   • Pure-data leaf: deterministic, reads no chain, writes nothing.
 
@@ -27,7 +27,7 @@ export type SeatPackage = {
   rank: RankTier;
   /** Entry USDC — identical to the rank threshold. */
   usdc: number;
-  /** SYN received at the live Genesis access rate (= rank.syn). */
+  /** SYN received at the current deterministic V3 era rate. */
   synAtGenesis: number;
   /** Headline card in the featured strip. */
   featured: boolean;

@@ -10,7 +10,6 @@ import {
   TOKEN_SPEC,
   PROTOCOL_STATUS,
   SYN_EXPLORERS,
-  ACCESS_RATE_LABEL,
   SALE_MIN_USDC,
   LEGAL_DISCLAIMER,
   VAULT_ALLOCATION,
@@ -198,8 +197,9 @@ function WhitepaperPage() {
         <GlassCard className="p-6 text-sm text-foreground/85 leading-relaxed space-y-3">
           <p>
             The Membership Sale contract is the only canonical onramp from USDC to SYN.
-            Fixed access rate: <span className="mono">{ACCESS_RATE_LABEL}</span>. Minimum buy:{" "}
-            <span className="mono">${SALE_MIN_USDC} USDC</span>.
+            V3 uses deterministic era pricing: Era I currently returns{" "}
+            <span className="mono">100 SYN per 1 USDC</span>. Minimum buy:{" "}
+            <span className="mono">${SALE_MIN_USDC} USDC</span>. Chapter is history and belonging; era is pricing.
           </p>
           <p>
             Every purchase splits USDC at the contract: {VAULT_ALLOCATION.vaultAssets * 100}% to

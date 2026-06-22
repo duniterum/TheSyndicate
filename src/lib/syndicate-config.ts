@@ -58,8 +58,8 @@ export const VAULT_ALLOCATION = {
 };
 
 // ─── Unified Rank Ladder (V1 — single source of truth) ─────────────────
-// Fixed access rate: 1 SYN = $0.01 USDC. Bigger amounts unlock visible
-// membership rank — never bonus tokens or cheaper SYN.
+// Current Era I quote: 100 SYN per 1 USDC. Bigger amounts unlock visible
+// membership rank — never bonus tokens, cheaper SYN, or private terms.
 export const ACCESS_RATE_USDC_PER_SYN = 0.01;
 export const ACCESS_RATE_LABEL = "1 SYN = $0.01 USDC";
 
@@ -104,7 +104,7 @@ export const MEMBERSHIP_POOL = {
 export type RankTier = {
   name: string;
   usdc: number;       // entry USDC amount
-  syn: number;        // SYN received at fixed rate (1 SYN = $0.01)
+  syn: number;        // SYN shown at the current Era I quote
   group: "Open Entry" | "Active Members" | "Deep Supporters" | "High-Conviction";
   badge: string;
   benefits: string[];

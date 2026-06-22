@@ -74,7 +74,7 @@ export function JoinStepsPlaque() {
         ))}
       </div>
       <p className="mt-5 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-        Non-custodial / Avalanche C-Chain / same rate for everyone / no fake success state
+        Non-custodial / Avalanche C-Chain / deterministic era pricing / no fake success state
       </p>
     </Section>
   );

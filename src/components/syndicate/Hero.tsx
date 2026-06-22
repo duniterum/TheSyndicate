@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import {
   LP_POOL,
-  ACCESS_RATE_LABEL,
   SALE_MIN_USDC,
 } from "@/lib/syndicate-config";
 import { NextMemberHero } from "./NextMemberHero";
@@ -84,7 +83,7 @@ export function Hero() {
 
 
         <div className="mt-4 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          Fixed access rate · {ACCESS_RATE_LABEL} · Same rate for everyone
+          V3 era pricing · Era I currently 100 SYN / 1 USDC · no private terms
         </div>
 
       </div>

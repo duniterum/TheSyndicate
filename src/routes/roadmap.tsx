@@ -54,7 +54,7 @@ const BUCKETS: Bucket[] = [
     items: [
       { title: "SYN ERC20 token", what: "Fixed 1,000,000,000 supply. No admin, no mint, no pause, no tax.", why: "Foundation of every other primitive.", verifyLabel: "Avascan", verifyHref: SYN_EXPLORERS.avascan },
       { title: "Source verification", what: "Source code matches deployed bytecode.", why: "Anyone can audit what is running.", verifyLabel: "Sourcify", verifyHref: SYN_EXPLORERS.sourcify },
-      { title: "Membership Sale contract", what: "Accepts USDC, delivers SYN at 1 SYN = $0.01, splits 70/20/10 in the same transaction.", why: "Single onchain entry point for membership.", verifyLabel: "Sale contract", verifyHref: saleHref },
+      { title: "MembershipSaleV3", what: "Accepts USDC, delivers SYN using deterministic era pricing, and splits 70/20/10 in the same transaction.", why: "Single on-chain entry point for membership; Era I currently returns 100 SYN per 1 USDC.", verifyLabel: "Sale contract", verifyHref: saleHref },
       { title: "USDC routing 70 / 20 / 10", what: "70% Vault Wallet · 20% Liquidity Wallet · 10% Operations Wallet, atomic.", why: "Removes discretion; the split is enforced by code.", verifyLabel: "Vault wallet", verifyHref: vaultHref },
       { title: "Liquidity wallet", what: "Receives 20% of every USDC purchase for protocol-owned liquidity reinforcement.", why: "Liquidity grows with participation, not promises.", verifyLabel: "Liquidity wallet", verifyHref: lpWalletHref },
       { title: "Operations wallet", what: "Receives 10% for build, ops, and community.", why: "Funds the work, publicly.", verifyLabel: "Operations wallet", verifyHref: opsHref },
@@ -108,7 +108,7 @@ const BUCKETS: Bucket[] = [
       { title: "Yield product or dividend program", what: "SYN is not equity, not debt, not a yield-bearing instrument.", why: "Protects members and matches every contract on-chain." },
       { title: "Custodial vault", what: "Members never deposit assets into a Syndicate-controlled custody contract.", why: "Non-custodial is a hard line." },
       { title: "Hidden admin keys / upgradeable token", what: "SYN has no owner, no mint, no pause, no blacklist.", why: "The token's guarantees are immutable." },
-      { title: "Pay-to-rank bonus tokens", what: "Larger purchases never receive a better SYN price.", why: "Same rate for everyone: 1 SYN = $0.01 USDC." },
+      { title: "Pay-to-rank bonus tokens", what: "Larger purchases never receive bonus tokens or private terms.", why: "Rank is recognition only; it never changes the current era quote." },
     ],
   },
 ];

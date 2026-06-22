@@ -33,7 +33,7 @@ export const Route = createFileRoute("/join")({
   head: () => ({
     meta: [
       { title: "Take Your Seat — Live Membership Sale | The Syndicate" },
-      { name: "description", content: "Take a V1 membership seat by buying SYN with USDC on Avalanche. Fixed rate: 1 SYN = $0.01 USDC. Every purchase routes 70/20/10 to Vault, Liquidity, Operations." },
+      { name: "description", content: "Take a V1 membership seat by buying SYN with USDC on Avalanche. V3 uses deterministic era pricing; Era I currently returns 100 SYN per 1 USDC. Every purchase routes 70/20/10 to Vault, Liquidity, Operations." },
       { property: "og:title", content: "Take your seat in The Syndicate" },
       { property: "og:description", content: "Connect wallet, approve USDC, receive SYN, and verify the receipt on-chain." },
       { property: "og:url", content: "https://thesyndicate.money/join" },

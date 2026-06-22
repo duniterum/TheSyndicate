@@ -1,13 +1,14 @@
-// My Referral / Reputation — personal cockpit surfaces, demoted to honest
-// PENDING shells (Wave C1).
+// My Referral / Reputation — personal cockpit surfaces, kept as honest
+// PENDING shells until source records and activation are separately approved.
 //
-// Doctrine: docs/LEGAL_DISCLOSURE_REFERRAL.md + PROTOCOL_IN_PUBLIC_DOCTRINE.
-//   • No contract has shipped for either surface, so there is nothing live to
-//     show. We say so plainly instead of rendering fabricated estimators,
-//     tier ladders, or simulated scores.
+// Doctrine: SourceRegistryV1 and MembershipSaleV3 exist, but SourceRegistryV1
+// has zero source records and public/default buys use ZERO_SOURCE_ID.
+//   • There is no live source link, commission, claim UI, or source-aware
+//     public buy path. We say so plainly instead of rendering fabricated
+//     estimators, tier ladders, or simulated scores.
 //   • Status vocabulary is LIVE / PARTIAL / PENDING only — never "SIMULATED".
-//   • Referral commission, when it ships, is paid ONLY from the 10% Operations
-//     slice. Vault and Liquidity are never touched. Recognition, not payout.
+//   • Recognition and source money terms remain separate. Any future source
+//     terms must be disclosed and verified before they affect money.
 
 import { Link as RouterLink } from "@tanstack/react-router";
 import { GlassCard, Pill, Section, SectionHeader, StatusPill } from "./Primitives";
@@ -18,25 +19,27 @@ export function MyReferralCard() {
       <SectionHeader
         eyebrow="Referral · Pending"
         title={<>Bring members. Recognition, <span className="text-gradient-gold">not payout</span></>}
-        description="The referral surface is not live yet. When the CommissionRouter contract ships, commission is paid only from the 10% Operations slice — Vault and Liquidity are never touched. Nothing is being tracked or owed today."
+        description="The referral surface is not live yet. SourceRegistryV1 is deployed with zero source records; public V3 buys use ZERO_SOURCE_ID. No commission is accruing and no claim UI is live."
       />
       <GlassCard className="p-5">
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <StatusPill status="PENDING" />
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            No contract deployed · nothing to claim yet
+            No source records · no claim UI
           </span>
         </div>
 
         <p className="text-sm text-foreground/85 leading-relaxed">
-          Your referral link will derive from your wallet at launch. Until the
-          router is deployed there is no link to share, no balance to estimate,
+          Your introduction path may become visible after a separate approved
+          source packet, on-chain source record, activation readback, and legal
+          copy. Until then there is no link to share, no balance to estimate,
           and no commission accruing — so we show none.
         </p>
 
         <div className="mt-4 border-t border-border/40 pt-3 text-[11px] text-muted-foreground leading-relaxed">
-          Referral commission is routed from Operations only. Vault and Liquidity
-          routing are never touched.
+          CommissionRouterV1 is not the active V3 source engine. V3 source
+          terms would be disclosed in the purchase receipt before they affect
+          money.
           <div className="mt-2">
             <RouterLink to="/referral" className="underline-offset-4 hover:underline text-foreground">
               Read the public explainer →

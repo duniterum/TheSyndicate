@@ -113,7 +113,7 @@ function TokenomicsPage() {
         <SectionHeader
           eyebrow="Membership Sale"
           title="Live USDC → SYN sale"
-          description="The Membership Sale contract routes USDC into Vault (70%), Liquidity (20%), and Operations (10%). SYN is delivered from the Membership Distribution allocation at the fixed rate 1 SYN = $0.01 USDC."
+          description="The V3 Membership Sale routes USDC into Vault (70%), Liquidity (20%), and Operations (10%). SYN is delivered from the Membership Distribution allocation at the current era quote; Era I currently returns 100 SYN per 1 USDC."
         />
         <GlassCard className="p-6"><SaleStatsPanel /></GlassCard>
       </Section>

@@ -28,7 +28,6 @@ import {
   TOKENOMICS_ALLOCATION,
   TOKEN_SPEC,
   MEMBERSHIP_POOL,
-  ACCESS_RATE_LABEL,
   type RankTier,
 } from "@/lib/syndicate-config";
 import {
@@ -86,7 +85,7 @@ export function PaymentStrategy() {
       />
       <GlassCard>
         <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-5">
-          V1 onboarding flow
+          V3 onboarding flow
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {FLOW.map((s, i) => (
@@ -100,7 +99,7 @@ export function PaymentStrategy() {
           ))}
         </div>
         <p className="mt-6 text-xs text-muted-foreground border-l-2 border-[var(--navy)]/30 pl-3">
-          Future versions may support additional tokens or DEX entry, but V1 prioritizes clarity.
+          V3 prioritizes USDC clarity: approval is separate from purchase, the sale quote comes from the current era, and the receipt proves the 70/20/10 route.
         </p>
       </GlassCard>
     </Section>
@@ -114,7 +113,7 @@ export function Ranks() {
       <SectionHeader
         eyebrow="06 — Ranks"
         title={<>Ranks are based on <span className="text-gradient-gold">SYN held.</span></>}
-        description="Twelve unlockable ranks, one fixed rate. Status is derived from on-chain SYN balance — larger purchases unlock recognition and archive placement, never bonus tokens."
+        description="Twelve unlockable ranks under one current era quote. Status is derived from on-chain SYN balance — larger purchases unlock recognition and archive placement, never bonus tokens."
       />
       <div className="surface overflow-hidden">
         <div className="hidden md:grid grid-cols-12 gap-3 px-5 py-3 border-b border-border/60 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -151,7 +150,7 @@ export function Ranks() {
         </ul>
       </div>
       <p className="mt-4 text-xs text-muted-foreground border-l-2 border-[var(--navy)]/30 pl-3 max-w-3xl">
-        Status and archive placement scale with cumulative purchase size. Token rate stays fixed at 1 SYN = $0.01 USDC.
+        Status and archive placement scale with cumulative purchase size. Rank never changes the current era quote or creates a private rate.
       </p>
     </Section>
   );
@@ -610,7 +609,7 @@ export function RankLadder() {
       <SectionHeader
         eyebrow="18 — Progression"
         title={<>The <span className="text-gradient-gold">Rank Ladder</span></>}
-        description="A single fixed rate. Twelve unlockable ranks from $5 to $10,000. Every step is predictable and verifiable."
+        description="A single recognition ladder. Twelve unlockable ranks from $5 to $10,000. The current era quote is predictable and verifiable."
       />
       <div className="surface p-6 md:p-8">
         <div className="hidden md:block relative h-1.5 rounded-full bg-border/50 mb-8">
@@ -643,18 +642,18 @@ export function RankLadder() {
 
       <p className="mt-5 max-w-3xl text-sm leading-relaxed text-muted-foreground">
         <span className="text-foreground">Reading the ladder.</span> Tier names
-        are recognition labels on one fixed-rate ladder, ordered only by USDC
+        are recognition labels on one contribution ladder, ordered only by USDC
         threshold — Architect ($250) comes before Steward ($500). A name marks
-        where a seat sits in the archive; it never buys a better rate, a payout,
-        or different treatment. Every wallet pays the same fixed access rate.
+        where a seat sits in the archive; it never buys a discount, payout,
+        or different treatment. Every wallet receives the quote for the current era.
       </p>
 
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-5">
         <GlassCard glow="gold">
-          <Pill tone="gold">Same rate · Higher recognition</Pill>
+          <Pill tone="gold">Current era quote · Higher recognition</Pill>
           <h3 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">Why no discount?</h3>
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-            The Syndicate does not discount larger purchases. Every wallet pays the same fixed rate — higher tiers unlock recognition and archive visibility, never cheaper SYN.
+            The Syndicate does not discount larger purchases. Every wallet receives the current era quote — higher tiers unlock recognition and archive visibility, never cheaper SYN.
           </p>
         </GlassCard>
         <GlassCard glow="navy">
@@ -731,7 +730,7 @@ export function MembershipCalculator() {
           <p className="text-xs text-muted-foreground">
             {usdc < 5
               ? "Simulate any amount. Official Citizen entry starts at $5."
-              : "Fixed V1 access rate: 1 SYN = $0.01 USDC."}
+              : "Current Era I quote: 100 SYN per 1 USDC."}
           </p>
         </GlassCard>
 
@@ -773,27 +772,27 @@ export function MembershipCalculator() {
 /* ─────────────────────── 20. Verify Flow — REMOVED (orphan; trust copy lives on /transparency) ─────────────────────── */
 
 
-/* ─────────────────────── 21. Access Rate ─────────────────────── */
+/* ─────────────────────── 21. Era Quote ─────────────────────── */
 export function AccessRate() {
   const rows = [
-    { k: "Access Rate", v: "1 SYN = $0.01 USDC" },
+    { k: "Current Era Quote", v: "100 SYN / 1 USDC" },
     { k: "Total Supply", v: `${SYNDICATE_CONFIG.TOTAL_SUPPLY} SYN` },
-    { k: "V1 Access Model", v: "USDC-only" },
+    { k: "V3 Access Model", v: "USDC-only" },
     { k: "DEX", v: "Optional secondary exit" },
     { k: "Site", v: "Primary onboarding interface" },
   ];
   return (
     <Section id="access-rate">
       <SectionHeader
-        eyebrow="21 — V1 Access Rate"
-        title={<>One rate. <span className="text-gradient-gold">One supply. One door.</span></>}
-        description="The DEX is an optional secondary market and exit route. The website is the main V1 onboarding experience so members understand the rules, rank system, Vault flow, and utility before joining."
+        eyebrow="21 — V3 Era Quote"
+        title={<>One seat. <span className="text-gradient-gold">One supply. One door.</span></>}
+        description="The DEX is an optional secondary market and exit route. The website is the main V3 onboarding experience so members understand the current era quote, rank system, Vault flow, and utility before joining."
       />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <GlassCard glow="gold" className="lg:col-span-1">
-          <div className="mono text-[10px] uppercase tracking-[0.22em] text-[color:oklch(0.5_0.13_75)] mb-2">Fixed V1 Rate</div>
-          <div className="mono text-4xl font-semibold tracking-tight">1 SYN</div>
-          <div className="mono text-3xl text-gradient-gold mt-1">$0.01 USDC</div>
+          <div className="mono text-[10px] uppercase tracking-[0.22em] text-[color:oklch(0.5_0.13_75)] mb-2">Current Era I Quote</div>
+          <div className="mono text-4xl font-semibold tracking-tight">100 SYN</div>
+          <div className="mono text-3xl text-gradient-gold mt-1">1 USDC</div>
           <p className="mt-4 text-xs text-muted-foreground border-l-2 border-[var(--navy)]/30 pl-3">
             Utility membership onboarding and Vault accounting clarity. Not a price target, guarantee, or promise of future value.
           </p>
@@ -1246,12 +1245,12 @@ const FAQS: Array<{ q: string; a: string }> = [
   { q: "What happens to USDC paid by members?", a: "70% reinforces the Vault, 20% strengthens liquidity, 10% funds operations and community. Every flow is publicly verifiable onchain today via the Membership Sale contract and the three allocation wallets." },
   { q: "Can I buy a custom amount?", a: "Yes. The simulator accepts any USDC amount. Official Citizen entry starts at $5." },
   { q: "What is a Founder Number?", a: "A permanent archive ID assigned in join order. The first members carry the lowest numbers, forever." },
-  { q: "How does membership rank work?", a: "Rank is derived from SYN held at the fixed access rate. It is recognition only — not a payout, governance entitlement, or claim on the Vault." },
-  { q: "Can larger members get cheaper tokens?", a: "No. Same fixed rate for everyone: 1 SYN = $0.01 USDC. Bigger amounts change visible membership rank — never bonus tokens." },
+  { q: "How does membership rank work?", a: "Rank is derived from SYN held and contribution depth. It is recognition only — not a payout, governance entitlement, discount, or claim on the Vault." },
+  { q: "Can larger members get cheaper tokens?", a: "No. Bigger amounts can change visible membership rank and contribution depth — never bonus tokens, private terms, or rank-based discounts." },
   { q: "Why are some sections labeled PENDING?", a: "SYN token, the Membership Sale, and the Trader Joe SYN/USDC LP are live and verifiable onchain right now. Modules that depend on contracts not yet deployed are clearly labeled PENDING — never mixed with live data." },
   { q: "What is verifiable today?", a: "The SYN token, the Membership Sale contract, the Vault / Liquidity / Operations wallets, every USDC purchase and 70/20/10 routing transfer, every SYN allocation wallet balance, and the Trader Joe SYN/USDC LP — all live on Avalanche and verifiable on Avascan, Sourcify, and Routescan. PENDING modules are clearly labeled." },
   { q: "Is SYN live?", a: "Yes. SYN is deployed on Avalanche C-Chain at 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 and verifiable on Avascan, Sourcify, and Routescan." },
-  { q: "Can I buy SYN through the website now?", a: "Yes. The Membership Sale contract is live on Avalanche. Go to /join, approve USDC, and buy SYN at the fixed rate of 1 SYN = $0.01 USDC. Minimum entry is $5." },
+  { q: "Can I buy SYN through the website now?", a: "Yes. The V3 Membership Sale is live on Avalanche. Go to /join, approve USDC, and buy SYN using the current era quote. Minimum entry is $5." },
   { q: "Where will website buyer SYN come from?", a: "From the Membership Distribution wallet (0x975a…Cec8), which holds 350,000,000 SYN (35% of total supply). The Sale contract pulls SYN from this allocation." },
   { q: "Where does my USDC go?", a: "70% to the Vault Wallet, 20% to the Liquidity Wallet, 10% to the Operations Wallet — split inside the Membership Sale contract on every purchase." },
   { q: "Where can I trade SYN?", a: "On Trader Joe, in the live SYN/USDC pool (0xe124…9389) on Avalanche C-Chain." },

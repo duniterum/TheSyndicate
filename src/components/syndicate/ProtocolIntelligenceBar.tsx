@@ -6,10 +6,10 @@
 // supply line. No invented numbers; a missing value renders the canonical "—".
 //
 // LEGAL-SAFE doctrine (non-negotiable):
-//   • "Reference Market Cap" = reference price × circulating supply.
-//   • "FDV"                  = reference price × total supply.
-//   • "Reference price"      = the FIXED access rate (1 SYN = $0.01 USDC) —
-//     a protocol-set rate, NOT a market/traded price and NOT a price promise.
+//   • "Reference Market Cap" = current Era I quote × circulating supply.
+//   • "FDV"                  = current Era I quote × total supply.
+//   • "Current Era I Quote"  = 100 SYN per 1 USDC —
+//     a protocol-set V3 era quote, NOT a market/traded price and NOT a price promise.
 //   • "USDC Routed" — never "raised".
 //   • "Protocol Wallets"     = Vault + Liquidity + Operations (USDC held).
 //   • Nothing here implies ROI, yield, return, or scarcity value.
@@ -45,7 +45,7 @@ const fmtSynExact = (n?: number) =>
 const fmtCount = (n?: number) =>
   n === undefined ? "—" : n.toLocaleString("en-US", { maximumFractionDigits: 0 });
 
-const REFERENCE_PRICE = ACCESS_RATE_USDC_PER_SYN; // fixed access rate: 1 SYN = $0.01
+const REFERENCE_PRICE = ACCESS_RATE_USDC_PER_SYN; // Current Era I quote: 100 SYN per 1 USDC
 
 /** Canonical compact label for a metric — single source for every bar cell. */
 const barLabel = (id: string) => {
@@ -107,7 +107,7 @@ const TAIL_KEYS = [
 export const CANONICAL_TICKER_ORDER: string[] = [...LEAD_KEYS, "burned", ...TAIL_KEYS];
 
 /** Status keys evaluated for the prop-less (global) bar — the real on-chain
- *  reads (constant/derived cells like the fixed access price are excluded so a
+ *  reads (constant/derived cells like the current Era I quote are excluded so a
  *  cell that is always present can never alone force the bar to "LIVE"). */
 export const DEFAULT_STATUS_KEYS: string[] = [
   "vault", "liquidity", "operations", "lpTvl", "synSold", "usdcRouted",
@@ -168,7 +168,7 @@ export function buildTickerItemsByKey(v: TickerValues): Map<string, RenderItem> 
       key: "price",
       label: barLabel("referencePrice"),
       value: `$${v.referencePrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`,
-      title: "Fixed access rate · 1 SYN = $0.01 USDC (protocol-set rate, not a market price)",
+      title: "Current Era I quote · 100 SYN per 1 USDC (protocol-set V3 era quote, not a market price)",
     },
     {
       key: "refMktCap",

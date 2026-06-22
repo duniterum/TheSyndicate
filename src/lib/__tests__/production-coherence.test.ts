@@ -63,6 +63,73 @@ describe("production coherence guards", () => {
     expect(referral).not.toMatch(/CommissionByTierChart|SimReferralActivity|ReputationLeaderboard/);
   });
 
+  it("keeps public V3 sale surfaces on deterministic era-pricing truth", () => {
+    const files = {
+      join: read("src/routes/join.tsx"),
+      tokenomics: read("src/routes/tokenomics.tsx"),
+      whitepaper: read("src/routes/whitepaper.tsx"),
+      roadmap: read("src/routes/roadmap.tsx"),
+      faq: read("src/components/syndicate/FaqRebuilt.tsx"),
+      packages: read("src/components/syndicate/JoinPackages.tsx"),
+      mobileJoinBar: read("src/components/syndicate/MobileJoinBar.tsx"),
+      routeFinalCta: read("src/components/syndicate/RouteFinalCTA.tsx"),
+      sections: read("src/components/syndicate/Sections.tsx"),
+      canonicalSpec: read("src/components/syndicate/CanonicalSpec.tsx"),
+      editorialHero: read("src/components/syndicate/EditorialHero.tsx"),
+      joinStepsPlaque: read("src/components/syndicate/JoinStepsPlaque.tsx"),
+      protocolIntelligenceBar: read("src/components/syndicate/ProtocolIntelligenceBar.tsx"),
+      eras: read("src/lib/eras.ts"),
+      packagesData: read("src/lib/package-catalog.ts"),
+      metrics: read("src/lib/protocol-metrics-registry.ts"),
+    };
+
+    const banned = [
+      /fixed access rate/i,
+      /fixed rate/i,
+      /same rate for everyone/i,
+      /same fixed rate/i,
+      /fixed for everyone/i,
+      /same price for everyone/i,
+      /future sale contract/i,
+      /proposed future distribution model/i,
+      /proposed schedule/i,
+      /token price is fixed for everyone/i,
+      /1 SYN = \$0\.01 USDC/i,
+    ];
+
+    const offenders: Array<{ file: string; pattern: string }> = [];
+    for (const [file, src] of Object.entries(files)) {
+      for (const pattern of banned) {
+        if (pattern.test(src)) offenders.push({ file, pattern: pattern.source });
+      }
+    }
+
+    expect(offenders, JSON.stringify(offenders, null, 2)).toEqual([]);
+
+    expect(files.join).toContain("V3 uses deterministic era pricing");
+    expect(files.faq).toContain("Era I currently returns 100 SYN per 1 USDC");
+    expect(files.faq).toContain("Chapter is history and belonging; era is pricing");
+    expect(files.packages).toContain("Chapter is history");
+    expect(files.packages).toContain("Era is pricing");
+    expect(files.metrics).toContain("Current Era I Quote");
+  });
+
+  it("keeps member referral cockpit aligned with V3 source-attribution inactive truth", () => {
+    const card = read("src/components/syndicate/MyReferralCard.tsx");
+
+    expect(card).toContain("SourceRegistryV1 is deployed with zero source records");
+    expect(card).toContain("public V3 buys use ZERO_SOURCE_ID");
+    expect(card).toContain("No source records");
+    expect(card).toContain("no claim UI");
+    expect(card).toContain("CommissionRouterV1 is not the active V3 source engine");
+
+    expect(card).not.toMatch(/When the CommissionRouter contract ships/i);
+    expect(card).not.toMatch(/router is deployed/i);
+    expect(card).not.toMatch(/No contract deployed/i);
+    expect(card).not.toMatch(/10% Operations slice/i);
+    expect(card).not.toMatch(/Referral commission is routed from Operations only/i);
+  });
+
   it("keeps the live purchase ceremony clear before wallet signatures", () => {
     const purchase = read("src/components/syndicate/LivePurchase.tsx");
 

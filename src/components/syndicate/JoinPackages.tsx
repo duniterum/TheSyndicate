@@ -3,12 +3,12 @@
 //   • SeatPackages       — a curated strip of "featured ways to take your seat".
 //                          Each card is an EXISTING rank tier (no new naming),
 //                          rendered through the shared premium SeatPackageCard:
-//                          entry USDC · SYN at the live Genesis rate ·
+//                          entry USDC · SYN at the current V3 era rate ·
 //                          recognition meaning · who it is for · CTA.
-//                          Recognition only — no payout/rate change.
+//                          Recognition only — no payout/entitlement/private terms.
 //   • EraSchedulePreview — the distribution-era schedule. Era I (Genesis) is the
-//                          ONE live rate; Eras II+ are a PROPOSED FUTURE model,
-//                          labeled PENDING / not live. Includes the sale-vs-DEX
+//                          current active era; Eras II+ are scheduled later
+//                          pricing eras. Includes the sale-vs-DEX
 //                          two-price note.
 //
 // Both are pure presentational leaves: they read the package + era config only,
@@ -42,8 +42,8 @@ export function SeatPackages() {
         }
         description={
           genesisLive
-            ? "A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier; the SYN shown is the current Era I (Genesis) access rate (1 SYN = $0.01 USDC), and the live rate is always confirmed in your wallet at checkout. Recognition only — no payout, no rate change, no better rate, no entitlement. Every tier is self-service: taken online through your own wallet."
-            : "A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier; the SYN you receive is set by the live access rate and always confirmed in your wallet at checkout. Recognition only — no payout, no rate change, no better rate, no entitlement. Every tier is self-service: taken online through your own wallet."
+            ? "A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier; the SYN shown uses the current Era I quote (100 SYN per 1 USDC), and the live quote is always confirmed in your wallet at checkout. Recognition only — no payout, no entitlement, no private terms. Every tier is self-service: taken online through your own wallet."
+            : "A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier; the SYN you receive is set by the current era and always confirmed in your wallet at checkout. Recognition only — no payout, no entitlement, no private terms. Every tier is self-service: taken online through your own wallet."
         }
       />
 
@@ -59,7 +59,7 @@ export function SeatPackages() {
       </div>
 
       <p className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mt-5 leading-relaxed">
-        Era {era.roman} ({era.name}) is live now at the fixed access rate. The
+        Era {era.roman} ({era.name}) is the current V3 pricing era. The
         full recognition ladder — all twelve tiers — is below. Rank is derived
         from cumulative USDC routed; it is recognition only.
       </p>
@@ -74,8 +74,8 @@ export function EraSchedulePreview() {
         eyebrow="The distribution eras"
         title={
           <>
-            One live rate today — a{" "}
-            <span className="text-gradient-gold">proposed schedule</span> ahead
+            Chapter is history.{" "}
+            <span className="text-gradient-gold">Era is pricing.</span>
           </>
         }
         description={ERA_SCHEDULE_NOTE}
@@ -132,7 +132,7 @@ export function EraSchedulePreview() {
                       <span className="inline-flex items-center gap-2">
                         <StatusPill status="PENDING" />
                         <span className="mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
-                          proposed
+                          scheduled
                         </span>
                       </span>
                     )}
@@ -145,13 +145,12 @@ export function EraSchedulePreview() {
       </div>
 
       <p className="text-sm text-muted-foreground leading-relaxed mt-5 max-w-3xl">
-        <span className="text-foreground">Sale rate vs. open market.</span> The
-        Genesis access rate is the protocol&rsquo;s own sale rate for taking a
+        <span className="text-foreground">Sale quote vs. open market.</span> The
+        current era quote is the protocol&rsquo;s own sale quote for taking a
         seat. Once you hold SYN, it may also trade on Trader Joe at a separate,
-        market-set price — the two are independent, and the access rate is not a
-        market quote. Eras II onward are a proposed future distribution model:
-        not live, and contingent on a future sale contract before any of it
-        takes effect.
+        market-set price — the two are independent, and the sale quote is not a
+        market quote. Later eras are scheduled sale phases: they become active
+        by deterministic member-seat ranges, not by an admin price switch.
       </p>
     </Section>
   );

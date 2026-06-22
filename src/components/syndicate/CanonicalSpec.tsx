@@ -1,8 +1,6 @@
 import {
   TOKEN_SPEC,
   TOKENOMICS_ALLOCATION,
-  ACCESS_RATE_LABEL,
-  ACCESS_RATE_USDC_PER_SYN,
   VAULT_ALLOCATION,
   LEGAL_DISCLAIMER,
   ALLOCATION_WALLETS,
@@ -79,11 +77,12 @@ export function CanonicalSpec() {
           {/* Access rate + vault flow */}
           <article className="rounded-2xl border border-border/50 bg-card/40 backdrop-blur p-6 flex flex-col gap-6">
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Access Rate</h3>
-              <p className="text-2xl font-mono text-primary">{ACCESS_RATE_LABEL}</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Current Era Quote</h3>
+              <p className="text-2xl font-mono text-primary">100 SYN / 1 USDC</p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Fixed rate. Larger cumulative purchases reflect a higher rank and archive
-                recognition — never cheaper SYN. ({ACCESS_RATE_USDC_PER_SYN} USDC per SYN)
+                Era I currently returns 100 SYN per 1 USDC. Larger cumulative
+                purchases reflect a higher rank and archive recognition — never
+                cheaper SYN or private terms.
               </p>
             </div>
             <div>

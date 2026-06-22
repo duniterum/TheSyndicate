@@ -23,15 +23,14 @@
 // source, or formula inline.
 //
 // Legal doctrine is enforced in the wording: USDC is *routed*, never "raised";
-// no ROI / yield / dividend / return language; the reference price is a fixed
-// protocol access rate, never a market price or a price promise.
+// no ROI / yield / dividend / return language; the current era quote is never
+// a market price or a price promise.
 // ────────────────────────────────────────────────────────────────────────────
 
 import {
   CONTRACTS,
   LP_POOL,
   MEMBER_DEFINITION,
-  ACCESS_RATE_USDC_PER_SYN,
   SYN_EXPLORERS,
   SYN_BURN_ADDRESS,
   PROOF_OF_FIRE_001,
@@ -304,20 +303,20 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     hook: "TOKENOMICS_ALLOCATION",
   }),
 
-  // ── Market reference (fixed access-rate framing — never a market price) ─────
+  // ── Market reference (current sale quote — never a market price) ─────
   m({
     id: "referencePrice",
     aliases: [],
-    label: "SYN Reference Price",
-    shortLabel: "SYN Reference Price",
+    label: "Current Era I Quote",
+    shortLabel: "Era I Quote",
     category: "market-reference",
     type: "RAW",
     status: "LIVE",
     unit: "USD",
     description:
-      "The fixed access rate at which the Membership Sale delivers SYN: 1 SYN = $0.01 USDC. A protocol-set parameter — not a traded or market price, and not a price prediction or promise.",
-    source: "src/lib/syndicate-config.ts · ACCESS_RATE_USDC_PER_SYN (fixed protocol access rate).",
-    formula: `fixed access rate · 1 SYN = $${ACCESS_RATE_USDC_PER_SYN.toFixed(2)} USDC`,
+      "The current Era I sale quote: 100 SYN per 1 USDC. A protocol-set V3 era quote — not a traded or market price, and not a price prediction or promise.",
+    source: "MembershipSaleV3 deterministic era pricing; Era I mirrors src/lib/syndicate-config.ts · ACCESS_RATE_USDC_PER_SYN.",
+    formula: "current Era I quote · 100 SYN per 1 USDC",
     verification: {
       primaryHref: SALE_HREF,
       links: links(saleLink),
@@ -488,9 +487,9 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     status: "LIVE",
     unit: "SYN",
     description:
-      "Cumulative SYN distributed by the Membership Sale contract since deployment — equals USDC routed ÷ 0.01.",
+      "Cumulative SYN distributed by the Membership Sale contract since deployment — read directly from the sale rather than inferred from a permanent fixed-rate assumption.",
     source: "Avalanche C-Chain RPC. Reads totalSynSold() on the SyndicateMembershipSale contract.",
-    formula: "usdcRouted ÷ 0.01 USDC per SYN (fixed rate)",
+    formula: "read totalSynSold(); sale quotes are determined by the active V3 era schedule",
     verification: {
       primaryHref: SALE_HREF,
       links: links(saleLink, link(CONTRACTS.MEMBERSHIP_SYN_WALLET, "Membership SYN wallet")),

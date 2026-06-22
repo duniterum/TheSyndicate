@@ -3,18 +3,17 @@
 // SECOND coordinate system, layered ON TOP of the canonical Chapters
 // (src/lib/chapters.ts), which are left UNTOUCHED. Chapters are the STORY
 // layer (historical coordinates). Eras are the DISTRIBUTION layer — the
-// proposed access-rate schedule for how SYN is distributed as the archive
-// fills.
+// deterministic V3 pricing schedule for how SYN is distributed as the archive
+// fills. Chapter = history / belonging. Era = pricing.
 //
 // DOCTRINE (binding — do not weaken):
-//   • TODAY the Membership Sale is LIVE at a SINGLE fixed Genesis access rate:
-//     1 SYN = $0.01 USDC, for every member. The V1 sale has NO on-chain era
-//     stepping. Only Era I (Genesis) is LIVE.
-//   • Eras II+ are a PROPOSED FUTURE distribution model. They are NOT live and
-//     would require a future sale contract before any of them takes effect.
-//     Every surface that shows a future era MUST label it FUTURE / not live.
+//   • V3 uses deterministic era pricing. Era I (Genesis) is the current active
+//     era and currently returns 100 SYN per 1 USDC.
+//   • Eras II+ are scheduled later pricing eras. They become active only by
+//     the deterministic member-seat ranges, not by an admin price switch,
+//     oracle, market price, or private rate.
 //   • This is a pure-data leaf with deterministic helpers. It reads no chain,
-//     writes nothing, and asserts no live status beyond Era I.
+//     writes nothing, and asserts no live status beyond the current active era.
 //   • Eras I–IV share the Chapter I–IV member-number boundaries exactly.
 //     Eras V–IX all fall inside Chapter V (Open Era, #10,001+).
 //   • Capacities sum to exactly 1,000,000 seats (the "First Million").
@@ -58,7 +57,7 @@ export type Era = {
   entryUsdc: number;
   /** SYN received at the illustrative entry (entryUsdc ÷ rate). */
   synPerEntry: number;
-  /** LIVE only for Era I (Genesis). Every other era is FUTURE / not live. */
+  /** LIVE only for the current active era. Other eras are scheduled later eras. */
   status: EraStatus;
   /** Which canonical Chapter this era falls inside (link only — not owned). */
   chapterId: ChapterId;
@@ -80,7 +79,7 @@ export const ERAS: ReadonlyArray<Era> = [
     status: "LIVE",
     chapterId: "genesis-signal",
     blurb:
-      "The founding cohort. The live era — seats taken at the fixed Genesis access rate.",
+      "The founding cohort. The current active era — 100 SYN per 1 USDC.",
   },
   {
     id: "first-thousand",
@@ -94,7 +93,7 @@ export const ERAS: ReadonlyArray<Era> = [
     synPerEntry: 500,
     status: "FUTURE",
     chapterId: "first-thousand",
-    blurb: "The first thousand seats. A proposed future era — not yet live.",
+    blurb: "The first thousand seats. A scheduled later pricing era.",
   },
   {
     id: "the-expansion",
@@ -109,7 +108,7 @@ export const ERAS: ReadonlyArray<Era> = [
     status: "FUTURE",
     chapterId: "the-expansion",
     blurb:
-      "The protocol becomes a visible community. A proposed future era — not yet live.",
+      "The protocol becomes a visible community. A scheduled later pricing era.",
   },
   {
     id: "first-ten-thousand",
@@ -124,7 +123,7 @@ export const ERAS: ReadonlyArray<Era> = [
     status: "FUTURE",
     chapterId: "first-ten-thousand",
     blurb:
-      "The first large public archive. A proposed future era — not yet live.",
+      "The first large public archive. A scheduled later pricing era.",
   },
   {
     id: "open-era-i",
@@ -139,7 +138,7 @@ export const ERAS: ReadonlyArray<Era> = [
     status: "FUTURE",
     chapterId: "open-era",
     blurb:
-      "The open era begins beyond the founding archive. A proposed future era — not yet live.",
+      "The open era begins beyond the founding archive. A scheduled later pricing era.",
   },
   {
     id: "open-era-ii",
@@ -153,7 +152,7 @@ export const ERAS: ReadonlyArray<Era> = [
     synPerEntry: 300,
     status: "FUTURE",
     chapterId: "open-era",
-    blurb: "The open era widens. A proposed future era — not yet live.",
+    blurb: "The open era widens. A scheduled later pricing era.",
   },
   {
     id: "hundred-thousand",
@@ -167,7 +166,7 @@ export const ERAS: ReadonlyArray<Era> = [
     synPerEntry: 200,
     status: "FUTURE",
     chapterId: "open-era",
-    blurb: "Toward one hundred thousand seats. A proposed future era — not yet live.",
+    blurb: "Toward one hundred thousand seats. A scheduled later pricing era.",
   },
   {
     id: "quarter-million",
@@ -181,7 +180,7 @@ export const ERAS: ReadonlyArray<Era> = [
     synPerEntry: 200,
     status: "FUTURE",
     chapterId: "open-era",
-    blurb: "Toward a quarter million seats. A proposed future era — not yet live.",
+    blurb: "Toward a quarter million seats. A scheduled later pricing era.",
   },
   {
     id: "first-million",
@@ -195,13 +194,13 @@ export const ERAS: ReadonlyArray<Era> = [
     synPerEntry: 100,
     status: "FUTURE",
     chapterId: "open-era",
-    blurb: "Toward the first million seats. A proposed future era — not yet live.",
+    blurb: "Toward the first million seats. A scheduled later pricing era.",
   },
 ] as const;
 
 /** Plain-language doctrine note for any surface that shows the era schedule. */
 export const ERA_SCHEDULE_NOTE =
-  "Today the Membership Sale is live at a single fixed Genesis access rate (1 SYN = $0.01 USDC) for every member. The multi-era schedule below is a proposed future distribution model — it is not live and would require a future sale contract before any of it takes effect.";
+  "V3 uses deterministic era pricing. Era I is the current active era at 100 SYN per 1 USDC. Later eras use scheduled SYN-per-USDC rates as member-seat ranges advance. Chapter is history and belonging; era is pricing.";
 
 const FALLBACK_ERA: Era = ERAS[ERAS.length - 1];
 
@@ -210,15 +209,14 @@ export function currentEra(): Era {
   return ERAS.find((e) => e.status === "LIVE") ?? ERAS[0];
 }
 
-/** True when an era is the proposed future schedule (anything past Genesis). */
+/** True when an era is scheduled for a later member-seat range. */
 export function isFutureEra(era: Era): boolean {
   return era.status === "FUTURE";
 }
 
 /**
- * Which era a member number falls inside under the proposed positional
- * schedule. Deterministic and pure. For numbers beyond Genesis this is a
- * PREVIEW mapping only — it does not imply a live or committed rate.
+ * Which era a member number falls inside under the deterministic positional
+ * schedule. Pure; no chain read.
  */
 export function eraForMemberNumber(memberNumber: number): Era {
   if (!Number.isFinite(memberNumber) || memberNumber < 1) return ERAS[0];
@@ -239,8 +237,8 @@ export function eraUsdcPerSyn(era: Era): number {
 }
 
 /**
- * SYN a given USDC amount would receive in an era. Era I uses the real LIVE
- * access rate; future eras use their proposed (preview-only) schedule rate.
+ * SYN a given USDC amount would receive in an era. Era I uses the current
+ * active rate; scheduled later eras use their deterministic schedule rate.
  */
 export function synForUsdcInEra(usdc: number, era: Era): number {
   if (!Number.isFinite(usdc) || usdc <= 0) return 0;
