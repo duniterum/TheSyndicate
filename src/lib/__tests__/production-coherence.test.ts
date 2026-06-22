@@ -955,6 +955,51 @@ describe("production coherence guards", () => {
     expect(v3Preview).toContain("NOT LIVE");
     expect(v3Preview).not.toMatch(/claimSourceEscrow|source balance|earned commission/i);
   });
+
+  it("keeps the read-only Protocol Economy and My Economy surfaces evidence-labeled", () => {
+    const transparency = read("src/routes/transparency.tsx");
+    const mySyndicate = read("src/routes/my-syndicate.tsx");
+    const economyBand = read("src/components/syndicate/ProtocolEconomyBand.tsx");
+    const myEconomy = read("src/components/syndicate/MyEconomy.tsx");
+    const purchaseRouting = read("src/components/syndicate/MyPurchaseRouting.tsx");
+    const economyDesign = read("docs/PROTOCOL_ECONOMY_OBSERVATORY_DESIGN.md");
+
+    expect(transparency).toContain("ProtocolEconomyBand");
+    expect(mySyndicate).toContain("MyEconomy");
+    expect(economyBand).toContain("Protocol Economy Observatory");
+    expect(economyBand).toContain("Net USDC routed");
+    expect(economyBand).toContain("Volume is not revenue");
+    expect(economyBand).toContain("SourceRegistryV1 exists, but source attribution is not publicly active");
+    expect(economyBand).toContain("ZERO_SOURCE_ID");
+    expect(economyBand).toContain("Referral inactive");
+    expect(economyBand).toContain("Claims inactive");
+    expect(economyBand).toContain("NOT IMPLEMENTED");
+    expect(economyBand).toContain("No writes here");
+
+    expect(myEconomy).toContain("Your wallet's receipt-backed footprint inside The Syndicate");
+    expect(myEconomy).toContain("USDC placed");
+    expect(myEconomy).toContain("Net USDC routed");
+    expect(myEconomy).toContain("SYN is the V1 seat");
+    expect(myEconomy).toContain("Source attribution");
+    expect(myEconomy).toContain("Claim interface");
+    expect(myEconomy).toContain("Not implemented");
+    expect(myEconomy).toContain("No claim UI");
+    expect(myEconomy).toContain("No source activation");
+
+    expect(purchaseRouting).toContain("cumulativeRoutedToVault");
+    expect(purchaseRouting).toContain("cumulativeRoutedToLiquidity");
+    expect(purchaseRouting).toContain("cumulativeRoutedToOperations");
+    expect(purchaseRouting).toContain("read from indexed purchase receipts");
+    expect(purchaseRouting).not.toContain("const vault = (total *");
+
+    expect(economyDesign).toContain("First Read-Only Implementation");
+    expect(economyDesign).toContain("do not activate claim UI");
+
+    const newReadOnlySurfaces = [economyBand, myEconomy].join("\n");
+    expect(newReadOnlySurfaces).not.toMatch(/useWriteContract|writeContract|sendTransaction|claimSourceEscrow/i);
+    expect(newReadOnlySurfaces).not.toMatch(/passive income|yield-bearing|ROI|guaranteed return|earnings dashboard/i);
+  });
+
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {
     const activity = read("src/routes/activity.tsx");
     const glossary = read("src/components/syndicate/ArchiveGlossary.tsx");

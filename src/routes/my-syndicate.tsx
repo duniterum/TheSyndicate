@@ -28,6 +28,7 @@ import { CockpitMemory } from "@/components/syndicate/cockpit/CockpitMemory";
 import { CockpitProof } from "@/components/syndicate/cockpit/CockpitProof";
 import { CockpitEmbedProvider } from "@/components/syndicate/cockpit/cockpit-shell";
 import { MyPurchaseRouting } from "@/components/syndicate/MyPurchaseRouting";
+import { MyEconomy } from "@/components/syndicate/MyEconomy";
 import {
   MyReferralCard,
   MyReputationConceptCard,
@@ -166,6 +167,7 @@ function MySyndicatePage() {
       />
       <ReturnBriefing />
       <SeatPassport />
+      <MyEconomy />
       <MemoryPath />
       <ChapterMemory />
       <ProtocolCarryObject />

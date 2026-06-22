@@ -9,6 +9,7 @@ import { VerifyEverything } from "@/components/syndicate/VerifyEverything";
 import { RoutingFlow } from "@/components/syndicate/RoutingFlow";
 import { UseOfFunds } from "@/components/syndicate/UseOfFunds";
 import { LpStatusCard } from "@/components/syndicate/LpStatus";
+import { ProtocolEconomyBand } from "@/components/syndicate/ProtocolEconomyBand";
 import { Section, SectionHeader } from "@/components/syndicate/Primitives";
 import { RiskDisclaimer } from "@/components/syndicate/RiskDisclaimer";
 
@@ -40,6 +41,8 @@ export const Route = createFileRoute("/transparency")({
       description="What is live onchain, what is pending, and where to verify each piece. Full contract + wallet addresses live on the Registry."
     >
       <TransparencyCenter />
+
+      <ProtocolEconomyBand />
 
       <TransparencyTimeline />
 

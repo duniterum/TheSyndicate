@@ -12,8 +12,6 @@ import { useHolderIndex } from "@/lib/holder-index";
 import { GlassCard, Pill, Section, SectionHeader, StatusPill } from "./Primitives";
 import { Link as RouterLink } from "@tanstack/react-router";
 
-const SPLIT = { vault: 70, liquidity: 20, operations: 10 } as const;
-
 const fmtUsd = (n: number) =>
   `$${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
 
@@ -23,16 +21,18 @@ export function MyPurchaseRouting() {
   const record = address ? idx.getByWallet(address) : undefined;
 
   const total = record?.cumulativeUsdc ?? 0;
-  const vault = (total * SPLIT.vault) / 100;
-  const liquidity = (total * SPLIT.liquidity) / 100;
-  const operations = (total * SPLIT.operations) / 100;
+  const vault = record?.cumulativeRoutedToVault ?? 0;
+  const liquidity = record?.cumulativeRoutedToLiquidity ?? 0;
+  const operations = record?.cumulativeRoutedToOperations ?? 0;
+  const netRouted = vault + liquidity + operations;
+  const acquisitionCommission = Math.max(0, total - netRouted);
 
   return (
     <Section id="purchase-routing">
       <SectionHeader
         eyebrow="Purchase Routing"
         title={<>Where your <span className="text-gradient-gold">payment went</span></>}
-        description="An on-chain receipt. Every USDC you paid was atomically routed by the Membership Sale contract: 70% Vault, 20% Liquidity, 10% Operations. The contract enforces the split; this card adds up your indexed purchases."
+        description="An on-chain receipt. USDC paid, any acquisition commission, and the net amount routed to Vault, Liquidity, and Operations are read from indexed purchase receipts."
       />
       <GlassCard className="p-5">
         <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -55,8 +55,10 @@ export function MyPurchaseRouting() {
           </p>
         ) : (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
               <Tile label="Total Paid" value={fmtUsd(total)} hint={`${record.purchaseCount} purchase${record.purchaseCount === 1 ? "" : "s"}`} emphasize />
+              <Tile label="Net Routed" value={fmtUsd(netRouted)} hint="gross minus source commission" />
+              <Tile label="Acquisition" value={fmtUsd(acquisitionCommission)} hint="inactive today unless receipt says otherwise" />
               <Tile label="Routed to Vault" value={fmtUsd(vault)} hint="70% · reserve" />
               <Tile label="Routed to Liquidity" value={fmtUsd(liquidity)} hint="20% · LP" />
               <Tile label="Routed to Operations" value={fmtUsd(operations)} hint="10% · ops" />

@@ -355,3 +355,21 @@ Before implementing Observatory or My Economy surfaces, confirm:
 - religious-compliance vocabulary does not appear in public/canonical product
   copy,
 - and every metric has an evidence class.
+
+## 18. First Read-Only Implementation
+
+The first product implementation is intentionally small:
+
+- `/transparency` renders `ProtocolEconomyBand`, a compact read-only band for
+  seated wallets, net USDC routed, receipt routing totals, verified receipts,
+  inactive source attribution, and future disabled modules.
+- `/my-syndicate` renders `MyEconomy`, a wallet-level read-only section for
+  receipts, USDC placed, net USDC routed, SYN received, routing impact, Archive
+  memories, and inactive/pending economy systems.
+- `MyPurchaseRouting` reads per-wallet Vault, Liquidity, and Operations from
+  indexed receipt fields instead of re-splitting gross USDC. This keeps future
+  source-attributed V3 receipts reconstructable.
+
+These surfaces do not create source records, do not activate claim UI, do not
+route non-zero source IDs, do not switch registries, and do not describe future
+modules as live.
