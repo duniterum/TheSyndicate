@@ -434,6 +434,26 @@ describe("production coherence guards", () => {
     }
   });
 
+  it("keeps the source-attribution capability map scoped to membership before product-wide expansion", () => {
+    const capability = read("docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md");
+
+    expect(capability).toContain("Status: DECISION MAP / NO TRANSACTION AUTHORIZED / SOURCE RECORDS INACTIVE");
+    expect(capability).toContain("SourceRegistryV1 is reusable policy infrastructure, not a universal payment");
+    expect(capability).toContain("MembershipSaleV3 is source-aware. Archive1155 and future products are not");
+    expect(capability).toContain("V3 SYN membership sale");
+    expect(capability).toContain("Archive1155 does not accept a `sourceId`");
+    expect(capability).toContain("No new contract is needed for the first controlled MembershipSaleV3 source");
+    expect(capability).toContain("Future NFT or product commission requires a source-aware sale wrapper/router or new product contract");
+    expect(capability).toContain("Public/default buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active.");
+    expect(capability).toContain("do not create it until founder inputs and ceremony approval are final");
+    expect(capability).toContain("Do not build public source links, claim UI, Archive source attribution, or");
+
+    expect(capability).not.toMatch(/passive income|yield|downline|MLM/i);
+    expect(capability).not.toMatch(/claimable commission|earned commission now/i);
+    expect(capability).not.toMatch(/source owns (?:a )?member/i);
+    expect(capability).not.toMatch(/referral is the business model/i);
+  });
+
   it("freezes identity and attribution before referral, Privy, or SeatRecord721 activation", () => {
     const identity = read("docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md");
     const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
