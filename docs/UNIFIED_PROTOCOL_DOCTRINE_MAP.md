@@ -56,7 +56,7 @@ For each: purpose · writer · mutator · class · permanence · neighbors.
 - **Neighbors.** Feeds Treasury Ledger (downstream movement), Activity (display), Builder Records (signal source).
 
 ### 2.2 Treasury Ledger
-- **Purpose.** Record every directional movement out of an allocation wallet with a canonical tag (`VAULT_TO_INVESTMENT`, `OPERATIONS_TO_REFERRER`, `LIQUIDITY_LP_ADD`, …) so "where did the money go?" has a single answer.
+- **Purpose.** Record every directional movement out of an allocation wallet with a canonical tag (`VAULT_TO_APPROVED_ALLOCATION`, `OPERATIONS_TO_REFERRER`, `LIQUIDITY_LP_ADD`, …) so "where did the money go?" has a single answer.
 - **Who writes.** The existing `src/lib/transaction-tags.ts` registry, manually appended by the operator at the moment of movement; extended by automatic entries when `CommissionRouter` emits splits.
 - **Who can change.** Founder/operator may add entries; entries are not edited or deleted — corrections are new entries that reference the prior one.
 - **Class.** Financial.

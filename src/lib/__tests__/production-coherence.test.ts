@@ -357,6 +357,53 @@ describe("production coherence guards", () => {
     }
   });
 
+  it("keeps protocol economy design and active module docs in neutral public-trust language", () => {
+    const moduleStandard = read("docs/MODULE_INTEGRATION_STANDARD.md");
+    const strategy = read("docs/STRATEGIC_NARRATIVE_AND_EXECUTION_ORDER.md");
+    const treasury = read("docs/TREASURY_LEDGER_DOCTRINE.md");
+    const unified = read("docs/UNIFIED_PROTOCOL_DOCTRINE_MAP.md");
+    const referralPreview = read("src/lib/preview/referral.ts");
+    const observatory = read("docs/PROTOCOL_ECONOMY_OBSERVATORY_DESIGN.md");
+
+    const activeFiles = {
+      moduleStandard,
+      strategy,
+      treasury,
+      unified,
+      referralPreview,
+      observatory,
+    };
+
+    for (const [name, src] of Object.entries(activeFiles)) {
+      expect(src, name).not.toMatch(/\bsharia\b/i);
+      expect(src, name).not.toMatch(/\briba\b/i);
+      expect(src, name).not.toMatch(/\bhalal\b/i);
+      expect(src, name).not.toMatch(/\bharam\b/i);
+      expect(src, name).not.toMatch(/\bislamic\b/i);
+      expect(src, name).not.toMatch(/shariaRiskStatus/);
+      expect(src, name).not.toMatch(/VAULT_TO_INVESTMENT|VAULT_FROM_INVESTMENT/);
+      expect(src, name).not.toMatch(/yield-bearing position/i);
+      expect(src, name).not.toMatch(/passive treasury return/i);
+    }
+
+    expect(moduleStandard).toContain("riskPolicyStatus");
+    expect(moduleStandard).toContain("legal/disclosure/risk-policy guardrails");
+    expect(treasury).toContain("VAULT_TO_APPROVED_ALLOCATION");
+    expect(treasury).toContain("approved reserve allocation");
+    expect(unified).toContain("VAULT_TO_APPROVED_ALLOCATION");
+    expect(referralPreview).toContain("Approved reserve allocation");
+    expect(referralPreview).toContain("VAULT_TO_APPROVED_ALLOCATION");
+
+    expect(observatory).toContain("Protocol Economy Observatory");
+    expect(observatory).toContain("My Economy");
+    expect(observatory).toContain("Volume is not revenue");
+    expect(observatory).toContain("Wallet balances are not member entitlements");
+    expect(observatory).toContain("Evidence Classes");
+    expect(observatory).toContain("SourceRegistryV1 is deployed but has zero source records");
+    expect(observatory).toContain("Public/default V3 buys use `ZERO_SOURCE_ID`");
+    expect(observatory).toContain("Do not build a new public `/economy` route first");
+  });
+
   it("freezes the V3 acquisition engine without making it live", () => {
     const v3 = read("docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md");
     const testPlan = read("docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md");

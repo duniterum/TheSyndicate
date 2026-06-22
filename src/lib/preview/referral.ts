@@ -149,7 +149,7 @@ export const SIM_TREASURY_ROWS: LedgerRow[] = [
   { id: "t3", source: "MembershipSale",   destination: "Operations Wallet",      amountUsdc:  25, reason: "SALE_TO_OPERATIONS (10%)",   status: "SIMULATED", whenLabel: "~1h ago" },
   { id: "t4", source: "Operations Wallet", destination: "ember.eth (referrer)",  amountUsdc:  13.75, reason: "OPERATIONS_TO_REFERRER",  status: "SIMULATED", whenLabel: "~1h ago" },
   { id: "t5", source: "Liquidity Wallet", destination: "Trader Joe SYN/USDC LP", amountUsdc:  50, reason: "LIQUIDITY_LP_ADD",           status: "PENDING",   whenLabel: "queued" },
-  { id: "t6", source: "Vault Reserve",    destination: "Yield-bearing position", amountUsdc: 500, reason: "VAULT_TO_INVESTMENT",        status: "PENDING",   whenLabel: "queued" },
+  { id: "t6", source: "Vault Reserve",    destination: "Approved reserve allocation", amountUsdc: 500, reason: "VAULT_TO_APPROVED_ALLOCATION", status: "PENDING", whenLabel: "queued" },
   { id: "t7", source: "Operations Wallet", destination: "Infrastructure (RPC)",  amountUsdc:  35, reason: "OPERATIONS_TO_INFRA",        status: "SIMULATED", whenLabel: "~6h ago" },
   { id: "t8", source: "Operations Wallet", destination: "Audit firm",            amountUsdc: 250, reason: "OPERATIONS_TO_AUDIT",        status: "SIMULATED", whenLabel: "~2d ago" },
 ];

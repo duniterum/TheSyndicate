@@ -222,14 +222,15 @@ supports it. SourceRegistryV1 can store source policy for MembershipSaleV3, but
 it does not automatically make Archive, SwapRail, or future products
 source-aware.
 
-### Sharia-Conscious Explanation
+### Public Trust / Legal Cautious Explanation
 
 The Syndicate should be explained as transparent membership and verifiable
 participation, not yield, lending, passive income, interest, revenue share, or
 financial entitlement. SYN is the membership seat. Archive artifacts are memory.
 Source attribution, if later activated, is an acquisition cost disclosed in a
-purchase receipt, not passive income. Any formal Sharia position would require
-qualified review; the product copy should stay conservative until then.
+purchase receipt, not passive income. Any formal compliance position would
+require qualified review; public product copy should stay neutral and
+conservative until then.
 
 ## 3. What To Say / What Not To Say
 
@@ -588,7 +589,7 @@ CTA:
 - Run a design-only module intake when V3 public truth and source gates are
   stable.
 
-### 11. Sharia / Legal Cautious Explanation
+### 11. Public Trust / Legal Cautious Explanation
 
 What to say:
 
@@ -968,7 +969,7 @@ What not to include:
 - premium products,
 - marketplace/product sales,
 - any NFT/Archive sale language beyond current memory framing,
-- Sharia-conscious public positioning.
+- trust-policy public positioning.
 
 ## 12. Requires Replit / Public Publish
 
@@ -1023,4 +1024,3 @@ V3 public truth cleanup -> Replit publish/live QA -> source packet finalization
 
 Do not skip to source records, referral activation, SwapRail, SeatRecord721, or
 ProductSaleRouter while the public Join/FAQ layer still teaches old sale truth.
-

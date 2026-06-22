@@ -31,8 +31,8 @@ Adding a tag is a governance change.
 | `OPERATIONS_TO_AUDIT` | Operations spend on audits / legal |
 | `LIQUIDITY_LP_ADD` | Liquidity wallet deposited into Trader Joe pair |
 | `LIQUIDITY_LP_REMOVE` | Liquidity wallet withdrew from pair |
-| `VAULT_TO_INVESTMENT` | Vault funds allocated to a yield-bearing position |
-| `VAULT_FROM_INVESTMENT` | Returning position closed back to Vault |
+| `VAULT_TO_APPROVED_ALLOCATION` | Vault funds moved to an approved reserve allocation with its own proof path |
+| `VAULT_FROM_APPROVED_ALLOCATION` | Approved reserve allocation returned back to Vault |
 
 ## Verifiable > Impressive
 

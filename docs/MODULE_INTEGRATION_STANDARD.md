@@ -137,7 +137,7 @@ type SyndicateModuleManifest = {
   chronicleBehavior: string;
   archiveBehavior: string;
   legalCopyStatus: "not-required" | "draft" | "approved" | "blocked";
-  shariaRiskStatus: "none" | "low" | "medium" | "high" | "blocked";
+  riskPolicyStatus: "none" | "low" | "medium" | "high" | "blocked";
   seoStatus: "none" | "draft" | "indexable" | "noindex";
   analyticsStatus: "none" | "local-only" | "privacy-reviewed" | "public";
   conversionRole: "primary" | "secondary" | "retention" | "trust" | "utility" | "internal";
@@ -384,7 +384,7 @@ with this intake before code:
 6. State receipt/event schema.
 7. State Activity, My Syndicate, Register, Chronicle, and Archive behavior.
 8. State public route, SEO, docs, and FAQ posture.
-9. State legal/disclosure/Sharia guardrails.
+9. State legal/disclosure/risk-policy guardrails.
 10. State conversion role and CTA priority.
 11. State tests and release gates.
 12. State owner action/activation ceremony.
