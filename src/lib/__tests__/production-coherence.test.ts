@@ -493,6 +493,33 @@ describe("production coherence guards", () => {
     expect(authority).toContain("canonical anti-fragmentation standard for future modules");
   });
 
+  it("keeps the protocol organism graph canonical and non-live for future modules", () => {
+    const graph = read("docs/PROTOCOL_ORGANISM_GRAPH.md");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+
+    expect(graph).toContain("Status: CANONICAL MODULE RELATIONSHIP MAP / NO TRANSACTION AUTHORIZED");
+    expect(graph).toContain("docs/MODULE_INTEGRATION_STANDARD.md");
+    expect(graph).toContain("Current V3 Direct-Buy Graph");
+    expect(graph).toContain("Source Attribution Lifecycle Graph");
+    expect(graph).toContain("Archive / NFT Current vs Future Graph");
+    expect(graph).toContain("Future Module Relationship Table");
+    expect(graph).toContain("public/default V3 buy uses `ZERO_SOURCE_ID`");
+    expect(graph).toContain("Archive1155 does not accept `sourceId`");
+    expect(graph).toContain("SwapRail is not implemented and not source-aware");
+    expect(graph).toContain("ProductSaleRouter does not exist");
+    expect(graph).toContain("Claim UI | future/planned module | INACTIVE");
+    expect(graph).toContain("SeatRecord721 / identity | Future");
+    expect(graph).toContain("No edge. Archive1155 does not accept `sourceId`.");
+    expect(graph).toContain("Claim UI remains hidden until escrow/status/legal gates pass.");
+    expect(graph).toContain("Source records live, public source links live, claim UI live, product-wide attribution live.");
+    expect(graph).not.toMatch(/\| SeatRecord721(?: \/ identity)? \|[^\n]*\|\s*LIVE\s*\|/i);
+    expect(graph).not.toMatch(/\| ProductSaleRouter \|[^\n]*\|\s*LIVE\s*\|/i);
+    expect(graph).not.toMatch(/\| Claim UI \|[^\n]*\|\s*LIVE\s*\|/i);
+    expect(graph).not.toMatch(/\| Source records \|[^\n]*\|\s*ACTIVE\s*\|/i);
+    expect(authority).toContain("docs/PROTOCOL_ORGANISM_GRAPH.md");
+    expect(authority).toContain("canonical module relationship map");
+  });
+
   it("freezes identity and attribution before referral, Privy, or SeatRecord721 activation", () => {
     const identity = read("docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md");
     const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
