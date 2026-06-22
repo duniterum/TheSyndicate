@@ -381,6 +381,8 @@ describe("production coherence guards", () => {
     const futureReferral = read("src/lib/future-referral.ts");
     const sourcePacket = read("docs/SOURCE_RECORD_PACKET_TEMPLATE.md");
     const sourceRunbook = read("docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md");
+    const sourceForkReadback = read("docs/SOURCE_ATTRIBUTION_FORK_REHEARSAL_READBACK.md");
+    const internalSourceDraft = read("docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md");
 
     expect(readiness).toContain("Status: NON-LIVE READINESS SPEC / SOURCE RECORDS INACTIVE / NO CLAIM UI");
     expect(readiness).toContain("SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; zero source records");
@@ -412,8 +414,19 @@ describe("production coherence guards", () => {
     expect(sourceRunbook).toContain("createSource(bytes32 sourceId, SourceTerms terms)");
     expect(sourceRunbook).toContain("The initial status must be `PAUSED`.");
     expect(sourceRunbook).toContain("No source creation happens without founder approval.");
+    expect(sourceForkReadback).toContain("Status: PASSED / DEPLOYED-ADDRESS FORK ONLY / NO MAINNET SOURCE RECORD");
+    expect(sourceForkReadback).toContain("2 passed / 0 failed / 0 skipped");
+    expect(sourceForkReadback).toContain("It does not create a real mainnet source record.");
+    expect(sourceForkReadback).toContain("A separate activation ceremony is required before any source can be used live.");
+    expect(internalSourceDraft).toContain("Status: DRAFT ONLY / NOT APPROVED / NO TRANSACTION AUTHORIZED / SOURCE MUST START PAUSED");
+    expect(internalSourceDraft).toContain("Recommended source class | `BUILDER_SOURCE`");
+    expect(internalSourceDraft).toContain("Candidate source wallet | TBD");
+    expect(internalSourceDraft).toContain("Candidate payout wallet | TBD");
+    expect(internalSourceDraft).toContain("No public source link.");
+    expect(internalSourceDraft).toContain("Expected SourceRegistry Readback");
+    expect(internalSourceDraft).toContain("Initial status is `PAUSED`.");
 
-    for (const [name, src] of Object.entries({ referralRoute, futureReferral, sourcePacket, sourceRunbook })) {
+    for (const [name, src] of Object.entries({ referralRoute, futureReferral, sourcePacket, sourceRunbook, sourceForkReadback, internalSourceDraft })) {
       expect(src, name).not.toMatch(/passive income|yield|downline|MLM/i);
       expect(src, name).not.toMatch(/claimable commission|earned commission now/i);
       expect(src, name).not.toMatch(/source owns (?:a )?member/i);
