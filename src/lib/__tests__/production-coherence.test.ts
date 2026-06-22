@@ -454,6 +454,28 @@ describe("production coherence guards", () => {
     expect(capability).not.toMatch(/referral is the business model/i);
   });
 
+  it("requires future modules to pass the modular product integration standard", () => {
+    const standard = read("docs/MODULE_INTEGRATION_STANDARD.md");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+
+    expect(standard).toContain("Status: CANONICAL ARCHITECTURE STANDARD / NO TRANSACTION AUTHORIZED");
+    expect(standard).toContain("No future module may be implemented as an isolated page patch.");
+    expect(standard).toContain("SourceRegistryV1 is reusable policy infrastructure, not a universal payment");
+    expect(standard).toContain("MembershipSaleV3 is source-aware");
+    expect(standard).toContain("Archive1155 is not source-aware");
+    expect(standard).toContain("sourceAttributionSupport:");
+    expect(standard).toContain("publicStatus:");
+    expect(standard).toContain("receiptSchema:");
+    expect(standard).toContain("public-actionable");
+    expect(standard).toContain("paymentRequired: true");
+    expect(standard).toContain("SwapRail / Bridge / Trade Future Module");
+    expect(standard).toContain("Archive / NFT Source Attribution Options");
+    expect(standard).toContain("Decision: defer TypeScript registry for now.");
+    expect(standard).toContain("Do not implement SwapRail, Archive sale wrapper, ProductSaleRouter, SeatRecord721");
+    expect(authority).toContain("docs/MODULE_INTEGRATION_STANDARD.md");
+    expect(authority).toContain("canonical anti-fragmentation standard for future modules");
+  });
+
   it("freezes identity and attribution before referral, Privy, or SeatRecord721 activation", () => {
     const identity = read("docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md");
     const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");

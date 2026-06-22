@@ -81,6 +81,7 @@ The doctrine layer. Vision, gates, decision frameworks.
 - `docs/SYNDICATE_PROTOCOL_MODEL.md` — canonical economic model: SYN seat doctrine, contribution depth, economic scale, 70/20/10 routing, and institutional trust capital. *(Reclassified HISTORICAL -> CANONICAL 2026-06-20.)*
 - `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md` — canonical V3 pre-Solidity specification: deterministic era pricing, acquisition-first routing, public/approved source policy, source registry requirements, receipt schema, and V3 boundaries. *(Registered 2026-06-20.)*
 - `docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md` — canonical boundary for current seat status, historical identity, recovery, Privy, SeatRecord721, and source attribution. *(Registered 2026-06-20.)*
+- `docs/MODULE_INTEGRATION_STANDARD.md` — canonical anti-fragmentation standard for future modules: taxonomy, manifest fields, payment/source/receipt/read-model gates, SwapRail posture, Archive attribution options, and no page-by-page patching. *(Registered 2026-06-22.)*
 - `docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md` — knowledge-map index: where each kind of protocol knowledge lives (Protocol Knowledge vs Institutional Register Memory). Defers to the code registry `src/lib/protocol-knowledge-map.ts`. *(Registered 2026-06-12.)*
 
 ### Consolidated canon set (`docs/canon/`)
