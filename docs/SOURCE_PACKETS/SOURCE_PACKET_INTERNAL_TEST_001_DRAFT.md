@@ -97,6 +97,499 @@ Cons:
 
 Recommended for `SOURCE_PACKET_INTERNAL_TEST_001`.
 
+## Readiness Status
+
+Status after the Protocol Organism Graph review: CEREMONY-READY DRAFT /
+FOUNDER INPUTS MISSING / NO SOURCE CREATION AUTHORIZED.
+
+This packet is operationally close enough for a later yes/no decision, but it is
+not final because founder-provided public addresses, source ID, timestamps,
+caps, metadata hash, and legal/product approval are still missing.
+
+The packet remains constrained by `docs/PROTOCOL_ORGANISM_GRAPH.md`:
+
+- MembershipSaleV3 only.
+- SourceRegistryV1 policy only.
+- Initial source status must be `PAUSED`.
+- Public/default V3 buys continue to use `ZERO_SOURCE_ID`.
+- No Archive1155, SwapRail, ProductSaleRouter, claim UI, or public source-link
+  activation follows from this packet.
+
+## Founder Input Readiness Matrix
+
+Each input must be approved before a source creation ceremony. Safe defaults are
+recommendations only; the founder can change them before approval.
+
+### Final source wallet
+
+- Why it matters: identifies the source policy actor and is emitted in
+  `SourceCreated`.
+- Safe default recommendation: founder-provided public wallet controlled for
+  the internal test; do not use a compromised, exchange, vendor, or placeholder
+  address.
+- Risk if wrong: attribution points to the wrong actor; source can become
+  legally or operationally ambiguous.
+- SourceRegistry readback: `sourceConfig(sourceId).sourceWallet`.
+- MembershipSaleV3 effect: used for self-referral checks and receipt
+  `sourceWallet`.
+- Activity: source policy action can be shown only as paused policy truth.
+- My Syndicate: no member-facing action while paused; future receipts may show
+  the source wallet as a receipt fact.
+- Register: should record the source wallet only after on-chain readback.
+- Chronicle: only a candidate if the first source policy is historically
+  material.
+- Archive/NFT: no effect; Archive1155 does not accept `sourceId`.
+- Referral route: remains inactive while paused.
+- Claim UI: no effect; claim UI remains hidden.
+- Future modules: no automatic product-wide source rights.
+
+### Final payout wallet
+
+- Why it matters: receives acquisition commission if a future active source
+  pays directly or receives escrow claims later.
+- Safe default recommendation: founder-approved payout wallet separate from the
+  buyer/recipient wallet and suitable for USDC receipt.
+- Risk if wrong: funds could route to the wrong wallet after activation;
+  recovery requires visible owner action.
+- SourceRegistry readback: `sourceConfig(sourceId).payoutWallet`.
+- MembershipSaleV3 effect: used for payout, escrow fallback, and self-referral
+  checks.
+- Activity: payout/escrow events are future receipt facts only after activation.
+- My Syndicate: no claim/balance display while paused.
+- Register: record after sourceConfig readback.
+- Chronicle: not Chronicle-worthy unless institutionally material.
+- Archive/NFT: no effect.
+- Referral route: no displayed balance or claim while paused.
+- Claim UI: blocked until escrow/status/legal gates pass.
+- Future modules: no automatic payout for non-membership products.
+
+### Final source label
+
+- Why it matters: human label for docs, metadata, and future operator review.
+- Safe default recommendation: `Internal Test Source 001`.
+- Risk if wrong: public copy may imply official representation, agency,
+  employment, or a public partner launch.
+- SourceRegistry readback: not stored directly; label must live in the final
+  packet metadata and `metadataHash`.
+- MembershipSaleV3 effect: none directly; receipts store numeric/source fields,
+  not the label.
+- Activity: can use label only after matching metadata/readback.
+- My Syndicate: hidden/internal while paused.
+- Register: may reference the label as metadata context after readback.
+- Chronicle: only material if founder admits the source policy as a milestone.
+- Archive/NFT: no effect.
+- Referral route: no public display while paused.
+- Claim UI: no effect.
+- Future modules: label does not grant product-wide attribution.
+
+### Final source class approval
+
+- Why it matters: controls class semantics and commission caps.
+- Safe default recommendation: `BUILDER_SOURCE`.
+- Risk if wrong: `MEMBER_INTRODUCTION` requires seated-referrer semantics;
+  institutional classes can imply public representation if used loosely.
+- SourceRegistry readback: `sourceConfig(sourceId).sourceClass`.
+- MembershipSaleV3 effect: `MEMBER_INTRODUCTION` enforces seated-referrer
+  status; class is emitted in V3 receipt fields.
+- Activity: source policy class can be shown only as paused policy truth.
+- My Syndicate: future receipt facts only; not identity.
+- Register: source class belongs in source policy readback.
+- Chronicle: source class alone is not history.
+- Archive/NFT: no effect.
+- Referral route: still pending/inactive while paused.
+- Claim UI: no effect while paused.
+- Future modules: class does not automatically apply outside MembershipSaleV3.
+
+### Final sourceId derivation method
+
+- Why it matters: sourceId is the permanent on-chain key for the source record.
+- Safe default recommendation:
+  `keccak256("SOURCE_PACKET_INTERNAL_TEST_001:<approved-source-wallet>:<approved-date>")`
+  unless founder approves a stricter metadata-hash-derived method.
+- Risk if wrong: collisions, unreadable provenance, or mismatch between packet
+  and on-chain record.
+- SourceRegistry readback: `sourceExists(sourceId)` and
+  `sourceConfig(sourceId)`.
+- MembershipSaleV3 effect: source-aware buys use this exact bytes32 value.
+- Activity: future source-attributed receipts carry this sourceId.
+- My Syndicate: future receipt context depends on exact sourceId.
+- Register: should store sourceId and derivation note.
+- Chronicle: only if material.
+- Archive/NFT: no effect.
+- Referral route: no public source link while paused.
+- Claim UI: future escrow lookup uses sourceId.
+- Future modules: no automatic reuse without module approval.
+
+### Final sourceId
+
+- Why it matters: exact bytes32 value used in `createSource` and future
+  `buy(..., sourceId, ...)`.
+- Safe default recommendation: TBD until source wallet, approval date, and
+  metadata hash are final.
+- Risk if wrong: wrong or duplicate source record; future attribution can fail
+  or point to the wrong policy.
+- SourceRegistry readback: `sourceExists(sourceId) = true` after creation.
+- MembershipSaleV3 effect: only active non-zero sourceId can produce acquisition
+  commission.
+- Activity: future receipts index by sourceId.
+- My Syndicate: future source receipt facts index by sourceId.
+- Register: primary durable source policy key.
+- Chronicle: only material source milestones.
+- Archive/NFT: no effect.
+- Referral route: not exposed while paused.
+- Claim UI: hidden; future escrow reads use sourceId.
+- Future modules: no automatic scope.
+
+### Final commission bps
+
+- Why it matters: determines acquisition cost if the source later becomes active
+  and eligible.
+- Safe default recommendation: `500` bps for the first internal test.
+- Risk if wrong: economics can be too generous, too weak, or legally confusing;
+  too-high terms can violate caps.
+- SourceRegistry readback: `sourceConfig(sourceId).commissionBps`.
+- MembershipSaleV3 effect: computes `acquisitionCost` and net routed USDC after
+  activation.
+- Activity: future receipts can show acquisition cost only from events.
+- My Syndicate: future receipt facts only; no balance while paused.
+- Register: source terms readback.
+- Chronicle: not history by itself.
+- Archive/NFT: no effect.
+- Referral route: no commission copy while paused.
+- Claim UI: no claim while paused.
+- Future modules: no product-wide commission.
+
+### Final attribution scope
+
+- Why it matters: controls whether the source is first-purchase, windowed,
+  capped, lifetime, or custom.
+- Safe default recommendation: `WINDOWED`.
+- Risk if wrong: source can over-attribute, under-attribute, or create
+  expectations beyond the first internal test.
+- SourceRegistry readback: `sourceConfig(sourceId).scope`.
+- MembershipSaleV3 effect: used in eligibility and receipt `attributionScope`.
+- Activity: future source events can display scope only as receipt/policy fact.
+- My Syndicate: future source context only after activation.
+- Register: record scope after readback.
+- Chronicle: only material if source policy itself is important.
+- Archive/NFT: no effect.
+- Referral route: remains inactive while paused.
+- Claim UI: no effect while paused.
+- Future modules: no automatic product scope.
+
+### Start timestamp
+
+- Why it matters: a future ACTIVE source is ineligible before `startTime`.
+- Safe default recommendation: founder-approved Unix timestamp at or after
+  source creation approval; if activation may be delayed, set a conservative
+  later start or be prepared to update terms before activation.
+- Risk if wrong: source may be eligible too early or may expire before intended
+  test use.
+- SourceRegistry readback: `sourceConfig(sourceId).startTime`.
+- MembershipSaleV3 effect: SourceRegistry `attributionTerms` returns ineligible
+  before start.
+- Activity: source policy timeline only.
+- My Syndicate: no direct member effect while paused.
+- Register: include timestamp readback.
+- Chronicle: only if material.
+- Archive/NFT: no effect.
+- Referral route: no source link while paused.
+- Claim UI: no effect.
+- Future modules: no automatic effect.
+
+### End timestamp
+
+- Why it matters: required for `WINDOWED` scope and closes eligibility after the
+  window.
+- Safe default recommendation: short internal window, 7 to 14 days after
+  intended activation; use a timestamp far enough to avoid accidental expiry
+  before activation.
+- Risk if wrong: source may remain eligible too long or expire before testing.
+- SourceRegistry readback: `sourceConfig(sourceId).endTime`.
+- MembershipSaleV3 effect: source becomes ineligible after end time; receipt
+  `attributionWindowEndsAt` uses this value.
+- Activity: future receipt fact only.
+- My Syndicate: future receipt context only.
+- Register: include timestamp readback.
+- Chronicle: not material by itself.
+- Archive/NFT: no effect.
+- Referral route: no public countdown while paused.
+- Claim UI: no effect.
+- Future modules: no automatic effect.
+
+### Gross cap
+
+- Why it matters: caps total attributed gross USDC for this source.
+- Safe default recommendation: 25 to 100 USDC for the first internal test;
+  recommended starting candidate: 25 USDC (`25_000_000` USDC units).
+- Risk if wrong: source can over-attribute too much gross or fail during a
+  planned small test.
+- SourceRegistry readback: `sourceConfig(sourceId).grossCap`.
+- MembershipSaleV3 effect: projected source gross above cap becomes ineligible.
+- Activity: future receipt can show remaining source cap.
+- My Syndicate: no public source dashboard while paused.
+- Register: include cap readback.
+- Chronicle: not material by itself.
+- Archive/NFT: no effect.
+- Referral route: no cap display while paused.
+- Claim UI: no effect while paused.
+- Future modules: cap applies only to this MembershipSaleV3 sourceId.
+
+### Per-buyer cap
+
+- Why it matters: caps attributed gross USDC per buyer for this source.
+- Safe default recommendation: 5 to 10 USDC for the first internal test;
+  recommended starting candidate: 5 USDC (`5_000_000` USDC units).
+- Risk if wrong: one buyer can consume the whole source cap, or test purchase
+  can fail unexpectedly.
+- SourceRegistry readback: `sourceConfig(sourceId).perBuyerCap`.
+- MembershipSaleV3 effect: projected buyer gross above cap becomes ineligible.
+- Activity: future receipt can show remaining buyer cap.
+- My Syndicate: future receipt facts only.
+- Register: include cap readback.
+- Chronicle: not material by itself.
+- Archive/NFT: no effect.
+- Referral route: no public cap display while paused.
+- Claim UI: no effect.
+- Future modules: no automatic effect.
+
+### Applies to repeat purchases
+
+- Why it matters: determines whether the source may apply after the recipient's
+  first seat purchase.
+- Safe default recommendation: `false` for the first internal test.
+- Risk if wrong: repeat attribution can create broader economics than intended
+  or fail to test a desired repeat path.
+- SourceRegistry readback:
+  `sourceConfig(sourceId).appliesToRepeatPurchases`.
+- MembershipSaleV3 effect: repeat source purchases fail closed if false.
+- Activity: future receipt facts only.
+- My Syndicate: no recurring/source-loop copy while paused.
+- Register: include readback.
+- Chronicle: not material by itself.
+- Archive/NFT: no effect.
+- Referral route: no repeat-purchase promise while paused.
+- Claim UI: no effect.
+- Future modules: no automatic repeat attribution.
+
+### Metadata hash
+
+- Why it matters: binds the on-chain source record to the approved packet.
+- Safe default recommendation: `keccak256` hash of the final approved packet
+  text or canonical JSON packet; must be nonzero for `BUILDER_SOURCE`.
+- Risk if wrong: on-chain policy cannot be tied cleanly to the approved
+  off-chain record.
+- SourceRegistry readback: `sourceConfig(sourceId).metadataHash`.
+- MembershipSaleV3 effect: none directly; receipt emits source terms, not
+  metadata.
+- Activity: source policy event can reference metadata after readback.
+- My Syndicate: no direct effect while paused.
+- Register: should store metadata hash and packet reference.
+- Chronicle: only material if admitted.
+- Archive/NFT: no effect.
+- Referral route: no public source profile while paused.
+- Claim UI: no effect.
+- Future modules: metadata does not grant broader scope.
+
+### Public display posture
+
+- Why it matters: controls whether this source appears publicly or remains
+  internal.
+- Safe default recommendation: Hidden / internal only.
+- Risk if wrong: public users may infer source activation, representation, or
+  available payout rights.
+- SourceRegistry readback: not stored directly; belongs in metadata hash and
+  docs.
+- MembershipSaleV3 effect: none directly.
+- Activity: internal/read-only policy wording only.
+- My Syndicate: no public module while paused.
+- Register: can record source policy without promoting it.
+- Chronicle: only material.
+- Archive/NFT: no effect.
+- Referral route: remains inactive.
+- Claim UI: hidden.
+- Future modules: no public product scope.
+
+### Legal/product copy posture
+
+- Why it matters: prevents prohibited financial-return, member-ownership,
+  official-agency, or chain-payout drift.
+- Safe default recommendation: Needs founder/legal/product review before any
+  public source copy.
+- Risk if wrong: regulatory, trust, and brand harm.
+- SourceRegistry readback: not stored except through metadata hash.
+- MembershipSaleV3 effect: none directly.
+- Activity: copy must say paused policy, not live commission.
+- My Syndicate: no source earnings copy while paused.
+- Register: factual readback only.
+- Chronicle: no routine accounting-as-history.
+- Archive/NFT: no source commission implication.
+- Referral route: pending/inactive copy only.
+- Claim UI: blocked.
+- Future modules: each module needs its own copy approval.
+
+### Risk classification
+
+- Why it matters: frames operational/legal/security review before transaction.
+- Safe default recommendation: Medium until wallets, caps, metadata, and copy
+  are final; Low only after readback and no public activation.
+- Risk if wrong: founder may underestimate source/payout/legal risk.
+- SourceRegistry readback: not stored directly.
+- MembershipSaleV3 effect: none directly.
+- Activity: no risk label unless an internal operator surface is later built.
+- My Syndicate: hidden/internal while paused.
+- Register: may note operational risk posture in source policy log.
+- Chronicle: not history unless material.
+- Archive/NFT: no effect.
+- Referral route: no effect beyond pending posture.
+- Claim UI: no effect; still blocked.
+- Future modules: risk must be reassessed per module.
+
+### PAUSED-first ceremony approval
+
+- Why it matters: `createSource` writes mainnet policy state and must not
+  activate money routing in the same step.
+- Safe default recommendation: approve only PAUSED-first creation; no
+  `setSourceStatus(ACTIVE)` in the same ceremony.
+- Risk if wrong: source attribution could become usable before readback, copy,
+  and UI guardrails are ready.
+- SourceRegistry readback: `sourceConfig(sourceId).status = PAUSED` and
+  `SourceCreated(..., PAUSED, ...)`.
+- MembershipSaleV3 effect: source remains ineligible while paused.
+- Activity: source policy created but not active.
+- My Syndicate: no source action while paused.
+- Register: record the paused policy truth after readback.
+- Chronicle: candidate only if historically material.
+- Archive/NFT: no effect.
+- Referral route: remains inactive.
+- Claim UI: remains hidden.
+- Future modules: no activation.
+
+## Conservative Draft Values For Founder Review
+
+These are not final values and must not be pasted into a transaction until the
+founder approves them.
+
+| Field | Conservative recommendation | Reason |
+| --- | --- | --- |
+| Source class | `BUILDER_SOURCE` | Best controlled internal test; avoids public seated-member referral semantics. |
+| Commission bps | `500` bps | Small, understandable, low-risk acquisition cost for first ceremony. |
+| Scope | `WINDOWED` | Bounded in time and aligned with the contract's window guard. |
+| Start timestamp | Founder-approved timestamp at or after source creation approval | Avoids accidental early eligibility. |
+| End timestamp | 7 to 14 days after intended activation | Keeps the test short; update before activation if delayed. |
+| Gross cap | Candidate range 25 to 100 USDC; suggested first value 25 USDC (`25_000_000`) | Prevents broad attribution from a first internal source. |
+| Per-buyer cap | Candidate range 5 to 10 USDC; suggested first value 5 USDC (`5_000_000`) | Fits one minimum purchase and limits one buyer. |
+| Repeat purchases | `false` | Keeps the first internal test first-purchase only. |
+| Public display | Hidden / internal only | Avoids public referral activation implication. |
+| Initial status | `PAUSED` | Required ceremony boundary. |
+
+Tradeoff: `WINDOWED` terms can expire while the source remains paused. If the
+founder wants a long gap between PAUSED creation and activation, either use a
+future end timestamp with a short post-activation test window, or perform a
+visible `updateSourceTerms` action before activation.
+
+## Future Readback Command Plan
+
+No command in this section should be run as a transaction. These are readback
+checks for after a separately approved future `createSource` transaction.
+
+Target contract:
+
+```text
+SourceRegistryV1 = 0x780013bB358be6be95b401901264FC7c22a595a6
+Chain ID = 43114
+```
+
+Expected read functions:
+
+```text
+owner()
+pendingOwner()
+sourceExists(sourceId)
+sourceConfig(sourceId)
+isActive(sourceId)
+```
+
+Expected event:
+
+```text
+SourceCreated(sourceId, sourceWallet, BUILDER_SOURCE, 500, PAUSED, WINDOWED, payoutWallet, metadataHash)
+```
+
+Expected PAUSED readback:
+
+```text
+sourceExists(sourceId) = true
+sourceConfig(sourceId).sourceWallet = <approved source wallet>
+sourceConfig(sourceId).payoutWallet = <approved payout wallet>
+sourceConfig(sourceId).sourceClass = BUILDER_SOURCE
+sourceConfig(sourceId).commissionBps = 500
+sourceConfig(sourceId).status = PAUSED
+sourceConfig(sourceId).scope = WINDOWED
+sourceConfig(sourceId).startTime = <approved start timestamp>
+sourceConfig(sourceId).endTime = <approved end timestamp>
+sourceConfig(sourceId).grossCap = <approved gross cap>
+sourceConfig(sourceId).perBuyerCap = <approved per-buyer cap>
+sourceConfig(sourceId).appliesToRepeatPurchases = false
+sourceConfig(sourceId).metadataHash = <approved metadata hash>
+isActive(sourceId) = false
+```
+
+Expected non-effects:
+
+- `/referral` remains inactive.
+- Public/default buy remains `ZERO_SOURCE_ID`.
+- No claim UI.
+- No source-aware public buy path.
+- No Archive/NFT attribution.
+- No SwapRail attribution.
+- No product attribution.
+- No source commission accrues while status is `PAUSED`.
+
+## Future PAUSED Source Wording
+
+Use only after a source record exists on-chain and readback confirms it is
+`PAUSED`.
+
+Register wording:
+
+> Source policy record `SOURCE_PACKET_INTERNAL_TEST_001` was created on
+> SourceRegistryV1 and remains PAUSED. No public source-linked purchase path is
+> active.
+
+Activity heartbeat wording:
+
+> Source policy prepared: internal test source created in PAUSED status. No
+> commission is accruing and public buys remain ZERO_SOURCE_ID.
+
+My Syndicate internal wording:
+
+> Source attribution is under internal review. No source-linked action or claim
+> is available from this member home.
+
+Chronicle candidate wording:
+
+> The first internal source policy was created as a paused governance/readback
+> milestone. Admit to Chronicle only if founder confirms it materially changed
+> the institution's acquisition infrastructure.
+
+`/referral` wording while paused:
+
+> A source policy record exists but is paused. Referral/source attribution is
+> not live; no public source link, claim action, or commission accrual is active.
+
+Forbidden wording while paused:
+
+- "Referral is live."
+- "Commission is accruing."
+- "Claim your commission."
+- "Public source link is active."
+- "Archive/NFT attribution is live."
+- "Product-wide attribution is live."
+- Any official-representative, agency, employment, member-ownership, or banned
+  source-attribution finance/chain-payout wording listed in
+  `docs/LEGAL_DISCLOSURE_REFERRAL.md`.
+
 ## Non-Live Boundaries
 
 - No public source link.
