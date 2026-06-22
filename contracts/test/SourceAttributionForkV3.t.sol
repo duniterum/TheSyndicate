@@ -231,6 +231,8 @@ contract SourceAttributionForkV3Test is Test {
         vm.expectRevert(MembershipSaleV3.ReferrerNotSeated.selector);
         sale.buy(USDC_5, buyer, MEMBER_SOURCE_ID, 0, new bytes32[](0));
 
+        deal(SYN, sourceWallet, 1 ether);
+
         vm.prank(OWNER);
         registry.setSourceStatus(MEMBER_SOURCE_ID, SourceRegistryV1.SourceStatus.PAUSED);
         vm.prank(buyer);
