@@ -45,7 +45,9 @@ Until then:
 - no tier should be displayed as live,
 - no route may imply Vault or Liquidity fund referrals.
 
-Referral, if activated, must remain Operations-slice-only.
+Historical note: this CommissionRouterV1 boundary was superseded for V3 by
+the SourceRegistryV1 + MembershipSaleV3 acquisition-first model. Do not use
+this pre-V3 document as the current referral/source economics authority.
 
 ## SeatRecord721 Readiness Boundary
 
@@ -104,4 +106,3 @@ The safe order is:
 3. CommissionRouterV1 read-only frontend plan.
 4. SeatRecord721 final spec.
 5. SeatRecord721 implementation and tests.
-

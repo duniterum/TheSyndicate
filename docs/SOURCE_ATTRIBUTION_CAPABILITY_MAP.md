@@ -193,7 +193,7 @@ layer. It does not store product-specific terms natively.
 | Paused or revoked source blocks new commission and claim status-gates escrow | Medium | No | Requires clear source-operator UX | No | Keep runbook/recovery path explicit |
 | V3 normalized read model uses legacy `referralAmount` naming for acquisition cost compatibility | Medium | No | Should be cleaned before public source dashboards | No | Rename/copy carefully in future UI/read model |
 | Source-aware public buy path is not built | Medium | No | Yes | No | Build after source record ceremony and activation approval |
-| Referral route still contains some historical Operations-slice framing | Medium | No | Yes | No | Future copy patch before public source activation |
+| Referral route can drift back into historical Operations-slice-only framing | Medium | No | Yes | No | Guard with production coherence tests; public copy must use acquisition-first, Net USDC Routed V3 language |
 | Solidity header comments still say candidate/not deployed in some files | Low-medium | No | No | No | Future comment-only cleanup, no contract behavior change |
 | V3 receipt UI for default buys uses gross 70/20/10 assumptions | Medium | No because ZERO_SOURCE_ID has no acquisition cost | Yes for non-zero source UX | No | Future source receipt UI must use event/readback amounts |
 | SwapRail/external swap routes cannot be commissioned by current contracts | High | No | No | Not applicable | Keep out of scope until dedicated design |
@@ -385,8 +385,8 @@ Before creating any source record:
 
 1. Finalize the first internal source packet.
 2. Keep initial status PAUSED.
-3. Patch public referral copy that still implies Operations-slice-only referral
-   economics.
+3. Keep public referral/source copy aligned with acquisition-first,
+   MembershipSaleV3-only source attribution.
 4. Prepare source readback commands and Activity/Register wording for a paused
    source policy.
 5. Do not build public source links, claim UI, Archive source attribution, or

@@ -100,7 +100,30 @@ On-chain reads are auto-refetched in parallel. Ownership is reflected on
 `/nft`, `/my-syndicate`, and `/wallet/:address`. No marketplace links are
 invented.
 
-## 7. Rights disclaimer (binding for every public artifact)
+## 7. Source attribution / future NFT architecture boundary
+
+Current Archive1155 mints are not source-aware. Archive1155 does not accept a
+`sourceId`, does not read SourceRegistryV1, and does not emit acquisition-cost
+or source-term receipt fields.
+
+Do not patch Archive1155 casually just to add source attribution. Future NFT
+source-attribution work must pass `docs/MODULE_INTEGRATION_STANDARD.md` first
+and should be designed as a separate architecture sprint.
+
+Possible future paths include:
+
+1. A source-aware Archive wrapper/router.
+2. Archive1155 V2 with source-aware minting.
+3. A ProductSaleRouter for approved product commerce.
+4. A separate approved NFT sale design.
+
+Any future design must answer: identity versus memory, ERC-721 versus ERC-1155,
+sale contract versus token contract, receipt schema, Activity / My Syndicate /
+Register / Chronicle / Archive read-model behavior, SourceRegistryV1/V2 fit,
+legal/product copy, SEO/conversion posture, and the rule that artifacts never
+imply financial rights.
+
+## 8. Rights disclaimer (binding for every public artifact)
 
 Artifacts are collectible records only. NOT equity, NOT debt, NOT Vault
 ownership, NOT dividends, NOT revenue share, NOT governance, NOT promises
@@ -109,7 +132,7 @@ of profit. See `ARCHIVE_DISCLAIMER` in `archive-config.ts`.
 Banned vocabulary in any mint UI: ROI, dividend, yield product, profit
 share, revenue share, guaranteed appreciation, passive income.
 
-## 8. Activation checklist (any new public ID)
+## 9. Activation checklist (any new public ID)
 
 Before activating a new public ID on-chain:
 

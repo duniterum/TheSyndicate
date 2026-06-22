@@ -13,14 +13,14 @@ import {
 export const Route = createFileRoute("/referral")({
   head: () => ({
     meta: [
-      { title: "Referral - Pending Protocol Infrastructure | The Syndicate" },
+      { title: "Source Attribution - Pending Protocol Infrastructure | The Syndicate" },
       {
         name: "description",
         content:
           "Referral and source attribution are reserved future protocol systems. SourceRegistryV1 is deployed with zero source records; no referral commission is accruing and no claim is live.",
       },
       { name: "robots", content: "noindex,nofollow" },
-      { property: "og:title", content: "The Syndicate - Referral pending" },
+      { property: "og:title", content: "The Syndicate - Source attribution pending" },
       {
         property: "og:description",
         content:
@@ -56,15 +56,15 @@ const RESERVED_SYSTEMS = [
 function ReferralPage() {
   return (
     <PageShell
-      eyebrow="Referral"
+      eyebrow="Source attribution"
       title="Source attribution pending"
-      description="Referral is reserved future growth infrastructure, not affiliate marketing. SourceRegistryV1 is deployed, but records, source links, commissions, and claims remain inactive until a separate ceremony approves them."
+      description="Source attribution is reserved growth infrastructure for verified introductions. SourceRegistryV1 is deployed with zero source records; public V3 buys still use ZERO_SOURCE_ID, and no source-linked purchase or claim path is live."
     >
       <Section id="referral-status">
         <SectionHeader
           eyebrow="Current status"
           title={<>No source records. No commission. <span className="text-gradient-gold">No claim.</span></>}
-          description="The live product is membership: buying SYN seats the wallet. Source attribution belongs to a separate contract-gated system and remains pending until source terms are created and verifiable."
+          description="The live product is membership: buying SYN seats the wallet. MembershipSaleV3 can support source-attributed membership receipts later, but only after source terms are approved, created, read back, and activated."
         />
         <GlassCard className="p-5">
           <div className="flex flex-wrap items-center gap-2">
@@ -74,16 +74,17 @@ function ReferralPage() {
           </div>
           <p className="mt-4 text-sm leading-relaxed text-foreground/85">
             The Syndicate can remember who introduced whom, but memory is not
-            money. V3 public buys currently use the zero source ID. Until a
-            SourceRegistry record is created, wired live, and publicly
-            verifiable, there is no referral balance, no earned commission, no
-            active source tier, no leaderboard, and no claim button.
+            money. V3 public buys currently use ZERO_SOURCE_ID. Until a
+            SourceRegistry record is created, activated, wired live, and
+            publicly verifiable, no commission is accruing, no active source
+            tier is live, no source balance is displayed, and no claim button
+            appears.
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {[
               ["Truth first", "No live claim appears before source state can prove it."],
               ["No hidden balances", "The interface will not imply money owed from browser state or off-chain memory."],
-              ["Growth without hype", "Attribution may matter later, but membership remains the live product today."],
+              ["Source without hype", "Attribution may matter later, but membership remains the live product today."],
             ].map(([label, body]) => (
               <div key={label} className="rounded-[6px] border border-border/55 bg-background/45 p-3">
                 <div className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--gold)]">
@@ -115,24 +116,58 @@ function ReferralPage() {
         </div>
       </Section>
 
-      <Section id="routing-boundary">
+      <Section id="membership-source-boundary">
         <SectionHeader
-          eyebrow="Routing boundary"
-          title="Vault and Liquidity are never referral funding"
-          description="The deployed Membership Sale routes USDC 70 / 20 / 10. Any future referral design may only come from the Operations slice and must not alter Vault or Liquidity routing."
+          eyebrow="Membership source boundary"
+          title="Source attribution changes the receipt, not the seat"
+          description="MembershipSaleV3 can calculate acquisition cost first, then split Net USDC Routed 70 / 20 / 10. Public/default buys still use ZERO_SOURCE_ID."
         />
         <div className="surface elevated p-5 text-sm text-muted-foreground leading-relaxed">
           <p>
-            Today, every public Membership Sale purchase routes on-chain to
-            Vault, Liquidity, and Operations with the zero source ID. Referral
-            has no public source record and no write path. If source attribution
-            ships later, the site must show the source record, the claim source,
-            and the exact proof path before any action becomes live.
+            Today, every public MembershipSaleV3 purchase uses ZERO_SOURCE_ID:
+            gross USDC becomes Net USDC Routed, then the receipt splits that
+            amount to Vault, Liquidity, and Operations. If a future source record
+            is approved and activated, a non-zero sourceId may attribute a
+            MembershipSaleV3 purchase: gross USDC minus acquisition commission
+            equals Net USDC Routed, then Net USDC Routed splits 70 / 20 / 10.
+            CommissionRouterV1 is not the active V3 source engine.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <CTAButton variant="gold" href="/transparency">Verify routing</CTAButton>
             <CTAButton variant="ghost" href="/my-syndicate">Open My Syndicate</CTAButton>
           </div>
+        </div>
+      </Section>
+
+      <Section id="future-module-boundary">
+        <SectionHeader
+          eyebrow="Module boundary"
+          title="Future products need their own source-aware design"
+          description="Archive1155, future ERC-721 identity/artifact systems, SwapRail, and premium products are not source-attributed today."
+        />
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          {[
+            [
+              "Archive and NFT mints",
+              "Archive1155 is not source-aware. A future NFT source path would need a source-aware Archive wrapper/router, Archive1155 V2, ProductSaleRouter, or separate approved NFT sale design.",
+            ],
+            [
+              "SeatRecord / ERC-721",
+              "SeatRecord721 is not live and does not replace SYN as the seat. Future ERC-721 work must separate identity, memory, and recognition from financial rights.",
+            ],
+            [
+              "Other products",
+              "SwapRail and future product commerce do not inherit source attribution automatically. Every new module must pass the Module Integration Standard before it can use source terms.",
+            ],
+          ].map(([label, body]) => (
+            <article key={label} className="rounded-md border border-border/60 bg-card/70 p-4">
+              <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+                PENDING DESIGN
+              </div>
+              <h3 className="mt-2 text-base font-semibold">{label}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
+            </article>
+          ))}
         </div>
       </Section>
 

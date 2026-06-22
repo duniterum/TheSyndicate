@@ -6,6 +6,21 @@ This packet is a working draft for the first possible internal source record.
 It does not authorize a mainnet transaction, source activation, public
 source-aware buy path, claim UI, registry switch, or public referral launch.
 
+## Scope Boundary
+
+This packet applies only to MembershipSaleV3 source attribution.
+
+It does not apply to Archive1155 NFT mints, future ERC-721 / SeatRecord
+systems, SwapRail, premium product sales, marketplace flows, or product-wide
+source attribution. SourceRegistryV1 can store source policy, but each payment
+path must explicitly support source-aware receipts before it can use those
+terms.
+
+Future NFT, ERC-721, SwapRail, or product-commerce attribution must pass
+`docs/MODULE_INTEGRATION_STANDARD.md` first. This packet does not authorize an
+Archive wrapper, Archive1155 V2, ProductSaleRouter, SeatRecord721, or any
+generic commerce router.
+
 ## Packet Identity
 
 | Field | Draft Value |

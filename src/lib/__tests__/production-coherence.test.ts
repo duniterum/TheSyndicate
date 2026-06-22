@@ -57,7 +57,7 @@ describe("production coherence guards", () => {
 
     expect(referral).toContain("SOURCE RECORDS INACTIVE");
     expect(referral).toContain("No source records. No commission.");
-    expect(referral).toContain("V3 public buys currently use the zero source ID");
+    expect(referral).toContain("V3 public buys currently use ZERO_SOURCE_ID");
     expect(referral).not.toMatch(/components\/preview/);
     expect(referral).not.toMatch(/simulated/i);
     expect(referral).not.toMatch(/CommissionByTierChart|SimReferralActivity|ReputationLeaderboard/);
@@ -383,6 +383,7 @@ describe("production coherence guards", () => {
     const sourceRunbook = read("docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md");
     const sourceForkReadback = read("docs/SOURCE_ATTRIBUTION_FORK_REHEARSAL_READBACK.md");
     const internalSourceDraft = read("docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md");
+    const archiveCanon = read("docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md");
 
     expect(readiness).toContain("Status: NON-LIVE READINESS SPEC / SOURCE RECORDS INACTIVE / NO CLAIM UI");
     expect(readiness).toContain("SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; zero source records");
@@ -400,8 +401,17 @@ describe("production coherence guards", () => {
 
     expect(saleHooks).toContain("ZERO_SOURCE_ID");
     expect(livePurchase).toContain("args: [usdcRaw, address!, ZERO_SOURCE_ID, minSynOut, []]");
-    expect(referralRoute).toContain("no earned commission, no");
+    expect(referralRoute).toContain("no commission is accruing");
     expect(referralRoute).toContain("no claim button");
+    expect(referralRoute).toContain("Public/default buys still use ZERO_SOURCE_ID");
+    expect(referralRoute).toContain("gross USDC minus acquisition commission");
+    expect(referralRoute).toContain("CommissionRouterV1 is not the active V3 source engine");
+    expect(referralRoute).toContain("Archive1155 is not source-aware");
+    expect(referralRoute).toContain("Module Integration Standard");
+    expect(referralRoute).not.toMatch(/may only come from the Operations slice/i);
+    expect(referralRoute).not.toMatch(/Archive1155 already supports source attribution/i);
+    expect(referralRoute).not.toMatch(/NFT source commission is live/i);
+    expect(referralRoute).not.toMatch(/SwapRail.*commission.*live/i);
     expect(futureReferral).toContain("verified source records are created, read back, legally approved, and wired live");
     expect(sourcePacket).toContain("Status: TEMPLATE ONLY / NON-TRANSACTIONAL / NO SOURCE CREATION AUTHORIZED");
     expect(sourcePacket).toContain("Source ID");
@@ -423,8 +433,14 @@ describe("production coherence guards", () => {
     expect(internalSourceDraft).toContain("Candidate source wallet | TBD");
     expect(internalSourceDraft).toContain("Candidate payout wallet | TBD");
     expect(internalSourceDraft).toContain("No public source link.");
+    expect(internalSourceDraft).toContain("This packet applies only to MembershipSaleV3 source attribution.");
+    expect(internalSourceDraft).toContain("It does not apply to Archive1155 NFT mints");
+    expect(internalSourceDraft).toContain("Future NFT, ERC-721, SwapRail, or product-commerce attribution must pass");
     expect(internalSourceDraft).toContain("Expected SourceRegistry Readback");
     expect(internalSourceDraft).toContain("Initial status is `PAUSED`.");
+    expect(archiveCanon).toContain("Current Archive1155 mints are not source-aware.");
+    expect(archiveCanon).toContain("source-attribution work must pass `docs/MODULE_INTEGRATION_STANDARD.md` first");
+    expect(archiveCanon).toContain("Possible future paths include:");
 
     for (const [name, src] of Object.entries({ referralRoute, futureReferral, sourcePacket, sourceRunbook, sourceForkReadback, internalSourceDraft })) {
       expect(src, name).not.toMatch(/passive income|yield|downline|MLM/i);
@@ -445,6 +461,7 @@ describe("production coherence guards", () => {
     expect(capability).toContain("No new contract is needed for the first controlled MembershipSaleV3 source");
     expect(capability).toContain("Future NFT or product commission requires a source-aware sale wrapper/router or new product contract");
     expect(capability).toContain("Public/default buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active.");
+    expect(capability).toContain("Guard with production coherence tests; public copy must use acquisition-first");
     expect(capability).toContain("do not create it until founder inputs and ceremony approval are final");
     expect(capability).toContain("Do not build public source links, claim UI, Archive source attribution, or");
 

@@ -458,9 +458,9 @@ A module can become public-actionable only when all relevant gates are green:
 Do not implement SwapRail, Archive sale wrapper, ProductSaleRouter, SeatRecord721,
 or claim UI next.
 
-The safest next step is a small source-attribution readiness cleanup:
+The current safest sequence is:
 
-1. Patch referral copy that still implies Operations-slice-only economics.
+1. Keep referral/source copy aligned with acquisition-first, MembershipSaleV3-only source attribution.
 2. Finalize the first internal source packet with exact founder-approved values.
 3. Keep source creation as a separate PAUSED-record ceremony.
 4. After PAUSED source readback, design source-aware UI/read-model surfaces.
