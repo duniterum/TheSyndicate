@@ -1060,6 +1060,9 @@ describe("production coherence guards", () => {
     expect(authority).toContain("operational first-read for synchronization");
     expect(release).toContain("Before synchronization, Replit publish, patch handoff, or production release");
     expect(release).toContain("docs/OPERATIONAL_MEMORY_LEDGER.md");
+    expect(release).toContain("Local validation is not delivery");
+    expect(release).toContain("pushed to GitHub main");
+    expect(release).toContain("GitHub Desktop clone, GitHub connector/API");
 
     expect(ledger).toContain("Status: operational first-read");
     expect(ledger).toContain("This file has no deployment authority");
@@ -1073,6 +1076,16 @@ describe("production coherence guards", () => {
     expect(ledger).toContain("Run `npm run check-release`");
     expect(ledger).toContain("Never commit `.output`, `node_modules`, `contracts/out`,");
     expect(ledger).toContain("If push or write access is blocked, report the exact blocker");
+    expect(ledger).toContain("Local validation, GitHub sync, Replit publish, and production verification");
+    expect(ledger).toContain("OML-011 - Local validated commits are not delivery");
+    expect(ledger).toContain("26038b0");
+    expect(ledger).toContain("bd7b5bc");
+    expect(ledger).toContain("SEC_E_NO_CREDENTIALS");
+    expect(ledger).toContain("Patch handoff is not a valid completion path");
+    expect(ledger).toContain("local success: files changed, tests passed, local commit exists");
+    expect(ledger).toContain("GitHub success: GitHub main contains the commit");
+    expect(ledger).toContain("Replit success: Replit has pulled and validated the commit");
+    expect(ledger).toContain("production success: the live site is published and route-checked");
     expect(ledger).toContain("Product UX regression ledger");
     expect(ledger).toContain("Live production incident ledger");
   });

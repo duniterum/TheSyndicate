@@ -105,6 +105,11 @@ Status guide:
     safe local/GitHub-ready options.
 15. If push or write access is blocked, report the exact blocker, local commit,
     affected files, and safest founder action.
+16. Local validation, GitHub sync, Replit publish, and production verification
+    are four different completion states. Report them separately.
+17. When a sprint is expected to end in GitHub synchronization, evaluate push
+    capability before starting implementation or before declaring the batch
+    blocked.
 
 ## 4. Operational Lessons
 
@@ -298,6 +303,26 @@ Status guide:
 | Release implication | Operational risks become inspectable before sync/publish work. |
 | Future "never again" rule | If an operational mistake costs time twice, record it here. |
 
+### OML-011 - Local validated commits are not delivery
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-23 |
+| System | GitHub sync / Codex / GitHub Desktop |
+| Severity | High |
+| Status | Resolved by authenticated Desktop-clone sync; permanently guarded by process |
+| Category | Completion boundary / synchronization |
+| Affected surfaces | Local Codex clone, GitHub Desktop clone, GitHub main, Replit pull boundary |
+| Symptom | Two validated local commits (`26038b0` and `bd7b5bc`) were initially reported as blocked because direct push from the sandbox failed with `SEC_E_NO_CREDENTIALS`; later they were successfully synchronized by fetching from the local Codex clone into the authenticated GitHub Desktop clone, cherry-picking, validating, and pushing. |
+| Root cause | The first sync attempt stopped at the local Git credential failure instead of exhausting all authenticated synchronization paths available on the machine. |
+| Why it mattered | Local-only commits are invisible to GitHub, cannot be pulled by Replit, and create a false sense of completion. Patch-file handoff would have pushed avoidable manual work onto the founder. |
+| Fix | Used the authenticated GitHub Desktop clone at the same base commit, fetched the local commit chain from `.codex-canonical-work`, cherry-picked the two commits, ran `npm run check-release`, and pushed GitHub main to `c6899065922d8f476438854fdc6aaa354d47af16`. |
+| Process guard | Before declaring sync blocked, check direct Git push, GitHub Desktop clone fetch/cherry-pick path, GitHub connector/API path, GitHub CLI availability, SSH/token availability, and Replit/GitHub sync options where relevant. |
+| Founder-work impact | Founder manual patch application was avoided. Future founder action must not be requested until authenticated paths are truly exhausted. |
+| Release implication | Replit can pull only after GitHub main receives the commits. Validation in a local-only clone is not release completion. |
+| Future "never again" rule | Patch handoff is not a valid completion path until every safe authenticated sync path has been exhausted and the exact blocker is documented. |
+| Source links / commit hashes | Local-only commits: `26038b0`, `bd7b5bc`. GitHub commits after authenticated sync: `24b0364`, `c6899065922d8f476438854fdc6aaa354d47af16`. Blocked command: `git push origin main` from `.codex-canonical-work`; blocker: `schannel: AcquireCredentialsHandle failed: SEC_E_NO_CREDENTIALS`. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -308,11 +333,13 @@ Before any implementation, release, sync, or handoff sprint:
 4. Confirm whether local state matches GitHub main.
 5. Confirm whether the worktree is clean or intentionally dirty.
 6. Confirm whether the current clone can be written and pushed.
-7. Confirm whether Replit production is current, lagging, paused, or unknown.
-8. Confirm whether the task requires live-site QA or can stay local.
-9. Confirm whether secrets/RPC values are needed and whether they are available
+7. If the sprint is expected to end in GitHub sync, confirm at least one
+   authenticated sync path before starting or before declaring the work blocked.
+8. Confirm whether Replit production is current, lagging, paused, or unknown.
+9. Confirm whether the task requires live-site QA or can stay local.
+10. Confirm whether secrets/RPC values are needed and whether they are available
    without being exposed.
-10. Confirm the validation command required for the batch.
+11. Confirm the validation command required for the batch.
 
 If any of these cannot be confirmed, report the unknown before presenting the
 work as synchronized.
@@ -335,7 +362,12 @@ For a GitHub/Replit-facing batch:
     manual checks still needed.
 
 If push or Replit publish is blocked, say so plainly. Do not imply the batch is
-live.
+live. A report must distinguish:
+
+- local success: files changed, tests passed, local commit exists
+- GitHub success: GitHub main contains the commit
+- Replit success: Replit has pulled and validated the commit
+- production success: the live site is published and route-checked
 
 ## 7. Founder-Work Reduction Opportunities
 
@@ -349,6 +381,9 @@ live.
   files, never in chat or committed files.
 - When Codex cannot push, provide the exact blocker and the smallest safe next
   action.
+- Before asking for founder manual action, exhaust authenticated sync paths such
+  as GitHub Desktop clone fetch/cherry-pick, GitHub connector/API, GitHub CLI,
+  SSH/token Git, and Replit/GitHub import paths when available.
 - Keep recurring setup facts in this ledger so the founder does not need to
   restate them.
 
@@ -381,6 +416,7 @@ or a sprint explicitly requires it.
 | Sandbox and credential boundaries | This ledger | Guarded by process | Add a sync preflight script if blocked pushes continue. |
 | No generated files | This ledger, release handoff | Guarded by docs/tests | Add a precommit generated-artifact scanner if needed. |
 | Patch handoffs last resort | This ledger | Guarded by process | Add handoff template if patch handoffs remain unavoidable. |
+| Local-only commits are not delivery | This ledger, release handoff, production coherence guard | Guarded in docs/tests | Add a sync preflight script if local-only commit loops repeat. |
 
 ## 10. Validation Policy
 

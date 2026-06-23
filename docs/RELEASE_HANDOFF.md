@@ -7,6 +7,12 @@ work, read `docs/OPERATIONAL_MEMORY_LEDGER.md`. That ledger records GitHub,
 Replit, sandbox, credential, desktop-export, and patch-file lessons that must
 not be rediscovered.
 
+Local validation is not delivery. A release handoff must say separately whether
+the batch is local-only, pushed to GitHub main, pulled by Replit, and verified
+on production. Patch-file handoff is a failure mode until authenticated sync
+paths such as the GitHub Desktop clone, GitHub connector/API, GitHub CLI,
+SSH/token Git, and Replit/GitHub import path have been exhausted.
+
 ## Package Manager
 
 Use npm for validation and deployment commands:
