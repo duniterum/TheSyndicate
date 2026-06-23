@@ -9,6 +9,10 @@ import {
   SectionHeader,
   StatusPill,
 } from "@/components/syndicate/Primitives";
+import {
+  CURRENT_SOURCE_POLICY_SNAPSHOT,
+  SOURCE_POLICY_LIFECYCLE_MODEL,
+} from "@/lib/source-policy-observability";
 
 export const Route = createFileRoute("/referral")({
   head: () => ({
@@ -54,11 +58,13 @@ const RESERVED_SYSTEMS = [
 ] as const;
 
 function ReferralPage() {
+  const sourcePolicy = CURRENT_SOURCE_POLICY_SNAPSHOT;
+
   return (
     <PageShell
       eyebrow="Source attribution"
       title="Source attribution pending"
-      description="Source attribution is reserved growth infrastructure for verified introductions. SourceRegistryV1 is deployed with zero source records; public V3 buys still use ZERO_SOURCE_ID, and no source-linked purchase or claim path is live."
+      description={sourcePolicy.currentSummary}
     >
       <Section id="referral-status">
         <SectionHeader
@@ -97,11 +103,41 @@ function ReferralPage() {
         </GlassCard>
       </Section>
 
+      <Section id="source-policy-observability">
+        <SectionHeader
+          eyebrow="Source policy observability"
+          title="The source registry is visible before any source is usable"
+          description="This read-only snapshot separates deployed infrastructure from active source policy. It is the truth layer future source records must pass through."
+        />
+        <GlassCard className="p-5">
+          <div className="grid gap-3 md:grid-cols-4">
+            {[
+              ["Registry", sourcePolicy.registryExists ? "DEPLOYED" : "PENDING"],
+              ["Records", sourcePolicy.recordCount.toString()],
+              ["Active", sourcePolicy.activeCount.toString()],
+              ["Paused / revoked", `${sourcePolicy.pausedCount} / ${sourcePolicy.revokedCount}`],
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-[6px] border border-border/55 bg-background/45 p-3">
+                <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{label}</div>
+                <div className="mt-2 text-lg font-semibold">{value}</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 grid gap-2 md:grid-cols-2">
+            {sourcePolicy.currentLimits.map((limit) => (
+              <div key={limit} className="rounded-[6px] border border-border/50 bg-card/50 px-3 py-2 text-sm text-muted-foreground">
+                {limit}
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </Section>
+
       <Section id="reserved-systems">
         <SectionHeader
           eyebrow="Reserved systems"
           title="What can exist later"
-          description="Future systems stay visible only as PENDING / RESERVED / REQUIRES CONTRACT."
+          description="Future systems stay visible only as PENDING / RESERVED / REQUIRES SOURCE RECORD / PENDING DESIGN."
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {RESERVED_SYSTEMS.map((system) => (
@@ -136,6 +172,25 @@ function ReferralPage() {
             <CTAButton variant="gold" href="/transparency">Verify routing</CTAButton>
             <CTAButton variant="ghost" href="/my-syndicate">Open My Syndicate</CTAButton>
           </div>
+        </div>
+      </Section>
+
+      <Section id="source-lifecycle">
+        <SectionHeader
+          eyebrow="Lifecycle"
+          title="A source record must move through visible states"
+          description="Creating a source record is not the same as activating it. Status changes must remain observable before they can affect a purchase."
+        />
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          {SOURCE_POLICY_LIFECYCLE_MODEL.map((state) => (
+            <article key={state.status} className="rounded-md border border-border/60 bg-card/70 p-4">
+              <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+                {state.status}
+              </div>
+              <h3 className="mt-2 text-base font-semibold">{state.label}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{state.meaning}</p>
+            </article>
+          ))}
         </div>
       </Section>
 

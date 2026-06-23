@@ -1459,9 +1459,9 @@ function ReturnBriefing() {
                 body="Future identity record. It does not replace SYN as the V1 seat and is not deployed."
               />
               <RadarItem
-                status="REQUIRES CONTRACT"
+                status="REQUIRES SOURCE RECORD"
                 title="Referral routing"
-                body="Growth infrastructure remains reserved until a contract exists. No balances, payout states, or claim buttons."
+                body="Growth infrastructure remains reserved until a source record exists, is read back, activated, and wired. No balances, payout states, or claim buttons."
               />
               <RadarItem
                 status="WATCHING"
@@ -1981,7 +1981,7 @@ function RadarItem({
   title,
   body,
 }: {
-  status: "RESERVED" | "REQUIRES CONTRACT" | "WATCHING";
+  status: "RESERVED" | "REQUIRES CONTRACT" | "REQUIRES SOURCE RECORD" | "WATCHING";
   title: string;
   body: string;
 }) {

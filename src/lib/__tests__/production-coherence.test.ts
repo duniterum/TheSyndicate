@@ -57,10 +57,58 @@ describe("production coherence guards", () => {
 
     expect(referral).toContain("SOURCE RECORDS INACTIVE");
     expect(referral).toContain("No source records. No commission.");
+    expect(referral).toContain("CURRENT_SOURCE_POLICY_SNAPSHOT");
+    expect(referral).toContain("sourcePolicy.currentSummary");
+    expect(referral).toContain("Source policy observability");
     expect(referral).toContain("V3 public buys currently use ZERO_SOURCE_ID");
+    expect(referral).toContain("A source record must move through visible states");
     expect(referral).not.toMatch(/components\/preview/);
     expect(referral).not.toMatch(/simulated/i);
     expect(referral).not.toMatch(/CommissionByTierChart|SimReferralActivity|ReputationLeaderboard/);
+  });
+
+  it("keeps source policy observable without activating source/referral/claim behavior", () => {
+    const sourcePolicy = read("src/lib/source-policy-observability.ts");
+    const saleHooks = read("src/lib/sale-hooks.ts");
+    const saleAbi = read("src/lib/sale-abi.ts");
+    const referral = read("src/routes/referral.tsx");
+    const economyBand = read("src/components/syndicate/ProtocolEconomyBand.tsx");
+    const mySyndicate = read("src/routes/my-syndicate.tsx");
+
+    expect(sourcePolicy).toContain("CURRENT_SOURCE_POLICY_RECORDS: readonly SourcePolicyRecord[] = []");
+    expect(sourcePolicy).toContain("recordCount === 0");
+    expect(sourcePolicy).toContain("referralActive: false");
+    expect(sourcePolicy).toContain("claimingActive: false");
+    expect(sourcePolicy).toContain("publicSourceAwareBuyPathActive: false");
+    expect(sourcePolicy).toContain("Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID");
+    expect(sourcePolicy).toContain("MembershipSaleV3");
+    expect(sourcePolicy).toContain("Archive1155");
+    expect(sourcePolicy).toContain("SeatRecord721");
+    expect(sourcePolicy).toContain("SwapRail");
+    expect(sourcePolicy).toContain("ProductSaleRouter / premium products");
+    expect(sourcePolicy).toContain("SOURCE_REGISTRY_V1_READBACK_BLOCK");
+
+    expect(saleHooks).toContain('import { ZERO_SOURCE_ID } from "./source-policy-observability"');
+    expect(saleHooks).toContain("export { ZERO_SOURCE_ID }");
+    expect(saleAbi).toContain("SOURCE_REGISTRY_V1_ABI");
+    expect(saleAbi).toContain("SourceCreated");
+    expect(saleAbi).toContain("SourceStatusChanged");
+    expect(saleAbi).toContain("SourcePayoutWalletUpdated");
+
+    expect(referral).toContain("SOURCE_POLICY_LIFECYCLE_MODEL");
+    expect(economyBand).toContain("CURRENT_SOURCE_POLICY_SNAPSHOT");
+    expect(economyBand).toContain("sourcePolicy.productCapabilities");
+    expect(mySyndicate).toContain("REQUIRES SOURCE RECORD");
+    expect(mySyndicate).toContain("until a source record exists, is read back, activated, and wired");
+    expect(mySyndicate).not.toMatch(/Referral routing[\s\S]{0,160}until a contract exists/i);
+
+    const publicSource = [sourcePolicy, referral, economyBand, mySyndicate].join("\n");
+    const publicCopySource = publicSource
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/.*$/gm, "");
+    expect(publicSource).not.toMatch(/claimSourceEscrow\(/);
+    expect(publicSource).not.toMatch(/source balance(?:s)? (?:available|claimable|owed|earned|is live)/i);
+    expect(publicCopySource).not.toMatch(/earn now|passive income|\bROI\b|guaranteed reward|downline/i);
   });
 
   it("keeps public V3 sale surfaces on deterministic era-pricing truth", () => {
@@ -971,11 +1019,12 @@ describe("production coherence guards", () => {
     expect(economyBand).toContain("Protocol Economy Observatory");
     expect(economyBand).toContain("Net USDC routed");
     expect(economyBand).toContain("Volume is not revenue");
-    expect(economyBand).toContain("SourceRegistryV1 exists, but source attribution is not publicly active");
+    expect(economyBand).toContain("sourcePolicy.currentSummary");
     expect(economyBand).toContain("ZERO_SOURCE_ID");
     expect(economyBand).toContain("Referral inactive");
     expect(economyBand).toContain("Claims inactive");
-    expect(economyBand).toContain("NOT IMPLEMENTED");
+    expect(economyBand).toContain("DESIGN REQUIRED");
+    expect(economyBand).toContain("NOT SOURCE-AWARE");
     expect(economyBand).toContain("No writes here");
 
     expect(myEconomy).toContain("Your wallet's receipt-backed footprint inside The Syndicate");

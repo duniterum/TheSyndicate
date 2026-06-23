@@ -13,6 +13,7 @@ import {
   SALE_V3_FRONTEND_BUY_TARGET,
   SALE_V2_LIVE,
 } from "./syndicate-config";
+import { ZERO_SOURCE_ID } from "./source-policy-observability";
 import { SALE_ABI, SALE_V2_ABI, SALE_V3_ABI, ERC20_ABI, PAIR_ABI } from "./sale-abi";
 import {
   loadWalletReadsSnapshot,
@@ -35,8 +36,7 @@ const SALE_V3 = (SALE_V3_FRONTEND_BUY_TARGET && MEMBERSHIP_SALE_V3_CONTRACT_ADDR
   ? MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS
   : null) as `0x${string}` | null;
 /** Zero source: public member buys are active; source/referral UI is not. */
-export const ZERO_SOURCE_ID =
-  "0x0000000000000000000000000000000000000000000000000000000000000000" as const;
+export { ZERO_SOURCE_ID };
 const QUOTE_PREVIEW_RECIPIENT = "0x0000000000000000000000000000000000000001" as `0x${string}`;
 /** True once the V3 sale is the active self-service sale. */
 export const ACTIVE_SALE_IS_V3 = SALE_V3 !== null;

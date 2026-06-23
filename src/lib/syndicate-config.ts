@@ -359,6 +359,9 @@ export const SOURCE_REGISTRY_V1_CONTRACT_ADDRESS: string | null =
   "0x780013bB358be6be95b401901264FC7c22a595a6";
 export const MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS: string | null =
   "0x2A6cFc76906e758B934209AFf5A163c9bC20132E";
+// SourceRegistryV1 readback at this block confirmed SourceCreated logs since
+// deploy = 0. Source records remain inactive until a separate source ceremony.
+export const SOURCE_REGISTRY_V1_READBACK_BLOCK: bigint | null = 88511703n;
 export const SALE_V3_DEPLOYMENT_BLOCK: bigint | null = 88505301n;
 export const SALE_V3_FRONTEND_BUY_TARGET: boolean =
   MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS !== null &&

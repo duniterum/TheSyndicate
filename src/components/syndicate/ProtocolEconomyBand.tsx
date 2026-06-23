@@ -3,6 +3,7 @@ import { ArrowRight, FileCheck2, Landmark, Route, ShieldCheck } from "lucide-rea
 
 import { useLivePurchaseEvents } from "@/lib/activity-hooks";
 import { useHolderIndex } from "@/lib/holder-index";
+import { CURRENT_SOURCE_POLICY_SNAPSHOT } from "@/lib/source-policy-observability";
 
 import { GlassCard, Pill, Section, SectionHeader, StatusPill, type CanonicalStatus } from "./Primitives";
 
@@ -38,6 +39,7 @@ function MetricCard({ metric }: { metric: EconomyMetric }) {
 export function ProtocolEconomyBand() {
   const purchases = useLivePurchaseEvents({ limit: 5000 });
   const holderIndex = useHolderIndex();
+  const sourcePolicy = CURRENT_SOURCE_POLICY_SNAPSHOT;
   const events = purchases.data ?? [];
 
   const routed = events.reduce(
@@ -124,13 +126,13 @@ export function ProtocolEconomyBand() {
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-200">Current acquisition truth</p>
                 <p className="mt-2 text-base leading-relaxed text-slate-200">
-                  SourceRegistryV1 exists, but source attribution is not publicly active. Public/default V3 buys use
-                  ZERO_SOURCE_ID, no source records exist, and no claim UI is live.
+                  {sourcePolicy.currentSummary} Public/default V3 buys use
+                  ZERO_SOURCE_ID, and no claim UI is live.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Pill tone="muted">Source records: 0</Pill>
-                  <Pill tone="muted">Referral inactive</Pill>
-                  <Pill tone="muted">Claims inactive</Pill>
+                  <Pill tone="muted">Source records: {sourcePolicy.recordCount}</Pill>
+                  <Pill tone="muted">{sourcePolicy.referralActive ? "Referral active" : "Referral inactive"}</Pill>
+                  <Pill tone="muted">{sourcePolicy.claimingActive ? "Claims active" : "Claims inactive"}</Pill>
                 </div>
               </div>
             </div>
@@ -139,16 +141,11 @@ export function ProtocolEconomyBand() {
           <GlassCard className="border-slate-800/80 bg-slate-950/78 p-5">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-300">Future modules</p>
             <div className="mt-4 grid gap-3 text-sm text-slate-300">
-              {[
-                ["LP Economy", "PENDING"],
-                ["Marketplace / Packages", "NOT IMPLEMENTED"],
-                ["Archive commerce wrapper", "NOT IMPLEMENTED"],
-                ["ProductSaleRouter", "NOT IMPLEMENTED"],
-              ].map(([label, status]) => (
-                <div key={label} className="flex items-center justify-between gap-3 rounded-lg border border-slate-800/80 bg-slate-900/45 px-3 py-2">
-                  <span>{label}</span>
+              {sourcePolicy.productCapabilities.slice(1).map((capability) => (
+                <div key={capability.product} className="flex items-center justify-between gap-3 rounded-lg border border-slate-800/80 bg-slate-900/45 px-3 py-2">
+                  <span>{capability.product}</span>
                   <Pill tone="navy">
-                    {status}
+                    {capability.status === "NOT_SOURCE_AWARE" ? "NOT SOURCE-AWARE" : "DESIGN REQUIRED"}
                   </Pill>
                 </div>
               ))}

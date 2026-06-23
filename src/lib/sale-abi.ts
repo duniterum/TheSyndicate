@@ -223,6 +223,99 @@ export const SALE_V3_ABI = [
   },
 ] as const;
 
+// SourceRegistryV1 read/event vocabulary. Kept separate from the sale ABI so
+// source policy can be observed without activating source-aware purchases.
+export const SOURCE_REGISTRY_V1_ABI = [
+  { type: "function", name: "sourceExists", stateMutability: "view", inputs: [{ name: "sourceId", type: "bytes32" }], outputs: [{ type: "bool" }] },
+  { type: "function", name: "isActive", stateMutability: "view", inputs: [{ name: "sourceId", type: "bytes32" }], outputs: [{ type: "bool" }] },
+  {
+    type: "function",
+    name: "sourceConfig",
+    stateMutability: "view",
+    inputs: [{ name: "sourceId", type: "bytes32" }],
+    outputs: [
+      {
+        type: "tuple",
+        components: [
+          { name: "sourceWallet", type: "address" },
+          { name: "sourceClass", type: "uint8" },
+          { name: "commissionBps", type: "uint16" },
+          { name: "status", type: "uint8" },
+          { name: "scope", type: "uint8" },
+          { name: "startTime", type: "uint64" },
+          { name: "endTime", type: "uint64" },
+          { name: "grossCap", type: "uint256" },
+          { name: "perBuyerCap", type: "uint256" },
+          { name: "appliesToRepeatPurchases", type: "bool" },
+          { name: "payoutWallet", type: "address" },
+          { name: "metadataHash", type: "bytes32" },
+          { name: "createdBy", type: "address" },
+          { name: "updatedAt", type: "uint64" },
+        ],
+      },
+    ],
+  },
+  {
+    type: "event",
+    name: "SourceCreated",
+    inputs: [
+      { name: "sourceId", type: "bytes32", indexed: true },
+      { name: "sourceWallet", type: "address", indexed: true },
+      { name: "sourceClass", type: "uint8", indexed: true },
+      { name: "commissionBps", type: "uint16", indexed: false },
+      { name: "status", type: "uint8", indexed: false },
+      { name: "scope", type: "uint8", indexed: false },
+      { name: "payoutWallet", type: "address", indexed: false },
+      { name: "metadataHash", type: "bytes32", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "SourceTermsUpdated",
+    inputs: [
+      { name: "sourceId", type: "bytes32", indexed: true },
+      { name: "sourceWallet", type: "address", indexed: true },
+      { name: "sourceClass", type: "uint8", indexed: true },
+      { name: "commissionBps", type: "uint16", indexed: false },
+      { name: "scope", type: "uint8", indexed: false },
+      { name: "startTime", type: "uint64", indexed: false },
+      { name: "endTime", type: "uint64", indexed: false },
+      { name: "grossCap", type: "uint256", indexed: false },
+      { name: "perBuyerCap", type: "uint256", indexed: false },
+      { name: "appliesToRepeatPurchases", type: "bool", indexed: false },
+      { name: "payoutWallet", type: "address", indexed: false },
+      { name: "metadataHash", type: "bytes32", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "SourceStatusChanged",
+    inputs: [
+      { name: "sourceId", type: "bytes32", indexed: true },
+      { name: "previousStatus", type: "uint8", indexed: false },
+      { name: "newStatus", type: "uint8", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "SourceWalletUpdated",
+    inputs: [
+      { name: "sourceId", type: "bytes32", indexed: true },
+      { name: "previousWallet", type: "address", indexed: false },
+      { name: "newWallet", type: "address", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "SourcePayoutWalletUpdated",
+    inputs: [
+      { name: "sourceId", type: "bytes32", indexed: true },
+      { name: "previousWallet", type: "address", indexed: false },
+      { name: "newWallet", type: "address", indexed: false },
+    ],
+  },
+] as const;
+
 // Uniswap V2-style pair (Trader Joe v1 uses this interface).
 export const PAIR_ABI = [
   { type: "function", name: "token0",      stateMutability: "view", inputs: [], outputs: [{ type: "address" }] },

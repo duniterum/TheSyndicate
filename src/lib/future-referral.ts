@@ -10,13 +10,13 @@
 //   - Referral/source attribution is attribution first, payout later.
 //   - It records who helped bring whom into The Syndicate as a verified growth
 //     contribution and member recognition.
-//   - Reward status is ALWAYS PENDING until verified source records are created,
+//   - Commission status is ALWAYS PENDING until verified source records are created,
 //     read back, legally approved, and wired live.
 // Canonical gate: verified source records are created, read back, legally approved, and wired live.
 //   - No live commission is implied now.
 //   - This namespace is intentionally kept OUT of ProtocolEventKind.
 
-/** The only allowed reward status while source/referral remains inactive. */
+/** Legacy internal field name. The only allowed status while source/referral remains inactive. */
 export type FutureReferralRewardStatus = "PENDING";
 
 export const FUTURE_REFERRAL_REWARD_STATUS: FutureReferralRewardStatus = "PENDING";
@@ -40,11 +40,11 @@ export type FutureReferralAttribution = {
 
 export const FUTURE_REFERRAL_NOTE =
   "Attribution only - a verified growth contribution and member recognition. " +
-  "No reward is implied or paid. Reward status remains PENDING until verified " +
+  "No commission is implied or paid. Commission status remains PENDING until verified " +
   "source records are created, read back, legally approved, and wired live.";
 
 /**
- * Build a reserved attribution record. rewardStatus is forced to PENDING and
+ * Build a reserved attribution record. The legacy rewardStatus field is forced to PENDING and
  * cannot be overridden while public source/referral activation is inactive.
  */
 export function buildFutureReferralAttribution(input: {
