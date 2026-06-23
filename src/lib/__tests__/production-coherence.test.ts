@@ -545,6 +545,7 @@ describe("production coherence guards", () => {
     const sourceRunbook = read("docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md");
     const sourceForkReadback = read("docs/SOURCE_ATTRIBUTION_FORK_REHEARSAL_READBACK.md");
     const internalSourceDraft = read("docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md");
+    const internalSourceFounderInputs = read("docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_FOUNDER_INPUTS.md");
     const deferredLedger = read("docs/DEFERRED_WORK_LEDGER.md");
     const archiveCanon = read("docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md");
 
@@ -635,6 +636,37 @@ describe("production coherence guards", () => {
     expect(internalSourceDraft).toContain("Founder Decision Readiness");
     expect(internalSourceDraft).toContain("no-agency");
     expect(internalSourceDraft).toContain("no-MLM/downline");
+
+    expect(internalSourceFounderInputs).toContain("Status: FOUNDER INPUT FORM / NO TRANSACTION AUTHORIZED / SOURCE RECORD NOT CREATED");
+    expect(internalSourceFounderInputs).toContain("SourceRegistryV1 is deployed and currently has zero source records");
+    expect(internalSourceFounderInputs).toContain("MembershipSaleV3 is the only current source-aware payment path");
+    expect(internalSourceFounderInputs).toContain("Public/default V3 buys continue to use `ZERO_SOURCE_ID`");
+    expect(internalSourceFounderInputs).toContain("Source class | `BUILDER_SOURCE`");
+    expect(internalSourceFounderInputs).toContain("Commission bps | `500` bps");
+    expect(internalSourceFounderInputs).toContain("Attribution scope | `WINDOWED`");
+    expect(internalSourceFounderInputs).toContain("Gross cap | `25_000_000` USDC units suggested");
+    expect(internalSourceFounderInputs).toContain("Per-buyer cap | `5_000_000` USDC units suggested");
+    expect(internalSourceFounderInputs).toContain("Repeat purchases | `false`");
+    expect(internalSourceFounderInputs).toContain("Do not generate yet");
+    expect(internalSourceFounderInputs).toContain("No public referral activation is authorized");
+    expect(internalSourceFounderInputs).toContain("No source-aware public buy path is authorized");
+    expect(internalSourceFounderInputs).toContain("No public source link is authorized");
+    expect(internalSourceFounderInputs).toContain("No claim UI is authorized");
+    expect(internalSourceFounderInputs).toContain("No source dashboard is authorized");
+    expect(internalSourceFounderInputs).toContain("No Archive/NFT attribution is authorized");
+    expect(internalSourceFounderInputs).toContain("No SwapRail attribution is authorized");
+    expect(internalSourceFounderInputs).toContain("No product-wide attribution is authorized");
+    expect(internalSourceFounderInputs).toContain("Direct on-chain acquisition commission can happen only after a future ACTIVE source-attributed purchase");
+    expect(internalSourceFounderInputs).toContain("Escrow fallback exists only if direct payout fails");
+    expect(internalSourceFounderInputs).toContain("Source starts `PAUSED`");
+    expect(internalSourceFounderInputs).toContain("No activation occurs in the same ceremony");
+    expect(internalSourceFounderInputs).toContain("Ready for sourceId + metadata hash generation");
+    expect(internalSourceFounderInputs).toContain("Missing founder values remain");
+    expect(internalSourceFounderInputs).toContain("Source observability snapshot / docs");
+    expect(internalSourceFounderInputs).toContain("CURRENT_SOURCE_POLICY_RECORDS");
+    expect(internalSourceFounderInputs).toContain("Register wording");
+    expect(internalSourceFounderInputs).toContain("Activity wording");
+    expect(internalSourceFounderInputs).toContain("This source applies only to MembershipSaleV3 unless a future module passes a separate review");
 
     expect(deferredLedger).toContain("Source Commission Statement / Reporting Export");
     expect(deferredLedger).toContain("no tax/accounting advice");
