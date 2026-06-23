@@ -1113,6 +1113,27 @@ describe("production coherence guards", () => {
     expect(research).not.toMatch(/public referral is live|claim UI is live|source records are active/i);
   });
 
+  it("keeps referral infrastructure platform audit non-activating and source-record gated", () => {
+    const audit = read("docs/REFERRAL_INFRASTRUCTURE_PLATFORM_AUDIT.md");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+
+    expect(authority).toContain("docs/REFERRAL_INFRASTRUCTURE_PLATFORM_AUDIT.md");
+    expect(authority).toContain("no activation, deployment, source-record, claim-UI, public-source-link, or transaction authority");
+
+    expect(audit).toContain("Status: OPERATIONAL RESEARCH / INFRASTRUCTURE BLUEPRINT / NO ACTIVATION AUTHORITY");
+    expect(audit).toContain("Mature referral platforms are workflow systems, not only links");
+    expect(audit).toContain("Source records remain zero");
+    expect(audit).toContain("Public/default buys use ZERO_SOURCE_ID");
+    expect(audit).toContain("SourceRegistryV1 is not a universal commerce router");
+    expect(audit).toContain("MembershipSaleV3 is the only current source-aware payment path");
+    expect(audit).toContain("Archive1155 is not source-aware");
+    expect(audit).toContain("Product-wide attribution remains future-only");
+    expect(audit).toContain("one internal, PAUSED, readback-first MembershipSaleV3 source record");
+    expect(audit).toContain("Do not create public source links before an active source record");
+    expect(audit).toContain("No MLM/downline/passive-income framing");
+    expect(audit).not.toMatch(/public referral is live|claim UI is live|source records are active|source links are live/i);
+  });
+
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {
     const activity = read("src/routes/activity.tsx");
     const glossary = read("src/components/syndicate/ArchiveGlossary.tsx");
