@@ -2,6 +2,11 @@
 
 This repository is the canonical implementation workspace for The Syndicate.
 
+Before synchronization, Replit publish, patch handoff, or production release
+work, read `docs/OPERATIONAL_MEMORY_LEDGER.md`. That ledger records GitHub,
+Replit, sandbox, credential, desktop-export, and patch-file lessons that must
+not be rediscovered.
+
 ## Package Manager
 
 Use npm for validation and deployment commands:

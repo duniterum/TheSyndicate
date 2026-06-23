@@ -121,9 +121,12 @@ specs that match the deployed reality. Safe to reference for current work.
 > canonical registry (`src/lib/chain-registry.ts`,
 > `src/lib/contract-registry.ts`, `src/lib/archive-id-registry.ts`).
 > Operational entry point: `docs/CANONICAL_REGISTRY.md`. Activation
-> checklist: `docs/ACTIVATION_RUNBOOK.md`.
+> checklist: `docs/ACTIVATION_RUNBOOK.md`. Operational mistakes, sync
+> boundaries, sandbox limits, and Replit/GitHub workflow lessons belong in
+> `docs/OPERATIONAL_MEMORY_LEDGER.md`.
 
 - `docs/CANONICAL_REGISTRY.md`
+- `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
 - `docs/ACTIVATION_RUNBOOK.md`
 - `docs/HOLDER_INDEX_ARCHITECTURE.md`
 - `docs/DEPLOYMENT_STATE_V1.md`

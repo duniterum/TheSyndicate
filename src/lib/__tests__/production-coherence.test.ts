@@ -1051,6 +1051,32 @@ describe("production coherence guards", () => {
     expect(newReadOnlySurfaces).not.toMatch(/passive income|yield-bearing|ROI|guaranteed return|earnings dashboard/i);
   });
 
+  it("keeps operational memory durable for GitHub, Replit, sandbox, and handoff work", () => {
+    const ledger = read("docs/OPERATIONAL_MEMORY_LEDGER.md");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+    const release = read("docs/RELEASE_HANDOFF.md");
+
+    expect(authority).toContain("docs/OPERATIONAL_MEMORY_LEDGER.md");
+    expect(authority).toContain("operational first-read for synchronization");
+    expect(release).toContain("Before synchronization, Replit publish, patch handoff, or production release");
+    expect(release).toContain("docs/OPERATIONAL_MEMORY_LEDGER.md");
+
+    expect(ledger).toContain("Status: operational first-read");
+    expect(ledger).toContain("This file has no deployment authority");
+    expect(ledger).toContain("GitHub main is the canonical implementation truth");
+    expect(ledger).toContain("Replit is the production deployment surface");
+    expect(ledger).toContain("Desktop export folders are not authoritative");
+    expect(ledger).toContain("Sandbox access differs from founder machine access");
+    expect(ledger).toContain("GitHub Desktop clones may be readable but not writable");
+    expect(ledger).toContain("Patch-file handoffs are a last resort");
+    expect(ledger).toContain("Production velocity is a protocol resource");
+    expect(ledger).toContain("Run `npm run check-release`");
+    expect(ledger).toContain("Never commit `.output`, `node_modules`, `contracts/out`,");
+    expect(ledger).toContain("If push or write access is blocked, report the exact blocker");
+    expect(ledger).toContain("Product UX regression ledger");
+    expect(ledger).toContain("Live production incident ledger");
+  });
+
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {
     const activity = read("src/routes/activity.tsx");
     const glossary = read("src/components/syndicate/ArchiveGlossary.tsx");
