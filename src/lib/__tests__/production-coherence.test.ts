@@ -921,6 +921,8 @@ describe("production coherence guards", () => {
 
     expect(syndicateConfig).toContain('"0x2A6cFc76906e758B934209AFf5A163c9bC20132E"');
     expect(syndicateConfig).toContain('"0x780013bB358be6be95b401901264FC7c22a595a6"');
+    expect(syndicateConfig).toContain("SALE_V3_DEPLOYMENT_BLOCK: bigint | null = 88505301n");
+    expect(syndicateConfig).not.toContain("SALE_V3_DEPLOYMENT_BLOCK: bigint | null = 88791883n");
     expect(syndicateConfig).toContain('ACTIVE_MEMBERSHIP_SALE_VERSION = SALE_V3_FRONTEND_BUY_TARGET');
     expect(syndicateConfig).toContain("Membership Sale V3");
     expect(syndicateConfig).toContain("Current live buy target");
