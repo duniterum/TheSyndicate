@@ -152,6 +152,7 @@ specs that match the deployed reality. Safe to reference for current work.
 - `docs/OG_RENDERING_VERIFICATION.md`
 - `docs/SEARCH_SUBMISSION_NOTES.md`
 - `docs/FULL_SITE_MAP.md`
+- `docs/REFERRAL_SOURCE_ATTRIBUTION_STRATEGIC_RESEARCH.md` - strategic referral/source-attribution research and architecture reference. It has no activation, deployment, source-record, claim-UI, or transaction authority.
 - `docs/STRATEGIC_NARRATIVE_AND_EXECUTION_ORDER.md` — operational synthesis of current story, audience narratives, deferred-work triage, and execution order after the 2026-06-22 full-site/protocol baseline audit. It does not override canonical doctrine or authorize transactions/activation.
 - `docs/NFT_ARCHIVE_DESIGN_REFERENCES.md`
 - `docs/NFT_ARCHIVE_VERIFIABILITY_MATRIX.md`

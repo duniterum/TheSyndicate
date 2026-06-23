@@ -1090,6 +1090,29 @@ describe("production coherence guards", () => {
     expect(ledger).toContain("Live production incident ledger");
   });
 
+  it("keeps referral and source-attribution strategic research non-activating", () => {
+    const research = read("docs/REFERRAL_SOURCE_ATTRIBUTION_STRATEGIC_RESEARCH.md");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+
+    expect(authority).toContain("docs/REFERRAL_SOURCE_ATTRIBUTION_STRATEGIC_RESEARCH.md");
+    expect(authority).toContain("no activation, deployment, source-record, claim-UI, or transaction authority");
+
+    expect(research).toContain("Status: STRATEGIC RESEARCH / ARCHITECTURE REFERENCE / NO ACTIVATION AUTHORITY");
+    expect(research).toContain("SourceRegistryV1 is policy infrastructure, not a universal commerce router");
+    expect(research).toContain("MembershipSaleV3 is the only current source-aware payment path");
+    expect(research).toContain("Public/default V3 buys must continue to use `ZERO_SOURCE_ID`");
+    expect(research).toContain("Source records are still zero");
+    expect(research).toContain("Referral/source UI and claim UI remain inactive");
+    expect(research).toContain("Archive1155, SwapRail, future product sales, and SeatRecord721 are not source-aware today");
+    expect(research).toContain("CommissionRouterV1 as the active V3 source engine");
+    expect(research).toContain("Do not create or activate a source in the same ceremony");
+    expect(research).toContain("one internal, PAUSED, readback-first source record for MembershipSaleV3 only");
+    expect(research).toContain("Never frame source attribution as:");
+    expect(research).toContain("passive income");
+    expect(research).toContain("MLM");
+    expect(research).not.toMatch(/public referral is live|claim UI is live|source records are active/i);
+  });
+
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {
     const activity = read("src/routes/activity.tsx");
     const glossary = read("src/components/syndicate/ArchiveGlossary.tsx");
