@@ -545,6 +545,7 @@ describe("production coherence guards", () => {
     const sourceRunbook = read("docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md");
     const sourceForkReadback = read("docs/SOURCE_ATTRIBUTION_FORK_REHEARSAL_READBACK.md");
     const internalSourceDraft = read("docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md");
+    const deferredLedger = read("docs/DEFERRED_WORK_LEDGER.md");
     const archiveCanon = read("docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md");
 
     expect(readiness).toContain("Status: NON-LIVE READINESS SPEC / SOURCE RECORDS INACTIVE / NO CLAIM UI");
@@ -618,8 +619,36 @@ describe("production coherence guards", () => {
     expect(archiveCanon).toContain("source-attribution work must pass `docs/MODULE_INTEGRATION_STANDARD.md` first");
     expect(archiveCanon).toContain("Possible future paths include:");
 
-    for (const [name, src] of Object.entries({ referralRoute, futureReferral, sourcePacket, sourceRunbook, sourceForkReadback, internalSourceDraft })) {
+    expect(sourcePacket).toContain("Direct on-chain acquisition commission during eligible ACTIVE purchase");
+    expect(sourcePacket).toContain("escrow fallback only if transfer fails");
+    expect(sourcePacket).toContain("no-agency");
+    expect(sourcePacket).toContain("no-MLM/downline");
+    expect(sourcePacket).toContain("not tax or accounting advice");
+
+    expect(sourceRunbook).toContain("direct on-chain acquisition commission payout during that purchase transaction");
+    expect(sourceRunbook).toContain("Escrow is fallback only if the payout transfer fails");
+
+    expect(internalSourceDraft).toContain("Direct On-Chain Acquisition Commission Reality");
+    expect(internalSourceDraft).toContain("escrow exists only as a failed-payout fallback");
+    expect(internalSourceDraft).toContain("Source attribution is acquisition attribution, not reward accounting");
+    expect(internalSourceDraft).toContain("Source Commission Statement / Reporting Export");
+    expect(internalSourceDraft).toContain("Founder Decision Readiness");
+    expect(internalSourceDraft).toContain("no-agency");
+    expect(internalSourceDraft).toContain("no-MLM/downline");
+
+    expect(deferredLedger).toContain("Source Commission Statement / Reporting Export");
+    expect(deferredLedger).toContain("no tax/accounting advice");
+    expect(deferredLedger).toContain("Active source record, V3 source receipts");
+
+    for (const [name, src] of Object.entries({ referralRoute, futureReferral, sourceRunbook, sourceForkReadback })) {
       expect(src, name).not.toMatch(/passive income|yield|downline|MLM/i);
+      expect(src, name).not.toMatch(/claimable commission|earned commission now/i);
+      expect(src, name).not.toMatch(/source owns (?:a )?member/i);
+      expect(src, name).not.toMatch(/referral is the business model/i);
+    }
+
+    for (const [name, src] of Object.entries({ sourcePacket, internalSourceDraft })) {
+      expect(src, name).not.toMatch(/earn passively|guaranteed earnings|reward entitlement|platform owes/i);
       expect(src, name).not.toMatch(/claimable commission|earned commission now/i);
       expect(src, name).not.toMatch(/source owns (?:a )?member/i);
       expect(src, name).not.toMatch(/referral is the business model/i);

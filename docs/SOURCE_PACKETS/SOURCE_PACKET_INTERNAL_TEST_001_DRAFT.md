@@ -21,12 +21,35 @@ Future NFT, ERC-721, SwapRail, or product-commerce attribution must pass
 Archive wrapper, Archive1155 V2, ProductSaleRouter, SeatRecord721, or any
 generic commerce router.
 
+## Direct On-Chain Acquisition Commission Reality
+
+Most referral SaaS systems operate as: track -> approve -> calculate -> pay
+later. The Syndicate's V3 source path is different.
+
+For a valid ACTIVE source, MembershipSaleV3 operates as:
+
+```text
+purchase occurs
+-> contract computes acquisition commission
+-> commission is pushed directly on-chain during the purchase transaction
+-> receipt records gross USDC, acquisition commission, Net USDC Routed, and route amounts
+-> escrow is used only as fallback if the direct payout transfer fails
+```
+
+Therefore this packet is not about delayed rewards, off-chain balances, or
+manual payout promises. It is about on-chain acquisition attribution. The
+source record defines policy; the purchase receipt proves whether policy was
+used; escrow exists only as a failed-payout fallback; claim UI remains inactive.
+
+Source attribution is acquisition attribution, not reward accounting.
+
 ## Packet Identity
 
 | Field | Draft Value |
 | --- | --- |
 | Packet ID | `SOURCE_PACKET_INTERNAL_TEST_001` |
 | Source label | Internal Test Source 001 |
+| Source purpose | Internal controlled test of source-policy readback and future MembershipSaleV3 source-attributed receipt mechanics |
 | Recommended source class | `BUILDER_SOURCE` |
 | Candidate source wallet | TBD - founder-provided public wallet address |
 | Candidate payout wallet | TBD - founder-provided public wallet address |
@@ -42,8 +65,31 @@ generic commerce router.
 | Metadata hash | TBD - hash of final approved source packet |
 | Public display posture | Hidden / internal only |
 | Legal copy posture | Needs founder/legal/product review |
+| Privacy/tracking posture | No public link, no cookie/session tracking, no campaign tracking for this packet |
+| Source dashboard status | Not live |
+| Claim UI status | Not live |
+| Payout model | Direct on-chain acquisition commission during eligible ACTIVE purchases; escrow fallback only if payout transfer fails |
+| Tax/accounting note | Reporting/export utility may be useful later; this packet gives no tax or accounting advice |
 | Risk classification | Medium until wallets, caps, and copy are approved |
 | Initial status | `PAUSED` |
+
+## Required Ethical / Trust Acknowledgments
+
+The final approved packet should include explicit source acknowledgment of these
+boundaries before any source record exists:
+
+| Acknowledgment | Required posture |
+| --- | --- |
+| no-agency | The source is not an agent, employee, broker, advisor, or official representative unless a separate written agreement says otherwise. |
+| no-employment | Source attribution does not create employment, payroll, benefits, or worker status. |
+| no-official-representative | The source may not present itself as speaking for The Syndicate unless separately approved. |
+| no-member-ownership | The source never owns, controls, or captures a member relationship. |
+| no-passive-income | Acquisition commission is tied to a verified purchase receipt, not passive return. |
+| no-guaranteed-income | No payout is guaranteed; source status, caps, windows, eligibility, and receipts control outcomes. |
+| no-MLM/downline | There is no downline, network tree, multi-level payout, or recruitment chain. |
+| no-yield/no-ROI | Source attribution is not yield, investment return, equity, governance, or revenue share. |
+| disclosure-required | Any future public source promotion needs approved disclosure copy before use. |
+| pause/revoke-aware | Source terms can be paused, revoked, or updated through visible policy action. |
 
 ## Recommended First Source Class
 
@@ -99,12 +145,13 @@ Recommended for `SOURCE_PACKET_INTERNAL_TEST_001`.
 
 ## Readiness Status
 
-Status after the Protocol Organism Graph review: CEREMONY-READY DRAFT /
+Status after the source infrastructure audit: CEREMONY-READY ARCHITECTURE /
 FOUNDER INPUTS MISSING / NO SOURCE CREATION AUTHORIZED.
 
 This packet is operationally close enough for a later yes/no decision, but it is
 not final because founder-provided public addresses, source ID, timestamps,
-caps, metadata hash, and legal/product approval are still missing.
+caps, metadata hash, source acknowledgments, and legal/product approval are
+still missing.
 
 The packet remains constrained by `docs/PROTOCOL_ORGANISM_GRAPH.md`:
 
@@ -114,6 +161,10 @@ The packet remains constrained by `docs/PROTOCOL_ORGANISM_GRAPH.md`:
 - Public/default V3 buys continue to use `ZERO_SOURCE_ID`.
 - No Archive1155, SwapRail, ProductSaleRouter, claim UI, or public source-link
   activation follows from this packet.
+- Direct on-chain acquisition commission is possible only after a separate
+  ACTIVE source decision and an eligible source-attributed purchase.
+- Escrow is a fallback if direct payout fails; it is not a default delayed
+  reward balance.
 
 ## Founder Input Readiness Matrix
 
@@ -445,6 +496,77 @@ recommendations only; the founder can change them before approval.
 - Claim UI: no effect; still blocked.
 - Future modules: risk must be reassessed per module.
 
+### Privacy/tracking posture
+
+- Why it matters: the first packet must not import SaaS-style cookies,
+  campaign tracking, source links, or lead capture before those systems have
+  privacy and disclosure approval.
+- Safe default recommendation: no public source link, no cookies, no session
+  attribution, no campaign tracking, and no source-aware public path. The first
+  packet is on-chain policy/readback only.
+- Risk if wrong: users may be tracked or attributed without a clear policy;
+  source disputes can arise before the program is public.
+- SourceRegistry readback: not stored directly; belongs in the packet metadata
+  and future source-link policy.
+- MembershipSaleV3 effect: none while paused; future active use still requires
+  an explicit non-zero sourceId.
+- Activity: no click/session analytics as protocol truth.
+- My Syndicate: no source-link attribution shown while paused.
+- Register: may record privacy posture as packet metadata context.
+- Chronicle: not history by itself.
+- Archive/NFT: no effect.
+- Referral route: no public source link.
+- Claim UI: no effect.
+- Future modules: any source-link/cookie/session layer must pass separate
+  privacy and disclosure review.
+
+### Payout model
+
+- Why it matters: The Syndicate is not a delayed reward platform by default.
+  MembershipSaleV3 attempts direct on-chain payout during an eligible ACTIVE
+  source-attributed purchase.
+- Safe default recommendation: packet copy must say direct on-chain acquisition
+  commission when active, with escrow fallback only if the direct payout fails.
+- Risk if wrong: source UX may imply hidden balances, off-chain IOUs, platform
+  debt, or a reward dashboard.
+- SourceRegistry readback: payout wallet and source status determine where a
+  future direct payout or status-gated escrow claim can route.
+- MembershipSaleV3 effect: `_payAcquisition` pushes USDC to payout wallet; if
+  transfer fails, `sourceEscrowOwed(sourceId)` increases and
+  `SourcePayoutEscrowed` emits.
+- Activity: future receipt facts can show direct payout or escrow fallback from
+  events.
+- My Syndicate: no balance or claim copy while paused.
+- Register: record payout model as source policy context after readback.
+- Chronicle: only if source policy becomes institutionally material.
+- Archive/NFT: no effect.
+- Referral route: no claim UI while paused.
+- Claim UI: blocked until escrow readback, source status, legal copy, and UX
+  failure states are approved.
+- Future modules: each payment path needs its own payout/escrow design.
+
+### Tax/accounting responsibility note
+
+- Why it matters: future source payouts may require records for source wallets,
+  but this packet is not tax or accounting advice.
+- Safe default recommendation: include a plain note that sources are responsible
+  for their own tax/accounting obligations and that The Syndicate may later
+  provide reporting exports as convenience tooling only.
+- Risk if wrong: public copy can look like accounting advice, guaranteed payout,
+  or an official earnings statement before records exist.
+- SourceRegistry readback: none directly.
+- MembershipSaleV3 effect: future purchase events can provide transaction
+  hashes and amounts for reporting exports.
+- Activity: events may supply source receipt data.
+- My Syndicate: future reporting export only after active source receipts exist.
+- Register: no routine tax records.
+- Chronicle: not routine accounting history.
+- Archive/NFT: no effect.
+- Referral route: no reporting/export UI while inactive.
+- Claim UI: no effect while inactive.
+- Future modules: reporting export must be clearly labeled as not tax or
+  accounting advice.
+
 ### PAUSED-first ceremony approval
 
 - Why it matters: `createSource` writes mainnet policy state and must not
@@ -487,6 +609,43 @@ Tradeoff: `WINDOWED` terms can expire while the source remains paused. If the
 founder wants a long gap between PAUSED creation and activation, either use a
 future end timestamp with a short post-activation test window, or perform a
 visible `updateSourceTerms` action before activation.
+
+## Future Source Commission Statement / Reporting Export
+
+This packet does not build reporting tooling. It does, however, identify a
+future utility that deserves deferred-work tracking once source-attributed
+receipts exist.
+
+Possible future module:
+
+```text
+Source Commission Statement / Reporting Export
+```
+
+Potential fields:
+
+- source wallet,
+- payout wallet,
+- sourceId,
+- source class,
+- attributed purchase transaction hashes,
+- gross USDC,
+- acquisition commission,
+- Net USDC Routed,
+- direct payout events,
+- escrow fallback events,
+- claim events if a future claim UI is approved,
+- yearly CSV export,
+- PDF statement.
+
+Boundaries:
+
+- not tax advice,
+- not accounting advice,
+- not proof of passive income,
+- not a claim UI,
+- not an owed-balance dashboard,
+- not available until active source-attributed receipts exist.
 
 ## Future Readback Command Plan
 
@@ -693,10 +852,14 @@ Stop before any transaction if:
 - chain ID is not `43114`,
 - ceremony attempts to activate the source in the same step,
 - frontend changes are bundled into source creation.
+- direct on-chain payout and escrow fallback wording has not been acknowledged.
+- source tax/accounting and privacy/tracking posture is not approved.
 
 ## Founder Approval Checklist
 
 - [ ] Source class approved.
+- [ ] Source purpose approved.
+- [ ] Source label approved.
 - [ ] Source wallet approved.
 - [ ] Payout wallet approved.
 - [ ] Source ID derivation approved.
@@ -707,9 +870,62 @@ Stop before any transaction if:
 - [ ] Repeat-purchase setting approved.
 - [ ] Metadata hash approved.
 - [ ] Public display posture approved.
+- [ ] Privacy/tracking posture approved.
+- [ ] Direct payout / escrow fallback model acknowledged.
+- [ ] Source dashboard status approved as not live.
+- [ ] Claim UI status approved as not live.
+- [ ] no-agency / no-employment / no-official-representative acknowledgments approved.
+- [ ] no-member-ownership / no-passive-income / no-guaranteed-income / no-MLM/downline acknowledgments approved.
+- [ ] Tax/accounting responsibility note approved.
 - [ ] Legal/product copy approved.
 - [ ] Risk classification approved.
 - [ ] PAUSED-first ceremony approved.
+
+## Founder Decision Readiness
+
+### Mandatory before the first PAUSED source record can exist
+
+- Final source label.
+- Final source purpose.
+- Final source class.
+- Final source wallet.
+- Final payout wallet.
+- Final commission bps.
+- Final attribution scope.
+- Final start timestamp.
+- Final end timestamp, if `WINDOWED`.
+- Final gross cap.
+- Final per-buyer cap.
+- Final repeat-purchase setting.
+- Final sourceId derivation method.
+- Final sourceId.
+- Final metadata hash.
+- Explicit PAUSED-first creation approval.
+- Direct on-chain payout / escrow fallback acknowledgment.
+- Source visibility: hidden/internal unless founder approves otherwise.
+- Privacy/tracking posture: no public link, no cookies, no session tracking for
+  this packet unless separately approved.
+- Ethical/trust acknowledgments listed above.
+- Founder/legal/product copy approval.
+
+### Recommended before the first PAUSED source record
+
+- Keep `BUILDER_SOURCE`.
+- Keep `500` bps.
+- Keep `WINDOWED`.
+- Use a short internal test window.
+- Use a small gross cap.
+- Use a small per-buyer cap.
+- Keep repeat purchases disabled.
+- Keep source dashboard and claim UI explicitly not live.
+- Prepare a readback note for Register/Activity after the transaction.
+
+### Optional before the first PAUSED source record
+
+- Prepare a future reporting/export design note for source statements.
+- Prepare internal-only source dashboard mock copy.
+- Prepare a post-readback Chronicle candidate only if founder deems the first
+  source policy historically material.
 
 ## Post-Transaction Readback Checklist
 

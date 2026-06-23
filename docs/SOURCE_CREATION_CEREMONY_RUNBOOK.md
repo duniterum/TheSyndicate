@@ -13,6 +13,8 @@ claim UI activation, and source-linked buy UI activation.
 - Source packet is complete: `docs/SOURCE_RECORD_PACKET_TEMPLATE.md`.
 - Founder approval is explicit.
 - Legal/product copy is approved.
+- Direct on-chain acquisition commission and escrow-fallback wording is acknowledged in the approved packet.
+- Source privacy/tracking posture, source dashboard status, claim UI status, and tax/accounting note are approved in the packet.
 - Source creation has been rehearsed on an Avalanche fork.
 - SourceRegistryV1 owner wallet is available and verified.
 - Chain ID is Avalanche C-Chain `43114`.
@@ -26,6 +28,17 @@ claim UI activation, and source-linked buy UI activation.
 - `docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md`
 - `docs/LEGAL_DISCLOSURE_REFERRAL.md`
 - `docs/REVENUE_ATTRIBUTION_LAYER.md`
+
+## Commission Reality
+
+This ceremony creates source policy only. It does not pay anything.
+
+If a separate future activation ceremony sets a source to `ACTIVE` and an
+eligible MembershipSaleV3 purchase uses the sourceId, MembershipSaleV3 attempts
+direct on-chain acquisition commission payout during that purchase transaction.
+Escrow is fallback only if the payout transfer fails. Escrow does not activate
+claim UI, does not create an off-chain balance display, and does not authorize
+public source links.
 
 ## Target Contract
 
@@ -110,6 +123,8 @@ Stop and report if:
 - metadata hash differs,
 - commission bps differs,
 - source class/scope/cap/window differs,
+- packet does not acknowledge direct payout / escrow fallback,
+- packet does not approve privacy/tracking, source dashboard, claim UI, and tax/accounting posture,
 - any frontend path starts using non-zero source IDs unexpectedly.
 
 ## Explicit Rule

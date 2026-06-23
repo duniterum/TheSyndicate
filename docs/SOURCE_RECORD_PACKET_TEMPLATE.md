@@ -23,6 +23,7 @@ does not contain private keys, and does not authorize referral/source activation
 | Packet ID | `SOURCE_PACKET_<YYYYMMDD>_<SHORT_NAME>` |
 | Source ID | `0x...` |
 | Source label | TBD |
+| Source purpose | TBD |
 | Source wallet | `0x...` |
 | Payout wallet | `0x...` |
 | Source class | `MEMBER_INTRODUCTION` / `BUILDER_SOURCE` / `AFFILIATE` / `BD_NETWORK` / `WHITELABEL` / `SPONSORSHIP` / `TREASURY_DEAL` |
@@ -36,7 +37,25 @@ does not contain private keys, and does not authorize referral/source activation
 | Metadata hash | `0x...` |
 | Public display posture | Hidden / read-only / named source / institutional source |
 | Legal copy posture | Approved / needs review |
+| Privacy/tracking posture | No public link / no cookies / approved source link / approved campaign tracking |
+| Source dashboard status | Not live / internal only / approved public |
+| Claim UI status | Not live / internal read-only / approved public |
+| Payout model | Direct on-chain acquisition commission during eligible ACTIVE purchase; escrow fallback only if transfer fails |
+| Tax/accounting note | Not tax or accounting advice; reporting exports require separate approval |
 | Risk classification | Low / Medium / High |
+
+## Required Acknowledgments
+
+- no-agency
+- no-employment
+- no-official-representative
+- no-member-ownership
+- no-passive-income
+- no-guaranteed-income
+- no-MLM/downline
+- no-yield/no-ROI
+- disclosure-required before public promotion
+- pause/revoke-aware
 
 ## Required SourceRegistry Readback
 
@@ -74,7 +93,9 @@ After separate source activation approval:
 - Receipt must disclose `grossUsdc`, `acquisitionCost`, `protocolContribution`, `vaultAmount`, `liquidityAmount`, `operationsAmount`, `synOut`, `sourceId`, `sourceClass`, `sourceWallet`, `commissionBps`, `attributionScope`, and remaining cap fields.
 - `grossUsdc = acquisitionCost + vaultAmount + liquidityAmount + operationsAmount`.
 - `protocolContribution = grossUsdc - acquisitionCost`.
-- Source payout failure must escrow without blocking the purchase.
+- Default when eligible and ACTIVE: acquisition commission is pushed directly on-chain to the approved payout wallet during the purchase.
+- Fallback only: source payout failure must escrow without blocking the purchase.
+- Escrow is not a default delayed-reward balance and does not make claim UI live.
 
 ## Expected Frontend Behavior
 
@@ -83,6 +104,7 @@ After separate source activation approval:
 - No claim button appears unless escrow-read and claim policy are approved.
 - Activity and My Syndicate may display source-attributed receipt fields only as verified receipt truth.
 - CommissionRouterV1 must not be described as the live V3 source engine.
+- Source statement/reporting exports require separate approval and must be labeled as reporting convenience only, not tax or accounting advice.
 
 ## Expected Activity / My Syndicate Behavior
 

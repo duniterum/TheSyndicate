@@ -46,6 +46,7 @@ revisit · prerequisite · owner/surface.
 | Notification Bell → Chronicle routing                | Chronicle close-out                    | LOW      | Bell remains count-only; routing needs block tracker | When Phase 2 entry pipeline exists                     | Phase 2 + per-entry blocks            | `NotificationBell.tsx`           |
 | Chronicle share features (per-entry OG, copy-link)   | Chronicle close-out                    | LOW      | Doctrine: Chronicle is read-only protocol record   | After Phase 2                                           | Phase 2                               | `/chronicle`                     |
 | Referral / invite / reward system                    | Pre-referral readiness sweep           | DEFER    | Contract candidate exists, but no deployed router or live payout path | After review, audit, deployment, verified address, and frontend read/write gates | `CommissionRouterV1` deployed + verified | referral surfaces / new contract |
+| Source Commission Statement / Reporting Export       | Source packet doctrine hardening       | LOW      | Reporting utility only; no tax/accounting advice and no source-attributed receipts exist yet | After at least one active source-attributed purchase and payout/escrow event is verified | Active source record, V3 source receipts, legal/accounting copy, privacy review | future source dashboard / My Syndicate export |
 
 ## How to use
 
