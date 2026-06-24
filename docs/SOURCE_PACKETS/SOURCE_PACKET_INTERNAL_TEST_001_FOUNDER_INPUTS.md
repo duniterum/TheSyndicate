@@ -24,6 +24,32 @@ one precise, founder-approved, `PAUSED` source-policy record. It cannot make
 referral public-live, activate a source, generate a claim UI, or authorize a
 source-attributed purchase.
 
+## Internal Test Source vs Future Public Referrer
+
+The first source must be understood as an internal protocol rehearsal source,
+not a public referrer.
+
+Internal protocol test source:
+
+- tests source policy creation,
+- starts `PAUSED`,
+- proves readback,
+- proves source lifecycle truth,
+- prepares future receipt mechanics,
+- remains hidden/internal,
+- does not expose a public source link.
+
+Future public referrer/member source:
+
+- requires a separate member-referral design sprint,
+- requires source onboarding UX,
+- may require aliases, source links, dashboards, profiles, and reporting tools,
+- requires public disclosure and legal/product copy,
+- must not be inferred from this internal test source.
+
+Anti-drift rule: do not use the first internal test source as a template for
+public referrer UX without a separate member-referral design sprint.
+
 Use this form only after reading:
 
 - `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`
@@ -39,10 +65,10 @@ Fill every founder final value before sourceId or metadata hash generation.
 
 | Field | Recommended default | Founder final value | Notes |
 | --- | --- | --- | --- |
-| Source label | `SOURCE_PACKET_INTERNAL_TEST_001` or founder-approved internal label | TBD - founder supplies | Must not imply agency, employment, official representation, or public partnership. |
-| Source purpose | Internal controlled test of source-policy readback and future MembershipSaleV3 source-attributed receipt mechanics | TBD - founder supplies | Purpose should stay internal, readback-first, and MembershipSaleV3-only. |
-| Source wallet | TBD | TBD - founder supplies public wallet address | Do not invent. This is the source identity wallet recorded in SourceRegistryV1. |
-| Payout wallet | TBD | TBD - founder supplies public wallet address | Do not invent. Direct payout targets this wallet only after a future ACTIVE eligible purchase. |
+| Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001` | TBD - founder supplies or confirms | Must not imply a public referrer, public referral link, agency, employment, official representation, or public partnership. |
+| Source purpose | Internal controlled protocol rehearsal of source-policy creation, PAUSED status, readback, lifecycle truth, and future MembershipSaleV3 source-attributed receipt mechanics | TBD - founder supplies or confirms | Purpose should stay internal, readback-first, and MembershipSaleV3-only. |
+| Source wallet | TBD | TBD - founder supplies controlled protocol-test public wallet address | Do not invent. This is the source identity wallet recorded in SourceRegistryV1; it is not the future public referrer model. |
+| Payout wallet | TBD | TBD - founder supplies controlled payout public wallet address | Do not invent. Direct payout targets this wallet only after a future ACTIVE eligible purchase; it is not the future public referrer payout model. |
 | Source class | `BUILDER_SOURCE` | TBD - founder confirms or changes | Recommended first class because it avoids public seated-member referral semantics. |
 | Commission bps | `500` bps | TBD - founder confirms or changes | 500 bps = 5%. Keep conservative for the first internal PAUSED record. |
 | Attribution scope | `WINDOWED` | TBD - founder confirms or changes | Bounded time window is preferred for the first internal record. |
@@ -85,6 +111,9 @@ Rules for this first internal test:
 - Do not use Vault, Liquidity, or Operations as the source wallet or payout wallet
   unless the founder explicitly approves that exceptional choice.
 - Future public referrers will need their own source/payout wallet model.
+- Future public referrers will need their own onboarding flow, source links,
+  aliases, dashboards, profiles, and reporting/claim rules if those are ever
+  approved.
 - A source wallet does not own a member, seat, receipt, chapter, Archive item, or
   future SeatRecord.
 
@@ -130,6 +159,7 @@ Unix timestamps before sourceId and metadata hash generation.
 Use these unless the founder explicitly chooses otherwise:
 
 - Source class: `BUILDER_SOURCE`
+- Source label: `INTERNAL_PROTOCOL_TEST_SOURCE_001`
 - Commission: `500` bps
 - Attribution scope: `WINDOWED`
 - Repeat purchases: `false`
@@ -137,9 +167,9 @@ Use these unless the founder explicitly chooses otherwise:
 - Source dashboard: not live
 - Claim UI: not live
 - Privacy/tracking: no public link, no cookies, no session tracking
-- Source wallet: founder-provided controlled source wallet
-- Payout wallet: same founder-provided controlled source wallet unless founder
-  chooses otherwise
+- Source wallet: founder-provided controlled protocol-test wallet
+- Payout wallet: same founder-provided controlled protocol-test wallet unless
+  founder chooses otherwise
 - Gross cap: 25 to 100 USDC, suggested first value 25 USDC (`25_000_000`)
 - Per-buyer cap: 5 to 10 USDC, suggested first value 5 USDC (`5_000_000`)
 - Window: short internal test window, but long enough that it cannot expire before
@@ -151,7 +181,7 @@ Use these unless the founder explicitly chooses otherwise:
 
 Only these founder decisions are needed for the next gate:
 
-A. Which public wallet should be the internal source wallet?
+A. Which controlled protocol-test public wallet should be the internal source wallet?
 
 B. Should the payout wallet be the same wallet as the source wallet?
 
@@ -192,6 +222,9 @@ The founder must check every item before sourceId and metadata hash generation.
 - [ ] No Archive/NFT attribution is authorized.
 - [ ] No SwapRail attribution is authorized.
 - [ ] No product-wide attribution is authorized.
+- [ ] This internal protocol test source is not a public referrer.
+- [ ] This internal protocol test source is not a user referral link.
+- [ ] This internal protocol test source is not the future member referral UX.
 - [ ] No agency, employment, or official-representative status is created.
 - [ ] No member ownership is created.
 - [ ] No passive-income, guaranteed-income, MLM, or downline framing is allowed.
@@ -203,6 +236,7 @@ The founder must check every item before sourceId and metadata hash generation.
 - [ ] This source applies only to MembershipSaleV3 unless a future module passes a separate review.
 - [ ] Vault, Liquidity, and Operations wallets are protocol routing wallets, not default source/payout wallets.
 - [ ] 25 USDC gross cap and 5 USDC per-buyer cap are first-internal-test values only, not public referral economics.
+- [ ] Do not use the first internal test source as a template for public referrer UX without a separate member-referral design sprint.
 
 ## 8. SourceId And Metadata Hash Gate
 
@@ -227,7 +261,8 @@ Future deterministic generation instructions:
 
 - Use only the final approved values.
 - Compute `sourceId` from the approved packet identity, approved source wallet,
-  and approved date/source label exactly as recorded in the final source packet.
+  and approved date/source label `INTERNAL_PROTOCOL_TEST_SOURCE_001` exactly as
+  recorded in the final source packet.
 - Compute `metadataHash` from the final frozen packet text or final approved
   metadata artifact.
 - Do not compute either value from this unfinished input form.

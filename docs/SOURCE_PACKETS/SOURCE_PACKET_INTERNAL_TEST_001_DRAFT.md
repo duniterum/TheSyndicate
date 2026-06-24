@@ -21,6 +21,26 @@ Future NFT, ERC-721, SwapRail, or product-commerce attribution must pass
 Archive wrapper, Archive1155 V2, ProductSaleRouter, SeatRecord721, or any
 generic commerce router.
 
+## Internal Protocol Test Source vs Future Public Referrer
+
+This packet is for an internal protocol rehearsal source. It is not a public
+referrer, not a user referral link, and not the future member referral UX.
+
+The first source exists only to test:
+
+- source policy creation,
+- `PAUSED` status,
+- readback,
+- source lifecycle truth,
+- future receipt mechanics.
+
+Future public referrers need a separate onboarding model, public source-link
+rules, aliases, dashboards, source profiles, reporting/claim rules, disclosure
+copy, and member-referral UX. None of those are created by this packet.
+
+Anti-drift rule: do not use the first internal test source as a template for
+public referrer UX without a separate member-referral design sprint.
+
 ## Direct On-Chain Acquisition Commission Reality
 
 Most referral SaaS systems operate as: track -> approve -> calculate -> pay
@@ -48,12 +68,12 @@ Source attribution is acquisition attribution, not reward accounting.
 | Field | Draft Value |
 | --- | --- |
 | Packet ID | `SOURCE_PACKET_INTERNAL_TEST_001` |
-| Source label | Internal Test Source 001 |
-| Source purpose | Internal controlled test of source-policy readback and future MembershipSaleV3 source-attributed receipt mechanics |
+| Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001` |
+| Source purpose | Internal controlled protocol rehearsal of source-policy creation, PAUSED status, readback, lifecycle truth, and future MembershipSaleV3 source-attributed receipt mechanics |
 | Recommended source class | `BUILDER_SOURCE` |
-| Candidate source wallet | TBD - founder-provided public wallet address |
-| Candidate payout wallet | TBD - founder-provided public wallet address |
-| Source ID derivation method | `keccak256("SOURCE_PACKET_INTERNAL_TEST_001:<approved-source-wallet>:<approved-date>")`, finalized only after founder approval |
+| Candidate source wallet | TBD - founder-provided controlled protocol-test public wallet address |
+| Candidate payout wallet | TBD - founder-provided controlled payout public wallet address; may be the same controlled wallet if founder approves |
+| Source ID derivation method | `keccak256("INTERNAL_PROTOCOL_TEST_SOURCE_001:<approved-source-wallet>:<approved-date>")`, finalized only after founder approval |
 | Source ID | TBD until packet approval |
 | Commission bps | Draft recommendation: `500` bps |
 | Attribution scope | `WINDOWED` |
@@ -141,7 +161,7 @@ Cons:
 - Still requires an approved source packet, PAUSED-first source creation, and
   post-transaction readback.
 
-Recommended for `SOURCE_PACKET_INTERNAL_TEST_001`.
+Recommended for `INTERNAL_PROTOCOL_TEST_SOURCE_001`.
 
 ## Readiness Status
 
@@ -161,6 +181,8 @@ The packet remains constrained by `docs/PROTOCOL_ORGANISM_GRAPH.md`:
 - Public/default V3 buys continue to use `ZERO_SOURCE_ID`.
 - No Archive1155, SwapRail, ProductSaleRouter, claim UI, or public source-link
   activation follows from this packet.
+- This internal protocol test source must not be treated as the future public
+  referrer/member-source onboarding model.
 - Direct on-chain acquisition commission is possible only after a separate
   ACTIVE source decision and an eligible source-attributed purchase.
 - Escrow is a fallback if direct payout fails; it is not a default delayed
@@ -217,9 +239,10 @@ recommendations only; the founder can change them before approval.
 ### Final source label
 
 - Why it matters: human label for docs, metadata, and future operator review.
-- Safe default recommendation: `Internal Test Source 001`.
+- Safe default recommendation: `INTERNAL_PROTOCOL_TEST_SOURCE_001`.
 - Risk if wrong: public copy may imply official representation, agency,
-  employment, or a public partner launch.
+  employment, public referrer activation, user referral UX, or a public partner
+  launch.
 - SourceRegistry readback: not stored directly; label must live in the final
   packet metadata and `metadataHash`.
 - MembershipSaleV3 effect: none directly; receipts store numeric/source fields,
@@ -255,7 +278,7 @@ recommendations only; the founder can change them before approval.
 
 - Why it matters: sourceId is the permanent on-chain key for the source record.
 - Safe default recommendation:
-  `keccak256("SOURCE_PACKET_INTERNAL_TEST_001:<approved-source-wallet>:<approved-date>")`
+  `keccak256("INTERNAL_PROTOCOL_TEST_SOURCE_001:<approved-source-wallet>:<approved-date>")`
   unless founder approves a stricter metadata-hash-derived method.
 - Risk if wrong: collisions, unreadable provenance, or mismatch between packet
   and on-chain record.
@@ -594,6 +617,7 @@ founder approves them.
 
 | Field | Conservative recommendation | Reason |
 | --- | --- | --- |
+| Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001` | Makes the first source unmistakably an internal protocol rehearsal, not a public referrer. |
 | Source class | `BUILDER_SOURCE` | Best controlled internal test; avoids public seated-member referral semantics. |
 | Commission bps | `500` bps | Small, understandable, low-risk acquisition cost for first ceremony. |
 | Scope | `WINDOWED` | Bounded in time and aligned with the contract's window guard. |
@@ -712,7 +736,7 @@ Use only after a source record exists on-chain and readback confirms it is
 
 Register wording:
 
-> Source policy record `SOURCE_PACKET_INTERNAL_TEST_001` was created on
+> Source policy record `INTERNAL_PROTOCOL_TEST_SOURCE_001` was created on
 > SourceRegistryV1 and remains PAUSED. No public source-linked purchase path is
 > active.
 
