@@ -44,6 +44,17 @@ export type SourcePolicyProductCapability = {
   futureRequirement: string;
 };
 
+export type SourceAttributionReadinessGate = {
+  label: string;
+  currentStatus: "MISSING" | "LOCKED" | "FUTURE_APPROVAL";
+  requirement: string;
+};
+
+export type SourceAttributedReceiptProofField = {
+  label: string;
+  proof: string;
+};
+
 export type SourcePolicySnapshot = {
   registryExists: boolean;
   registryAddress: string | null;
@@ -113,6 +124,66 @@ export const SOURCE_POLICY_PRODUCT_CAPABILITIES: readonly SourcePolicyProductCap
       "Every product module must declare source eligibility, receipt fields, caps, and disclosure before launch.",
   },
 ];
+
+export const SOURCE_ATTRIBUTION_READINESS_GATES: readonly SourceAttributionReadinessGate[] = [
+  {
+    label: "Source policy fact",
+    currentStatus: "MISSING",
+    requirement:
+      "A SourceCreated event must exist, be read back, and match an approved packet before any source can be discussed as real.",
+  },
+  {
+    label: "Activation ceremony",
+    currentStatus: "LOCKED",
+    requirement:
+      "A source starts PAUSED and remains unusable until a separate approved status change makes it ACTIVE.",
+  },
+  {
+    label: "Source-aware buy path",
+    currentStatus: "LOCKED",
+    requirement:
+      "Public/default buys keep using ZERO_SOURCE_ID until a separately approved path passes a specific non-zero sourceId.",
+  },
+  {
+    label: "Receipt and read model",
+    currentStatus: "FUTURE_APPROVAL",
+    requirement:
+      "Activity, Register, My Syndicate, and receipt views must show source truth from events, not browser memory or private spreadsheets.",
+  },
+  {
+    label: "Claim boundary",
+    currentStatus: "LOCKED",
+    requirement:
+      "No claim UI appears unless escrow state, legal copy, tax/accounting posture, and source readbacks are approved.",
+  },
+] as const;
+
+export const SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS: readonly SourceAttributedReceiptProofField[] = [
+  {
+    label: "sourceId",
+    proof: "The exact source policy identifier used by the purchase, or ZERO_SOURCE_ID for public/default buys.",
+  },
+  {
+    label: "source class and status",
+    proof: "The SourceRegistry class and ACTIVE/PAUSED/REVOKED state read at the time the purchase is evaluated.",
+  },
+  {
+    label: "commission bps and caps",
+    proof: "The money terms that determined acquisition commission, gross cap, per-buyer cap, and repeat-purchase eligibility.",
+  },
+  {
+    label: "acquisition commission",
+    proof: "The USDC routed to the source payout wallet, or escrowed only if direct payout fails.",
+  },
+  {
+    label: "Net USDC Routed",
+    proof: "Gross USDC minus acquisition commission, then split to Vault, Liquidity, and Operations.",
+  },
+  {
+    label: "membership receipt",
+    proof: "Buyer, recipient, SYN delivered, era, chapter, first-seat status, member number, and transaction proof.",
+  },
+] as const;
 
 export const SOURCE_POLICY_LIFECYCLE_MODEL = [
   {

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   CURRENT_SOURCE_POLICY_SNAPSHOT,
+  SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS,
+  SOURCE_ATTRIBUTION_READINESS_GATES,
   SOURCE_POLICY_PRODUCT_CAPABILITIES,
   ZERO_SOURCE_ID,
   buildSourcePolicySnapshot,
@@ -94,6 +96,38 @@ describe("source policy observability", () => {
         }),
       ]),
     );
+  });
+
+  it("defines activation gates and receipt proof without activating source-aware public buys", () => {
+    expect(SOURCE_ATTRIBUTION_READINESS_GATES).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ label: "Source policy fact", currentStatus: "MISSING" }),
+        expect.objectContaining({ label: "Activation ceremony", currentStatus: "LOCKED" }),
+        expect.objectContaining({ label: "Source-aware buy path", currentStatus: "LOCKED" }),
+        expect.objectContaining({ label: "Receipt and read model", currentStatus: "FUTURE_APPROVAL" }),
+        expect.objectContaining({ label: "Claim boundary", currentStatus: "LOCKED" }),
+      ]),
+    );
+
+    expect(SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ label: "sourceId" }),
+        expect.objectContaining({ label: "commission bps and caps" }),
+        expect.objectContaining({ label: "acquisition commission" }),
+        expect.objectContaining({ label: "Net USDC Routed" }),
+        expect.objectContaining({ label: "membership receipt" }),
+      ]),
+    );
+
+    const publicCopy = [
+      ...SOURCE_ATTRIBUTION_READINESS_GATES.map((gate) => `${gate.label} ${gate.requirement}`),
+      ...SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS.map((field) => `${field.label} ${field.proof}`),
+    ].join("\n");
+
+    expect(publicCopy).toContain("ZERO_SOURCE_ID");
+    expect(publicCopy).toContain("No claim UI appears");
+    expect(publicCopy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
+    expect(publicCopy).not.toMatch(/passive income|downline|upline|\bROI\b|top earner/i);
   });
 
   it("reduces future source lifecycle events into the same observability snapshot", () => {

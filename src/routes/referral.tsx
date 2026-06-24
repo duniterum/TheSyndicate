@@ -10,6 +10,8 @@ import {
   StatusPill,
 } from "@/components/syndicate/Primitives";
 import {
+  SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS,
+  SOURCE_ATTRIBUTION_READINESS_GATES,
   CURRENT_SOURCE_POLICY_SNAPSHOT,
   SOURCE_POLICY_LIFECYCLE_MODEL,
 } from "@/lib/source-policy-observability";
@@ -129,6 +131,50 @@ function ReferralPage() {
                 {limit}
               </div>
             ))}
+          </div>
+        </GlassCard>
+      </Section>
+
+      <Section id="source-attribution-readiness">
+        <SectionHeader
+          eyebrow="Activation gates"
+          title="What must become true before attribution can affect money"
+          description="The source system advances through proof, ceremony, and read-model gates. A source record by itself is not referral activation."
+        />
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
+          {SOURCE_ATTRIBUTION_READINESS_GATES.map((gate) => (
+            <article key={gate.label} className="rounded-md border border-border/60 bg-card/70 p-4">
+              <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+                {gate.currentStatus}
+              </div>
+              <h3 className="mt-2 text-sm font-semibold">{gate.label}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{gate.requirement}</p>
+            </article>
+          ))}
+        </div>
+      </Section>
+
+      <Section id="future-receipt-proof">
+        <SectionHeader
+          eyebrow="Future receipt proof"
+          title="If a source-attributed purchase is ever approved, the receipt must explain itself"
+          description="The goal is not a hidden referral balance. The goal is a purchase receipt that lets a member reconstruct attribution, commission, and routing from verifiable facts."
+        />
+        <GlassCard className="p-5">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            {SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS.map((field) => (
+              <article key={field.label} className="rounded-[6px] border border-border/55 bg-background/45 p-3">
+                <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {field.label}
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-foreground/85">{field.proof}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-4 rounded-[6px] border border-[rgba(255,180,84,0.28)] bg-[rgba(255,180,84,0.07)] p-3 text-sm leading-relaxed text-foreground/85">
+            Until these fields are emitted, indexed, and presented correctly,
+            the product must not show a source balance, claim button, public
+            referral link, or non-zero public source path.
           </div>
         </GlassCard>
       </Section>

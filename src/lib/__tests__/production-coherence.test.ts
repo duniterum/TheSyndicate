@@ -61,6 +61,10 @@ describe("production coherence guards", () => {
     expect(referral).toContain("sourcePolicy.currentSummary");
     expect(referral).toContain("Source policy observability");
     expect(referral).toContain("V3 public buys currently use ZERO_SOURCE_ID");
+    expect(referral).toContain("SOURCE_ATTRIBUTION_READINESS_GATES");
+    expect(referral).toContain("SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS");
+    expect(referral).toContain("A source record by itself is not referral activation");
+    expect(referral).toContain("must not show a source balance, claim button, public");
     expect(referral).toContain("A source record must move through visible states");
     expect(referral).not.toMatch(/components\/preview/);
     expect(referral).not.toMatch(/simulated/i);
@@ -81,6 +85,11 @@ describe("production coherence guards", () => {
     expect(sourcePolicy).toContain("claimingActive: false");
     expect(sourcePolicy).toContain("publicSourceAwareBuyPathActive: false");
     expect(sourcePolicy).toContain("Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID");
+    expect(sourcePolicy).toContain("SOURCE_ATTRIBUTION_READINESS_GATES");
+    expect(sourcePolicy).toContain("SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS");
+    expect(sourcePolicy).toContain("A source starts PAUSED");
+    expect(sourcePolicy).toContain("No claim UI appears unless escrow state");
+    expect(sourcePolicy).toContain("Gross USDC minus acquisition commission");
     expect(sourcePolicy).toContain("MembershipSaleV3");
     expect(sourcePolicy).toContain("Archive1155");
     expect(sourcePolicy).toContain("SeatRecord721");
