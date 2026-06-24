@@ -15,7 +15,7 @@
 //
 //   • The public hook signature is stable across phases. Today it scans
 //     the chain client-side via useLivePurchaseEvents. Tomorrow it can be
-//     fed by a Lovable Cloud cache or a subgraph WITHOUT changing the
+//     fed by a hosted cache, indexer, or subgraph WITHOUT changing the
 //     return type or any consumer.
 // ─────────────────────────────────────────────────────────────────────────
 

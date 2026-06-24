@@ -24,7 +24,7 @@ Additional terms surfaced by the user (`Founder Number contract`,
 `Every payment, verifiable.`, `AI analyst / governance / risk modules`,
 `What is live, what is pending, what is a preview`, the public `PREVIEW`
 bucket) are **not present** on the deployed `wave-P3.transparency-truth`
-bundle of `https://syndicate-archive.lovable.app/transparency` nor on
+bundle of `[legacy preview URL removed]/transparency` nor on
 `https://thesyndicate.money/transparency`. They likely came from a stale
 browser session that had cached the pre-P3 bundle, or from the older
 `id-preview--…` build which has not been republished. The rendered scan
@@ -94,7 +94,7 @@ email requirement, no real-world identity.
 ## 6. Rendered-output proof
 
 ```
-=== https://syndicate-archive.lovable.app/transparency ===
+=== [legacy preview URL removed]/transparency ===
   bytes=97457
   data-build-tag="wave-P3.transparency-truth"   ← still old bundle until Publish → Update
   LEAK: governance weight
@@ -106,7 +106,7 @@ email requirement, no real-world identity.
   LEAK: governance weight
   LEAK: Member Directory
   LEAK: Member directory
-=== https://id-preview--ad47d0d6-2f40-4c25-bfe1-9939988d60df.lovable.app/transparency ===
+=== [legacy preview URL removed]/transparency ===
   bytes=64172
   (no leaks for the user-cited forbidden terms after this pass)
 ```
@@ -116,23 +116,23 @@ Source scan (post-fix): **CLEAN** for every forbidden term in §2.
 ### Full route sweep (all HTTP 200, no `Internal Error` / `unhandled` text)
 
 ```
-https://syndicate-archive.lovable.app/                  200
-https://syndicate-archive.lovable.app/join              200
-https://syndicate-archive.lovable.app/transparency      200
-https://syndicate-archive.lovable.app/tokenomics        200
-https://syndicate-archive.lovable.app/token             200
-https://syndicate-archive.lovable.app/vault             200
-https://syndicate-archive.lovable.app/liquidity         200
-https://syndicate-archive.lovable.app/activity          200
-https://syndicate-archive.lovable.app/ranks             200
-https://syndicate-archive.lovable.app/members           200
-https://syndicate-archive.lovable.app/founders          200
-https://syndicate-archive.lovable.app/chapters          200
-https://syndicate-archive.lovable.app/roadmap           200
-https://syndicate-archive.lovable.app/docs              200
-https://syndicate-archive.lovable.app/faq               200
-https://syndicate-archive.lovable.app/whitepaper        200
-https://syndicate-archive.lovable.app/registry          200
+[legacy preview URL removed]/                  200
+[legacy preview URL removed]/join              200
+[legacy preview URL removed]/transparency      200
+[legacy preview URL removed]/tokenomics        200
+[legacy preview URL removed]/token             200
+[legacy preview URL removed]/vault             200
+[legacy preview URL removed]/liquidity         200
+[legacy preview URL removed]/activity          200
+[legacy preview URL removed]/ranks             200
+[legacy preview URL removed]/members           200
+[legacy preview URL removed]/founders          200
+[legacy preview URL removed]/chapters          200
+[legacy preview URL removed]/roadmap           200
+[legacy preview URL removed]/docs              200
+[legacy preview URL removed]/faq               200
+[legacy preview URL removed]/whitepaper        200
+[legacy preview URL removed]/registry          200
 (thesyndicate.money mirrors all above — same 200s, no error text)
 ```
 
@@ -144,10 +144,10 @@ The deployed bundle on every public host is **still** `wave-P3.transparency-trut
 because no publish has occurred since the previous wave. Source is now
 `wave-P3b.preview-truth`. To make rendered preview/production match source:
 
-1. Click **Publish → Update** in Lovable.
-2. Hard-refresh `/transparency` on `preview--syndicate-archive.lovable.app`,
-   `syndicate-archive.lovable.app`, and `thesyndicate.money`.
-3. Run `node scripts/check-live-content.mjs https://syndicate-archive.lovable.app`
+1. Click **Publish → Update** in legacy deployment platform.
+2. Hard-refresh `/transparency` on `[legacy preview domain removed]`,
+   `[legacy preview domain removed]`, and `thesyndicate.money`.
+3. Run `node scripts/check-live-content.mjs [legacy preview URL removed]`
    — both the parity gate and per-route blocklist (now hardened with
    `governance weight`, `Member Directory`, `20 — Verify`,
    `Every payment, verifiable`, `AI analyst`) must go green before any

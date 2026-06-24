@@ -8,7 +8,7 @@
 
 ## 1. Root cause
 
-The live URL (`https://syndicate-archive.lovable.app`) is serving an older
+The live URL (`[legacy preview URL removed]`) is serving an older
 bundle than the source tree. Every route returns HTTP 200, every route
 serves a valid build, but the deployed build tag does **not** match the
 source build-stamp tag. The hardened parity gate in
@@ -16,7 +16,7 @@ source build-stamp tag. The hardened parity gate in
 
 The "stale copy" reported by the checker against production is the
 correct copy *for that bundle* — it just isn't the current source.
-Until the user clicks **Publish → Update** in Lovable, the live site will
+Until the user clicks **Publish → Update** in legacy deployment platform, the live site will
 continue to serve the wave-P bundle that still contains the legacy terms.
 
 ---
@@ -127,10 +127,10 @@ fragment, or per-route SSR divergence before continuing.
 The source tree is aligned with the constitution. The remaining action
 is **not** a code change:
 
-1. Click **Publish → Update** in the Lovable UI.
+1. Click **Publish → Update** in the legacy deployment platform UI.
 2. Hard-refresh the production URL.
 3. Run `npm run check-live` (or
-   `node scripts/check-live-content.mjs https://syndicate-archive.lovable.app`).
+   `node scripts/check-live-content.mjs [legacy preview URL removed]`).
 4. Expect `All 15 routes passed · build parity OK.`
 
 No further wallet, drawer, or feature work should ship until that line

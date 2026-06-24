@@ -42,7 +42,7 @@ Why this is better than the alternatives for V1:
 | Separate ERC-721 Seat Record contract *in V1* | Deferred to a later, separate contract (`SyndicateSeatRecord721`). Not built in V1: membership eligibility is not yet enforceable on-chain. ERC-721 IS the correct shape for Seat Records — it just ships later as its own deployment, not inside V1. See Part G + `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`. |
 | Many small contracts (one per artifact)  | N×audit cost, N×deploy cost, N×explorer pages, N×failure modes. Same memory layer fragmented across many addresses.                                             |
 | Proxy / upgradeable (UUPS, Transparent)  | Powerful but adds a permanent admin power that "can change the rules later". For a memory layer, immutability *is* the feature. V2 lives at a new address.      |
-| Third-party mint platform (Zora/Manifold)| Couples the future memory layer to another product's roadmap, fees, and shutdown risk. Violates "works if the website / Lovable disappears."                    |
+| Third-party mint platform (Zora/Manifold)| Couples the future memory layer to another product's roadmap, fees, and shutdown risk. Violates "works if the website / legacy deployment platform disappears."                    |
 | Off-chain only                           | No on-chain memory layer at all. Defeats the purpose.                                                                                                           |
 
 Founder-friendly translation:

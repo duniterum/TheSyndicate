@@ -56,7 +56,7 @@ These items were inspected and left alone to avoid breaking working flows or des
 - **`Hero`, `TrustBar`, `ProtocolOverview`, `ProtocolRevenueEngine`, `UseOfFunds`, `OpportunitySection`, `WhyBecomeMember`, `WhatSynDoes`, `WhyDifferent`** — already aligned with VISION + canonical model.
 - **Existing on-chain hooks** (`useSaleStats`, `useAllocationBalances`, `useLpStatus`, `useTreasury*`, activity scanners, registry config, all explorer link helpers): untouched.
 
-## 5. Open follow-ups (not done in this pass, listed for future Lovable prompts)
+## 5. Open follow-ups (not done in this pass, listed for future legacy deployment platform prompts)
 
 These are real improvements but were intentionally scoped out to avoid a blind redesign:
 

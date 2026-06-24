@@ -389,7 +389,7 @@ card and dies in the timeline.
 - Notional P&L, "value of your SYN", or any price-anchored member stat. Violates Core rules.
 - Wealth-based leaderboards beyond what the Compounder Score already does (it already de-emphasizes whales via `√usdc`).
 - Referral mechanics with tracking codes — they would shift the protocol from formation to acquisition incentives and contaminate the archive.
-- Notifications that require email or push subscription — out of scope; do this later through Lovable Cloud only if explicitly requested.
+- Notifications that require email or push subscription — out of scope; do this later through legacy deployment platform Cloud only if explicitly requested.
 - Gamified "streaks" with reward implications (XP, multipliers, claimable points). A pure observability streak ("days with ≥1 new member") is fine; anything redeemable is not.
 - Wallet PII enrichment (names, socials) — only what's on-chain.
 - Per-wallet OG images that include live USDC numbers in the *image text* without a "live as of block N" footer — would feel dishonest the moment it's stale.

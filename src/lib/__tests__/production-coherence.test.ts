@@ -147,6 +147,42 @@ describe("production coherence guards", () => {
     expect(sitemap).toContain('{ path: "/evolution"');
   });
 
+  it("keeps the homepage visibility layer five-pillar, truthful, and non-activating", () => {
+    const home = read("src/routes/index.tsx");
+    const model = read("src/lib/protocol-visibility.ts");
+    const surface = read("src/components/syndicate/ProtocolVisibilitySurface.tsx");
+
+    expect(home).toContain("<ProtocolVisibilitySurface />");
+    expect(model).toContain("PROTOCOL_VISIBILITY_PILLARS");
+    expect(model).toContain("Institutional Spine");
+    expect(model).toContain("Institution Map");
+    expect(model).toContain("Institutional Pulse");
+    expect(model).toContain("Proof Backbone");
+    expect(model).toContain("Place / Belonging");
+    expect(model).toContain("Join");
+    expect(model).toContain("Prove");
+    expect(model).toContain("Remember");
+    expect(model).toContain("Return");
+    expect(model).toContain("Evolve");
+    expect(model).toContain("Future recognition should answer what a person or source helped the institution become");
+    expect(model).toContain("Default V3 buys use");
+    expect(model).toContain("ZERO_SOURCE_ID");
+    expect(model).toContain("No public source link");
+    expect(model).toContain("No source-aware public buy path");
+    expect(model).toContain("No claim UI");
+
+    expect(surface).toContain("One institution.");
+    expect(surface).toContain("Five views.");
+    expect(surface).toContain("Pulse shows why");
+    expect(surface).toContain("Future recognition reserve");
+    expect(surface).toContain("Reserved does not mean live");
+
+    expect(surface).not.toMatch(/useWriteContract|writeContract|sendTransaction|claimSourceEscrow|createSource\(/);
+    expect(surface).not.toMatch(/source links are live|claim UI is live|public referral is live/i);
+    expect(surface).not.toMatch(/passive income|\bROI\b|top earners?|downline|MLM/i);
+    expect(surface).not.toMatch(/members voted|community vote|governance rights/i);
+  });
+
   it("keeps public V3 sale surfaces on deterministic era-pricing truth", () => {
     const files = {
       join: read("src/routes/join.tsx"),
@@ -1355,6 +1391,32 @@ describe("production coherence guards", () => {
     expect(audit).toContain("Do not create public source links before an active source record");
     expect(audit).toContain("No MLM/downline/passive-income framing");
     expect(audit).not.toMatch(/public referral is live|claim UI is live|source records are active|source links are live/i);
+  });
+
+  it("keeps the current runtime free of legacy platform dependencies", () => {
+    const currentRuntime = [
+      "package.json",
+      "bun.lock",
+      "bunfig.toml",
+      "vite.config.ts",
+      "scripts/check-homepage-content.mjs",
+      "src/routes/__root.tsx",
+      "src/routes/api.chat.ts",
+      "src/lib/ai.functions.ts",
+      "src/lib/ai-gateway.server.ts",
+      "src/lib/build-stamp.ts",
+      "src/lib/client-error-reporting.ts",
+    ]
+      .map((file) => read(file))
+      .join("\n");
+
+    const legacyPlatformName = ["lov", "able"].join("");
+    const legacyPlatformPattern = new RegExp(`${legacyPlatformName}|@${legacyPlatformName}`, "i");
+
+    expect(currentRuntime).not.toMatch(legacyPlatformPattern);
+    expect(read("package.json")).not.toContain(`@${legacyPlatformName}.dev/vite-tanstack-config`);
+    expect(read("vite.config.ts")).toContain("tanstackStart");
+    expect(read("vite.config.ts")).toContain('nitro({ preset: "node-server" })');
   });
 
   it("keeps Patron Seal read-gated outside deep mint surfaces", () => {

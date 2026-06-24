@@ -49,10 +49,10 @@ This script is already in the repo and checks all 21 public routes plus the `/ep
 
 ## Error monitoring
 
-- Client-side runtime errors are captured by `src/lib/error-capture.ts` and forwarded via `src/lib/lovable-error-reporting.ts` (Lovable platform default).
+- Client-side runtime errors are captured by the app-owned client error boundary/reporting path in `src/lib/client-error-reporting.ts`.
 - No additional third-party error tracker (Sentry, Bugsnag, etc.) was attached in this pass — would require account setup and a new script tag.
 - If owner wants Sentry, the cleanest hook point is `src/start.ts` (server) and `src/router.tsx` (client) — defer until chosen.
 
 ## Verdict
 
-Pre-ads safe. Manual smoke check + Lovable's built-in error capture cover the first-ads window. External monitoring is documented as deferred.
+Pre-ads safe. Manual smoke check + app-owned client error reporting cover the first-ads window. External monitoring is documented as deferred.

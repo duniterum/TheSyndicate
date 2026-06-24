@@ -78,7 +78,7 @@ Terms searched:
 Result:
 
 ```txt
-BASE https://id-preview--ad47d0d6-2f40-4c25-bfe1-9939988d60df.lovable.app
+BASE [legacy preview URL removed]
 /              HTTP 200 CLEAN
 /join          HTTP 200 CLEAN
 /transparency  HTTP 200 CLEAN
@@ -97,7 +97,7 @@ BASE https://id-preview--ad47d0d6-2f40-4c25-bfe1-9939988d60df.lovable.app
 /whitepaper    HTTP 200 CLEAN
 /registry      HTTP 200 CLEAN
 
-BASE https://preview--syndicate-archive.lovable.app
+BASE [legacy preview URL removed]
 /              HTTP 200 CLEAN
 /join          HTTP 200 CLEAN
 /transparency  HTTP 200 CLEAN

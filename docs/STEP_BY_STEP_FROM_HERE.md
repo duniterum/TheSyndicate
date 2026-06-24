@@ -194,7 +194,7 @@ Canonical decision doc: `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`.
 ## Current Solidity Review State (2026-06-06)
 
 Kemal + ChatGPT are reviewing the production-candidate Solidity contract
-for `SyndicateArchive1155`. **Lovable MUST NOT generate Solidity** unless
+for `SyndicateArchive1155`. **legacy deployment platform MUST NOT generate Solidity** unless
 explicitly asked. The next required step is **compile + tests** against
 the frozen spec, not new product design. Full state, ID-2 rules, and
 required test invariants are pinned in

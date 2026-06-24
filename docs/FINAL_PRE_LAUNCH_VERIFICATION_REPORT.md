@@ -82,7 +82,7 @@ Exits non-zero on any failure. **Current run: 21/21 passing.** Add to launch-day
 
 ```
 node scripts/check-route-status.mjs                       # prod
-node scripts/check-route-status.mjs https://syndicate-archive.lovable.app
+node scripts/check-route-status.mjs [legacy preview URL removed]
 ```
 
 Heavier infra (Playwright, forked-chain E2E, full Lighthouse CI) intentionally **deferred** until traffic justifies.
@@ -139,10 +139,10 @@ Confirmed all canonical derivations from prior waves remain intact:
 | URL | Latest build present? |
 |---|---|
 | https://thesyndicate.money | ⚠️ Serving prior published build (lacks newest `sitemap.xml` cache header + OG endpoint mounts) |
-| https://syndicate-archive.lovable.app | Same as above |
-| Preview (`id-preview--...lovable.app`) | ✅ Latest |
+| [legacy preview URL removed] | Same as above |
+| Preview (`[legacy preview domain removed]`) | ✅ Latest |
 
-**Action required by user:** Open Lovable and click **Publish → Update** to push the latest preview build to the two production hostnames. **I cannot publish from here; user action required.** All routes already return 200 on the current published build, so this is a soft requirement — the publish picks up the sitemap cache header + OG endpoints + recent SSOT fixes.
+**Action required by user:** Open legacy deployment platform and click **Publish → Update** to push the latest preview build to the two production hostnames. **I cannot publish from here; user action required.** All routes already return 200 on the current published build, so this is a soft requirement — the publish picks up the sitemap cache header + OG endpoints + recent SSOT fixes.
 
 ---
 
@@ -164,7 +164,7 @@ Verified across all primary routes:
 
 | # | Risk | Severity | Mitigation when triggered |
 |---|---|---|---|
-| 1 | Public Avalanche RPC throttling under viral load | **High (post-traffic)** | Move to private RPC + Lovable Cloud cache (deferred; cost-conscious) |
+| 1 | Public Avalanche RPC throttling under viral load | **High (post-traffic)** | Move to private RPC + legacy deployment platform Cloud cache (deferred; cost-conscious) |
 | 2 | Lifetime purchases > 5,000 require subgraph migration | Medium (months out) | `buildHolderIndex` already pure-builder, drop-in for subgraph |
 | 3 | Activity URL-state preservation (deep-link filters) | Low | Add `useSearch` params when needed |
 | 4 | Latest sitemap / OG cache-header changes not yet on prod | Low | One Publish → Update click |
@@ -185,7 +185,7 @@ Held back from 10: items 1, 4, 5 above (paid infra, publish-click, real-buy veri
 
 **READY for organic / low-paid traffic** after one user action:
 
-> **Click Publish → Update** in the Lovable editor to push the current preview build to `thesyndicate.money` and `syndicate-archive.lovable.app`.
+> **Click Publish → Update** in the deployment editor to push the current preview build to `thesyndicate.money` and `[legacy preview domain removed]`.
 
 Once that is done, run `node scripts/check-route-status.mjs` and `curl -sI https://thesyndicate.money/sitemap.xml | grep -i cache-control` to confirm the new sitemap cache header is live. No further engineering work is required for launch.
 

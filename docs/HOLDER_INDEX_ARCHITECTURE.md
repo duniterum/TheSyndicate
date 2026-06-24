@@ -205,7 +205,7 @@ Per refresh cycle: one `eth_getLogs` sweep over Sale contract from `SALE_DEPLOYM
 - `localStorage` snapshot of last-seen tip block + events → only fetch *delta* on revisit.
 
 **Phase B — 500–5,000 members. Lightweight cache layer.**
-- Move event aggregation into a Lovable Cloud Postgres table (`holder_events`), indexed by `(wallet, block_number)`.
+- Move event aggregation into a legacy deployment platform Cloud Postgres table (`holder_events`), indexed by `(wallet, block_number)`.
 - A server function `getHolderIndex({ asOfBlock?: bigint })` returns the prebuilt JSON.
 - Client falls back to live scan if server is cold.
 - Update path: small cron / per-request scan from `last_indexed_block` → tip.

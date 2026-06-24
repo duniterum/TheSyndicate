@@ -27,16 +27,16 @@ serving the post-Wave-3A code**:
 **The reported "old live site" is almost certainly one of:**
 1. A previously-published build that has not been re-published. Frontend
    changes require clicking **Publish → Update** in the dialog. The preview
-   sandbox always shows the latest code; the `.lovable.app` published URL
+   sandbox always shows the latest code; the ` legacy preview domain` published URL
    serves the last published build.
 2. Browser/CDN cache showing a stale HTML response (hard-refresh resolves).
-3. The reporter is on `https://syndicate-archive.lovable.app` (the previous
-   default `.lovable.app` URL) which may be on an older published build than
+3. The reporter is on `[legacy preview URL removed]` (the previous
+   default ` legacy preview domain` URL) which may be on an older published build than
    the custom domain.
 
 **Recommended remediation:** click **Publish → Update** in the editor to
 re-publish the current build to all attached domains. If the
-`.lovable.app` archive still shows stale content after re-publish, hard-refresh
+` legacy preview domain` archive still shows stale content after re-publish, hard-refresh
 and re-check.
 
 ---
@@ -228,7 +228,7 @@ These do not user-block. Bundle into the next copy/cleanup pass:
 ## Deployment / cache action required
 
 The repo and the custom-domain HTML already match. If
-`syndicate-archive.lovable.app` or any other published surface still
+`[legacy preview domain removed]` or any other published surface still
 shows old hero / old Rank Hub copy:
 
 1. Open the editor, click **Publish → Update** to re-push the current
@@ -252,7 +252,7 @@ Use this workflow after any AI build pass before declaring a release "live".
 npm run check-live
 
 # Verify a preview or other domain
-node scripts/check-live-content.mjs https://your-preview-url.lovable.app
+node scripts/check-live-content.mjs https://your-preview-url legacy preview domain
 
 # Verbose output (shows rule notes even on PASS)
 VERBOSE=1 npm run check-live
@@ -319,7 +319,7 @@ Skip bumping for pure documentation, internal-only, or script-only changes.
 #### 3. Confirm the build stamp
 - [ ] Scroll to the footer. The build stamp reads
       `Build YYYY-MM-DD · <tag> · production` on the apex domain and
-      `… · preview` on `*.lovable.app`.
+      `… · preview` on `[legacy preview domain removed]`.
 - [ ] The `<tag>` value should match what the most recent AI pass
       shipped (see `src/lib/build-stamp.ts`). If it does not match,
       the surface is on an older build — repeat step 1.

@@ -24,9 +24,9 @@ Kemal + ChatGPT are now reviewing the **production-candidate Solidity
 contract** for `SyndicateArchive1155` against the frozen specification
 in this repo.
 
-- **Lovable MUST NOT generate Solidity** unless explicitly asked.
-- **Lovable MUST NOT deploy** anything.
-- **Lovable MUST NOT** add product features, UI surfaces, mint flows,
+- **legacy deployment platform MUST NOT generate Solidity** unless explicitly asked.
+- **legacy deployment platform MUST NOT deploy** anything.
+- **legacy deployment platform MUST NOT** add product features, UI surfaces, mint flows,
   admin panels, simulated previews, or invented contract addresses
   ahead of deployment.
 - The next required step is **compile + tests** against the spec, not
@@ -163,7 +163,7 @@ and do not promise V1 ERC-1155 mint behaviour.
    license, D2/D3/D6 addresses + signer threshold, §8.7 initial
    `rendererMode` for IDs 4–7).
 4. Fuji rehearsal → independent audit → mainnet deployment.
-5. Only then does Lovable wire `ARCHIVE_NFT_CONTRACT_ADDRESS` and flip
+5. Only then does legacy deployment platform wire `ARCHIVE_NFT_CONTRACT_ADDRESS` and flip
    the relevant surfaces from `PENDING NFT CONTRACT` to
    `LIVE ON AVALANCHE` / `DERIVED FROM ON-CHAIN DATA` per
    `docs/STEP_BY_STEP_FROM_HERE.md` Phase 3.

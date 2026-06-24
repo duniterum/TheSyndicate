@@ -7,8 +7,8 @@ Updated: 2026-06-06 (pre-ads)
 - **Production domain**: https://thesyndicate.money
 - **Sitemap**: https://thesyndicate.money/sitemap.xml
 - **Robots**: https://thesyndicate.money/robots.txt
-- **Mirror (Lovable)**: https://syndicate-archive.lovable.app
-- **Preview**: https://id-preview--ad47d0d6-2f40-4c25-bfe1-9939988d60df.lovable.app
+- **Production**: https://thesyndicate.money
+- **Preview**: use the current Replit deployment preview only when explicitly provided by the deployment surface.
 
 The mirror and preview URLs are not the canonical search target. Submit only the production domain to search engines.
 
@@ -51,4 +51,4 @@ node scripts/check-route-status.mjs https://thesyndicate.money
 
 - No login or external setup performed in this pass — these are instructions only. Owner must complete GSC / Bing verification manually.
 - Do not submit `/labs` URLs. They are intentionally blocked.
-- Do not submit Lovable mirror or preview URLs — they would compete with the canonical domain.
+- Do not submit legacy deployment platform mirror or preview URLs — they would compete with the canonical domain.

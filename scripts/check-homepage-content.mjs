@@ -9,11 +9,7 @@
 
 const TARGETS = process.argv[2]
   ? [process.argv[2]]
-  : [
-      "https://thesyndicate.money",
-      "https://syndicate-archive.lovable.app",
-      "https://id-preview--ad47d0d6-2f40-4c25-bfe1-9939988d60df.lovable.app",
-    ];
+  : ["https://thesyndicate.money"];
 
 // [phrase, mustExist] — true ⇒ required, false ⇒ must NOT appear in homepage HTML.
 // Note: a few banned terms (yield, dividend) are intentionally retained inside

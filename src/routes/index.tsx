@@ -18,11 +18,12 @@ import { WhatChangesAfterJoining } from "@/components/syndicate/WhatChangesAfter
 import { HomeTransparencySnapshot } from "@/components/syndicate/HomeTransparencySnapshot";
 import { RiskDisclaimer } from "@/components/syndicate/RiskDisclaimer";
 import { Section, SectionHeader, CTAButton } from "@/components/syndicate/Primitives";
-import { ProtocolJourneySpine, ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
+import { ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
 import { AnticipationLine } from "@/components/syndicate/AnticipationLine";
 import { HomeQuickAnswerRail } from "@/components/syndicate/HomeQuickAnswerRail";
 import { TrustBar } from "@/components/syndicate/TrustBar";
 import { HomeArchiveTeaser } from "@/components/syndicate/HomeArchiveTeaser";
+import { ProtocolVisibilitySurface } from "@/components/syndicate/ProtocolVisibilitySurface";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -99,7 +100,7 @@ function Index() {
       <TrustBar />
       <HeroEntryStrip />
       <AnticipationLine />
-      <ProtocolJourneySpine current="visitor" />
+      <ProtocolVisibilitySurface />
       <HomeKpiGrid />
 
       {/* Raised live heartbeat — nearest milestone, vitals, and the activity tape.

@@ -4,7 +4,7 @@
 
 **Status:** FROZEN VISUAL DOCTRINE · NO CODE · NO DEPLOYMENT
 **Doctrine:** SYN is the seat. NFT Artifacts are the memory.
-**Audience:** Lovable, ChatGPT, Kemal, future AIs, future Solidity author, future designers.
+**Audience:** legacy deployment platform, ChatGPT, Kemal, future AIs, future Solidity author, future designers.
 
 This document freezes the visual philosophy of the NFT Archive **before**
 Solidity is written. It is paired with:

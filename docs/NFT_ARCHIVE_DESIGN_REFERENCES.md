@@ -19,7 +19,7 @@ Stored at:
 ## 1. Why these images exist
 
 Before Solidity is written, the project needs a shared visual vocabulary
-that Lovable, ChatGPT, future AIs, future developers, and future
+that legacy deployment platform, ChatGPT, future AIs, future developers, and future
 designers can all align on. Text alone has repeatedly drifted into
 either "PFP collection" framing or "boring certificate" framing —
 neither correct.

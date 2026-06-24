@@ -15,17 +15,14 @@ export const BUILD_STAMP = {
   human: "2026-06-14 · UTC",
   /** Short release tag — bump on each significant wave. */
   tag: "featured-paths-member-profile",
-  /** Environment hint: 'preview' on lovable preview/sandbox, 'production' on custom domain. */
+  /** Environment hint: 'preview' on hosted preview/sandbox, 'production' on custom domain. */
   envLabel(): "preview" | "production" | "local" {
     if (typeof window === "undefined") return "local";
     const h = window.location.hostname;
-    if (h.includes("id-preview--") || h.includes("preview--") || h.endsWith("lovable.app")) {
-      // Custom apex / www domains are production; *.lovable.app is preview unless it is the
-      // canonical published archive subdomain (still treated as preview for QA clarity).
-      if (h === "thesyndicate.money" || h === "www.thesyndicate.money") return "production";
+    if (h === "thesyndicate.money" || h === "www.thesyndicate.money") return "production";
+    if (h.includes("id-preview--") || h.includes("preview--") || h.endsWith(".replit.dev")) {
       return "preview";
     }
-    if (h === "thesyndicate.money" || h === "www.thesyndicate.money") return "production";
     return "local";
   },
 } as const;

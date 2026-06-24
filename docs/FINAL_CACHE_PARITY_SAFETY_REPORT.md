@@ -79,7 +79,7 @@ New script. Asserts on each target HTML payload:
 
 Targets (override with `node scripts/check-homepage-content.mjs <url>`):
 - `https://thesyndicate.money`
-- `https://syndicate-archive.lovable.app`
+- `[legacy preview URL removed]`
 - preview URL
 
 Bodies under 4 KB are treated as SPA shells (warn, skip — preview

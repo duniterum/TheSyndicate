@@ -44,7 +44,7 @@ No redesign, no product change. Full Lighthouse run deferred to owner.
 ## E. Uptime / error monitoring
 
 - No new external service added. `scripts/check-route-status.mjs` remains the manual fallback (23/23 PASS).
-- Lovable's built-in error capture (`src/lib/error-capture.ts` + `src/lib/lovable-error-reporting.ts`) is the active error channel.
+- App-owned client error reporting (`src/lib/client-error-reporting.ts`) is the active in-app error channel.
 - Full plan + suggested free tools deferred per `docs/MONITORING_READINESS_PLAN.md`.
 
 ## F. Product-logic guard (zero changes)

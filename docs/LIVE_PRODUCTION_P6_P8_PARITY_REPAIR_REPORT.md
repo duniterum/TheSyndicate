@@ -173,7 +173,7 @@ All required routes returned HTTP 200 during the scan:
 
 Source is repaired and stamped as `wave-P8.production-parity-repair`.
 
-The custom domain scan shown above was taken **before** this frontend repair was published. Because these are frontend/rendered changes, the production custom domain must be updated through Lovable Publish → Update. After publish, rerun the same production scan and require:
+The custom domain scan shown above was taken **before** this frontend repair was published. Because these are frontend/rendered changes, the production custom domain must be updated through legacy deployment platform Publish → Update. After publish, rerun the same production scan and require:
 
 - build stamp: `wave-P8.production-parity-repair`
 - all listed routes HTTP 200

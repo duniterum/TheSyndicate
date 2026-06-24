@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { generateText, Output } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import { createSyndicateAiGatewayProvider, DEFAULT_AI_GATEWAY_MODEL } from "./ai-gateway.server";
 
 const SummarizeInput = z.object({ text: z.string().min(1) });
 
@@ -13,12 +13,12 @@ const SummarizeInput = z.object({ text: z.string().min(1) });
 export const summarizeText = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SummarizeInput.parse(input))
   .handler(async ({ data }) => {
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("Missing LOVABLE_API_KEY");
+    const key = process.env.AI_GATEWAY_API_KEY;
+    if (!key) throw new Error("Missing AI_GATEWAY_API_KEY");
 
-    const gateway = createLovableAiGatewayProvider(key);
+    const gateway = createSyndicateAiGatewayProvider(key);
     const { text } = await generateText({
-      model: gateway("google/gemini-3-flash-preview"),
+      model: gateway(process.env.AI_GATEWAY_MODEL ?? DEFAULT_AI_GATEWAY_MODEL),
       prompt: `Summarize this in one sentence: ${data.text}`,
     });
 

@@ -30,7 +30,7 @@ and the live HTML on `thesyndicate.money` already matches the post-flywheel buil
 | `Vault wallet` | 2 | ✓ present |
 | `yield` / `dividend` | 1 / 1 | ✓ both in disclaimer/safety wording only ("not a yield product", "no dividend, no profit share") — constitution-safe |
 
-Same scan on `https://syndicate-archive.lovable.app` → identical signatures
+Same scan on `[legacy preview URL removed]` → identical signatures
 (`Flywheel`, `seat is the anchor`, `70 / 20 / 10` all present).
 
 ### Conclusion

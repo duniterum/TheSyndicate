@@ -128,7 +128,7 @@ Run against `https://thesyndicate.money` at lock time:
 **9.9 / 10 — READY FOR FIRST ADS.**
 
 The only outstanding item is republishing so the Vault PENDING wording
-update reaches production. Click **Publish → Update** in the Lovable
+update reaches production. Click **Publish → Update** in the legacy deployment platform
 editor; the leak guard will confirm the new copy on the next CI run.
 
 ---

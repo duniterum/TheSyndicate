@@ -2,7 +2,7 @@
 
 ## Production
 - **Canonical URL:** https://thesyndicate.money
-- **Aliases:** https://www.thesyndicate.money, https://syndicate-archive.lovable.app
+- **Aliases:** https://www.thesyndicate.money
 - **Build/deployment ID:** hidden from public UI by design (see `docs/FINAL_CACHE_PARITY_SAFETY_REPORT.md`). Exposed only via footer `data-*` attributes, an HTML comment marker `<!-- syndicate-build: ... -->`, and the hidden diagnostics route. The live homepage currently serves a cached HTML response that does not include the comment marker — non-blocking; build tag is verifiable on hard-refresh and on every leaf route.
 
 ## 1. Route smoke check — `scripts/check-route-status.mjs`

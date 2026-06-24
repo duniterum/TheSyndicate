@@ -99,8 +99,8 @@ constitutional layer the user explicitly asked us to honor.
 | Surface                                        | Build tag source                  | Status   |
 | ---------------------------------------------- | --------------------------------- | -------- |
 | `thesyndicate.money`                           | `src/lib/build-stamp.ts`          | Pending verification (next deploy after this sprint) |
-| `syndicate-archive.lovable.app` (preview pub)  | same                              | Pending verification |
-| `id-preview--*.lovable.app` (preview)          | same                              | Live with this sprint's edits on next preview build |
+| `[legacy preview domain removed]` (preview pub)  | same                              | Pending verification |
+| `[legacy preview domain removed]` (preview)          | same                              | Live with this sprint's edits on next preview build |
 
 Verification step the user should run after Publish:
 1. Hard-refresh each URL.

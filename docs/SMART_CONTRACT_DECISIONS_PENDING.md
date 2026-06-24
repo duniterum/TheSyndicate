@@ -119,7 +119,7 @@ Solidity author. The renderer-architecture rows (B1–B4) are now
 ## Current Solidity Review State (2026-06-06)
 
 Kemal + ChatGPT are reviewing the production-candidate Solidity
-contract. **Lovable MUST NOT generate Solidity** unless explicitly
+contract. **legacy deployment platform MUST NOT generate Solidity** unless explicitly
 asked. Next step is compile + tests, not new product design. See
 `docs/SOLIDITY_REVIEW_STATE.md` for the full locked state, ID-2 rules,
 and required test invariants.

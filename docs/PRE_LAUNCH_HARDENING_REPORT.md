@@ -82,7 +82,7 @@ covers >5 000 purchase events before any change is required.
 | 0 – 100 | Single RPC chunk, sub-second | none |
 | 100 – 1 000 | ~1–3 chunks, <2 s | none |
 | 1 000 – 10 000 | Multiple chunks, 3–6 s on cold load; cached for 60 s | none for MVP |
-| 10 000+ | RPC scan would dominate. Pre-launch threshold not hit | **Operational checklist item:** migrate `useLivePurchaseEvents` to a Lovable Cloud cache or subgraph BEFORE crossing ~5 000 lifetime purchases. The `buildHolderIndex` pure function already accepts any `PurchaseEvent[]` source — no consumer changes needed |
+| 10 000+ | RPC scan would dominate. Pre-launch threshold not hit | **Operational checklist item:** migrate `useLivePurchaseEvents` to a legacy deployment platform Cloud cache or subgraph BEFORE crossing ~5 000 lifetime purchases. The `buildHolderIndex` pure function already accepts any `PurchaseEvent[]` source — no consumer changes needed |
 
 ### Known gap (non-blocking)
 
@@ -157,7 +157,7 @@ No new frameworks, no new constitutional documents, no new audits.
 
 | # | Risk | Mitigation | Blocks launch? |
 |---|---|---|---|
-| 1 | Public Avalanche RPC throttling under viral load (`useLivePurchaseEvents` calls `eth_getLogs` per visitor) | Cache TTL is 60 s and limited; switch to a dedicated RPC or Lovable Cloud-cached endpoint if we exceed ~1k concurrent | No (mitigate if/when seen) |
+| 1 | Public Avalanche RPC throttling under viral load (`useLivePurchaseEvents` calls `eth_getLogs` per visitor) | Cache TTL is 60 s and limited; switch to a dedicated RPC or legacy deployment platform Cloud-cached endpoint if we exceed ~1k concurrent | No (mitigate if/when seen) |
 | 2 | `useLivePurchaseEvents` 60 s polling means non-buying visitors see new members up to 60 s late | Acceptable for archive UX; identity-refresh for the *buyer* is now sub-second on the buyer's session | No |
 | 3 | Activity URL-state preservation deferred | Filters are session-local; deep-link sharing not yet supported | No |
 | 4 | Scale beyond 5 000 lifetime purchases | Migrate to Cloud cache / subgraph using `buildHolderIndex` as the pure builder | No (threshold not near) |

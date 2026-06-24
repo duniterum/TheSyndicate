@@ -25,7 +25,7 @@ export type MuseumCategory =
   | "Story / Chronicle / Episode"
   | "Growth / Referral / Reputation"
   | "Proof / Transparency"
-  | "Old Lovable / Museum / Lab"
+  | "Legacy Museum / Lab"
   | "Deprecated-but-interesting";
 
 export interface MuseumWidget {
@@ -63,7 +63,7 @@ export const MUSEUM_CATEGORIES: MuseumCategory[] = [
   "Story / Chronicle / Episode",
   "Growth / Referral / Reputation",
   "Proof / Transparency",
-  "Old Lovable / Museum / Lab",
+  "Legacy Museum / Lab",
   "Deprecated-but-interesting",
 ];
 
@@ -486,11 +486,11 @@ export const MUSEUM_WIDGETS: MuseumWidget[] = [
     needs: "LP-stats query",
   },
 
-  // ─── Old Lovable / Museum / Lab ─────────────────────────────────────────
+  // ─── Legacy Museum / Lab ───────────────────────────────────────────────
   {
     name: "ProtocolFlywheel",
     source: "src/labs/components/ProtocolFlywheel.tsx",
-    category: "Old Lovable / Museum / Lab",
+    category: "Legacy Museum / Lab",
     status: "lab",
     labClass: "LABS",
     why: "Flywheel diagram — useful explainer for a future /how-it-works page.",
@@ -500,7 +500,7 @@ export const MUSEUM_WIDGETS: MuseumWidget[] = [
   {
     name: "ProtocolOverview",
     source: "src/labs/components/ProtocolOverview.tsx",
-    category: "Old Lovable / Museum / Lab",
+    category: "Legacy Museum / Lab",
     status: "lab",
     labClass: "ARCHIVE",
     why: "Pre-IdentityZone overview block.",
@@ -510,7 +510,7 @@ export const MUSEUM_WIDGETS: MuseumWidget[] = [
   {
     name: "HomeMetricsStrip",
     source: "src/labs/components/HomeMetricsStrip.tsx",
-    category: "Old Lovable / Museum / Lab",
+    category: "Legacy Museum / Lab",
     status: "lab",
     labClass: "LABS",
     why: "Homepage metric tiles — pattern for a future /metrics page.",
@@ -520,7 +520,7 @@ export const MUSEUM_WIDGETS: MuseumWidget[] = [
   {
     name: "HomeJoinPreview",
     source: "src/labs/components/HomeJoinPreview.tsx",
-    category: "Old Lovable / Museum / Lab",
+    category: "Legacy Museum / Lab",
     status: "lab",
     labClass: "ARCHIVE",
     why: "Early home → /join preview.",
@@ -530,7 +530,7 @@ export const MUSEUM_WIDGETS: MuseumWidget[] = [
   {
     name: "HomeAllocationPreview",
     source: "src/labs/components/HomeAllocationPreview.tsx",
-    category: "Old Lovable / Museum / Lab",
+    category: "Legacy Museum / Lab",
     status: "lab",
     labClass: "ARCHIVE",
     why: "Early home allocation card.",

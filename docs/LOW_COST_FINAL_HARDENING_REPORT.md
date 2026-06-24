@@ -97,7 +97,7 @@ Manual smoke checklist used instead (kept here as a launch checklist):
 | Item | Why deferred |
 |---|---|
 | Paid / private RPC | Public Avalanche RPC is sufficient pre-traffic. Track 429 rate after launch. |
-| Lovable Cloud cache for holder index | Only matters past ~5,000 lifetime purchases. `buildHolderIndex` already extracted as pure builder, ready to migrate. |
+| legacy deployment platform Cloud cache for holder index | Only matters past ~5,000 lifetime purchases. `buildHolderIndex` already extracted as pure builder, ready to migrate. |
 | Subgraph | Same as above. |
 | Playwright / forked-chain E2E | Engineering overhead exceeds current risk. |
 | Heavy load testing | No paid traffic running yet. |

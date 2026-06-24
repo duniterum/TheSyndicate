@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
-import { createLovableAiGatewayProvider, getLovableAiGatewayRunId, withLovableAiGatewayRunIdHeader } from "@/lib/ai-gateway.server";
+import {
+  createSyndicateAiGatewayProvider,
+  DEFAULT_AI_GATEWAY_MODEL,
+  getSyndicateAiGatewayRunId,
+  withSyndicateAiGatewayRunIdHeader,
+} from "@/lib/ai-gateway.server";
 
 type ChatRequestBody = { messages?: unknown };
 
@@ -13,14 +18,14 @@ export const Route = createFileRoute("/api/chat")({
           return new Response("Messages are required", { status: 400 });
         }
 
-        const key = process.env.LOVABLE_API_KEY;
+        const key = process.env.AI_GATEWAY_API_KEY;
         if (!key) {
-          return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+          return new Response("Missing AI_GATEWAY_API_KEY", { status: 500 });
         }
 
-        const initialRunId = getLovableAiGatewayRunId(request);
-        const gateway = createLovableAiGatewayProvider(key, initialRunId);
-        const model = gateway("google/gemini-3-flash-preview");
+        const initialRunId = getSyndicateAiGatewayRunId(request);
+        const gateway = createSyndicateAiGatewayProvider(key, initialRunId);
+        const model = gateway(process.env.AI_GATEWAY_MODEL ?? DEFAULT_AI_GATEWAY_MODEL);
         const result = streamText({
           model,
           system:
@@ -33,7 +38,7 @@ export const Route = createFileRoute("/api/chat")({
           originalMessages: messages as UIMessage[],
         });
 
-        return withLovableAiGatewayRunIdHeader(response, gateway);
+        return withSyndicateAiGatewayRunIdHeader(response, gateway);
       },
     },
   },

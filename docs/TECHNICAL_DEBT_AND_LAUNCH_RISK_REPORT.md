@@ -51,7 +51,7 @@ SSR wrapper are wired correctly.
   protocol pulse / activity / members / chapters / founders surface goes
   to "—".
 - **Probability:** HIGH under paid traffic (>~50 concurrent cold loads).
-- **Effort:** Medium — move event indexing to a Lovable Cloud edge cache
+- **Effort:** Medium — move event indexing to a legacy deployment platform Cloud edge cache
   fronting the same `buildHolderIndex` pure builder (already exported for
   this exact reason). Alternative: paid RPC (Ankr / QuickNode) keyed
   behind a server function.
@@ -159,7 +159,7 @@ No double-counting or contradictory totals detected.
 ## Remaining before paid traffic
 
 1. **(HIGH)** Provision a non-public Avalanche RPC and / or move
-   event indexing to a Lovable Cloud cache. The pure `buildHolderIndex`
+   event indexing to a legacy deployment platform Cloud cache. The pure `buildHolderIndex`
    exporter is ready for either path.
 2. **(MEDIUM)** Add `s-maxage` cache headers to truly static routes
    (`/whitepaper`, `/faq`, `/roadmap`).

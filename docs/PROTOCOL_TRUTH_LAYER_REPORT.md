@@ -2,7 +2,7 @@
 
 **Wave:** P4 · protocol-truth-layer
 **Build stamp:** `wave-P4.protocol-truth-layer`
-**Author:** Lovable build pass
+**Author:** legacy deployment platform build pass
 
 ## Why
 
