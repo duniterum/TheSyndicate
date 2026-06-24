@@ -85,6 +85,7 @@ const GROUPS: Group[] = [
     description: "Where the protocol is going, and answers to the questions visitors ask most.",
     cards: [
       { title: "Roadmap", purpose: "Live · Next · Pending · Future · Never — no fake dates.", href: "/roadmap", status: "LIVE", audience: ["Beginner", "Member", "Builder", "Verifier"] },
+      { title: "Protocol Evolution", purpose: "Evidence-backed module status: live, paused, inactive, future, deferred, and blocked without fake activation.", href: "/evolution", status: "LIVE", audience: ["Member", "Builder", "Verifier"] },
       { title: "V3 Preview", purpose: "Read-only candidate model for quote, receipt, acquisition routing, source attribution, era pricing, and source progression. Not live.", href: "/v3-preview", status: "PENDING", audience: ["Builder", "Verifier"] },
       { title: "FAQ", purpose: "Basics, SYN, joining, routing, vault, liquidity, ranks, verification, risks.", href: "/faq", status: "LIVE", audience: ["Beginner", "Member"] },
       { title: "Whitepaper", purpose: "Long-form protocol reference. Mission, mechanics, modules.", href: "/whitepaper", status: "REFERENCE", audience: ["Builder", "Verifier"] },

@@ -32,6 +32,7 @@ const GROUPS: Group[] = [
       { label: "Transparency", to: "/transparency", hint: "70 / 20 / 10 routing proof" },
       { label: "Members", to: "/members", hint: "Who is seated" },
       { label: "Roadmap", to: "/roadmap", hint: "Live · Next · Pending · Future" },
+      { label: "Evolution", to: "/evolution", hint: "Evidence-backed protocol status" },
       { label: "Referral Reserved", to: "/referral", hint: "Requires contract before live" },
       { label: "Tokenomics", to: "/tokenomics", hint: "Allocation & supply" },
       { label: "Founders", to: "/founders", hint: "Who was here first" },
@@ -60,6 +61,7 @@ function navLabel(it: Item) {
 
 function navHint(it: Item) {
   if (it.to === "/referral") return "Requires contract before live";
+  if (it.to === "/evolution") return "Evidence-backed protocol status";
   if (it.to === "/roadmap") return "Live / Next / Pending / Future";
   return it.hint;
 }

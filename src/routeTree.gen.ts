@@ -33,6 +33,7 @@ import { Route as JoinRouteImport } from './routes/join'
 import { Route as InstitutionalRegisterRouteImport } from './routes/institutional-register'
 import { Route as FoundersRouteImport } from './routes/founders'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as EvolutionRouteImport } from './routes/evolution'
 import { Route as EpisodesRouteImport } from './routes/episodes'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as ChronicleRouteImport } from './routes/chronicle'
@@ -190,6 +191,11 @@ const FoundersRoute = FoundersRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvolutionRoute = EvolutionRouteImport.update({
+  id: '/evolution',
+  path: '/evolution',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EpisodesRoute = EpisodesRouteImport.update({
@@ -397,6 +403,7 @@ export interface FileRoutesByFullPath {
   '/chronicle': typeof ChronicleRoute
   '/docs': typeof DocsRoute
   '/episodes': typeof EpisodesRoute
+  '/evolution': typeof EvolutionRoute
   '/faq': typeof FaqRoute
   '/founders': typeof FoundersRoute
   '/institutional-register': typeof InstitutionalRegisterRoute
@@ -461,6 +468,7 @@ export interface FileRoutesByTo {
   '/chronicle': typeof ChronicleRoute
   '/docs': typeof DocsRoute
   '/episodes': typeof EpisodesRoute
+  '/evolution': typeof EvolutionRoute
   '/faq': typeof FaqRoute
   '/founders': typeof FoundersRoute
   '/institutional-register': typeof InstitutionalRegisterRoute
@@ -525,6 +533,7 @@ export interface FileRoutesById {
   '/chronicle': typeof ChronicleRoute
   '/docs': typeof DocsRoute
   '/episodes': typeof EpisodesRoute
+  '/evolution': typeof EvolutionRoute
   '/faq': typeof FaqRoute
   '/founders': typeof FoundersRoute
   '/institutional-register': typeof InstitutionalRegisterRoute
@@ -591,6 +600,7 @@ export interface FileRouteTypes {
     | '/chronicle'
     | '/docs'
     | '/episodes'
+    | '/evolution'
     | '/faq'
     | '/founders'
     | '/institutional-register'
@@ -655,6 +665,7 @@ export interface FileRouteTypes {
     | '/chronicle'
     | '/docs'
     | '/episodes'
+    | '/evolution'
     | '/faq'
     | '/founders'
     | '/institutional-register'
@@ -718,6 +729,7 @@ export interface FileRouteTypes {
     | '/chronicle'
     | '/docs'
     | '/episodes'
+    | '/evolution'
     | '/faq'
     | '/founders'
     | '/institutional-register'
@@ -783,6 +795,7 @@ export interface RootRouteChildren {
   ChronicleRoute: typeof ChronicleRoute
   DocsRoute: typeof DocsRoute
   EpisodesRoute: typeof EpisodesRoute
+  EvolutionRoute: typeof EvolutionRoute
   FaqRoute: typeof FaqRoute
   FoundersRoute: typeof FoundersRoute
   InstitutionalRegisterRoute: typeof InstitutionalRegisterRoute
@@ -987,6 +1000,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evolution': {
+      id: '/evolution'
+      path: '/evolution'
+      fullPath: '/evolution'
+      preLoaderRoute: typeof EvolutionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/episodes': {
@@ -1337,6 +1357,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChronicleRoute: ChronicleRoute,
   DocsRoute: DocsRoute,
   EpisodesRoute: EpisodesRoute,
+  EvolutionRoute: EvolutionRoute,
   FaqRoute: FaqRoute,
   FoundersRoute: FoundersRoute,
   InstitutionalRegisterRoute: InstitutionalRegisterRoute,

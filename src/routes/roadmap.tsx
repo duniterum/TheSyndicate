@@ -61,6 +61,7 @@ const BUCKETS: Bucket[] = [
       { title: "Trader Joe SYN/USDC LP", what: "Classic AMM pair on Avalanche C-Chain. Reserves and implied price readable onchain.", why: "Public exit and price discovery from day one.", verifyLabel: "LP pair", verifyHref: lpHref },
       { title: "Public allocation registry", what: "Seven labeled allocation wallets with live balance reads.", why: "Every SYN can be traced to a known address.", verifyLabel: "Registry", verifyHref: "/registry" },
       { title: "Transparency Center", what: "Claim → Source → Explorer → Status for every metric.", why: "Anyone can audit any claim end-to-end.", verifyLabel: "Transparency", verifyHref: "/transparency" },
+      { title: "Protocol Evolution", what: "Evidence-backed status for live, paused, inactive, deferred, future, and blocked modules.", why: "The institution can show what changed without pretending future systems are live.", verifyLabel: "Evolution", verifyHref: "/evolution" },
     ],
   },
   {

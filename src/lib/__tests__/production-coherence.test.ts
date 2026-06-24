@@ -111,6 +111,42 @@ describe("production coherence guards", () => {
     expect(publicCopySource).not.toMatch(/earn now|passive income|\bROI\b|guaranteed reward|downline/i);
   });
 
+  it("keeps Protocol Evolution read-only and evidence-backed without activation authority", () => {
+    const registry = read("src/lib/protocol-evolution.ts");
+    const route = read("src/routes/evolution.tsx");
+    const header = read("src/components/syndicate/Header.tsx");
+    const docs = read("src/routes/docs.tsx");
+    const roadmap = read("src/routes/roadmap.tsx");
+    const sitemap = read("src/routes/sitemap[.]xml.ts");
+
+    expect(registry).toContain("PROTOCOL_EVOLUTION_MODULES");
+    expect(registry).toContain("No source record is created by Protocol Evolution.");
+    expect(registry).toContain("No source, referral, or claim UI is activated by Protocol Evolution.");
+    expect(registry).toContain("Public/default MembershipSaleV3 buys remain");
+    expect(registry).toContain("ZERO_SOURCE_ID");
+    expect(registry).toContain('id: "source-attribution"');
+    expect(registry).toContain('status: sourceAttributionStatus');
+    expect(registry).toContain('"INACTIVE"');
+    expect(registry).toContain('"FUTURE"');
+    expect(registry).toContain('"DEFERRED"');
+
+    expect(route).toContain('createFileRoute("/evolution")');
+    expect(route).toContain("This surface explains state. It does not change state.");
+    expect(route).toContain("No fake-live systems");
+    expect(route).toContain("no public");
+    expect(route).toContain("no claim UI");
+    expect(route).toContain("PROTOCOL_EVOLUTION_BOUNDARIES");
+    expect(route).not.toMatch(/useWriteContract|writeContract|sendTransaction|claimSourceEscrow|createSource\(/);
+    expect(route).not.toMatch(/public referral is live|source links are live|claim UI is live/i);
+    expect(route).not.toMatch(/passive income|yield-bearing|\bROI\b|guaranteed return|downline/i);
+    expect(route).not.toMatch(/members voted|community vote|governance rights/i);
+
+    expect(header).toContain('{ label: "Evolution", to: "/evolution"');
+    expect(docs).toContain('title: "Protocol Evolution"');
+    expect(roadmap).toContain("Protocol Evolution");
+    expect(sitemap).toContain('{ path: "/evolution"');
+  });
+
   it("keeps public V3 sale surfaces on deterministic era-pricing truth", () => {
     const files = {
       join: read("src/routes/join.tsx"),
