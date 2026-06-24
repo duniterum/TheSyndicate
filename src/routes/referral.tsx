@@ -16,6 +16,10 @@ import {
   CURRENT_SOURCE_POLICY_SNAPSHOT,
   SOURCE_POLICY_LIFECYCLE_MODEL,
 } from "@/lib/source-policy-observability";
+import {
+  SOURCE_REGISTRY_ACTIVITY_READ_MODEL_BOUNDARY,
+  SOURCE_REGISTRY_LIFECYCLE_VISIBILITY,
+} from "@/lib/source-registry-lifecycle";
 
 export const Route = createFileRoute("/referral")({
   head: () => ({
@@ -153,6 +157,36 @@ function ReferralPage() {
             </article>
           ))}
         </div>
+      </Section>
+
+      <Section id="source-registry-event-model">
+        <SectionHeader
+          eyebrow="Lifecycle event model"
+          title="Future source records must be observable before they are usable"
+          description="The contract event vocabulary is ready for read-only proof. The product must treat every lifecycle fact as status-aware evidence, never as a shortcut to public referral activation."
+        />
+        <GlassCard className="p-5">
+          <div className="rounded-[6px] border border-border/55 bg-background/45 p-3 text-sm leading-relaxed text-foreground/85">
+            {SOURCE_REGISTRY_ACTIVITY_READ_MODEL_BOUNDARY.futureRequirement}{" "}
+            {SOURCE_REGISTRY_ACTIVITY_READ_MODEL_BOUNDARY.publicDefaultBoundary}
+          </div>
+          <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-5">
+            {SOURCE_REGISTRY_LIFECYCLE_VISIBILITY.map((event) => (
+              <article key={event.eventName} className="rounded-md border border-border/60 bg-card/70 p-4">
+                <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+                  {event.eventName}
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-foreground/85">{event.proofMeaning}</p>
+                <div className="mt-3 mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Surfaces: {event.primarySurfaces.join(" / ")}
+                </div>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  Not proof of: {event.notProofOf}
+                </p>
+              </article>
+            ))}
+          </div>
+        </GlassCard>
       </Section>
 
       <Section id="future-receipt-proof">

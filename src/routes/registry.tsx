@@ -22,6 +22,11 @@ import {
   extrasForAddress,
   txExplorerUrl,
 } from "@/lib/syndicate-config";
+import { CURRENT_SOURCE_POLICY_SNAPSHOT } from "@/lib/source-policy-observability";
+import {
+  SOURCE_REGISTRY_ACTIVITY_READ_MODEL_BOUNDARY,
+  SOURCE_REGISTRY_LIFECYCLE_VISIBILITY,
+} from "@/lib/source-registry-lifecycle";
 
 // Active membership sale (V3 after cutover; V1/V2 history stays sealed but verifiable).
 const ACTIVE_SALE_ADDR =
@@ -100,6 +105,8 @@ function StatusPill({ status }: { status: "live" | "pending" }) {
 }
 
 function RegistryPage() {
+  const sourcePolicy = CURRENT_SOURCE_POLICY_SNAPSHOT;
+
   return (
     <PageShell
       eyebrow="Registry"
@@ -187,6 +194,53 @@ function RegistryPage() {
       </Section>
 
       <ContractDossiers />
+
+      {/* SourceRegistry lifecycle model */}
+      <Section id="source-registry-lifecycle">
+        <SectionHeader
+          eyebrow="Source policy lifecycle"
+          title="Source records become proof before they become rails"
+          description="SourceRegistryV1 is deployed and readable. Its future events must appear as status-aware proof facts, not as proof that referral, claim UI, or public source links are available."
+        />
+        <GlassCard className="p-5">
+          <div className="grid gap-3 md:grid-cols-4">
+            {[
+              ["Source records", sourcePolicy.recordCount.toString()],
+              ["Active", sourcePolicy.activeCount.toString()],
+              ["Paused", sourcePolicy.pausedCount.toString()],
+              ["Public default", "ZERO_SOURCE_ID"],
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-[6px] border border-border/55 bg-background/45 p-3">
+                <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  {label}
+                </div>
+                <div className="mt-2 text-lg font-semibold">{value}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 rounded-[6px] border border-[rgba(255,180,84,0.28)] bg-[rgba(255,180,84,0.07)] p-3 text-sm leading-relaxed text-foreground/85">
+            {SOURCE_REGISTRY_ACTIVITY_READ_MODEL_BOUNDARY.currentTruth}{" "}
+            {SOURCE_REGISTRY_ACTIVITY_READ_MODEL_BOUNDARY.publicDefaultBoundary}
+          </div>
+
+          <div className="mt-4 grid gap-3 lg:grid-cols-5">
+            {SOURCE_REGISTRY_LIFECYCLE_VISIBILITY.map((event) => (
+              <article key={event.eventName} className="rounded-md border border-border/60 bg-card/70 p-4">
+                <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+                  {event.eventName}
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-foreground/85">
+                  {event.proofMeaning}
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  Not proof of: {event.notProofOf}
+                </p>
+              </article>
+            ))}
+          </div>
+        </GlassCard>
+      </Section>
 
       {/* Allocation Wallets */}
       <Section id="allocations">

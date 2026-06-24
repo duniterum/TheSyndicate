@@ -90,6 +90,7 @@ export type SourcePolicySnapshot = {
 
 export type SourcePolicyLifecycleEvent =
   | { type: "SOURCE_CREATED"; record: SourcePolicyRecord }
+  | { type: "SOURCE_TERMS_UPDATED"; record: SourcePolicyRecord }
   | { type: "SOURCE_STATUS_CHANGED"; sourceId: string; status: Exclude<SourcePolicyStatus, "NONE"> }
   | { type: "SOURCE_WALLET_UPDATED"; sourceId: string; sourceWallet: string }
   | { type: "SOURCE_PAYOUT_WALLET_UPDATED"; sourceId: string; payoutWallet: string };
@@ -282,6 +283,22 @@ export function buildSourcePolicySnapshot(
   const pausedCount = countStatus(records, "PAUSED");
   const revokedCount = countStatus(records, "REVOKED");
   const sourceAttributionActive = activeCount > 0;
+  const currentLimits =
+    recordCount === 0
+      ? [
+          "No source record has been created.",
+          "No referral/source commission is accruing.",
+          "No source claim UI is live.",
+          "No public source-aware purchase path is live.",
+          "Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID.",
+        ]
+      : [
+          "A source record exists as a policy fact, not as public referral activation.",
+          "No source claim UI is live.",
+          "No public source-aware purchase path is live.",
+          "Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID.",
+          "Source records must remain status-aware: PAUSED cannot route commission; REVOKED cannot create new attribution.",
+        ];
 
   return {
     registryExists,
@@ -306,13 +323,7 @@ export function buildSourcePolicySnapshot(
       recordCount === 0
         ? "SourceRegistryV1 exists and has zero source records. Referral, claiming, and public source-aware purchases are inactive."
         : `SourceRegistryV1 has ${recordCount} source record${recordCount === 1 ? "" : "s"}: ${activeCount} active, ${pausedCount} paused, ${revokedCount} revoked.`,
-    currentLimits: [
-      "No source record has been created.",
-      "No referral/source commission is accruing.",
-      "No source claim UI is live.",
-      "No public source-aware purchase path is live.",
-      "Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID.",
-    ],
+    currentLimits,
     productCapabilities: SOURCE_POLICY_PRODUCT_CAPABILITIES,
   };
 }
@@ -326,6 +337,9 @@ export function buildSourcePolicySnapshotFromLifecycleEvents(
   for (const event of events) {
     switch (event.type) {
       case "SOURCE_CREATED":
+        byId.set(event.record.sourceId, event.record);
+        break;
+      case "SOURCE_TERMS_UPDATED":
         byId.set(event.record.sourceId, event.record);
         break;
       case "SOURCE_STATUS_CHANGED": {

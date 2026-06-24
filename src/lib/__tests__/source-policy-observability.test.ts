@@ -172,6 +172,14 @@ describe("source policy observability", () => {
     const snapshot = buildSourcePolicySnapshotFromLifecycleEvents([
       { type: "SOURCE_CREATED", record },
       {
+        type: "SOURCE_TERMS_UPDATED",
+        record: {
+          ...record,
+          commissionBps: 250,
+          scope: "CAPPED",
+        },
+      },
+      {
         type: "SOURCE_WALLET_UPDATED",
         sourceId: record.sourceId,
         sourceWallet: "0x3333333333333333333333333333333333333333",
@@ -187,6 +195,8 @@ describe("source policy observability", () => {
     expect(snapshot.recordCount).toBe(1);
     expect(snapshot.activeCount).toBe(1);
     expect(snapshot.records[0]).toMatchObject({
+      commissionBps: 250,
+      scope: "CAPPED",
       sourceWallet: "0x3333333333333333333333333333333333333333",
       payoutWallet: "0x4444444444444444444444444444444444444444",
       status: "ACTIVE",

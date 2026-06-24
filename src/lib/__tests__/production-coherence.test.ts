@@ -84,6 +84,8 @@ describe("production coherence guards", () => {
     const activityFeed = read("src/components/syndicate/LiveActivityFeed.tsx");
     const purchaseRouting = read("src/components/syndicate/MyPurchaseRouting.tsx");
     const sourceReceipts = read("src/lib/source-attributed-receipts.ts");
+    const sourceLifecycle = read("src/lib/source-registry-lifecycle.ts");
+    const registry = read("src/routes/registry.tsx");
 
     expect(sourcePolicy).toContain("CURRENT_SOURCE_POLICY_RECORDS: readonly SourcePolicyRecord[] = []");
     expect(sourcePolicy).toContain("recordCount === 0");
@@ -100,6 +102,8 @@ describe("production coherence guards", () => {
     expect(sourcePolicy).toContain("Register / Chronicle");
     expect(sourcePolicy).toContain("Archive / future products");
     expect(sourcePolicy).toContain("never as proof that referral is broadly live");
+    expect(sourcePolicy).toContain("SOURCE_TERMS_UPDATED");
+    expect(sourcePolicy).toContain("A source record exists as a policy fact, not as public referral activation");
     expect(sourcePolicy).toContain("MembershipSaleV3");
     expect(sourcePolicy).toContain("Archive1155");
     expect(sourcePolicy).toContain("SeatRecord721");
@@ -110,15 +114,34 @@ describe("production coherence guards", () => {
     expect(sourceReceipts).toContain("summarizeSourceAttributedReceipts");
     expect(sourceReceipts).toContain("REQUIRES_SOURCE_REGISTRY_READBACK");
     expect(sourceReceipts).toContain("ZERO_SOURCE_ID");
+    expect(sourceLifecycle).toContain("SOURCE_REGISTRY_LIFECYCLE_VISIBILITY");
+    expect(sourceLifecycle).toContain("SourceCreated");
+    expect(sourceLifecycle).toContain("SourceTermsUpdated");
+    expect(sourceLifecycle).toContain("SourceStatusChanged");
+    expect(sourceLifecycle).toContain("SourceWalletUpdated");
+    expect(sourceLifecycle).toContain("SourcePayoutWalletUpdated");
+    expect(sourceLifecycle).toContain("source record exists");
+    expect(sourceLifecycle).toContain("not referral activation");
+    expect(sourceLifecycle).toContain("publicSourceAwareBuyPathActive: false");
+    expect(sourceLifecycle).toContain("Public/default buys remain");
+    expect(sourceLifecycle).toContain("ZERO_SOURCE_ID");
 
     expect(saleHooks).toContain('import { ZERO_SOURCE_ID } from "./source-policy-observability"');
     expect(saleHooks).toContain("export { ZERO_SOURCE_ID }");
     expect(saleAbi).toContain("SOURCE_REGISTRY_V1_ABI");
     expect(saleAbi).toContain("SourceCreated");
     expect(saleAbi).toContain("SourceStatusChanged");
+    expect(saleAbi).toContain("SourceTermsUpdated");
+    expect(saleAbi).toContain("SourceWalletUpdated");
     expect(saleAbi).toContain("SourcePayoutWalletUpdated");
 
     expect(referral).toContain("SOURCE_POLICY_LIFECYCLE_MODEL");
+    expect(referral).toContain("SOURCE_REGISTRY_LIFECYCLE_VISIBILITY");
+    expect(referral).toContain("Future source records must be observable before they are usable");
+    expect(referral).toContain("The contract event vocabulary is ready for read-only proof");
+    expect(registry).toContain("SOURCE_REGISTRY_LIFECYCLE_VISIBILITY");
+    expect(registry).toContain("Source records become proof before they become rails");
+    expect(registry).toContain("not as proof that referral, claim UI, or public source links are available");
     expect(economyBand).toContain("CURRENT_SOURCE_POLICY_SNAPSHOT");
     expect(economyBand).toContain("sourcePolicy.productCapabilities");
     expect(activityFeed).toContain("projectSourceAttributedReceipt");
@@ -131,7 +154,7 @@ describe("production coherence guards", () => {
     expect(mySyndicate).toContain("until a source record exists, is read back, activated, and wired");
     expect(mySyndicate).not.toMatch(/Referral routing[\s\S]{0,160}until a contract exists/i);
 
-    const publicSource = [sourcePolicy, referral, economyBand, mySyndicate, activityFeed, purchaseRouting].join("\n");
+    const publicSource = [sourcePolicy, sourceLifecycle, referral, registry, economyBand, mySyndicate, activityFeed, purchaseRouting].join("\n");
     const publicCopySource = publicSource
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .replace(/\/\/.*$/gm, "");
