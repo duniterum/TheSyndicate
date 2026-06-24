@@ -11,9 +11,20 @@
 //     terms must be disclosed and verified before they affect money.
 
 import { Link as RouterLink } from "@tanstack/react-router";
+import {
+  CURRENT_SOURCE_POLICY_SNAPSHOT,
+  SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS,
+  SOURCE_ATTRIBUTION_READINESS_GATES,
+} from "@/lib/source-policy-observability";
 import { GlassCard, Pill, Section, SectionHeader, StatusPill } from "./Primitives";
 
 export function MyReferralCard() {
+  const sourcePolicy = CURRENT_SOURCE_POLICY_SNAPSHOT;
+  const memberFacingGates = SOURCE_ATTRIBUTION_READINESS_GATES.filter((gate) =>
+    ["Source policy fact", "Source-aware buy path", "Claim boundary"].includes(gate.label),
+  );
+  const receiptProofLabels = SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS.map((field) => field.label);
+
   return (
     <Section id="my-referral">
       <SectionHeader
@@ -36,7 +47,32 @@ export function MyReferralCard() {
           and no commission accruing — so we show none.
         </p>
 
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {memberFacingGates.map((gate) => (
+            <div key={gate.label} className="rounded-[6px] border border-border/55 bg-background/45 p-3">
+              <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+                {gate.currentStatus}
+              </div>
+              <div className="mt-1.5 text-sm font-semibold text-foreground">{gate.label}</div>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{gate.requirement}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 rounded-[6px] border border-border/50 bg-background/35 p-3">
+          <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Future receipt must prove
+          </div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {receiptProofLabels.map((label) => (
+              <Pill key={label} tone="muted">{label}</Pill>
+            ))}
+          </div>
+        </div>
+
         <div className="mt-4 border-t border-border/40 pt-3 text-[11px] text-muted-foreground leading-relaxed">
+          Current readback: {sourcePolicy.currentSummary}
+          <br />
           CommissionRouterV1 is not the active V3 source engine. V3 source
           terms would be disclosed in the purchase receipt before they affect
           money.

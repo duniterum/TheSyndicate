@@ -284,6 +284,11 @@ describe("production coherence guards", () => {
     expect(card).toContain("No source records");
     expect(card).toContain("no claim UI");
     expect(card).toContain("CommissionRouterV1 is not the active V3 source engine");
+    expect(card).toContain("CURRENT_SOURCE_POLICY_SNAPSHOT");
+    expect(card).toContain("SOURCE_ATTRIBUTION_READINESS_GATES");
+    expect(card).toContain("SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS");
+    expect(card).toContain("Future receipt must prove");
+    expect(card).toContain("Current readback:");
 
     expect(card).not.toMatch(/When the CommissionRouter contract ships/i);
     expect(card).not.toMatch(/router is deployed/i);
