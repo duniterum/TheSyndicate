@@ -3,6 +3,7 @@ import { Link as RouterLink } from "@tanstack/react-router";
 import { useLivePurchaseEvents, purchaseLabel, type PurchaseEvent } from "@/lib/activity-hooks";
 import { CONTRACTS, extrasForAddress, SALE_DEPLOYMENT_BLOCK, txExplorerUrl, explorerUrlForAddress } from "@/lib/syndicate-config";
 import { fmtSyn, fmtUsdc, useBuyerPurchaseTotals, useSaleStats } from "@/lib/sale-hooks";
+import { projectSourceAttributedReceipt, type SourceAttributedReceiptReadModel } from "@/lib/source-attributed-receipts";
 import { ContractLink, GlassCard, Pill, Section, SectionHeader, StatusPill } from "./Primitives";
 import { EmptyState } from "./EmptyState";
 import { IndexerFreshnessBadge } from "./IndexerFreshnessBadge";
@@ -208,6 +209,7 @@ export function LiveActivityFeed({ limit = 25, enableControls = false }: { limit
 
 function PurchaseRow({ ev }: { ev: PurchaseEvent }) {
   const buyerUrl = explorerUrlForAddress(ev.buyer);
+  const sourceReceipt = projectSourceAttributedReceipt(ev);
   return (
     <li className="py-4 grid grid-cols-12 gap-3 items-start text-sm">
       <div className="col-span-12 lg:col-span-3 min-w-0">
@@ -246,7 +248,36 @@ function PurchaseRow({ ev }: { ev: PurchaseEvent }) {
           {`${ev.txHash.slice(0, 8)}…${ev.txHash.slice(-6)}`} ↗
         </a>
       </div>
+      {sourceReceipt && (
+        <div className="col-span-12">
+          <SourceAttributedReceiptStrip receipt={sourceReceipt} />
+        </div>
+      )}
     </li>
+  );
+}
+
+function SourceAttributedReceiptStrip({ receipt }: { receipt: SourceAttributedReceiptReadModel }) {
+  return (
+    <div className="rounded-md border border-[var(--gold)]/30 bg-[var(--gold)]/[0.04] p-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+          Source-attributed receipt
+        </div>
+        <Pill tone="gold">{receipt.sourceClassLabel}</Pill>
+      </div>
+      <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 mono text-[11px]">
+        <MiniAmount label="Source" value={`${receipt.sourceId.slice(0, 8)}…${receipt.sourceId.slice(-6)}`} />
+        <MiniAmount label="Acquisition" value={fmtUsd(receipt.acquisitionCommission)} />
+        <MiniAmount label="Net Routed" value={fmtUsd(receipt.netUsdcRouted)} />
+        <MiniAmount label="Terms" value={`${receipt.commissionRateLabel} · ${receipt.attributionScopeLabel}`} />
+      </div>
+      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+        Read-only Activity proof from the V3 receipt event. It does not create a public source link,
+        claim surface, source dashboard, or referral activation; current source status still requires
+        SourceRegistry readback.
+      </p>
+    </div>
   );
 }
 

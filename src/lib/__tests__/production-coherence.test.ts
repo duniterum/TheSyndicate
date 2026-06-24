@@ -81,6 +81,9 @@ describe("production coherence guards", () => {
     const referral = read("src/routes/referral.tsx");
     const economyBand = read("src/components/syndicate/ProtocolEconomyBand.tsx");
     const mySyndicate = read("src/routes/my-syndicate.tsx");
+    const activityFeed = read("src/components/syndicate/LiveActivityFeed.tsx");
+    const purchaseRouting = read("src/components/syndicate/MyPurchaseRouting.tsx");
+    const sourceReceipts = read("src/lib/source-attributed-receipts.ts");
 
     expect(sourcePolicy).toContain("CURRENT_SOURCE_POLICY_RECORDS: readonly SourcePolicyRecord[] = []");
     expect(sourcePolicy).toContain("recordCount === 0");
@@ -103,6 +106,10 @@ describe("production coherence guards", () => {
     expect(sourcePolicy).toContain("SwapRail");
     expect(sourcePolicy).toContain("ProductSaleRouter / premium products");
     expect(sourcePolicy).toContain("SOURCE_REGISTRY_V1_READBACK_BLOCK");
+    expect(sourceReceipts).toContain("projectSourceAttributedReceipt");
+    expect(sourceReceipts).toContain("summarizeSourceAttributedReceipts");
+    expect(sourceReceipts).toContain("REQUIRES_SOURCE_REGISTRY_READBACK");
+    expect(sourceReceipts).toContain("ZERO_SOURCE_ID");
 
     expect(saleHooks).toContain('import { ZERO_SOURCE_ID } from "./source-policy-observability"');
     expect(saleHooks).toContain("export { ZERO_SOURCE_ID }");
@@ -114,11 +121,17 @@ describe("production coherence guards", () => {
     expect(referral).toContain("SOURCE_POLICY_LIFECYCLE_MODEL");
     expect(economyBand).toContain("CURRENT_SOURCE_POLICY_SNAPSHOT");
     expect(economyBand).toContain("sourcePolicy.productCapabilities");
+    expect(activityFeed).toContain("projectSourceAttributedReceipt");
+    expect(activityFeed).toContain("Source-attributed receipt");
+    expect(activityFeed).toContain("current source status still requires");
+    expect(purchaseRouting).toContain("summarizeSourceAttributedReceipts");
+    expect(purchaseRouting).toContain("Source-attributed receipt proof");
+    expect(purchaseRouting).toContain("Current source status still requires SourceRegistry readback");
     expect(mySyndicate).toContain("REQUIRES SOURCE RECORD");
     expect(mySyndicate).toContain("until a source record exists, is read back, activated, and wired");
     expect(mySyndicate).not.toMatch(/Referral routing[\s\S]{0,160}until a contract exists/i);
 
-    const publicSource = [sourcePolicy, referral, economyBand, mySyndicate].join("\n");
+    const publicSource = [sourcePolicy, referral, economyBand, mySyndicate, activityFeed, purchaseRouting].join("\n");
     const publicCopySource = publicSource
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .replace(/\/\/.*$/gm, "");

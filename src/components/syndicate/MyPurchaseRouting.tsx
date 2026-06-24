@@ -7,8 +7,11 @@
 //   • 70/20/10 is the canonical protocol routing; we derive the per-wallet
 //     totals from cumulativeUsdc using that fixed split.
 
+import { useMemo } from "react";
 import { useAccount } from "wagmi";
 import { useHolderIndex } from "@/lib/holder-index";
+import { useLivePurchaseEvents } from "@/lib/activity-hooks";
+import { summarizeSourceAttributedReceipts, type SourceAttributedReceiptSummary } from "@/lib/source-attributed-receipts";
 import { GlassCard, Pill, Section, SectionHeader, StatusPill } from "./Primitives";
 import { Link as RouterLink } from "@tanstack/react-router";
 
@@ -18,7 +21,12 @@ const fmtUsd = (n: number) =>
 export function MyPurchaseRouting() {
   const { address, isConnected } = useAccount();
   const idx = useHolderIndex();
+  const purchaseEvents = useLivePurchaseEvents({ limit: 5_000 });
   const record = address ? idx.getByWallet(address) : undefined;
+  const sourceReceiptSummary = useMemo(
+    () => summarizeSourceAttributedReceipts(purchaseEvents.data ?? [], address),
+    [purchaseEvents.data, address],
+  );
 
   const total = record?.cumulativeUsdc ?? 0;
   const vault = record?.cumulativeRoutedToVault ?? 0;
@@ -75,6 +83,9 @@ export function MyPurchaseRouting() {
               <span>Liquidity 20%</span>
               <span>Operations 10%</span>
             </div>
+            {sourceReceiptSummary.count > 0 && (
+              <SourceAttributedReceiptBriefing summary={sourceReceiptSummary} />
+            )}
           </>
         )}
 
@@ -95,6 +106,37 @@ export function MyPurchaseRouting() {
         </p>
       </GlassCard>
     </Section>
+  );
+}
+
+function SourceAttributedReceiptBriefing({
+  summary,
+}: {
+  summary: SourceAttributedReceiptSummary;
+}) {
+  const latest = summary.latestReceipt;
+  if (!latest) return null;
+
+  return (
+    <div className="mt-4 rounded-md border border-[var(--gold)]/30 bg-[var(--gold)]/[0.04] p-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
+          Source-attributed receipt proof
+        </div>
+        <Pill tone="gold">{summary.count} receipt{summary.count === 1 ? "" : "s"}</Pill>
+      </div>
+      <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2">
+        <Tile label="Source class" value={latest.sourceClassLabel} hint="from V3 receipt" />
+        <Tile label="Acquisition" value={fmtUsd(summary.totalAcquisitionCommission)} hint="source payout amount" />
+        <Tile label="Net routed" value={fmtUsd(summary.totalNetUsdcRouted)} hint="gross minus acquisition" />
+        <Tile label="Latest terms" value={latest.commissionRateLabel} hint={latest.attributionScopeLabel} />
+      </div>
+      <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed">
+        This appears only when indexed V3 receipt events include a non-zero sourceId.
+        It is a read-model proof, not a source dashboard, public link, referral activation,
+        or claim surface. Current source status still requires SourceRegistry readback.
+      </p>
+    </div>
   );
 }
 
