@@ -546,6 +546,7 @@ describe("production coherence guards", () => {
     const sourceForkReadback = read("docs/SOURCE_ATTRIBUTION_FORK_REHEARSAL_READBACK.md");
     const internalSourceDraft = read("docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md");
     const internalSourceFounderInputs = read("docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_FOUNDER_INPUTS.md");
+    const internalSourceMetadata = read("docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_FROZEN_METADATA.json");
     const deferredLedger = read("docs/DEFERRED_WORK_LEDGER.md");
     const archiveCanon = read("docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md");
 
@@ -592,20 +593,21 @@ describe("production coherence guards", () => {
     expect(sourceForkReadback).toContain("2 passed / 0 failed / 0 skipped");
     expect(sourceForkReadback).toContain("It does not create a real mainnet source record.");
     expect(sourceForkReadback).toContain("A separate activation ceremony is required before any source can be used live.");
-    expect(internalSourceDraft).toContain("Status: DRAFT ONLY / NOT APPROVED / NO TRANSACTION AUTHORIZED / SOURCE MUST START PAUSED");
+    expect(internalSourceDraft).toContain("Status: READY FOR PAUSED SOURCE CEREMONY / NO TRANSACTION AUTHORIZED / SOURCE MUST START PAUSED");
     expect(internalSourceDraft).toContain("Internal Protocol Test Source vs Future Public Referrer");
     expect(internalSourceDraft).toContain("It is not a public");
     expect(internalSourceDraft).toContain("not a user referral link");
     expect(internalSourceDraft).toContain("not the future member referral UX");
     expect(internalSourceDraft).toContain("Anti-drift rule: do not use the first internal test source as a template for");
     expect(internalSourceDraft).toContain("public referrer UX without a separate member-referral design sprint");
-    expect(internalSourceDraft).toContain("Recommended source class | `BUILDER_SOURCE`");
-    expect(internalSourceDraft).toContain("Candidate source wallet | TBD");
-    expect(internalSourceDraft).toContain("Candidate payout wallet | TBD");
+    expect(internalSourceDraft).toContain("Source class | `BUILDER_SOURCE`");
+    expect(internalSourceDraft).toContain("Source wallet | `0x244531C571966f90f4849e03a507543d90f9C721`");
+    expect(internalSourceDraft).toContain("Payout wallet | `0x244531C571966f90f4849e03a507543d90f9C721`");
     expect(internalSourceDraft).toContain("Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001`");
-    expect(internalSourceDraft).toContain("controlled protocol-test public wallet address");
-    expect(internalSourceDraft).toContain("may be the same controlled wallet if founder approves");
-    expect(internalSourceDraft).toContain("keccak256(\"INTERNAL_PROTOCOL_TEST_SOURCE_001:<approved-source-wallet>:<approved-date>\")");
+    expect(internalSourceDraft).toContain("Dedicated source-test wallet; not a public referrer wallet");
+    expect(internalSourceDraft).toContain("`keccak256(utf8(\"INTERNAL_PROTOCOL_TEST_SOURCE_001:0x244531C571966f90f4849e03a507543d90f9C721:2026-07-01T12:00:00Z\"))`");
+    expect(internalSourceDraft).toContain("0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620");
+    expect(internalSourceDraft).toContain("0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d");
     expect(internalSourceDraft).toContain("This internal protocol test source must not be treated as the future public");
     expect(internalSourceDraft).toContain("No public source link.");
     expect(internalSourceDraft).toContain("This packet applies only to MembershipSaleV3 source attribution.");
@@ -617,9 +619,11 @@ describe("production coherence guards", () => {
     expect(internalSourceDraft).toContain("Final sourceId derivation method");
     expect(internalSourceDraft).toContain("Final commission bps");
     expect(internalSourceDraft).toContain("PAUSED-first ceremony approval");
-    expect(internalSourceDraft).toContain("Conservative Draft Values For Founder Review");
-    expect(internalSourceDraft).toContain("suggested first value 25 USDC (`25_000_000`)");
-    expect(internalSourceDraft).toContain("suggested first value 5 USDC (`5_000_000`)");
+    expect(internalSourceDraft).toContain("Frozen Internal Test Values For Founder Review");
+    expect(internalSourceDraft).toContain("25 USDC (`25_000_000`)");
+    expect(internalSourceDraft).toContain("5 USDC (`5_000_000`)");
+    expect(internalSourceDraft).toContain("Future createSource Argument Table");
+    expect(internalSourceDraft).toContain("Pre-Ceremony Readback Checklist");
     expect(internalSourceDraft).toContain("Future Readback Command Plan");
     expect(internalSourceDraft).toContain("SourceRegistryV1 = 0x780013bB358be6be95b401901264FC7c22a595a6");
     expect(internalSourceDraft).toContain("isActive(sourceId) = false");
@@ -648,7 +652,7 @@ describe("production coherence guards", () => {
     expect(internalSourceDraft).toContain("no-agency");
     expect(internalSourceDraft).toContain("no-MLM/downline");
 
-    expect(internalSourceFounderInputs).toContain("Status: FOUNDER INPUT FORM / NO TRANSACTION AUTHORIZED / SOURCE RECORD NOT CREATED");
+    expect(internalSourceFounderInputs).toContain("Status: READY FOR PAUSED SOURCE CEREMONY / NO TRANSACTION AUTHORIZED / SOURCE RECORD NOT CREATED");
     expect(internalSourceFounderInputs).toContain("SourceRegistryV1 is deployed and currently has zero source records");
     expect(internalSourceFounderInputs).toContain("MembershipSaleV3 is the only current source-aware payment path");
     expect(internalSourceFounderInputs).toContain("Public/default V3 buys continue to use `ZERO_SOURCE_ID`");
@@ -682,8 +686,8 @@ describe("production coherence guards", () => {
     expect(internalSourceFounderInputs).toContain("controlled protocol-test public wallet address");
     expect(internalSourceFounderInputs).toContain("Commission bps | `500` bps");
     expect(internalSourceFounderInputs).toContain("Attribution scope | `WINDOWED`");
-    expect(internalSourceFounderInputs).toContain("Gross cap | `25_000_000` USDC units suggested");
-    expect(internalSourceFounderInputs).toContain("Per-buyer cap | `5_000_000` USDC units suggested");
+    expect(internalSourceFounderInputs).toContain("Gross cap | `25_000_000` USDC units");
+    expect(internalSourceFounderInputs).toContain("Per-buyer cap | `5_000_000` USDC units");
     expect(internalSourceFounderInputs).toContain("Repeat purchases | `false`");
     expect(internalSourceFounderInputs).toContain("Privacy/tracking: no public link, no cookies, no session tracking");
     expect(internalSourceFounderInputs).toContain("Source wallet: founder-provided controlled protocol-test wallet");
@@ -697,7 +701,8 @@ describe("production coherence guards", () => {
     expect(internalSourceFounderInputs).toContain("Confirm per-buyer cap: 5 USDC (`5_000_000`)?");
     expect(internalSourceFounderInputs).toContain("Confirm repeat purchases: `false`?");
     expect(internalSourceFounderInputs).toContain("Confirm readiness to generate sourceId and metadata hash after all final");
-    expect(internalSourceFounderInputs).toContain("Do not generate yet");
+    expect(internalSourceFounderInputs).toContain("0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620");
+    expect(internalSourceFounderInputs).toContain("0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d");
     expect(internalSourceFounderInputs).toContain("No public referral activation is authorized");
     expect(internalSourceFounderInputs).toContain("No source-aware public buy path is authorized");
     expect(internalSourceFounderInputs).toContain("No public source link is authorized");
@@ -716,16 +721,18 @@ describe("production coherence guards", () => {
     expect(internalSourceFounderInputs).toContain("Vault, Liquidity, and Operations wallets are protocol routing wallets");
     expect(internalSourceFounderInputs).toContain("25 USDC gross cap and 5 USDC per-buyer cap are first-internal-test values only");
     expect(internalSourceFounderInputs).toContain("Do not use the first internal test source as a template for public referrer UX");
-    expect(internalSourceFounderInputs).toContain("Ready for sourceId + metadata hash generation");
-    expect(internalSourceFounderInputs).toContain("Missing founder values remain");
+    expect(internalSourceFounderInputs).toContain("Ready for PAUSED source ceremony review");
     expect(internalSourceFounderInputs).toContain("Future deterministic generation instructions");
     expect(internalSourceFounderInputs).toContain("source label `INTERNAL_PROTOCOL_TEST_SOURCE_001`");
-    expect(internalSourceFounderInputs).toContain("No helper script is added in this sprint");
     expect(internalSourceFounderInputs).toContain("Source observability snapshot / docs");
     expect(internalSourceFounderInputs).toContain("CURRENT_SOURCE_POLICY_RECORDS");
     expect(internalSourceFounderInputs).toContain("Register wording");
     expect(internalSourceFounderInputs).toContain("Activity wording");
     expect(internalSourceFounderInputs).toContain("This source applies only to MembershipSaleV3 unless a future module passes a separate review");
+    expect(internalSourceMetadata).toContain("\"sourceLabel\": \"INTERNAL_PROTOCOL_TEST_SOURCE_001\"");
+    expect(internalSourceMetadata).toContain("\"sourceWallet\": \"0x244531C571966f90f4849e03a507543d90f9C721\"");
+    expect(internalSourceMetadata).toContain("\"sourceId\": \"0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620\"");
+    expect(internalSourceMetadata).not.toContain("metadataHash");
 
     expect(deferredLedger).toContain("Source Commission Statement / Reporting Export");
     expect(deferredLedger).toContain("no tax/accounting advice");

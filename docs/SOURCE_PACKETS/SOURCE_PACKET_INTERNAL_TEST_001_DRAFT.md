@@ -1,9 +1,9 @@
 # Source Packet: Internal Test 001
 
-Status: DRAFT ONLY / NOT APPROVED / NO TRANSACTION AUTHORIZED / SOURCE MUST START PAUSED
+Status: READY FOR PAUSED SOURCE CEREMONY / NO TRANSACTION AUTHORIZED / SOURCE MUST START PAUSED
 
-This packet is a working draft for the first possible internal source record.
-It does not authorize a mainnet transaction, source activation, public
+This packet freezes the founder-approved values for the first possible internal
+source record. It does not authorize a mainnet transaction, source activation, public
 source-aware buy path, claim UI, registry switch, or public referral launch.
 
 ## Scope Boundary
@@ -65,24 +65,25 @@ Source attribution is acquisition attribution, not reward accounting.
 
 ## Packet Identity
 
-| Field | Draft Value |
+| Field | Frozen Value |
 | --- | --- |
 | Packet ID | `SOURCE_PACKET_INTERNAL_TEST_001` |
 | Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001` |
 | Source purpose | Internal controlled protocol rehearsal of source-policy creation, PAUSED status, readback, lifecycle truth, and future MembershipSaleV3 source-attributed receipt mechanics |
-| Recommended source class | `BUILDER_SOURCE` |
-| Candidate source wallet | TBD - founder-provided controlled protocol-test public wallet address |
-| Candidate payout wallet | TBD - founder-provided controlled payout public wallet address; may be the same controlled wallet if founder approves |
-| Source ID derivation method | `keccak256("INTERNAL_PROTOCOL_TEST_SOURCE_001:<approved-source-wallet>:<approved-date>")`, finalized only after founder approval |
-| Source ID | TBD until packet approval |
-| Commission bps | Draft recommendation: `500` bps |
+| Source class | `BUILDER_SOURCE` |
+| Source wallet | `0x244531C571966f90f4849e03a507543d90f9C721` |
+| Payout wallet | `0x244531C571966f90f4849e03a507543d90f9C721` |
+| Source ID derivation method | `keccak256(utf8("INTERNAL_PROTOCOL_TEST_SOURCE_001:0x244531C571966f90f4849e03a507543d90f9C721:2026-07-01T12:00:00Z"))` |
+| Source ID | `0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620` |
+| Commission bps | `500` bps |
 | Attribution scope | `WINDOWED` |
-| Start timestamp | TBD - no earlier than source creation approval time |
-| End timestamp | TBD - draft recommendation: short internal window |
-| Gross cap | TBD - draft recommendation: small internal cap |
-| Per-buyer cap | TBD - draft recommendation: small internal per-buyer cap |
-| Applies to repeat purchases | Draft recommendation: `false` for first source ceremony, unless founder approves repeat attribution explicitly |
-| Metadata hash | TBD - hash of final approved source packet |
+| Start timestamp | `1782907200` (`2026-07-01T12:00:00Z`) |
+| End timestamp | `1784116800` (`2026-07-15T12:00:00Z`) |
+| Gross cap | `25_000_000` USDC units (25 USDC) |
+| Per-buyer cap | `5_000_000` USDC units (5 USDC) |
+| Applies to repeat purchases | `false` |
+| Metadata artifact | `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_FROZEN_METADATA.json` |
+| Metadata hash | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` |
 | Public display posture | Hidden / internal only |
 | Legal copy posture | Needs founder/legal/product review |
 | Privacy/tracking posture | No public link, no cookie/session tracking, no campaign tracking for this packet |
@@ -90,7 +91,7 @@ Source attribution is acquisition attribution, not reward accounting.
 | Claim UI status | Not live |
 | Payout model | Direct on-chain acquisition commission during eligible ACTIVE purchases; escrow fallback only if payout transfer fails |
 | Tax/accounting note | Reporting/export utility may be useful later; this packet gives no tax or accounting advice |
-| Risk classification | Medium until wallets, caps, and copy are approved |
+| Risk classification | Medium until the PAUSED ceremony is separately approved and read back |
 | Initial status | `PAUSED` |
 
 ## Required Ethical / Trust Acknowledgments
@@ -124,7 +125,8 @@ Why:
 - It avoids requiring the source wallet to hold SYN solely to satisfy
   `MEMBER_INTRODUCTION` semantics.
 
-This recommendation is not final. Founder approval is still required.
+This recommendation is now frozen for founder ceremony review. It still does
+not authorize a transaction.
 
 ## Source-Class Option Comparison
 
@@ -165,13 +167,12 @@ Recommended for `INTERNAL_PROTOCOL_TEST_SOURCE_001`.
 
 ## Readiness Status
 
-Status after the source infrastructure audit: CEREMONY-READY ARCHITECTURE /
-FOUNDER INPUTS MISSING / NO SOURCE CREATION AUTHORIZED.
+Status after founder value freeze: READY FOR PAUSED SOURCE CEREMONY REVIEW /
+NO SOURCE CREATION AUTHORIZED.
 
-This packet is operationally close enough for a later yes/no decision, but it is
-not final because founder-provided public addresses, source ID, timestamps,
-caps, metadata hash, source acknowledgments, and legal/product approval are
-still missing.
+Founder-provided public addresses, timestamps, caps, sourceId, and metadataHash
+are now frozen. This packet still does not authorize a transaction; a separate
+PAUSED source ceremony approval remains required.
 
 The packet remains constrained by `docs/PROTOCOL_ORGANISM_GRAPH.md`:
 
@@ -298,8 +299,7 @@ recommendations only; the founder can change them before approval.
 
 - Why it matters: exact bytes32 value used in `createSource` and future
   `buy(..., sourceId, ...)`.
-- Safe default recommendation: TBD until source wallet, approval date, and
-  metadata hash are final.
+- Frozen value: `0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620`.
 - Risk if wrong: wrong or duplicate source record; future attribution can fail
   or point to the wrong policy.
 - SourceRegistry readback: `sourceExists(sourceId) = true` after creation.
@@ -505,8 +505,8 @@ recommendations only; the founder can change them before approval.
 ### Risk classification
 
 - Why it matters: frames operational/legal/security review before transaction.
-- Safe default recommendation: Medium until wallets, caps, metadata, and copy
-  are final; Low only after readback and no public activation.
+- Frozen value: Medium until the PAUSED ceremony is separately approved and
+  read back; Low only after readback and no public activation.
 - Risk if wrong: founder may underestimate source/payout/legal risk.
 - SourceRegistry readback: not stored directly.
 - MembershipSaleV3 effect: none directly.
@@ -610,21 +610,23 @@ recommendations only; the founder can change them before approval.
 - Claim UI: remains hidden.
 - Future modules: no activation.
 
-## Conservative Draft Values For Founder Review
+## Frozen Internal Test Values For Founder Review
 
-These are not final values and must not be pasted into a transaction until the
-founder approves them.
+These values are frozen for founder review. They must not be pasted into a
+transaction until the founder separately approves the PAUSED source ceremony.
 
-| Field | Conservative recommendation | Reason |
+| Field | Frozen value | Reason |
 | --- | --- | --- |
 | Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001` | Makes the first source unmistakably an internal protocol rehearsal, not a public referrer. |
 | Source class | `BUILDER_SOURCE` | Best controlled internal test; avoids public seated-member referral semantics. |
+| Source wallet | `0x244531C571966f90f4849e03a507543d90f9C721` | Dedicated source-test wallet; not a public referrer wallet. |
+| Payout wallet | `0x244531C571966f90f4849e03a507543d90f9C721` | Same dedicated wallet for the first internal rehearsal. |
 | Commission bps | `500` bps | Small, understandable, low-risk acquisition cost for first ceremony. |
 | Scope | `WINDOWED` | Bounded in time and aligned with the contract's window guard. |
-| Start timestamp | Founder-approved timestamp at or after source creation approval | Avoids accidental early eligibility. |
-| End timestamp | 7 to 14 days after intended activation | Keeps the test short; update before activation if delayed. |
-| Gross cap | Candidate range 25 to 100 USDC; suggested first value 25 USDC (`25_000_000`) | Prevents broad attribution from a first internal source. |
-| Per-buyer cap | Candidate range 5 to 10 USDC; suggested first value 5 USDC (`5_000_000`) | Fits one minimum purchase and limits one buyer. |
+| Start timestamp | `1782907200` (`2026-07-01T12:00:00Z`) | Planned activation-test window start. |
+| End timestamp | `1784116800` (`2026-07-15T12:00:00Z`) | Fourteen-day planned activation-test window. |
+| Gross cap | 25 USDC (`25_000_000`) | Prevents broad attribution from a first internal source. |
+| Per-buyer cap | 5 USDC (`5_000_000`) | Fits one minimum purchase and limits one buyer. |
 | Repeat purchases | `false` | Keeps the first internal test first-purchase only. |
 | Public display | Hidden / internal only | Avoids public referral activation implication. |
 | Initial status | `PAUSED` | Required ceremony boundary. |
@@ -633,6 +635,74 @@ Tradeoff: `WINDOWED` terms can expire while the source remains paused. If the
 founder wants a long gap between PAUSED creation and activation, either use a
 future end timestamp with a short post-activation test window, or perform a
 visible `updateSourceTerms` action before activation.
+
+## Frozen SourceId / MetadataHash
+
+The deterministic sourceId is:
+
+```text
+0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620
+```
+
+The sourceId preimage is:
+
+```text
+INTERNAL_PROTOCOL_TEST_SOURCE_001:0x244531C571966f90f4849e03a507543d90f9C721:2026-07-01T12:00:00Z
+```
+
+The sourceId derivation is:
+
+```text
+keccak256(utf8(sourceId preimage))
+```
+
+The metadata artifact is:
+
+```text
+docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_FROZEN_METADATA.json
+```
+
+The metadata hash is:
+
+```text
+0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d
+```
+
+The metadata hash is `keccak256` over the UTF-8 canonical JSON form of the
+metadata artifact with lexicographically sorted object keys. The artifact does
+not contain a `metadataHash` field, avoiding self-reference.
+
+## Future createSource Argument Table
+
+Founder review only. This table does not authorize a transaction.
+
+| Argument | Value |
+| --- | --- |
+| `sourceId` | `0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620` |
+| `terms.sourceWallet` | `0x244531C571966f90f4849e03a507543d90f9C721` |
+| `terms.sourceClass` | `BUILDER_SOURCE` (`1`) |
+| `terms.commissionBps` | `500` |
+| `terms.scope` | `WINDOWED` (`1`) |
+| `terms.startTime` | `1782907200` |
+| `terms.endTime` | `1784116800` |
+| `terms.grossCap` | `25000000` |
+| `terms.perBuyerCap` | `5000000` |
+| `terms.appliesToRepeatPurchases` | `false` |
+| `terms.payoutWallet` | `0x244531C571966f90f4849e03a507543d90f9C721` |
+| `terms.metadataHash` | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` |
+
+## Pre-Ceremony Readback Checklist
+
+Before any future source-creation transaction, verify:
+
+- SourceRegistryV1 owner is still the approved owner wallet.
+- Avalanche C-Chain ID is `43114`.
+- `sourceExists(0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620) = false`.
+- SourceRegistryV1 still has zero source records / no `SourceCreated` logs unless a later readback says otherwise.
+- V3 public/default buys still use `ZERO_SOURCE_ID`.
+- `/referral` still says referral/source attribution is inactive.
+- Claim UI remains absent.
+- No public source link, source dashboard, or source-aware buy path exists.
 
 ## Future Source Commission Statement / Reporting Export
 
@@ -703,18 +773,18 @@ Expected PAUSED readback:
 
 ```text
 sourceExists(sourceId) = true
-sourceConfig(sourceId).sourceWallet = <approved source wallet>
-sourceConfig(sourceId).payoutWallet = <approved payout wallet>
+sourceConfig(sourceId).sourceWallet = 0x244531C571966f90f4849e03a507543d90f9C721
+sourceConfig(sourceId).payoutWallet = 0x244531C571966f90f4849e03a507543d90f9C721
 sourceConfig(sourceId).sourceClass = BUILDER_SOURCE
 sourceConfig(sourceId).commissionBps = 500
 sourceConfig(sourceId).status = PAUSED
 sourceConfig(sourceId).scope = WINDOWED
-sourceConfig(sourceId).startTime = <approved start timestamp>
-sourceConfig(sourceId).endTime = <approved end timestamp>
-sourceConfig(sourceId).grossCap = <approved gross cap>
-sourceConfig(sourceId).perBuyerCap = <approved per-buyer cap>
+sourceConfig(sourceId).startTime = 1782907200
+sourceConfig(sourceId).endTime = 1784116800
+sourceConfig(sourceId).grossCap = 25000000
+sourceConfig(sourceId).perBuyerCap = 5000000
 sourceConfig(sourceId).appliesToRepeatPurchases = false
-sourceConfig(sourceId).metadataHash = <approved metadata hash>
+sourceConfig(sourceId).metadataHash = 0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d
 isActive(sourceId) = false
 ```
 
@@ -788,18 +858,18 @@ Forbidden wording while paused:
 After a future approved `createSource` transaction:
 
 - `sourceExists(sourceId) = true`
-- `sourceConfig(sourceId).sourceWallet = <approved source wallet>`
-- `sourceConfig(sourceId).payoutWallet = <approved payout wallet>`
+- `sourceConfig(sourceId).sourceWallet = 0x244531C571966f90f4849e03a507543d90f9C721`
+- `sourceConfig(sourceId).payoutWallet = 0x244531C571966f90f4849e03a507543d90f9C721`
 - `sourceConfig(sourceId).sourceClass = BUILDER_SOURCE`
 - `sourceConfig(sourceId).commissionBps = 500`
 - `sourceConfig(sourceId).status = PAUSED`
 - `sourceConfig(sourceId).scope = WINDOWED`
-- `sourceConfig(sourceId).startTime = <approved start timestamp>`
-- `sourceConfig(sourceId).endTime = <approved end timestamp>`
-- `sourceConfig(sourceId).grossCap = <approved gross cap>`
-- `sourceConfig(sourceId).perBuyerCap = <approved per-buyer cap>`
-- `sourceConfig(sourceId).appliesToRepeatPurchases = <approved bool>`
-- `sourceConfig(sourceId).metadataHash = <approved metadata hash>`
+- `sourceConfig(sourceId).startTime = 1782907200`
+- `sourceConfig(sourceId).endTime = 1784116800`
+- `sourceConfig(sourceId).grossCap = 25000000`
+- `sourceConfig(sourceId).perBuyerCap = 5000000`
+- `sourceConfig(sourceId).appliesToRepeatPurchases = false`
+- `sourceConfig(sourceId).metadataHash = 0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d`
 
 Expected event:
 

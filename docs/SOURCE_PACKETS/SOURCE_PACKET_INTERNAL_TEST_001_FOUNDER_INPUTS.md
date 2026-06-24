@@ -1,11 +1,11 @@
 # Source Packet Internal Test 001 - Founder Inputs
 
-Status: FOUNDER INPUT FORM / NO TRANSACTION AUTHORIZED / SOURCE RECORD NOT CREATED
+Status: READY FOR PAUSED SOURCE CEREMONY / NO TRANSACTION AUTHORIZED / SOURCE RECORD NOT CREATED
 
-This document is the founder decision sheet for the first possible internal
-MembershipSaleV3 source record. It does not create a source record, activate
-referral, create a public source link, create a claim UI, or authorize any
-transaction.
+This document records the founder-approved values for the first possible
+internal MembershipSaleV3 source record. It does not create a source record,
+activate referral, create a public source link, create a claim UI, or authorize
+any transaction.
 
 Current boundary:
 
@@ -59,33 +59,35 @@ Use this form only after reading:
 - `docs/REFERRAL_SOURCE_ATTRIBUTION_STRATEGIC_RESEARCH.md`
 - `docs/OPERATIONAL_MEMORY_LEDGER.md`
 
-## 1. Required Final Values
+## 1. Frozen Final Values
 
-Fill every founder final value before sourceId or metadata hash generation.
+Founder final values are frozen for review. They still do not authorize a
+transaction.
 
 | Field | Recommended default | Founder final value | Notes |
 | --- | --- | --- | --- |
-| Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001` | TBD - founder supplies or confirms | Must not imply a public referrer, public referral link, agency, employment, official representation, or public partnership. |
-| Source purpose | Internal controlled protocol rehearsal of source-policy creation, PAUSED status, readback, lifecycle truth, and future MembershipSaleV3 source-attributed receipt mechanics | TBD - founder supplies or confirms | Purpose should stay internal, readback-first, and MembershipSaleV3-only. |
-| Source wallet | TBD | TBD - founder supplies controlled protocol-test public wallet address | Do not invent. This is the source identity wallet recorded in SourceRegistryV1; it is not the future public referrer model. |
-| Payout wallet | TBD | TBD - founder supplies controlled payout public wallet address | Do not invent. Direct payout targets this wallet only after a future ACTIVE eligible purchase; it is not the future public referrer payout model. |
-| Source class | `BUILDER_SOURCE` | TBD - founder confirms or changes | Recommended first class because it avoids public seated-member referral semantics. |
-| Commission bps | `500` bps | TBD - founder confirms or changes | 500 bps = 5%. Keep conservative for the first internal PAUSED record. |
-| Attribution scope | `WINDOWED` | TBD - founder confirms or changes | Bounded time window is preferred for the first internal record. |
-| Start timestamp | TBD | TBD - founder supplies Unix timestamp | Should be no earlier than approved source creation timing. |
-| End timestamp | TBD | TBD - founder supplies Unix timestamp | Use a short test window, but not so short it expires before activation testing can happen. |
-| Gross cap | `25_000_000` USDC units suggested; acceptable first-test range 25 to 100 USDC | TBD - founder confirms final value | Suggested value equals 25 USDC on 6-decimal USDC. |
-| Per-buyer cap | `5_000_000` USDC units suggested; acceptable first-test range 5 to 10 USDC | TBD - founder confirms final value | Suggested value equals 5 USDC on 6-decimal USDC. |
-| Repeat purchases | `false` | TBD - founder confirms or changes | Recommended false for first source record. |
-| SourceId derivation method | Hash the final approved packet identity and source terms | TBD - founder approves method | Do not generate until all final inputs are frozen. |
-| Final sourceId | Do not generate yet | TBD after all final inputs are frozen | Must match the final source packet and readback. |
-| Metadata hash | Do not generate yet | TBD after final packet text is frozen | Hash must describe the approved packet, not a draft. |
-| Public display posture | Hidden / internal only | TBD - founder confirms or changes | No public source link, no named public source display. |
-| Privacy/tracking posture | Internal source-policy readback only | TBD - founder confirms | No off-chain tracking expansion without separate approval. |
-| Source dashboard status | Not live | TBD - founder confirms | No source dashboard before separate product/legal/read-model gate. |
-| Claim UI status | Not live | TBD - founder confirms | No claim UI before escrow/status/legal gates. |
-| Tax/accounting note | Not tax or accounting advice | TBD - founder acknowledges | Future statements/exports require separate approval. |
-| Direct payout / escrow fallback acknowledgment | Direct on-chain acquisition commission only after a future ACTIVE source-attributed purchase; escrow fallback only if direct payout fails | TBD - founder acknowledges | A PAUSED source does not accrue commission. |
+| Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001` | `INTERNAL_PROTOCOL_TEST_SOURCE_001` | Must not imply a public referrer, public referral link, agency, employment, official representation, or public partnership. |
+| Source purpose | Internal controlled protocol rehearsal of source-policy creation, PAUSED status, readback, lifecycle truth, and future MembershipSaleV3 source-attributed receipt mechanics | Internal controlled protocol rehearsal of source-policy creation, PAUSED status, readback, lifecycle truth, and future MembershipSaleV3 source-attributed receipt mechanics | Purpose stays internal, readback-first, and MembershipSaleV3-only. |
+| Source wallet | Founder-provided controlled protocol-test public wallet address | `0x244531C571966f90f4849e03a507543d90f9C721` | This is the source identity wallet recorded in SourceRegistryV1; it is not the future public referrer model. |
+| Payout wallet | Same founder-provided controlled protocol-test wallet | `0x244531C571966f90f4849e03a507543d90f9C721` | Direct payout targets this wallet only after a future ACTIVE eligible purchase; it is not the future public referrer payout model. |
+| Source class | `BUILDER_SOURCE` | `BUILDER_SOURCE` | Recommended first class because it avoids public seated-member referral semantics. |
+| Commission bps | `500` bps | `500` bps | 500 bps = 5%. Conservative for the first internal PAUSED record. |
+| Attribution scope | `WINDOWED` | `WINDOWED` | Bounded time window for the first internal record. |
+| Start timestamp | Founder-supplied Unix timestamp | `1782907200` (`2026-07-01T12:00:00Z`) | Planned activation-test window start. |
+| End timestamp | Founder-supplied Unix timestamp | `1784116800` (`2026-07-15T12:00:00Z`) | Fourteen days after start. |
+| Gross cap | `25_000_000` USDC units | `25_000_000` | 25 USDC on 6-decimal USDC. |
+| Per-buyer cap | `5_000_000` USDC units | `5_000_000` | 5 USDC on 6-decimal USDC. |
+| Repeat purchases | `false` | `false` | First source record does not test repeat attribution. |
+| SourceId derivation method | Hash the final approved packet identity and source terms | `keccak256(utf8("INTERNAL_PROTOCOL_TEST_SOURCE_001:0x244531C571966f90f4849e03a507543d90f9C721:2026-07-01T12:00:00Z"))` | Frozen for this packet. |
+| Final sourceId | Generated after final inputs freeze | `0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620` | Must match the final source packet and readback. |
+| Metadata artifact | Frozen metadata JSON | `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_FROZEN_METADATA.json` | Canonical artifact used for metadata hash. |
+| Metadata hash | Generated after final packet text freeze | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` | Hash describes the approved packet artifact, not a draft. |
+| Public display posture | Hidden / internal only | Hidden / internal only | No public source link, no named public source display. |
+| Privacy/tracking posture | Internal source-policy readback only | No public link, no cookies, no session tracking | No off-chain tracking expansion without separate approval. |
+| Source dashboard status | Not live | Not live | No source dashboard before separate product/legal/read-model gate. |
+| Claim UI status | Not live | Not live | No claim UI before escrow/status/legal gates. |
+| Tax/accounting note | Not tax or accounting advice | Not tax or accounting advice | Future statements/exports require separate approval. |
+| Direct payout / escrow fallback acknowledgment | Direct on-chain acquisition commission only after a future ACTIVE source-attributed purchase; escrow fallback only if direct payout fails | Acknowledged in packet boundaries | A PAUSED source does not accrue commission. |
 
 ## 2. Wallet Model
 
@@ -240,7 +242,7 @@ The founder must check every item before sourceId and metadata hash generation.
 
 ## 8. SourceId And Metadata Hash Gate
 
-Do not generate `sourceId` or `metadataHash` while any founder value remains TBD.
+Do not regenerate `sourceId` or `metadataHash` unless a founder value changes.
 
 Generation is allowed only after:
 
@@ -252,10 +254,9 @@ Generation is allowed only after:
 
 Decision after this gate:
 
-- Ready for sourceId + metadata hash generation
-- Missing founder values remain
+- Ready for PAUSED source ceremony review
 
-Current decision: missing founder values remain.
+Current decision: ready for PAUSED source ceremony review.
 
 Future deterministic generation instructions:
 
@@ -265,14 +266,13 @@ Future deterministic generation instructions:
   recorded in the final source packet.
 - Compute `metadataHash` from the final frozen packet text or final approved
   metadata artifact.
-- Do not compute either value from this unfinished input form.
+- Do not recompute either value unless a frozen founder value changes.
 - Do not broadcast, sign, deploy, activate, or call `createSource` during
   generation.
 - Record both generated values for founder review before any ceremony.
 
-No helper script is added in this sprint because final wallet, timestamp,
-sourceId method, and metadata artifact values remain missing. A helper would be
-useful only after the founder freezes the exact inputs.
+No transaction is authorized by this document. The generated sourceId and
+metadata hash are for founder review and future readback only.
 
 ## 9. Post-Readback Update Plan
 
@@ -322,11 +322,7 @@ Stop before source creation if any of these are true:
 
 Current output:
 
-Missing founder values remain.
+Ready for PAUSED source ceremony review.
 
-When every required value and acknowledgment is filled, replace this with:
-
-Ready for sourceId + metadata hash generation.
-
-That later state still does not authorize source creation. It only means the next
-step can generate the deterministic sourceId and metadata hash for founder review.
+This state still does not authorize source creation. It only means the sourceId,
+metadata hash, and future `createSource` arguments are frozen for founder review.
