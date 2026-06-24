@@ -55,6 +55,18 @@ export type SourceAttributedReceiptProofField = {
   proof: string;
 };
 
+export type SourceAttributionTouchpointStatus =
+  | "CURRENT_GUARD"
+  | "FUTURE_GATED"
+  | "NOT_SOURCE_AWARE";
+
+export type SourceAttributionTouchpoint = {
+  surface: string;
+  status: SourceAttributionTouchpointStatus;
+  currentTruth: string;
+  futureRequirement: string;
+};
+
 export type SourcePolicySnapshot = {
   registryExists: boolean;
   registryAddress: string | null;
@@ -182,6 +194,58 @@ export const SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS: readonly SourceAttributedRe
   {
     label: "membership receipt",
     proof: "Buyer, recipient, SYN delivered, era, chapter, first-seat status, member number, and transaction proof.",
+  },
+] as const;
+
+export const SOURCE_ATTRIBUTION_TOUCHPOINTS: readonly SourceAttributionTouchpoint[] = [
+  {
+    surface: "Join",
+    status: "CURRENT_GUARD",
+    currentTruth: "Public/default buys use ZERO_SOURCE_ID and do not expose a source selector or source link.",
+    futureRequirement:
+      "A source-aware purchase path must show source terms before wallet signature and pass a specific non-zero sourceId only after approval.",
+  },
+  {
+    surface: "Registry",
+    status: "CURRENT_GUARD",
+    currentTruth: "SourceRegistryV1 is deployed and verifiable, but the current record count is zero.",
+    futureRequirement:
+      "Source records must appear as policy facts with status, terms, metadata hash, and explorer proof; never as proof that referral is broadly live.",
+  },
+  {
+    surface: "Activity",
+    status: "FUTURE_GATED",
+    currentTruth: "No source policy or source-attributed purchase activity is live in the public feed.",
+    futureRequirement:
+      "SourceCreated, SourceStatusChanged, payout-wallet changes, and source-attributed purchase receipts must appear as verifiable events.",
+  },
+  {
+    surface: "My Syndicate",
+    status: "FUTURE_GATED",
+    currentTruth: "The member cockpit shows pending source readiness only; no share link, source balance, or claim UI is displayed.",
+    futureRequirement:
+      "A member view may show source-linked receipts and source state only from indexed events and current SourceRegistry readbacks.",
+  },
+  {
+    surface: "Transparency / Protocol Economy",
+    status: "FUTURE_GATED",
+    currentTruth: "The economy surfaces show referral inactive and public/default ZERO_SOURCE_ID routing.",
+    futureRequirement:
+      "Future source-attributed receipts must separate gross USDC, acquisition commission, Net USDC Routed, and 70/20/10 routing.",
+  },
+  {
+    surface: "Register / Chronicle",
+    status: "FUTURE_GATED",
+    currentTruth: "No source-policy facts or source-attributed milestones are registered as institutional memory today.",
+    futureRequirement:
+      "Only meaningful source-policy events should enter Register or Chronicle; routine attribution events remain Activity/read-model facts.",
+  },
+  {
+    surface: "Archive / future products",
+    status: "NOT_SOURCE_AWARE",
+    currentTruth: "Archive1155, SeatRecord721, SwapRail, and ProductSaleRouter do not inherit MembershipSaleV3 source terms.",
+    futureRequirement:
+      "Each future product needs its own source-aware design, disclosure, receipt schema, and activation gate before using source terms.",
   },
 ] as const;
 

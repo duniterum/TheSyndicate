@@ -12,6 +12,7 @@ import {
 import {
   SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS,
   SOURCE_ATTRIBUTION_READINESS_GATES,
+  SOURCE_ATTRIBUTION_TOUCHPOINTS,
   CURRENT_SOURCE_POLICY_SNAPSHOT,
   SOURCE_POLICY_LIFECYCLE_MODEL,
 } from "@/lib/source-policy-observability";
@@ -177,6 +178,40 @@ function ReferralPage() {
             referral link, or non-zero public source path.
           </div>
         </GlassCard>
+      </Section>
+
+      <Section id="source-attribution-touchpoints">
+        <SectionHeader
+          eyebrow="System touchpoints"
+          title="Where source truth must appear before it can be trusted"
+          description="Source attribution is not a standalone referral page. If it becomes active later, the same proof must travel through the product surfaces that members already use to judge the institution."
+        />
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          {SOURCE_ATTRIBUTION_TOUCHPOINTS.map((touchpoint) => (
+            <article key={touchpoint.surface} className="rounded-md border border-border/60 bg-card/70 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-base font-semibold">{touchpoint.surface}</h3>
+                <Pill tone={touchpoint.status === "CURRENT_GUARD" ? "success" : touchpoint.status === "NOT_SOURCE_AWARE" ? "muted" : "warning"}>
+                  {touchpoint.status.replaceAll("_", " ")}
+                </Pill>
+              </div>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-[6px] border border-border/50 bg-background/35 p-3">
+                  <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Current truth
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/85">{touchpoint.currentTruth}</p>
+                </div>
+                <div className="rounded-[6px] border border-border/50 bg-background/35 p-3">
+                  <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Before activation
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/85">{touchpoint.futureRequirement}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </Section>
 
       <Section id="reserved-systems">

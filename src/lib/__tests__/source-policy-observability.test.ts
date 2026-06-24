@@ -4,6 +4,7 @@ import {
   CURRENT_SOURCE_POLICY_SNAPSHOT,
   SOURCE_ATTRIBUTED_RECEIPT_PROOF_FIELDS,
   SOURCE_ATTRIBUTION_READINESS_GATES,
+  SOURCE_ATTRIBUTION_TOUCHPOINTS,
   SOURCE_POLICY_PRODUCT_CAPABILITIES,
   ZERO_SOURCE_ID,
   buildSourcePolicySnapshot,
@@ -128,6 +129,32 @@ describe("source policy observability", () => {
     expect(publicCopy).toContain("No claim UI appears");
     expect(publicCopy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
     expect(publicCopy).not.toMatch(/passive income|downline|upline|\bROI\b|top earner/i);
+  });
+
+  it("maps future source attribution across product touchpoints without making any route live", () => {
+    expect(SOURCE_ATTRIBUTION_TOUCHPOINTS).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ surface: "Join", status: "CURRENT_GUARD" }),
+        expect.objectContaining({ surface: "Registry", status: "CURRENT_GUARD" }),
+        expect.objectContaining({ surface: "Activity", status: "FUTURE_GATED" }),
+        expect.objectContaining({ surface: "My Syndicate", status: "FUTURE_GATED" }),
+        expect.objectContaining({ surface: "Transparency / Protocol Economy", status: "FUTURE_GATED" }),
+        expect.objectContaining({ surface: "Register / Chronicle", status: "FUTURE_GATED" }),
+        expect.objectContaining({ surface: "Archive / future products", status: "NOT_SOURCE_AWARE" }),
+      ]),
+    );
+
+    const touchpointCopy = SOURCE_ATTRIBUTION_TOUCHPOINTS.map(
+      (touchpoint) =>
+        `${touchpoint.surface} ${touchpoint.status} ${touchpoint.currentTruth} ${touchpoint.futureRequirement}`,
+    ).join("\n");
+
+    expect(touchpointCopy).toContain("ZERO_SOURCE_ID");
+    expect(touchpointCopy).toContain("SourceRegistryV1 is deployed and verifiable");
+    expect(touchpointCopy).toContain("never as proof that referral is broadly live");
+    expect(touchpointCopy).toContain("source terms");
+    expect(touchpointCopy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
+    expect(touchpointCopy).not.toMatch(/passive income|downline|upline|\bROI\b|top earner/i);
   });
 
   it("reduces future source lifecycle events into the same observability snapshot", () => {
