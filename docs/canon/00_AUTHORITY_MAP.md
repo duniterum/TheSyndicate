@@ -38,7 +38,7 @@ guard-enforced (see *Enforcement* below).
 2. **Canonical code registries** — `src/lib/contract-registry.ts`, `archive-id-registry.ts`, `chain-registry.ts`, `execution-gates.ts`, `syndicate-config.ts`.
 3. **Execution gates** — `scripts/check-execution-gates.mjs`, `docs/PROTOCOL_EXECUTION_CONTROL_SYSTEM.md`.
 4. **Canonical docs** — this canon + the CANONICAL class in `docs/DOCUMENTATION_AUTHORITY_MAP.md`.
-5. **Operational docs** — runbooks, registries, integration/deployment state (operational entry point: `docs/CANONICAL_REGISTRY.md`).
+5. **Operational docs** - runbooks, registries, integration/deployment state (operational entry points: `docs/CANONICAL_REGISTRY.md`, `docs/OPERATIONAL_MEMORY_LEDGER.md`, `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`).
 6. **Historical / Deprecated docs** — record only, **never** authority.
 
 ---
@@ -109,6 +109,7 @@ Full per-document classification lives in `docs/DOCUMENTATION_AUTHORITY_MAP.md`
 | `docs/UNIFIED_PROTOCOL_DOCTRINE_MAP.md` | **Retained.** The four-verb doctrine map (Money / Time / History / Constitution); its navigational role is now indexed here. |
 | `docs/TERMINOLOGY_GLOSSARY.md` | **Retained & guard-enforced.** `03_GLOSSARY.md` consolidates it and adds the collision rulings; keep the two in sync. |
 | `docs/CANONICAL_REGISTRY.md` | **Retained.** The operational entry point for chain / contract / address / ABI data (which always defers to code registries). |
+| `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` | **Retained as operational doctrine.** The GitHub/Replit/production sync decision system; no deployment, publish, transaction, activation, or registry authority. |
 
 ---
 

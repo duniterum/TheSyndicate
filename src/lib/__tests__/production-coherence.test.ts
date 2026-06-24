@@ -1234,21 +1234,31 @@ describe("production coherence guards", () => {
     const ledger = read("docs/OPERATIONAL_MEMORY_LEDGER.md");
     const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
     const release = read("docs/RELEASE_HANDOFF.md");
+    const syncDoctrine = read("docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md");
+    const canonAuthority = read("docs/canon/00_AUTHORITY_MAP.md");
     const smartContractLedger = read("docs/SMART_CONTRACT_LESSONS_AND_REGRESSION_LEDGER.md");
     const activationRunbook = read("docs/ACTIVATION_RUNBOOK.md");
 
     expect(authority).toContain("docs/OPERATIONAL_MEMORY_LEDGER.md");
+    expect(authority).toContain("docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md");
     expect(authority).toContain("operational first-read for synchronization");
+    expect(authority).toContain("GitHub/Replit/production state separation");
     expect(authority).toContain("Execution authority rule: current readback beats remembered authority");
     expect(authority).toContain("require a fresh current-authority check");
+    expect(canonAuthority).toContain("docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md");
+    expect(canonAuthority).toContain("GitHub/Replit/production sync decision system");
     expect(release).toContain("Before synchronization, Replit publish, patch handoff, or production release");
     expect(release).toContain("docs/OPERATIONAL_MEMORY_LEDGER.md");
+    expect(release).toContain("docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md");
+    expect(release).toContain("requires Replit pull, publish, route QA, wallet/write-path QA");
     expect(release).toContain("Local validation is not delivery");
     expect(release).toContain("pushed to GitHub main");
     expect(release).toContain("GitHub Desktop clone, GitHub connector/API");
     expect(release).toContain("Current authority beats remembered authority");
+    expect(release).toContain("Do not collapse states");
 
     expect(ledger).toContain("Status: operational first-read");
+    expect(ledger).toContain("Primary synchronization doctrine: `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`");
     expect(ledger).toContain("This file has no deployment authority");
     expect(ledger).toContain("GitHub main is the canonical implementation truth");
     expect(ledger).toContain("Replit is the production deployment surface");
@@ -1274,6 +1284,26 @@ describe("production coherence guards", () => {
     expect(ledger).toContain("Lineage explains how we arrived here");
     expect(ledger).toContain("Execution must use current truth");
     expect(ledger).toContain("never remembered truth, never historical truth alone, never stale documentation alone");
+    expect(ledger).toContain("OML-013 - Production synchronization requires change classification");
+    expect(ledger).toContain("Never ask Replit to pull, publish, push back, or skip publish without first naming the change class");
+
+    expect(syncDoctrine).toContain("Status: OPERATIONAL DOCTRINE / NO DEPLOYMENT AUTHORITY / NO PUBLISH AUTHORITY");
+    expect(syncDoctrine).toContain("Source-Of-Truth Model");
+    expect(syncDoctrine).toContain("Change Classification Matrix");
+    expect(syncDoctrine).toContain("Replit Pre-Pull Protocol");
+    expect(syncDoctrine).toContain("Publish Decision Protocol");
+    expect(syncDoctrine).toContain("Live QA Protocol");
+    expect(syncDoctrine).toContain("Replit Push-Back Protocol");
+    expect(syncDoctrine).toContain("Codex After-Replit Protocol");
+    expect(syncDoctrine).toContain("Final Reporting Standard");
+    expect(syncDoctrine).toContain("Never treat GitHub as production");
+    expect(syncDoctrine).toContain("Never treat Replit workspace as published site");
+    expect(syncDoctrine).toContain("Never treat contract deployment as product activation");
+    expect(syncDoctrine).toContain("Never treat local preview as production QA");
+    expect(syncDoctrine).toContain("Never call source policy existence \"referral live.\"");
+    expect(syncDoctrine).toContain("docs-only or guard-only");
+    expect(syncDoctrine).toContain("Payment / write-path frontend");
+    expect(syncDoctrine).toContain("Activation / public availability boundary");
     expect(smartContractLedger).toContain("SCRL-015 - Current readback is execution authority");
     expect(smartContractLedger).toContain("No transaction packet may rely on remembered values alone");
     expect(activationRunbook).toContain("Current Authority Check");

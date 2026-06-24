@@ -13,6 +13,11 @@ This file has no deployment authority. It does not authorize contract
 transactions, source activation, registry switches, Replit publishes, or
 production claims. It is process memory.
 
+Primary synchronization doctrine: `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`.
+Use that document to classify whether a batch requires Replit pull, production
+publish, live route QA, wallet/write-path QA, current-authority readback, or
+founder approval.
+
 ## 1. Purpose
 
 The Syndicate already records smart-contract lessons in
@@ -115,6 +120,11 @@ Status guide:
     activation, publish, or production action, rebuild current truth from
     live readbacks and repository state instead of relying on memory,
     historical docs, or stale chat context.
+19. Classify every batch before asking Replit to pull or publish. Use
+    `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` to decide whether the change
+    is docs-only, runtime-visible, public-copy, route/wiring, payment/write
+    path, contract-interaction, on-chain, activation-boundary, hotfix, or
+    rollback work.
 
 ## 4. Operational Lessons
 
@@ -348,6 +358,26 @@ Status guide:
 | Future "never again" rule | Current authority always beats remembered authority. Lineage explains how we arrived here. Readbacks prove where we are now. Execution must use current truth: never remembered truth, never historical truth alone, never stale documentation alone. |
 | Source links / commit hashes | Added after the first internal source packet froze values but before any source-record ceremony. The frozen packet remains pending until a fresh current-authority readback confirms it can still be executed safely. |
 
+### OML-013 - Production synchronization requires change classification
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-24 |
+| System | GitHub / Replit / production / release operations |
+| Severity | High |
+| Status | Resolved by production synchronization doctrine; must remain guarded |
+| Category | Production synchronization / release classification |
+| Affected surfaces | GitHub main, Replit workspace, Replit deployment, live production, on-chain state, docs, route QA, wallet QA |
+| Symptom | The team repeatedly needed bespoke Replit instructions to decide whether a batch required pull-only, publish, route QA, wallet QA, source/readback checks, or no Replit action. |
+| Root cause | GitHub success, Replit workspace success, Replit deployment success, production success, and on-chain success were known as separate states, but no reusable change-classification table existed. |
+| Why it mattered | A docs-only batch could waste founder/Replit time if treated like a publish, while a runtime/payment/source/activation batch could create public drift if treated like docs-only work. |
+| Fix | Created `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` with the source-of-truth model, change classification matrix, Replit pre-pull protocol, validation protocol, publish decision protocol, live QA protocol, push-back protocol, Codex after-Replit protocol, final reporting standard, and anti-drift rules. |
+| Process guard | Before Replit sync/publish or production-facing work, classify the batch using the doctrine. Reports must separate local, GitHub, Replit workspace, Replit deployment, production, validation, QA, and on-chain state. |
+| Founder-work impact | Reduces one-off Replit prompts, avoids unnecessary publishes for docs-only work, and protects founder time during real runtime or wallet-flow releases. |
+| Release implication | Publish decisions are no longer ad hoc: docs-only can wait, runtime UI needs publish and route QA, write paths need wallet QA, and on-chain actions need current-authority readback. |
+| Future "never again" rule | Never ask Replit to pull, publish, push back, or skip publish without first naming the change class and the required validation/QA boundary. |
+| Source links / commit hashes | Introduced after Protocol Evolution V1 route work, before the next production alignment pass. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -365,6 +395,8 @@ Before any implementation, release, sync, or handoff sprint:
 10. Confirm whether secrets/RPC values are needed and whether they are available
    without being exposed.
 11. Confirm the validation command required for the batch.
+12. Classify the batch using `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`
+    if GitHub/Replit/production/on-chain alignment may be affected.
 
 If any of these cannot be confirmed, report the unknown before presenting the
 work as synchronized.
@@ -379,17 +411,20 @@ and packet values are lineage; they do not authorize execution by themselves.
 
 For a GitHub/Replit-facing batch:
 
-1. Re-read intended changed files.
-2. Confirm no generated or unrelated files are included.
-3. Run targeted tests if the batch has a focused risk.
-4. Run `npm run check-release`.
-5. Commit only intended files.
-6. Push to GitHub main from an authenticated path.
-7. Replit pulls the exact GitHub commit.
-8. Replit runs `npm run check-release`.
-9. Replit publishes only if green.
-10. Live QA checks the relevant routes and states.
-11. Final report names GitHub commit, Replit status, live QA result, and any
+1. Classify the change using `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`.
+2. Re-read intended changed files.
+3. Confirm no generated or unrelated files are included.
+4. Run targeted tests if the batch has a focused risk.
+5. Run `npm run check-release`.
+6. Commit only intended files.
+7. Push to GitHub main from an authenticated path.
+8. Replit pulls the exact GitHub commit when the change class requires it or
+   when provenance alignment is requested.
+9. Replit runs `npm run check-release`.
+10. Replit publishes only if the change class requires publish and validation
+    is green.
+11. Live QA checks the relevant routes and states when production changed.
+12. Final report names GitHub commit, Replit status, live QA result, and any
     manual checks still needed.
 
 If push or Replit publish is blocked, say so plainly. Do not imply the batch is
@@ -448,6 +483,7 @@ or a sprint explicitly requires it.
 | No generated files | This ledger, release handoff | Guarded by docs/tests | Add a precommit generated-artifact scanner if needed. |
 | Patch handoffs last resort | This ledger | Guarded by process | Add handoff template if patch handoffs remain unavoidable. |
 | Local-only commits are not delivery | This ledger, release handoff, production coherence guard | Guarded in docs/tests | Add a sync preflight script if local-only commit loops repeat. |
+| Production synchronization classification | `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`, this ledger, release handoff, production coherence guard | Guarded in docs/tests | Add a script that prints required Replit/publish/QA class if production drift repeats. |
 
 ## 10. Validation Policy
 

@@ -3,9 +3,12 @@
 This repository is the canonical implementation workspace for The Syndicate.
 
 Before synchronization, Replit publish, patch handoff, or production release
-work, read `docs/OPERATIONAL_MEMORY_LEDGER.md`. That ledger records GitHub,
+work, read `docs/OPERATIONAL_MEMORY_LEDGER.md` and
+`docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`. The ledger records GitHub,
 Replit, sandbox, credential, desktop-export, and patch-file lessons that must
-not be rediscovered.
+not be rediscovered. The synchronization doctrine classifies whether a batch
+requires Replit pull, publish, route QA, wallet/write-path QA,
+current-authority readback, founder approval, or no Replit action.
 
 Local validation is not delivery. A release handoff must say separately whether
 the batch is local-only, pushed to GitHub main, pulled by Replit, and verified
@@ -18,6 +21,10 @@ registry update, activation claim, or ceremony-adjacent public copy change,
 rebuild current truth from GitHub, Replit, production, and any relevant
 on-chain readbacks. Previous reports explain lineage; they are not proof that
 the live site or contract state is still current.
+
+Do not collapse states. A release report must distinguish local validation,
+GitHub main, Replit workspace, Replit deployment, live production, and on-chain
+readback when relevant.
 
 ## Package Manager
 

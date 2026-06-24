@@ -131,11 +131,15 @@ specs that match the deployed reality. Safe to reference for current work.
 > Operational entry point: `docs/CANONICAL_REGISTRY.md`. Activation
 > checklist: `docs/ACTIVATION_RUNBOOK.md`. Operational mistakes, sync
 > boundaries, sandbox limits, and Replit/GitHub workflow lessons belong in
-> `docs/OPERATIONAL_MEMORY_LEDGER.md`. Current-authority readback rules also
-> belong there.
+> `docs/OPERATIONAL_MEMORY_LEDGER.md`. Production synchronization, Replit
+> pull/publish decisions, live route QA, Replit push-back rules, and
+> GitHub/Replit/production state separation belong in
+> `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`. Current-authority readback
+> rules also belong there.
 
 - `docs/CANONICAL_REGISTRY.md`
 - `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, current-authority readback, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
+- `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` - operational doctrine for GitHub/Replit/production synchronization, change classification, Replit pull/publish decisions, route QA, wallet/write-path QA, push-back rules, Codex after-Replit protocol, and final reporting. It has no deployment, publish, transaction, registry, source-record, activation, or claim-UI authority.
 - `docs/ACTIVATION_RUNBOOK.md`
 - `docs/HOLDER_INDEX_ARCHITECTURE.md`
 - `docs/DEPLOYMENT_STATE_V1.md`
