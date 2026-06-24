@@ -268,7 +268,7 @@ export const PROTOCOL_EVOLUTION_EPISODES = [
     whatBecameTrue:
       "The identity and attribution constitution now separates seat identity, wallet ownership, recovery, and future durable identity.",
     whatIsUnfolding:
-      "Future identity work must preserve SYN as the current seat and avoid implying governance, equity, yield, or rights.",
+      "Future identity work must preserve SYN as the current seat and must not imply governance, equity, yield, or financial rights.",
     whyItMattersToMembers:
       "A member should know what seats them today and what future identity records may eventually preserve.",
     proofToWatchNext:
