@@ -9,6 +9,13 @@ import {
   getProtocolEvolutionEvidenceCount,
   getProtocolEvolutionStatusCounts,
 } from "../protocol-evolution";
+import {
+  PROTOCOL_EVOLUTION_EPISODES,
+  PROTOCOL_EVOLUTION_EPISODE_STATES,
+  getProtocolEvolutionEpisodeCounts,
+  getProtocolEvolutionEpisodesByState,
+  getProtocolEvolutionLatestEpisode,
+} from "../protocol-evolution-episodes";
 import { ZERO_SOURCE_ID } from "../source-policy-observability";
 
 describe("protocol evolution registry", () => {
@@ -79,9 +86,47 @@ describe("protocol evolution registry", () => {
     }
   });
 
+  it("adds an evidence-backed episode layer above the proof board", () => {
+    const moduleIds = new Set(PROTOCOL_EVOLUTION_MODULES.map((module) => module.id));
+    const episodeStates = new Set(PROTOCOL_EVOLUTION_EPISODE_STATES);
+
+    expect(PROTOCOL_EVOLUTION_EPISODES.length).toBeGreaterThanOrEqual(5);
+    expect(getProtocolEvolutionLatestEpisode()?.state).toBe("BECAME_TRUE");
+
+    for (const episode of PROTOCOL_EVOLUTION_EPISODES) {
+      expect(episodeStates.has(episode.state), episode.id).toBe(true);
+      expect(episode.title.trim().length, episode.id).toBeGreaterThan(0);
+      expect(episode.plainSummary.trim().length, episode.id).toBeGreaterThan(0);
+      expect(episode.whyItMattersToMembers.trim().length, episode.id).toBeGreaterThan(0);
+      expect(episode.proofToWatchNext.trim().length, episode.id).toBeGreaterThan(0);
+      expect(episode.safetyBoundary.trim().length, episode.id).toBeGreaterThan(0);
+      expect(episode.evidence.length, episode.id).toBeGreaterThan(0);
+      for (const moduleId of episode.moduleIds) {
+        expect(moduleIds.has(moduleId), `${episode.id}:${moduleId}`).toBe(true);
+      }
+    }
+
+    expect(getProtocolEvolutionEpisodesByState("BECAME_TRUE").length).toBeGreaterThan(0);
+    expect(getProtocolEvolutionEpisodeCounts().UNFOLDING).toBeGreaterThan(0);
+  });
+
+  it("keeps the source episode framed as internal rehearsal, not public referral activation", () => {
+    const sourceEpisode = PROTOCOL_EVOLUTION_EPISODES.find(
+      (episode) => episode.id === "source-policy-rehearsal",
+    );
+
+    expect(sourceEpisode).toBeTruthy();
+    expect(sourceEpisode?.state).toBe("UNFOLDING");
+    expect(sourceEpisode?.plainSummary).toContain("no referral activation");
+    expect(sourceEpisode?.plainSummary).toContain("no claim UI");
+    expect(sourceEpisode?.proofToWatchNext).toContain("PAUSED status");
+    expect(sourceEpisode?.whatDidNotChange).toContain("Public/default buys remain direct");
+  });
+
   it("does not contain activation or entitlement drift language", () => {
     const corpus = JSON.stringify({
       modules: PROTOCOL_EVOLUTION_MODULES,
+      episodes: PROTOCOL_EVOLUTION_EPISODES,
       boundaries: PROTOCOL_EVOLUTION_BOUNDARIES,
     });
 
