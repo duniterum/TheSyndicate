@@ -1355,6 +1355,10 @@ describe("production coherence guards", () => {
     expect(ledger).toContain("never remembered truth, never historical truth alone, never stale documentation alone");
     expect(ledger).toContain("OML-013 - Production synchronization requires change classification");
     expect(ledger).toContain("Never ask Replit to pull, publish, push back, or skip publish without first naming the change class");
+    expect(ledger).toContain("OML-014 - Replit dev workflow watcher limits are not production failures");
+    expect(ledger).toContain("ENOSPC: System limit for number of file watchers reached");
+    expect(ledger).toContain("Do not collapse dev-server watcher exhaustion into production failure");
+    expect(ledger).toContain("local-only Replit config edits");
 
     expect(syncDoctrine).toContain("Status: OPERATIONAL DOCTRINE / NO DEPLOYMENT AUTHORITY / NO PUBLISH AUTHORITY");
     expect(syncDoctrine).toContain("Source-Of-Truth Model");

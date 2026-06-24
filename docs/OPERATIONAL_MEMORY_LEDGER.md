@@ -378,6 +378,26 @@ Status guide:
 | Future "never again" rule | Never ask Replit to pull, publish, push back, or skip publish without first naming the change class and the required validation/QA boundary. |
 | Source links / commit hashes | Introduced after Protocol Evolution V1 route work, before the next production alignment pass. |
 
+### OML-014 - Replit dev workflow watcher limits are not production failures
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-25 |
+| System | Replit dev workflow / Vite / production publish |
+| Severity | Medium |
+| Status | Partially resolved by local Replit workaround; canonical repo unchanged unless a future sprint intentionally commits the fix |
+| Category | Environment limitation / production QA interpretation |
+| Affected surfaces | Replit development workflow, local preview, production publish reports, `vite.config.ts` local-only edits |
+| Symptom | After syncing GitHub `12dc33f` and publishing successfully, Replit's dev workflow showed `ENOSPC: System limit for number of file watchers reached` while production build and live QA were green. |
+| Root cause | Replit's inotify watcher cap was exhausted across running processes and growing local folders such as `.local`, `.pythonlibs`, `contracts`, `artifacts`, and reports. The failure came from the dev server's file-watching footprint, not the production bundle. |
+| Why it mattered | A dev workflow failure can be misread as a production regression after a successful publish. Conversely, a local-only Replit fix can be lost on the next GitHub sync if it is not intentionally committed to canonical source. |
+| Fix | Replit added a local-only `server.watch.ignored` workaround in `vite.config.ts` to stop the dev preview from watching non-frontend/generated/local directories. Production remained healthy and no GitHub push-back was needed because build/publish did not require a source fix. |
+| Process guard | Distinguish Replit dev workflow health from publish/build/live-site health. If dev preview fails with `ENOSPC` after production publish succeeds, diagnose watcher pressure before treating it as code failure. If a `vite.config.ts` watch-ignore is needed repeatedly, decide explicitly whether to make it canonical. |
+| Founder-work impact | Prevents unnecessary rollback or manual debugging when the live site is already healthy. Preserves the rule that Replit fixes are pushed back only when they are intentional canonical production fixes. |
+| Release implication | Production can be accepted when publish build and live QA pass even if the Replit dev workflow needs an environment-only watch workaround. Reports must name the distinction. |
+| Future "never again" rule | Do not collapse dev-server watcher exhaustion into production failure. Do not assume local-only Replit config edits survive future GitHub sync unless they are intentionally committed. |
+| Source links / commit hashes | Replit sync from `30e16970` to GitHub canonical `12dc33fd8469c00d0cbcb429489254c59cbbf731`; production deploy checkpoint reported as `543e6665`; GitHub canonical unchanged because no production source fix was required. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -484,6 +504,7 @@ or a sprint explicitly requires it.
 | Patch handoffs last resort | This ledger | Guarded by process | Add handoff template if patch handoffs remain unavoidable. |
 | Local-only commits are not delivery | This ledger, release handoff, production coherence guard | Guarded in docs/tests | Add a sync preflight script if local-only commit loops repeat. |
 | Production synchronization classification | `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`, this ledger, release handoff, production coherence guard | Guarded in docs/tests | Add a script that prints required Replit/publish/QA class if production drift repeats. |
+| Replit dev watcher limits are not production failures | This ledger, production synchronization doctrine's separate completion states | Guarded by process | If ENOSPC repeats, consider a canonical Vite dev watch-ignore for `.local`, `.pythonlibs`, `contracts`, `artifacts`, reports, and generated local state. |
 
 ## 10. Validation Policy
 
