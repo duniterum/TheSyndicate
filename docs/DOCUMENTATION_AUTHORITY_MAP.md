@@ -112,6 +112,13 @@ glossary, and source-of-truth findings into one navigable layer. Entry point
 5. **Operational docs** (OPERATIONAL list below)
 6. **Historical docs** (HISTORICAL list — record only, never authority)
 
+Execution authority rule: current readback beats remembered authority. A
+canonical document or previous readback can explain lineage, but transactions,
+deployments, funding, recovery, registry changes, source creation, activation,
+Replit publish, and production claims require a fresh current-authority check
+against live chain/repository/frontend/production state immediately before
+action.
+
 ## OPERATIONAL
 
 Active runbooks, registries, integration maps, deployment state, contract
@@ -123,10 +130,11 @@ specs that match the deployed reality. Safe to reference for current work.
 > Operational entry point: `docs/CANONICAL_REGISTRY.md`. Activation
 > checklist: `docs/ACTIVATION_RUNBOOK.md`. Operational mistakes, sync
 > boundaries, sandbox limits, and Replit/GitHub workflow lessons belong in
-> `docs/OPERATIONAL_MEMORY_LEDGER.md`.
+> `docs/OPERATIONAL_MEMORY_LEDGER.md`. Current-authority readback rules also
+> belong there.
 
 - `docs/CANONICAL_REGISTRY.md`
-- `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
+- `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, current-authority readback, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
 - `docs/ACTIVATION_RUNBOOK.md`
 - `docs/HOLDER_INDEX_ARCHITECTURE.md`
 - `docs/DEPLOYMENT_STATE_V1.md`

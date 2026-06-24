@@ -1,6 +1,6 @@
 # Smart Contract Lessons and Regression Ledger
 
-Last updated: 2026-06-21
+Last updated: 2026-06-24
 
 Status: canonical first-read for future smart-contract work.
 
@@ -403,6 +403,29 @@ Status guide:
 | Future "never again" rule | Never assume GitHub main equals production until Replit sync/publish and live route QA are complete. |
 | Source links / commit hashes | V3 frontend wiring `7d17333`; historical guard `ca7d6d2`. |
 
+### SCRL-015 - Current readback is execution authority
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-24 |
+| Contract / system | All owner/source/deployment/funding/recovery ceremonies |
+| Severity | Critical |
+| Status | Resolved as process guard; must be repeated before every transaction |
+| Category | Ceremony safety / execution authority |
+| Affected files | Source creation runbook, source packets, deployment/readback docs, operational memory ledger |
+| Affected deployed contracts | SourceRegistryV1, MembershipSaleV3, V2b, Archive1155, future owner-controlled contracts |
+| Symptom | A correct historical packet or previous readback can become stale before the founder signs a transaction. |
+| Root cause | Historical memory, lineage docs, and earlier readbacks were sometimes treated like current execution authority. |
+| Why it mattered | Owner, pending owner, source existence, paused state, signer, registry target, frontend route, and production state can change between packet freeze and execution. Acting on stale truth can create a wrong source record, target the wrong contract, publish stale UI, or activate a path unintentionally. |
+| Fix | Every transaction runbook must start with a Current Authority Check that reads current chain, bytecode, owner, pending owner, signer, target address, source existence/status, activation state, and frontend/production boundary before signing. |
+| Tests added | Production coherence guard requires the current-authority rule in operational memory, the smart-contract ledger, and the source creation runbook. |
+| Regression guard | No transaction packet may rely on remembered values alone. Readbacks must be current and named as such. |
+| Deployment implication | Deployment, ownership transfer, pause/unpause, funding, recovery, registry switch, source creation, source update, payout-wallet recovery, source activation, and frontend activation all require fresh readback immediately before action. |
+| Frontend implication | Frontend truth must be checked separately from GitHub truth; a source record or contract state change does not create public UI activation. |
+| Docs updated | Operational memory ledger, this ledger, source creation runbook, source packet docs, authority/release handoff docs. |
+| Future "never again" rule | Lineage explains how we arrived here. Current readbacks prove where we are now. Execution must use current truth, not remembered truth, historical truth alone, or stale documentation alone. |
+| Source links / commit hashes | Added before the first internal PAUSED source-record ceremony. |
+
 ## 4. Required Pre-Contract Workflow
 
 Before coding or patching any future smart contract:
@@ -439,17 +462,21 @@ Minimum lineage questions:
 
 Before any transaction:
 
-1. Confirm chain ID.
-2. Confirm signer.
-3. Confirm target address.
-4. Confirm contract role.
-5. Confirm function name.
-6. Confirm function args.
-7. Confirm value = 0 unless intentional.
-8. Confirm expected readback.
-9. Confirm stop conditions.
-10. Confirm transaction is authorized by founder.
-11. After transaction, record tx hash and readback.
+1. Rebuild current authority from live readbacks, not memory.
+2. Confirm chain ID.
+3. Confirm current signer.
+4. Confirm target address and bytecode.
+5. Confirm contract role.
+6. Confirm current `owner()` and `pendingOwner()` for owner-controlled calls.
+7. Confirm function name.
+8. Confirm function args.
+9. Confirm value = 0 unless intentional.
+10. Confirm current activation/paused/source/registry/frontend state relevant
+    to the action.
+11. Confirm expected readback.
+12. Confirm stop conditions.
+13. Confirm transaction is authorized by founder.
+14. After transaction, record tx hash and readback.
 
 This applies to:
 
@@ -520,6 +547,7 @@ This map must be updated whenever a lesson gains, loses, or changes coverage.
 | SCRL-012 deployment is not activation | Production coherence and source-of-truth docs | Guarded | Add source/referral activation tests before any source UI. |
 | SCRL-013 source records are not referral activation | `SourceRegistryV1.t.sol`, `MembershipSaleV3.t.sol`, production coherence | Guarded | Add frontend read-only source-state tests before source activation. |
 | SCRL-014 public frontend truth explicit | `sale-hooks`, `LivePurchase`, production coherence, V3 historical guard tests, `purchase-events-cache.test.ts` | Guarded for cache source preservation | Live Replit publish and wallet QA remain required before public confidence. |
+| SCRL-015 current readback is execution authority | `docs/OPERATIONAL_MEMORY_LEDGER.md`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`, production coherence | Guarded by docs/tests | Add a reusable pre-transaction readback script for repeated owner ceremonies. |
 
 Resolved cache gap:
 

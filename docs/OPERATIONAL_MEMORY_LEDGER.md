@@ -1,6 +1,6 @@
 # Operational Memory Ledger
 
-Last updated: 2026-06-23
+Last updated: 2026-06-24
 
 Status: operational first-read for synchronization, release, deployment,
 environment, Git, Replit, sandbox, credential, and handoff work.
@@ -110,6 +110,11 @@ Status guide:
 17. When a sprint is expected to end in GitHub synchronization, evaluate push
     capability before starting implementation or before declaring the batch
     blocked.
+18. Current authority beats remembered authority. Before any transaction,
+    deployment, funding, recovery, registry, ownership, source, referral,
+    activation, publish, or production action, rebuild current truth from
+    live readbacks and repository state instead of relying on memory,
+    historical docs, or stale chat context.
 
 ## 4. Operational Lessons
 
@@ -323,6 +328,26 @@ Status guide:
 | Future "never again" rule | Patch handoff is not a valid completion path until every safe authenticated sync path has been exhausted and the exact blocker is documented. |
 | Source links / commit hashes | Local-only commits: `26038b0`, `bd7b5bc`. GitHub commits after authenticated sync: `24b0364`, `c6899065922d8f476438854fdc6aaa354d47af16`. Blocked command: `git push origin main` from `.codex-canonical-work`; blocker: `schannel: AcquireCredentialsHandle failed: SEC_E_NO_CREDENTIALS`. |
 
+### OML-012 - Current authority beats remembered authority
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-24 |
+| System | Ceremony execution / live-state readbacks / operational truth |
+| Severity | Critical |
+| Status | Resolved by process guard; must be re-checked before every execution action |
+| Category | Execution authority / institutional memory |
+| Affected surfaces | Source ceremonies, deployment ceremonies, ownership changes, funding, recovery, registry switches, Replit publish, production activation, frontend truth |
+| Symptom | A historical value, previous readback, or remembered owner/state can be mistaken for current execution authority after mainnet, GitHub, Replit, or production state has changed. |
+| Root cause | Lineage and readback logs explain how the protocol arrived at a state, but they do not prove that state is still current at the moment of execution. |
+| Why it mattered | A transaction signed from stale authority can target the wrong contract, use the wrong signer, create a duplicate source, activate the wrong path, publish stale frontend truth, or mislead the founder about what is live. |
+| Fix | Add a Current Authority Check to ceremony runbooks and standing rules. Any execution action must rebuild current truth from live readbacks and current repository state immediately before action. |
+| Process guard | Before any transaction/deployment/activation/funding/recovery/registry/ownership/source/referral/publish action, read current chain ID, contract bytecode, owner, pending owner, signer, target address, activation status, source count/status, frontend buy target, Replit state, and production state where relevant. Stop if any value differs from the packet or if the readback cannot be performed. |
+| Founder-work impact | Prevents the founder from signing or publishing based on stale memory. Makes every ceremony auditable and reduces repeated "what is current?" reconstruction. |
+| Release implication | A green historical report is not enough for execution. Final reports must say whether a value is lineage, prior readback, or current authority. |
+| Future "never again" rule | Current authority always beats remembered authority. Lineage explains how we arrived here. Readbacks prove where we are now. Execution must use current truth: never remembered truth, never historical truth alone, never stale documentation alone. |
+| Source links / commit hashes | Added after the first internal source packet froze values but before any source-record ceremony. The frozen packet remains pending until a fresh current-authority readback confirms it can still be executed safely. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -343,6 +368,12 @@ Before any implementation, release, sync, or handoff sprint:
 
 If any of these cannot be confirmed, report the unknown before presenting the
 work as synchronized.
+
+For any execution action, add a current-authority readback before the founder
+acts. At minimum, confirm the current chain ID, signer, target address,
+contract owner, pending owner, activation state, relevant source count/status,
+frontend buy target, Replit state, and production state. Historical readbacks
+and packet values are lineage; they do not authorize execution by themselves.
 
 ## 6. Required Post-Work Sync Workflow
 

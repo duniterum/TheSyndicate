@@ -695,14 +695,28 @@ Founder review only. This table does not authorize a transaction.
 
 Before any future source-creation transaction, verify:
 
+- Current authority beats remembered authority: this checklist must be run
+  fresh immediately before signing. Frozen packet values and older readbacks
+  are lineage only.
 - SourceRegistryV1 owner is still the approved owner wallet.
+- SourceRegistryV1 `pendingOwner()` is zero unless a separate ownership
+  ceremony is intentionally in progress.
+- The selected signer equals the current SourceRegistryV1 `owner()` readback.
+- SourceRegistryV1 bytecode exists at the target address.
 - Avalanche C-Chain ID is `43114`.
 - `sourceExists(0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620) = false`.
+- `sourceConfig(0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620)` is empty/default before creation.
+- `isActive(0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620) = false`.
 - SourceRegistryV1 still has zero source records / no `SourceCreated` logs unless a later readback says otherwise.
+- MembershipSaleV3 still points to SourceRegistryV1.
 - V3 public/default buys still use `ZERO_SOURCE_ID`.
 - `/referral` still says referral/source attribution is inactive.
 - Claim UI remains absent.
 - No public source link, source dashboard, or source-aware buy path exists.
+
+Stop if any current readback differs from the frozen packet or from the
+expected inactive public surface. Update the packet/readback docs before
+continuing.
 
 ## Future Source Commission Statement / Reporting Export
 
@@ -929,10 +943,33 @@ Any future source-attributed receipt must preserve:
 - No balance/claim language appears without escrow readback and claim policy.
 - Source attribution never grants member ownership.
 
+## Future Localhost Source-Attributed Buy Boundary
+
+The first PAUSED source record does not create a referral system. No referral
+link exists today, no public source-aware buy path exists today, and no user can
+self-serve a public source/referrer identity from this packet.
+
+Before any future $5 source-attributed buy test, a separate local-only sprint
+must build or enable a controlled test path:
+
+- localhost/local dev only,
+- explicit internal source test mode,
+- loud copy: `INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL`,
+- the frozen sourceId injected intentionally, never as a production default,
+- a fresh buyer wallet never used on The Syndicate,
+- public/default production buys still using `ZERO_SOURCE_ID`,
+- no public referral link, claim UI, source dashboard, or onboarding flow.
+
+After that separate future test, read back the V3 receipt, sourceId,
+sourceClass, source wallet, commission bps, acquisition cost, Net USDC Routed,
+Vault/Liquidity/Operations routing, payout wallet balance change, escrow state,
+buyer attribution state, and Activity/My Syndicate cache behavior after reload.
+
 ## Stop Conditions
 
 Stop before any transaction if:
 
+- current authority readbacks were skipped or differ from packet values,
 - source wallet is not final,
 - payout wallet is not final,
 - source ID is not derived from the approved packet,

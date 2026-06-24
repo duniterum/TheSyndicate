@@ -13,6 +13,12 @@ on production. Patch-file handoff is a failure mode until authenticated sync
 paths such as the GitHub Desktop clone, GitHub connector/API, GitHub CLI,
 SSH/token Git, and Replit/GitHub import path have been exhausted.
 
+Current authority beats remembered authority. Before any production publish,
+registry update, activation claim, or ceremony-adjacent public copy change,
+rebuild current truth from GitHub, Replit, production, and any relevant
+on-chain readbacks. Previous reports explain lineage; they are not proof that
+the live site or contract state is still current.
+
 ## Package Manager
 
 Use npm for validation and deployment commands:

@@ -274,6 +274,31 @@ Future deterministic generation instructions:
 No transaction is authorized by this document. The generated sourceId and
 metadata hash are for founder review and future readback only.
 
+## 8A. Current Authority Check Before Ceremony
+
+Frozen packet values do not authorize a transaction by themselves. They are
+lineage. Immediately before any future `createSource` transaction, rebuild
+current authority from live readbacks:
+
+- Avalanche C-Chain ID is `43114`.
+- SourceRegistryV1 bytecode exists at
+  `0x780013bB358be6be95b401901264FC7c22a595a6`.
+- SourceRegistryV1 `owner()` equals the intended owner hardware wallet.
+- SourceRegistryV1 `pendingOwner()` is zero unless a separate ownership
+  ceremony is intentionally in progress.
+- The selected signer equals the current SourceRegistryV1 `owner()` readback.
+- `sourceExists(sourceId) = false`.
+- `sourceConfig(sourceId)` is empty/default before creation.
+- `isActive(sourceId) = false`.
+- Current source-count/log truth is known.
+- MembershipSaleV3 still points to SourceRegistryV1.
+- Public/default V3 buys still use `ZERO_SOURCE_ID`.
+- `/referral` remains inactive, claim UI remains absent, and no public
+  source-aware buy path exists.
+
+Stop if any value differs from the packet or if any current readback cannot be
+performed.
+
 ## 9. Post-Readback Update Plan
 
 Immediately after any future `SourceCreated` event, update truth surfaces before
@@ -303,10 +328,35 @@ Validation after readback:
 - Commit readback docs/guards to GitHub before Replit pulls or production copy
   changes.
 
+## 9A. Future Localhost Source-Attributed Buy Boundary
+
+The first PAUSED source record does not create a referral system. It creates
+only an internal source-policy fact. No referral/source link exists today.
+
+Before any $5 source-attributed buy test, a separate sprint must build or
+enable a controlled local-only source test path:
+
+- localhost/local dev only,
+- explicit source test mode,
+- visible `INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL` copy,
+- frozen sourceId passed intentionally to the buy flow,
+- fresh buyer wallet never used on The Syndicate,
+- public/default production buys remain `ZERO_SOURCE_ID`,
+- no production public source attribution,
+- no public referral link, no claim UI, no source dashboard, and no public
+  source onboarding.
+
+That future local test must be followed by readbacks for the
+`MembershipPurchasedV3` receipt, source fields, acquisition cost, Net USDC
+Routed, Vault/Liquidity/Operations routing, payout wallet USDC balance,
+escrow state, buyer attribution state, and Activity/My Syndicate cache after
+reload.
+
 ## 10. Stop Conditions
 
 Stop before source creation if any of these are true:
 
+- current authority readbacks were skipped or differ from packet values,
 - Source wallet or payout wallet is missing.
 - The final sourceId or metadata hash is still draft.
 - Commission bps, caps, timestamps, or repeat setting are not approved.

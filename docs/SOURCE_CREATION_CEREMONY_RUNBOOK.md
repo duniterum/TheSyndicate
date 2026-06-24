@@ -29,6 +29,36 @@ claim UI activation, and source-linked buy UI activation.
 - `docs/LEGAL_DISCLOSURE_REFERRAL.md`
 - `docs/REVENUE_ATTRIBUTION_LAYER.md`
 
+## Current Authority Check
+
+Run this check immediately before the founder signs. Packet values, previous
+readbacks, and chat memory are lineage only. They do not authorize execution.
+Current authority comes from fresh readbacks.
+
+Stop if any current readback is missing or differs from the approved packet.
+
+- Confirm the connected network is Avalanche C-Chain `43114`.
+- Confirm target contract bytecode exists at
+  `0x780013bB358be6be95b401901264FC7c22a595a6`.
+- Read `owner()` and confirm it is the expected owner hardware wallet.
+- Read `pendingOwner()` and confirm it is zero unless a separate ownership
+  ceremony is intentionally in progress.
+- Confirm the selected signer equals the current `owner()` readback.
+- Confirm `sourceExists(sourceId) = false` for the exact frozen sourceId.
+- Confirm `sourceConfig(sourceId)` is empty/default before creation.
+- Confirm `isActive(sourceId) = false`.
+- Confirm current source-count/log truth; do not rely on an older
+  "zero source records" statement if a newer readback says otherwise.
+- Confirm MembershipSaleV3 still points to this SourceRegistryV1.
+- Confirm public/default buys still use `ZERO_SOURCE_ID`.
+- Confirm `/referral` remains inactive, claim UI remains absent, and no public
+  source-aware buy path is live.
+- Confirm GitHub/Replit/production status is understood separately if public
+  copy will be updated after readback.
+
+If a value changed, stop. Update the packet/readback docs first, then repeat
+the Current Authority Check before any transaction.
+
 ## Commission Reality
 
 This ceremony creates source policy only. It does not pay anything.
@@ -65,16 +95,18 @@ public source links.
 
 ## Ceremony Steps
 
-1. Confirm chain ID `43114`.
-2. Confirm selected signer is the approved owner hardware wallet.
-3. Confirm target address is `SourceRegistryV1`.
-4. Confirm source packet is final and founder-approved.
-5. Call `createSource(sourceId, terms)`.
-6. Do not call `setSourceStatus(..., ACTIVE)` in the same ceremony unless separately approved.
-7. Do not change frontend source paths.
-8. Do not create claim UI.
-9. Do not switch registry.
-10. Record transaction hash and readbacks.
+1. Complete the Current Authority Check above.
+2. Confirm chain ID `43114`.
+3. Confirm selected signer is the current SourceRegistryV1 owner hardware
+   wallet from readback.
+4. Confirm target address is `SourceRegistryV1`.
+5. Confirm source packet is final and founder-approved.
+6. Call `createSource(sourceId, terms)`.
+7. Do not call `setSourceStatus(..., ACTIVE)` in the same ceremony unless separately approved.
+8. Do not change frontend source paths.
+9. Do not create claim UI.
+10. Do not switch registry.
+11. Record transaction hash and readbacks.
 
 ## Expected Event
 
@@ -114,6 +146,8 @@ Before any frontend activation:
 
 Stop and report if:
 
+- the Current Authority Check was skipped,
+- a previous readback is being used as current authority,
 - transaction targets the wrong contract,
 - chain ID is wrong,
 - signer is wrong,

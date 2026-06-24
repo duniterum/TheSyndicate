@@ -586,6 +586,13 @@ describe("production coherence guards", () => {
     expect(sourcePacket).toContain("Founder Approval Checklist");
     expect(sourcePacket).toContain("No source record is created without explicit founder approval.");
     expect(sourceRunbook).toContain("Status: RUNBOOK ONLY / NO TRANSACTION AUTHORIZED / SOURCE RECORDS INACTIVE");
+    expect(sourceRunbook).toContain("Current Authority Check");
+    expect(sourceRunbook).toContain("readbacks, and chat memory are lineage only");
+    expect(sourceRunbook).toContain("Read `owner()`");
+    expect(sourceRunbook).toContain("Read `pendingOwner()`");
+    expect(sourceRunbook).toContain("Confirm `sourceExists(sourceId) = false`");
+    expect(sourceRunbook).toContain("Confirm `sourceConfig(sourceId)` is empty/default before creation");
+    expect(sourceRunbook).toContain("Confirm MembershipSaleV3 still points to this SourceRegistryV1");
     expect(sourceRunbook).toContain("createSource(bytes32 sourceId, SourceTerms terms)");
     expect(sourceRunbook).toContain("The initial status must be `PAUSED`.");
     expect(sourceRunbook).toContain("No source creation happens without founder approval.");
@@ -624,6 +631,11 @@ describe("production coherence guards", () => {
     expect(internalSourceDraft).toContain("5 USDC (`5_000_000`)");
     expect(internalSourceDraft).toContain("Future createSource Argument Table");
     expect(internalSourceDraft).toContain("Pre-Ceremony Readback Checklist");
+    expect(internalSourceDraft).toContain("Current authority beats remembered authority");
+    expect(internalSourceDraft).toContain("Frozen packet values and older readbacks");
+    expect(internalSourceDraft).toContain("Future Localhost Source-Attributed Buy Boundary");
+    expect(internalSourceDraft).toContain("The first PAUSED source record does not create a referral system");
+    expect(internalSourceDraft).toContain("INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL");
     expect(internalSourceDraft).toContain("Future Readback Command Plan");
     expect(internalSourceDraft).toContain("SourceRegistryV1 = 0x780013bB358be6be95b401901264FC7c22a595a6");
     expect(internalSourceDraft).toContain("isActive(sourceId) = false");
@@ -681,6 +693,10 @@ describe("production coherence guards", () => {
     expect(internalSourceFounderInputs).toContain("A `PAUSED` source can expire if its window is too short");
     expect(internalSourceFounderInputs).toContain("future activation-testing window");
     expect(internalSourceFounderInputs).toContain("create PAUSED now and update terms before activation");
+    expect(internalSourceFounderInputs).toContain("Current Authority Check Before Ceremony");
+    expect(internalSourceFounderInputs).toContain("Frozen packet values do not authorize a transaction by themselves");
+    expect(internalSourceFounderInputs).toContain("Future Localhost Source-Attributed Buy Boundary");
+    expect(internalSourceFounderInputs).toContain("No referral/source link exists today");
     expect(internalSourceFounderInputs).toContain("Source class | `BUILDER_SOURCE`");
     expect(internalSourceFounderInputs).toContain("Source label | `INTERNAL_PROTOCOL_TEST_SOURCE_001`");
     expect(internalSourceFounderInputs).toContain("controlled protocol-test public wallet address");
@@ -1182,14 +1198,19 @@ describe("production coherence guards", () => {
     const ledger = read("docs/OPERATIONAL_MEMORY_LEDGER.md");
     const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
     const release = read("docs/RELEASE_HANDOFF.md");
+    const smartContractLedger = read("docs/SMART_CONTRACT_LESSONS_AND_REGRESSION_LEDGER.md");
+    const activationRunbook = read("docs/ACTIVATION_RUNBOOK.md");
 
     expect(authority).toContain("docs/OPERATIONAL_MEMORY_LEDGER.md");
     expect(authority).toContain("operational first-read for synchronization");
+    expect(authority).toContain("Execution authority rule: current readback beats remembered authority");
+    expect(authority).toContain("require a fresh current-authority check");
     expect(release).toContain("Before synchronization, Replit publish, patch handoff, or production release");
     expect(release).toContain("docs/OPERATIONAL_MEMORY_LEDGER.md");
     expect(release).toContain("Local validation is not delivery");
     expect(release).toContain("pushed to GitHub main");
     expect(release).toContain("GitHub Desktop clone, GitHub connector/API");
+    expect(release).toContain("Current authority beats remembered authority");
 
     expect(ledger).toContain("Status: operational first-read");
     expect(ledger).toContain("This file has no deployment authority");
@@ -1213,6 +1234,15 @@ describe("production coherence guards", () => {
     expect(ledger).toContain("GitHub success: GitHub main contains the commit");
     expect(ledger).toContain("Replit success: Replit has pulled and validated the commit");
     expect(ledger).toContain("production success: the live site is published and route-checked");
+    expect(ledger).toContain("OML-012 - Current authority beats remembered authority");
+    expect(ledger).toContain("Lineage explains how we arrived here");
+    expect(ledger).toContain("Execution must use current truth");
+    expect(ledger).toContain("never remembered truth, never historical truth alone, never stale documentation alone");
+    expect(smartContractLedger).toContain("SCRL-015 - Current readback is execution authority");
+    expect(smartContractLedger).toContain("No transaction packet may rely on remembered values alone");
+    expect(activationRunbook).toContain("Current Authority Check");
+    expect(activationRunbook).toContain("Previous reports");
+    expect(activationRunbook).toContain("chat memory are lineage only");
     expect(ledger).toContain("Product UX regression ledger");
     expect(ledger).toContain("Live production incident ledger");
   });

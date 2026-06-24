@@ -4,6 +4,17 @@ Reusable checklist for activating a new Archive1155 artifact id or a new
 Syndicate smart contract. Do not skip steps. Do not perform any step UI-side
 until the on-chain step has been verified by an independent read.
 
+## Current Authority Check
+
+Before any activation, deployment registration, registry change, mint enablement,
+or write UI change, rebuild current truth from live readbacks. Previous reports,
+runbooks, and chat memory are lineage only.
+
+At minimum verify chain ID, target address, bytecode, current owner,
+pending owner, selected signer, active/paused/configured state, registry entry,
+frontend state, and production state where relevant. Stop if any current
+readback differs from the intended activation packet.
+
 ## A. Archive1155 — public-mint activation checklist
 
 For each id (e.g. ID 4 / ID 5 / future ids):
