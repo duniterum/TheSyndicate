@@ -33,15 +33,16 @@ const ENTRIES: SitemapEntry[] = [
   { path: "/founders",     changefreq: "weekly",  priority: "0.6" },
   // /episodes retired — now 302s to /chapters; excluded from sitemap.
   // /nft is the public-facing mint/ownership route for The First Signal (canonical SEO route).
-  // /nfts is an ALIAS of /nft (renders the same NftPage); canonicalizes to /nft.
+  // /nfts is an ALIAS of /nft (renders the same NftPage); canonicalizes to /nft and
+  // is intentionally excluded from the sitemap to avoid listing a duplicate canonical URL.
   // /archive is a DISTINCT museum / protocol-memory route (renders ArchivePage), but
   // canonicalizes to /nft for SEO consolidation.
   { path: "/nft",          changefreq: "weekly",  priority: "0.8" },
   { path: "/archive",      changefreq: "weekly",  priority: "0.6" },
   { path: "/my-syndicate", changefreq: "weekly",  priority: "0.6" },
-  { path: "/nfts",         changefreq: "monthly", priority: "0.4" },
-  { path: "/ai",           changefreq: "monthly", priority: "0.4" },
-  // /referral is a SIMULATED preview surface; noindex on the route — excluded from sitemap.
+  // /ai is reserved future member tooling; noindex on the route until it is real.
+  // /referral is the pending source-attribution truth surface; noindex on the route
+  // until a separately approved public referral launch.
   // /member/$number and /wallet/$address are DYNAMIC per-entity routes (unbounded,
   // one URL per member/wallet) — intentionally NOT enumerated here. Crawlers reach
   // member profiles via the indexed /members wall, which links to each /member/N.

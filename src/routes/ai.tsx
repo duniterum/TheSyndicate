@@ -7,9 +7,10 @@ export const Route = createFileRoute("/ai")({
   head: () => ({
     meta: [
       { title: "AI Syndicate Layer — Pending | The Syndicate" },
-      { name: "description", content: "Future AI Syndicate Layer: agents, signal generation, and member tooling. Not yet built." },
+      { name: "description", content: "Reserved future member tooling for The Syndicate. Not built, not live, and not part of current protocol totals." },
+      { name: "robots", content: "noindex,nofollow" },
       { property: "og:title", content: "The Syndicate — AI Layer" },
-      { property: "og:description", content: "Future module. Not yet active." },
+      { property: "og:description", content: "Reserved future module. Not built or active." },
       { property: "og:url", content: "https://thesyndicate.money/ai" },
     ],
     links: [{ rel: "canonical", href: "https://thesyndicate.money/ai" }],
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/ai")({
           <div className="mt-6">
             <MetricExplainer
               what="An optional member-facing layer of AI tooling built around the Vault, the protocol, and the on-chain network."
-              why="To give members signal, analytics, and automation that compound participation — without changing how the protocol routes USDC or accrues assets."
+              why="To give members signal, analytics, and automation around participation — without changing how the protocol routes USDC, records receipts, or defines membership."
               how="Specs and contracts are not designed yet. Nothing is live. When work begins, every component will ship behind LIVE / PARTIAL / PENDING status with verifiable contract addresses."
               verify="No contract, no claim, no waitlist. Status: PENDING."
             />

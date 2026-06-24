@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Low-cost production smoke test: every public route must return 200,
-// /episodes must 30x → /chapters, and /labs must remain non-indexed.
+// Low-cost production smoke test: public and critical noindex truth routes
+// must return 200, /episodes must 30x → /chapters, and /labs must remain
+// non-indexed.
 // Run with: node scripts/check-route-status.mjs [origin]
 // Default origin: https://thesyndicate.money
 
@@ -10,7 +11,9 @@ const ROUTES_200 = [
   "/", "/join", "/activity", "/chapters", "/liquidity", "/members",
   "/founders", "/ranks", "/registry", "/transparency", "/token",
   "/tokenomics", "/vault", "/roadmap", "/docs", "/faq", "/whitepaper",
-  "/archive", "/my-syndicate",
+  "/archive", "/chronicle", "/evolution", "/institutional-register",
+  "/knowledge-map", "/my-syndicate", "/nft", "/nfts", "/risk",
+  "/ai", "/referral", "/protocol-health",
   "/sitemap.xml", "/robots.txt",
 ];
 

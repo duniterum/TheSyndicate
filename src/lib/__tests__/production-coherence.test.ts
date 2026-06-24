@@ -147,6 +147,39 @@ describe("production coherence guards", () => {
     expect(sitemap).toContain('{ path: "/evolution"');
   });
 
+  it("keeps sitemap and production route smoke checks aligned with current route truth", () => {
+    const sitemap = read("src/routes/sitemap[.]xml.ts");
+    const smoke = read("scripts/check-route-status.mjs");
+    const ai = read("src/routes/ai.tsx");
+
+    expect(sitemap).toContain('{ path: "/evolution"');
+    expect(sitemap).toContain('{ path: "/nft"');
+    expect(sitemap).toContain('{ path: "/archive"');
+    expect(sitemap).not.toContain('{ path: "/nfts"');
+    expect(sitemap).not.toContain('{ path: "/ai"');
+    expect(sitemap).toContain("/referral is the pending source-attribution truth surface");
+    expect(sitemap).not.toMatch(/SIMULATED preview surface/i);
+
+    expect(ai).toContain('{ name: "robots", content: "noindex,nofollow" }');
+    expect(ai).toContain("Not built, not live");
+    expect(ai).toContain("No contract, no claim, no waitlist");
+
+    for (const route of [
+      '"/evolution"',
+      '"/referral"',
+      '"/chronicle"',
+      '"/institutional-register"',
+      '"/knowledge-map"',
+      '"/nft"',
+      '"/nfts"',
+      '"/ai"',
+      '"/risk"',
+      '"/protocol-health"',
+    ]) {
+      expect(smoke).toContain(route);
+    }
+  });
+
   it("keeps the homepage visibility layer five-pillar, truthful, and non-activating", () => {
     const home = read("src/routes/index.tsx");
     const model = read("src/lib/protocol-visibility.ts");
