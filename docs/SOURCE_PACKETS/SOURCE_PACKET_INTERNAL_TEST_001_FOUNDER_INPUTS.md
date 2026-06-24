@@ -17,6 +17,13 @@ Current boundary:
 - Archive1155, SwapRail, product commerce, and future NFT/ERC721 systems are not
   source-aware.
 
+Acceleration rule:
+
+Move fast by removing ambiguity, not by skipping proof. This packet can prepare
+one precise, founder-approved, `PAUSED` source-policy record. It cannot make
+referral public-live, activate a source, generate a claim UI, or authorize a
+source-attributed purchase.
+
 Use this form only after reading:
 
 - `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`
@@ -54,7 +61,71 @@ Fill every founder final value before sourceId or metadata hash generation.
 | Tax/accounting note | Not tax or accounting advice | TBD - founder acknowledges | Future statements/exports require separate approval. |
 | Direct payout / escrow fallback acknowledgment | Direct on-chain acquisition commission only after a future ACTIVE source-attributed purchase; escrow fallback only if direct payout fails | TBD - founder acknowledges | A PAUSED source does not accrue commission. |
 
-## 2. Recommended Defaults
+## 2. Wallet Model
+
+Do not confuse source wallets with protocol routing wallets.
+
+Protocol routing wallets:
+
+- Vault wallet: receives the Vault share of Net USDC Routed.
+- Liquidity wallet: receives the Liquidity share of Net USDC Routed.
+- Operations wallet: receives the Operations share of Net USDC Routed.
+
+Source attribution wallets:
+
+- Source wallet: the identity/source actor wallet recorded in SourceRegistryV1.
+- Payout wallet: the wallet that receives acquisition commission after a future
+  ACTIVE, eligible, source-attributed MembershipSaleV3 purchase.
+
+Rules for this first internal test:
+
+- The source wallet and payout wallet may be the same controlled wallet if the
+  founder approves.
+- The source wallet and payout wallet do not have to be the same in future.
+- Do not use Vault, Liquidity, or Operations as the source wallet or payout wallet
+  unless the founder explicitly approves that exceptional choice.
+- Future public referrers will need their own source/payout wallet model.
+- A source wallet does not own a member, seat, receipt, chapter, Archive item, or
+  future SeatRecord.
+
+## 3. Test Cap Clarification
+
+The first internal test caps are deliberately small.
+
+- The suggested 25 USDC gross cap (`25_000_000`) is only a first internal test
+  recommendation.
+- The suggested 5 USDC per-buyer cap (`5_000_000`) is only a first internal test
+  recommendation.
+- These values are not final public referral limits.
+- These values are not the final public acquisition economy.
+- The purpose is to test source-policy creation, readback, and later
+  source-attributed receipt mechanics safely.
+- Future public referral caps, source rates, source classes, and activation rules
+  require a separate founder-approved design.
+
+## 4. Timing / Window Strategy
+
+`WINDOWED` source terms require both `startTime` and `endTime`.
+
+Important timing truth:
+
+- A `PAUSED` source can expire if its window is too short.
+- Source creation and source activation are separate ceremonies.
+- This first ceremony must create the source as `PAUSED` only.
+- If activation testing happens later, the source terms may need a visible
+  `updateSourceTerms` action before activation.
+
+Recommended founder choice:
+
+- If activation testing is expected soon, use a short future activation-testing
+  window that will not expire before the separate activation test can occur.
+- If activation timing is uncertain, create the PAUSED source first and plan to
+  update terms before any later activation.
+
+Do not invent final timestamps. The founder must supply or approve the final
+Unix timestamps before sourceId and metadata hash generation.
+
+## 5. Recommended Defaults
 
 Use these unless the founder explicitly chooses otherwise:
 
@@ -65,6 +136,10 @@ Use these unless the founder explicitly chooses otherwise:
 - Public display: hidden/internal only
 - Source dashboard: not live
 - Claim UI: not live
+- Privacy/tracking: no public link, no cookies, no session tracking
+- Source wallet: founder-provided controlled source wallet
+- Payout wallet: same founder-provided controlled source wallet unless founder
+  chooses otherwise
 - Gross cap: 25 to 100 USDC, suggested first value 25 USDC (`25_000_000`)
 - Per-buyer cap: 5 to 10 USDC, suggested first value 5 USDC (`5_000_000`)
 - Window: short internal test window, but long enough that it cannot expire before
@@ -72,7 +147,40 @@ Use these unless the founder explicitly chooses otherwise:
 - Initial status: `PAUSED`
 - Public/default buy path: remains `ZERO_SOURCE_ID`
 
-## 3. Founder Acknowledgments
+## 6. Exact Founder Questions
+
+Only these founder decisions are needed for the next gate:
+
+A. Which public wallet should be the internal source wallet?
+
+B. Should the payout wallet be the same wallet as the source wallet?
+
+C. Confirm source class: `BUILDER_SOURCE`?
+
+D. Confirm commission: `500` bps?
+
+E. Confirm gross cap: 25 USDC (`25_000_000`)?
+
+F. Confirm per-buyer cap: 5 USDC (`5_000_000`)?
+
+G. Confirm repeat purchases: `false`?
+
+H. Choose timing strategy:
+
+- future activation-testing window, or
+- create PAUSED now and update terms before activation
+
+I. Confirm public display: hidden/internal only?
+
+J. Confirm no public referral, no claim UI, no source dashboard, and no
+product-wide attribution?
+
+K. Confirm direct on-chain payout / escrow fallback doctrine?
+
+L. Confirm readiness to generate sourceId and metadata hash after all final
+values are filled?
+
+## 7. Founder Acknowledgments
 
 The founder must check every item before sourceId and metadata hash generation.
 
@@ -93,8 +201,10 @@ The founder must check every item before sourceId and metadata hash generation.
 - [ ] No activation occurs in the same ceremony.
 - [ ] Public/default buys continue to use `ZERO_SOURCE_ID`.
 - [ ] This source applies only to MembershipSaleV3 unless a future module passes a separate review.
+- [ ] Vault, Liquidity, and Operations wallets are protocol routing wallets, not default source/payout wallets.
+- [ ] 25 USDC gross cap and 5 USDC per-buyer cap are first-internal-test values only, not public referral economics.
 
-## 4. SourceId And Metadata Hash Gate
+## 8. SourceId And Metadata Hash Gate
 
 Do not generate `sourceId` or `metadataHash` while any founder value remains TBD.
 
@@ -113,7 +223,23 @@ Decision after this gate:
 
 Current decision: missing founder values remain.
 
-## 5. Post-Readback Update Plan
+Future deterministic generation instructions:
+
+- Use only the final approved values.
+- Compute `sourceId` from the approved packet identity, approved source wallet,
+  and approved date/source label exactly as recorded in the final source packet.
+- Compute `metadataHash` from the final frozen packet text or final approved
+  metadata artifact.
+- Do not compute either value from this unfinished input form.
+- Do not broadcast, sign, deploy, activate, or call `createSource` during
+  generation.
+- Record both generated values for founder review before any ceremony.
+
+No helper script is added in this sprint because final wallet, timestamp,
+sourceId method, and metadata artifact values remain missing. A helper would be
+useful only after the founder freezes the exact inputs.
+
+## 9. Post-Readback Update Plan
 
 Immediately after any future `SourceCreated` event, update truth surfaces before
 any later activation discussion.
@@ -142,7 +268,7 @@ Validation after readback:
 - Commit readback docs/guards to GitHub before Replit pulls or production copy
   changes.
 
-## 6. Stop Conditions
+## 10. Stop Conditions
 
 Stop before source creation if any of these are true:
 
@@ -157,7 +283,7 @@ Stop before source creation if any of these are true:
   SeatRecord721, NFT/ERC721, or product commerce without separate review.
 - The post-readback update plan is not accepted.
 
-## 7. Decision Output
+## 11. Decision Output
 
 Current output:
 
