@@ -83,6 +83,7 @@ The doctrine layer. Vision, gates, decision frameworks.
 - `docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md` — canonical boundary for current seat status, historical identity, recovery, Privy, SeatRecord721, and source attribution. *(Registered 2026-06-20.)*
 - `docs/MODULE_INTEGRATION_STANDARD.md` — canonical anti-fragmentation standard for future modules: taxonomy, manifest fields, payment/source/receipt/read-model gates, SwapRail posture, Archive attribution options, and no page-by-page patching. *(Registered 2026-06-22.)*
 - `docs/PROTOCOL_ORGANISM_GRAPH.md` — canonical module relationship map: current live/proven graph, source attribution lifecycle, Archive/NFT non-edges, future module intake, read-model propagation, and anti-fragmentation operating questions. *(Registered 2026-06-22.)*
+- `docs/PROTOCOL_EVOLUTION_LAYER_ARCHITECTURE.md` — canonical architecture for the public Protocol Evolution layer: evidence-backed module status, community-signal loop, anti-drift rules, and V1/V2/V3 implementation sequence. It has no activation, source-record, claim-UI, transaction, deployment, or publish authority. *(Registered 2026-06-24.)*
 - `docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md` — knowledge-map index: where each kind of protocol knowledge lives (Protocol Knowledge vs Institutional Register Memory). Defers to the code registry `src/lib/protocol-knowledge-map.ts`. *(Registered 2026-06-12.)*
 
 ### Consolidated canon set (`docs/canon/`)

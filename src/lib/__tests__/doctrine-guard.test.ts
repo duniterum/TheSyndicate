@@ -214,6 +214,7 @@ const CANONICAL_DOCS = [
   "docs/SYNDICATE_PROTOCOL_MODEL.md",
   "docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md",
   "docs/IDENTITY_ATTRIBUTION_CONSTITUTION.md",
+  "docs/PROTOCOL_EVOLUTION_LAYER_ARCHITECTURE.md",
   "docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md",
   // ── Coupled to the Authority Map's CANONICAL class (2026-06-12, Batch 8) ──
   // Classified CANONICAL in docs/DOCUMENTATION_AUTHORITY_MAP.md but not
