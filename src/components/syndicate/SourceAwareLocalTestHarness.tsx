@@ -29,6 +29,10 @@ import {
   SOURCE_AWARE_TEST_MODE_FLAG,
   SOURCE_AWARE_TEST_QUERY_VALUE,
 } from "@/lib/source-aware-test-mode";
+import {
+  deriveSourceTestOperatorState,
+  type SourceTestOperatorStage,
+} from "@/lib/source-test-operator-ceremony";
 import { type SourcePolicyRecord, ZERO_SOURCE_ID } from "@/lib/source-policy-observability";
 import {
   REAL_CONDITION_SOURCE_TEST_PACKET,
@@ -43,13 +47,6 @@ const TEST_USDC_RAW = parseUnits("5", USDC_DECIMALS);
 const TEST_SOURCE_ID = REAL_CONDITION_SOURCE_TEST_TERMS.sourceId as `0x${string}`;
 
 type Phase = "idle" | "approving" | "buying" | "success";
-type CeremonyStage =
-  | "LOCKED"
-  | "READY_FOR_APPROVAL"
-  | "READY_FOR_BUY"
-  | "APPROVING"
-  | "BUYING"
-  | "BUY_CONFIRMED";
 type SourceConfigObject = {
   sourceWallet: string;
   sourceClass: number;
@@ -131,63 +128,6 @@ function sourceRecordFromConfig(config: unknown): SourcePolicyRecord | null {
 
 function statusTone(ok: boolean): "green" | "red" {
   return ok ? "green" : "red";
-}
-
-function deriveCeremonyStage({
-  buyConfirmed,
-  phase,
-  canPrepare,
-  needsApprove,
-}: {
-  buyConfirmed: boolean;
-  phase: Phase;
-  canPrepare: boolean;
-  needsApprove: boolean;
-}): CeremonyStage {
-  if (buyConfirmed || phase === "success") return "BUY_CONFIRMED";
-  if (phase === "approving") return "APPROVING";
-  if (phase === "buying") return "BUYING";
-  if (!canPrepare) return "LOCKED";
-  return needsApprove ? "READY_FOR_APPROVAL" : "READY_FOR_BUY";
-}
-
-function stageCopy(stage: CeremonyStage) {
-  switch (stage) {
-    case "READY_FOR_APPROVAL":
-      return {
-        label: "Next action: approve exactly 5 USDC",
-        detail:
-          "Stay on this page. This approval only lets MembershipSaleV3 spend the test amount; it is not the buy.",
-      };
-    case "READY_FOR_BUY":
-      return {
-        label: "Next action: start controlled $5 test buy",
-        detail:
-          "Approval is already satisfied. The next wallet action is the MembershipSaleV3 buy with the frozen non-zero sourceId.",
-      };
-    case "APPROVING":
-      return {
-        label: "Wallet action open: approval",
-        detail: "Confirm only if the spender is MembershipSaleV3 and the amount is 5 USDC.",
-      };
-    case "BUYING":
-      return {
-        label: "Wallet action open: controlled buy",
-        detail: "Confirm only if the target is MembershipSaleV3 and the sourceId matches the packet.",
-      };
-    case "BUY_CONFIRMED":
-      return {
-        label: "Stop: wait for readback",
-        detail:
-          "The buy has confirmed. Do not re-pause from this page; paste the transaction hash for receipt and payout readback first.",
-      };
-    default:
-      return {
-        label: "Locked: ceremony prerequisites incomplete",
-        detail:
-          "The console is showing blockers. Do not go to /join and do not attempt a separate contract call.",
-      };
-  }
 }
 
 export function SourceAwareLocalTestHarness({
@@ -291,13 +231,18 @@ export function SourceAwareLocalTestHarness({
     userBal.usdcAllowance !== undefined &&
     userBal.usdcBalance !== undefined &&
     quoteReady;
-  const stage = deriveCeremonyStage({
-    buyConfirmed: buyReceipt.isSuccess,
-    phase,
+  const approvalPending = phase === "approving" || approveTx.isPending || approveReceipt.isLoading;
+  const buyPending = phase === "buying" || buyTx.isPending || buyReceipt.isLoading;
+  const operatorState = deriveSourceTestOperatorState({
     canPrepare: canUseWalletControls,
-    needsApprove,
+    needsApproval: needsApprove,
+    approvalPending,
+    approvalConfirmed: approveReceipt.isSuccess,
+    buyPending,
+    buyReceiptConfirmed: buyReceipt.isSuccess,
+    approveHash: approveTx.data,
+    buyHash: buyTx.data,
   });
-  const currentStage = stageCopy(stage);
 
   const sourceTerms = [
     ["sourceId", gate.sourceIdForTest],
@@ -410,16 +355,20 @@ export function SourceAwareLocalTestHarness({
             <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               Current ceremony step
             </div>
-            <div className="mt-2 text-lg font-semibold">{currentStage.label}</div>
+            <div className="mt-2 text-lg font-semibold">{operatorState.label}</div>
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              {currentStage.detail}
+              {operatorState.detail}
             </p>
           </div>
         </div>
       </header>
 
       <section className="mt-5 grid gap-4 xl:grid-cols-[1fr_1.2fr]">
-        <CeremonyCard stage={stage} txHash={buyTx.data} />
+        <CeremonyCard
+          stage={operatorState.stage}
+          approveHash={approveTx.data}
+          buyHash={buyTx.data}
+        />
         <article className="rounded-md border border-border/60 bg-card/70 p-5">
           <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             Ceremony checklist
@@ -434,6 +383,13 @@ export function SourceAwareLocalTestHarness({
             spender, target, or claim/referral language differs from this
             console, cancel and read back before trying again.
           </div>
+          {operatorState.approvalOnly && (
+            <div className="mt-3 rounded-md border border-amber-500/50 bg-amber-500/10 p-3 text-sm leading-relaxed">
+              Approval-only checkpoint: buy still pending. This transaction did
+              not create a seat, did not emit MembershipPurchasedV3, did not
+              route protocol funds, and did not prove source attribution.
+            </div>
+          )}
         </article>
       </section>
 
@@ -525,9 +481,9 @@ export function SourceAwareLocalTestHarness({
               <Row label="Net USDC routed" value={fmtUsdc(quote.protocolContribution)} />
             </div>
             <div className="rounded-md border border-border/50 bg-background/45 p-3 text-sm leading-relaxed text-muted-foreground">
-              The approval, if needed, is only Step A. The buy is Step B. After
-              Step B succeeds, stop here and paste the buy transaction hash for
-              readback before any re-pause action.
+              Step A is USDC approval: permission only. Step B is
+              MembershipSaleV3.buy: the protocol event. This test is incomplete
+              until the buy transaction confirms and emits MembershipPurchasedV3.
             </div>
             {!wallet.isConnected ? (
               <button className="btn btn-primary gap-2" onClick={() => wallet.connectWallet()}>
@@ -569,9 +525,10 @@ export function SourceAwareLocalTestHarness({
               </button>
             )}
             {approveReceipt.isSuccess && approveTx.data && !buyReceipt.isSuccess && (
-              <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm">
-                Approval confirmed. Stay on this page: the controlled $5 buy is
-                still the next action.
+              <div className="rounded-md border border-amber-500/50 bg-amber-500/10 p-3 text-sm">
+                Approval complete - now start controlled $5 buy. This approval
+                tx is not the protocol event and must be rejected by readback as
+                approval only.
                 <div className="mt-2">
                   <ProofButton href={txExplorerUrl(approveTx.data)}>
                     View approval transaction
@@ -582,8 +539,9 @@ export function SourceAwareLocalTestHarness({
             {message && <p className="text-sm text-destructive">{message}</p>}
             {buyReceipt.isSuccess && buyTx.data && (
               <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm">
-                Controlled source-aware buy transaction confirmed. Stop here and
-                paste this transaction hash for readback before re-pause.
+                Buy submitted - STOP and wait for readback. Paste this buy
+                transaction hash so Codex/Replit can verify MembershipPurchasedV3,
+                sourceId, routing, payout, and member indexing before re-pause.
                 <div className="mt-2">
                   <ProofButton href={txExplorerUrl(buyTx.data)}>
                     View buy transaction
@@ -614,17 +572,27 @@ export function SourceAwareLocalTestHarness({
   );
 }
 
-function CeremonyCard({ stage, txHash }: { stage: CeremonyStage; txHash?: `0x${string}` }) {
-  const iconByStage: Record<CeremonyStage, LucideIcon> = {
+function CeremonyCard({
+  stage,
+  approveHash,
+  buyHash,
+}: {
+  stage: SourceTestOperatorStage;
+  approveHash?: `0x${string}`;
+  buyHash?: `0x${string}`;
+}) {
+  const iconByStage: Record<SourceTestOperatorStage, LucideIcon> = {
     LOCKED: LockKeyhole,
-    READY_FOR_APPROVAL: ShieldCheck,
+    NEEDS_APPROVAL: ShieldCheck,
+    APPROVAL_PENDING: ShieldCheck,
+    APPROVAL_ONLY_BUY_PENDING: AlertTriangle,
     READY_FOR_BUY: Play,
-    APPROVING: ShieldCheck,
-    BUYING: Play,
-    BUY_CONFIRMED: CheckCircle2,
+    BUY_PENDING: Play,
+    BUY_CONFIRMED_WAIT_READBACK: CheckCircle2,
   };
   const Icon = iconByStage[stage];
-  const isTerminal = stage === "BUY_CONFIRMED";
+  const isTerminal = stage === "BUY_CONFIRMED_WAIT_READBACK";
+  const approvalOnly = stage === "APPROVAL_ONLY_BUY_PENDING";
   return (
     <article className="rounded-md border border-border/60 bg-card/70 p-5">
       <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -636,24 +604,36 @@ function CeremonyCard({ stage, txHash }: { stage: CeremonyStage; txHash?: `0x${s
         </div>
         <div>
           <div className="text-xl font-semibold">
-            {isTerminal ? "Buy complete: freeze for readback" : "One controlled internal source test"}
+            {isTerminal
+              ? "Buy complete: freeze for readback"
+              : approvalOnly
+                ? "Approval complete: buy still pending"
+                : "One controlled internal source test"}
           </div>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            This console is not a referral product. It exists to keep one real
-            operator ceremony legible: read state, approve if needed, buy once,
-            stop, read back, then re-pause from the owner wallet.
+            This console is not a referral product. Approval is permission. Buy
+            is the protocol event. Readback is proof. Re-pause is closure.
           </p>
         </div>
       </div>
       <div className="mt-5 grid gap-2 text-sm">
-        <StepPill active={stage === "READY_FOR_APPROVAL" || stage === "APPROVING"} done={stage !== "LOCKED" && stage !== "READY_FOR_APPROVAL" && stage !== "APPROVING"} label="A. Approve 5 USDC if needed" />
-        <StepPill active={stage === "READY_FOR_BUY" || stage === "BUYING"} done={isTerminal} label="B. Start controlled $5 buy" />
+        <StepPill active={stage === "NEEDS_APPROVAL" || stage === "APPROVAL_PENDING"} done={stage === "APPROVAL_ONLY_BUY_PENDING" || stage === "READY_FOR_BUY" || stage === "BUY_PENDING" || isTerminal} label="A. Approve 5 USDC - permission only" />
+        <StepPill active={stage === "APPROVAL_ONLY_BUY_PENDING" || stage === "READY_FOR_BUY" || stage === "BUY_PENDING"} done={isTerminal} label="B. Start controlled $5 buy - protocol event" />
         <StepPill active={isTerminal} done={false} label="C. Stop and wait for readback" />
         <StepPill active={false} done={false} label="D. Re-pause only after readback" />
       </div>
-      {txHash && (
-        <div className="mt-4">
-          <ProofButton href={txExplorerUrl(txHash)}>View latest wallet transaction</ProofButton>
+      {(approveHash || buyHash) && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {approveHash && (
+            <ProofButton href={txExplorerUrl(approveHash)}>
+              Approval tx - permission only
+            </ProofButton>
+          )}
+          {buyHash && (
+            <ProofButton href={txExplorerUrl(buyHash)}>
+              Buy tx - protocol event
+            </ProofButton>
+          )}
         </div>
       )}
     </article>

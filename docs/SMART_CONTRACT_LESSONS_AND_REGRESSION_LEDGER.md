@@ -272,7 +272,7 @@ Status guide:
 | Date discovered | 2026-06 |
 | Contract / system | Frontend USDC approval and purchase flow |
 | Severity | High |
-| Status | Resolved in current V3 flow; still requires live QA |
+| Status | Resolved in current V3 flow and internal source operator console; still requires live QA |
 | Category | UX / transaction lifecycle |
 | Affected files | `src/components/syndicate/LivePurchase.tsx`, `src/lib/tx-lifecycle.ts`, `src/lib/tx-errors.ts`, `src/lib/__tests__/tx-lifecycle.test.ts`, `src/lib/__tests__/payment-flow.test.ts` |
 | Affected deployed contracts | V2b sale, MembershipSaleV3 |
@@ -280,13 +280,13 @@ Status guide:
 | Root cause | Allowance approval and purchase execution were not presented as separate trust events clearly enough. |
 | Why it mattered | Approval only authorizes the spender; it does not create a seat, deliver SYN, route USDC, or create a purchase receipt. |
 | Fix | V3 flow separates approval and buy copy, uses active sale spender, and requires buy transaction receipt/event/readback for purchase success. |
-| Tests added | Transaction lifecycle, transaction error, payment-flow, and production coherence tests. |
+| Tests added | Transaction lifecycle, transaction error, payment-flow, source-operator ceremony, and production coherence tests. |
 | Regression guard | Approval receipt only proves allowance; purchase success requires buy tx receipt and `MembershipPurchasedV3`/fallback readback. |
 | Deployment implication | Manual QA must test approval-only, rejected approval, buy success, buy rejection, and receipt rendering. |
 | Frontend implication | UI must never call approval "joined", "seated", or "purchased". |
-| Docs updated | Live purchase trust copy and release guards. |
+| Docs updated | Live purchase trust copy, wallet transaction architecture, source real-condition test plan, founder ceremony guide, and release guards. |
 | Future "never again" rule | Approval is not purchase. |
-| Source links / commit hashes | Current V3 frontend flow through `ca7d6d2`. |
+| Source links / commit hashes | Current V3 frontend flow through `ca7d6d2`; source-operator approval-only incident `0x2e2bbe37db1ad1094c2e2b45a3d86b608fcd3e64de83688053fb5a8438e95773`. |
 
 ### SCRL-010 - Spender address must match sale target
 
@@ -541,7 +541,7 @@ This map must be updated whenever a lesson gains, loses, or changes coverage.
 | SCRL-006 Era VII cap mismatch | `contracts/test/MembershipSaleV3.t.sol`, V3 preview tests, production coherence | Guarded | Add deployment-parameter script that compares docs constants to constructor arrays before future deployments. |
 | SCRL-007 V2b recovery cannot instantly fund V3 | `contracts/test/SyndicateSaleV2.t.sol`, V3 recovery docs | Partially guarded | Add operational recovery rehearsal/readback script before any future recovery ceremony. |
 | SCRL-008 funding changed V3 status | Production coherence guards and source-of-truth docs | Guarded in docs/tests | Add live-site smoke checklist after Replit publish. |
-| SCRL-009 approval is not purchase | `tx-lifecycle.test.ts`, `tx-errors.test.ts`, `payment-flow.test.ts`, production coherence | Guarded | Live wallet QA remains required after publish. |
+| SCRL-009 approval is not purchase | `tx-lifecycle.test.ts`, `tx-errors.test.ts`, `payment-flow.test.ts`, `source-test-operator-ceremony.test.ts`, production coherence | Guarded | Live wallet QA remains required after publish. |
 | SCRL-010 spender matches target | `payment-flow.test.ts`, `tx-write-canonical.test.ts`, production coherence | Guarded | Add route-level E2E assertion after Playwright/browser flow is available. |
 | SCRL-011 Remix settings locked | Remix Standard JSON files, `docs/V3_REMIX_VIA_IR_DEPLOYMENT_CONFIG.md` | Guarded by docs/config | Add bytecode metadata comparison if future deployment is repeated. |
 | SCRL-012 deployment is not activation | Production coherence and source-of-truth docs | Guarded | Add source/referral activation tests before any source UI. |

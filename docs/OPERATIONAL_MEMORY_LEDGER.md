@@ -457,6 +457,26 @@ Status guide:
 | Future "never again" rule | A correct gate is not enough. Every real-condition operator surface must be an explicit ceremony console, not a bare test harness or documentation page. |
 | Source links / commit hashes | Discovered during the first real-condition source-attribution test after updateSourceTerms and ACTIVE ceremonies. Buy-test transaction `0x2e2bbe37db1ad1094c2e2b45a3d86b608fcd3e64de83688053fb5a8438e95773` read back as USDC approval to MembershipSaleV3, proving the approval-vs-buy distinction must be visible. |
 
+### OML-018 - A blockchain transaction is not automatically the protocol event
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-25 |
+| System | USDC approval / MembershipSaleV3 buy / source-attribution operator ceremony |
+| Severity | High |
+| Status | Resolved for the internal source test console; reuse for every wallet ceremony |
+| Category | Wallet UX / readback classification / protocol-event proof |
+| Affected surfaces | `/labs/source-attribution-test`, `docs/SOURCE_REAL_CONDITION_TEST_PLAN.md`, `docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md`, Replit/Codex readback reports |
+| Symptom | A successful Snowtrace transaction was easy to interpret as the test transaction even though it was only `USDC.approve(MembershipSaleV3, 5000000)`. |
+| Root cause | The operator flow treated any successful wallet transaction as emotionally close to success. It did not make approval-only state loud enough or force readback to reject approval as incomplete. |
+| Why it mattered | Approval gives permission. It does not create a seat, emit `MembershipPurchasedV3`, route funds, prove source attribution, or complete the test. Confusing the two can lead to premature readback, missed buy execution, or unsafe re-pause timing. |
+| Fix | The source operator console now has a first-class `APPROVAL_ONLY_BUY_PENDING` state, separate approval and buy explorer links, explicit "buy still pending" copy, and tests that require buy transaction evidence before completion. |
+| Process guard | Any ceremony readback must classify the transaction by function/event, not by success status alone. Approval receipts are checkpoint evidence only; protocol completion requires the action receipt and expected event/readback. |
+| Founder-work impact | Reduces founder uncertainty after the first wallet signature and makes the next action obvious without chat rescue. |
+| Release implication | Replit QA must verify approval and buy are visually/logically separated before the founder attempts the actual buy. |
+| Future "never again" rule | Transaction success is not enough. Name what function was called, what event it emitted, and whether it is permission, protocol action, proof, or closure. |
+| Source links / commit hashes | Incident transaction `0x2e2bbe37db1ad1094c2e2b45a3d86b608fcd3e64de83688053fb5a8438e95773` was approval-only. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -570,6 +590,7 @@ or a sprint explicitly requires it.
 | Live QA text matches are not live controls | This ledger, production coherence guard | Guarded in docs/tests | Add a DOM-aware live QA helper if grep false positives repeat. |
 | Replit can serve as readback executor when Codex lacks RPC | This ledger, source ceremony preflight docs | Guarded by process | Add a reusable readback script if current-authority readbacks repeat often. |
 | Operator consoles must make ceremony state explicit | This ledger, source operator console, production coherence guard | Guarded in docs/tests | Add a reusable ceremony-state component if more write-path operator routes appear. |
+| Transaction success is not automatically protocol-event success | This ledger, wallet transaction architecture, source operator console, production coherence guard | Guarded in docs/tests | Add a receipt classifier helper if more owner/operator ceremonies repeat this pattern. |
 
 ## 10. Validation Policy
 

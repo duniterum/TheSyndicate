@@ -93,7 +93,9 @@ It must stay:
 - clear that it is `INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL`,
 - explicit about the current ceremony step, approval status, buy status, next
   action, and stop condition so the operator never has to leave the page or
-  guess whether approval is the buy.
+  guess whether approval is the buy,
+- explicit that approval is permission only and the test is incomplete until
+  the MembershipSaleV3 `buy` receipt emits `MembershipPurchasedV3`.
 
 Required Replit env for a future published internal test:
 
@@ -192,6 +194,12 @@ Expected calls:
 USDC.approve(MembershipSaleV3, 5000000)
 ```
 
+This is permission only. It does not buy membership, create a seat, emit
+`MembershipPurchasedV3`, prove source attribution, route protocol funds, or
+complete the test. A Snowtrace approval transaction hash is useful evidence for
+the approval checkpoint, but readback must classify it as `APPROVAL ONLY / BUY
+STILL PENDING`.
+
 2. Buy:
 
 ```text
@@ -204,8 +212,13 @@ MembershipSaleV3.buy(
 )
 ```
 
+This is the protocol event. This is the transaction hash Codex/Replit needs for
+the source-attributed receipt readback.
+
 Readback after buy:
 
+- reject `USDC.approve` receipts as approval-only if no MembershipSaleV3 `buy`
+  transaction exists,
 - transaction status success,
 - `MembershipPurchasedV3` event,
 - `sourceId` equals the frozen sourceId,
@@ -286,7 +299,10 @@ After publish, live QA:
 - /referral remains inactive
 - /labs/source-attribution-test without exact query is locked
 - /labs/source-attribution-test with exact query is locked unless allowlisted wallet and ACTIVE readback are present
-- /labs/source-attribution-test separates approval from the controlled buy and tells the operator to stop for readback after the buy
+- /labs/source-attribution-test separates approval from the controlled buy
+- /labs/source-attribution-test shows "Approval complete - buy still pending" after approval-only state
+- /labs/source-attribution-test tells the operator that only the buy transaction emits MembershipPurchasedV3
+- /labs/source-attribution-test tells the operator to stop for readback after the buy
 - no public nav/sitemap source test link exists
 - no claim UI appears
 ```

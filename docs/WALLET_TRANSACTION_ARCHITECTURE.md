@@ -94,6 +94,13 @@ Every USDC purchase follows this shape:
 Rules:
 - **Exact-allowance approval.** Never `MaxUint256`. `exactApprovalAmount(required)`
   enforces this.
+- **Approval is permission only.** An approval transaction can be successful and
+  still mean the protocol action has not happened. Approval does not create a
+  seat, mint, claim, route funds, emit the protocol action event, or complete a
+  ceremony.
+- **Action receipt is the protocol event.** Purchase/mint/claim success requires
+  the action transaction receipt and the expected event/readback. Readback must
+  reject an approval-only hash as incomplete.
 - **Receipt-driven success.** Never declare success on submit alone —
   always wait for receipt + `status === "success"`.
 - **Persisted hashes.** Approve + action hashes MUST flow through

@@ -53,6 +53,33 @@ Key values from the machine packet:
 
 ## Human Translation
 
+### Approval is not the buy
+
+Avalanche will show the USDC approval as a real transaction. That is normal.
+It is still only permission.
+
+Approval:
+- lets MembershipSaleV3 spend exactly the approved USDC amount,
+- does not buy membership,
+- does not create a seat,
+- does not emit `MembershipPurchasedV3`,
+- does not prove source attribution,
+- does not route protocol funds,
+- does not complete the test.
+
+The buy transaction is separate. The test is not complete until
+MembershipSaleV3 `buy` confirms and the readback finds the expected
+`MembershipPurchasedV3` receipt.
+
+After approval, the correct state is:
+
+```text
+APPROVAL COMPLETE / BUY STILL PENDING
+```
+
+Codex/Replit may need the approval hash to confirm allowance. Codex/Replit need
+the later buy hash to verify the actual source-attributed receipt.
+
 ### Why no normal referral link yet?
 
 A normal referral link would imply that the public referral product exists.
@@ -288,6 +315,7 @@ What can go wrong:
 - Stale quote.
 - Insufficient AVAX or USDC.
 - Payout fails and escrow fallback must be read carefully.
+- Mistaking USDC approval for the MembershipSaleV3 buy.
 
 Check before continuing:
 - Fresh buyer wallet is
@@ -305,6 +333,11 @@ Exact stop condition:
   `0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620`,
   any amount other than 5 USDC, any buyer wallet other than the allowlisted
   fresh wallet, any stale quote, or any public referral/claim language.
+- After approval, stop only long enough to confirm the console says
+  `Approval complete - buy still pending`; then the next action is still the
+  controlled $5 buy.
+- After the buy, stop completely and paste the buy transaction hash for
+  readback before any re-pause action.
 
 Founder approval phrase:
 
