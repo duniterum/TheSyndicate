@@ -398,6 +398,25 @@ Status guide:
 | Future "never again" rule | Do not collapse dev-server watcher exhaustion into production failure. Do not assume local-only Replit config edits survive future GitHub sync unless they are intentionally committed. |
 | Source links / commit hashes | Replit sync from `30e16970` to GitHub canonical `12dc33fd8469c00d0cbcb429489254c59cbbf731`; production deploy checkpoint reported as `543e6665`; GitHub canonical unchanged because no production source fix was required. |
 
+### OML-015 - Live QA text matches are not live controls
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-25 |
+| System | Replit live QA / production route checks / source-readback sync |
+| Severity | Medium |
+| Status | Resolved as QA interpretation rule; must remain remembered |
+| Category | Live QA / boundary-copy interpretation / local divergence handling |
+| Affected surfaces | Replit post-publish QA, `/referral`, `/my-syndicate`, `/join`, source/referral boundary checks, local Replit config |
+| Symptom | Loose live-site grep checks flagged text such as "no claim UI" and "no source link" as possible claim/source controls after production was synced to GitHub `e19927b`. |
+| Root cause | Text scans treated boundary/negation copy the same as actionable UI. Mentions of forbidden concepts in safety copy are not equivalent to buttons, links, inputs, forms, selectors, wallet actions, or source-aware buy paths. |
+| Why it mattered | False positives can waste release time or make a safe PAUSED-readback truth update look like referral/claim activation. |
+| Fix | Future QA must distinguish text mentions from actionable controls. Confirm whether matches are negations/boundaries, then separately scan for actionable controls such as claim buttons, source links, source selectors, non-zero source IDs in public buy paths, forms, or wallet write actions. |
+| Process guard | Treat Replit's local `vite.config.ts` watch-ignore fix as an intentional local divergence unless a future sprint makes it canonical. Treat `check-commission-router-freeze` `BLOCKED` output as expected pre-activation posture while CommissionRouterV1 remains PENDING/null and signoffs/fork-RPC gates are intentionally unresolved. |
+| Release implication | A release is not failed by negated safety copy or expected frozen-router blockers. It is failed only if actionable live controls, source activation, claim UI, public source-aware buys, contract changes, or unexpected router posture appear. |
+| Future "never again" rule | Do not classify boundary copy as live UI. Do not treat expected `check-commission-router-freeze` blockers as release failures unless the frozen-router posture changes. |
+| Source links / commit hashes | GitHub canonical `e19927b1b6caf846fa72531bcfdb034f9a892ec6`; Replit deploy checkpoint reported as `5a6b7b70`; no Replit fix pushed back. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -505,6 +524,7 @@ or a sprint explicitly requires it.
 | Local-only commits are not delivery | This ledger, release handoff, production coherence guard | Guarded in docs/tests | Add a sync preflight script if local-only commit loops repeat. |
 | Production synchronization classification | `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`, this ledger, release handoff, production coherence guard | Guarded in docs/tests | Add a script that prints required Replit/publish/QA class if production drift repeats. |
 | Replit dev watcher limits are not production failures | This ledger, production synchronization doctrine's separate completion states | Guarded by process | If ENOSPC repeats, consider a canonical Vite dev watch-ignore for `.local`, `.pythonlibs`, `contracts`, `artifacts`, reports, and generated local state. |
+| Live QA text matches are not live controls | This ledger, production coherence guard | Guarded in docs/tests | Add a DOM-aware live QA helper if grep false positives repeat. |
 
 ## 10. Validation Policy
 

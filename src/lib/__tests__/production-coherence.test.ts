@@ -1417,6 +1417,11 @@ describe("production coherence guards", () => {
     expect(ledger).toContain("ENOSPC: System limit for number of file watchers reached");
     expect(ledger).toContain("Do not collapse dev-server watcher exhaustion into production failure");
     expect(ledger).toContain("local-only Replit config edits");
+    expect(ledger).toContain("OML-015 - Live QA text matches are not live controls");
+    expect(ledger).toContain("Loose live-site grep checks flagged text such as \"no claim UI\"");
+    expect(ledger).toContain("buttons, links, inputs, forms, selectors, wallet actions, or source-aware buy paths");
+    expect(ledger).toContain("local `vite.config.ts` watch-ignore fix as an intentional local divergence");
+    expect(ledger).toContain("`check-commission-router-freeze` `BLOCKED` output as expected pre-activation posture");
 
     expect(syncDoctrine).toContain("Status: OPERATIONAL DOCTRINE / NO DEPLOYMENT AUTHORITY / NO PUBLISH AUTHORITY");
     expect(syncDoctrine).toContain("Source-Of-Truth Model");
