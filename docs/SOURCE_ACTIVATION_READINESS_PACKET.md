@@ -68,6 +68,11 @@ The institution needs one place that answers:
 
 The source policy fact exists and was read back as `PAUSED`.
 
+The current-authority preflight packet now exists at
+`docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, but this Codex environment did not
+have `AVAX_RPC` or `VITE_AVALANCHE_RPC_URL` set during the preflight sprint.
+Fresh live readbacks are still required before any founder approval or signing.
+
 The protocol is ready for:
 
 - readiness review,
@@ -158,9 +163,10 @@ does not expose wallet controls while the frozen source remains `PAUSED`.
 
 ## Immediate Next Sprint
 
-Prepare the current-authority preflight for a possible future ACTIVE ceremony
-and decide whether the July 1-15, 2026 UTC test window still fits. If it does
-not fit, stop and update source terms before any activation decision.
+Run the `AVAX_RPC` readback commands in
+`docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md` and decide whether the July 1-15,
+2026 UTC test window still fits. If it does not fit, stop and update source
+terms before any activation decision.
 
 ## Stop Conditions
 

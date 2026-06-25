@@ -221,8 +221,11 @@ Outcome:
 - no public UI changes.
 
 Current implementation note: this sprint is represented by
-`docs/SOURCE_ACTIVATION_READINESS_PACKET.md` and
+`docs/SOURCE_ACTIVATION_READINESS_PACKET.md`,
+`docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, and
 `src/lib/source-activation-readiness.ts`. It does not authorize activation.
+The preflight document is command-ready, but live `AVAX_RPC` readbacks were not
+performed in the Codex shell because no RPC endpoint was set.
 
 ### Sprint 2 - Localhost-Only Source-Aware Test Path
 

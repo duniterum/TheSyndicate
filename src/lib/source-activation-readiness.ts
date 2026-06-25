@@ -88,7 +88,7 @@ export function buildSourceActivationReadiness(
       label: "Fresh current-authority preflight",
       status: "READBACK_REQUIRED",
       proof:
-        "The repository records the PAUSED readback, but a future ceremony must re-read chain state at that time.",
+        "docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md records the exact readback commands, but a future ceremony must re-read chain state with AVAX_RPC at that time.",
       requirement:
         "Verify chain ID 43114, SourceRegistry owner, target status PAUSED, source terms, V3 sale address, and default ZERO_SOURCE_ID path immediately before signing.",
       blocksActiveCeremony: true,
@@ -178,7 +178,7 @@ export function buildSourceActivationReadiness(
     readyForPublicSourceAwareBuyPath: false,
     gates,
     requiredNextActions: [
-      "Run a fresh current-authority readback before any source status transaction.",
+      "Run the AVAX_RPC current-authority readback in docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md before any source status transaction.",
       "Decide whether the approved time window still fits the intended controlled test.",
       "Run the localhost-only source-aware test path with the explicit internal-test flag and frozen sourceId.",
       "Reconfirm source-aware buyer disclosure before any non-zero sourceId wallet signature.",

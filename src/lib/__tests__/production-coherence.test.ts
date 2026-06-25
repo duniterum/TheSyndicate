@@ -1546,6 +1546,7 @@ describe("production coherence guards", () => {
 
   it("keeps source activation readiness non-transactional and aligned with the PAUSED source truth", () => {
     const packet = read("docs/SOURCE_ACTIVATION_READINESS_PACKET.md");
+    const preflight = read("docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md");
     const localPathDoc = read("docs/SOURCE_AWARE_LOCAL_TEST_PATH.md");
     const model = read("src/lib/source-activation-readiness.ts");
     const modelTest = read("src/lib/__tests__/source-activation-readiness.test.ts");
@@ -1562,8 +1563,10 @@ describe("production coherence guards", () => {
     const graph = read("docs/PROTOCOL_ORGANISM_GRAPH.md");
 
     expect(authority).toContain("docs/SOURCE_ACTIVATION_READINESS_PACKET.md");
+    expect(authority).toContain("docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md");
     expect(authority).toContain("docs/SOURCE_AWARE_LOCAL_TEST_PATH.md");
     expect(index).toContain("docs/SOURCE_ACTIVATION_READINESS_PACKET.md");
+    expect(index).toContain("docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md");
     expect(index).toContain("src/lib/source-activation-readiness.ts");
     expect(index).toContain("src/lib/source-aware-test-mode.ts");
     expect(packet).toContain("Status: READINESS PACKET / NO TRANSACTION AUTHORIZED / NO ACTIVATION AUTHORIZED");
@@ -1573,6 +1576,16 @@ describe("production coherence guards", () => {
     expect(packet).toContain("Buyer disclosure / clear-source UX | SATISFIED AS INTERNAL BOUNDARY");
     expect(packet).toContain("/labs/source-attribution-test?sourceTest=INTERNAL_PROTOCOL_TEST_SOURCE_001");
     expect(packet).toContain("This table is for future review only. It is not an instruction to sign.");
+    expect(packet).toContain("docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md");
+    expect(preflight).toContain("Status: CURRENT-AUTHORITY PREFLIGHT / NO TRANSACTION AUTHORIZED / NO ACTIVATION AUTHORIZED");
+    expect(preflight).toContain("NO-GO FOR SIGNING OR BROADCAST");
+    expect(preflight).toContain("AVAX_RPC");
+    expect(preflight).toContain("setSourceStatus(bytes32,uint8)");
+    expect(preflight).toContain("Founder Approval Sentence Required");
+    expect(preflight).toContain("Rollback / Re-Pause Plan");
+    expect(preflight).toContain("2026-07-01T12:00:00Z");
+    expect(preflight).toContain("2026-07-15T12:00:00Z");
+    expect(preflight).toContain("public/default buy path");
     expect(model).toContain("readyForActiveCeremony");
     expect(model).toContain("readyForPublicReferral: false");
     expect(model).toContain("readyForClaimUi: false");
@@ -1603,7 +1616,7 @@ describe("production coherence guards", () => {
     expect(packet).toContain("no yield/passive-income/ROI framing");
     expect(packet).toContain("no MLM/downline framing");
     expect(packet).toContain("financial leaderboard framing");
-    const fakeLiveSurface = [packet, localPathDoc, localGate, localRoute, localHarness].join("\n");
+    const fakeLiveSurface = [packet, preflight, localPathDoc, localGate, localRoute, localHarness].join("\n");
     expect(fakeLiveSurface).not.toMatch(/public referral is live|claim UI is live|source links are live|top earner|leaderboard is live|guaranteed return|yield opportunity/i);
   });
 
