@@ -35,7 +35,7 @@ describe("source activation readiness", () => {
     expect(statusesById.get("no-active-source-today")).toBe("SATISFIED");
     expect(statusesById.get("current-authority-preflight")).toBe("READBACK_REQUIRED");
     expect(statusesById.get("terms-window-review")).toBe("READBACK_REQUIRED");
-    expect(statusesById.get("local-source-aware-test-path")).toBe("SATISFIED");
+    expect(statusesById.get("internal-source-aware-test-path")).toBe("SATISFIED");
     expect(statusesById.get("clear-source-ux")).toBe("SATISFIED");
     expect(statusesById.get("founder-active-approval")).toBe("FOUNDER_APPROVAL_REQUIRED");
     expect(statusesById.get("legal-product-signoff")).toBe("FOUNDER_APPROVAL_REQUIRED");
@@ -54,7 +54,9 @@ describe("source activation readiness", () => {
 
     expect(copy).toContain("ZERO_SOURCE_ID");
     expect(copy).toContain("setSourceStatus(sourceId, ACTIVE)");
-    expect(copy).toContain("localhost-only source-aware test path");
+    expect(copy).toContain("Internal source-aware test path");
+    expect(copy).toContain("production-internal mode");
+    expect(copy).toContain("allowlisted fresh buyer wallet");
     expect(copy).toContain("Do not add claim UI");
     expect(copy).toContain("no yield/passive-income/ROI framing");
     expect(copy).toContain("no MLM/downline framing");

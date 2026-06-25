@@ -54,7 +54,7 @@ What should stay future-only:
 - ProductSaleRouter attribution.
 - Marketplace or premium pass attribution.
 
-This audit does not change the current near-term recommendation. The controlled local-only source-aware test path now exists as an internal boundary for the existing internal PAUSED MembershipSaleV3 source record. The correct next real milestone is source activation readiness: current-authority preflight, source terms/window review, and separate founder approval before any ACTIVE ceremony or tiny controlled test. The SaaS research adds a stronger warning: do not create public source links before an active source record, and do not create source-facing dashboards before the legal, payout, fraud, disclosure, and read-model layers are ready.
+This audit does not change the current near-term recommendation. The controlled internal source-aware test path now exists as a boundary for the existing internal PAUSED MembershipSaleV3 source record, with localhost mode and a separately approved production-internal mode. The correct next real milestone is source activation readiness: current-authority preflight, source terms/window review, and separate founder approval before any ACTIVE ceremony or tiny controlled test. The SaaS research adds a stronger warning: do not create public source links before an active source record, and do not create source-facing dashboards before the legal, payout, fraud, disclosure, and read-model layers are ready.
 
 ## 2. SaaS Platform Matrix
 

@@ -390,7 +390,8 @@ Before creating another source record or activating the existing PAUSED source:
    `src/lib/source-activation-readiness.ts` as the PAUSED-to-ACTIVE boundary
    model.
 4. Use `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md` and
-   `src/lib/source-aware-test-mode.ts` as the localhost-only test boundary.
+   `src/lib/source-aware-test-mode.ts` as the internal source-aware test
+   boundary for localhost and explicit production-internal mode.
 5. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
 6. Do not build public source links, claim UI, Archive source attribution, or

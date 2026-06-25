@@ -197,7 +197,7 @@ Archive1155 / SeatRecord721 / SwapRail / ProductSaleRouter
 | Current-authority preflight before any next source transaction | Prevents acting from stale source, owner, status, or production memory | Any source status or terms transaction |
 | Source activation readiness packet | Created as `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`; separates PAUSED policy fact from ACTIVE source behavior | ACTIVE ceremony remains blocked until readbacks, local test path, disclosure, and founder approval |
 | Timestamp/window review | Current window is July 1-15, 2026 UTC; if activation testing happens too late, a visible terms update may be required before activation | Source-attributed test buy |
-| Localhost-only source-aware test path | Created as `/labs/source-attribution-test` with localhost, flag, query, sourceId, and PAUSED-status gates | $5 internal source-attributed buy test remains blocked until ACTIVE ceremony and fresh readbacks |
+| Internal source-aware test path | Created as `/labs/source-attribution-test` with localhost or explicit production-internal flags, exact query, sourceId, allowlisted buyer in production-internal mode, live SourceRegistry terms, and PAUSED-status gates | $5 internal source-attributed buy test remains blocked until ACTIVE ceremony and fresh readbacks |
 | Buyer disclosure / clear-source UX | Internal harness previews sourceId, status, class, wallets, commission bps, caps, and quote fields before future controls can appear | Public source-aware UX still requires separate legal/product approval |
 | ACTIVE source ceremony | Separate founder transaction; not bundled with UI or claim activation | Source-attributed buy test |
 | $5 internal source-attributed buy readback | Proves receipt, payout, escrow, attribution, cache, Activity, My Syndicate, and Registry truth | Public source/referral planning |
@@ -227,14 +227,14 @@ Current implementation note: this sprint is represented by
 The preflight document is command-ready, but live `AVAX_RPC` readbacks were not
 performed in the Codex shell because no RPC endpoint was set.
 
-### Sprint 2 - Localhost-Only Source-Aware Test Path
+### Sprint 2 - Internal Source-Aware Test Path
 
-Goal: build or enable an environment-gated test path that can intentionally pass the frozen sourceId in local development only.
+Goal: build or enable an environment-gated test path that can intentionally pass the frozen sourceId in local development, or in a separately approved production-internal mode with explicit flags and an allowlisted fresh buyer.
 
 Outcome:
 
 - loud internal source test mode,
-- no production exposure,
+- no public production exposure,
 - no public source link,
 - no source selector in default public buy,
 - fresh-buyer-wallet checklist,
@@ -313,7 +313,7 @@ Do not create another source record yet.
 
 Do not build claim UI yet.
 
-The localhost-only source-aware test path boundary now exists as an internal,
+The internal source-aware test path boundary now exists as an internal,
 noindex `/labs` route guarded by localhost, an explicit environment flag, the
 frozen internal source label, and the source's current `PAUSED` status. That
 work increases institutional integrity because it makes the next possible

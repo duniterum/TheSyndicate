@@ -26,7 +26,7 @@ The code and packet state are otherwise positioned for the next preflight step:
 
 - the internal PAUSED source record is represented in the repository read model,
 - public/default buys still use `ZERO_SOURCE_ID`,
-- the localhost-only source-aware harness exists and remains locked while the
+- the internal source-aware harness exists and remains locked while the
   source is `PAUSED`,
 - the source window has not started as of 2026-06-25 and can still be used if
   the controlled test occurs between July 1 and July 15, 2026 UTC.
@@ -87,7 +87,7 @@ sentence only if every readback is green.
 | MembershipSaleV3 `SOURCE_REGISTRY()` | `0x780013bB358be6be95b401901264FC7c22a595a6` | UNCONFIRMED |
 | MembershipSaleV3 `paused()` | `false` unless a later owner action changed it | UNCONFIRMED |
 | Public/default buy path | `ZERO_SOURCE_ID` | CODE CHECK GREEN: `LivePurchase` still passes `ZERO_SOURCE_ID` |
-| Localhost test route gates | localhost + dev + flag + exact query + ACTIVE source status required | CODE CHECK GREEN |
+| Internal test route gates | localhost/dev or explicit production-internal flag + exact query + allowlisted buyer in production-internal mode + ACTIVE source status + exact terms readback required | CODE CHECK GREEN |
 | Production sync before ceremony | Not required for signing; current production may lag this internal GitHub route batch | CAN WAIT |
 
 ## Exact Readback Commands
@@ -135,8 +135,8 @@ The approved source window is:
 - end: `2026-07-15T12:00:00Z`
 
 As of 2026-06-25, the window has not started. Activation can use the existing
-terms only if the ACTIVE ceremony, localhost-only $5 test, and re-pause
-readback can realistically occur inside this window.
+terms only if the ACTIVE ceremony, internal $5 test, and re-pause readback can
+realistically occur inside this window.
 
 If the test cannot occur inside this window, do not activate. Prepare:
 
@@ -155,7 +155,7 @@ If the test cannot occur inside this window, do not activate. Prepare:
 | Ask founder to approve after green readback | CONDITIONAL GO | Existing terms are time-viable if the controlled test will occur inside July 1-15, 2026 UTC. |
 | Activate public referral | NO-GO | Public referral remains inactive. |
 | Run public source-aware buy path | NO-GO | No public source-aware buy path exists or is authorized. |
-| Run localhost-only test while source is PAUSED | NO-GO | PAUSED sources cannot route commission; harness stays locked. |
+| Run internal test while source is PAUSED | NO-GO | PAUSED sources cannot route commission; harness stays locked. |
 | Prepare Replit publish now | CAN WAIT | This is an internal preflight/docs boundary, not a public-truth emergency. |
 
 ## Exact Future Activation Transaction Under Review Only
@@ -181,7 +181,7 @@ Before any wallet signing, the founder must explicitly approve:
 > I approve activating only sourceId
 > `0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620`
 > by calling `setSourceStatus(sourceId, ACTIVE)` on SourceRegistryV1 for a
-> controlled localhost-only $5 test inside the approved July 1-15, 2026 UTC
+> controlled internal $5 test inside the approved July 1-15, 2026 UTC
 > window. I understand this does not activate public referral, public source
 > links, source dashboard, claim UI, public source-aware buys, registry switch,
 > or any other source.
@@ -201,11 +201,14 @@ After a separately approved future ACTIVE transaction, read back:
 9. `/referral` still has no public source link, claim UI, or source dashboard,
 10. production has no public source-aware buy path.
 
-## Exact $5 Localhost Test Sequence After Activation
+## Exact $5 Internal Test Sequence After Activation
 
 Only after green ACTIVE readbacks:
 
-1. Run local development with `VITE_ENABLE_SOURCE_TEST_MODE=true`.
+1. Run local development with `VITE_ENABLE_SOURCE_TEST_MODE=true`, or use a
+   separately approved production-internal Replit build with
+   `VITE_ENABLE_PRODUCTION_SOURCE_TEST_MODE=true` and
+   `VITE_SOURCE_TEST_ALLOWED_BUYERS=<fresh buyer wallet>`.
 2. Open `/labs/source-attribution-test?sourceTest=INTERNAL_PROTOCOL_TEST_SOURCE_001`.
 3. Confirm the route is on localhost or loopback only.
 4. Confirm the harness shows `READY_FOR_LOCAL_TEST`.

@@ -91,7 +91,7 @@ Do not call `recoverUnsoldSyn()` until a separate recovery ceremony is approved.
 These must remain separate. Completion of one does not authorize the next.
 
 1. V2b recovery decision after timelock eligibility.
-2. Localhost-only source-aware buy path decision.
+2. Internal source-aware buy path decision.
 3. Source activation decision.
 4. Referral/source UI activation.
 5. Post-activation monitoring.

@@ -120,7 +120,7 @@ describe("protocol evolution registry", () => {
     expect(sourceEpisode?.plainSummary).toContain("no referral activation");
     expect(sourceEpisode?.plainSummary).toContain("no claim UI");
     expect(sourceEpisode?.plainSummary).toContain("One internal PAUSED source record exists");
-    expect(sourceEpisode?.proofToWatchNext).toContain("local-only source-attributed receipt test");
+    expect(sourceEpisode?.proofToWatchNext).toContain("internal source-attributed receipt test");
     expect(sourceEpisode?.whatDidNotChange).toContain("Public/default buys remain direct");
   });
 

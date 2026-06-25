@@ -13,7 +13,7 @@ export const Route = createFileRoute("/labs/source-attribution-test")({
       {
         name: "description",
         content:
-          "Internal localhost-only source-aware test boundary. Not public referral, not activation, not a source link.",
+          "Internal source-aware test boundary. Not public referral, not activation, not a source link.",
       },
     ],
   }),

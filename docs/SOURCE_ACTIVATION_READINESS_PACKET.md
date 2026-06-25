@@ -77,7 +77,7 @@ The protocol is ready for:
 
 - readiness review,
 - current-authority readback planning,
-- localhost-only source-aware test path design.
+- internal source-aware test path design.
 
 The protocol is not ready for:
 
@@ -96,7 +96,7 @@ The protocol is not ready for:
 | No active source exists today | SATISFIED | If any ACTIVE source already exists before the controlled test, stop and reconcile source state before another activation action. |
 | SourceRegistry owner and network | READBACK REQUIRED | Re-read chain ID `43114`, bytecode, `owner()`, and `pendingOwner()` immediately before signing. |
 | Source terms and window | READBACK REQUIRED | Confirm the planned test can happen inside the approved window. If not, update terms with a new approved packet and metadata hash before activation. |
-| Localhost-only source-aware test path | SATISFIED AS BOUNDARY | `/labs/source-attribution-test` exists under a noindex internal route and hard-fails unless localhost development, `VITE_ENABLE_SOURCE_TEST_MODE=true`, and `sourceTest=INTERNAL_PROTOCOL_TEST_SOURCE_001` are all present. It remains non-executable while the source is PAUSED. |
+| Internal source-aware test path | SATISFIED AS BOUNDARY | `/labs/source-attribution-test` exists under a noindex internal route and hard-fails unless localhost development or explicit production-internal mode is enabled, `sourceTest=INTERNAL_PROTOCOL_TEST_SOURCE_001` is present, and production-internal mode uses an allowlisted fresh buyer wallet. It remains non-executable while the source is PAUSED or live SourceRegistry terms do not match the approved packet. |
 | Buyer disclosure / clear-source UX | SATISFIED AS INTERNAL BOUNDARY | The internal harness previews sourceId, status, class, source wallet, payout wallet, commission bps, caps, $5 test amount, and Net USDC Routed/acquisition commission fields before any future wallet controls can appear. |
 | Founder ACTIVE ceremony approval | FOUNDER APPROVAL REQUIRED | Founder must approve the exact transaction after fresh readbacks. |
 | Legal/product copy | FOUNDER APPROVAL REQUIRED | Approve acquisition-first wording with no source ownership, no agency/employment implication, no MLM/downline framing, and no yield/passive-income/ROI framing. |
@@ -137,7 +137,7 @@ If all gates clear later, the activation transaction to review would be:
 
 This table is for future review only. It is not an instruction to sign.
 
-## Localhost-Only Source-Aware Test Path
+## Internal Source-Aware Test Path
 
 The local boundary now exists at:
 
@@ -145,11 +145,13 @@ The local boundary now exists at:
 
 Required constraints:
 
-- local development only,
+- local development or founder-approved production-internal mode only,
 - explicit environment gate,
 - `VITE_ENABLE_SOURCE_TEST_MODE=true`,
+- `VITE_ENABLE_PRODUCTION_SOURCE_TEST_MODE=true` and `VITE_SOURCE_TEST_ALLOWED_BUYERS=<fresh buyer wallet>` when production-internal mode is used,
 - loud internal-test banner,
 - exact sourceId supplied intentionally,
+- live SourceRegistry terms readback before wallet controls unlock,
 - fresh buyer wallet,
 - small controlled test amount,
 - no production public source attribution,
@@ -179,7 +181,7 @@ Stop before any future activation if any of these are true:
 - `sourceConfig(sourceId).status` is not `PAUSED`.
 - Terms differ from the approved packet.
 - The planned test cannot occur inside the approved window.
-- The local-only source-aware path fails its localhost/flag/query/sourceId gate.
+- The internal source-aware path fails its localhost or production-internal flag/query/sourceId/allowlist gate.
 - Public/default buy path does not use `ZERO_SOURCE_ID`.
 - `/referral` shows a public source link, claim UI, or source dashboard.
 - Any UI implies source ownership, public referral activation, passive income,
@@ -199,5 +201,5 @@ If a future founder-approved activation ceremony occurs, read back:
 - no claim UI,
 - no public source-aware buy path unless separately approved.
 
-Only after that may a controlled localhost-only source-attributed buy test be
+Only after that may a controlled internal source-attributed buy test be
 considered.

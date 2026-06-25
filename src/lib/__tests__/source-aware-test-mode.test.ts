@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   buildSourceAwareTestModeGate,
   isLocalhostHost,
+  SOURCE_AWARE_PRODUCTION_TEST_MODE_FLAG,
+  SOURCE_AWARE_TEST_ALLOWED_BUYERS_FLAG,
   SOURCE_AWARE_TEST_MODE_FLAG,
   SOURCE_AWARE_TEST_QUERY_VALUE,
   SOURCE_AWARE_TEST_USDC,
+  walletInAllowlist,
 } from "../source-aware-test-mode";
 import {
   CURRENT_SOURCE_POLICY_SNAPSHOT,
@@ -17,6 +20,7 @@ const activeSource: SourcePolicyRecord = {
   ...INTERNAL_PROTOCOL_TEST_SOURCE_001,
   status: "ACTIVE",
 };
+const allowlistedBuyer = "0x1111111111111111111111111111111111111111";
 
 describe("source-aware localhost test mode", () => {
   it("recognizes only local loopback hosts", () => {
@@ -28,7 +32,7 @@ describe("source-aware localhost test mode", () => {
     expect(isLocalhostHost("replit.dev")).toBe(false);
   });
 
-  it("hard-locks production even if someone sets the public flag", () => {
+  it("hard-locks production unless the production-internal flag is explicitly set", () => {
     const gate = buildSourceAwareTestModeGate({
       isDev: false,
       hostname: "thesyndicate.money",
@@ -38,11 +42,12 @@ describe("source-aware localhost test mode", () => {
       target: activeSource,
     });
 
-    expect(gate.status).toBe("LOCKED_PRODUCTION");
+    expect(gate.status).toBe("LOCKED_PRODUCTION_FLAG_MISSING");
     expect(gate.canRenderInternalHarness).toBe(false);
     expect(gate.canQuoteNonZeroSourceId).toBe(false);
     expect(gate.canPrepareSourceAwareBuy).toBe(false);
     expect(gate.defaultBuySourceId).toBe(ZERO_SOURCE_ID);
+    expect(gate.productionFlagName).toBe(SOURCE_AWARE_PRODUCTION_TEST_MODE_FLAG);
   });
 
   it("requires localhost plus explicit flag plus explicit source test query", () => {
@@ -105,6 +110,75 @@ describe("source-aware localhost test mode", () => {
     expect(gate.canRenderInternalHarness).toBe(true);
     expect(gate.canQuoteNonZeroSourceId).toBe(true);
     expect(gate.canPrepareSourceAwareBuy).toBe(true);
+  });
+
+  it("allows production-internal test mode only for an allowlisted buyer after live readback", () => {
+    const gate = buildSourceAwareTestModeGate({
+      isDev: false,
+      hostname: "thesyndicate.money",
+      productionEnabledFlag: true,
+      allowedBuyerAddresses: allowlistedBuyer,
+      connectedWallet: allowlistedBuyer,
+      requestedSourceTest: SOURCE_AWARE_TEST_QUERY_VALUE,
+      snapshot: { ...CURRENT_SOURCE_POLICY_SNAPSHOT, records: [activeSource], activeCount: 1, pausedCount: 0 },
+      target: activeSource,
+      liveSourceStatus: "ACTIVE",
+      liveSourceMatchesExpectedTerms: true,
+    });
+
+    expect(gate.status).toBe("READY_FOR_PRODUCTION_INTERNAL_TEST");
+    expect(gate.isProductionInternalMode).toBe(true);
+    expect(gate.requiresAllowlistedBuyer).toBe(true);
+    expect(gate.connectedWalletAllowed).toBe(true);
+    expect(gate.canRenderInternalHarness).toBe(true);
+    expect(gate.canQuoteNonZeroSourceId).toBe(true);
+    expect(gate.canPrepareSourceAwareBuy).toBe(true);
+    expect(gate.allowedBuyersFlagName).toBe(SOURCE_AWARE_TEST_ALLOWED_BUYERS_FLAG);
+  });
+
+  it("blocks production-internal controls when the buyer is not allowlisted", () => {
+    const gate = buildSourceAwareTestModeGate({
+      isDev: false,
+      hostname: "thesyndicate.money",
+      productionEnabledFlag: true,
+      allowedBuyerAddresses: allowlistedBuyer,
+      connectedWallet: "0x2222222222222222222222222222222222222222",
+      requestedSourceTest: SOURCE_AWARE_TEST_QUERY_VALUE,
+      snapshot: { ...CURRENT_SOURCE_POLICY_SNAPSHOT, records: [activeSource], activeCount: 1, pausedCount: 0 },
+      target: activeSource,
+      liveSourceStatus: "ACTIVE",
+      liveSourceMatchesExpectedTerms: true,
+    });
+
+    expect(gate.status).toBe("LOCKED_BUYER_NOT_ALLOWLISTED");
+    expect(gate.canPrepareSourceAwareBuy).toBe(false);
+  });
+
+  it("blocks production-internal controls when live source terms do not match", () => {
+    const gate = buildSourceAwareTestModeGate({
+      isDev: false,
+      hostname: "thesyndicate.money",
+      productionEnabledFlag: true,
+      allowedBuyerAddresses: allowlistedBuyer,
+      connectedWallet: allowlistedBuyer,
+      requestedSourceTest: SOURCE_AWARE_TEST_QUERY_VALUE,
+      snapshot: { ...CURRENT_SOURCE_POLICY_SNAPSHOT, records: [activeSource], activeCount: 1, pausedCount: 0 },
+      target: activeSource,
+      liveSourceStatus: "ACTIVE",
+      liveSourceMatchesExpectedTerms: false,
+    });
+
+    expect(gate.status).toBe("LOCKED_SOURCE_MISMATCH");
+    expect(gate.canPrepareSourceAwareBuy).toBe(false);
+  });
+
+  it("parses buyer allowlists without treating the value as a secret", () => {
+    expect(walletInAllowlist(allowlistedBuyer, ` ${allowlistedBuyer.toUpperCase()} , 0x3333333333333333333333333333333333333333`)).toBe(
+      true,
+    );
+    expect(walletInAllowlist("0x2222222222222222222222222222222222222222", allowlistedBuyer)).toBe(
+      false,
+    );
   });
 
   it("contains no fake-live referral or claim wording", () => {

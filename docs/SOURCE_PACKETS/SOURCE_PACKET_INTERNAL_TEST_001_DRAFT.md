@@ -961,17 +961,18 @@ Any future source-attributed receipt must preserve:
 - No balance/claim language appears without escrow readback and claim policy.
 - Source attribution never grants member ownership.
 
-## Future Localhost Source-Attributed Buy Boundary
+## Future Internal Source-Attributed Buy Boundary
 
 The first PAUSED source record does not create a referral system. No referral
 link exists today, no public source-aware buy path exists today, and no user can
 self-serve a public source/referrer identity from this packet.
 
-Before any future $5 source-attributed buy test, a separate local-only sprint
-must build or enable a controlled test path:
+Before any future $5 source-attributed buy test, a separate sprint must build or
+enable a controlled internal test path:
 
-- localhost/local dev only,
+- localhost/local dev or separately approved production-internal mode only,
 - explicit internal source test mode,
+- allowlisted fresh buyer wallet in production-internal mode,
 - loud copy: `INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL`,
 - the frozen sourceId injected intentionally, never as a production default,
 - a fresh buyer wallet never used on The Syndicate,

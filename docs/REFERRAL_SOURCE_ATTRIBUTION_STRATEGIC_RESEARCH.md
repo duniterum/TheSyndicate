@@ -509,7 +509,7 @@ The current path is still the best path if it stays narrow:
 - Do not turn source attribution into the product.
 
 The best next real-world move is not a public referral launch. The controlled
-localhost-only source-aware test path now exists as an internal boundary for
+internal source-aware test path now exists as an internal boundary for
 the existing internal PAUSED MembershipSaleV3 source record.
 
 Exact next step: source activation preflight plus source terms/window review,

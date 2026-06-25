@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
 import {
   ACTIVE_SALE,
@@ -8,26 +8,117 @@ import {
   fmtUsdc,
   useQuoteSyn,
   useUserBalances,
-  ZERO_SOURCE_ID,
 } from "@/lib/sale-hooks";
 import { useWalletGate } from "@/lib/useWalletGate";
-import { CONTRACTS, explorerUrlForAddress, txExplorerUrl, USDC_DECIMALS } from "@/lib/syndicate-config";
-import { ERC20_ABI, SALE_V3_ABI } from "@/lib/sale-abi";
+import {
+  CONTRACTS,
+  SOURCE_REGISTRY_V1_CONTRACT_ADDRESS,
+  explorerUrlForAddress,
+  txExplorerUrl,
+  USDC_DECIMALS,
+} from "@/lib/syndicate-config";
+import { ERC20_ABI, SALE_V3_ABI, SOURCE_REGISTRY_V1_ABI } from "@/lib/sale-abi";
 import { getV3HistoricalMember } from "@/lib/v3-historical-members";
 import { useHolderIndex } from "@/lib/holder-index";
 import {
   buildSourceAwareTestModeGate,
+  SOURCE_AWARE_PRODUCTION_TEST_MODE_FLAG,
+  SOURCE_AWARE_TEST_ALLOWED_BUYERS_FLAG,
   SOURCE_AWARE_TEST_MODE_FLAG,
   SOURCE_AWARE_TEST_QUERY_VALUE,
 } from "@/lib/source-aware-test-mode";
-import { INTERNAL_PROTOCOL_TEST_SOURCE_001 } from "@/lib/source-policy-observability";
+import { type SourcePolicyRecord, ZERO_SOURCE_ID } from "@/lib/source-policy-observability";
+import {
+  REAL_CONDITION_SOURCE_TEST_PACKET,
+  REAL_CONDITION_SOURCE_TEST_TERMS,
+  sourceRecordMatchesRealConditionTestTerms,
+} from "@/lib/source-real-condition-test";
 import { ContractLink, ProofButton } from "./Primitives";
 
 const USDC = CONTRACTS.USDC_CONTRACT_ADDRESS as `0x${string}`;
+const SOURCE_REGISTRY = SOURCE_REGISTRY_V1_CONTRACT_ADDRESS as `0x${string}`;
 const TEST_USDC_RAW = parseUnits("5", USDC_DECIMALS);
-const TEST_SOURCE_ID = INTERNAL_PROTOCOL_TEST_SOURCE_001.sourceId as `0x${string}`;
+const TEST_SOURCE_ID = REAL_CONDITION_SOURCE_TEST_TERMS.sourceId as `0x${string}`;
 
 type Phase = "idle" | "approving" | "buying" | "success";
+type SourceConfigObject = {
+  sourceWallet: string;
+  sourceClass: number;
+  commissionBps: number;
+  status: number;
+  scope: number;
+  startTime: bigint;
+  endTime: bigint;
+  grossCap: bigint;
+  perBuyerCap: bigint;
+  appliesToRepeatPurchases: boolean;
+  payoutWallet: string;
+  metadataHash: string;
+};
+type SourceConfigTuple = readonly [
+  string,
+  number,
+  number,
+  number,
+  number,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  boolean,
+  string,
+  string,
+  string,
+  bigint,
+];
+type SourceConfigRead = SourceConfigTuple | SourceConfigObject;
+
+const sourceClasses = [
+  "MEMBER_INTRODUCTION",
+  "BUILDER_SOURCE",
+  "AFFILIATE",
+  "BD_NETWORK",
+  "WHITELABEL",
+  "SPONSORSHIP",
+  "TREASURY_DEAL",
+] as const;
+const sourceStatuses = ["NONE", "ACTIVE", "PAUSED", "REVOKED"] as const;
+const sourceScopes = ["FIRST_PURCHASE", "WINDOWED", "CAPPED", "LIFETIME", "CUSTOM"] as const;
+
+function isSourceConfigTuple(config: SourceConfigRead): config is SourceConfigTuple {
+  return Array.isArray(config);
+}
+
+function field<T>(config: SourceConfigRead, index: number, key: keyof SourceConfigObject): T {
+  return (isSourceConfigTuple(config) ? config[index] : config[key]) as T;
+}
+
+function sourceRecordFromConfig(config: unknown): SourcePolicyRecord | null {
+  if (!config) return null;
+  const c = config as SourceConfigRead;
+  const sourceWallet = field<string>(c, 0, "sourceWallet");
+  if (!sourceWallet || /^0x0{40}$/i.test(sourceWallet)) return null;
+  const sourceClass = sourceClasses[field<number>(c, 1, "sourceClass")];
+  const status = sourceStatuses[field<number>(c, 3, "status")];
+  const scope = sourceScopes[field<number>(c, 4, "scope")];
+  if (!sourceClass || !status || !scope) return null;
+
+  return {
+    sourceId: TEST_SOURCE_ID,
+    sourceWallet,
+    sourceClass,
+    status,
+    commissionBps: Number(field<number>(c, 2, "commissionBps")),
+    scope,
+    startTime: Number(field<bigint>(c, 5, "startTime")),
+    endTime: Number(field<bigint>(c, 6, "endTime")),
+    grossCap: Number(field<bigint>(c, 7, "grossCap")),
+    perBuyerCap: Number(field<bigint>(c, 8, "perBuyerCap")),
+    appliesToRepeatPurchases: field<boolean>(c, 9, "appliesToRepeatPurchases"),
+    payoutWallet: field<string>(c, 10, "payoutWallet"),
+    metadataHash: field<string>(c, 11, "metadataHash"),
+  };
+}
 
 export function SourceAwareLocalTestHarness({
   requestedSourceTest,
@@ -42,18 +133,44 @@ export function SourceAwareLocalTestHarness({
     setHostname(window.location.hostname);
   }, []);
 
+  const wallet = useWalletGate();
+  const sourceConfig = useReadContract({
+    address: SOURCE_REGISTRY,
+    abi: SOURCE_REGISTRY_V1_ABI,
+    functionName: "sourceConfig",
+    args: [TEST_SOURCE_ID],
+    query: { refetchInterval: 20_000, staleTime: 10_000 },
+  });
+  const sourceActive = useReadContract({
+    address: SOURCE_REGISTRY,
+    abi: SOURCE_REGISTRY_V1_ABI,
+    functionName: "isActive",
+    args: [TEST_SOURCE_ID],
+    query: { refetchInterval: 20_000, staleTime: 10_000 },
+  });
+  const liveSourceRecord = useMemo(() => sourceRecordFromConfig(sourceConfig.data), [sourceConfig.data]);
+  const liveTermsMatch = liveSourceRecord
+    ? sourceRecordMatchesRealConditionTestTerms(liveSourceRecord)
+    : false;
+
   const gate = useMemo(
     () =>
       buildSourceAwareTestModeGate({
         isDev: import.meta.env.DEV,
         hostname,
         enabledFlag: import.meta.env.VITE_ENABLE_SOURCE_TEST_MODE,
+        productionEnabledFlag: import.meta.env.VITE_ENABLE_PRODUCTION_SOURCE_TEST_MODE,
+        allowedBuyerAddresses: import.meta.env.VITE_SOURCE_TEST_ALLOWED_BUYERS,
+        connectedWallet: wallet.address,
         requestedSourceTest,
+        target: REAL_CONDITION_SOURCE_TEST_TERMS,
+        liveSourceStatus:
+          liveSourceRecord && sourceActive.data === true ? liveSourceRecord.status : "PAUSED",
+        liveSourceMatchesExpectedTerms: liveTermsMatch && sourceActive.data === true,
       }),
-    [hostname, requestedSourceTest],
+    [hostname, liveSourceRecord, liveTermsMatch, requestedSourceTest, sourceActive.data, wallet.address],
   );
 
-  const wallet = useWalletGate();
   const userBal = useUserBalances();
   const holderIndex = useHolderIndex();
   const knownMember = wallet.address ? holderIndex.getByWallet(wallet.address) : undefined;
@@ -106,12 +223,23 @@ export function SourceAwareLocalTestHarness({
   const sourceTerms = [
     ["sourceId", gate.sourceIdForTest],
     ["status", gate.sourceStatus],
-    ["sourceClass", INTERNAL_PROTOCOL_TEST_SOURCE_001.sourceClass],
-    ["sourceWallet", INTERNAL_PROTOCOL_TEST_SOURCE_001.sourceWallet],
-    ["payoutWallet", INTERNAL_PROTOCOL_TEST_SOURCE_001.payoutWallet],
-    ["commissionBps", INTERNAL_PROTOCOL_TEST_SOURCE_001.commissionBps.toString()],
-    ["grossCap", `${fmtUsdc(BigInt(INTERNAL_PROTOCOL_TEST_SOURCE_001.grossCap ?? 0))} USDC`],
-    ["perBuyerCap", `${fmtUsdc(BigInt(INTERNAL_PROTOCOL_TEST_SOURCE_001.perBuyerCap ?? 0))} USDC`],
+    ["sourceClass", REAL_CONDITION_SOURCE_TEST_TERMS.sourceClass],
+    ["sourceWallet", REAL_CONDITION_SOURCE_TEST_TERMS.sourceWallet],
+    ["payoutWallet", REAL_CONDITION_SOURCE_TEST_TERMS.payoutWallet],
+    ["commissionBps", REAL_CONDITION_SOURCE_TEST_TERMS.commissionBps.toString()],
+    ["startTime", REAL_CONDITION_SOURCE_TEST_PACKET.startTimeUtc],
+    ["endTime", REAL_CONDITION_SOURCE_TEST_PACKET.endTimeUtc],
+    ["grossCap", `${fmtUsdc(BigInt(REAL_CONDITION_SOURCE_TEST_TERMS.grossCap ?? 0))} USDC`],
+    ["perBuyerCap", `${fmtUsdc(BigInt(REAL_CONDITION_SOURCE_TEST_TERMS.perBuyerCap ?? 0))} USDC`],
+    ["metadataHash", REAL_CONDITION_SOURCE_TEST_TERMS.metadataHash],
+  ] as const;
+
+  const readbackRows = [
+    ["SourceRegistry read", sourceConfig.isLoading ? "Loading" : liveSourceRecord ? "Present" : "Missing"],
+    ["isActive(sourceId)", sourceActive.data === true ? "true" : "false"],
+    ["terms match packet", liveTermsMatch ? "true" : "false"],
+    ["public/default buy", ZERO_SOURCE_ID],
+    ["production mode", gate.isProductionInternalMode ? "enabled internally" : "not production-internal"],
   ] as const;
 
   const handleApprove = async () => {
@@ -160,13 +288,13 @@ export function SourceAwareLocalTestHarness({
           INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL
         </div>
         <h1 className="mt-2 text-2xl font-semibold tracking-tight">
-          Localhost-only source-aware test boundary
+          Internal source-aware test boundary
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          This page exists only to prepare a future controlled $5
-          source-attributed MembershipSaleV3 test after a separate ACTIVE
-          ceremony. It is not linked publicly, not a source dashboard, not a
-          claim surface, and not referral activation.
+          This page exists only for a controlled $5 source-attributed
+          MembershipSaleV3 test after separate terms-update, ACTIVE, and
+          readback approvals. It is not linked publicly, not a source dashboard,
+          not a claim surface, and not referral activation.
         </p>
       </header>
 
@@ -204,6 +332,8 @@ export function SourceAwareLocalTestHarness({
           <dl className="mt-3 space-y-2 text-sm">
             <Row label="Route" value="/labs/source-attribution-test" />
             <Row label="Flag" value={`${SOURCE_AWARE_TEST_MODE_FLAG}=true`} />
+            <Row label="Production flag" value={`${SOURCE_AWARE_PRODUCTION_TEST_MODE_FLAG}=true`} />
+            <Row label="Allowlist" value={SOURCE_AWARE_TEST_ALLOWED_BUYERS_FLAG} />
             <Row label="Query" value={`sourceTest=${SOURCE_AWARE_TEST_QUERY_VALUE}`} />
             <Row label="Amount" value="$5.00 USDC only" />
             <Row label="Default public buy" value="ZERO_SOURCE_ID" />
@@ -221,9 +351,20 @@ export function SourceAwareLocalTestHarness({
           ))}
         </div>
         <div className="mt-4 rounded-md border border-border/50 bg-background/45 p-3 text-sm leading-relaxed text-muted-foreground">
-          Quote and buy controls stay locked until the source is ACTIVE in the
-          current read model. The current public/default path stays{" "}
-          <code>{ZERO_SOURCE_ID}</code>.
+          Quote and buy controls stay locked until live SourceRegistry readback
+          shows ACTIVE status and exact terms match for this packet. The current
+          public/default path stays <code>{ZERO_SOURCE_ID}</code>.
+        </div>
+      </section>
+
+      <section className="mt-5 rounded-md border border-border/60 bg-card/70 p-5">
+        <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          Live SourceRegistry readback
+        </div>
+        <div className="mt-4 grid gap-2 md:grid-cols-2">
+          {readbackRows.map(([label, value]) => (
+            <Row key={label} label={label} value={value} />
+          ))}
         </div>
       </section>
 
@@ -295,8 +436,9 @@ export function SourceAwareLocalTestHarness({
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           This harness must never be linked from public navigation, never appear
           in the sitemap, never create a public source link, and never alter
-          `/join`. If production renders this page, it must stay locked and show
-          no wallet action.
+          `/join`. If production renders this page without the explicit internal
+          flags, allowlisted wallet, ACTIVE readback, and exact terms match, it
+          must stay locked and show no wallet action.
         </p>
         <div className="mt-3">
           <ContractLink address={ACTIVE_SALE} explorerHref={explorerUrlForAddress(ACTIVE_SALE)} />

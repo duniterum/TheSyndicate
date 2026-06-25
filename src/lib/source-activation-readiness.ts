@@ -104,13 +104,13 @@ export function buildSourceActivationReadiness(
       blocksActiveCeremony: true,
     },
     {
-      id: "local-source-aware-test-path",
-      label: "Localhost-only source-aware test path",
+      id: "internal-source-aware-test-path",
+      label: "Internal source-aware test path",
       status: "SATISFIED",
       proof:
-        "A noindex /labs/source-attribution-test harness exists, hard-gated to localhost development, an explicit source-test flag, and the frozen test sourceId.",
+        "A noindex /labs/source-attribution-test harness exists, hard-gated to localhost development or explicit production-internal mode, exact source-test query, allowlisted buyer in production-internal mode, live SourceRegistry terms, and the frozen test sourceId.",
       requirement:
-        "Before any controlled test, run the harness locally and confirm production/default buys still use ZERO_SOURCE_ID with no public selector or source link.",
+        "Before any controlled test, confirm the harness stays out of public navigation and sitemap, production/default buys still use ZERO_SOURCE_ID, and no public selector or source link exists.",
       blocksActiveCeremony: false,
     },
     {
@@ -118,7 +118,7 @@ export function buildSourceActivationReadiness(
       label: "Clear-source buyer disclosure",
       status: "SATISFIED",
       proof:
-        "The internal harness previews sourceId, status, source class, wallet, payout wallet, commission bps, caps, local-only warnings, and the $5 test boundary before any wallet controls can appear.",
+        "The internal harness previews sourceId, status, source class, wallet, payout wallet, commission bps, caps, internal-mode warnings, and the $5 test boundary before any wallet controls can appear.",
       requirement:
         "Before public source-aware UX, repeat this disclosure discipline with legal/product-approved public copy.",
       blocksActiveCeremony: false,
@@ -180,7 +180,7 @@ export function buildSourceActivationReadiness(
     requiredNextActions: [
       "Run the AVAX_RPC current-authority readback in docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md before any source status transaction.",
       "Decide whether the approved time window still fits the intended controlled test.",
-      "Run the localhost-only source-aware test path with the explicit internal-test flag and frozen sourceId.",
+      "Run the internal source-aware test path with explicit local or production-internal flags, frozen sourceId, live SourceRegistry readback, and an allowlisted fresh buyer wallet.",
       "Reconfirm source-aware buyer disclosure before any non-zero sourceId wallet signature.",
       "Approve the exact ACTIVE status transaction only after every blocker is cleared.",
     ],

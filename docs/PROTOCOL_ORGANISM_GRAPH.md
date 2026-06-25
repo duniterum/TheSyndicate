@@ -203,7 +203,7 @@ Before any ACTIVE source status action or public source path:
 2. Current SourceRegistry owner, chain ID, bytecode, source status, and source terms freshly read back.
 3. Source activation readiness packet reviewed.
 4. Source window still fits the intended controlled test or terms are updated with a new approved packet.
-5. Localhost-only source-aware test path exists and cannot leak to production.
+5. Internal source-aware test path exists and cannot leak into public production.
 6. Buyer disclosure / clear-source UX approved for any non-zero sourceId signature path.
 7. Legal/product copy approved.
 8. Public/default `ZERO_SOURCE_ID` path remains safe.

@@ -328,16 +328,17 @@ Validation after readback:
 - Commit readback docs/guards to GitHub before Replit pulls or production copy
   changes.
 
-## 9A. Future Localhost Source-Attributed Buy Boundary
+## 9A. Future Internal Source-Attributed Buy Boundary
 
 The first PAUSED source record does not create a referral system. It creates
 only an internal source-policy fact. No referral/source link exists today.
 
 Before any $5 source-attributed buy test, a separate sprint must build or
-enable a controlled local-only source test path:
+enable a controlled internal source test path:
 
-- localhost/local dev only,
+- localhost/local dev or separately approved production-internal mode only,
 - explicit source test mode,
+- allowlisted fresh buyer wallet in production-internal mode,
 - visible `INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL` copy,
 - frozen sourceId passed intentionally to the buy flow,
 - fresh buyer wallet never used on The Syndicate,
