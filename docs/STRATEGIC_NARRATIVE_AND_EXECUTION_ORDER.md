@@ -6,6 +6,12 @@ Last updated: 2026-06-22
 
 Starting source: full site / full protocol baseline audit at commit `0971dc8cc3969ad44066e3c56147ebd7594a5245`.
 
+Current-state note, 2026-06-25: source/referral state in this 2026-06-22
+synthesis is superseded by `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`. In
+particular, SourceRegistryV1 now has one internal PAUSED source record and zero
+ACTIVE sources. Treat any older "zero source records" line below as historical
+sequence context, not current authority.
+
 This document is not a new audit. It converts the current canon, the full-site
 baseline audit, the pre-referral audit, the module standard, the organism graph,
 and deferred-work ledgers into a practical execution spine.

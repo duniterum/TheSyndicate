@@ -944,7 +944,8 @@ describe("production coherence guards", () => {
     expect(capability).toContain("Future NFT or product commission requires a source-aware sale wrapper/router or new product contract");
     expect(capability).toContain("Public/default buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active.");
     expect(capability).toContain("Guard with production coherence tests; public copy must use acquisition-first");
-    expect(capability).toContain("do not create it until founder inputs and ceremony approval are final");
+    expect(capability).toContain("Result: the first internal BUILDER_SOURCE source record was created PAUSED");
+    expect(capability).toContain("Before creating another source record or activating the existing PAUSED source");
     expect(capability).toContain("Do not build public source links, claim UI, Archive source attribution, or");
 
     expect(capability).not.toMatch(/passive income|yield|downline|MLM/i);
@@ -1460,12 +1461,12 @@ describe("production coherence guards", () => {
     expect(research).toContain("SourceRegistryV1 is policy infrastructure, not a universal commerce router");
     expect(research).toContain("MembershipSaleV3 is the only current source-aware payment path");
     expect(research).toContain("Public/default V3 buys must continue to use `ZERO_SOURCE_ID`");
-    expect(research).toContain("Source records are still zero");
+    expect(research).toContain("One internal PAUSED source record exists; zero ACTIVE sources exist");
     expect(research).toContain("Referral/source UI and claim UI remain inactive");
     expect(research).toContain("Archive1155, SwapRail, future product sales, and SeatRecord721 are not source-aware today");
     expect(research).toContain("CommissionRouterV1 as the active V3 source engine");
     expect(research).toContain("Do not create or activate a source in the same ceremony");
-    expect(research).toContain("one internal, PAUSED, readback-first source record for MembershipSaleV3 only");
+    expect(research).toContain("existing internal PAUSED MembershipSaleV3 source record");
     expect(research).toContain("Never frame source attribution as:");
     expect(research).toContain("passive income");
     expect(research).toContain("MLM");
@@ -1481,7 +1482,7 @@ describe("production coherence guards", () => {
 
     expect(audit).toContain("Status: OPERATIONAL RESEARCH / INFRASTRUCTURE BLUEPRINT / NO ACTIVATION AUTHORITY");
     expect(audit).toContain("Mature referral platforms are workflow systems, not only links");
-    expect(audit).toContain("Source records remain zero");
+    expect(audit).toContain("One internal PAUSED source record exists; zero ACTIVE sources exist");
     expect(audit).toContain("Public/default buys use ZERO_SOURCE_ID");
     expect(audit).toContain("SourceRegistryV1 is not a universal commerce router");
     expect(audit).toContain("MembershipSaleV3 is the only current source-aware payment path");
@@ -1491,6 +1492,30 @@ describe("production coherence guards", () => {
     expect(audit).toContain("Do not create public source links before an active source record");
     expect(audit).toContain("No MLM/downline/passive-income framing");
     expect(audit).not.toMatch(/public referral is live|claim UI is live|source records are active|source links are live/i);
+  });
+
+  it("keeps the whole-protocol checkpoint aligned with current source and production truth", () => {
+    const checkpoint = read("docs/PROTOCOL_CHECKPOINT_2026_06_25.md");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+    const strategicOrder = read("docs/STRATEGIC_NARRATIVE_AND_EXECUTION_ORDER.md");
+
+    expect(authority).toContain("docs/PROTOCOL_CHECKPOINT_2026_06_25.md");
+    expect(authority).toContain("Current source/referral state in this older synthesis is superseded by `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`");
+    expect(strategicOrder).toContain("source/referral state in this 2026-06-22");
+    expect(strategicOrder).toContain("superseded by `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`");
+    expect(checkpoint).toContain("Status: OPERATIONAL CHECKPOINT / CURRENT AUTHORITY SNAPSHOT / NO ACTIVATION AUTHORITY");
+    expect(checkpoint).toContain("Published and QA green from `e19927b`");
+    expect(checkpoint).toContain("`46e10a2b4d601f886d1409ff29b9d7ab999cfe38`");
+    expect(checkpoint).toContain("one internal PAUSED source record");
+    expect(checkpoint).toContain("`0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620`");
+    expect(checkpoint).toContain("`0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280`");
+    expect(checkpoint).toContain("public/default sourceId = ZERO_SOURCE_ID");
+    expect(checkpoint).toContain("OML-015");
+    expect(checkpoint).toContain("Source Activation Readiness Packet");
+    expect(checkpoint).toContain("Localhost-Only Source-Aware Test Path");
+    expect(checkpoint).toContain("Do not activate referral yet.");
+    expect(checkpoint).toContain("\"A source record means referral is live.\"");
+    expect(checkpoint).not.toMatch(/\| Referral\/source UI \| Live|\| Claim UI \| Live|source links are live now/i);
   });
 
   it("keeps the current runtime free of legacy platform dependencies", () => {

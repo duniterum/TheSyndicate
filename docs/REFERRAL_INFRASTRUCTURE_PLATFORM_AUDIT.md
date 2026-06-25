@@ -6,14 +6,14 @@ Last updated: 2026-06-23
 
 Repository baseline: 8d4d5f9096401b74053ab10513359d7a0d2abe06
 
-This document has no activation, deployment, source-record, claim-UI, public-source-link, or transaction authority. It is a research and architecture reference for source attribution only. It does not authorize referral activation, public source links, non-zero public buy paths, source records, claims, wallet signing, contract changes, registry switches, Replit publishing, or production changes.
+This document has no activation, deployment, source-record, claim-UI, public-source-link, or transaction authority. It is a research and architecture reference for source attribution only. It does not authorize referral activation, public source links, non-zero public buy paths, another source record, claims, wallet signing, contract changes, registry switches, Replit publishing, or production changes.
 
 Current repository truth remains:
 
 - V3 is the active membership sale path in the repository.
 - SourceRegistryV1 is deployed and owner-accepted.
 - MembershipSaleV3 is technically source-aware.
-- Source records remain zero.
+- One internal PAUSED source record exists; zero ACTIVE sources exist.
 - Public/default buys use ZERO_SOURCE_ID.
 - Referral/source UI and claim UI remain inactive.
 - SourceRegistryV1 is not a universal commerce router.
@@ -54,7 +54,7 @@ What should stay future-only:
 - ProductSaleRouter attribution.
 - Marketplace or premium pass attribution.
 
-This audit does not change the current near-term recommendation. The correct next real milestone remains one internal, PAUSED, readback-first MembershipSaleV3 source record, after source packet approval. The SaaS research adds a stronger warning: do not create public source links before an active source record, and do not create source-facing dashboards before the legal, payout, fraud, disclosure, and read-model layers are ready.
+This audit does not change the current near-term recommendation. The correct next real milestone is source activation readiness and a controlled local-only source-aware test path for the existing internal PAUSED MembershipSaleV3 source record. The SaaS research adds a stronger warning: do not create public source links before an active source record, and do not create source-facing dashboards before the legal, payout, fraud, disclosure, and read-model layers are ready.
 
 ## 2. SaaS Platform Matrix
 
@@ -82,7 +82,7 @@ This audit does not change the current near-term recommendation. The correct nex
 
 | Feature | Syndicate timing | Correct layer | Current support | Missing support | Legal/UX/abuse risk | Priority |
 |---|---|---|---|---|---|---|
-| Source records | Now, controlled only | On-chain | SourceRegistryV1 | First approved record is not created | Terms can imply agency if poorly named | High |
+| Source records | Now, controlled only | On-chain | SourceRegistryV1 | First approved record exists PAUSED; no ACTIVE source exists | Terms can imply agency if poorly named | High |
 | Source lifecycle | Now | On-chain plus Register | create/pause/revoke/update events | Public readback surface is not complete | Hidden changes reduce trust | High |
 | Referral/source links | Later | Off-chain plus sourceId | None live | Link generator, session handling, disclosures | Link hijacking, fake official sources | High later |
 | Coupon/code attribution | Later, maybe | Off-chain/hybrid | None | Code registry and collision rules | Coupon leakage and consumer promo drift | Medium |
@@ -120,7 +120,7 @@ This audit does not change the current near-term recommendation. The correct nex
 
 | SaaS concept | Syndicate primitive | Current state | Correct translation |
 |---|---|---|---|
-| Partner profile | SourceRegistryV1 source record | Zero records | A source is a policy object, not a member relationship owner |
+| Partner profile | SourceRegistryV1 source record | One internal PAUSED record | A source is a policy object, not a member relationship owner |
 | Affiliate link | Future source link | Not live | A link may prefill sourceId later, but public/default buys must remain ZERO_SOURCE_ID until activated |
 | Coupon/code | Future code registry | Not live | Only add if code collision, disclosure, and attribution rules are frozen |
 | Commission terms | Source terms | Contract-supported | commissionBps, scope, caps, window, payout wallet, status |
@@ -138,7 +138,7 @@ Module boundaries:
 - Source Policy Observability is the current non-live public truth surface.
 - ZERO_SOURCE_ID is the public/default buy boundary.
 - Activity and Register may later read source policy events, but this does not activate referral.
-- Protocol Economy and Transparency can explain source attribution only as pending/inactive until source records exist.
+- Protocol Economy and Transparency can explain source attribution only as pending/inactive until a source is ACTIVE and receipt proof exists.
 - My Syndicate may later show source status, attributed receipts, and claim state, but not before activation gates are met.
 - Archive1155 is memory, not referral infrastructure.
 - Future Archive wrapper / Archive1155 V2 must have explicit attribution support before any Archive attribution claim.
@@ -293,7 +293,7 @@ This audit strengthens the current path instead of replacing it.
 Recommended next priority order:
 
 1. Keep the first internal source packet as the next source-attribution milestone.
-2. Add SaaS-derived source packet fields before any source record ceremony:
+2. Keep the SaaS-derived source packet fields as the minimum standard before any future source record or source activation ceremony:
    - source purpose
    - source class
    - payout wallet
@@ -307,8 +307,8 @@ Recommended next priority order:
    - no-agency/no-employment/no-yield/no-MLM acknowledgment
    - source dashboard status: not live
    - claim UI status: not live
-3. If approved, create one internal, PAUSED, readback-first MembershipSaleV3 source record only.
-4. Record readback in Source Policy Observability, Register/Activity docs, and source packet files.
+3. Keep the existing internal, PAUSED, readback-first MembershipSaleV3 source record as policy truth only.
+4. Keep readback recorded in Source Policy Observability, Register/Activity docs, and source packet files.
 5. Do not activate the source in the same ceremony.
 6. Defer public links, public referral, claim UI, dashboards, coupon/code attribution, product-wide attribution, and campaign mechanics.
 

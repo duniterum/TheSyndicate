@@ -88,7 +88,8 @@ Every future source record should have a public policy packet before creation:
 
 - Preserve V3 source fields in the purchase-event read model and cache.
 - Keep public buy path at `ZERO_SOURCE_ID`.
-- Keep source records count at zero in docs until readback changes.
+- Keep source-record count aligned with current readback; current truth is one
+  internal PAUSED source record and zero ACTIVE sources.
 - Keep `/referral` pending and noindex.
 
 ### Phase B - Preview UI

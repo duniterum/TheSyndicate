@@ -140,6 +140,7 @@ specs that match the deployed reality. Safe to reference for current work.
 - `docs/CANONICAL_REGISTRY.md`
 - `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, current-authority readback, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
 - `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` - operational doctrine for GitHub/Replit/production synchronization, change classification, Replit pull/publish decisions, route QA, wallet/write-path QA, push-back rules, Codex after-Replit protocol, and final reporting. It has no deployment, publish, transaction, registry, source-record, activation, or claim-UI authority.
+- `docs/PROTOCOL_CHECKPOINT_2026_06_25.md` - whole-protocol continuity checkpoint after the first internal PAUSED source readback and Replit live sync. It has no deployment, publish, transaction, source-record, activation, registry-switch, referral, or claim-UI authority.
 - `docs/ACTIVATION_RUNBOOK.md`
 - `docs/HOLDER_INDEX_ARCHITECTURE.md`
 - `docs/DEPLOYMENT_STATE_V1.md`
@@ -167,7 +168,7 @@ specs that match the deployed reality. Safe to reference for current work.
 - `docs/FULL_SITE_MAP.md`
 - `docs/REFERRAL_SOURCE_ATTRIBUTION_STRATEGIC_RESEARCH.md` - strategic referral/source-attribution research and architecture reference. It has no activation, deployment, source-record, claim-UI, or transaction authority.
 - `docs/REFERRAL_INFRASTRUCTURE_PLATFORM_AUDIT.md` - referral infrastructure platform research and source-attribution blueprint. It has no activation, deployment, source-record, claim-UI, public-source-link, or transaction authority.
-- `docs/STRATEGIC_NARRATIVE_AND_EXECUTION_ORDER.md` — operational synthesis of current story, audience narratives, deferred-work triage, and execution order after the 2026-06-22 full-site/protocol baseline audit. It does not override canonical doctrine or authorize transactions/activation.
+- `docs/STRATEGIC_NARRATIVE_AND_EXECUTION_ORDER.md` — operational synthesis of story, audience narratives, deferred-work triage, and execution order after the 2026-06-22 full-site/protocol baseline audit. Current source/referral state in this older synthesis is superseded by `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`. It does not override canonical doctrine or authorize transactions/activation.
 - `docs/NFT_ARCHIVE_DESIGN_REFERENCES.md`
 - `docs/NFT_ARCHIVE_VERIFIABILITY_MATRIX.md`
 - `docs/V3_ACQUISITION_ENGINE_TEST_PLAN.md`

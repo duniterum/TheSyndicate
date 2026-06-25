@@ -12,9 +12,9 @@ does not override on-chain truth, canonical registries, constitutional doctrine,
 the module integration standard, the protocol organism graph, or the source
 creation ceremony runbook.
 
-This document does not authorize a source record, source activation, claim UI,
-public source link, non-zero public source path, registry switch, deployment,
-transaction, funding action, V2b recovery, SwapRail, SeatRecord721,
+This document does not authorize another source record, source activation,
+claim UI, public source link, non-zero public source path, registry switch,
+deployment, transaction, funding action, V2b recovery, SwapRail, SeatRecord721,
 ProductSaleRouter, Archive1155 V2, or any public activation.
 
 ## 1. Executive Summary
@@ -26,7 +26,7 @@ for The Syndicate, but only if it is kept in its proper place:
 - SourceRegistryV1 is policy infrastructure, not a universal commerce router.
 - MembershipSaleV3 is the only current source-aware payment path.
 - Public/default V3 buys must continue to use `ZERO_SOURCE_ID`.
-- Source records are still zero.
+- One internal PAUSED source record exists; zero ACTIVE sources exist.
 - Referral/source UI and claim UI remain inactive.
 - Archive1155, SwapRail, future product sales, and SeatRecord721 are not
   source-aware today.
@@ -37,9 +37,9 @@ The next irreversible action should not be public referral activation. The
 highest-leverage path is:
 
 1. Keep current public V3 direct buys stable and source-neutral.
-2. Finalize one tightly scoped internal source packet.
-3. If approved, create a PAUSED source record only.
-4. Read it back and record it in Register/Activity truth surfaces.
+2. Keep the first internal PAUSED source readback as policy truth only.
+3. Do not activate it without a separate ceremony.
+4. Keep the readback recorded in Register/Activity truth surfaces.
 5. Build source-aware quote, receipt, and My Syndicate read models after the
    paused-record proof exists.
 6. Activate a source only in a separate ceremony after legal/product copy,
@@ -58,7 +58,7 @@ Archive commission, product-wide attribution, or member ownership language.
 | --- | --- |
 | SYN | Live V1 seat token. |
 | MembershipSaleV3 | Deployed, funded, direct-buy target for V3 membership purchases. |
-| SourceRegistryV1 | Deployed, owner accepted, zero source records. |
+| SourceRegistryV1 | Deployed, owner accepted, one internal PAUSED source record. |
 | Public/default buy path | Uses `ZERO_SOURCE_ID`. |
 | Referral/source UI | Pending, read-only/inactive. |
 | Claim UI | Inactive. |
@@ -306,7 +306,7 @@ source packet -> SourceRegistryV1 source policy -> source status ACTIVE
 ```
 
 This path exists technically but is not public-active because no source record
-exists and public/default buys use `ZERO_SOURCE_ID`.
+is ACTIVE and public/default buys use `ZERO_SOURCE_ID`.
 
 ### 6.2 Current non-edges
 
@@ -351,7 +351,8 @@ Before a non-zero public source path exists, these should be ready:
 
 ### V1 - Current safe path: observation and paused source readiness
 
-Status: next safe phase.
+Status: first PAUSED record complete; next safe phase is read-model proof and
+activation readiness, not public referral.
 
 Scope:
 
@@ -359,7 +360,7 @@ Scope:
 - no claim UI;
 - no non-zero public/default source path;
 - one internal source packet only;
-- source record, if approved, starts `PAUSED`;
+- the existing internal source record remains `PAUSED`;
 - MembershipSaleV3-only source attribution.
 
 Recommended first source:
@@ -424,7 +425,7 @@ Scope:
 
 ## 8. Anti-Drift Rules
 
-1. Do not call referral live while source records equal zero.
+1. Do not call referral live merely because a source record exists or is PAUSED.
 2. Do not call source attribution active while every public/default buy uses
    `ZERO_SOURCE_ID`.
 3. Do not create public source links before a source record is active.
@@ -475,10 +476,10 @@ Complete the source packet with:
 
 ### 9.4 Re-run pre-ceremony proof before any source transaction
 
-Before creating a source record:
+Before creating another source record or activating the existing PAUSED source:
 
 - read SourceRegistryV1 source count/logs;
-- confirm source records remain zero;
+- confirm source count, status, and sourceConfig from current readback;
 - confirm V3 direct buy path remains healthy;
 - run or cite the latest relevant fork rehearsal;
 - confirm owner wallet and network;
@@ -507,11 +508,12 @@ The current path is still the best path if it stays narrow:
 - Do not create ProductSaleRouter yet.
 - Do not turn source attribution into the product.
 
-The best next real-world move is not a public referral launch. It is one
-internal, PAUSED, readback-first source record for MembershipSaleV3 only, after
-the source packet is fully approved.
+The best next real-world move is not a public referral launch. It is activation
+readiness and a controlled localhost-only source-aware test path for the
+existing internal PAUSED MembershipSaleV3 source record.
 
-Exact next step: one internal, PAUSED, readback-first source record for MembershipSaleV3 only.
+Exact next step: source activation preflight plus local-only source-aware test
+design, with no public source path.
 
 This gives The Syndicate real operational proof without creating legal,
 psychological, or product-story drift. It also preserves the larger institution:

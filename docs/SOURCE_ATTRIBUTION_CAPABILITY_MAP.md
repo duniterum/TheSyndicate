@@ -3,10 +3,10 @@
 Status: DECISION MAP / ONE PAUSED INTERNAL SOURCE / NO ACTIVATION AUTHORIZED
 
 This document maps what the deployed SourceRegistryV1 and MembershipSaleV3
-source-attribution system can do across The Syndicate product organism before
-any real source record is created.
+source-attribution system can do across The Syndicate product organism after
+the first internal PAUSED source record was created and read back.
 
-It does not authorize a mainnet transaction, source record, source link,
+It does not authorize another mainnet transaction, source record, source link,
 commission claim surface, registry switch, production publish, funding action,
 V2b recovery, SwapRail implementation, SeatRecord721 implementation, or any
 change to deployed smart contracts.
@@ -17,7 +17,7 @@ Repository and chain truth at this map:
 
 | Surface | Current truth |
 | --- | --- |
-| SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; source records remain zero until a later readback proves otherwise. |
+| SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; one internal PAUSED source record exists. |
 | MembershipSaleV3 | Deployed at `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`; funded; active frontend buy target for direct SYN membership purchases. |
 | Public/default buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active. |
 | Source attribution rehearsal | Deployed-address Avalanche fork passed for source creation and source-attributed MembershipSaleV3 buy. |
@@ -81,7 +81,7 @@ What works now:
 
 What remains inactive:
 
-- No source record exists on mainnet.
+- No ACTIVE source record exists on mainnet.
 - No public source link exists.
 - No source-aware public buy path exists.
 - No claim UI exists.
@@ -297,12 +297,13 @@ Need later:
 - Public/non-public display posture.
 - Per-product terms policy if products expand beyond MembershipSaleV3.
 
-## First Internal Source Record Recommendation
+## First Internal Source Record Result
 
-Recommendation: yes, prepare for a PAUSED internal BUILDER_SOURCE source record
-soon, but do not create it until founder inputs and ceremony approval are final.
+Result: the first internal BUILDER_SOURCE source record was created PAUSED and
+read back green. This result does not authorize activation, public source links,
+claim UI, source dashboard, or a public source-aware buy path.
 
-Why:
+Why this remains the right boundary:
 
 - The deployed-address fork proved the core source-attributed membership path.
 - SourceRegistryV1 and MembershipSaleV3 are sufficient for a first controlled
@@ -381,13 +382,13 @@ Never show:
 
 ## Next Recommended Sprint
 
-Before creating any source record:
+Before creating another source record or activating the existing PAUSED source:
 
-1. Finalize the first internal source packet.
-2. Keep initial status PAUSED.
+1. Rebuild current-authority readbacks.
+2. Confirm whether source terms/window remain suitable for any controlled test.
 3. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
-4. Prepare source readback commands and Activity/Register wording for a paused
-   source policy.
+4. Prepare a local-only source-aware test path and readback checklist.
 5. Do not build public source links, claim UI, Archive source attribution, or
-   product-wide attribution until the paused-record readback is complete.
+   product-wide attribution until a controlled internal source-attributed test
+   is separately approved and read back.
