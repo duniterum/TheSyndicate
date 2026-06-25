@@ -128,8 +128,9 @@ specs that match the deployed reality. Safe to reference for current work.
 > **Do not infer chain, explorer, address, or ABI data.** Import from the
 > canonical registry (`src/lib/chain-registry.ts`,
 > `src/lib/contract-registry.ts`, `src/lib/archive-id-registry.ts`).
-> Operational entry point: `docs/CANONICAL_REGISTRY.md`. Activation
-> checklist: `docs/ACTIVATION_RUNBOOK.md`. Operational mistakes, sync
+> Operational entry points: `docs/PROTOCOL_KNOWLEDGE_INDEX.md` for
+> whole-protocol navigation and `docs/CANONICAL_REGISTRY.md` for canonical
+> registry references. Activation checklist: `docs/ACTIVATION_RUNBOOK.md`. Operational mistakes, sync
 > boundaries, sandbox limits, and Replit/GitHub workflow lessons belong in
 > `docs/OPERATIONAL_MEMORY_LEDGER.md`. Production synchronization, Replit
 > pull/publish decisions, live route QA, Replit push-back rules, and
@@ -138,6 +139,12 @@ specs that match the deployed reality. Safe to reference for current work.
 > rules also belong there.
 
 - `docs/CANONICAL_REGISTRY.md`
+- `docs/PROTOCOL_KNOWLEDGE_INDEX.md` - whole-protocol knowledge front door
+  that routes current work across V3, SourceRegistryV1, referral/source
+  attribution, Activity, Registry, Chronicle, My Syndicate, Transparency,
+  Archive1155, future modules, operational memory, production sync, and guard
+  files. It has no deployment, publish, transaction, source-record, activation,
+  registry-switch, referral, or claim-UI authority.
 - `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, current-authority readback, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
 - `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` - operational doctrine for GitHub/Replit/production synchronization, change classification, Replit pull/publish decisions, route QA, wallet/write-path QA, push-back rules, Codex after-Replit protocol, and final reporting. It has no deployment, publish, transaction, registry, source-record, activation, or claim-UI authority.
 - `docs/PROTOCOL_CHECKPOINT_2026_06_25.md` - whole-protocol continuity checkpoint after the first internal PAUSED source readback and Replit live sync. It has no deployment, publish, transaction, source-record, activation, registry-switch, referral, or claim-UI authority.

@@ -1518,6 +1518,32 @@ describe("production coherence guards", () => {
     expect(checkpoint).not.toMatch(/\| Referral\/source UI \| Live|\| Claim UI \| Live|source links are live now/i);
   });
 
+  it("keeps the whole-protocol knowledge index discoverable and non-activating", () => {
+    const index = read("docs/PROTOCOL_KNOWLEDGE_INDEX.md");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+
+    expect(authority).toContain("docs/PROTOCOL_KNOWLEDGE_INDEX.md");
+    expect(index).toContain("Status: OPERATIONAL FRONT DOOR / WHOLE-PROTOCOL NAVIGATION / NO ACTIVATION AUTHORITY");
+    expect(index).toContain("Current Whole-Protocol Authority");
+    expect(index).toContain("Protocol Domain Map");
+    expect(index).toContain("Reading Paths By Task");
+    expect(index).toContain("File Authority Rationalization");
+    expect(index).toContain("Superseded / Dangerous Old Truths");
+    expect(index).toContain("Current Execution Roadmap");
+    expect(index).toContain("Guard / Test Hooks");
+    expect(index).toContain("MembershipSaleV3");
+    expect(index).toContain("SourceRegistryV1");
+    expect(index).toContain("one internal PAUSED source record");
+    expect(index).toContain("ZERO_SOURCE_ID");
+    expect(index).toContain("Archive1155");
+    expect(index).toContain("SeatRecord721");
+    expect(index).toContain("SwapRail");
+    expect(index).toContain("Production Synchronization Doctrine");
+    expect(index).toContain("GitHub green means production green");
+    expect(index).toContain("source-attributed receipt projection");
+    expect(index).not.toMatch(/\| Referral\/source UI \| Live|\| Claim UI \| Live|source links are live now/i);
+  });
+
   it("keeps the current runtime free of legacy platform dependencies", () => {
     const currentRuntime = [
       "package.json",
