@@ -1556,6 +1556,7 @@ describe("production coherence guards", () => {
     const preflight = read("docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md");
     const localPathDoc = read("docs/SOURCE_AWARE_LOCAL_TEST_PATH.md");
     const realConditionPlan = read("docs/SOURCE_REAL_CONDITION_TEST_PLAN.md");
+    const founderGuide = read("docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md");
     const realConditionMetadata = read(
       "docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_TERMS_UPDATE_2026_06_25_METADATA.json",
     );
@@ -1578,8 +1579,10 @@ describe("production coherence guards", () => {
     expect(authority).toContain("docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md");
     expect(authority).toContain("docs/SOURCE_AWARE_LOCAL_TEST_PATH.md");
     expect(authority).toContain("docs/SOURCE_REAL_CONDITION_TEST_PLAN.md");
+    expect(authority).toContain("docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md");
     expect(index).toContain("docs/SOURCE_ACTIVATION_READINESS_PACKET.md");
     expect(index).toContain("docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md");
+    expect(index).toContain("docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md");
     expect(index).toContain("src/lib/source-activation-readiness.ts");
     expect(index).toContain("src/lib/source-aware-test-mode.ts");
     expect(packet).toContain("Status: READINESS PACKET / NO TRANSACTION AUTHORIZED / NO ACTIVATION AUTHORIZED");
@@ -1630,6 +1633,20 @@ describe("production coherence guards", () => {
     expect(realConditionPlan).toContain("1783598400");
     expect(realConditionPlan).toContain("0x797dedbf845edc5954012c46a6c42e121f19f142d76fe34c8f59bf8e8c7bd681");
     expect(realConditionPlan).toContain("VITE_SOURCE_TEST_ALLOWED_BUYERS=<fresh buyer wallet address>");
+    expect(founderGuide).toContain("We are not launching referral. We are preparing the engine for one controlled");
+    expect(founderGuide).toContain("Step 1 - updateSourceTerms");
+    expect(founderGuide).toContain("It does not activate the source.");
+    expect(founderGuide).toContain("Source status remains `PAUSED`");
+    expect(founderGuide).toContain("Step 3 - set ACTIVE");
+    expect(founderGuide).toContain("Step 5 - one $5 source-attributed buy");
+    expect(founderGuide).toContain("Step 7 - re-pause");
+    expect(founderGuide).toContain("I approve only the SourceRegistryV1 updateSourceTerms transaction");
+    expect(founderGuide).toContain("I approve only setSourceStatus ACTIVE");
+    expect(founderGuide).toContain("I approve one controlled $5 source-attributed MembershipSaleV3 buy");
+    expect(founderGuide).toContain("I approve only setSourceStatus PAUSED");
+    expect(founderGuide).toContain("0x620febd921E7B8d123c7DFB6731ed58fCfbcC75F");
+    expect(founderGuide).toContain("No AI agent signs. No AI agent broadcasts.");
+    expect(founderGuide).not.toMatch(/referral is live|claim UI is live|public source link exists/i);
     expect(realConditionModel).toContain("REAL_CONDITION_SOURCE_TEST_TERMS");
     expect(realConditionModel).toContain("sourceRecordMatchesRealConditionTestTerms");
     expect(realConditionMetadata).toContain("SOURCE_PACKET_INTERNAL_TEST_001_TERMS_UPDATE_2026_06_25");

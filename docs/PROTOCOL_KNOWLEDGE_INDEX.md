@@ -39,7 +39,7 @@ publish.
 | Domain | Current status | Canonical files | Runtime / operational files | Tests / guards | Pending | Danger if confused |
 | --- | --- | --- | --- | --- | --- | --- |
 | V3 MembershipSaleV3 / Join | LIVE direct buy target. Public buys use `ZERO_SOURCE_ID`. | `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `docs/V3_DEPLOYMENT_PARAMETER_SHEET.md`, `contracts/src/MembershipSaleV3.sol` | `src/lib/syndicate-config.ts`, `src/lib/sale-hooks.ts`, `src/components/syndicate/LivePurchase.tsx`, `src/routes/join.tsx` | `contracts/test/MembershipSaleV3.t.sol`, `src/lib/__tests__/production-coherence.test.ts` | Continue readback discipline and direct-buy QA. | Accidentally routing public buys through a non-zero sourceId. |
-| SourceRegistryV1 | DEPLOYED with one internal PAUSED source record. | `contracts/src/SourceRegistryV1.sol`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`, `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`, `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md` | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `src/lib/source-activation-readiness.ts`, `src/lib/source-aware-test-mode.ts`, `src/routes/referral.tsx`, `src/routes/registry.tsx` | `contracts/test/SourceRegistryV1.t.sol`, source lifecycle tests, activation-readiness tests, source-aware test-mode tests, production coherence guards | Run the AVAX_RPC current-authority preflight before any future status transaction. | Treating source record existence as referral activation. |
+| SourceRegistryV1 | DEPLOYED with one internal PAUSED source record. | `contracts/src/SourceRegistryV1.sol`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`, `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`, `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`, `docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md` | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `src/lib/source-activation-readiness.ts`, `src/lib/source-aware-test-mode.ts`, `src/routes/referral.tsx`, `src/routes/registry.tsx` | `contracts/test/SourceRegistryV1.t.sol`, source lifecycle tests, activation-readiness tests, source-aware test-mode tests, production coherence guards | Run the AVAX_RPC current-authority preflight before any future status transaction. | Treating source record existence as referral activation. |
 | Referral / Source Attribution | INACTIVE public product; future capability under staged guardrails. | `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`, `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`, source packet docs | `src/routes/referral.tsx`, `src/lib/source-attributed-receipts.ts`, `src/lib/future-referral.ts` | source receipt tests, source lifecycle tests, production coherence guards | Internal gated source-aware test path, then separate ACTIVE ceremony if approved. | Claim UI, public links, source dashboard, or MLM-style language before approval. |
 | Activity | LIVE heartbeat/read-model surface. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/MODULE_INTEGRATION_STANDARD.md` | `src/routes/activity.tsx`, `src/lib/protocol-events.ts`, `src/lib/protocol-event-registry.ts`, purchase caches | event/cache tests, production coherence guards | Future source lifecycle and source-attributed purchase display after readback. | Letting routine events become fake Chronicle/history claims. |
 | Register / Registry | LIVE proof and contract/source-policy surface. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` | `src/routes/registry.tsx`, `src/lib/contract-registry.ts`, `src/lib/institutional-register.ts` | production coherence guards | Keep source and V3 readbacks aligned after any ceremony. | Showing old V2/V1 sale truth as active current sale. |
@@ -92,10 +92,11 @@ Before any source ceremony or source status transaction:
 1. `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`
 2. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
 3. `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`
-4. `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`
-5. Current owner/readback checks on Avalanche
-6. Current source status and terms
-7. Founder approval for the exact transaction
+4. `docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md`
+5. `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`
+6. Current owner/readback checks on Avalanche
+7. Current source status and terms
+8. Founder approval for the exact transaction
 
 Before Replit, production, or publish work:
 
