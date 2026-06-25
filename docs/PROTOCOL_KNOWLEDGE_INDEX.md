@@ -2,7 +2,7 @@
 
 Status: OPERATIONAL FRONT DOOR / WHOLE-PROTOCOL NAVIGATION / NO ACTIVATION AUTHORITY
 
-Last updated: 2026-06-25
+Last updated: 2026-06-26
 
 GitHub anchor at consolidation start: `8b82a2e62d975aa668c39c957855a1c0cbe33fe2`
 
@@ -20,12 +20,12 @@ publish.
 | Area | Current truth | Authority |
 | --- | --- | --- |
 | GitHub implementation truth | Current GitHub main is the canonical implementation source. The anchor entering this index was `8b82a2e62d975aa668c39c957855a1c0cbe33fe2`; later docs-only commits should be read from `git log -1`. | Git history, `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` |
-| Production truth | Production was last published and QA green from `e19927b` for the PAUSED source readback. This index is docs/guard truth and does not itself require publish unless release provenance is desired. | `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`, Replit QA reports |
+| Production truth | Production was last published and QA green from the source-operator console batch. This index now records post-ceremony repo truth and does not itself require publish unless release provenance is desired. | `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`, Replit QA reports |
 | Replit truth | Replit is the production deployment surface. GitHub success, Replit success, and production success are separate states. | `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`, `docs/OPERATIONAL_MEMORY_LEDGER.md` |
 | Current buy target | MembershipSaleV3 is the current repository buy target. | `src/lib/syndicate-config.ts`, `src/lib/sale-hooks.ts`, `src/components/syndicate/LivePurchase.tsx` |
 | Default public sourceId | Public/default V3 buys pass `ZERO_SOURCE_ID`. No public source selector or public source-aware buy path is live. | `src/lib/source-policy-observability.ts`, `src/lib/sale-hooks.ts`, `src/components/syndicate/LivePurchase.tsx` |
-| SourceRegistryV1 | Deployed, owner accepted, and has one internal PAUSED source record. | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `docs/PROTOCOL_CHECKPOINT_2026_06_25.md` |
-| PAUSED internal source record | `INTERNAL_PROTOCOL_TEST_SOURCE_001` exists as policy state only. It is not public referral activation and cannot route commission while PAUSED. | `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`, `src/lib/source-policy-observability.ts` |
+| SourceRegistryV1 | Deployed, owner accepted, and has one internal source record now PAUSED after a completed controlled source-attributed buy. | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `docs/PROTOCOL_CHECKPOINT_2026_06_25.md` |
+| PAUSED internal source record | `INTERNAL_PROTOCOL_TEST_SOURCE_001` exists as policy state and has one validated internal source-attributed V3 receipt. It is not public referral activation and cannot route commission while PAUSED. | `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`, `src/lib/source-policy-observability.ts` |
 | Referral/source UI | Inactive. `/referral` may explain PAUSED policy truth, but no referral link, source dashboard, claim action, or public source-aware buy path is live. | `src/routes/referral.tsx`, `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md` |
 | Claim UI | Absent. Contract escrow mechanics exist, but no claim route/control/balance UI is live. | `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`, production coherence tests |
 | Archive1155 | Live protocol memory layer. Not a seat, not financial rights, and not source-aware today. | `src/lib/archive-id-registry.ts`, `docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md` |
@@ -39,9 +39,9 @@ publish.
 | Domain | Current status | Canonical files | Runtime / operational files | Tests / guards | Pending | Danger if confused |
 | --- | --- | --- | --- | --- | --- | --- |
 | V3 MembershipSaleV3 / Join | LIVE direct buy target. Public buys use `ZERO_SOURCE_ID`. | `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `docs/V3_DEPLOYMENT_PARAMETER_SHEET.md`, `contracts/src/MembershipSaleV3.sol` | `src/lib/syndicate-config.ts`, `src/lib/sale-hooks.ts`, `src/components/syndicate/LivePurchase.tsx`, `src/routes/join.tsx` | `contracts/test/MembershipSaleV3.t.sol`, `src/lib/__tests__/production-coherence.test.ts` | Continue readback discipline and direct-buy QA. | Accidentally routing public buys through a non-zero sourceId. |
-| SourceRegistryV1 | DEPLOYED with one internal PAUSED source record. | `contracts/src/SourceRegistryV1.sol`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`, `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`, `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`, `docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md` | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `src/lib/source-activation-readiness.ts`, `src/lib/source-aware-test-mode.ts`, `src/routes/referral.tsx`, `src/routes/registry.tsx` | `contracts/test/SourceRegistryV1.t.sol`, source lifecycle tests, activation-readiness tests, source-aware test-mode tests, production coherence guards | Run the AVAX_RPC current-authority preflight before any future status transaction. | Treating source record existence as referral activation. |
-| Referral / Source Attribution | INACTIVE public product; future capability under staged guardrails. | `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`, `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`, source packet docs | `src/routes/referral.tsx`, `src/lib/source-attributed-receipts.ts`, `src/lib/future-referral.ts` | source receipt tests, source lifecycle tests, production coherence guards | Internal gated source-aware test path, then separate ACTIVE ceremony if approved. | Claim UI, public links, source dashboard, or MLM-style language before approval. |
-| Activity | LIVE heartbeat/read-model surface. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/MODULE_INTEGRATION_STANDARD.md` | `src/routes/activity.tsx`, `src/lib/protocol-events.ts`, `src/lib/protocol-event-registry.ts`, purchase caches | event/cache tests, production coherence guards | Future source lifecycle and source-attributed purchase display after readback. | Letting routine events become fake Chronicle/history claims. |
+| SourceRegistryV1 | DEPLOYED with one internal source record now PAUSED after a completed controlled source-attributed buy. | `contracts/src/SourceRegistryV1.sol`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`, `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`, `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`, `docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md` | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `src/lib/source-activation-readiness.ts`, `src/lib/source-aware-test-mode.ts`, `src/routes/referral.tsx`, `src/routes/registry.tsx` | `contracts/test/SourceRegistryV1.t.sol`, source lifecycle tests, activation-readiness tests, source-aware test-mode tests, production coherence guards | Run latest-chain current-authority preflight before any future status transaction. | Treating a validated internal source proof as public referral activation. |
+| Referral / Source Attribution | INACTIVE public product; one internal real-condition source-attributed V3 receipt has been validated under staged guardrails. | `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`, `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`, source packet docs | `src/routes/referral.tsx`, `src/lib/source-attributed-receipts.ts`, `src/lib/future-referral.ts`, `src/lib/source-real-condition-test.ts` | source receipt tests, source lifecycle tests, production coherence guards | Post-test read-model/product hardening, then separate public referral decision if founder approves. | Claim UI, public links, source dashboard, or MLM-style language before approval. |
+| Activity | LIVE heartbeat/read-model surface. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/MODULE_INTEGRATION_STANDARD.md` | `src/routes/activity.tsx`, `src/lib/protocol-events.ts`, `src/lib/protocol-event-registry.ts`, purchase caches | event/cache tests, production coherence guards | Source lifecycle and source-attributed purchase display should use non-public/internal status labels. | Letting routine events become fake Chronicle/history claims. |
 | Register / Registry | LIVE proof and contract/source-policy surface. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` | `src/routes/registry.tsx`, `src/lib/contract-registry.ts`, `src/lib/institutional-register.ts` | production coherence guards | Keep source and V3 readbacks aligned after any ceremony. | Showing old V2/V1 sale truth as active current sale. |
 | Chronicle | PARTIAL curated memory. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, Chronicle docs | `src/routes/chronicle.tsx`, `src/lib/chronicle-entries.ts` | content and production guards | Admit only material milestones. | Turning every task, receipt, or routine source change into history. |
 | My Syndicate | LIVE member home/place layer. | `docs/MODULE_INTEGRATION_STANDARD.md`, product translation docs | `src/routes/my-syndicate.tsx`, member/read-model hooks | member/read-model tests, production coherence guards | Future source receipt and return-loop context after real source events. | Showing claim balances, source ownership, or inactive modules as live. |
@@ -78,22 +78,25 @@ Before referral or source attribution work:
 1. `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`
 2. `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`
 3. `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`
-4. `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`
-5. `src/lib/source-policy-observability.ts`
-6. `src/lib/source-registry-lifecycle.ts`
-7. `src/lib/source-attributed-receipts.ts`
-8. `src/lib/source-activation-readiness.ts`
-9. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
-10. `src/lib/source-aware-test-mode.ts`
-11. `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`
+4. `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`
+5. `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`
+6. `src/lib/source-policy-observability.ts`
+7. `src/lib/source-registry-lifecycle.ts`
+8. `src/lib/source-attributed-receipts.ts`
+9. `src/lib/source-real-condition-test.ts`
+10. `src/lib/source-activation-readiness.ts`
+11. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
+12. `src/lib/source-aware-test-mode.ts`
+13. `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`
 
 Before any source ceremony or source status transaction:
 
 1. `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`
 2. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
 3. `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`
-4. `docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md`
-5. `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`
+4. `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`
+5. `docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md`
+6. `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`
 6. Current owner/readback checks on Avalanche
 7. Current source status and terms
 8. Founder approval for the exact transaction
@@ -173,9 +176,9 @@ referral-only thinking.
 | Order | Sprint | Purpose | Depends on | Must not do |
 | --- | --- | --- | --- | --- |
 | 1 | Source Activation Readiness Packet | Completed as a non-transactional readiness model and packet. | Fresh readbacks are still required before any future status action. | Do not activate. |
-| 2 | Internal Source-Aware Test Path | Completed as a gated `/labs/source-attribution-test` boundary and read model for localhost or separately approved production-internal mode. | Source remains PAUSED; ACTIVE ceremony still requires fresh approval. | Do not expose source links or source selector in public production. |
-| 3 | Controlled ACTIVE Ceremony And $5 Test | If founder approves, activate the source for a tiny internal test and read back the receipt. | Founder transaction approval, current readbacks, internal path ready, source ACTIVE. | Do not bundle public referral or claim UI. |
-| 4 | Post-Test Truth Update | Record source receipt, payout/escrow, Activity, My Syndicate, Registry, and cache truth. | Real tx/readback. | Do not imply public referral is live. |
+| 2 | Internal Source-Aware Test Path | Completed as a gated `/labs/source-attribution-test` operator console for production-internal mode. | Source remains PAUSED after the completed ceremony. | Do not expose source links or source selector in public production. |
+| 3 | Controlled ACTIVE Ceremony And $5 Test | Completed. One $5 source-attributed V3 buy was read back and the source was re-paused. | Final readback lives in `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`. | Do not repeat without new founder approval. |
+| 4 | Post-Test Truth Update | Record source receipt, payout/escrow, Activity, My Syndicate, Registry, and cache truth. | Real tx/readback now exists. | Do not imply public referral is live. |
 | 5 | Public Source/Referral Product Decision | Decide whether to build public referrer UX, source links, aliases, and dashboards. | Legal/product signoff, test evidence, anti-abuse design. | Do not use the internal test source as public UX template. |
 | 6 | Whole-Protocol Continuous Excellence | Keep surfaces, docs, tests, status labels, and proof paths clean while referral matures. | Current GitHub truth. | Do not start unrelated future modules as fake-live placeholders. |
 

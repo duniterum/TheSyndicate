@@ -128,9 +128,9 @@ export function buildSourceActivationReadiness(
       label: "Founder approval for ACTIVE status ceremony",
       status: "FOUNDER_APPROVAL_REQUIRED",
       proof:
-        "The PAUSED source ceremony was approved and read back; the ACTIVE ceremony has not been approved.",
+        "The first controlled ACTIVE ceremony was approved, executed, read back, and re-paused; any future ACTIVE ceremony requires fresh founder approval.",
       requirement:
-        "Founder must approve the exact setSourceStatus(sourceId, ACTIVE) transaction after fresh readbacks and before any wallet signing.",
+        "Founder must approve the exact future setSourceStatus(sourceId, ACTIVE) transaction after fresh readbacks and before any wallet signing.",
       blocksActiveCeremony: true,
     },
     {
@@ -178,11 +178,13 @@ export function buildSourceActivationReadiness(
     readyForPublicSourceAwareBuyPath: false,
     gates,
     requiredNextActions: [
-      "Run the AVAX_RPC current-authority readback in docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md before any source status transaction.",
-      "Decide whether the approved time window still fits the intended controlled test.",
-      "Run the internal source-aware test path with explicit local or production-internal flags, frozen sourceId, live SourceRegistry readback, and an allowlisted fresh buyer wallet.",
+      "Preserve the final PAUSED source state from docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md as current authority.",
+      "Translate the completed internal source-attributed receipt into product/read-model truth without implying public referral activation.",
+      "Run the AVAX_RPC current-authority readback in docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md before any future source status transaction.",
+      "For any future test, decide whether the approved time window still fits or prepare a new approved terms packet.",
+      "For any future source-aware test, run the internal path with explicit local or production-internal flags, frozen sourceId, live SourceRegistry readback, and an allowlisted fresh buyer wallet.",
       "Reconfirm source-aware buyer disclosure before any non-zero sourceId wallet signature.",
-      "Approve the exact ACTIVE status transaction only after every blocker is cleared.",
+      "Approve any future ACTIVE status transaction only after every blocker is cleared.",
     ],
     forbiddenActions: [
       "Do not activate referral.",

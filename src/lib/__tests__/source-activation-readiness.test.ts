@@ -65,10 +65,10 @@ describe("source activation readiness", () => {
   });
 
   it("evaluates the approved activation-test window without relying on wall-clock time", () => {
-    expect(evaluateSourceTermWindow(INTERNAL_PROTOCOL_TEST_SOURCE_001, 1782800000)).toBe("NOT_STARTED");
-    expect(evaluateSourceTermWindow(INTERNAL_PROTOCOL_TEST_SOURCE_001, 1783000000)).toBe("OPEN");
-    expect(evaluateSourceTermWindow(INTERNAL_PROTOCOL_TEST_SOURCE_001, 1784200000)).toBe("EXPIRED");
-    expect(evaluateSourceTermWindow({}, 1783000000)).toBe("MISSING");
+    expect(evaluateSourceTermWindow(INTERNAL_PROTOCOL_TEST_SOURCE_001, 1782300000)).toBe("NOT_STARTED");
+    expect(evaluateSourceTermWindow(INTERNAL_PROTOCOL_TEST_SOURCE_001, 1782400000)).toBe("OPEN");
+    expect(evaluateSourceTermWindow(INTERNAL_PROTOCOL_TEST_SOURCE_001, 1783700000)).toBe("EXPIRED");
+    expect(evaluateSourceTermWindow({}, 1782400000)).toBe("MISSING");
   });
 
   it("fails readiness if the target record is missing or no longer PAUSED", () => {

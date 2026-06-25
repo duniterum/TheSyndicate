@@ -1,10 +1,14 @@
 # Source Creation Ceremony Runbook
 
-Status: RUNBOOK ONLY / NO TRANSACTION AUTHORIZED / ONE PAUSED INTERNAL SOURCE EXISTS
+Status: RUNBOOK ONLY / NO TRANSACTION AUTHORIZED / VALIDATED INTERNAL SOURCE TEST EXISTS
 
 This runbook defines the controlled ceremony for creating a `SourceRegistryV1`
 source record. It is intentionally separate from public referral activation,
 claim UI activation, and source-linked buy UI activation.
+
+The first internal source record already exists, completed one controlled
+source-attributed buy, and is now PAUSED. Use this runbook only for a future
+founder-approved source-creation ceremony.
 
 ## Preconditions
 

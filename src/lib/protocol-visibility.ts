@@ -410,7 +410,7 @@ export const PROTOCOL_VISIBILITY_PULSE: readonly ProtocolVisibilityPulseItem[] =
     summary:
       sourcePolicy.recordCount === 0
         ? "SourceRegistry has zero source records."
-        : "Source policy exists only in its readback state.",
+        : "Source policy was validated once and is currently PAUSED.",
     proof: `Public/default buys remain ${ZERO_SOURCE_ID}. No public source link or claim UI is live.`,
   },
   {

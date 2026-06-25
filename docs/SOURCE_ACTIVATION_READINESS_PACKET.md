@@ -1,12 +1,15 @@
 # Source Activation Readiness Packet
 
-Status: READINESS PACKET / NO TRANSACTION AUTHORIZED / NO ACTIVATION AUTHORIZED
+Status: FUTURE READINESS REFERENCE / SOURCE RE-PAUSED / NO TRANSACTION AUTHORIZED
 
-Last updated: 2026-06-25
+Last updated: 2026-06-26
 
-This packet defines the conditions that must be satisfied before the existing
-internal PAUSED source record can ever be considered for a controlled ACTIVE
-status ceremony.
+This packet now defines the conditions that must be satisfied before any future
+ACTIVE status ceremony for the existing internal PAUSED source record.
+
+The first controlled ACTIVE ceremony and $5 source-attributed buy have already
+been completed and closed. Final readback authority:
+`docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`.
 
 It does not authorize:
 
@@ -53,20 +56,25 @@ The institution needs one place that answers:
 | current status | `PAUSED` |
 | commissionBps | `500` |
 | scope | `WINDOWED` |
-| startTime | `1782907200` |
-| endTime | `1784116800` |
+| startTime | `1782388800` |
+| endTime | `1783598400` |
 | grossCap | `25000000` |
 | perBuyerCap | `5000000` |
 | appliesToRepeatPurchases | `false` |
-| metadataHash | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` |
+| metadataHash | `0x797dedbf845edc5954012c46a6c42e121f19f142d76fe34c8f59bf8e8c7bd681` |
 | SourceCreated tx | `0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280` |
 | SourceCreated block | `88705814` |
+| SourceTermsUpdated tx | `0x898b4f142ca388543701da8e483f764d1daef4c3256d28b449aac5cf08e2784d` |
+| Controlled ACTIVE tx | `0x7565d0fbe6389a7fc39da4ec0f9e69d2a82a99d42d3192e616d18fc35efc4df1` |
+| Validated buy tx | `0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46` |
+| Re-pause tx | `0x67f6498cd734b27032f0a10fe55bad57079f5b9cf38b38a85a1f95895aece71f` |
 
 ## Current Verdict
 
-`NOT READY FOR ACTIVE CEREMONY`
+`NOT READY FOR ANOTHER ACTIVE CEREMONY`
 
-The source policy fact exists and was read back as `PAUSED`.
+The source policy fact exists, one controlled source-attributed buy was
+validated, and the source was read back as `PAUSED` after re-pause.
 
 The current-authority preflight packet now exists at
 `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, but this Codex environment did not
@@ -75,13 +83,13 @@ Fresh live readbacks are still required before any founder approval or signing.
 
 The protocol is ready for:
 
-- readiness review,
-- current-authority readback planning,
-- internal source-aware test path design.
+- post-test read-model hardening,
+- current-authority readback planning for any future status action,
+- public referral product decision only if separately approved.
 
 The protocol is not ready for:
 
-- `setSourceStatus(..., ACTIVE)`,
+- another `setSourceStatus(..., ACTIVE)` without new founder approval,
 - public source links,
 - public source-aware buys,
 - claim UI,
@@ -105,10 +113,10 @@ The protocol is not ready for:
 
 ## Time Window Rule
 
-Current frozen terms use:
+Current post-test terms use:
 
-- `startTime = 1782907200`
-- `endTime = 1784116800`
+- `startTime = 1782388800`
+- `endTime = 1783598400`
 
 Before any future activation attempt:
 
@@ -165,10 +173,15 @@ does not expose wallet controls while the frozen source remains `PAUSED`.
 
 ## Immediate Next Sprint
 
+The first controlled source-attributed buy is complete. The immediate next
+sprint is post-test truth hardening: preserve the final PAUSED state, keep
+public/default buys on `ZERO_SOURCE_ID`, and translate the validated receipt
+into read-model/product truth without implying public referral activation.
+
 Run the `AVAX_RPC` readback commands in
-`docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md` and decide whether the July 1-15,
-2026 UTC test window still fits. If it does not fit, stop and update source
-terms before any activation decision.
+`docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md` only if the founder separately asks
+for a new future source-status ceremony. Any future activation decision needs a
+fresh packet, fresh current-authority readback, and explicit founder approval.
 
 ## Stop Conditions
 
@@ -201,5 +214,5 @@ If a future founder-approved activation ceremony occurs, read back:
 - no claim UI,
 - no public source-aware buy path unless separately approved.
 
-Only after that may a controlled internal source-attributed buy test be
+Only after that may another controlled internal source-attributed buy test be
 considered.

@@ -1,14 +1,14 @@
 # Revenue Attribution Layer (RAL) - Doctrine
 
-Status: DOCTRINE + DEPLOYED V3 SOURCE INFRASTRUCTURE / ONE PAUSED INTERNAL SOURCE
+Status: DOCTRINE + DEPLOYED V3 SOURCE INFRASTRUCTURE / VALIDATED INTERNAL SOURCE TEST / SOURCE PAUSED
 
 Public name: **Referral**. Internal name: **Revenue Attribution Layer**.
 
-`SourceRegistryV1` and `MembershipSaleV3` are deployed and verified, but
-SourceRegistryV1's first internal source record is PAUSED. Public V3 buys use
-`ZERO_SOURCE_ID`. The `/referral` route remains reserved/read-only until source
-activation, source-aware product path, legal copy, and public QA are separately
-approved and read back.
+`SourceRegistryV1` and `MembershipSaleV3` are deployed and verified. The first
+internal source record completed one controlled source-attributed buy and is
+now PAUSED. Public V3 buys use `ZERO_SOURCE_ID`. The `/referral` route remains
+reserved/read-only until any future source activation, source-aware product
+path, legal copy, and public QA are separately approved and read back.
 Public V3 buys use `ZERO_SOURCE_ID`.
 `CommissionRouterV1` remains a reviewed candidate/test reference, not the V3
 acquisition-first engine.

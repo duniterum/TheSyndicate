@@ -1,10 +1,10 @@
 # Referral / Source Attribution - Legal Disclosure Doctrine
 
-Status: NON-LIVE DISCLOSURE DOCTRINE / ONE PAUSED INTERNAL SOURCE
+Status: NON-LIVE DISCLOSURE DOCTRINE / VALIDATED INTERNAL SOURCE TEST / SOURCE PAUSED
 
 Public disclosure must reflect the current V3 truth:
 
-- SourceRegistryV1 is deployed with one internal PAUSED source record.
+- SourceRegistryV1 is deployed with one validated internal source test now PAUSED.
 - Public V3 buys use `ZERO_SOURCE_ID`.
 - No source-aware public link is active.
 - No referral/source commission is accruing.

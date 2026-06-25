@@ -66,7 +66,7 @@ SeatRecord721
 | Operations wallet | LIVE | `CONTRACTS.OPERATIONS_WALLET` | Receives 10% USDC while router is unset or disabled. |
 | Trader Joe SYN/USDC LP pair | LIVE | `LP_POOL.pairAddress` | Secondary market access layer. |
 | Archive1155 | LIVE | `CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS` | Protocol-memory ERC-1155. |
-| SourceRegistryV1 | DEPLOYED / ONE PAUSED INTERNAL SOURCE | `SOURCE_REGISTRY_V1_CONTRACT_ADDRESS` | V3 source policy registry. One internal source record exists as PAUSED policy state; referral/source UI inactive. |
+| SourceRegistryV1 | DEPLOYED / VALIDATED INTERNAL SOURCE TEST / PAUSED | `SOURCE_REGISTRY_V1_CONTRACT_ADDRESS` | V3 source policy registry. One internal source record completed a controlled source-attributed buy and is now PAUSED; referral/source UI inactive. |
 | MembershipSaleV3 | LIVE DIRECT-BUY TARGET / SOURCE UI INACTIVE | `MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS` | Current frontend approval/quote/buy target. Public buys use zero sourceId. |
 | CommissionRouterV1 | CANDIDATE / PENDING | `address: null` in `contract-registry.ts` | Future Operations-slice commission router. Not live. |
 | SeatRecord721 | FUTURE / RESERVED | `address: null` in `contract-registry.ts` | Future identity record. Not implemented. |
@@ -198,7 +198,7 @@ Resolved in this review:
 
 Open risks:
 
-- V3 is live as a direct-buy target, but source/referral remains inactive; public copy must keep that trust posture.
+- V3 is live as a direct-buy target, and one internal source-attributed buy has been validated; source/referral remains inactive publicly and public copy must keep that trust posture.
 - Historical audit docs still contain pre-cutover V2a/V2b planning language.
   They are acceptable as historical records, but should not be used as current
   operator instructions without cross-checking this map and the contract

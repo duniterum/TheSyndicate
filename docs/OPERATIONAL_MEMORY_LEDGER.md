@@ -1,6 +1,6 @@
 # Operational Memory Ledger
 
-Last updated: 2026-06-25
+Last updated: 2026-06-26
 
 Status: operational first-read for synchronization, release, deployment,
 environment, Git, Replit, sandbox, credential, and handoff work.
@@ -477,6 +477,26 @@ Status guide:
 | Future "never again" rule | Transaction success is not enough. Name what function was called, what event it emitted, and whether it is permission, protocol action, proof, or closure. |
 | Source links / commit hashes | Incident transaction `0x2e2bbe37db1ad1094c2e2b45a3d86b608fcd3e64de83688053fb5a8438e95773` was approval-only. |
 
+### OML-019 - Source ceremonies close only after final safe-state readback
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-26 |
+| System | SourceRegistryV1 / MembershipSaleV3 / operator ceremony / latest-chain readback |
+| Severity | High |
+| Status | Resolved for the first real-condition source test; reuse for future ceremonies |
+| Category | Ceremony closure / current authority / operator safety |
+| Affected surfaces | `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`, source operator console, SourceRegistry readbacks, Replit/Codex handoffs |
+| Symptom | The protocol action itself succeeded, but the ceremony was not institutionally complete until the source was re-paused and latest-chain readback proved the final state. |
+| Root cause | A successful buy proves capability, not closure. Source-attribution ceremonies have multiple phases: terms update, status activation, approval, buy, readback, re-pause, and final readback. |
+| Why it mattered | Without closure readback, a source could remain ACTIVE longer than intended, future operators could rely on stale readback anchors, or a validated internal test could be mistaken for public referral activation. |
+| Fix | Founder executed re-pause transaction `0x67f6498cd734b27032f0a10fe55bad57079f5b9cf38b38a85a1f95895aece71f`; latest block readback confirmed `status = PAUSED`, `isActive(sourceId) = false`, `sourceEscrowOwed = 0`, and the $5 source-attributed receipt remained readable. |
+| Process guard | Every multi-step ceremony must have a final closure step and a latest-block readback. Historical readback anchors are lineage; current-authority validation must use latest chain state. |
+| Founder-work impact | Gives the founder a clear "we are closed and safe" moment instead of leaving the operator to infer completion from a successful intermediate transaction. |
+| Release implication | Repository truth may be updated after readback, but production publish remains separate and should be requested only if runtime/public truth needs to change. |
+| Future "never again" rule | Do not call an operator ceremony complete after the exciting transaction. Call it complete only after the safety transaction, final readback, and public-boundary check are recorded. |
+| Source links / commit hashes | Terms update `0x898b4f142ca388543701da8e483f764d1daef4c3256d28b449aac5cf08e2784d`; ACTIVE `0x7565d0fbe6389a7fc39da4ec0f9e69d2a82a99d42d3192e616d18fc35efc4df1`; buy `0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46`; re-pause `0x67f6498cd734b27032f0a10fe55bad57079f5b9cf38b38a85a1f95895aece71f`. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -591,6 +611,7 @@ or a sprint explicitly requires it.
 | Replit can serve as readback executor when Codex lacks RPC | This ledger, source ceremony preflight docs | Guarded by process | Add a reusable readback script if current-authority readbacks repeat often. |
 | Operator consoles must make ceremony state explicit | This ledger, source operator console, production coherence guard | Guarded in docs/tests | Add a reusable ceremony-state component if more write-path operator routes appear. |
 | Transaction success is not automatically protocol-event success | This ledger, wallet transaction architecture, source operator console, production coherence guard | Guarded in docs/tests | Add a receipt classifier helper if more owner/operator ceremonies repeat this pattern. |
+| Ceremony closure requires final safe-state readback | This ledger, source ceremony readback doc, source policy observability guard | Guarded in docs/tests | Add a reusable ceremony close-out checklist if more multi-step ceremonies repeat. |
 
 ## 10. Validation Policy
 

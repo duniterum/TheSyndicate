@@ -1,6 +1,6 @@
 # Smart Contract Lessons and Regression Ledger
 
-Last updated: 2026-06-24
+Last updated: 2026-06-26
 
 Status: canonical first-read for future smart-contract work.
 
@@ -364,21 +364,21 @@ Status guide:
 | Date discovered | 2026-06 |
 | Contract / system | SourceRegistryV1 / referral |
 | Severity | High |
-| Status | Resolved as boundary; source activation remains deferred |
+| Status | Resolved as boundary; public referral activation remains deferred |
 | Category | Referral / acquisition |
 | Affected files | `contracts/src/SourceRegistryV1.sol`, `contracts/src/MembershipSaleV3.sol`, `src/routes/referral.tsx`, V3 docs |
 | Affected deployed contracts | SourceRegistryV1, MembershipSaleV3 |
-| Symptom | SourceRegistry exists, but source/referral policy and UI are not automatically live. |
+| Symptom | SourceRegistry exists and one internal source-attributed buy has been proven, but source/referral policy and UI are not automatically public-live. |
 | Root cause | A registry deployment can be confused with a complete acquisition product. |
 | Why it mattered | Referral/source systems require legal copy, source terms, source records, receipts, UI, and claim posture before public use. |
-| Fix | No source records were created; referral/source UI remains inactive. |
+| Fix | One internal source record was created, terms-updated, activated for a controlled $5 MembershipSaleV3 test buy, and re-paused. Referral/source UI remains inactive. |
 | Tests added | Production coherence guards, SourceRegistry tests, MembershipSaleV3 source tests. |
-| Regression guard | No source record creation before source policy approval. |
+| Regression guard | Source record, activation, test buy, public referral, and claim UI are separate gates. |
 | Deployment implication | Source records require a separate founder-approved ceremony and readback. |
-| Frontend implication | No public referral/source/claim UI before source state exists and copy is approved. |
+| Frontend implication | No public referral/source/claim UI before source state, receipt evidence, public copy, and product approval are all current and explicit. |
 | Docs updated | Source-of-truth and V3 activation docs. |
-| Future "never again" rule | Source records are not referral activation; registry deployment is infrastructure only. |
-| Source links / commit hashes | SourceRegistry deployment docs; current readback shows `SourceCreated` logs = 0. |
+| Future "never again" rule | Source records, ACTIVE status, source-attributed receipts, and public referral are distinct lifecycle states. |
+| Source links / commit hashes | SourceCreated `0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280`; source-attributed buy `0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46`; re-pause `0x67f6498cd734b27032f0a10fe55bad57079f5b9cf38b38a85a1f95895aece71f`. |
 
 ### SCRL-014 - Public frontend truth must be explicit
 
@@ -425,6 +425,29 @@ Status guide:
 | Docs updated | Operational memory ledger, this ledger, source creation runbook, source packet docs, authority/release handoff docs. |
 | Future "never again" rule | Lineage explains how we arrived here. Current readbacks prove where we are now. Execution must use current truth, not remembered truth, historical truth alone, or stale documentation alone. |
 | Source links / commit hashes | Added before the first internal PAUSED source-record ceremony. |
+
+### SCRL-016 - Source attribution lifecycle is proven but state-scoped
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-26 |
+| Contract / system | SourceRegistryV1 / MembershipSaleV3 |
+| Severity | High |
+| Status | Resolved for first internal ceremony; public referral remains deferred |
+| Category | Source attribution / receipt accounting / lifecycle |
+| Affected files | `contracts/src/SourceRegistryV1.sol`, `contracts/src/MembershipSaleV3.sol`, `src/lib/source-policy-observability.ts`, `src/lib/source-real-condition-test.ts`, source ceremony docs |
+| Affected deployed contracts | SourceRegistryV1, MembershipSaleV3 |
+| Symptom | Before the real-condition test, source attribution was proven by tests/fork rehearsals but not by a completed mainnet source-attributed MembershipSaleV3 purchase. |
+| Root cause | A source system has multiple independently true states: source record exists, terms updated, source ACTIVE, buy uses non-zero sourceId, payout succeeds or escrows, and source is safely re-paused. |
+| Why it mattered | Without an end-to-end proof, future public referral work would still rest on assumptions about wallet UX, receipt fields, cap accounting, and payout behavior. Without final re-pause, the same proof could create accidental ongoing activation. |
+| Fix | Founder executed `updateSourceTerms`, controlled ACTIVE, one $5 source-attributed V3 buy, and re-pause. Final readback confirms source status PAUSED, `isActive(sourceId) = false`, `sourceGrossAttributed = 5000000`, `buyerGrossAttributedToSource = 5000000`, `sourceEscrowOwed = 0`, and member #10 receipt fields match expected acquisition and routing math. |
+| Tests added | Runtime guards now record the completion in `src/lib/source-real-condition-test.ts`, source policy observability tests, and production coherence docs/tests. |
+| Regression guard | Public/default buys must remain `ZERO_SOURCE_ID`; any future ACTIVE period needs fresh founder approval, current-authority readback, exact sourceId, exact terms, and a final closure readback. |
+| Deployment implication | No new contract is needed for the first controlled MembershipSaleV3 source-attributed path. Future product attribution still needs separate contract/read-model design. |
+| Frontend implication | The operator console pattern is proven useful; public referral UX is still unbuilt and must not inherit the internal source test route as a public model. |
+| Docs updated | `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`, `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`, `docs/PROTOCOL_KNOWLEDGE_INDEX.md`, `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`, `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`, ledgers. |
+| Future "never again" rule | A source-attributed receipt proves a capability, not public activation. Activation is state-scoped, time-scoped, path-scoped, and must close with re-pause or another approved final state. |
+| Source links / commit hashes | Terms update `0x898b4f142ca388543701da8e483f764d1daef4c3256d28b449aac5cf08e2784d`; ACTIVE `0x7565d0fbe6389a7fc39da4ec0f9e69d2a82a99d42d3192e616d18fc35efc4df1`; buy `0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46`; re-pause `0x67f6498cd734b27032f0a10fe55bad57079f5b9cf38b38a85a1f95895aece71f`. |
 
 ## 4. Required Pre-Contract Workflow
 
@@ -548,6 +571,7 @@ This map must be updated whenever a lesson gains, loses, or changes coverage.
 | SCRL-013 source records are not referral activation | `SourceRegistryV1.t.sol`, `MembershipSaleV3.t.sol`, production coherence | Guarded | Add frontend read-only source-state tests before source activation. |
 | SCRL-014 public frontend truth explicit | `sale-hooks`, `LivePurchase`, production coherence, V3 historical guard tests, `purchase-events-cache.test.ts` | Guarded for cache source preservation | Live Replit publish and wallet QA remain required before public confidence. |
 | SCRL-015 current readback is execution authority | `docs/OPERATIONAL_MEMORY_LEDGER.md`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`, production coherence | Guarded by docs/tests | Add a reusable pre-transaction readback script for repeated owner ceremonies. |
+| SCRL-016 source attribution lifecycle is proven but state-scoped | `src/lib/source-real-condition-test.ts`, `src/lib/__tests__/source-real-condition-test.test.ts`, `src/lib/__tests__/source-policy-observability.test.ts`, `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md` | Guarded for the first internal ceremony | Add public-referral E2E tests only if a future public source path is approved. |
 
 Resolved cache gap:
 

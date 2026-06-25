@@ -1,14 +1,15 @@
 # Source Real-Condition Founder Ceremony Guide
 
-Status: FOUNDER CEREMONY GUIDE / NO TRANSACTION AUTHORIZED / NO ACTIVATION AUTHORIZED
+Status: CEREMONY EXECUTED / SOURCE RE-PAUSED / PUBLIC REFERRAL INACTIVE
 
-Last updated: 2026-06-25
+Last updated: 2026-06-26
 
 This guide explains the real-condition source-attributed test ceremony in
-human language.
+human language. The ceremony has now been completed and closed; final readback
+is recorded in `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`.
 
-We are not launching referral. We are preparing the engine for one controlled
-internal test.
+We did not launch referral. We tested the engine with one controlled internal
+source-attributed buy, then re-paused the source.
 
 There is no public member referral link yet. There is no claim UI. There is no
 source dashboard. Public `/join` still uses `ZERO_SOURCE_ID`. The hidden labs
@@ -17,16 +18,15 @@ separate on-chain approvals and readbacks.
 
 ## Current State
 
-- Production is published from GitHub commit `82300c9`.
-- The production-internal test route is armed, hidden, and locked.
+- Production was published with the internal test route armed, hidden, and
+  locked.
 - The allowlisted fresh buyer wallet is
   `0x620febd921E7B8d123c7DFB6731ed58fCfbcC75F`.
-- The source exists on-chain and is still `PAUSED`.
+- The source exists on-chain and is again `PAUSED`.
 - `isActive(sourceId) = false`.
-- Current source terms are still the original July 1-15 packet.
-- `updateSourceTerms` has not happened.
-- `ACTIVE` has not happened.
-- The $5 test buy has not happened.
+- Source terms were updated to the June 25 to July 9 packet.
+- `updateSourceTerms`, the controlled ACTIVE window, the $5 buy, and re-pause
+  all happened and were read back.
 
 ## Machine Packet Authority
 
@@ -135,7 +135,7 @@ What can go wrong:
 Check before continuing:
 - Production QA green.
 - Source readback says `PAUSED`.
-- Terms still show original July 1-15 packet.
+- Terms show the updated before-July packet.
 
 Stop condition:
 - Stop if readback, production QA, or public boundaries are unclear.

@@ -1,21 +1,25 @@
 # Source Real-Condition Test Plan
 
-Status: EXCEPTIONAL FOUNDER PREP / NO TRANSACTION AUTHORIZED / NO ACTIVATION AUTHORIZED
+Status: EXECUTED / SOURCE RE-PAUSED / PUBLIC REFERRAL INACTIVE
 
-Last updated: 2026-06-25
+Last updated: 2026-06-26
 
-This plan prepares the fastest safe path to one real-condition
+This plan prepared the fastest safe path to one real-condition
 source-attributed MembershipSaleV3 purchase before the original July 1 source
 window.
 
-It does not authorize wallet signing, `updateSourceTerms`, source activation,
-the $5 purchase, re-pause, referral activation, public source links, claim UI,
-source dashboards, registry switches, contract changes, or production publish.
+The ceremony has now been executed and closed. Final current-authority readback
+lives in `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`.
+
+This historical plan does not authorize any future wallet signing,
+`updateSourceTerms`, source activation, additional purchase, re-pause, referral
+activation, public source links, claim UI, source dashboards, registry switches,
+contract changes, or production publish.
 
 ## Executive Verdict
 
-The protocol can test before July 1 only if the existing PAUSED source terms
-are updated first.
+The protocol tested before July 1 by updating the existing PAUSED source terms
+first.
 
 Best path:
 
@@ -28,7 +32,7 @@ Best path:
 7. re-pause the source,
 8. read back that the source is no longer active.
 
-This is not public referral. Public/default `/join` remains `ZERO_SOURCE_ID`.
+This was not public referral. Public/default `/join` remains `ZERO_SOURCE_ID`.
 
 ## Why Not Wait Until July 1
 

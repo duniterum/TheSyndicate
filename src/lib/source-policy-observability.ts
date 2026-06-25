@@ -38,6 +38,24 @@ export type SourcePolicyRecord = {
   sourceCreatedTxHash?: string;
   sourceCreatedBlock?: number;
   sourceCreatedAt?: string;
+  sourceTermsUpdatedTxHash?: string;
+  sourceTermsUpdatedBlock?: number;
+  sourceTermsUpdatedAt?: string;
+  sourceActivatedTxHash?: string;
+  sourceActivatedBlock?: number;
+  sourceActivatedAt?: string;
+  sourceRepausedTxHash?: string;
+  sourceRepausedBlock?: number;
+  sourceRepausedAt?: string;
+  sourceAttributedBuyTxHash?: string;
+  sourceAttributedBuyBlock?: number;
+  sourceAttributedBuyAt?: string;
+  sourceAttributedBuyer?: string;
+  sourceAttributedMemberNumber?: number;
+  sourceAttributedGrossUsdc?: number;
+  sourceAttributedAcquisitionCost?: number;
+  sourceAttributedProtocolContribution?: number;
+  sourceEscrowOwed?: number;
 };
 
 export type SourceProductAwareness =
@@ -54,7 +72,7 @@ export type SourcePolicyProductCapability = {
 
 export type SourceAttributionReadinessGate = {
   label: string;
-  currentStatus: "RECORDED" | "MISSING" | "LOCKED" | "FUTURE_APPROVAL";
+  currentStatus: "RECORDED" | "VALIDATED" | "MISSING" | "LOCKED" | "FUTURE_APPROVAL";
   requirement: string;
 };
 
@@ -110,21 +128,40 @@ export const INTERNAL_PROTOCOL_TEST_SOURCE_001: SourcePolicyRecord = {
   status: "PAUSED",
   commissionBps: 500,
   scope: "WINDOWED",
-  startTime: 1782907200,
-  endTime: 1784116800,
+  startTime: 1782388800,
+  endTime: 1783598400,
   grossCap: 25000000,
   perBuyerCap: 5000000,
   appliesToRepeatPurchases: false,
   payoutWallet: "0x244531C571966f90f4849e03a507543d90f9C721",
-  metadataHash: "0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d",
+  metadataHash: "0x797dedbf845edc5954012c46a6c42e121f19f142d76fe34c8f59bf8e8c7bd681",
   sourceCreatedTxHash: "0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280",
   sourceCreatedBlock: 88705814,
   sourceCreatedAt: "2026-06-24T09:11:50.000Z",
+  sourceTermsUpdatedTxHash: "0x898b4f142ca388543701da8e483f764d1daef4c3256d28b449aac5cf08e2784d",
+  sourceTermsUpdatedBlock: 88769017,
+  sourceTermsUpdatedAt: "2026-06-25T12:00:01.000Z",
+  sourceActivatedTxHash: "0x7565d0fbe6389a7fc39da4ec0f9e69d2a82a99d42d3192e616d18fc35efc4df1",
+  sourceActivatedBlock: 88794252,
+  sourceActivatedAt: "2026-06-25T20:41:55.000Z",
+  sourceAttributedBuyTxHash: "0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46",
+  sourceAttributedBuyBlock: 88806161,
+  sourceAttributedBuyAt: "2026-06-26T00:46:00.000Z",
+  sourceAttributedBuyer: "0x620febd921E7B8d123c7DFB6731ed58fCfbcC75F",
+  sourceAttributedMemberNumber: 10,
+  sourceAttributedGrossUsdc: 5000000,
+  sourceAttributedAcquisitionCost: 250000,
+  sourceAttributedProtocolContribution: 4750000,
+  sourceEscrowOwed: 0,
+  sourceRepausedTxHash: "0x67f6498cd734b27032f0a10fe55bad57079f5b9cf38b38a85a1f95895aece71f",
+  sourceRepausedBlock: 88807390,
+  sourceRepausedAt: "2026-06-26T01:10:41.000Z",
 } as const;
 
 // Current protocol truth from deployed SourceRegistryV1 readback. The first
-// internal protocol-test source exists as PAUSED policy state only: it is not
-// referral activation, not a public source link, and not a claim surface.
+// internal protocol-test source completed one controlled source-attributed V3
+// buy, then returned to PAUSED: it is not referral activation, not a public
+// source link, and not a claim surface.
 export const CURRENT_SOURCE_POLICY_RECORDS: readonly SourcePolicyRecord[] = [
   INTERNAL_PROTOCOL_TEST_SOURCE_001,
 ];
@@ -134,9 +171,9 @@ export const SOURCE_POLICY_PRODUCT_CAPABILITIES: readonly SourcePolicyProductCap
     product: "MembershipSaleV3",
     status: "SOURCE_AWARE_TECHNICAL",
     currentTruth:
-      "The contract supports sourceId, acquisition cost, attribution scope, and receipt fields. Public/default buys pass ZERO_SOURCE_ID.",
+      "The contract supports sourceId, acquisition cost, attribution scope, and receipt fields. One controlled internal source-attributed V3 buy has been proven; public/default buys pass ZERO_SOURCE_ID.",
     futureRequirement:
-      "A source record must be created, read back, activated, and wired into an approved source-aware buy path.",
+      "Any future source-aware path still needs separate approval, disclosure, anti-abuse review, and public-boundary QA before broad use.",
   },
   {
     product: "Archive1155",
@@ -173,25 +210,25 @@ export const SOURCE_ATTRIBUTION_READINESS_GATES: readonly SourceAttributionReadi
     label: "Source policy fact",
     currentStatus: "RECORDED",
     requirement:
-      "One internal PAUSED SourceCreated event exists and matches the approved packet. It remains unusable until a separate activation ceremony.",
+      "One internal source record exists, was terms-updated, activated for one controlled buy, and returned to PAUSED. It is not a public referral launch.",
   },
   {
-    label: "Activation ceremony",
-    currentStatus: "LOCKED",
+    label: "Controlled ACTIVE ceremony",
+    currentStatus: "VALIDATED",
     requirement:
-      "A source starts PAUSED and remains unusable until a separate approved status change makes it ACTIVE.",
+      "The internal source was made ACTIVE only for the approved test window and then re-paused. Future activation requires a new founder-approved ceremony.",
   },
   {
-    label: "Source-aware buy path",
-    currentStatus: "LOCKED",
+    label: "Controlled source-aware buy path",
+    currentStatus: "VALIDATED",
     requirement:
-      "Public/default buys keep using ZERO_SOURCE_ID until a separately approved path passes a specific non-zero sourceId.",
+      "One hidden allowlisted operator path produced one $5 source-attributed MembershipSaleV3 receipt. Public/default buys still use ZERO_SOURCE_ID.",
   },
   {
     label: "Receipt and read model",
-    currentStatus: "FUTURE_APPROVAL",
+    currentStatus: "VALIDATED",
     requirement:
-      "Activity, Register, My Syndicate, and receipt views must show source truth from events, not browser memory or private spreadsheets.",
+      "The real receipt proves sourceId, source class, commission bps, acquisition cost, net routing, caps, and first-seat state from on-chain events. Public receipt surfacing remains a separate product decision.",
   },
   {
     label: "Claim boundary",
@@ -247,28 +284,28 @@ export const SOURCE_ATTRIBUTION_TOUCHPOINTS: readonly SourceAttributionTouchpoin
   {
     surface: "Activity",
     status: "FUTURE_GATED",
-    currentTruth: "No source policy or source-attributed purchase activity is live in the public feed.",
+    currentTruth: "One internal source-attributed purchase exists as a proof fact, but public Activity must not imply referral is live.",
     futureRequirement:
-      "SourceCreated, SourceStatusChanged, payout-wallet changes, and source-attributed purchase receipts must appear as verifiable events.",
+      "SourceCreated, SourceStatusChanged, payout-wallet changes, and source-attributed purchase receipts should appear as verifiable events only with clear internal/public status labels.",
   },
   {
     surface: "My Syndicate",
     status: "FUTURE_GATED",
-    currentTruth: "The member cockpit shows pending source readiness only; no share link, source balance, or claim UI is displayed.",
+    currentTruth: "The member cockpit may read source-attributed receipt facts, but no share link, source balance, or claim UI is displayed.",
     futureRequirement:
       "A member view may show source-linked receipts and source state only from indexed events and current SourceRegistry readbacks.",
   },
   {
     surface: "Transparency / Protocol Economy",
     status: "FUTURE_GATED",
-    currentTruth: "The economy surfaces show referral inactive and public/default ZERO_SOURCE_ID routing.",
+    currentTruth: "The economy surfaces show referral inactive, public/default ZERO_SOURCE_ID routing, and one internal source-attributed proof event.",
     futureRequirement:
       "Future source-attributed receipts must separate gross USDC, acquisition commission, Net USDC Routed, and 70/20/10 routing.",
   },
   {
     surface: "Register / Chronicle",
     status: "FUTURE_GATED",
-    currentTruth: "No source-policy facts or source-attributed milestones are registered as institutional memory today.",
+    currentTruth: "The completed internal source-attribution ceremony is eligible for institutional memory as a protocol capability proof, not as public referral activation.",
     futureRequirement:
       "Only meaningful source-policy events should enter Register or Chronicle; routine attribution events remain Activity/read-model facts.",
   },
@@ -324,8 +361,9 @@ export function buildSourcePolicySnapshot(
           "Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID.",
         ]
       : [
-          "One internal PAUSED source record exists as a policy fact, not as public referral activation.",
+          "One internal source record exists and is currently PAUSED after a completed controlled source-attributed test.",
           "No active source record can route commission today.",
+          "One historical $5 source-attributed V3 receipt exists; it does not make public referral live.",
           "No source claim UI is live.",
           "No public source-aware purchase path is live.",
           "Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID.",

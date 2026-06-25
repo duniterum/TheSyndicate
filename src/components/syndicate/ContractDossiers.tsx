@@ -96,14 +96,17 @@ const DOSSIERS: Dossier[] = [
     status: "live",
   },
   {
-    label: "SourceRegistryV1 (one PAUSED internal source)",
+    label: "SourceRegistryV1 (validated internal source, now PAUSED)",
     address: SOURCE_REGISTRY_V1_CONTRACT_ADDRESS ?? "PENDING",
     explorerHref: SOURCE_REGISTRY_V1_CONTRACT_ADDRESS
       ? explorerUrlForAddress(SOURCE_REGISTRY_V1_CONTRACT_ADDRESS)
       : null,
     network: "Avalanche C-Chain",
     chainId: 43114,
-    deployment: { kind: "block", value: "Deployed with owner accepted - one PAUSED internal source record" },
+    deployment: {
+      kind: "block",
+      value: "Deployed with owner accepted - one internal source test validated and re-paused",
+    },
     verified: "yes",
     verificationSources: [
       {
@@ -119,11 +122,11 @@ const DOSSIERS: Dossier[] = [
           : "",
       },
     ],
-    ownerLabel: "Owner hardware wallet; first SourceCreated event recorded as PAUSED",
+    ownerLabel: "Owner hardware wallet; source lifecycle validated once and returned to PAUSED",
     upgradeable: "no",
     standard: "Custom - source policy registry - inactive until separate activation ceremony",
     description:
-      "Deployed V3 source policy registry. It has one internal PAUSED source record, no referral balances, no claim UI, and no public source activation.",
+      "Deployed V3 source policy registry. It has one internal source record that completed one controlled source-attributed buy and returned to PAUSED; no public referral, claim UI, or source activation is live.",
     status: "deployed",
   },
   {

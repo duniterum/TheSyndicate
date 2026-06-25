@@ -1,13 +1,16 @@
 # Source ACTIVE Ceremony Preflight
 
-Status: CURRENT-AUTHORITY PREFLIGHT / NO TRANSACTION AUTHORIZED / NO ACTIVATION AUTHORIZED
+Status: EXECUTED PREFLIGHT REFERENCE / SOURCE RE-PAUSED / NO TRANSACTION AUTHORIZED
 
-Last updated: 2026-06-25
+Last updated: 2026-06-26
 
 Starting GitHub commit: `867647975d79e85b1bb463fad93fc2e54b79664e`
 
-This document prepares the non-transactional preflight for a possible future
+This document prepared the non-transactional preflight for the first controlled
 `ACTIVE` status ceremony for the existing internal PAUSED source record.
+
+That ceremony has now been completed and closed. Final readback authority:
+`docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`.
 
 It does not authorize source activation, referral activation, wallet signing,
 transactions, public referral links, public source-aware buy paths, claim UI,
@@ -16,24 +19,24 @@ publish, or any public activation claim.
 
 ## Executive Verdict
 
-`NO-GO FOR SIGNING OR BROADCAST`
+`NO-GO FOR ANY NEW SIGNING OR BROADCAST`
 
-Reason: this Codex environment does not have `AVAX_RPC` or
-`VITE_AVALANCHE_RPC_URL` set, so fresh Avalanche C-Chain current-authority
-readbacks were not performed here.
+Reason: the first controlled ceremony has already happened, the source was
+re-paused, and any future ACTIVE action requires a fresh preflight and founder
+approval.
 
-The code and packet state are otherwise positioned for the next preflight step:
+Current repository and readback truth:
 
-- the internal PAUSED source record is represented in the repository read model,
+- the internal source record is represented in the repository read model,
+- the first controlled source-attributed buy was validated,
+- the source is currently `PAUSED`,
 - public/default buys still use `ZERO_SOURCE_ID`,
-- the internal source-aware harness exists and remains locked while the
-  source is `PAUSED`,
-- the source window has not started as of 2026-06-25 and can still be used if
-  the controlled test occurs between July 1 and July 15, 2026 UTC.
+- the internal source-aware harness exists and remains locked while the source
+  is `PAUSED`.
 
-The next action is not activation. The next action is to run the exact live
-readback commands with `AVAX_RPC`, then ask the founder for the exact approval
-sentence only if every readback is green.
+The next action is not activation. The next action is post-test truth/read-model
+hardening unless the founder separately asks for a new current-authority
+preflight.
 
 ## Frozen Target
 
@@ -53,12 +56,12 @@ sentence only if every readback is green.
 | proposed future status | `ACTIVE` / enum value `1` |
 | commissionBps | `500` |
 | scope | `WINDOWED` / enum value `1` |
-| startTime | `1782907200` / `2026-07-01T12:00:00Z` |
-| endTime | `1784116800` / `2026-07-15T12:00:00Z` |
+| startTime | `1782388800` / `2026-06-25T12:00:00Z` |
+| endTime | `1783598400` / `2026-07-09T12:00:00Z` |
 | grossCap | `25000000` USDC units / `25` USDC |
 | perBuyerCap | `5000000` USDC units / `5` USDC |
 | appliesToRepeatPurchases | `false` |
-| metadataHash | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` |
+| metadataHash | `0x797dedbf845edc5954012c46a6c42e121f19f142d76fe34c8f59bf8e8c7bd681` |
 
 ## Current-Authority Readback Table
 
@@ -76,12 +79,12 @@ sentence only if every readback is green.
 | `sourceConfig(sourceId).commissionBps` | `500` | UNCONFIRMED |
 | `sourceConfig(sourceId).status` | `2` / `PAUSED` | UNCONFIRMED |
 | `sourceConfig(sourceId).scope` | `1` / `WINDOWED` | UNCONFIRMED |
-| `sourceConfig(sourceId).startTime` | `1782907200` | UNCONFIRMED |
-| `sourceConfig(sourceId).endTime` | `1784116800` | UNCONFIRMED |
+| `sourceConfig(sourceId).startTime` | `1782388800` | CONFIRMED in final readback |
+| `sourceConfig(sourceId).endTime` | `1783598400` | CONFIRMED in final readback |
 | `sourceConfig(sourceId).grossCap` | `25000000` | UNCONFIRMED |
 | `sourceConfig(sourceId).perBuyerCap` | `5000000` | UNCONFIRMED |
 | `sourceConfig(sourceId).appliesToRepeatPurchases` | `false` | UNCONFIRMED |
-| `sourceConfig(sourceId).metadataHash` | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` | UNCONFIRMED |
+| `sourceConfig(sourceId).metadataHash` | `0x797dedbf845edc5954012c46a6c42e121f19f142d76fe34c8f59bf8e8c7bd681` | CONFIRMED in final readback |
 | `isActive(sourceId)` | `false` | UNCONFIRMED |
 | MembershipSaleV3 bytecode | Non-empty | UNCONFIRMED |
 | MembershipSaleV3 `SOURCE_REGISTRY()` | `0x780013bB358be6be95b401901264FC7c22a595a6` | UNCONFIRMED |
@@ -134,9 +137,9 @@ The approved source window is:
 - start: `2026-07-01T12:00:00Z`
 - end: `2026-07-15T12:00:00Z`
 
-As of 2026-06-25, the window has not started. Activation can use the existing
-terms only if the ACTIVE ceremony, internal $5 test, and re-pause readback can
-realistically occur inside this window.
+This window was used for the completed internal test. A future activation may
+use these terms only if fresh readback confirms the window is still suitable and
+the founder explicitly approves the new ceremony.
 
 If the test cannot occur inside this window, do not activate. Prepare:
 
@@ -151,8 +154,8 @@ If the test cannot occur inside this window, do not activate. Prepare:
 
 | Decision | Verdict | Reason |
 | --- | --- | --- |
-| Ask founder to sign now | NO-GO | Fresh chain readbacks were not performed in this environment. |
-| Ask founder to approve after green readback | CONDITIONAL GO | Existing terms are time-viable if the controlled test will occur inside July 1-15, 2026 UTC. |
+| Ask founder to sign now | NO-GO | The first ceremony is complete and any new status action requires a fresh packet/readback. |
+| Ask founder to approve after green readback | CONDITIONAL GO ONLY FOR A FUTURE CEREMONY | Existing terms may be considered only after fresh current-authority review and founder approval. |
 | Activate public referral | NO-GO | Public referral remains inactive. |
 | Run public source-aware buy path | NO-GO | No public source-aware buy path exists or is authorized. |
 | Run internal test while source is PAUSED | NO-GO | PAUSED sources cannot route commission; harness stays locked. |
@@ -181,8 +184,8 @@ Before any wallet signing, the founder must explicitly approve:
 > I approve activating only sourceId
 > `0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620`
 > by calling `setSourceStatus(sourceId, ACTIVE)` on SourceRegistryV1 for a
-> controlled internal $5 test inside the approved July 1-15, 2026 UTC
-> window. I understand this does not activate public referral, public source
+> controlled internal test inside a freshly approved source window. I
+> understand this does not activate public referral, public source
 > links, source dashboard, claim UI, public source-aware buys, registry switch,
 > or any other source.
 
@@ -265,4 +268,4 @@ Run the readback commands with `AVAX_RPC` in a private terminal. If every
 readback matches this document and the intended test can occur inside the
 approved window, the founder may then review the approval sentence above.
 
-Until then, this preflight remains `NO-GO FOR SIGNING OR BROADCAST`.
+Until then, this preflight remains `NO-GO FOR ANY NEW SIGNING OR BROADCAST`.

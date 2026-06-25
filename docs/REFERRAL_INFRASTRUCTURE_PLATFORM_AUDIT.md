@@ -13,7 +13,8 @@ Current repository truth remains:
 - V3 is the active membership sale path in the repository.
 - SourceRegistryV1 is deployed and owner-accepted.
 - MembershipSaleV3 is technically source-aware.
-- One internal PAUSED source record exists; zero ACTIVE sources exist.
+- One internal source record exists, completed one controlled source-attributed
+  MembershipSaleV3 buy, and returned to PAUSED; zero ACTIVE sources exist.
 - Public/default buys use ZERO_SOURCE_ID.
 - Referral/source UI and claim UI remain inactive.
 - SourceRegistryV1 is not a universal commerce router.

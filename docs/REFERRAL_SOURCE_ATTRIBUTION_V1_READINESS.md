@@ -1,21 +1,22 @@
 # Referral / Source Attribution V1 Readiness
 
-Status: NON-LIVE READINESS SPEC / ONE PAUSED INTERNAL SOURCE / NO CLAIM UI
+Status: NON-LIVE READINESS SPEC / ONE VALIDATED INTERNAL SOURCE TEST / NO CLAIM UI
 
 This document records the current referral/source-attribution boundary after
-the V3 direct-buy cutover and first internal PAUSED source record. It does not
-authorize source activation, referral link, claim UI, registry switch, funding
-action, public source-aware buy path, or public activation.
+the V3 direct-buy cutover, first internal source record, and first completed
+controlled source-attributed V3 purchase. It does not authorize source
+activation, referral link, claim UI, registry switch, funding action, public
+source-aware buy path, or public activation.
 
 ## Current On-Chain Truth
 
 | Surface | Current truth |
 | --- | --- |
-| SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; one PAUSED internal source record |
+| SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; one internal source record, final status PAUSED |
 | MembershipSaleV3 | Deployed at `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`; funded; current direct-buy target |
 | Public V3 buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active |
 | Referral/source UI | Inactive; no public referral/source link, source dashboard, balance, or claim action |
-| Source records | `INTERNAL_PROTOCOL_TEST_SOURCE_001` exists as PAUSED policy state only; no ACTIVE source exists |
+| Source records | `INTERNAL_PROTOCOL_TEST_SOURCE_001` exists, was used for one controlled internal $5 source-attributed buy, and is now PAUSED; no ACTIVE source exists |
 
 ## Doctrine
 
@@ -57,7 +58,8 @@ The future activation path should be:
 4. Read back `SourceCreated`, source terms, status, payout wallet, caps, and
    metadata hash.
 5. Keep UI pending until readback, legal copy, and Replit/public QA are green.
-6. Only then enable a source-aware preview or limited source link.
+6. The first internal operator path has now proven one controlled source-attributed buy.
+7. Only after separate approval should any public source-aware preview or limited source link be considered.
 
 Public buys must continue to use `ZERO_SOURCE_ID` until the activation ceremony
 explicitly approves a non-zero source path.
@@ -112,13 +114,20 @@ Every future source record should have a public policy packet before creation:
 - Read back event/state.
 - Record the transaction in docs.
 
-### Phase E - Public Activation
+### Phase E - Controlled Internal Test
 
-- Only after source readback, check-release, Replit publish, and wallet QA.
+- Completed once through the hidden operator console.
+- Source was made ACTIVE only for the controlled test and then re-paused.
+- Receipt, payout, cap accounting, and escrow state were read back.
+- Public/default `/join` stayed `ZERO_SOURCE_ID`.
+
+### Phase F - Public Activation
+
+- Only after source readback, check-release, Replit publish, wallet QA, legal/product signoff, anti-abuse review, and founder approval.
 - Source-aware buy must display source terms before wallet signature.
 - Buyer must be able to clear a source before signing.
 
-### Phase F - Claim UI
+### Phase G - Claim UI
 
 - Separate future sprint only.
 - Requires escrow state reads, source status reads, legal copy approval, failure
@@ -156,8 +165,8 @@ Before any source/referral activation:
 - `SourceRegistryV1` source count/readback must be known.
 - Legal/product copy must be approved.
 - A source metadata packet must be approved.
-- A source creation transaction must be separately approved and performed.
-- Source record readback must be recorded.
+- The existing source is PAUSED; any future ACTIVE transaction must be separately approved and performed.
+- Source status and terms readback must be recorded immediately before and after the action.
 - Frontend tests must prove invalid/missing/paused source IDs fail closed.
 - `npm run check-release` must pass.
 

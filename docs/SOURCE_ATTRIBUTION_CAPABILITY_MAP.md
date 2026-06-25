@@ -1,10 +1,11 @@
 # Source Attribution Capability Map
 
-Status: DECISION MAP / ONE PAUSED INTERNAL SOURCE / NO ACTIVATION AUTHORIZED
+Status: DECISION MAP / ONE VALIDATED INTERNAL SOURCE TEST / SOURCE PAUSED / NO PUBLIC ACTIVATION AUTHORIZED
 
 This document maps what the deployed SourceRegistryV1 and MembershipSaleV3
 source-attribution system can do across The Syndicate product organism after
-the first internal PAUSED source record was created and read back.
+the first internal source record was created, used for one controlled $5
+source-attributed MembershipSaleV3 purchase, and returned to PAUSED.
 
 It does not authorize another mainnet transaction, source record, source link,
 commission claim surface, registry switch, production publish, funding action,
@@ -17,10 +18,10 @@ Repository and chain truth at this map:
 
 | Surface | Current truth |
 | --- | --- |
-| SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; one internal PAUSED source record exists. |
+| SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; one internal source record exists and is PAUSED after a completed controlled test. |
 | MembershipSaleV3 | Deployed at `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`; funded; active frontend buy target for direct SYN membership purchases. |
 | Public/default buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active. |
-| Source attribution rehearsal | Deployed-address Avalanche fork passed for source creation and source-attributed MembershipSaleV3 buy. |
+| Source attribution rehearsal | Deployed-address fork passed, and a real mainnet controlled $5 source-attributed MembershipSaleV3 buy succeeded. |
 | Referral/source UI | Pending and inactive. |
 | Claim UI | Inactive. |
 | Archive1155 | Live protocol-memory mint contract; it does not accept a `sourceId`. |
@@ -36,7 +37,7 @@ source-aware merely because SourceRegistryV1 exists.
 
 Archive1155 does not accept a `sourceId`. Future NFT or product commission requires a source-aware sale wrapper/router or new product contract.
 
-The current deployed system can support a first controlled source-attributed
+The current deployed system has proven a first controlled source-attributed
 MembershipSaleV3 path. It cannot automatically attribute every product sold on
 the site, route Archive1155 commissions, or pay source commissions for external
 swap/product flows without additional sale-path design.
@@ -45,7 +46,7 @@ swap/product flows without additional sale-path design.
 
 | Product / sale surface | Current contract handling payment? | Can current SourceRegistryV1 attribute it? | Can current receipt track acquisition cost? | Can Activity / My Syndicate show it? | Can commission be paid automatically? | Needs frontend only? | Needs read-model only? | Needs new contract later? | Risk level |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| V3 SYN membership sale | Yes: MembershipSaleV3 | Yes, when a non-zero sourceId is supplied and source record is ACTIVE | Yes: MembershipPurchasedV3 event includes acquisition cost, net routed amount, source class, source wallet, commission bps, caps, and receipt version | Yes, event parser and cache preserve V3 source fields; UI still needs careful product copy before public source activation | Yes; direct payout with escrow fallback exists | Yes, for source-aware link/preview UX later | Yes, for clearer receipt/member views | No for first controlled V3 membership source path | Medium |
+| V3 SYN membership sale | Yes: MembershipSaleV3 | Proven for one controlled internal buy when a non-zero sourceId was supplied and source record was ACTIVE | Yes: MembershipPurchasedV3 event includes acquisition cost, net routed amount, source class, source wallet, commission bps, caps, and receipt version | Yes, event parser and cache preserve V3 source fields; UI still needs careful product copy before public source activation | Proven by direct payout; escrow fallback remains untested | Yes, for source-aware link/preview UX later | Yes, for clearer receipt/member views | No for first controlled V3 membership source path | Medium |
 | Archive1155 NFT mints | Yes: Archive1155 | No. Archive1155 does not read SourceRegistryV1 and does not accept sourceId | No. Mint events do not include acquisition cost/source fields | Only as normal artifact mint events; no source attribution truth exists on-chain today | No | No, not for real commission | Possible analytics-only attribution if clearly labeled as non-payment/off-chain memory | Yes, for true on-chain NFT source commission: source-aware Archive wrapper/router or Archive sale V2 | High if presented as live source commission |
 | Future SeatRecord721-related sale | No live sale contract | No current source-aware sale path | No | No | No | No | Planning only | Likely yes if any paid identity-record surface exists later | High |
 | Future premium/pass sale | No generic paid-product contract | SourceRegistryV1 can be reused as policy if a sale contract reads it | Not today | Not today | Not today | No, except static preview/docs | Possible non-payment analytics only | Likely yes: ProductSaleRouterV1 or product-specific sale contract | Medium-high |
@@ -81,7 +82,7 @@ What works now:
 
 What remains inactive:
 
-- No ACTIVE source record exists on mainnet.
+- No ACTIVE source record exists on mainnet after the completed test; the source was re-paused.
 - No public source link exists.
 - No source-aware public buy path exists.
 - No claim UI exists.
@@ -297,11 +298,13 @@ Need later:
 - Public/non-public display posture.
 - Per-product terms policy if products expand beyond MembershipSaleV3.
 
-## First Internal Source Record Result
+## First Internal Source Record And Test Result
 
-Result: the first internal BUILDER_SOURCE source record was created PAUSED and
-read back green. This result does not authorize activation, public source links,
-claim UI, source dashboard, or a public source-aware buy path.
+Result: the first internal BUILDER_SOURCE source record was created PAUSED,
+terms were updated, the source was activated for one controlled $5
+MembershipSaleV3 test buy, the receipt was read back, direct payout succeeded,
+and the source was re-paused. This result does not authorize public source
+links, claim UI, source dashboard, or a public source-aware buy path.
 
 Why this remains the right boundary:
 
@@ -314,7 +317,7 @@ Why this remains the right boundary:
 What it enables:
 
 - Readback of a real source policy record.
-- Register/Activity truth for a paused source policy.
+- Register/Activity truth for a paused source policy and one internal source-attributed receipt.
 - Operational rehearsal before public source links.
 
 What it does not enable:
@@ -328,11 +331,9 @@ What it does not enable:
 Still needed:
 
 - Final source wallet and payout wallet.
-- Conservative commission bps and caps.
-- Metadata hash.
-- Founder approval.
-- Legal/product copy posture.
+- Legal/product copy posture for any public exposure.
 - Public/Replit V3 frontend confidence if the source will ever be exposed.
+- Anti-abuse and source onboarding rules before member referral UX.
 
 ## Future Contract Candidates
 
@@ -382,11 +383,12 @@ Never show:
 
 ## Next Recommended Sprint
 
-Before creating another source record or activating the existing PAUSED source:
+Before creating another source record or activating the existing PAUSED source again:
 
 1. Rebuild current-authority readbacks.
-2. Confirm whether source terms/window remain suitable for any controlled test.
-3. Use `docs/SOURCE_ACTIVATION_READINESS_PACKET.md` and
+2. Confirm whether source terms/window remain suitable for any future controlled test.
+3. Use `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`,
+   `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`, and
    `src/lib/source-activation-readiness.ts` as the PAUSED-to-ACTIVE boundary
    model.
 4. Use `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md` and
@@ -395,5 +397,5 @@ Before creating another source record or activating the existing PAUSED source:
 5. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
 6. Do not build public source links, claim UI, Archive source attribution, or
-   product-wide attribution until a controlled internal source-attributed test
-   is separately approved and read back.
+   product-wide attribution until the completed internal source-attributed test
+   is translated into approved public product rules.

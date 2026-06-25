@@ -1,15 +1,16 @@
 # Source Packet Internal Test 001 - Founder Inputs
 
-Status: PAUSED SOURCE CREATED / READBACK GREEN / NO ACTIVATION AUTHORIZED
+Status: SOURCE CREATED / CONTROLLED TEST VALIDATED / SOURCE PAUSED / NO PUBLIC ACTIVATION AUTHORIZED
 
 This document records the founder-approved values for the first internal
-MembershipSaleV3 source record. The record now exists as PAUSED policy state. It
+MembershipSaleV3 source record. The record completed one controlled
+source-attributed buy and is now PAUSED again. It
 does not activate referral, create a public source link, create a claim UI, or
 authorize another transaction.
 
 Current boundary:
 
-- SourceRegistryV1 is deployed and currently has one PAUSED internal source record.
+- SourceRegistryV1 is deployed and currently has one validated internal source test now PAUSED.
 - MembershipSaleV3 is the only current source-aware payment path.
 - Public/default V3 buys continue to use `ZERO_SOURCE_ID`.
 - Referral/source UI remains inactive.

@@ -1,11 +1,12 @@
 # V3 Acquisition Engine Test Plan
 
-Status: V3 QA CHECKLIST / DEPLOYED DIRECT-BUY INFRA / ONE PAUSED INTERNAL SOURCE
+Status: V3 QA CHECKLIST / DEPLOYED DIRECT-BUY INFRA / VALIDATED INTERNAL SOURCE TEST
 
 This test plan converts `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md` into
 implementation gates. `SourceRegistryV1` and `MembershipSaleV3` are deployed;
 MembershipSaleV3 is funded and selected as the frontend direct-buy target with
-`ZERO_SOURCE_ID`. One internal source record exists as PAUSED policy state.
+`ZERO_SOURCE_ID`. One internal source-attributed buy has been validated and the
+source is back in PAUSED policy state.
 Source-aware links, referral/source UI, public source-aware buys, and claim UI
 remain inactive.
 

@@ -1,6 +1,6 @@
 # V3 Deployment Parameter Sheet
 
-Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / ONE PAUSED INTERNAL SOURCE
+Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / VALIDATED INTERNAL SOURCE TEST
 
 This sheet records the completed deployment/readback posture plus the later V2b pause, V3 funding, frontend buy-target wiring, and first internal PAUSED source record. It does not authorize recovery, additional funding, pause/unpause, source activation, referral UI, claim UI, public source-aware buys, or any private-key/broadcast action. The readback log is `docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md`. The next boundary plan is `docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md`.
 
@@ -8,7 +8,7 @@ This sheet records the completed deployment/readback posture plus the later V2b 
 
 - V3 SourceRegistryV1 and MembershipSaleV3 are deployed and owner-accepted.
 - MembershipSaleV3 is funded with 7,000,000 SYN, unpaused, and selected as the frontend approval/quote/buy target.
-- Public V3 buys use zero sourceId. One internal source record exists and is PAUSED.
+- Public V3 buys use zero sourceId. One internal source record completed one controlled source-attributed buy and is now PAUSED.
 - SourceRegistryV1 is not activated for public source/referral use.
 - V2b is paused on-chain and retained as historical proof plus recovery boundary.
 - No additional funding unless separately approved. The recorded V3 funding transaction transferred 7,000,000 SYN from `0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8` to MembershipSaleV3.
@@ -38,14 +38,14 @@ These addresses are derived from repository truth, V2b deployed-lineage paramete
 | V2a historical sale | `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48` |
 | V2b paused historical source | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` |
 | Archive1155 | `0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d` |
-| V3 SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / one PAUSED internal source record / referral UI inactive |
+| V3 SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / validated internal source test / final status PAUSED / referral UI inactive |
 | V3 MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded with 7,000,000 SYN / current frontend buy target / public buys use zero sourceId |
 
 ## Deployment Candidates
 
 | Candidate | Source file | Status |
 | --- | --- | --- |
-| SourceRegistryV1 | `contracts/src/SourceRegistryV1.sol` | Deployed / owner accepted / one PAUSED internal source record / referral UI inactive |
+| SourceRegistryV1 | `contracts/src/SourceRegistryV1.sol` | Deployed / owner accepted / validated internal source test / final status PAUSED / referral UI inactive |
 | MembershipSaleV3 | `contracts/src/MembershipSaleV3.sol` | Deployed / owner accepted / funded with 7,000,000 SYN / current frontend buy target / zero sourceId public buys |
 
 ## Hardware Wallet Addresses
@@ -249,7 +249,7 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 | Deployment/owner wallet not forbidden protocol addresses | Passed | Neither equals USDC, SYN, V1, V2a, V2b, Archive1155, Vault, Liquidity, or Operations |
 | Vault, Liquidity, and Operations distinct | Passed | Canonical route wallets are distinct |
 | Frontend direct-buy target | Passed | MembershipSaleV3 is the current approval/quote/buy target; public buys use zero sourceId |
-| V3 SourceRegistry and MembershipSale address posture | Passed | SourceRegistry has one PAUSED internal source record; MembershipSaleV3 is funded and selected for direct buys |
+| V3 SourceRegistry and MembershipSale address posture | Passed | SourceRegistry has one validated internal source test now PAUSED; MembershipSaleV3 is funded and selected for direct buys |
 | Recorded V3 funding | Passed | 7,000,000 SYN funded by `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2` |
 | First source record posture | Passed | One internal source record was later created as PAUSED policy state only; no activation or public source path |
 | Historical proof root format | Passed by artifact and Foundry test | V3 requires numbered wallet + member number leaves, not address-only leaves |
@@ -258,7 +258,7 @@ The price schedule is contract-fixed in `MembershipSaleV3._eraParams`. Construct
 | `maxUsdcPerTx` | Ready | Derived from deployed V2b lineage |
 | `reserveThroughSeat` | Ready | Derived from deployed V2b lineage |
 | `eraCaps[9]` | Ready | Derived from deployed V2b lineage and live V2b readback |
-| MembershipSaleV3 default pause state | Recorded | `paused()` is false by deployment default; pause is deferred intentionally. Current safety boundary is zero sourceId public buys, one PAUSED internal source record, no referral UI, and no claim UI. |
+| MembershipSaleV3 default pause state | Recorded | `paused()` is false by deployment default; pause is deferred intentionally. Current safety boundary is zero sourceId public buys, one validated internal source test now PAUSED, no referral UI, and no claim UI. |
 
 ## Current Safety Rule For Unpaused Direct-Buy State
 
@@ -300,7 +300,7 @@ Before any funding or activation decision, read back:
 - rescue restrictions for USDC and SYN
 - frontend direct-buy target is MembershipSaleV3
 - `/v3-preview` remains read-only and candidate/source-only
-- SourceRegistryV1 has one PAUSED internal source record and no ACTIVE sources
+- SourceRegistryV1 has one validated internal source test, final status PAUSED, and no ACTIVE sources
 
 ## Final Non-Live Deployment/Readback Checklist
 
@@ -333,7 +333,7 @@ This checklist is preparation only. It is not permission to deploy.
 
 - Completed: SourceRegistryV1 deployed/readback green and owner accepted.
 - Completed for deployment/readback: final freeze/readback used `genesisOffset = 8` and root `0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329`.
-- Completed/recorded: MembershipSaleV3 deployed/readback green, owner accepted, `paused() = false`, funded with 7,000,000 SYN, one internal source record exists as PAUSED policy state, and V3 remains selected as the direct frontend buy target with zero sourceId.
+- Completed/recorded: MembershipSaleV3 deployed/readback green, owner accepted, `paused() = false`, funded with 7,000,000 SYN, one internal source-attributed buy was validated and re-paused, and V3 remains selected as the direct frontend buy target with zero sourceId.
 
 ### Blocks Additional Funding, Source Activation, or Public Referral/Claim UI
 

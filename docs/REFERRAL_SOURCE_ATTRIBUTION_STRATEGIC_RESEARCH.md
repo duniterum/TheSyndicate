@@ -26,7 +26,8 @@ for The Syndicate, but only if it is kept in its proper place:
 - SourceRegistryV1 is policy infrastructure, not a universal commerce router.
 - MembershipSaleV3 is the only current source-aware payment path.
 - Public/default V3 buys must continue to use `ZERO_SOURCE_ID`.
-- One internal PAUSED source record exists; zero ACTIVE sources exist.
+- One internal source record exists, completed one controlled source-attributed
+  MembershipSaleV3 buy, and returned to PAUSED; zero ACTIVE sources exist.
 - Referral/source UI and claim UI remain inactive.
 - Archive1155, SwapRail, future product sales, and SeatRecord721 are not
   source-aware today.
@@ -37,12 +38,13 @@ The next irreversible action should not be public referral activation. The
 highest-leverage path is:
 
 1. Keep current public V3 direct buys stable and source-neutral.
-2. Keep the first internal PAUSED source readback as policy truth only.
-3. Do not activate it without a separate ceremony.
+2. Keep the first internal source test recorded as protocol capability proof
+   only.
+3. Do not activate it again without a separate ceremony.
 4. Keep the readback recorded in Register/Activity truth surfaces.
-5. Build source-aware quote, receipt, and My Syndicate read models after the
-   paused-record proof exists.
-6. Activate a source only in a separate ceremony after legal/product copy,
+5. Harden source-aware quote, receipt, and My Syndicate read models after the
+   validated proof exists.
+6. Activate a source again only in a separate ceremony after legal/product copy,
    wallet policy, and failure-state UX are ready.
 
 The first controlled source should be an internal MembershipSaleV3-only source,
@@ -58,7 +60,7 @@ Archive commission, product-wide attribution, or member ownership language.
 | --- | --- |
 | SYN | Live V1 seat token. |
 | MembershipSaleV3 | Deployed, funded, direct-buy target for V3 membership purchases. |
-| SourceRegistryV1 | Deployed, owner accepted, one internal PAUSED source record. |
+| SourceRegistryV1 | Deployed, owner accepted, one internal source record now PAUSED after a completed controlled test. |
 | Public/default buy path | Uses `ZERO_SOURCE_ID`. |
 | Referral/source UI | Pending, read-only/inactive. |
 | Claim UI | Inactive. |

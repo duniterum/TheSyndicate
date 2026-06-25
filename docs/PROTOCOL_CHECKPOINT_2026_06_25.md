@@ -1,8 +1,8 @@
 # Protocol Checkpoint - 2026-06-25
 
-Status: OPERATIONAL CHECKPOINT / CURRENT AUTHORITY SNAPSHOT / NO ACTIVATION AUTHORITY
+Status: OPERATIONAL CHECKPOINT / CURRENT AUTHORITY SNAPSHOT / INTERNAL SOURCE TEST VALIDATED / NO PUBLIC ACTIVATION AUTHORITY
 
-This checkpoint preserves the current whole-protocol state after the V3 direct-buy cutover, first internal PAUSED source readback, source/read-model hardening, Replit production sync, and operational memory updates.
+This checkpoint preserves the current whole-protocol state after the V3 direct-buy cutover, first internal source readback, source/read-model hardening, Replit production sync, operational memory updates, and the first completed end-to-end internal Source Attribution real-condition ceremony.
 
 It is not a deployment packet, source activation packet, referral launch packet, claim UI approval, registry switch, contract change, or production publish instruction.
 
@@ -11,13 +11,13 @@ It is not a deployment packet, source activation packet, referral launch packet,
 The last 24 hours moved The Syndicate across several boundaries at once:
 
 - V3 is the public direct-buy target.
-- SourceRegistryV1 has one internal PAUSED source policy fact.
+- SourceRegistryV1 has one internal source policy fact that completed a controlled source-attributed buy and was returned to PAUSED.
 - Referral/source attribution remains inactive.
 - The read model now distinguishes source policy existence from source activation.
-- Replit production has been synced to the PAUSED source readback.
+- Replit production has been synced through the source-operator console and the ceremony close-out is now repository truth.
 - Operational memory now records how to interpret live-QA text matches and Replit local divergences.
 
-Without one checkpoint, future work can easily mix old "zero source records" memory, current PAUSED source truth, and future referral activation plans. This file is the current continuity map.
+Without one checkpoint, future work can easily mix old "zero source records" memory, the first PAUSED source truth, the completed internal source-attributed receipt, and future public referral plans. This file is the current continuity map.
 
 ## Current Authority
 
@@ -30,12 +30,12 @@ Without one checkpoint, future work can easily mix old "zero source records" mem
 | Current active sale path | MembershipSaleV3 direct buy |
 | Default public sourceId | `ZERO_SOURCE_ID` / `0x0000000000000000000000000000000000000000000000000000000000000000` |
 | V2b | Paused historical sale and recovery boundary; not current public buy target |
-| SourceRegistryV1 | Deployed, owner accepted, one internal PAUSED source record |
+| SourceRegistryV1 | Deployed, owner accepted, one internal source record; final status PAUSED after a completed controlled source-attributed buy |
 | Referral/source UI | Inactive |
 | Claim UI | Absent |
 | Public source-aware buy path | Absent |
 | Contract changes in this checkpoint | None |
-| Transactions in this checkpoint | None |
+| Ceremony transactions now recorded | `updateSourceTerms`, controlled ACTIVE, one $5 source-attributed buy, and re-pause |
 
 Current GitHub main after the commit that adds this file supersedes the baseline above for docs/guard memory only. Production does not need a publish for this checkpoint unless the founder wants deployment provenance alignment.
 
@@ -48,8 +48,12 @@ Current GitHub main after the commit that adds this file supersedes the baseline
 | V2b sale | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` |
 | SYN | `0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170` |
 | USDC | `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E` |
-| SourceRegistry readback block | `88705814` |
+| SourceRegistry latest readback block | `88808111` |
 | SourceCreated tx | `0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280` |
+| SourceTermsUpdated tx | `0x898b4f142ca388543701da8e483f764d1daef4c3256d28b449aac5cf08e2784d` |
+| Controlled ACTIVE tx | `0x7565d0fbe6389a7fc39da4ec0f9e69d2a82a99d42d3192e616d18fc35efc4df1` |
+| Source-attributed buy tx | `0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46` |
+| Re-pause tx | `0x67f6498cd734b27032f0a10fe55bad57079f5b9cf38b38a85a1f95895aece71f` |
 
 ## Current Source Policy Fact
 
@@ -63,14 +67,19 @@ Current GitHub main after the commit that adds this file supersedes the baseline
 | payoutWallet | `0x244531C571966f90f4849e03a507543d90f9C721` |
 | commissionBps | `500` |
 | scope | `WINDOWED` |
-| startTime | `1782907200` |
-| endTime | `1784116800` |
+| startTime | `1782388800` |
+| endTime | `1783598400` |
 | grossCap | `25000000` USDC units |
 | perBuyerCap | `5000000` USDC units |
 | appliesToRepeatPurchases | `false` |
-| metadataHash | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` |
+| metadataHash | `0x797dedbf845edc5954012c46a6c42e121f19f142d76fe34c8f59bf8e8c7bd681` |
+| Final current status | `PAUSED` |
+| Latest `isActive(sourceId)` | `false` |
+| Validated source-attributed buy | `0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46` |
+| Validated member number | `10` |
+| Source escrow owed | `0` |
 
-This record is source policy state only. It does not create a referral program, public source link, source dashboard, claim UI, public source-aware buy path, member referral model, agency relationship, employment relationship, member ownership, passive income, MLM/downline structure, or product-wide attribution.
+This record is source policy state plus one completed internal proof receipt. It does not create a referral program, public source link, source dashboard, claim UI, public source-aware buy path, member referral model, agency relationship, employment relationship, member ownership, passive income, MLM/downline structure, or product-wide attribution.
 
 ## What Became True Recently
 
@@ -80,11 +89,12 @@ This record is source policy state only. It does not create a referral program, 
 | Historical-member guard | Historical wallets are protected from direct V3 member-number reassignment. |
 | Source policy observability | One internal PAUSED source record is represented in `src/lib/source-policy-observability.ts`. |
 | Source lifecycle model | `SourceCreated`, `SourceStatusChanged`, `SourceTermsUpdated`, and payout-wallet update facts have read-only modeling. |
-| Source-attributed receipts | Fixture/read-model coverage exists for future non-zero-source V3 purchase receipts. |
-| Activity/My Syndicate readiness | Future source-attributed receipts can be understood without activating public source paths. |
+| Source-attributed receipts | One real-condition internal V3 source-attributed purchase receipt exists and is read back; public receipt surfacing remains a product decision. |
+| Activity/My Syndicate readiness | The first real source-attributed receipt can be understood without activating public source paths. |
 | Registry/referral truth | Public surfaces can say a PAUSED source policy fact exists while still saying referral is inactive. |
 | Production truth | Replit production was synced to `e19927b` and QA confirmed the PAUSED readback state. |
 | Operational memory | OML-015 records that loose text grep can confuse boundary copy with live controls, that Replit's dev watch-ignore fix is local divergence, and that `check-commission-router-freeze` BLOCKED is expected pre-activation posture. |
+| Operator memory | OML-017 and OML-018 record that ceremony consoles must be explicit and approval is not a buy; OML-019 records the completed source test closure discipline. |
 
 ## Superseded Truths
 
@@ -92,6 +102,7 @@ Do not reintroduce these as current truth:
 
 - "Source records are zero."
 - "The first internal source packet is only a future recommendation."
+- "The source-attributed receipt test is still hypothetical."
 - "A source record means referral is live."
 - "A PAUSED source can be used by public buys."
 - "A claim UI exists because escrow functions exist."
@@ -127,6 +138,7 @@ The current system still forbids:
 | --- | --- |
 | Contract/readback addresses | `src/lib/syndicate-config.ts`, `src/lib/contract-registry.ts`, `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` |
 | Source policy runtime snapshot | `src/lib/source-policy-observability.ts` |
+| Completed source-attribution ceremony readback | `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md` |
 | Source lifecycle read model | `src/lib/source-registry-lifecycle.ts` |
 | Future source-attributed receipt projection | `src/lib/source-attributed-receipts.ts` |
 | Public inactive referral surface | `src/routes/referral.tsx` |
@@ -154,17 +166,15 @@ MembershipSaleV3 direct buy
   -> normal V3 receipt/routing only
 
 SourceRegistryV1
-  -> one internal PAUSED source record
-  -> visible policy fact
+  -> one internal source record now PAUSED after a completed test
+  -> visible policy fact and proof receipt
   -> not referral activation
 
-Future source-attributed MembershipSaleV3 buy
-  -> requires source status ACTIVE
-  -> requires source terms still valid
-  -> requires explicit non-zero sourceId path
-  -> requires buyer disclosure / clear-source UX
-  -> requires local/test path before public path
-  -> emits receipt facts for acquisition cost and Net USDC Routed
+Completed internal source-attributed MembershipSaleV3 buy
+  -> source was ACTIVE only during the test
+  -> explicit non-zero sourceId path was hidden and allowlisted
+  -> emitted receipt facts for acquisition cost and Net USDC Routed
+  -> source is now PAUSED again
 
 Claim / escrow UI
   -> requires escrow facts, status-gating, legal/product copy, and UX approval
@@ -183,8 +193,8 @@ Archive1155 / SeatRecord721 / SwapRail / ProductSaleRouter
 | `/join` | V3 direct buy. Public/default buys remain `ZERO_SOURCE_ID`; no source selector or source link. |
 | `/referral` | Inactive source/referral explanation and PAUSED source policy readback; no claim UI or live referral. |
 | `/registry` | Contract and source-policy proof surface, including SourceRegistryV1 and MembershipSaleV3. |
-| `/activity` | Live heartbeat and future receipt/event context; no source-attributed live receipt until one exists. |
-| `/my-syndicate` | Member cockpit and future source receipt context; no claim/balance dashboard. |
+| `/activity` | Live heartbeat and receipt/event context; the internal source-attributed receipt may be represented only with clear non-public status. |
+| `/my-syndicate` | Member cockpit and source receipt context; no claim/balance dashboard. |
 | `/transparency` | Protocol Economy and readback truth; source policy is not commission/revenue. |
 | `/chronicle` | Institutional memory; source milestones only if admitted as meaningful history. |
 | `/archive` / `/nft` | Archive1155 memory surface; not source-aware. |
@@ -195,41 +205,38 @@ Archive1155 / SeatRecord721 / SwapRail / ProductSaleRouter
 | Work | Why it exists | Blocks |
 | --- | --- | --- |
 | Current-authority preflight before any next source transaction | Prevents acting from stale source, owner, status, or production memory | Any source status or terms transaction |
-| Source activation readiness packet | Created as `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`; separates PAUSED policy fact from ACTIVE source behavior | ACTIVE ceremony remains blocked until readbacks, local test path, disclosure, and founder approval |
-| Timestamp/window review | Current window is July 1-15, 2026 UTC; if activation testing happens too late, a visible terms update may be required before activation | Source-attributed test buy |
-| Internal source-aware test path | Created as `/labs/source-attribution-test` with localhost or explicit production-internal flags, exact query, sourceId, allowlisted buyer in production-internal mode, live SourceRegistry terms, and PAUSED-status gates | $5 internal source-attributed buy test remains blocked until ACTIVE ceremony and fresh readbacks |
-| Buyer disclosure / clear-source UX | Internal harness previews sourceId, status, class, wallets, commission bps, caps, and quote fields before future controls can appear | Public source-aware UX still requires separate legal/product approval |
-| ACTIVE source ceremony | Separate founder transaction; not bundled with UI or claim activation | Source-attributed buy test |
-| $5 internal source-attributed buy readback | Proves receipt, payout, escrow, attribution, cache, Activity, My Syndicate, and Registry truth | Public source/referral planning |
+| Source activation readiness packet | Created as `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`; now a future-ceremony reference after the completed internal test | Any future ACTIVE ceremony requires fresh readback and founder approval |
+| Timestamp/window review | Current terms use the before-July test window; any future test must re-check timing or update terms with a new approved packet | Any future source-attributed test |
+| Internal source-aware test path | Created as `/labs/source-attribution-test` with localhost or explicit production-internal flags, exact query, sourceId, allowlisted buyer in production-internal mode, live SourceRegistry terms, and clear approval-vs-buy states; used successfully for one controlled buy | Public source-aware UX still requires separate legal/product approval |
+| Buyer disclosure / clear-source UX | Internal harness previews sourceId, status, class, wallets, commission bps, caps, amount, approval status, buy status, and stop conditions | Public source-aware UX still requires separate legal/product approval |
+| ACTIVE source ceremony | Completed once for the controlled internal test and closed by re-pause | Any future ACTIVE ceremony requires fresh current-authority readback and founder approval |
+| $5 internal source-attributed buy readback | Proved receipt, payout, escrow, attribution, cap accounting, Activity/My Syndicate read-model compatibility, and Registry truth | Public source/referral planning |
 | Claim/escrow policy | Required before any claim surface or balance display | Claim UI |
 | Legal/product copy signoff | Required before source commission is shown publicly | Public referral/source activation |
 | Product-wide attribution design | Required before Archive, SwapRail, SeatRecord721, ProductSaleRouter, or partner commerce claims | Future modules |
 
 ## Recommended Execution Roadmap
 
-### Sprint 1 - Source Activation Readiness Packet
+### Sprint 1 - Post-Ceremony Product Truth
 
-Goal: prepare, without transaction, the exact conditions under which the existing PAUSED source could be activated for a controlled internal test.
+Goal: make the completed source-attributed receipt visible to the read models
+without implying public referral activation.
 
 Outcome:
 
-- current readback checklist,
-- owner/signer/network checks,
-- timestamp/window decision,
-- failure cases,
-- exact `setSourceStatus(..., ACTIVE)` or `updateSourceTerms` preconditions,
-- no public UI changes.
+- Activity/My Syndicate receipt truth reflects the internal source proof,
+- Registry/Referral language distinguishes PAUSED source proof from public referral,
+- public/default buys remain `ZERO_SOURCE_ID`,
+- no source links, claim UI, source dashboards, or public source-aware buy path.
 
-Current implementation note: this sprint is represented by
-`docs/SOURCE_ACTIVATION_READINESS_PACKET.md`,
-`docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, and
-`src/lib/source-activation-readiness.ts`. It does not authorize activation.
-The preflight document is command-ready, but live `AVAX_RPC` readbacks were not
-performed in the Codex shell because no RPC endpoint was set.
+Current implementation note: this checkpoint records the final readback in
+`docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`; the product read models now
+need the same disciplined translation.
 
-### Sprint 2 - Internal Source-Aware Test Path
+### Sprint 2 - Internal Source-Aware Test Path Maintenance
 
-Goal: build or enable an environment-gated test path that can intentionally pass the frozen sourceId in local development, or in a separately approved production-internal mode with explicit flags and an allowlisted fresh buyer.
+Goal: keep the environment-gated test path available for future approved tests
+without turning it into public referral UX.
 
 Outcome:
 
@@ -250,7 +257,7 @@ authorize activation.
 
 ### Sprint 3 - Controlled ACTIVE Ceremony And $5 Test
 
-Goal: if founder separately approves, activate the source only for the controlled test window, perform a tiny source-attributed buy, and read back every receipt/routing/payout fact.
+Goal: completed. The source was activated only for the controlled test window, one $5 source-attributed buy succeeded, and every receipt/routing/payout fact was read back.
 
 Outcome:
 
@@ -303,7 +310,7 @@ Outcome:
 - SwapRail.
 - ProductSaleRouter.
 - Financial leaderboards.
-- Any public source-aware buy path before a controlled internal test proves the path.
+- Any public source-aware buy path beyond the internal test before a public-source product decision.
 
 ## Final Recommendation
 
@@ -313,11 +320,11 @@ Do not create another source record yet.
 
 Do not build claim UI yet.
 
-The internal source-aware test path boundary now exists as an internal,
-noindex `/labs` route guarded by localhost, an explicit environment flag, the
-frozen internal source label, and the source's current `PAUSED` status. That
-work increases institutional integrity because it makes the next possible
-source-attributed purchase understandable before it becomes usable.
+The internal source-aware test path proved the first controlled $5
+source-attributed MembershipSaleV3 purchase and the source was re-paused. That
+work increases institutional integrity because it turned the source engine from
+a design assumption into a readback-backed protocol capability without
+launching public referral.
 
 The protocol should move from:
 
@@ -328,7 +335,7 @@ PAUSED source policy fact
 to:
 
 ```text
-activation preflight -> source terms/window review -> controlled ACTIVE test -> receipt/readback truth
+validated internal source-attribution ceremony -> post-test read-model hardening -> public referral decision
 ```
 
 Only after that should public referral/source UX be reconsidered.

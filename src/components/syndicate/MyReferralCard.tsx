@@ -2,7 +2,7 @@
 // PENDING shells until source records and activation are separately approved.
 //
 // Doctrine: SourceRegistryV1 and MembershipSaleV3 exist, but the first source
-// record is PAUSED/internal only and public/default buys use ZERO_SOURCE_ID.
+// test is complete, PAUSED again, internal only, and public/default buys use ZERO_SOURCE_ID.
 //   • There is no live source link, commission, claim UI, or source-aware
 //     public buy path. We say so plainly instead of rendering fabricated
 //     estimators, tier ladders, or simulated scores.
@@ -30,19 +30,19 @@ export function MyReferralCard() {
       <SectionHeader
         eyebrow="Referral · Pending"
         title={<>Bring members. Recognition, <span className="text-gradient-gold">not payout</span></>}
-        description="The referral surface is not live yet. SourceRegistryV1 has one PAUSED internal source record; public V3 buys use ZERO_SOURCE_ID. No commission is accruing and no claim UI is live."
+        description="The referral surface is not live yet. SourceRegistryV1 has one validated internal source test now PAUSED; public V3 buys use ZERO_SOURCE_ID. No commission is accruing and no claim UI is live."
       />
       <GlassCard className="p-5">
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <StatusPill status="PENDING" />
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            One PAUSED source record · no claim UI
+            Validated internal test · source PAUSED · no claim UI
           </span>
         </div>
 
         <p className="text-sm text-foreground/85 leading-relaxed">
-          The internal source record is a protocol-test fact, not a member
-          referral program. Your introduction path may become visible only after
+          The internal source record is a validated protocol-test fact, not a
+          member referral program. Your introduction path may become visible only after
           a separate approved activation readback, source-aware product path,
           and legal copy. Until then there is no link to share, no balance to
           estimate, and no commission accruing — so we show none.

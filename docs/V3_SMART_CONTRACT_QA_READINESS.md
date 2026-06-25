@@ -1,11 +1,12 @@
 ﻿# V3 Smart Contract QA Readiness
 
-Status: QA PASS / DEPLOYED / OWNER ACCEPTED / FUNDED / DIRECT-BUY TARGET / ONE PAUSED INTERNAL SOURCE
+Status: QA PASS / DEPLOYED / OWNER ACCEPTED / FUNDED / DIRECT-BUY TARGET / VALIDATED INTERNAL SOURCE TEST
 
 External-review package status: prepared for review intake in
 `docs/V3_EXTERNAL_REVIEW_PACKAGE.md`. V3 direct-buy is now wired through the
-frontend with zero sourceId; one internal source record exists as PAUSED policy
-state; source activation, referral UI, and claim UI remain blocked until the
+frontend with zero sourceId; one internal source-attributed buy has been
+validated and the source is back in PAUSED policy state; source activation,
+referral UI, and claim UI remain blocked until the
 gates below are closed.
 
 This document records the focused QA pass for the V3 candidate contracts:
@@ -22,7 +23,7 @@ V2b is paused historical infrastructure; MembershipSaleV3 is the direct-buy targ
 
 V3 deployment/readback was completed, owner accepted, V2b paused, and MembershipSaleV3 funded with 7,000,000 SYN.
 
-- SourceRegistryV1: `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / one PAUSED internal source record / referral UI inactive.
+- SourceRegistryV1: `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / validated internal source test / final status PAUSED / referral UI inactive.
 - MembershipSaleV3: `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded / direct-buy target / zero sourceId public buys.
 - First SourceCreated block: `88705814`.
 - Final owner: `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73`.

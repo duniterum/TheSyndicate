@@ -1,16 +1,16 @@
 # V3 Non-Live Deployment Readback Log
 
-Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / ONE PAUSED INTERNAL SOURCE
+Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / VALIDATED INTERNAL SOURCE TEST
 
 This log records the V3 deployment, ownership, V2b pause, V3 funding readbacks, frontend buy-target wiring, and first internal PAUSED source readback. It does not authorize source activation, referral UI, claim UI, recovery, additional funding, pause/unpause, public source-aware buys, or any private-key/broadcast action.
 
-Precise status: MembershipSaleV3 is deployed, owner-accepted, funded with 7,000,000 SYN, and selected by the frontend buy flow as the active approval/quote/purchase target. `paused()` is false. Public buys use zero sourceId. SourceRegistryV1 has one internal PAUSED source record; referral UI, claim UI, public source-aware buys, and source activation remain inactive. V2b is paused on-chain and retained for history/recovery boundaries.
+Precise status: MembershipSaleV3 is deployed, owner-accepted, funded with 7,000,000 SYN, and selected by the frontend buy flow as the active approval/quote/purchase target. `paused()` is false. Public buys use zero sourceId. SourceRegistryV1 has one internal source record that completed one controlled source-attributed buy and returned to PAUSED; referral UI, claim UI, public source-aware buys, and source activation remain inactive. V2b is paused on-chain and retained for history/recovery boundaries.
 
 ## Contracts
 
 | Contract | Address | Deployment tx | Status |
 | --- | --- | --- | --- |
-| SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` | `0x29ae91db4b5868a5b572c315c250cce8b2ab8c438df97f6617a4a8b2bc435a67` | DEPLOYED / OWNER ACCEPTED / ONE PAUSED INTERNAL SOURCE / REFERRAL UI INACTIVE |
+| SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` | `0x29ae91db4b5868a5b572c315c250cce8b2ab8c438df97f6617a4a8b2bc435a67` | DEPLOYED / OWNER ACCEPTED / VALIDATED INTERNAL SOURCE TEST / FINAL PAUSED / REFERRAL UI INACTIVE |
 | MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` | `0x635770ef23a36e4db3d5855b94dc6d6c3b2d72192c59b663e36f312f78bbb42c` | DEPLOYED / OWNER ACCEPTED / FUNDED WITH 7,000,000 SYN / CURRENT FRONTEND BUY TARGET / ZERO SOURCE ID PUBLIC BUYS |
 | Membership Sale V2b | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` | Existing V2b deployment | PAUSED ON-CHAIN / HISTORICAL SOURCE / RECOVERY BOUNDARY |
 
@@ -123,17 +123,17 @@ V3 is now the public frontend buy target, but source/referral activation remains
 
 - Public buys use zero sourceId.
 - `/v3-preview` remains a candidate/read-only source preview, not a write surface.
-- One internal PAUSED source record exists.
+- One internal source record completed a controlled source-attributed buy and is now PAUSED.
 - No source record is ACTIVE.
 - No referral UI exists.
 - No claim UI exists.
 
-V3 is funded and unpaused, so the old zero-funding safety boundary no longer applies. The current boundary is V3 direct-buy only, zero sourceId, one PAUSED internal source record, no referral/claim UI, no public source-aware buy path, and no source activation.
+V3 is funded and unpaused, so the old zero-funding safety boundary no longer applies. The current boundary is V3 direct-buy only, zero sourceId, one validated internal source test now PAUSED, no referral/claim UI, no public source-aware buy path, and no source activation.
 
 ## Current Truth Classification
 
 - V2b: paused, recovery timelock started, retained as historical proof and recovery boundary.
 - V3: deployed, verified, owner accepted, funded with 7,000,000 SYN, unpaused, selected as the public frontend buy target, and constrained to zero sourceId public buys.
-- SourceRegistryV1: deployed and owner accepted with one internal PAUSED source record. Referral/source/claim UI remains inactive.
+- SourceRegistryV1: deployed and owner accepted with one validated internal source test now PAUSED. Referral/source/claim UI remains inactive.
 
 Canonical wording: V3 is the current direct-buy Membership Sale target. Do not call source/referral live.

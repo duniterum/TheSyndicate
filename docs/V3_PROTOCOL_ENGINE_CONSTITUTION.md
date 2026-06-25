@@ -1,11 +1,12 @@
 # V3 Protocol Engine Constitution
 
-Status: CANONICAL V3 SPECIFICATION / DEPLOYED DIRECT-BUY INFRA / ONE PAUSED INTERNAL SOURCE
+Status: CANONICAL V3 SPECIFICATION / DEPLOYED DIRECT-BUY INFRA / VALIDATED INTERNAL SOURCE TEST
 
 This document freezes the V3 design direction and records current V3 truth.
 `SourceRegistryV1` and `MembershipSaleV3` are deployed on Avalanche C-Chain;
 MembershipSaleV3 is funded and selected as the frontend direct-buy target with
-`ZERO_SOURCE_ID`. One internal source record exists as PAUSED policy state.
+`ZERO_SOURCE_ID`. One internal source-attributed buy has been validated and the
+source is back in PAUSED policy state.
 Source-aware links, referral/source UI, claim UI, active source payout, and any
 public source-aware buy path remain inactive until a separate activation
 ceremony is approved and read back.

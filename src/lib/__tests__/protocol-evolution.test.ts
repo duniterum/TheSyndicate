@@ -119,8 +119,9 @@ describe("protocol evolution registry", () => {
     expect(sourceEpisode?.state).toBe("UNFOLDING");
     expect(sourceEpisode?.plainSummary).toContain("no referral activation");
     expect(sourceEpisode?.plainSummary).toContain("no claim UI");
-    expect(sourceEpisode?.plainSummary).toContain("One internal PAUSED source record exists");
-    expect(sourceEpisode?.proofToWatchNext).toContain("internal source-attributed receipt test");
+    expect(sourceEpisode?.plainSummary).toContain("returned to PAUSED");
+    expect(sourceEpisode?.whatBecameTrue).toContain("temporary ACTIVE state");
+    expect(sourceEpisode?.proofToWatchNext).toContain("post-test receipt/read-model hardening");
     expect(sourceEpisode?.whatDidNotChange).toContain("Public/default buys remain direct");
   });
 

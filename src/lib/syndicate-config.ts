@@ -359,10 +359,11 @@ export const SOURCE_REGISTRY_V1_CONTRACT_ADDRESS: string | null =
   "0x780013bB358be6be95b401901264FC7c22a595a6";
 export const MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS: string | null =
   "0x2A6cFc76906e758B934209AFf5A163c9bC20132E";
-// SourceRegistryV1 readback at this block recorded the first internal PAUSED
-// protocol-test SourceCreated event. Referral/source UI and claim UI remain
-// inactive; normal member buys still pass bytes32(0) as sourceId.
-export const SOURCE_REGISTRY_V1_READBACK_BLOCK: bigint | null = 88705814n;
+// SourceRegistryV1 latest-authority readback after the first completed
+// internal source-attribution ceremony. The source was returned to PAUSED;
+// referral/source UI and claim UI remain inactive; normal member buys still
+// pass bytes32(0) as sourceId.
+export const SOURCE_REGISTRY_V1_READBACK_BLOCK: bigint | null = 88808111n;
 export const SALE_V3_DEPLOYMENT_BLOCK: bigint | null = 88505301n;
 export const SALE_V3_FRONTEND_BUY_TARGET: boolean =
   MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS !== null &&

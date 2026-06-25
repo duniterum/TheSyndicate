@@ -18,7 +18,7 @@ describe("source policy observability", () => {
   it("freezes current deployed SourceRegistry truth without activating referral or claims", () => {
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.registryExists).toBe(true);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.registryAddress).toBe("0x780013bB358be6be95b401901264FC7c22a595a6");
-    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.readbackBlock).toBe(88705814n);
+    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.readbackBlock).toBe(88808111n);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.recordCount).toBe(1);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.activeCount).toBe(0);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.pausedCount).toBe(1);
@@ -31,9 +31,17 @@ describe("source policy observability", () => {
       commissionBps: 500,
       scope: "WINDOWED",
       payoutWallet: "0x244531C571966f90f4849e03a507543d90f9C721",
-      metadataHash: "0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d",
+      startTime: 1782388800,
+      endTime: 1783598400,
+      metadataHash: "0x797dedbf845edc5954012c46a6c42e121f19f142d76fe34c8f59bf8e8c7bd681",
       sourceCreatedTxHash: "0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280",
       sourceCreatedBlock: 88705814,
+      sourceTermsUpdatedTxHash: "0x898b4f142ca388543701da8e483f764d1daef4c3256d28b449aac5cf08e2784d",
+      sourceActivatedTxHash: "0x7565d0fbe6389a7fc39da4ec0f9e69d2a82a99d42d3192e616d18fc35efc4df1",
+      sourceAttributedBuyTxHash: "0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46",
+      sourceRepausedTxHash: "0x67f6498cd734b27032f0a10fe55bad57079f5b9cf38b38a85a1f95895aece71f",
+      sourceAttributedMemberNumber: 10,
+      sourceEscrowOwed: 0,
     });
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.referralActive).toBe(false);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.claimingActive).toBe(false);
@@ -115,9 +123,9 @@ describe("source policy observability", () => {
     expect(SOURCE_ATTRIBUTION_READINESS_GATES).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ label: "Source policy fact", currentStatus: "RECORDED" }),
-        expect.objectContaining({ label: "Activation ceremony", currentStatus: "LOCKED" }),
-        expect.objectContaining({ label: "Source-aware buy path", currentStatus: "LOCKED" }),
-        expect.objectContaining({ label: "Receipt and read model", currentStatus: "FUTURE_APPROVAL" }),
+        expect.objectContaining({ label: "Controlled ACTIVE ceremony", currentStatus: "VALIDATED" }),
+        expect.objectContaining({ label: "Controlled source-aware buy path", currentStatus: "VALIDATED" }),
+        expect.objectContaining({ label: "Receipt and read model", currentStatus: "VALIDATED" }),
         expect.objectContaining({ label: "Claim boundary", currentStatus: "LOCKED" }),
       ]),
     );

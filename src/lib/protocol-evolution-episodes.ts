@@ -180,18 +180,18 @@ export const PROTOCOL_EVOLUTION_EPISODES = [
     timelineLabel: "Controlled next proof",
     plainSummary:
       PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT > 0
-        ? "One internal PAUSED source record exists, but the public site still has no referral activation, no claim UI, and no source-aware buy path."
+        ? "One internal source record was tested in real conditions and returned to PAUSED, but the public site still has no referral activation, no claim UI, and no source-aware buy path."
         : "SourceRegistryV1 exists, but the public site still has no referral activation, no claim UI, and no source-aware buy path.",
     whatBecameTrue:
       PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT > 0
-        ? "The first internal source-policy fact now exists as PAUSED state and can be inspected without activating referral."
+        ? "The first internal source-policy lifecycle has been proven: terms update, temporary ACTIVE state, one source-attributed buy, and re-pause."
         : "The source policy contracts and source observability layer are ready to record source-policy facts when separately approved.",
     whatIsUnfolding:
-      "The next source step is an internal gated source-attributed test path and separate activation decision, not a public referral launch.",
+      "The next source step is post-test read-model and product hardening, not a public referral launch.",
     whyItMattersToMembers:
-      "The institution can test acquisition attribution without confusing members about referral availability or rewards.",
+      "The institution proved acquisition attribution without confusing members about referral availability or rewards.",
     proofToWatchNext:
-      "Watch for an internal source-attributed receipt test, unchanged public ZERO_SOURCE_ID buys, and zero public source links.",
+      "Watch for post-test receipt/read-model hardening, unchanged public ZERO_SOURCE_ID buys, and zero public source links.",
     whatDidNotChange:
       "No source record should be treated as referral activation. Public/default buys remain direct.",
     moduleIds: assertKnownModules(["source-attribution", "activity", "institutional-register"]),

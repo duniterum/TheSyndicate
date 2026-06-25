@@ -1,15 +1,15 @@
 # V3 Next Boundary: Direct Buy and Source Activation Are Separate
 
-Status: POST-FUNDING CONSOLIDATION / V2B PAUSED / V3 FRONTEND BUY TARGET / ONE PAUSED INTERNAL SOURCE
+Status: POST-FUNDING CONSOLIDATION / V2B PAUSED / V3 FRONTEND BUY TARGET / VALIDATED INTERNAL SOURCE TEST
 
-This document records the boundary after the V2b pause, V3 funding, frontend buy-target wiring, and first internal PAUSED source record. It does not authorize source activation, referral UI, claim UI, recovery, additional funding, pause/unpause, public source-aware buys, or any private-key/broadcast action.
+This document records the boundary after the V2b pause, V3 funding, frontend buy-target wiring, first internal source record, and first completed controlled source-attributed buy. It does not authorize source activation, referral UI, claim UI, recovery, additional funding, pause/unpause, public source-aware buys, or any private-key/broadcast action.
 
 ## Current State
 
 | Surface | Status |
 | --- | --- |
 | V2b | Paused on-chain; recovery timelock started; retained as historical proof and recovery boundary |
-| SourceRegistryV1 | Deployed, owner accepted, one internal PAUSED source record |
+| SourceRegistryV1 | Deployed, owner accepted, one validated internal source test, final status PAUSED |
 | MembershipSaleV3 | Deployed, owner accepted, funded, unpaused, current frontend approval/quote/buy target |
 | Public frontend | Direct buy flow points to V3 with zero sourceId; `/v3-preview` remains read-only source/acquisition preview |
 | Source activation | Not approved and not performed |
@@ -98,6 +98,6 @@ These must remain separate. Completion of one does not authorize the next.
 
 ## Guardrail
 
-V3 deployed addresses may appear in the live direct-buy frontend config only for zero-source public purchases. SourceRegistryV1 has one PAUSED internal source record, but it must remain unusable until a separate activation ceremony approves source terms, source-aware path, disclosures, and readbacks.
+V3 deployed addresses may appear in the live direct-buy frontend config only for zero-source public purchases. SourceRegistryV1 has one validated internal source test now returned to PAUSED; it must remain unusable for any future non-zero sourceId flow until a separate ceremony approves source terms, source-aware path, disclosures, and readbacks.
 
 Canonical wording: V3 is the current direct-buy Membership Sale target. Source/referral remains inactive.

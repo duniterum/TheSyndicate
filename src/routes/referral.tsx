@@ -28,7 +28,7 @@ export const Route = createFileRoute("/referral")({
       {
         name: "description",
         content:
-          "Referral and source attribution are reserved future protocol systems. SourceRegistryV1 has one PAUSED internal source record; no referral commission is accruing and no claim is live.",
+          "Referral and source attribution are reserved future protocol systems. SourceRegistryV1 has one validated internal source test now PAUSED; no referral commission is accruing and no claim is live.",
       },
       { name: "robots", content: "noindex,nofollow" },
       { property: "og:title", content: "The Syndicate - Source attribution pending" },
@@ -48,7 +48,7 @@ const RESERVED_SYSTEMS = [
     title: "Referral attribution",
     status: "PENDING",
     body:
-      "SourceRegistryV1 exists with one PAUSED internal test source, but no source record is active. Today, attribution is recognition-only and creates no payout or entitlement.",
+      "SourceRegistryV1 exists with one internal test source validated and returned to PAUSED. No source record is active today; attribution is recognition-only and creates no payout or entitlement.",
   },
   {
     title: "Source records",
