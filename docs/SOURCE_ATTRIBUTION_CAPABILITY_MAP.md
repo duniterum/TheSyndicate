@@ -386,9 +386,12 @@ Before creating another source record or activating the existing PAUSED source:
 
 1. Rebuild current-authority readbacks.
 2. Confirm whether source terms/window remain suitable for any controlled test.
-3. Keep public referral/source copy aligned with acquisition-first,
+3. Use `docs/SOURCE_ACTIVATION_READINESS_PACKET.md` and
+   `src/lib/source-activation-readiness.ts` as the PAUSED-to-ACTIVE boundary
+   model.
+4. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
-4. Prepare a local-only source-aware test path and readback checklist.
-5. Do not build public source links, claim UI, Archive source attribution, or
+5. Prepare a local-only source-aware test path and readback checklist.
+6. Do not build public source links, claim UI, Archive source attribution, or
    product-wide attribution until a controlled internal source-attributed test
    is separately approved and read back.

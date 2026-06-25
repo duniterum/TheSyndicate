@@ -148,6 +148,7 @@ specs that match the deployed reality. Safe to reference for current work.
 - `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, current-authority readback, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
 - `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` - operational doctrine for GitHub/Replit/production synchronization, change classification, Replit pull/publish decisions, route QA, wallet/write-path QA, push-back rules, Codex after-Replit protocol, and final reporting. It has no deployment, publish, transaction, registry, source-record, activation, or claim-UI authority.
 - `docs/PROTOCOL_CHECKPOINT_2026_06_25.md` - whole-protocol continuity checkpoint after the first internal PAUSED source readback and Replit live sync. It has no deployment, publish, transaction, source-record, activation, registry-switch, referral, or claim-UI authority.
+- `docs/SOURCE_ACTIVATION_READINESS_PACKET.md` - non-transactional readiness packet for the existing internal PAUSED source record before any possible future ACTIVE status ceremony. It has no deployment, publish, transaction, source-record, source-activation, referral, registry-switch, public-source-link, source-aware-buy-path, or claim-UI authority.
 - `docs/ACTIVATION_RUNBOOK.md`
 - `docs/HOLDER_INDEX_ARCHITECTURE.md`
 - `docs/DEPLOYMENT_STATE_V1.md`

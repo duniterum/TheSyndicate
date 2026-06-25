@@ -195,7 +195,7 @@ Archive1155 / SeatRecord721 / SwapRail / ProductSaleRouter
 | Work | Why it exists | Blocks |
 | --- | --- | --- |
 | Current-authority preflight before any next source transaction | Prevents acting from stale source, owner, status, or production memory | Any source status or terms transaction |
-| Source activation readiness packet | Separates PAUSED policy fact from ACTIVE source behavior | ACTIVE ceremony |
+| Source activation readiness packet | Created as `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`; separates PAUSED policy fact from ACTIVE source behavior | ACTIVE ceremony remains blocked until readbacks, local test path, disclosure, and founder approval |
 | Timestamp/window review | Current window is July 1-15, 2026 UTC; if activation testing happens too late, a visible terms update may be required before activation | Source-attributed test buy |
 | Localhost-only source-aware test path | Needed to test non-zero sourceId without public referral UX | $5 internal source-attributed buy test |
 | Buyer disclosure / clear-source UX | Required before any non-zero sourceId signature path | Public or internal source-attributed buy UX |
@@ -219,6 +219,10 @@ Outcome:
 - failure cases,
 - exact `setSourceStatus(..., ACTIVE)` or `updateSourceTerms` preconditions,
 - no public UI changes.
+
+Current implementation note: this sprint is represented by
+`docs/SOURCE_ACTIVATION_READINESS_PACKET.md` and
+`src/lib/source-activation-readiness.ts`. It does not authorize activation.
 
 ### Sprint 2 - Localhost-Only Source-Aware Test Path
 
@@ -299,7 +303,7 @@ Do not create another source record yet.
 
 Do not build claim UI yet.
 
-The next highest-leverage sprint is a source activation readiness packet plus a localhost-only source-aware test path boundary. That work increases institutional integrity because it makes the next possible source-attributed purchase understandable before it becomes usable.
+The next highest-leverage sprint after the readiness packet is the localhost-only source-aware test path boundary. That work increases institutional integrity because it makes the next possible source-attributed purchase understandable before it becomes usable.
 
 The protocol should move from:
 

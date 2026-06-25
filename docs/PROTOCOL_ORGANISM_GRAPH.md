@@ -105,7 +105,7 @@ changing a module, the question is not only "what route changes?" It is:
 | `/referral` | route/page | PENDING / noindex / read-only | `src/routes/referral.tsx` |
 | `/nft` and `/archive` | route/page | LIVE memory surfaces | Archive components and hooks |
 | Claim UI | future/planned module | INACTIVE | no public route/action |
-| Source records | source/attribution policy | ZERO records | SourceRegistry readback docs |
+| Source records | source/attribution policy | ONE INTERNAL PAUSED RECORD | `src/lib/source-policy-observability.ts`, `docs/SOURCE_ACTIVATION_READINESS_PACKET.md` |
 
 ### Current V3 Direct-Buy Graph
 
@@ -155,24 +155,25 @@ and future Register/Chronicle/Archive decisions.
 
 | Node | Role | Current status |
 | --- | --- | --- |
-| SourceRegistryV1 | Source policy registry. Stores terms, status, payout wallet, metadata hash. | Deployed; zero records. |
+| SourceRegistryV1 | Source policy registry. Stores terms, status, payout wallet, metadata hash. | Deployed; one internal PAUSED source record. |
 | MembershipSaleV3 | Source-aware sale engine. Reads SourceRegistryV1 only when non-zero sourceId is supplied. | Live direct-buy target, public default uses zero source. |
-| Source packet | Off-chain approval artifact before source creation. | Template exists; first internal packet remains draft. |
-| Source creation ceremony | Manual on-chain `createSource` step. | Not performed. |
-| Source activation ceremony | Separate `setSourceStatus(ACTIVE)` decision. | Not performed. |
+| Source packet | Off-chain approval artifact before source creation or activation. | First internal packet was frozen and read back; future ACTIVE readiness uses `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`. |
+| Source creation ceremony | Manual on-chain `createSource` step. | Performed once for the internal PAUSED source; no public referral activation. |
+| Source activation ceremony | Separate `setSourceStatus(ACTIVE)` decision. | Not performed; readiness blockers remain. |
 | Claim UI | Future escrow read/claim surface. | Not live. |
 
 ### Source Attribution Lifecycle Graph
 
 ```mermaid
 flowchart TD
-  Packet["Source packet draft"] --> Approval["Founder/legal/product approval"]
+  Packet["Source packet / readiness packet"] --> Approval["Founder/legal/product approval"]
   Approval --> CreateCeremony["Source creation ceremony"]
   CreateCeremony --> CreateSource["SourceRegistryV1.createSource"]
   CreateSource --> PausedRecord["Source record starts PAUSED"]
   PausedRecord --> Readback["SourceCreated + sourceConfig readback"]
   Readback --> Register["Register source policy truth"]
-  PausedRecord --> ActivationGate["Separate activation approval"]
+  Readback --> ActivationReadiness["Source activation readiness packet"]
+  ActivationReadiness --> ActivationGate["Separate activation approval"]
   ActivationGate --> ActiveRecord["SourceStatus ACTIVE"]
   ActiveRecord --> SourceLink["Future source-aware link/preview"]
   SourceLink --> Buy["MembershipSaleV3.buy(..., sourceId, ...)"]
@@ -196,17 +197,19 @@ flowchart TD
 
 ### Source Activation Gates
 
-Before any public source path:
+Before any ACTIVE source status action or public source path:
 
-1. Source packet approved.
-2. Source record created on-chain with initial `PAUSED` status.
-3. SourceCreated event and `sourceConfig` read back.
-4. Legal/product copy approved.
-5. Source-aware UI preview tested.
-6. Public/default `ZERO_SOURCE_ID` path remains safe.
-7. Activation transaction separately approved.
-8. Activity/My Syndicate receipt rendering tested.
-9. Claim UI remains hidden until escrow/status/legal gates pass.
+1. Source packet approved and read back as PAUSED.
+2. Current SourceRegistry owner, chain ID, bytecode, source status, and source terms freshly read back.
+3. Source activation readiness packet reviewed.
+4. Source window still fits the intended controlled test or terms are updated with a new approved packet.
+5. Localhost-only source-aware test path exists and cannot leak to production.
+6. Buyer disclosure / clear-source UX approved for any non-zero sourceId signature path.
+7. Legal/product copy approved.
+8. Public/default `ZERO_SOURCE_ID` path remains safe.
+9. Activation transaction separately approved.
+10. Activity/My Syndicate receipt rendering tested.
+11. Claim UI remains hidden until escrow/status/legal gates pass.
 
 ## 5. Archive / NFT Graph
 

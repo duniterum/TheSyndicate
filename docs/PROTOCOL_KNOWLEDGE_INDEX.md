@@ -39,7 +39,7 @@ publish.
 | Domain | Current status | Canonical files | Runtime / operational files | Tests / guards | Pending | Danger if confused |
 | --- | --- | --- | --- | --- | --- | --- |
 | V3 MembershipSaleV3 / Join | LIVE direct buy target. Public buys use `ZERO_SOURCE_ID`. | `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `docs/V3_DEPLOYMENT_PARAMETER_SHEET.md`, `contracts/src/MembershipSaleV3.sol` | `src/lib/syndicate-config.ts`, `src/lib/sale-hooks.ts`, `src/components/syndicate/LivePurchase.tsx`, `src/routes/join.tsx` | `contracts/test/MembershipSaleV3.t.sol`, `src/lib/__tests__/production-coherence.test.ts` | Continue readback discipline and direct-buy QA. | Accidentally routing public buys through a non-zero sourceId. |
-| SourceRegistryV1 | DEPLOYED with one internal PAUSED source record. | `contracts/src/SourceRegistryV1.sol`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md` | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `src/routes/referral.tsx`, `src/routes/registry.tsx` | `contracts/test/SourceRegistryV1.t.sol`, source lifecycle tests, production coherence guards | Source activation readiness packet and current-authority preflight. | Treating source record existence as referral activation. |
+| SourceRegistryV1 | DEPLOYED with one internal PAUSED source record. | `contracts/src/SourceRegistryV1.sol`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`, `docs/SOURCE_ACTIVATION_READINESS_PACKET.md` | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `src/lib/source-activation-readiness.ts`, `src/routes/referral.tsx`, `src/routes/registry.tsx` | `contracts/test/SourceRegistryV1.t.sol`, source lifecycle tests, activation-readiness tests, production coherence guards | Current-authority preflight before any future status transaction. | Treating source record existence as referral activation. |
 | Referral / Source Attribution | INACTIVE public product; future capability under staged guardrails. | `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`, `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`, source packet docs | `src/routes/referral.tsx`, `src/lib/source-attributed-receipts.ts`, `src/lib/future-referral.ts` | source receipt tests, source lifecycle tests, production coherence guards | Localhost-only source-aware test path, then separate ACTIVE ceremony if approved. | Claim UI, public links, source dashboard, or MLM-style language before approval. |
 | Activity | LIVE heartbeat/read-model surface. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/MODULE_INTEGRATION_STANDARD.md` | `src/routes/activity.tsx`, `src/lib/protocol-events.ts`, `src/lib/protocol-event-registry.ts`, purchase caches | event/cache tests, production coherence guards | Future source lifecycle and source-attributed purchase display after readback. | Letting routine events become fake Chronicle/history claims. |
 | Register / Registry | LIVE proof and contract/source-policy surface. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` | `src/routes/registry.tsx`, `src/lib/contract-registry.ts`, `src/lib/institutional-register.ts` | production coherence guards | Keep source and V3 readbacks aligned after any ceremony. | Showing old V2/V1 sale truth as active current sale. |
@@ -82,14 +82,17 @@ Before referral or source attribution work:
 5. `src/lib/source-policy-observability.ts`
 6. `src/lib/source-registry-lifecycle.ts`
 7. `src/lib/source-attributed-receipts.ts`
+8. `src/lib/source-activation-readiness.ts`
+9. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
 
 Before any source ceremony or source status transaction:
 
 1. `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`
-2. `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`
-3. Current owner/readback checks on Avalanche
-4. Current source status and terms
-5. Founder approval for the exact transaction
+2. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
+3. `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`
+4. Current owner/readback checks on Avalanche
+5. Current source status and terms
+6. Founder approval for the exact transaction
 
 Before Replit, production, or publish work:
 
@@ -165,7 +168,7 @@ referral-only thinking.
 
 | Order | Sprint | Purpose | Depends on | Must not do |
 | --- | --- | --- | --- | --- |
-| 1 | Source Activation Readiness Packet | Prepare exact non-transactional conditions for turning the existing PAUSED source ACTIVE later. | Current SourceRegistry owner/readback, source terms, window review. | Do not activate. |
+| 1 | Source Activation Readiness Packet | Completed as a non-transactional readiness model and packet. | Fresh readbacks are still required before any future status action. | Do not activate. |
 | 2 | Localhost-Only Source-Aware Test Path | Allow a controlled non-zero sourceId test in local development only. | Readiness packet, explicit test-mode boundary. | Do not expose source links or source selector in production. |
 | 3 | Controlled ACTIVE Ceremony And $5 Test | If founder approves, activate the source for a tiny internal test and read back the receipt. | Founder transaction approval, current readbacks, local path ready. | Do not bundle public referral or claim UI. |
 | 4 | Post-Test Truth Update | Record source receipt, payout/escrow, Activity, My Syndicate, Registry, and cache truth. | Real tx/readback. | Do not imply public referral is live. |
@@ -179,6 +182,7 @@ The following guards must keep the index aligned with runtime truth:
 - `src/lib/__tests__/production-coherence.test.ts` - broad no-fake-live and authority guard.
 - `src/lib/__tests__/source-policy-observability.test.ts` - source snapshot, gates, and ZERO_SOURCE_ID behavior.
 - `src/lib/__tests__/source-registry-lifecycle.test.ts` - SourceCreated/status lifecycle projection.
+- `src/lib/__tests__/source-activation-readiness.test.ts` - PAUSED to ACTIVE readiness gates.
 - `src/lib/__tests__/source-attributed-receipts.test.ts` - future source-attributed receipt projection.
 - `src/lib/__tests__/purchase-events-cache.test.ts` - purchase source preservation across cache restore.
 - `src/lib/__tests__/chain-registry-guard.test.ts` - canonical chain/RPC guardrails.
