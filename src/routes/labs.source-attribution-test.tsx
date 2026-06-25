@@ -8,12 +8,12 @@ export const Route = createFileRoute("/labs/source-attribution-test")({
   },
   head: () => ({
     meta: [
-      { title: "Internal Source Test Boundary - The Syndicate" },
+      { title: "Source Attribution Operator Console - The Syndicate" },
       { name: "robots", content: "noindex, nofollow" },
       {
         name: "description",
         content:
-          "Internal source-aware test boundary. Not public referral, not activation, not a source link.",
+          "Internal source-aware operator console. Not public referral, not activation, not a source link.",
       },
     ],
   }),

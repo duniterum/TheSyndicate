@@ -437,6 +437,26 @@ Status guide:
 | Future "never again" rule | When blocked by missing local RPC or secrets, look for an authorized read environment before declaring the task blocked. Never run current-authority readbacks from a stale workspace. Never expose RPC URLs or secrets. |
 | Source links / commit hashes | GitHub canonical `1dd28205e6bb60f4d35c66174e461a2d11718b4c`; Replit synced file-content parity to canonical, ran server-side readbacks, and reported `READBACK GREEN`; no GitHub push-back required. |
 
+### OML-017 - Operator consoles must make ceremony state explicit
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-25 |
+| System | Internal source-attribution test route / founder ceremony / wallet UX |
+| Severity | High |
+| Status | Resolved for the internal source test route; reuse for future ceremonies |
+| Category | Operator UX / ceremony execution / wallet-action clarity |
+| Affected surfaces | `/labs/source-attribution-test`, founder-operated wallet actions, Replit readback handoffs, future activation/re-pause ceremonies |
+| Symptom | During the real-condition source test, the protocol gates were correct but the operator experience left the founder uncertain whether to stay on the hidden route, return to `/join`, click another control, or treat the page as only a link/document. The first transaction completed was a USDC approval, not the actual source-attributed buy, which made the distinction between approval and buy operationally important. |
+| Root cause | The route was a technically safe harness, but not a ceremony cockpit. It exposed gates and controls without a strong step model, current action, next action, stop condition, and post-success instruction. |
+| Why it mattered | If the founder hesitated, future operators, auditors, engineers, and maintainers will hesitate. In source/activation work, hesitation can cause either unnecessary delay or, worse, a wrong next transaction. |
+| Fix | Treat internal write-path tools as first-class operator products. The page must show current protocol state, current ceremony step, blockers, actor, wallet, sourceId, amount, approval status, buy status, stop condition, and next action in one place. Approval must be labeled as a checkpoint, not as the buy. |
+| Process guard | Before any future internal write-path route is considered ready, verify that a non-coder operator can answer: what state are we in, what do I do now, what must not happen, what happens after success, and when do I stop. |
+| Founder-work impact | Reduces chat-dependent operation, prevents the founder from needing to remember hidden flow details, and makes future ceremony execution safer and calmer. |
+| Release implication | Hidden/internal routes still require the same production boundaries: no navigation, no sitemap, noindex, allowlist, latest-chain readback, exact sourceId/amount, no claim UI, no public referral, and public/default `/join` remains `ZERO_SOURCE_ID`. |
+| Future "never again" rule | A correct gate is not enough. Every real-condition operator surface must be an explicit ceremony console, not a bare test harness or documentation page. |
+| Source links / commit hashes | Discovered during the first real-condition source-attribution test after updateSourceTerms and ACTIVE ceremonies. Buy-test transaction `0x2e2bbe37db1ad1094c2e2b45a3d86b608fcd3e64de83688053fb5a8438e95773` read back as USDC approval to MembershipSaleV3, proving the approval-vs-buy distinction must be visible. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -549,6 +569,7 @@ or a sprint explicitly requires it.
 | Replit dev watcher limits are not production failures | This ledger, production synchronization doctrine's separate completion states | Guarded by process | If ENOSPC repeats, consider a canonical Vite dev watch-ignore for `.local`, `.pythonlibs`, `contracts`, `artifacts`, reports, and generated local state. |
 | Live QA text matches are not live controls | This ledger, production coherence guard | Guarded in docs/tests | Add a DOM-aware live QA helper if grep false positives repeat. |
 | Replit can serve as readback executor when Codex lacks RPC | This ledger, source ceremony preflight docs | Guarded by process | Add a reusable readback script if current-authority readbacks repeat often. |
+| Operator consoles must make ceremony state explicit | This ledger, source operator console, production coherence guard | Guarded in docs/tests | Add a reusable ceremony-state component if more write-path operator routes appear. |
 
 ## 10. Validation Policy
 

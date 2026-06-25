@@ -61,10 +61,11 @@ source status, receipt behavior, payout behavior, and readbacks.
 
 ### Why does the hidden internal route exist?
 
-The hidden route is a controlled test surface. It lets the fresh buyer wallet
-perform one real-condition source-attributed buy after the source is active.
-It is not listed in navigation, not listed in the sitemap, and not meant for
-public users.
+The hidden route is a controlled operator console. It lets the fresh buyer
+wallet perform one real-condition source-attributed buy after the source is
+active, while showing the current step, blockers, approval status, buy status,
+and stop condition in one place. It is not listed in navigation, not listed in
+the sitemap, and not meant for public users.
 
 ### Why use a fresh wallet?
 
@@ -259,7 +260,8 @@ Exact stop condition:
 
 Plain English:
 - This is the real-condition engine test.
-- One fresh buyer wallet buys exactly 5 USDC through the hidden internal route.
+- One fresh buyer wallet buys exactly 5 USDC through the hidden internal
+  operator console.
 - This proves the source-attributed receipt path under real conditions.
 
 Who acts:

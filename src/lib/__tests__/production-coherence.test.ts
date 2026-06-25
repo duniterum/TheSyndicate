@@ -1430,6 +1430,9 @@ describe("production coherence guards", () => {
     expect(ledger).toContain("file-content parity matters more than literal HEAD equality");
     expect(ledger).toContain("Never run current-authority readbacks from a stale workspace");
     expect(ledger).toContain("Never expose RPC URLs or secrets");
+    expect(ledger).toContain("OML-017 - Operator consoles must make ceremony state explicit");
+    expect(ledger).toContain("Approval must be labeled as a checkpoint, not as the buy");
+    expect(ledger).toContain("A correct gate is not enough");
 
     expect(syncDoctrine).toContain("Status: OPERATIONAL DOCTRINE / NO DEPLOYMENT AUTHORITY / NO PUBLISH AUTHORITY");
     expect(syncDoctrine).toContain("Source-Of-Truth Model");
@@ -1623,6 +1626,12 @@ describe("production coherence guards", () => {
     expect(localRoute).toContain('createFileRoute("/labs/source-attribution-test")');
     expect(localRoute).toContain('{ name: "robots", content: "noindex, nofollow" }');
     expect(localHarness).toContain("INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL");
+    expect(localHarness).toContain("Source Attribution Operator Console");
+    expect(localHarness).toContain("Stay on this page");
+    expect(localHarness).toContain("Approval confirmed. Stay on this page");
+    expect(localHarness).toContain("Start controlled $5 test buy");
+    expect(localHarness).toContain("Stop here and");
+    expect(localHarness).toContain("Re-pause only after readback");
     expect(localHarness).toContain("sourceRecordMatchesRealConditionTestTerms");
     expect(localHarness).toContain("VITE_ENABLE_PRODUCTION_SOURCE_TEST_MODE");
     expect(localHarness).toContain("!gate.canPrepareSourceAwareBuy");

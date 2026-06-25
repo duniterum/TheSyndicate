@@ -19,7 +19,7 @@ are updated first.
 
 Best path:
 
-1. prepare and publish a production-internal gated test route,
+1. prepare and publish a production-internal gated operator console,
 2. update source terms to a new 14-day window,
 3. read back the updated terms while the source remains PAUSED,
 4. set the source ACTIVE,
@@ -72,7 +72,7 @@ The hash is `keccak256` over the UTF-8 canonical JSON form of the metadata
 artifact with lexicographically sorted object keys. The artifact does not
 include a `metadataHash` field.
 
-## Production-Internal Route Boundary
+## Production-Internal Operator Console Boundary
 
 The route remains:
 
@@ -90,7 +90,10 @@ It must stay:
 - locked unless live SourceRegistry readback matches this packet,
 - locked unless `isActive(sourceId) = true`,
 - fixed to exactly 5 USDC,
-- clear that it is `INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL`.
+- clear that it is `INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL`,
+- explicit about the current ceremony step, approval status, buy status, next
+  action, and stop condition so the operator never has to leave the page or
+  guess whether approval is the buy.
 
 Required Replit env for a future published internal test:
 
@@ -260,6 +263,7 @@ Before pulling:
 After syncing:
 - confirm file-content parity with GitHub
 - confirm /labs/source-attribution-test is noindex/nofollow and absent from nav/sitemap
+- confirm the page renders as the Source Attribution Operator Console and says to stay on the page
 - confirm public /join still uses ZERO_SOURCE_ID
 - confirm /referral remains inactive
 - confirm no claim UI, no source dashboard, no public source link, and no public source-aware buy path
@@ -282,6 +286,7 @@ After publish, live QA:
 - /referral remains inactive
 - /labs/source-attribution-test without exact query is locked
 - /labs/source-attribution-test with exact query is locked unless allowlisted wallet and ACTIVE readback are present
+- /labs/source-attribution-test separates approval from the controlled buy and tells the operator to stop for readback after the buy
 - no public nav/sitemap source test link exists
 - no claim UI appears
 ```
