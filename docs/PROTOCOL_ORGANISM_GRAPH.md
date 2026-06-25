@@ -90,7 +90,7 @@ changing a module, the question is not only "what route changes?" It is:
 | --- | --- | --- | --- |
 | SYN token | contract | LIVE | `src/lib/contract-registry.ts`, `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` |
 | MembershipSaleV3 | contract/module | LIVE direct-buy target, funded, owner accepted | `contracts/src/MembershipSaleV3.sol`, `src/lib/sale-hooks.ts` |
-| SourceRegistryV1 | contract/source policy | DEPLOYED, owner accepted, zero source records | `contracts/src/SourceRegistryV1.sol`, source readiness docs |
+| SourceRegistryV1 | contract/source policy | DEPLOYED, owner accepted, one internal PAUSED source record | `contracts/src/SourceRegistryV1.sol`, source readiness docs |
 | Public/default V3 buy | module | LIVE with `ZERO_SOURCE_ID` only | `src/components/syndicate/LivePurchase.tsx`, `src/lib/sale-hooks.ts` |
 | V3 receipt | receipt/event | LIVE for V3 buys | `MembershipPurchasedV3` |
 | V2b sale | contract | PAUSED / historical scan source | `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` |

@@ -18,11 +18,23 @@ describe("source policy observability", () => {
   it("freezes current deployed SourceRegistry truth without activating referral or claims", () => {
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.registryExists).toBe(true);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.registryAddress).toBe("0x780013bB358be6be95b401901264FC7c22a595a6");
-    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.readbackBlock).toBe(88511703n);
-    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.recordCount).toBe(0);
+    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.readbackBlock).toBe(88705814n);
+    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.recordCount).toBe(1);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.activeCount).toBe(0);
-    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.pausedCount).toBe(0);
+    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.pausedCount).toBe(1);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.revokedCount).toBe(0);
+    expect(CURRENT_SOURCE_POLICY_SNAPSHOT.records[0]).toMatchObject({
+      sourceId: "0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620",
+      sourceWallet: "0x244531C571966f90f4849e03a507543d90f9C721",
+      sourceClass: "BUILDER_SOURCE",
+      status: "PAUSED",
+      commissionBps: 500,
+      scope: "WINDOWED",
+      payoutWallet: "0x244531C571966f90f4849e03a507543d90f9C721",
+      metadataHash: "0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d",
+      sourceCreatedTxHash: "0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280",
+      sourceCreatedBlock: 88705814,
+    });
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.referralActive).toBe(false);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.claimingActive).toBe(false);
     expect(CURRENT_SOURCE_POLICY_SNAPSHOT.sourceAttributionActive).toBe(false);
@@ -102,7 +114,7 @@ describe("source policy observability", () => {
   it("defines activation gates and receipt proof without activating source-aware public buys", () => {
     expect(SOURCE_ATTRIBUTION_READINESS_GATES).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ label: "Source policy fact", currentStatus: "MISSING" }),
+        expect.objectContaining({ label: "Source policy fact", currentStatus: "RECORDED" }),
         expect.objectContaining({ label: "Activation ceremony", currentStatus: "LOCKED" }),
         expect.objectContaining({ label: "Source-aware buy path", currentStatus: "LOCKED" }),
         expect.objectContaining({ label: "Receipt and read model", currentStatus: "FUTURE_APPROVAL" }),

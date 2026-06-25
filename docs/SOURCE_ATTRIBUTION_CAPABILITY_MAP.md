@@ -1,6 +1,6 @@
 # Source Attribution Capability Map
 
-Status: DECISION MAP / NO TRANSACTION AUTHORIZED / SOURCE RECORDS INACTIVE
+Status: DECISION MAP / ONE PAUSED INTERNAL SOURCE / NO ACTIVATION AUTHORIZED
 
 This document maps what the deployed SourceRegistryV1 and MembershipSaleV3
 source-attribution system can do across The Syndicate product organism before

@@ -98,8 +98,8 @@ export const PROTOCOL_EVOLUTION_MODULES: readonly ProtocolEvolutionModule[] = [
         ? "SourceRegistryV1 is deployed with zero source records. Public/default buys use ZERO_SOURCE_ID."
         : sourcePolicy.currentSummary,
     notLive: "No referral activation, no public source link, no source dashboard, and no claim UI.",
-    nextMilestone: "If founder-approved, create one internal PAUSED source record and read it back.",
-    blocker: "Founder/manual source ceremony remains separate from frontend activation.",
+    nextMilestone: "If founder-approved, build a localhost-only source-attributed test path before any activation.",
+    blocker: "Source activation and source-aware product paths remain separate from the PAUSED policy record.",
     safetyBoundary:
       "A source record is policy state only. It is not public referral activation and does not create a claim UI.",
     evidence: [
@@ -112,7 +112,7 @@ export const PROTOCOL_EVOLUTION_MODULES: readonly ProtocolEvolutionModule[] = [
       {
         label: "Source readiness",
         kind: "OPERATIONAL_DOC",
-        note: "REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS records zero source records and inactive claims.",
+        note: "Source readbacks record one PAUSED internal source and inactive claims.",
       },
     ],
   },

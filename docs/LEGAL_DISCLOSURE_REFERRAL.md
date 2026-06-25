@@ -1,10 +1,10 @@
 # Referral / Source Attribution - Legal Disclosure Doctrine
 
-Status: NON-LIVE DISCLOSURE DOCTRINE / SOURCE RECORDS INACTIVE
+Status: NON-LIVE DISCLOSURE DOCTRINE / ONE PAUSED INTERNAL SOURCE
 
 Public disclosure must reflect the current V3 truth:
 
-- SourceRegistryV1 is deployed, but no source records exist.
+- SourceRegistryV1 is deployed with one internal PAUSED source record.
 - Public V3 buys use `ZERO_SOURCE_ID`.
 - No source-aware public link is active.
 - No referral/source commission is accruing.
@@ -15,8 +15,8 @@ Public disclosure must reflect the current V3 truth:
 
 The Referral page MUST carry, at minimum, the following statements:
 
-1. Referral/source attribution is not live until source records and source terms
-   are approved, created on-chain, read back, and wired into the buy path.
+1. Referral/source attribution is not live until a source is activated, read
+   back, legally approved, and wired into an approved source-aware buy path.
 2. Source attribution, if activated, is acquisition attribution on protocol
    membership sales, not ownership of a member relationship.
 3. Any acquisition commission must be visible in the V3 receipt as

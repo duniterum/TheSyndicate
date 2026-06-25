@@ -66,7 +66,7 @@ SeatRecord721
 | Operations wallet | LIVE | `CONTRACTS.OPERATIONS_WALLET` | Receives 10% USDC while router is unset or disabled. |
 | Trader Joe SYN/USDC LP pair | LIVE | `LP_POOL.pairAddress` | Secondary market access layer. |
 | Archive1155 | LIVE | `CONTRACTS.ARCHIVE_NFT_CONTRACT_ADDRESS` | Protocol-memory ERC-1155. |
-| SourceRegistryV1 | DEPLOYED / NO SOURCE RECORDS | `SOURCE_REGISTRY_V1_CONTRACT_ADDRESS` | V3 source policy registry. No source records; referral/source UI inactive. |
+| SourceRegistryV1 | DEPLOYED / ONE PAUSED INTERNAL SOURCE | `SOURCE_REGISTRY_V1_CONTRACT_ADDRESS` | V3 source policy registry. One internal source record exists as PAUSED policy state; referral/source UI inactive. |
 | MembershipSaleV3 | LIVE DIRECT-BUY TARGET / SOURCE UI INACTIVE | `MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS` | Current frontend approval/quote/buy target. Public buys use zero sourceId. |
 | CommissionRouterV1 | CANDIDATE / PENDING | `address: null` in `contract-registry.ts` | Future Operations-slice commission router. Not live. |
 | SeatRecord721 | FUTURE / RESERVED | `address: null` in `contract-registry.ts` | Future identity record. Not implemented. |

@@ -55,16 +55,16 @@ describe("protocol evolution registry", () => {
     }
   });
 
-  it("keeps source attribution inactive without creating referral, source, or claim behavior", () => {
+  it("keeps source attribution paused without creating referral, claim, or public source behavior", () => {
     const source = PROTOCOL_EVOLUTION_MODULES.find((module) => module.id === "source-attribution");
 
     expect(source).toBeTruthy();
-    expect(source?.status).toBe("INACTIVE");
-    expect(source?.currentTruth).toContain("zero source records");
+    expect(source?.status).toBe("PAUSED");
+    expect(source?.currentTruth).toContain("1 source record");
     expect(source?.currentTruth).toContain("ZERO_SOURCE_ID");
     expect(source?.notLive).toContain("No referral activation");
     expect(source?.notLive).toContain("no claim UI");
-    expect(PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT).toBe(0);
+    expect(PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT).toBe(1);
     expect(PROTOCOL_EVOLUTION_BOUNDARIES.join("\n")).toContain(ZERO_SOURCE_ID);
   });
 
@@ -119,7 +119,8 @@ describe("protocol evolution registry", () => {
     expect(sourceEpisode?.state).toBe("UNFOLDING");
     expect(sourceEpisode?.plainSummary).toContain("no referral activation");
     expect(sourceEpisode?.plainSummary).toContain("no claim UI");
-    expect(sourceEpisode?.proofToWatchNext).toContain("PAUSED status");
+    expect(sourceEpisode?.plainSummary).toContain("One internal PAUSED source record exists");
+    expect(sourceEpisode?.proofToWatchNext).toContain("local-only source-attributed receipt test");
     expect(sourceEpisode?.whatDidNotChange).toContain("Public/default buys remain direct");
   });
 

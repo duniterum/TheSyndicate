@@ -1,16 +1,16 @@
 # V3 Non-Live Deployment Readback Log
 
-Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / SOURCE RECORDS INACTIVE
+Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / ONE PAUSED INTERNAL SOURCE
 
-This log records the V3 deployment, ownership, V2b pause, V3 funding readbacks, and the later frontend buy-target wiring. It does not authorize source records, referral UI, claim UI, recovery, additional funding, pause/unpause, or any private-key/broadcast action.
+This log records the V3 deployment, ownership, V2b pause, V3 funding readbacks, frontend buy-target wiring, and first internal PAUSED source readback. It does not authorize source activation, referral UI, claim UI, recovery, additional funding, pause/unpause, public source-aware buys, or any private-key/broadcast action.
 
-Precise status: MembershipSaleV3 is deployed, owner-accepted, funded with 7,000,000 SYN, and selected by the frontend buy flow as the active approval/quote/purchase target. `paused()` is false. Public buys use zero sourceId. SourceRegistryV1 has no source records; referral UI, claim UI, and source activation remain inactive. V2b is paused on-chain and retained for history/recovery boundaries.
+Precise status: MembershipSaleV3 is deployed, owner-accepted, funded with 7,000,000 SYN, and selected by the frontend buy flow as the active approval/quote/purchase target. `paused()` is false. Public buys use zero sourceId. SourceRegistryV1 has one internal PAUSED source record; referral UI, claim UI, public source-aware buys, and source activation remain inactive. V2b is paused on-chain and retained for history/recovery boundaries.
 
 ## Contracts
 
 | Contract | Address | Deployment tx | Status |
 | --- | --- | --- | --- |
-| SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` | `0x29ae91db4b5868a5b572c315c250cce8b2ab8c438df97f6617a4a8b2bc435a67` | DEPLOYED / NON-LIVE / OWNER ACCEPTED / NO SOURCE RECORDS |
+| SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` | `0x29ae91db4b5868a5b572c315c250cce8b2ab8c438df97f6617a4a8b2bc435a67` | DEPLOYED / OWNER ACCEPTED / ONE PAUSED INTERNAL SOURCE / REFERRAL UI INACTIVE |
 | MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` | `0x635770ef23a36e4db3d5855b94dc6d6c3b2d72192c59b663e36f312f78bbb42c` | DEPLOYED / OWNER ACCEPTED / FUNDED WITH 7,000,000 SYN / CURRENT FRONTEND BUY TARGET / ZERO SOURCE ID PUBLIC BUYS |
 | Membership Sale V2b | `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` | Existing V2b deployment | PAUSED ON-CHAIN / HISTORICAL SOURCE / RECOVERY BOUNDARY |
 
@@ -80,14 +80,21 @@ Readback block: `88511703`
 | --- | --- |
 | SourceRegistryV1 `owner()` | `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73` |
 | SourceRegistryV1 `pendingOwner()` | `0x0000000000000000000000000000000000000000` |
-| SourceRegistryV1 `SourceCreated` logs since deploy | `0` |
+| SourceRegistryV1 `SourceCreated` logs since prior zero-record readback | `1` |
+| First SourceCreated tx | `0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280` |
+| First SourceCreated block | `88705814` |
+| First SourceCreated timestamp | `2026-06-24T09:11:50.000Z` |
+| First SourceCreated `sourceId` | `0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620` |
+| First SourceCreated status | `PAUSED` |
+| First SourceCreated source/payout wallet | `0x244531C571966f90f4849e03a507543d90f9C721` |
+| First SourceCreated metadata hash | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` |
 | MembershipSaleV3 `owner()` | `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73` |
 | MembershipSaleV3 `pendingOwner()` | `0x0000000000000000000000000000000000000000` |
 | MembershipSaleV3 `paused()` | `false` |
-| MembershipSaleV3 `availableSyn()` | `7,000,000 SYN` |
-| MembershipSaleV3 `sellableSynForNextSeat()` | `2,904,500 SYN` |
-| MembershipSaleV3 SYN balance | `7,000,000 SYN` |
-| MembershipSaleV3 `memberCount()` | `8` |
+| MembershipSaleV3 `availableSyn()` | `6,999,000 SYN` |
+| MembershipSaleV3 `sellableSynForNextSeat()` | `2,904,000 SYN` |
+| MembershipSaleV3 SYN balance | `6,999,000 SYN` |
+| MembershipSaleV3 `memberCount()` | `9` |
 | MembershipSaleV3 `currentEra()` | `1` |
 | MembershipSaleV3 `SOURCE_REGISTRY()` | `0x780013bB358be6be95b401901264FC7c22a595a6` |
 | MembershipSaleV3 `USDC()` | `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E` |
@@ -116,17 +123,17 @@ V3 is now the public frontend buy target, but source/referral activation remains
 
 - Public buys use zero sourceId.
 - `/v3-preview` remains a candidate/read-only source preview, not a write surface.
-- No source records exist.
-- No SourceCreated event has been emitted.
+- One internal PAUSED source record exists.
+- No source record is ACTIVE.
 - No referral UI exists.
 - No claim UI exists.
 
-V3 is funded and unpaused, so the old zero-funding safety boundary no longer applies. The current boundary is V3 direct-buy only, zero sourceId, no source records, no referral/claim UI, and no source activation.
+V3 is funded and unpaused, so the old zero-funding safety boundary no longer applies. The current boundary is V3 direct-buy only, zero sourceId, one PAUSED internal source record, no referral/claim UI, no public source-aware buy path, and no source activation.
 
 ## Current Truth Classification
 
 - V2b: paused, recovery timelock started, retained as historical proof and recovery boundary.
 - V3: deployed, verified, owner accepted, funded with 7,000,000 SYN, unpaused, selected as the public frontend buy target, and constrained to zero sourceId public buys.
-- SourceRegistryV1: deployed and owner accepted, but has zero source records. Referral/source/claim UI remains inactive.
+- SourceRegistryV1: deployed and owner accepted with one internal PAUSED source record. Referral/source/claim UI remains inactive.
 
 Canonical wording: V3 is the current direct-buy Membership Sale target. Do not call source/referral live.

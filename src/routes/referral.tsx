@@ -28,14 +28,14 @@ export const Route = createFileRoute("/referral")({
       {
         name: "description",
         content:
-          "Referral and source attribution are reserved future protocol systems. SourceRegistryV1 is deployed with zero source records; no referral commission is accruing and no claim is live.",
+          "Referral and source attribution are reserved future protocol systems. SourceRegistryV1 has one PAUSED internal source record; no referral commission is accruing and no claim is live.",
       },
       { name: "robots", content: "noindex,nofollow" },
       { property: "og:title", content: "The Syndicate - Source attribution pending" },
       {
         property: "og:description",
         content:
-          "Future referral infrastructure is reserved, not live. Source records are inactive: no commission, no claim, no displayed balances.",
+          "Future referral infrastructure is reserved, not live. The internal source record is PAUSED: no commission, no claim, no displayed balances.",
       },
     ],
     links: [{ rel: "canonical", href: "https://thesyndicate.money/referral" }],
@@ -48,13 +48,13 @@ const RESERVED_SYSTEMS = [
     title: "Referral attribution",
     status: "PENDING",
     body:
-      "SourceRegistryV1 exists, but no source records are active. Today, local attribution is recognition-only and creates no payout or entitlement.",
+      "SourceRegistryV1 exists with one PAUSED internal test source, but no source record is active. Today, attribution is recognition-only and creates no payout or entitlement.",
   },
   {
     title: "Source records",
-    status: "REQUIRES SOURCE RECORD",
+    status: "PAUSED",
     body:
-      "No source record has been created. Until source terms are approved, created, read back, and wired into the buy path, no acquisition commission accrues and no claim action can be shown.",
+      "One internal protocol-test source record exists as PAUSED policy state. Until a separate activation ceremony and source-aware buy path are approved, no acquisition commission accrues and no claim action can be shown.",
   },
   {
     title: "Reputation records",
@@ -76,22 +76,22 @@ function ReferralPage() {
       <Section id="referral-status">
         <SectionHeader
           eyebrow="Current status"
-          title={<>No source records. No commission. <span className="text-gradient-gold">No claim.</span></>}
+          title={<>One PAUSED source record. No commission. <span className="text-gradient-gold">No claim.</span></>}
           description="The live product is membership: buying SYN seats the wallet. MembershipSaleV3 can support source-attributed membership receipts later, but only after source terms are approved, created, read back, and activated."
         />
         <GlassCard className="p-5">
           <div className="flex flex-wrap items-center gap-2">
             <StatusPill status="PENDING" />
-            <Pill tone="warning">SOURCE RECORDS INACTIVE</Pill>
+            <Pill tone="warning">SOURCE RECORD PAUSED</Pill>
             <Pill tone="muted">RESERVED</Pill>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-foreground/85">
             The Syndicate can remember who introduced whom, but memory is not
-            money. V3 public buys currently use ZERO_SOURCE_ID. Until a
-            SourceRegistry record is created, activated, wired live, and
-            publicly verifiable, no commission is accruing, no active source
-            tier is live, no source balance is displayed, and no claim button
-            appears.
+            money. V3 public buys currently use ZERO_SOURCE_ID. The first
+            internal source record exists only as PAUSED policy state. Until it
+            is separately activated, wired into an approved source-aware path,
+            and publicly verifiable, no commission is accruing, no active
+            source tier is live, no source balance is displayed, and no claim button appears.
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {[
@@ -114,7 +114,7 @@ function ReferralPage() {
         <SectionHeader
           eyebrow="Source policy observability"
           title="The source registry is visible before any source is usable"
-          description="This read-only snapshot separates deployed infrastructure from active source policy. It is the truth layer future source records must pass through."
+          description="This read-only snapshot separates policy existence from active source use. It is the truth layer this PAUSED source and future source records must pass through."
         />
         <GlassCard className="p-5">
           <div className="grid gap-3 md:grid-cols-4">
@@ -162,7 +162,7 @@ function ReferralPage() {
       <Section id="source-registry-event-model">
         <SectionHeader
           eyebrow="Lifecycle event model"
-          title="Future source records must be observable before they are usable"
+          title="Source records must be observable before they are usable"
           description="The contract event vocabulary is ready for read-only proof. The product must treat every lifecycle fact as status-aware evidence, never as a shortcut to public referral activation."
         />
         <GlassCard className="p-5">

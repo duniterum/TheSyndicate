@@ -124,7 +124,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     "source-registry",
     "DEPLOYED",
     SOURCE_REGISTRY_V1_CONTRACT_ADDRESS,
-    "V3 source policy registry. Deployed and owner-accepted, but no source records exist and referral/source UI remains inactive.",
+    "V3 source policy registry. Deployed and owner-accepted with one PAUSED internal source record; referral/source UI remains inactive.",
     "contracts/src/SourceRegistryV1.sol",
   ),
   entry(

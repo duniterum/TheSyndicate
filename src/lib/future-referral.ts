@@ -1,9 +1,9 @@
 // Future Referral / Source Attribution Event Model (RESERVED).
 //
 // This reserves the shape of future attribution language. SourceRegistryV1 and
-// MembershipSaleV3 exist, but SourceRegistryV1 has zero source records and the
-// public buy path uses ZERO_SOURCE_ID. Nothing here is scanned, emitted, or
-// paid. This is distinct from the SIMULATED UX preview in
+// MembershipSaleV3 exist, but SourceRegistryV1's first source record is
+// PAUSED/internal only and the public buy path uses ZERO_SOURCE_ID. Nothing
+// here is scanned, emitted, or paid. This is distinct from the SIMULATED UX preview in
 // src/lib/preview/referral.ts.
 //
 // Doctrine:
@@ -11,8 +11,8 @@
 //   - It records who helped bring whom into The Syndicate as a verified growth
 //     contribution and member recognition.
 //   - Commission status is ALWAYS PENDING until verified source records are created,
-//     read back, legally approved, and wired live.
-// Canonical gate: verified source records are created, read back, legally approved, and wired live.
+//     read back as ACTIVE, legally approved, and wired live.
+// Canonical gate: verified source records are active, read back, legally approved, and wired live.
 //   - No live commission is implied now.
 //   - This namespace is intentionally kept OUT of ProtocolEventKind.
 
@@ -41,7 +41,7 @@ export type FutureReferralAttribution = {
 export const FUTURE_REFERRAL_NOTE =
   "Attribution only - a verified growth contribution and member recognition. " +
   "No commission is implied or paid. Commission status remains PENDING until verified " +
-  "source records are created, read back, legally approved, and wired live.";
+  "source records are active, read back, legally approved, and wired live.";
 
 /**
  * Build a reserved attribution record. The legacy rewardStatus field is forced to PENDING and

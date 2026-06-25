@@ -1,15 +1,15 @@
 # Source Packet Internal Test 001 - Founder Inputs
 
-Status: READY FOR PAUSED SOURCE CEREMONY / NO TRANSACTION AUTHORIZED / SOURCE RECORD NOT CREATED
+Status: PAUSED SOURCE CREATED / READBACK GREEN / NO ACTIVATION AUTHORIZED
 
-This document records the founder-approved values for the first possible
-internal MembershipSaleV3 source record. It does not create a source record,
-activate referral, create a public source link, create a claim UI, or authorize
-any transaction.
+This document records the founder-approved values for the first internal
+MembershipSaleV3 source record. The record now exists as PAUSED policy state. It
+does not activate referral, create a public source link, create a claim UI, or
+authorize another transaction.
 
 Current boundary:
 
-- SourceRegistryV1 is deployed and currently has zero source records.
+- SourceRegistryV1 is deployed and currently has one PAUSED internal source record.
 - MembershipSaleV3 is the only current source-aware payment path.
 - Public/default V3 buys continue to use `ZERO_SOURCE_ID`.
 - Referral/source UI remains inactive.
@@ -244,7 +244,7 @@ The founder must check every item before sourceId and metadata hash generation.
 
 Do not regenerate `sourceId` or `metadataHash` unless a founder value changes.
 
-Generation is allowed only after:
+Historical generation was allowed only after:
 
 1. All required values above are final.
 2. The founder acknowledgments are complete.
@@ -254,11 +254,11 @@ Generation is allowed only after:
 
 Decision after this gate:
 
-- Ready for PAUSED source ceremony review
+- SourceId and metadata hash were frozen and used in the PAUSED ceremony
 
-Current decision: ready for PAUSED source ceremony review.
+Current decision: PAUSED source created; no activation authorized.
 
-Future deterministic generation instructions:
+Deterministic generation instructions for audit only:
 
 - Use only the final approved values.
 - Compute `sourceId` from the approved packet identity, approved source wallet,
@@ -272,13 +272,13 @@ Future deterministic generation instructions:
 - Record both generated values for founder review before any ceremony.
 
 No transaction is authorized by this document. The generated sourceId and
-metadata hash are for founder review and future readback only.
+metadata hash are now readback facts for the completed PAUSED source ceremony.
 
-## 8A. Current Authority Check Before Ceremony
+## 8A. Historical Current Authority Check Before Ceremony
 
 Frozen packet values do not authorize a transaction by themselves. They are
-lineage. Immediately before any future `createSource` transaction, rebuild
-current authority from live readbacks:
+lineage. Immediately before the completed `createSource` transaction, current
+authority had to be rebuilt from live readbacks:
 
 - Avalanche C-Chain ID is `43114`.
 - SourceRegistryV1 bytecode exists at
@@ -287,7 +287,7 @@ current authority from live readbacks:
 - SourceRegistryV1 `pendingOwner()` is zero unless a separate ownership
   ceremony is intentionally in progress.
 - The selected signer equals the current SourceRegistryV1 `owner()` readback.
-- `sourceExists(sourceId) = false`.
+- `sourceExists(sourceId) = false` before creation.
 - `sourceConfig(sourceId)` is empty/default before creation.
 - `isActive(sourceId) = false`.
 - Current source-count/log truth is known.
@@ -301,8 +301,8 @@ performed.
 
 ## 9. Post-Readback Update Plan
 
-Immediately after any future `SourceCreated` event, update truth surfaces before
-any later activation discussion.
+After the `SourceCreated` event, update truth surfaces before any later
+activation discussion.
 
 Required updates after readback:
 
@@ -354,7 +354,8 @@ reload.
 
 ## 10. Stop Conditions
 
-Stop before source creation if any of these are true:
+Stop before any additional source creation or source activation if any of these
+are true:
 
 - current authority readbacks were skipped or differ from packet values,
 - Source wallet or payout wallet is missing.
@@ -372,7 +373,9 @@ Stop before source creation if any of these are true:
 
 Current output:
 
-Ready for PAUSED source ceremony review.
+PAUSED source created and read back green.
 
-This state still does not authorize source creation. It only means the sourceId,
-metadata hash, and future `createSource` arguments are frozen for founder review.
+This state still does not authorize source activation, another source creation,
+public referral UX, public source-aware buys, source dashboard, or claim UI. It
+only records that the sourceId, metadata hash, and `createSource` arguments were
+read back as the first internal PAUSED source policy fact.

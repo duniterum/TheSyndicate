@@ -48,7 +48,7 @@ Current active truth at design time:
 - Member count is not economic scale.
 - MembershipSaleV3 is the current direct-buy target.
 - Public/default V3 buys use `ZERO_SOURCE_ID`.
-- SourceRegistryV1 is deployed but has zero source records.
+- SourceRegistryV1 is deployed with one internal PAUSED source record.
 - Referral/source attribution remains inactive.
 - No claim UI is live.
 - Archive1155 is protocol memory and is not source-aware.
@@ -181,7 +181,7 @@ Recommended page bands:
    proof link.
 5. Revenue stream table: membership sale, Archive mints, future product lines,
    source status, amount status, proof status.
-6. Source attribution panel: zero source records today; future source terms
+6. Source attribution panel: one internal PAUSED source record today; future active source terms
    only after SourceRegistry readback and activation.
 7. Institutional milestones: only material events admitted to Register /
    Chronicle / Archive.

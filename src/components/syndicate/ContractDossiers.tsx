@@ -88,22 +88,22 @@ const DOSSIERS: Dossier[] = [
           : "",
       },
     ],
-    ownerLabel: "Owner hardware wallet controls pause/admin powers; source records remain inactive",
+    ownerLabel: "Owner hardware wallet controls pause/admin powers; source activation remains inactive",
     upgradeable: "no",
     standard: "Custom - active membership sale - V3 receipt model - zero sourceId public buys",
     description:
-      "Current frontend buy target. Accepts USDC, delivers SYN, waits for approval and purchase receipts, and routes net USDC 70% Vault / 20% Liquidity / 10% Operations. Source records, referral UI, and claim UI remain inactive.",
+      "Current frontend buy target. Accepts USDC, delivers SYN, waits for approval and purchase receipts, and routes net USDC 70% Vault / 20% Liquidity / 10% Operations. Public buys use zero sourceId; referral UI and claim UI remain inactive.",
     status: "live",
   },
   {
-    label: "SourceRegistryV1 (deployed, no source records)",
+    label: "SourceRegistryV1 (one PAUSED internal source)",
     address: SOURCE_REGISTRY_V1_CONTRACT_ADDRESS ?? "PENDING",
     explorerHref: SOURCE_REGISTRY_V1_CONTRACT_ADDRESS
       ? explorerUrlForAddress(SOURCE_REGISTRY_V1_CONTRACT_ADDRESS)
       : null,
     network: "Avalanche C-Chain",
     chainId: 43114,
-    deployment: { kind: "block", value: "Deployed with owner accepted - no source records" },
+    deployment: { kind: "block", value: "Deployed with owner accepted - one PAUSED internal source record" },
     verified: "yes",
     verificationSources: [
       {
@@ -119,11 +119,11 @@ const DOSSIERS: Dossier[] = [
           : "",
       },
     ],
-    ownerLabel: "Owner hardware wallet; no SourceCreated events recorded",
+    ownerLabel: "Owner hardware wallet; first SourceCreated event recorded as PAUSED",
     upgradeable: "no",
-    standard: "Custom - source policy registry - inactive until separate source ceremony",
+    standard: "Custom - source policy registry - inactive until separate activation ceremony",
     description:
-      "Deployed V3 source policy registry. It has no source records, no referral balances, no claim UI, and no public source activation.",
+      "Deployed V3 source policy registry. It has one internal PAUSED source record, no referral balances, no claim UI, and no public source activation.",
     status: "deployed",
   },
   {

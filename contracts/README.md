@@ -17,15 +17,16 @@ from file presence alone.
 | Membership Sale V2b | LIVE / PAUSED HISTORICAL | Paused on-chain. Retained for seats #6-#8, Holder Index continuity, and recovery boundary. Not the active buy target. |
 | `SyndicateArchive1155` | LIVE | Protocol-memory ERC-1155. ID 1 is public-open; ID 3 is active/read-gated; ID 2 is a disabled pointer to future SeatRecord721. |
 | `CommissionRouterV1` | CANDIDATE / NOT DEPLOYED / NOT LIVE | Future Operations-slice commission router. No address, no live referral, no claim UI. |
-| `SourceRegistryV1` | DEPLOYED / NO SOURCE RECORDS / REFERRAL UI INACTIVE | V3 source-term registry. Stores source policy only; moves no money. No source records exist. |
+| `SourceRegistryV1` | DEPLOYED / ONE PAUSED INTERNAL SOURCE / REFERRAL UI INACTIVE | V3 source-term registry. Stores source policy only; moves no money. One internal source record exists and is PAUSED. |
 | `MembershipSaleV3` | LIVE DIRECT-BUY TARGET / SOURCE UI INACTIVE | Funded V3 membership sale. Frontend approval/quote/buy target for zero-source public purchases. |
 | `SeatRecord721` | FUTURE / NOT IMPLEMENTED / NOT DEPLOYED | Future identity record. SYN remains the V1 seat today. |
 
 Hard rule: do not treat Solidity files in `contracts/src/` as deployed simply
 because they exist. Current truth is explicit above: `MembershipSaleV3.sol` is
 deployed and funded as the direct-buy target, `SourceRegistryV1.sol` is deployed
-with no source records, and `CommissionRouterV1.sol` remains not deployed.
-File presence never authorizes new source records, referral UI, or claim UI.
+with one internal PAUSED source record, and `CommissionRouterV1.sol` remains not
+deployed. File presence never authorizes source activation, referral UI, or
+claim UI.
 
 ## What's Here
 
@@ -33,7 +34,7 @@ File presence never authorizes new source records, referral UI, or claim UI.
 | --- | --- |
 | `src/SyndicateSaleV2.sol` | Sale V2 source used for historical V2a/V2b deployments: era table, caps, reserve floor, V1 recognition, 70/20/10 routing, and timelocked router wiring. |
 | `src/CommissionRouterV1.sol` | Production-candidate referral router: Operations-slice-only, tier ladder, push/escrow, RAL `Attribution` event. Not deployed. |
-| `src/SourceRegistryV1.sol` | Deployed V3 source-term registry: source class, commission bps, caps, windows, payout wallet, status, and visible policy events. No source records exist. |
+| `src/SourceRegistryV1.sol` | Deployed V3 source-term registry: source class, commission bps, caps, windows, payout wallet, status, and visible policy events. One internal source record exists and is PAUSED. |
 | `src/MembershipSaleV3.sol` | Deployed and funded V3 sale engine: deterministic era pricing, acquisition-first routing, source validation, payout escrow fallback, and rich receipt event. Current frontend buy target with zero sourceId. |
 | `test/SyndicateSaleV2.t.sol` | Sale tests covering constructor validation, buy path, era engine, caps, reserve, Merkle recognition, router glue, pause/recovery, and reentrancy fallback. |
 | `test/CommissionRouterV1.t.sol` | Router tests covering source allow-list, ABI parity, Operations-slice conservation, tier ladder, push/escrow/claim, remove/re-add lifecycle, and event reconstruction. |

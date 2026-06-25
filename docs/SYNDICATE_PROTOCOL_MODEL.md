@@ -19,7 +19,7 @@ Source of truth in code: `src/lib/syndicate-config.ts` (`VAULT_ALLOCATION`, `USD
 
 - Contract: `SyndicateMembershipSale` â€” `0x0020Df30C127306f0F5B44E6a6E4368D2855842d` â€” **LIVE**.
 - Paused V2b historical source: `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b` - **LIVE / PAUSED HISTORICAL**. It is retained for seats #6-#8, Holder Index continuity, and recovery boundary.
-- Active V3 direct-buy target: `MembershipSaleV3` - `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`. Public buys use zero sourceId. SourceRegistryV1 has no source records; referral/source UI and claim UI remain inactive.
+- Active V3 direct-buy target: `MembershipSaleV3` - `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`. Public buys use zero sourceId. SourceRegistryV1 has one internal PAUSED source record; referral/source UI and claim UI remain inactive.
 - Payment token: USDC (`0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E`).
 - Current/V3 pricing doctrine: deterministic era pricing. Chapter is historical identity / belonging; era is pricing. No private allocations, no insider pricing, no admin price switch, no oracle, and no market-linked price.
 - V3 schedule and receipt requirements are frozen in `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md`.

@@ -28,8 +28,16 @@ export type SourcePolicyRecord = {
   status: SourcePolicyStatus;
   commissionBps: number;
   scope: SourcePolicyScope;
+  startTime?: number;
+  endTime?: number;
+  grossCap?: number;
+  perBuyerCap?: number;
+  appliesToRepeatPurchases?: boolean;
   payoutWallet: string;
   metadataHash: string;
+  sourceCreatedTxHash?: string;
+  sourceCreatedBlock?: number;
+  sourceCreatedAt?: string;
 };
 
 export type SourceProductAwareness =
@@ -46,7 +54,7 @@ export type SourcePolicyProductCapability = {
 
 export type SourceAttributionReadinessGate = {
   label: string;
-  currentStatus: "MISSING" | "LOCKED" | "FUTURE_APPROVAL";
+  currentStatus: "RECORDED" | "MISSING" | "LOCKED" | "FUTURE_APPROVAL";
   requirement: string;
 };
 
@@ -95,9 +103,31 @@ export type SourcePolicyLifecycleEvent =
   | { type: "SOURCE_WALLET_UPDATED"; sourceId: string; sourceWallet: string }
   | { type: "SOURCE_PAYOUT_WALLET_UPDATED"; sourceId: string; payoutWallet: string };
 
-// Current protocol truth from deployed SourceRegistryV1 readback. Intentionally
-// empty until a real SourceCreated event is emitted and read back.
-export const CURRENT_SOURCE_POLICY_RECORDS: readonly SourcePolicyRecord[] = [];
+export const INTERNAL_PROTOCOL_TEST_SOURCE_001: SourcePolicyRecord = {
+  sourceId: "0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620",
+  sourceWallet: "0x244531C571966f90f4849e03a507543d90f9C721",
+  sourceClass: "BUILDER_SOURCE",
+  status: "PAUSED",
+  commissionBps: 500,
+  scope: "WINDOWED",
+  startTime: 1782907200,
+  endTime: 1784116800,
+  grossCap: 25000000,
+  perBuyerCap: 5000000,
+  appliesToRepeatPurchases: false,
+  payoutWallet: "0x244531C571966f90f4849e03a507543d90f9C721",
+  metadataHash: "0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d",
+  sourceCreatedTxHash: "0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280",
+  sourceCreatedBlock: 88705814,
+  sourceCreatedAt: "2026-06-24T09:11:50.000Z",
+} as const;
+
+// Current protocol truth from deployed SourceRegistryV1 readback. The first
+// internal protocol-test source exists as PAUSED policy state only: it is not
+// referral activation, not a public source link, and not a claim surface.
+export const CURRENT_SOURCE_POLICY_RECORDS: readonly SourcePolicyRecord[] = [
+  INTERNAL_PROTOCOL_TEST_SOURCE_001,
+];
 
 export const SOURCE_POLICY_PRODUCT_CAPABILITIES: readonly SourcePolicyProductCapability[] = [
   {
@@ -141,9 +171,9 @@ export const SOURCE_POLICY_PRODUCT_CAPABILITIES: readonly SourcePolicyProductCap
 export const SOURCE_ATTRIBUTION_READINESS_GATES: readonly SourceAttributionReadinessGate[] = [
   {
     label: "Source policy fact",
-    currentStatus: "MISSING",
+    currentStatus: "RECORDED",
     requirement:
-      "A SourceCreated event must exist, be read back, and match an approved packet before any source can be discussed as real.",
+      "One internal PAUSED SourceCreated event exists and matches the approved packet. It remains unusable until a separate activation ceremony.",
   },
   {
     label: "Activation ceremony",
@@ -209,7 +239,8 @@ export const SOURCE_ATTRIBUTION_TOUCHPOINTS: readonly SourceAttributionTouchpoin
   {
     surface: "Registry",
     status: "CURRENT_GUARD",
-    currentTruth: "SourceRegistryV1 is deployed and verifiable, but the current record count is zero.",
+    currentTruth:
+      "SourceRegistryV1 is deployed and verifiable with one internal PAUSED protocol-test source record.",
     futureRequirement:
       "Source records must appear as policy facts with status, terms, metadata hash, and explorer proof; never as proof that referral is broadly live.",
   },
@@ -293,7 +324,8 @@ export function buildSourcePolicySnapshot(
           "Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID.",
         ]
       : [
-          "A source record exists as a policy fact, not as public referral activation.",
+          "One internal PAUSED source record exists as a policy fact, not as public referral activation.",
+          "No active source record can route commission today.",
           "No source claim UI is live.",
           "No public source-aware purchase path is live.",
           "Public/default MembershipSaleV3 buys use ZERO_SOURCE_ID.",
@@ -322,7 +354,7 @@ export function buildSourcePolicySnapshot(
     currentSummary:
       recordCount === 0
         ? "SourceRegistryV1 exists and has zero source records. Referral, claiming, and public source-aware purchases are inactive."
-        : `SourceRegistryV1 has ${recordCount} source record${recordCount === 1 ? "" : "s"}: ${activeCount} active, ${pausedCount} paused, ${revokedCount} revoked.`,
+        : `SourceRegistryV1 has ${recordCount} source record${recordCount === 1 ? "" : "s"}: ${activeCount} active, ${pausedCount} paused, ${revokedCount} revoked. Public/default buys remain ZERO_SOURCE_ID.`,
     currentLimits,
     productCapabilities: SOURCE_POLICY_PRODUCT_CAPABILITIES,
   };

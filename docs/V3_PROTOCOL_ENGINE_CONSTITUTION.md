@@ -1,12 +1,13 @@
 # V3 Protocol Engine Constitution
 
-Status: CANONICAL V3 SPECIFICATION / DEPLOYED DIRECT-BUY INFRA / SOURCE RECORDS INACTIVE
+Status: CANONICAL V3 SPECIFICATION / DEPLOYED DIRECT-BUY INFRA / ONE PAUSED INTERNAL SOURCE
 
 This document freezes the V3 design direction and records current V3 truth.
 `SourceRegistryV1` and `MembershipSaleV3` are deployed on Avalanche C-Chain;
 MembershipSaleV3 is funded and selected as the frontend direct-buy target with
-`ZERO_SOURCE_ID`. Source records, source-aware links, referral/source UI, claim
-UI, and any source payout path remain inactive until a separate source-record
+`ZERO_SOURCE_ID`. One internal source record exists as PAUSED policy state.
+Source-aware links, referral/source UI, claim UI, active source payout, and any
+public source-aware buy path remain inactive until a separate activation
 ceremony is approved and read back.
 
 ## 1. Binding Doctrine
@@ -482,7 +483,7 @@ Current repository and chain truth:
 - MembershipSaleV3 is deployed at
   `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`.
 - Public buys target MembershipSaleV3 with `ZERO_SOURCE_ID`.
-- SourceRegistryV1 has zero source records.
+- SourceRegistryV1 has one internal PAUSED source record.
 - Referral/source UI and claim UI are inactive.
 - V2b is a paused historical proof/recovery boundary, not the active buy target.
 

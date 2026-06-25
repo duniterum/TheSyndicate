@@ -55,8 +55,8 @@ describe("production coherence guards", () => {
     expect(join).not.toMatch(/Referral commission \(preview\)/i);
     expect(join).not.toMatch(/SIMULATED/i);
 
-    expect(referral).toContain("SOURCE RECORDS INACTIVE");
-    expect(referral).toContain("No source records. No commission.");
+    expect(referral).toContain("SOURCE RECORD PAUSED");
+    expect(referral).toContain("One PAUSED source record. No commission.");
     expect(referral).toContain("CURRENT_SOURCE_POLICY_SNAPSHOT");
     expect(referral).toContain("sourcePolicy.currentSummary");
     expect(referral).toContain("Source policy observability");
@@ -87,8 +87,9 @@ describe("production coherence guards", () => {
     const sourceLifecycle = read("src/lib/source-registry-lifecycle.ts");
     const registry = read("src/routes/registry.tsx");
 
-    expect(sourcePolicy).toContain("CURRENT_SOURCE_POLICY_RECORDS: readonly SourcePolicyRecord[] = []");
-    expect(sourcePolicy).toContain("recordCount === 0");
+    expect(sourcePolicy).toContain("INTERNAL_PROTOCOL_TEST_SOURCE_001");
+    expect(sourcePolicy).toContain("sourceCreatedBlock: 88705814");
+    expect(sourcePolicy).toContain("CURRENT_SOURCE_POLICY_RECORDS: readonly SourcePolicyRecord[] = [");
     expect(sourcePolicy).toContain("referralActive: false");
     expect(sourcePolicy).toContain("claimingActive: false");
     expect(sourcePolicy).toContain("publicSourceAwareBuyPathActive: false");
@@ -103,7 +104,7 @@ describe("production coherence guards", () => {
     expect(sourcePolicy).toContain("Archive / future products");
     expect(sourcePolicy).toContain("never as proof that referral is broadly live");
     expect(sourcePolicy).toContain("SOURCE_TERMS_UPDATED");
-    expect(sourcePolicy).toContain("A source record exists as a policy fact, not as public referral activation");
+    expect(sourcePolicy).toContain("One internal PAUSED source record exists as a policy fact, not as public referral activation");
     expect(sourcePolicy).toContain("MembershipSaleV3");
     expect(sourcePolicy).toContain("Archive1155");
     expect(sourcePolicy).toContain("SeatRecord721");
@@ -137,7 +138,7 @@ describe("production coherence guards", () => {
 
     expect(referral).toContain("SOURCE_POLICY_LIFECYCLE_MODEL");
     expect(referral).toContain("SOURCE_REGISTRY_LIFECYCLE_VISIBILITY");
-    expect(referral).toContain("Future source records must be observable before they are usable");
+    expect(referral).toContain("Source records must be observable before they are usable");
     expect(referral).toContain("The contract event vocabulary is ready for read-only proof");
     expect(registry).toContain("SOURCE_REGISTRY_LIFECYCLE_VISIBILITY");
     expect(registry).toContain("Source records become proof before they become rails");
@@ -322,9 +323,9 @@ describe("production coherence guards", () => {
   it("keeps member referral cockpit aligned with V3 source-attribution inactive truth", () => {
     const card = read("src/components/syndicate/MyReferralCard.tsx");
 
-    expect(card).toContain("SourceRegistryV1 is deployed with zero source records");
+    expect(card).toContain("SourceRegistryV1 has one PAUSED internal source record");
     expect(card).toContain("public V3 buys use ZERO_SOURCE_ID");
-    expect(card).toContain("No source records");
+    expect(card).toContain("One PAUSED source record");
     expect(card).toContain("no claim UI");
     expect(card).toContain("CommissionRouterV1 is not the active V3 source engine");
     expect(card).toContain("CURRENT_SOURCE_POLICY_SNAPSHOT");
@@ -609,7 +610,7 @@ describe("production coherence guards", () => {
     expect(observatory).toContain("Volume is not revenue");
     expect(observatory).toContain("Wallet balances are not member entitlements");
     expect(observatory).toContain("Evidence Classes");
-    expect(observatory).toContain("SourceRegistryV1 is deployed but has zero source records");
+    expect(observatory).toContain("SourceRegistryV1 is deployed with one internal PAUSED source record");
     expect(observatory).toContain("Public/default V3 buys use `ZERO_SOURCE_ID`");
     expect(observatory).toContain("Do not build a new public `/economy` route first");
   });
@@ -622,7 +623,7 @@ describe("production coherence guards", () => {
     const contractRegistry = read("src/lib/contract-registry.ts");
     const referral = read("src/routes/referral.tsx");
 
-    expect(v3).toContain("Status: CANONICAL V3 SPECIFICATION / DEPLOYED DIRECT-BUY INFRA / SOURCE RECORDS INACTIVE");
+    expect(v3).toContain("Status: CANONICAL V3 SPECIFICATION / DEPLOYED DIRECT-BUY INFRA / ONE PAUSED INTERNAL SOURCE");
     expect(v3).toContain("Chapter is historical identity and belonging.");
     expect(v3).toContain("Era is pricing.");
     expect(v3).toContain("grossUsdc - acquisitionCost = protocolContribution");
@@ -650,7 +651,7 @@ describe("production coherence guards", () => {
     expect(v3).toContain("raw SYN balance alone is current holder/seat status, not sufficient");
     expect(v3).toContain("unknown wallets may buy and receive a new V3 member number even if they");
     expect(v3).toContain("Public buys target MembershipSaleV3 with `ZERO_SOURCE_ID`");
-    expect(v3).toContain("SourceRegistryV1 has zero source records");
+    expect(v3).toContain("SourceRegistryV1 has one internal PAUSED source record");
     expect(v3).toContain("preserved as a reviewed candidate");
     expect(v3).toContain("strategically superseded");
 
@@ -660,7 +661,7 @@ describe("production coherence guards", () => {
     expect(testPlan).toContain("no member-ownership or network-inventory language");
     expect(testPlan).toContain("Payout Escrow And Smart-Wallet Tests");
 
-    expect(qa).toContain("Status: QA PASS / DEPLOYED / OWNER ACCEPTED / FUNDED / DIRECT-BUY TARGET / SOURCE RECORDS INACTIVE");
+    expect(qa).toContain("Status: QA PASS / DEPLOYED / OWNER ACCEPTED / FUNDED / DIRECT-BUY TARGET / ONE PAUSED INTERNAL SOURCE");
     expect(qa).toContain("blocked payout wallet cannot grief normal purchases");
     expect(qa).toContain("address-only V1 proofs are disabled");
     expect(qa).toContain("numbered historical-member proofs set both `knownMember` and `memberNumberOf`");
@@ -692,7 +693,7 @@ describe("production coherence guards", () => {
 
     expect(contractRegistry).toContain('"COMMISSION_ROUTER_V1"');
     expect(contractRegistry).toContain('"PENDING"');
-    expect(referral).toContain("No source records. No commission.");
+    expect(referral).toContain("One PAUSED source record. No commission.");
   });
 
   it("keeps referral/source attribution readiness non-live and source-record gated", () => {
@@ -712,14 +713,14 @@ describe("production coherence guards", () => {
     const deferredLedger = read("docs/DEFERRED_WORK_LEDGER.md");
     const archiveCanon = read("docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md");
 
-    expect(readiness).toContain("Status: NON-LIVE READINESS SPEC / SOURCE RECORDS INACTIVE / NO CLAIM UI");
-    expect(readiness).toContain("SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; zero source records");
+    expect(readiness).toContain("Status: NON-LIVE READINESS SPEC / ONE PAUSED INTERNAL SOURCE / NO CLAIM UI");
+    expect(readiness).toContain("SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; one PAUSED internal source record");
     expect(readiness).toContain("Public V3 buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active");
     expect(readiness).toContain("No new smart contract is required");
     expect(readiness).toContain("Claim UI requires escrow/readback truth");
     expect(readiness).toContain("This document does not authorize:");
 
-    expect(ral).toContain("SourceRegistryV1 has zero source records");
+    expect(ral).toContain("SourceRegistryV1's first internal source record is PAUSED");
     expect(ral).toContain("Public V3 buys use `ZERO_SOURCE_ID`");
     expect(ral).toContain("CommissionRouterV1 remains a reviewed candidate/test reference, not the V3");
     expect(ral).toContain("If a valid source exists: `grossUsdc - acquisitionCost == protocolContribution`");
@@ -739,7 +740,7 @@ describe("production coherence guards", () => {
     expect(referralRoute).not.toMatch(/Archive1155 already supports source attribution/i);
     expect(referralRoute).not.toMatch(/NFT source commission is live/i);
     expect(referralRoute).not.toMatch(/SwapRail.*commission.*live/i);
-    expect(futureReferral).toContain("verified source records are created, read back, legally approved, and wired live");
+    expect(futureReferral).toContain("verified source records are active, read back, legally approved, and wired live");
     expect(sourcePacket).toContain("Status: TEMPLATE ONLY / NON-TRANSACTIONAL / NO SOURCE CREATION AUTHORIZED");
     expect(sourcePacket).toContain("Source ID");
     expect(sourcePacket).toContain("Payout wallet");
@@ -747,7 +748,7 @@ describe("production coherence guards", () => {
     expect(sourcePacket).toContain("Expected MembershipSaleV3 Behavior");
     expect(sourcePacket).toContain("Founder Approval Checklist");
     expect(sourcePacket).toContain("No source record is created without explicit founder approval.");
-    expect(sourceRunbook).toContain("Status: RUNBOOK ONLY / NO TRANSACTION AUTHORIZED / SOURCE RECORDS INACTIVE");
+    expect(sourceRunbook).toContain("Status: RUNBOOK ONLY / NO TRANSACTION AUTHORIZED / ONE PAUSED INTERNAL SOURCE EXISTS");
     expect(sourceRunbook).toContain("Current Authority Check");
     expect(sourceRunbook).toContain("readbacks, and chat memory are lineage only");
     expect(sourceRunbook).toContain("Read `owner()`");
@@ -762,7 +763,7 @@ describe("production coherence guards", () => {
     expect(sourceForkReadback).toContain("2 passed / 0 failed / 0 skipped");
     expect(sourceForkReadback).toContain("It does not create a real mainnet source record.");
     expect(sourceForkReadback).toContain("A separate activation ceremony is required before any source can be used live.");
-    expect(internalSourceDraft).toContain("Status: READY FOR PAUSED SOURCE CEREMONY / NO TRANSACTION AUTHORIZED / SOURCE MUST START PAUSED");
+    expect(internalSourceDraft).toContain("Status: PAUSED SOURCE CREATED / READBACK GREEN / NO ACTIVATION AUTHORIZED");
     expect(internalSourceDraft).toContain("Internal Protocol Test Source vs Future Public Referrer");
     expect(internalSourceDraft).toContain("It is not a public");
     expect(internalSourceDraft).toContain("not a user referral link");
@@ -791,19 +792,19 @@ describe("production coherence guards", () => {
     expect(internalSourceDraft).toContain("Frozen Internal Test Values For Founder Review");
     expect(internalSourceDraft).toContain("25 USDC (`25_000_000`)");
     expect(internalSourceDraft).toContain("5 USDC (`5_000_000`)");
-    expect(internalSourceDraft).toContain("Future createSource Argument Table");
-    expect(internalSourceDraft).toContain("Pre-Ceremony Readback Checklist");
+    expect(internalSourceDraft).toContain("Executed createSource Argument Table");
+    expect(internalSourceDraft).toContain("Historical Pre-Ceremony Readback Checklist");
     expect(internalSourceDraft).toContain("Current authority beats remembered authority");
     expect(internalSourceDraft).toContain("Frozen packet values and older readbacks");
     expect(internalSourceDraft).toContain("Future Localhost Source-Attributed Buy Boundary");
     expect(internalSourceDraft).toContain("The first PAUSED source record does not create a referral system");
     expect(internalSourceDraft).toContain("INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL");
-    expect(internalSourceDraft).toContain("Future Readback Command Plan");
+    expect(internalSourceDraft).toContain("Historical Readback Command Plan");
     expect(internalSourceDraft).toContain("SourceRegistryV1 = 0x780013bB358be6be95b401901264FC7c22a595a6");
     expect(internalSourceDraft).toContain("isActive(sourceId) = false");
     expect(internalSourceDraft).toContain("Future PAUSED Source Wording");
     expect(internalSourceDraft).toContain("No source commission accrues while status is `PAUSED`");
-    expect(internalSourceDraft).toContain("Expected SourceRegistry Readback");
+    expect(internalSourceDraft).toContain("SourceRegistry Readback");
     expect(internalSourceDraft).toContain("Initial status is `PAUSED`.");
     expect(archiveCanon).toContain("Current Archive1155 mints are not source-aware.");
     expect(archiveCanon).toContain("source-attribution work must pass `docs/MODULE_INTEGRATION_STANDARD.md` first");
@@ -826,8 +827,8 @@ describe("production coherence guards", () => {
     expect(internalSourceDraft).toContain("no-agency");
     expect(internalSourceDraft).toContain("no-MLM/downline");
 
-    expect(internalSourceFounderInputs).toContain("Status: READY FOR PAUSED SOURCE CEREMONY / NO TRANSACTION AUTHORIZED / SOURCE RECORD NOT CREATED");
-    expect(internalSourceFounderInputs).toContain("SourceRegistryV1 is deployed and currently has zero source records");
+    expect(internalSourceFounderInputs).toContain("Status: PAUSED SOURCE CREATED / READBACK GREEN / NO ACTIVATION AUTHORIZED");
+    expect(internalSourceFounderInputs).toContain("SourceRegistryV1 is deployed and currently has one PAUSED internal source record");
     expect(internalSourceFounderInputs).toContain("MembershipSaleV3 is the only current source-aware payment path");
     expect(internalSourceFounderInputs).toContain("Public/default V3 buys continue to use `ZERO_SOURCE_ID`");
     expect(internalSourceFounderInputs).toContain("Move fast by removing ambiguity, not by skipping proof");
@@ -855,7 +856,7 @@ describe("production coherence guards", () => {
     expect(internalSourceFounderInputs).toContain("A `PAUSED` source can expire if its window is too short");
     expect(internalSourceFounderInputs).toContain("future activation-testing window");
     expect(internalSourceFounderInputs).toContain("create PAUSED now and update terms before activation");
-    expect(internalSourceFounderInputs).toContain("Current Authority Check Before Ceremony");
+    expect(internalSourceFounderInputs).toContain("Historical Current Authority Check Before Ceremony");
     expect(internalSourceFounderInputs).toContain("Frozen packet values do not authorize a transaction by themselves");
     expect(internalSourceFounderInputs).toContain("Future Localhost Source-Attributed Buy Boundary");
     expect(internalSourceFounderInputs).toContain("No referral/source link exists today");
@@ -899,8 +900,8 @@ describe("production coherence guards", () => {
     expect(internalSourceFounderInputs).toContain("Vault, Liquidity, and Operations wallets are protocol routing wallets");
     expect(internalSourceFounderInputs).toContain("25 USDC gross cap and 5 USDC per-buyer cap are first-internal-test values only");
     expect(internalSourceFounderInputs).toContain("Do not use the first internal test source as a template for public referrer UX");
-    expect(internalSourceFounderInputs).toContain("Ready for PAUSED source ceremony review");
-    expect(internalSourceFounderInputs).toContain("Future deterministic generation instructions");
+    expect(internalSourceFounderInputs).toContain("PAUSED source created and read back green");
+    expect(internalSourceFounderInputs).toContain("Deterministic generation instructions for audit only");
     expect(internalSourceFounderInputs).toContain("source label `INTERNAL_PROTOCOL_TEST_SOURCE_001`");
     expect(internalSourceFounderInputs).toContain("Source observability snapshot / docs");
     expect(internalSourceFounderInputs).toContain("CURRENT_SOURCE_POLICY_RECORDS");
@@ -934,7 +935,7 @@ describe("production coherence guards", () => {
   it("keeps the source-attribution capability map scoped to membership before product-wide expansion", () => {
     const capability = read("docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md");
 
-    expect(capability).toContain("Status: DECISION MAP / NO TRANSACTION AUTHORIZED / SOURCE RECORDS INACTIVE");
+    expect(capability).toContain("Status: DECISION MAP / ONE PAUSED INTERNAL SOURCE / NO ACTIVATION AUTHORIZED");
     expect(capability).toContain("SourceRegistryV1 is reusable policy infrastructure, not a universal payment");
     expect(capability).toContain("MembershipSaleV3 is source-aware. Archive1155 and future products are not");
     expect(capability).toContain("V3 SYN membership sale");
@@ -1040,7 +1041,7 @@ describe("production coherence guards", () => {
     expect(route).toContain("CANDIDATE");
     expect(route).toContain("PENDING");
     expect(route).toContain("NOT LIVE");
-    expect(route).toContain("No writes. No source records. No referral activation.");
+    expect(route).toContain("No writes. No source activation. No referral activation.");
     expect(route).toContain("The live buy path now");
     expect(route).toContain("MembershipSaleV3 with a zero source ID");
     expect(route).toContain("Read-only quote");
@@ -1189,7 +1190,7 @@ describe("production coherence guards", () => {
     expect(map).toContain("Membership Sale V2b | LIVE / PAUSED HISTORICAL");
     expect(map).toContain("Membership Sale V1 | LIVE / SEALED HISTORICAL");
     expect(map).toContain("Membership Sale V2a | LIVE / SEALED HISTORICAL");
-    expect(map).toContain("SourceRegistryV1 | DEPLOYED / NO SOURCE RECORDS");
+    expect(map).toContain("SourceRegistryV1 | DEPLOYED / ONE PAUSED INTERNAL SOURCE");
     expect(map).toContain("CommissionRouterV1 | CANDIDATE / PENDING");
     expect(map).toContain("SeatRecord721 | FUTURE / RESERVED");
     expect(map).toContain("CommissionRouterV1 must not receive or affect Vault or Liquidity funds");
@@ -1197,12 +1198,12 @@ describe("production coherence guards", () => {
 
     expect(contractsReadme).toContain("Membership Sale V2b | LIVE / PAUSED HISTORICAL");
     expect(contractsReadme).toContain("`MembershipSaleV3` | LIVE DIRECT-BUY TARGET / SOURCE UI INACTIVE");
-    expect(contractsReadme).toContain("`SourceRegistryV1` | DEPLOYED / NO SOURCE RECORDS / REFERRAL UI INACTIVE");
+    expect(contractsReadme).toContain("`SourceRegistryV1` | DEPLOYED / ONE PAUSED INTERNAL SOURCE / REFERRAL UI INACTIVE");
     expect(contractsReadme).toContain("`CommissionRouterV1` | CANDIDATE / NOT DEPLOYED / NOT LIVE");
     expect(contractsReadme).not.toMatch(/Sale V2 \+ CommissionRouter V1 \(Production Solidity\)[\s\S]{0,300}NOT DEPLOYED/);
 
     expect(registry).toContain("MembershipSaleV3 (active buy target)");
-    expect(registry).toContain("SourceRegistryV1 (deployed, no source records)");
+    expect(registry).toContain("SourceRegistryV1 (one PAUSED internal source)");
     expect(registry).toContain("SyndicateMembershipSale V2b (paused historical)");
     expect(registry).toContain("SyndicateMembershipSale V2a (sealed historical)");
     expect(registry).toContain("SyndicateMembershipSale V1 (sealed historical)");
@@ -1219,8 +1220,8 @@ describe("production coherence guards", () => {
     expect(sourceTable).toContain("0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48");
     expect(sourceTable).toContain("Membership Sale V2b (paused historical source)");
     expect(sourceTable).toContain("0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b");
-    expect(sourceTable).toContain("V3 SourceRegistry | `0x780013bB358be6be95b401901264FC7c22a595a6` (deployed; owner accepted; no source records; referral/source UI inactive)");
-    expect(sourceTable).toContain("DEPLOYED NON-LIVE INFRA / REFERRAL UI PENDING");
+    expect(sourceTable).toContain("V3 SourceRegistry | `0x780013bB358be6be95b401901264FC7c22a595a6` (deployed; owner accepted; one internal PAUSED source record; referral/source UI inactive)");
+    expect(sourceTable).toContain("PAUSED INTERNAL SOURCE / REFERRAL UI PENDING");
     expect(sourceTable).toContain("V3 MembershipSale | `MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS`");
     expect(sourceTable).toContain("current frontend buy target");
     expect(sourceTable).toContain("funded with 7,000,000 SYN");
@@ -1230,10 +1231,10 @@ describe("production coherence guards", () => {
     expect(syndicateConfig).toContain("explorerUrlForAddress(MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS");
     expect(syndicateConfig).not.toMatch(/label: "Membership Sale",\s+status: "live",\s+detail: "SyndicateMembershipSale deployed/);
     expect(syndicateConfig).not.toMatch(/explorerUrlFor\("MEMBERSHIP_SALE_CONTRACT_ADDRESS"\) \?\? undefined/);
-    expect(v3ParameterSheet).toContain("Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / SOURCE RECORDS INACTIVE");
+    expect(v3ParameterSheet).toContain("Status: DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / ONE PAUSED INTERNAL SOURCE");
     expect(v3ParameterSheet).toContain("MembershipSaleV3 is funded with 7,000,000 SYN, unpaused, and selected as the frontend approval/quote/buy target.");
-    expect(v3ParameterSheet).toContain("Public V3 buys use zero sourceId. No source records exist.");
-    expect(v3ParameterSheet).toContain("SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / no source records / referral UI inactive");
+    expect(v3ParameterSheet).toContain("Public V3 buys use zero sourceId. One internal source record exists and is PAUSED.");
+    expect(v3ParameterSheet).toContain("SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` - deployed / owner accepted / one PAUSED internal source record / referral UI inactive");
     expect(v3ParameterSheet).toContain("V3 MembershipSaleV3 | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` - deployed / owner accepted / funded with 7,000,000 SYN / current frontend buy target / public buys use zero sourceId");
     expect(v3ParameterSheet).toContain("No public source/referral UI or claim UI");
     expect(v3ParameterSheet).toContain("pause is deferred intentionally");
@@ -1244,8 +1245,8 @@ describe("production coherence guards", () => {
     expect(v3NextBoundary).toContain("Snowtrace API | VERIFIED | VERIFIED");
     expect(v3NextBoundary).toContain("Sourcify | PERFECT MATCH | PERFECT MATCH");
     expect(v3NextBoundary).toContain("V3 funding | `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2`");
-    expect(v3ReadbackLog).toContain("MembershipSaleV3 `availableSyn()` | `7,000,000 SYN`");
-    expect(v3ReadbackLog).toContain("SourceRegistryV1 `SourceCreated` logs since deploy | `0`");
+    expect(v3ReadbackLog).toContain("MembershipSaleV3 `availableSyn()` | `6,999,000 SYN`");
+    expect(v3ReadbackLog).toContain("First SourceCreated block | `88705814`");
     expect(v3ParameterSheet).not.toContain("- V3 is live.");
     expect(v3ParameterSheet).not.toContain("- Frontend registry switch is authorized.");
     expect(v3ParameterSheet).not.toContain("- Public source/referral UI is authorized.");
@@ -1263,12 +1264,12 @@ describe("production coherence guards", () => {
     const readback = read("docs/V3_NON_LIVE_DEPLOYMENT_READBACK_LOG.md");
     const nextBoundary = read("docs/V3_NEXT_BOUNDARY_FUNDING_AND_ACTIVATION_PLAN.md");
 
-    expect(readback).toContain("DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / SOURCE RECORDS INACTIVE");
+    expect(readback).toContain("DEPLOYED / OWNER ACCEPTED / V2B PAUSED / V3 FUNDED / FRONTEND BUY TARGET / ONE PAUSED INTERNAL SOURCE");
     expect(readback).toContain("V3 funding tx | `0x04b3baf507d2908bff3b561207407cd12d8469a5785bcf90cd4dccaaea5cb7e2`");
-    expect(readback).toContain("SourceCreated` logs since deploy | `0`");
+    expect(readback).toContain("First SourceCreated status | `PAUSED`");
     expect(readback).toContain("MembershipSaleV3 `paused()` | `false`");
     expect(readback).toContain("V2b: paused, recovery timelock started, retained as historical proof and recovery boundary.");
-    expect(nextBoundary).toContain("No source records.");
+    expect(nextBoundary).toContain("No source activation.");
     expect(nextBoundary).toContain("No referral/source UI.");
     expect(nextBoundary).toContain("No claim UI.");
 
@@ -1281,7 +1282,7 @@ describe("production coherence guards", () => {
     expect(syndicateConfig).toContain("Current live buy target");
     expect(contractRegistry).toContain("MEMBERSHIP_SALE_V3");
     expect(contractRegistry).toContain("SOURCE_REGISTRY_V1");
-    expect(contractRegistry).toContain("no source records exist");
+    expect(contractRegistry).toContain("one PAUSED internal source record");
     expect(saleHooks).toContain("ACTIVE_SALE = (SALE_V3 ?? SALE_V2 ?? SALE_V1)");
     expect(saleHooks).toContain("ZERO_SOURCE_ID");
     expect(livePurchase).toContain('functionName: "approve"');

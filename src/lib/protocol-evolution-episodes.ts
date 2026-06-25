@@ -176,18 +176,22 @@ export const PROTOCOL_EVOLUTION_EPISODES = [
     id: "source-policy-rehearsal",
     title: "Source policy is in rehearsal, not public referral",
     eyebrow: "What is unfolding",
-    state: PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT > 0 ? "WAITING_READBACK" : "UNFOLDING",
+    state: "UNFOLDING",
     timelineLabel: "Controlled next proof",
     plainSummary:
-      "SourceRegistryV1 exists, but the public site still has no referral activation, no claim UI, and no source-aware buy path.",
+      PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT > 0
+        ? "One internal PAUSED source record exists, but the public site still has no referral activation, no claim UI, and no source-aware buy path."
+        : "SourceRegistryV1 exists, but the public site still has no referral activation, no claim UI, and no source-aware buy path.",
     whatBecameTrue:
-      "The source policy contracts and source observability layer are ready to record source-policy facts when separately approved.",
+      PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT > 0
+        ? "The first internal source-policy fact now exists as PAUSED state and can be inspected without activating referral."
+        : "The source policy contracts and source observability layer are ready to record source-policy facts when separately approved.",
     whatIsUnfolding:
-      "The next source step is a controlled PAUSED source-policy readback, not a public referral launch.",
+      "The next source step is a localhost-only source-attributed test path and separate activation decision, not a public referral launch.",
     whyItMattersToMembers:
       "The institution can test acquisition attribution without confusing members about referral availability or rewards.",
     proofToWatchNext:
-      "Watch for a SourceCreated readback, PAUSED status, zero public source links, and unchanged default ZERO_SOURCE_ID buys.",
+      "Watch for a local-only source-attributed receipt test, unchanged public ZERO_SOURCE_ID buys, and zero public source links.",
     whatDidNotChange:
       "No source record should be treated as referral activation. Public/default buys remain direct.",
     moduleIds: assertKnownModules(["source-attribution", "activity", "institutional-register"]),

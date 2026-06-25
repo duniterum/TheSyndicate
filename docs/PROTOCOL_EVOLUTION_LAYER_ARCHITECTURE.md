@@ -188,7 +188,7 @@ Initial modules that the layer should track:
 | Module | Current broad status | Evolution notes |
 | --- | --- | --- |
 | Membership Engine | LIVE | V3 direct buy is the current frontend target; source-neutral by default. |
-| Source / Referral Attribution | INACTIVE / PAUSED-ready | SourceRegistryV1 exists; zero source records; first internal PAUSED source packet is prepared but not executed. |
+| Source / Referral Attribution | PAUSED / INTERNAL ONLY | SourceRegistryV1 exists; one internal PAUSED source record is created and read back; referral/source UI remains inactive. |
 | Protocol Economy | LIVE / PARTIAL | Read-only observatory exists; future reporting/export remains deferred. |
 | Activity | LIVE | Heartbeat layer; future source policy events can be classified after readback. |
 | Register | LIVE | Durable truth surface; should receive evidence-backed evolution milestones. |

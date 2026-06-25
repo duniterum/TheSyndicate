@@ -1,9 +1,9 @@
 # Source Packet: Internal Test 001
 
-Status: READY FOR PAUSED SOURCE CEREMONY / NO TRANSACTION AUTHORIZED / SOURCE MUST START PAUSED
+Status: PAUSED SOURCE CREATED / READBACK GREEN / NO ACTIVATION AUTHORIZED
 
-This packet freezes the founder-approved values for the first possible internal
-source record. It does not authorize a mainnet transaction, source activation, public
+This packet records the founder-approved values and readback for the first
+internal source record. It does not authorize source activation, public
 source-aware buy path, claim UI, registry switch, or public referral launch.
 
 ## Scope Boundary
@@ -96,8 +96,8 @@ Source attribution is acquisition attribution, not reward accounting.
 
 ## Required Ethical / Trust Acknowledgments
 
-The final approved packet should include explicit source acknowledgment of these
-boundaries before any source record exists:
+The final approved packet included explicit source acknowledgment of these
+boundaries before the internal PAUSED source record was created:
 
 | Acknowledgment | Required posture |
 | --- | --- |
@@ -167,12 +167,12 @@ Recommended for `INTERNAL_PROTOCOL_TEST_SOURCE_001`.
 
 ## Readiness Status
 
-Status after founder value freeze: READY FOR PAUSED SOURCE CEREMONY REVIEW /
-NO SOURCE CREATION AUTHORIZED.
+Status after readback: PAUSED SOURCE CREATED / READBACK GREEN / NO ACTIVATION
+AUTHORIZED.
 
 Founder-provided public addresses, timestamps, caps, sourceId, and metadataHash
-are now frozen. This packet still does not authorize a transaction; a separate
-PAUSED source ceremony approval remains required.
+are frozen and were used in the first internal PAUSED source ceremony. This
+packet does not authorize another source creation transaction.
 
 The packet remains constrained by `docs/PROTOCOL_ORGANISM_GRAPH.md`:
 
@@ -672,9 +672,9 @@ The metadata hash is `keccak256` over the UTF-8 canonical JSON form of the
 metadata artifact with lexicographically sorted object keys. The artifact does
 not contain a `metadataHash` field, avoiding self-reference.
 
-## Future createSource Argument Table
+## Executed createSource Argument Table
 
-Founder review only. This table does not authorize a transaction.
+Historical/readback record only. Do not execute this transaction again.
 
 | Argument | Value |
 | --- | --- |
@@ -691,9 +691,26 @@ Founder review only. This table does not authorize a transaction.
 | `terms.payoutWallet` | `0x244531C571966f90f4849e03a507543d90f9C721` |
 | `terms.metadataHash` | `0x1f78bfa95d7aed0ff2a189a48b34bca937d4a3fe7c2defef758611f0bca1b75d` |
 
-## Pre-Ceremony Readback Checklist
+## SourceCreated Readback
 
-Before any future source-creation transaction, verify:
+| Field | Readback |
+| --- | --- |
+| Transaction | `0xf72d3c0ad6445f407382508985fc01c8d458186a410701ae40308a9d5f7a5280` |
+| Block | `88705814` |
+| Timestamp | `2026-06-24T09:11:50.000Z` |
+| SourceRegistryV1 | `0x780013bB358be6be95b401901264FC7c22a595a6` |
+| SourceRegistry owner | `0x88EC79AF0d5A2F3b83022A1770c645506803Dd73` |
+| `sourceExists(sourceId)` | `true` |
+| `isActive(sourceId)` | `false` |
+| `sourceConfig(sourceId).status` | `PAUSED` |
+| Event values | Match the frozen packet exactly |
+| Public/default buy path | Still `ZERO_SOURCE_ID` |
+| Referral/source UI | Still inactive |
+| Claim UI | Still absent |
+
+## Historical Pre-Ceremony Readback Checklist
+
+Before the source-creation transaction, the intended checklist was:
 
 - Current authority beats remembered authority: this checklist must be run
   fresh immediately before signing. Frozen packet values and older readbacks
@@ -704,10 +721,10 @@ Before any future source-creation transaction, verify:
 - The selected signer equals the current SourceRegistryV1 `owner()` readback.
 - SourceRegistryV1 bytecode exists at the target address.
 - Avalanche C-Chain ID is `43114`.
-- `sourceExists(0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620) = false`.
+- `sourceExists(0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620) = false` before creation.
 - `sourceConfig(0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620)` is empty/default before creation.
 - `isActive(0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620) = false`.
-- SourceRegistryV1 still has zero source records / no `SourceCreated` logs unless a later readback says otherwise.
+- SourceRegistryV1 still has zero source records / no `SourceCreated` logs unless a later readback says otherwise. The later readback now says the first internal PAUSED source exists.
 - MembershipSaleV3 still points to SourceRegistryV1.
 - V3 public/default buys still use `ZERO_SOURCE_ID`.
 - `/referral` still says referral/source attribution is inactive.
@@ -755,10 +772,11 @@ Boundaries:
 - not an owed-balance dashboard,
 - not available until active source-attributed receipts exist.
 
-## Future Readback Command Plan
+## Historical Readback Command Plan
 
-No command in this section should be run as a transaction. These are readback
-checks for after a separately approved future `createSource` transaction.
+No command in this section should be run as a transaction. These were the
+readback checks for the separately approved `createSource` transaction and now
+serve as the audit trail for the completed PAUSED source readback.
 
 Target contract:
 
@@ -863,13 +881,13 @@ Forbidden wording while paused:
 - No claim UI.
 - No source-aware public buy path.
 - No public referral activation.
-- No source record until founder approval.
+- No additional source record without separate founder approval.
 - No `setSourceStatus(..., ACTIVE)` in the source creation ceremony unless a
   separate activation approval exists.
 
-## Expected SourceRegistry Readback
+## SourceRegistry Readback
 
-After a future approved `createSource` transaction:
+After the approved `createSource` transaction:
 
 - `sourceExists(sourceId) = true`
 - `sourceConfig(sourceId).sourceWallet = 0x244531C571966f90f4849e03a507543d90f9C721`

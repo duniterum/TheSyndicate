@@ -56,7 +56,7 @@ Total: `2 passed / 0 failed / 0 skipped`
 
 | Surface | Status |
 | --- | --- |
-| `SourceRegistryV1` | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; expected zero source records until a separate readback changes that truth. |
+| `SourceRegistryV1` | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted. Later current-authority readback records one internal PAUSED source record. |
 | `MembershipSaleV3` | Deployed at `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`; funded; direct-buy target. |
 | Public buy path | `ZERO_SOURCE_ID` only. |
 | Referral/source UI | Inactive. |

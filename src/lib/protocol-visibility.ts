@@ -297,7 +297,7 @@ export const PROTOCOL_VISIBILITY_NODES: readonly ProtocolVisibilityNode[] = [
         : sourcePolicy.currentSummary,
     boundary: "No public source link, no source dashboard, no source-aware public buy path, and no claim UI.",
     pillarIds: ["map", "pulse", "proof"],
-    futureState: "Needs separate ceremony, readback, activation, legal framing, tests, and production QA.",
+    futureState: "Needs separate activation, local source-aware path, legal framing, tests, and production QA.",
   },
   {
     id: "referral",

@@ -31,7 +31,7 @@ export const Route = createFileRoute("/v3-preview")({
       {
         property: "og:description",
         content:
-          "Candidate V3 source/acquisition preview. No writes, no source records, no referral activation.",
+          "Candidate V3 source/acquisition preview. No writes, no source activation, no referral activation.",
       },
     ],
     links: [{ rel: "canonical", href: "https://thesyndicate.money/v3-preview" }],
@@ -86,7 +86,7 @@ function V3PreviewPage() {
                 Safety boundary
               </div>
               <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight">
-                No writes. No source records. No referral activation.
+                No writes. No source activation. No referral activation.
               </h2>
               <p className="mt-3 max-w-3xl text-base leading-relaxed text-foreground/82">
                 This page previews source attribution only. The live buy path now

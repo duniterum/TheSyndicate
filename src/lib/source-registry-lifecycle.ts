@@ -107,7 +107,7 @@ export function sourceStatusMeaning(status: SourcePolicyStatus): string {
 }
 
 function recordProofFields(record: SourcePolicyRecord): readonly string[] {
-  return [
+  const fields = [
     `sourceId ${record.sourceId}`,
     `sourceWallet ${record.sourceWallet}`,
     `sourceClass ${record.sourceClass}`,
@@ -116,7 +116,19 @@ function recordProofFields(record: SourcePolicyRecord): readonly string[] {
     `scope ${sourceScopeLabel(record.scope)}`,
     `payoutWallet ${record.payoutWallet}`,
     `metadataHash ${record.metadataHash}`,
-  ] as const;
+  ];
+
+  if (record.startTime !== undefined) fields.push(`startTime ${record.startTime}`);
+  if (record.endTime !== undefined) fields.push(`endTime ${record.endTime}`);
+  if (record.grossCap !== undefined) fields.push(`grossCap ${record.grossCap}`);
+  if (record.perBuyerCap !== undefined) fields.push(`perBuyerCap ${record.perBuyerCap}`);
+  if (record.appliesToRepeatPurchases !== undefined) {
+    fields.push(`appliesToRepeatPurchases ${record.appliesToRepeatPurchases}`);
+  }
+  if (record.sourceCreatedBlock !== undefined) fields.push(`sourceCreatedBlock ${record.sourceCreatedBlock}`);
+  if (record.sourceCreatedTxHash) fields.push(`sourceCreatedTxHash ${record.sourceCreatedTxHash}`);
+
+  return fields;
 }
 
 export function projectSourceRegistryLifecycleFact(

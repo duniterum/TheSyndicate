@@ -1,20 +1,21 @@
 # Referral / Source Attribution V1 Readiness
 
-Status: NON-LIVE READINESS SPEC / SOURCE RECORDS INACTIVE / NO CLAIM UI
+Status: NON-LIVE READINESS SPEC / ONE PAUSED INTERNAL SOURCE / NO CLAIM UI
 
 This document records the current referral/source-attribution boundary after
-the V3 direct-buy cutover. It does not authorize a transaction, source record,
-referral link, claim UI, registry switch, funding action, or public activation.
+the V3 direct-buy cutover and first internal PAUSED source record. It does not
+authorize source activation, referral link, claim UI, registry switch, funding
+action, public source-aware buy path, or public activation.
 
 ## Current On-Chain Truth
 
 | Surface | Current truth |
 | --- | --- |
-| SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; zero source records |
+| SourceRegistryV1 | Deployed at `0x780013bB358be6be95b401901264FC7c22a595a6`; owner accepted; one PAUSED internal source record |
 | MembershipSaleV3 | Deployed at `0x2A6cFc76906e758B934209AFf5A163c9bC20132E`; funded; current direct-buy target |
 | Public V3 buy path | Uses `ZERO_SOURCE_ID`; no source-linked public buy path is active |
 | Referral/source UI | Inactive; no public referral/source link, source dashboard, balance, or claim action |
-| Source records | None created; no policy metadata has been approved on-chain |
+| Source records | `INTERNAL_PROTOCOL_TEST_SOURCE_001` exists as PAUSED policy state only; no ACTIVE source exists |
 
 ## Doctrine
 
@@ -51,7 +52,8 @@ The future activation path should be:
 
 1. Create a source-policy packet off-chain.
 2. Founder/operator approves one source record.
-3. Create the source record on-chain.
+3. Create the source record on-chain. The first internal record is now created
+   and remains PAUSED.
 4. Read back `SourceCreated`, source terms, status, payout wallet, caps, and
    metadata hash.
 5. Keep UI pending until readback, legal copy, and Replit/public QA are green.

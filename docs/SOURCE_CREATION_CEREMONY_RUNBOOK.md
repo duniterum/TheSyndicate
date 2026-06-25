@@ -1,6 +1,6 @@
 # Source Creation Ceremony Runbook
 
-Status: RUNBOOK ONLY / NO TRANSACTION AUTHORIZED / SOURCE RECORDS INACTIVE
+Status: RUNBOOK ONLY / NO TRANSACTION AUTHORIZED / ONE PAUSED INTERNAL SOURCE EXISTS
 
 This runbook defines the controlled ceremony for creating a `SourceRegistryV1`
 source record. It is intentionally separate from public referral activation,

@@ -1,8 +1,8 @@
 // My Referral / Reputation — personal cockpit surfaces, kept as honest
 // PENDING shells until source records and activation are separately approved.
 //
-// Doctrine: SourceRegistryV1 and MembershipSaleV3 exist, but SourceRegistryV1
-// has zero source records and public/default buys use ZERO_SOURCE_ID.
+// Doctrine: SourceRegistryV1 and MembershipSaleV3 exist, but the first source
+// record is PAUSED/internal only and public/default buys use ZERO_SOURCE_ID.
 //   • There is no live source link, commission, claim UI, or source-aware
 //     public buy path. We say so plainly instead of rendering fabricated
 //     estimators, tier ladders, or simulated scores.
@@ -30,21 +30,22 @@ export function MyReferralCard() {
       <SectionHeader
         eyebrow="Referral · Pending"
         title={<>Bring members. Recognition, <span className="text-gradient-gold">not payout</span></>}
-        description="The referral surface is not live yet. SourceRegistryV1 is deployed with zero source records; public V3 buys use ZERO_SOURCE_ID. No commission is accruing and no claim UI is live."
+        description="The referral surface is not live yet. SourceRegistryV1 has one PAUSED internal source record; public V3 buys use ZERO_SOURCE_ID. No commission is accruing and no claim UI is live."
       />
       <GlassCard className="p-5">
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <StatusPill status="PENDING" />
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            No source records · no claim UI
+            One PAUSED source record · no claim UI
           </span>
         </div>
 
         <p className="text-sm text-foreground/85 leading-relaxed">
-          Your introduction path may become visible after a separate approved
-          source packet, on-chain source record, activation readback, and legal
-          copy. Until then there is no link to share, no balance to estimate,
-          and no commission accruing — so we show none.
+          The internal source record is a protocol-test fact, not a member
+          referral program. Your introduction path may become visible only after
+          a separate approved activation readback, source-aware product path,
+          and legal copy. Until then there is no link to share, no balance to
+          estimate, and no commission accruing — so we show none.
         </p>
 
         <div className="mt-4 grid gap-3 md:grid-cols-3">
