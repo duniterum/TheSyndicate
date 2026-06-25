@@ -35,8 +35,8 @@ describe("source activation readiness", () => {
     expect(statusesById.get("no-active-source-today")).toBe("SATISFIED");
     expect(statusesById.get("current-authority-preflight")).toBe("READBACK_REQUIRED");
     expect(statusesById.get("terms-window-review")).toBe("READBACK_REQUIRED");
-    expect(statusesById.get("local-source-aware-test-path")).toBe("MISSING_IMPLEMENTATION");
-    expect(statusesById.get("clear-source-ux")).toBe("MISSING_IMPLEMENTATION");
+    expect(statusesById.get("local-source-aware-test-path")).toBe("SATISFIED");
+    expect(statusesById.get("clear-source-ux")).toBe("SATISFIED");
     expect(statusesById.get("founder-active-approval")).toBe("FOUNDER_APPROVAL_REQUIRED");
     expect(statusesById.get("legal-product-signoff")).toBe("FOUNDER_APPROVAL_REQUIRED");
     expect(statusesById.get("public-zero-source-boundary")).toBe("SATISFIED");

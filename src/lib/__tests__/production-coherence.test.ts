@@ -1546,8 +1546,15 @@ describe("production coherence guards", () => {
 
   it("keeps source activation readiness non-transactional and aligned with the PAUSED source truth", () => {
     const packet = read("docs/SOURCE_ACTIVATION_READINESS_PACKET.md");
+    const localPathDoc = read("docs/SOURCE_AWARE_LOCAL_TEST_PATH.md");
     const model = read("src/lib/source-activation-readiness.ts");
     const modelTest = read("src/lib/__tests__/source-activation-readiness.test.ts");
+    const localGate = read("src/lib/source-aware-test-mode.ts");
+    const localGateTest = read("src/lib/__tests__/source-aware-test-mode.test.ts");
+    const localRoute = read("src/routes/labs.source-attribution-test.tsx");
+    const localHarness = read("src/components/syndicate/SourceAwareLocalTestHarness.tsx");
+    const saleHooks = read("src/lib/sale-hooks.ts");
+    const livePurchase = read("src/components/syndicate/LivePurchase.tsx");
     const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
     const index = read("docs/PROTOCOL_KNOWLEDGE_INDEX.md");
     const checkpoint = read("docs/PROTOCOL_CHECKPOINT_2026_06_25.md");
@@ -1555,27 +1562,49 @@ describe("production coherence guards", () => {
     const graph = read("docs/PROTOCOL_ORGANISM_GRAPH.md");
 
     expect(authority).toContain("docs/SOURCE_ACTIVATION_READINESS_PACKET.md");
+    expect(authority).toContain("docs/SOURCE_AWARE_LOCAL_TEST_PATH.md");
     expect(index).toContain("docs/SOURCE_ACTIVATION_READINESS_PACKET.md");
     expect(index).toContain("src/lib/source-activation-readiness.ts");
+    expect(index).toContain("src/lib/source-aware-test-mode.ts");
     expect(packet).toContain("Status: READINESS PACKET / NO TRANSACTION AUTHORIZED / NO ACTIVATION AUTHORIZED");
     expect(packet).toContain("NOT READY FOR ACTIVE CEREMONY");
     expect(packet).toContain("No active source exists today | SATISFIED");
-    expect(packet).toContain("localhost-only source-aware test path");
+    expect(packet).toContain("Localhost-only source-aware test path | SATISFIED AS BOUNDARY");
+    expect(packet).toContain("Buyer disclosure / clear-source UX | SATISFIED AS INTERNAL BOUNDARY");
+    expect(packet).toContain("/labs/source-attribution-test?sourceTest=INTERNAL_PROTOCOL_TEST_SOURCE_001");
     expect(packet).toContain("This table is for future review only. It is not an instruction to sign.");
     expect(model).toContain("readyForActiveCeremony");
     expect(model).toContain("readyForPublicReferral: false");
     expect(model).toContain("readyForClaimUi: false");
     expect(model).toContain("readyForPublicSourceAwareBuyPath: false");
     expect(modelTest).toContain("readyForActiveCeremony).toBe(false)");
+    expect(localPathDoc).toContain("LOCALHOST-ONLY TEST BOUNDARY / NO ACTIVATION AUTHORIZED");
+    expect(localPathDoc).toContain("VITE_ENABLE_SOURCE_TEST_MODE=true");
+    expect(localPathDoc).toContain("Current truth: the source is `PAUSED`, so the harness renders blockers and no");
+    expect(localGate).toContain("LOCKED_PRODUCTION");
+    expect(localGate).toContain("LOCKED_NON_LOCALHOST");
+    expect(localGate).toContain("LOCKED_SOURCE_NOT_ACTIVE");
+    expect(localGate).toContain("canPrepareSourceAwareBuy");
+    expect(localGateTest).toContain("hard-locks production even if someone sets the public flag");
+    expect(localRoute).toContain('createFileRoute("/labs/source-attribution-test")');
+    expect(localRoute).toContain('{ name: "robots", content: "noindex, nofollow" }');
+    expect(localHarness).toContain("INTERNAL SOURCE TEST MODE / NOT PUBLIC REFERRAL");
+    expect(localHarness).toContain("!gate.canPrepareSourceAwareBuy");
+    expect(localHarness).toContain("args: [TEST_USDC_RAW, wallet.address!, TEST_SOURCE_ID, minSynOut, []]");
+    expect(saleHooks).toContain("const quoteSourceId = options.sourceId ?? ZERO_SOURCE_ID");
+    expect(livePurchase).toContain("args: [usdcRaw, address!, ZERO_SOURCE_ID, minSynOut, []]");
     expect(checkpoint).toContain("docs/SOURCE_ACTIVATION_READINESS_PACKET.md");
+    expect(checkpoint).toContain("docs/SOURCE_AWARE_LOCAL_TEST_PATH.md");
     expect(capability).toContain("src/lib/source-activation-readiness.ts");
+    expect(capability).toContain("src/lib/source-aware-test-mode.ts");
     expect(graph).toContain("ONE INTERNAL PAUSED RECORD");
     expect(graph).toContain("one internal PAUSED source record");
     expect(graph).not.toMatch(/Source records \| source\/attribution policy \| ZERO records|Deployed; zero records|first internal packet remains draft/i);
     expect(packet).toContain("no yield/passive-income/ROI framing");
     expect(packet).toContain("no MLM/downline framing");
     expect(packet).toContain("financial leaderboard framing");
-    expect(packet).not.toMatch(/public referral is live|claim UI is live|source links are live|top earner|leaderboard is live|guaranteed return|yield opportunity/i);
+    const fakeLiveSurface = [packet, localPathDoc, localGate, localRoute, localHarness].join("\n");
+    expect(fakeLiveSurface).not.toMatch(/public referral is live|claim UI is live|source links are live|top earner|leaderboard is live|guaranteed return|yield opportunity/i);
   });
 
   it("keeps the current runtime free of legacy platform dependencies", () => {

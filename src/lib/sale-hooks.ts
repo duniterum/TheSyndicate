@@ -422,29 +422,35 @@ export function useBuyerPurchaseTotals() {
  * stable `{ data: synOut }` shape across V1 (`quoteSyn`) and V2 (`quote` tuple),
  * plus the V2-only `seatIfFirst`/`quoteEra`/`available` extras when live.
  */
-export function useQuoteSyn(usdcAmountRaw: bigint | undefined, recipient?: `0x${string}`) {
+export function useQuoteSyn(
+  usdcAmountRaw: bigint | undefined,
+  recipient?: `0x${string}`,
+  options: { sourceId?: `0x${string}`; enabled?: boolean } = {},
+) {
   const enabled = Boolean(usdcAmountRaw && usdcAmountRaw > 0n);
+  const queryEnabled = enabled && (options.enabled ?? true);
   const quoteRecipient = recipient ?? QUOTE_PREVIEW_RECIPIENT;
+  const quoteSourceId = options.sourceId ?? ZERO_SOURCE_ID;
   const v1 = useReadContract({
     address: SALE_V1,
     abi: SALE_ABI,
     functionName: "quoteSyn",
     args: enabled ? [usdcAmountRaw as bigint] : undefined,
-    query: { enabled: enabled && !ACTIVE_SALE_IS_V2 },
+    query: { enabled: queryEnabled && !ACTIVE_SALE_IS_V2 },
   });
   const v2 = useReadContract({
     address: ACTIVE_SALE,
     abi: SALE_V2_ABI,
     functionName: "quote",
     args: enabled ? [usdcAmountRaw as bigint] : undefined,
-    query: { enabled: enabled && ACTIVE_SALE_IS_V2 },
+    query: { enabled: queryEnabled && ACTIVE_SALE_IS_V2 },
   });
   const v3 = useReadContract({
     address: ACTIVE_SALE,
     abi: SALE_V3_ABI,
     functionName: "quote",
-    args: enabled ? [usdcAmountRaw as bigint, quoteRecipient, ZERO_SOURCE_ID] : undefined,
-    query: { enabled: enabled && ACTIVE_SALE_IS_V3 },
+    args: enabled ? [usdcAmountRaw as bigint, quoteRecipient, quoteSourceId] : undefined,
+    query: { enabled: queryEnabled && ACTIVE_SALE_IS_V3 },
   });
   if (ACTIVE_SALE_IS_V3) {
     const tuple = v3.data as

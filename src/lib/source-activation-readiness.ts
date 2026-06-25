@@ -106,22 +106,22 @@ export function buildSourceActivationReadiness(
     {
       id: "local-source-aware-test-path",
       label: "Localhost-only source-aware test path",
-      status: "MISSING_IMPLEMENTATION",
+      status: "SATISFIED",
       proof:
-        "The public buy path intentionally uses ZERO_SOURCE_ID and no local-only non-zero sourceId test path is approved yet.",
+        "A noindex /labs/source-attribution-test harness exists, hard-gated to localhost development, an explicit source-test flag, and the frozen test sourceId.",
       requirement:
-        "Build an environment-gated local test mode before any source-attributed purchase test. It must never expose a public source selector or public source link.",
-      blocksActiveCeremony: true,
+        "Before any controlled test, run the harness locally and confirm production/default buys still use ZERO_SOURCE_ID with no public selector or source link.",
+      blocksActiveCeremony: false,
     },
     {
       id: "clear-source-ux",
       label: "Clear-source buyer disclosure",
-      status: "MISSING_IMPLEMENTATION",
+      status: "SATISFIED",
       proof:
-        "No approved source-aware buyer confirmation exists because public/default buys are not source-attributed.",
+        "The internal harness previews sourceId, status, source class, wallet, payout wallet, commission bps, caps, local-only warnings, and the $5 test boundary before any wallet controls can appear.",
       requirement:
-        "Before a non-zero sourceId signature path, show sourceId, source class, status, commission bps, cap terms, acquisition commission behavior, and Net USDC Routed implications.",
-      blocksActiveCeremony: true,
+        "Before public source-aware UX, repeat this disclosure discipline with legal/product-approved public copy.",
+      blocksActiveCeremony: false,
     },
     {
       id: "founder-active-approval",
@@ -180,8 +180,8 @@ export function buildSourceActivationReadiness(
     requiredNextActions: [
       "Run a fresh current-authority readback before any source status transaction.",
       "Decide whether the approved time window still fits the intended controlled test.",
-      "Build the localhost-only source-aware test path with explicit internal-test gating.",
-      "Approve source-aware buyer disclosure before any non-zero sourceId wallet signature.",
+      "Run the localhost-only source-aware test path with the explicit internal-test flag and frozen sourceId.",
+      "Reconfirm source-aware buyer disclosure before any non-zero sourceId wallet signature.",
       "Approve the exact ACTIVE status transaction only after every blocker is cleared.",
     ],
     forbiddenActions: [

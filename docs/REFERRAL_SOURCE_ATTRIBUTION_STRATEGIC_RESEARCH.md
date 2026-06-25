@@ -508,12 +508,12 @@ The current path is still the best path if it stays narrow:
 - Do not create ProductSaleRouter yet.
 - Do not turn source attribution into the product.
 
-The best next real-world move is not a public referral launch. It is activation
-readiness and a controlled localhost-only source-aware test path for the
-existing internal PAUSED MembershipSaleV3 source record.
+The best next real-world move is not a public referral launch. The controlled
+localhost-only source-aware test path now exists as an internal boundary for
+the existing internal PAUSED MembershipSaleV3 source record.
 
-Exact next step: source activation preflight plus local-only source-aware test
-design, with no public source path.
+Exact next step: source activation preflight plus source terms/window review,
+with no public source path.
 
 This gives The Syndicate real operational proof without creating legal,
 psychological, or product-story drift. It also preserves the larger institution:

@@ -46,6 +46,7 @@ import { Route as LabsIndexRouteImport } from './routes/labs.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
 import { Route as MemberNumberRouteImport } from './routes/member.$number'
+import { Route as LabsSourceAttributionTestRouteImport } from './routes/labs.source-attribution-test'
 import { Route as LabsSignalsRouteImport } from './routes/labs.signals'
 import { Route as LabsProtocolMemoryRouteImport } from './routes/labs.protocol-memory'
 import { Route as LabsProtocolLineageRouteImport } from './routes/labs.protocol-lineage'
@@ -258,6 +259,12 @@ const MemberNumberRoute = MemberNumberRouteImport.update({
   path: '/member/$number',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabsSourceAttributionTestRoute =
+  LabsSourceAttributionTestRouteImport.update({
+    id: '/source-attribution-test',
+    path: '/source-attribution-test',
+    getParentRoute: () => LabsRoute,
+  } as any)
 const LabsSignalsRoute = LabsSignalsRouteImport.update({
   id: '/signals',
   path: '/signals',
@@ -447,6 +454,7 @@ export interface FileRoutesByFullPath {
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
+  '/labs/source-attribution-test': typeof LabsSourceAttributionTestRoute
   '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -511,6 +519,7 @@ export interface FileRoutesByTo {
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
+  '/labs/source-attribution-test': typeof LabsSourceAttributionTestRoute
   '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -577,6 +586,7 @@ export interface FileRoutesById {
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
+  '/labs/source-attribution-test': typeof LabsSourceAttributionTestRoute
   '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -644,6 +654,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
+    | '/labs/source-attribution-test'
     | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -708,6 +719,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
+    | '/labs/source-attribution-test'
     | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -773,6 +785,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-lineage'
     | '/labs/protocol-memory'
     | '/labs/signals'
+    | '/labs/source-attribution-test'
     | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -1093,6 +1106,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MemberNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/labs/source-attribution-test': {
+      id: '/labs/source-attribution-test'
+      path: '/source-attribution-test'
+      fullPath: '/labs/source-attribution-test'
+      preLoaderRoute: typeof LabsSourceAttributionTestRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/signals': {
       id: '/labs/signals'
       path: '/signals'
@@ -1308,6 +1328,7 @@ interface LabsRouteChildren {
   LabsProtocolLineageRoute: typeof LabsProtocolLineageRoute
   LabsProtocolMemoryRoute: typeof LabsProtocolMemoryRoute
   LabsSignalsRoute: typeof LabsSignalsRoute
+  LabsSourceAttributionTestRoute: typeof LabsSourceAttributionTestRoute
   LabsIndexRoute: typeof LabsIndexRoute
 }
 
@@ -1329,6 +1350,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsProtocolLineageRoute: LabsProtocolLineageRoute,
   LabsProtocolMemoryRoute: LabsProtocolMemoryRoute,
   LabsSignalsRoute: LabsSignalsRoute,
+  LabsSourceAttributionTestRoute: LabsSourceAttributionTestRoute,
   LabsIndexRoute: LabsIndexRoute,
 }
 

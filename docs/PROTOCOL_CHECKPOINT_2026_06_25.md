@@ -197,8 +197,8 @@ Archive1155 / SeatRecord721 / SwapRail / ProductSaleRouter
 | Current-authority preflight before any next source transaction | Prevents acting from stale source, owner, status, or production memory | Any source status or terms transaction |
 | Source activation readiness packet | Created as `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`; separates PAUSED policy fact from ACTIVE source behavior | ACTIVE ceremony remains blocked until readbacks, local test path, disclosure, and founder approval |
 | Timestamp/window review | Current window is July 1-15, 2026 UTC; if activation testing happens too late, a visible terms update may be required before activation | Source-attributed test buy |
-| Localhost-only source-aware test path | Needed to test non-zero sourceId without public referral UX | $5 internal source-attributed buy test |
-| Buyer disclosure / clear-source UX | Required before any non-zero sourceId signature path | Public or internal source-attributed buy UX |
+| Localhost-only source-aware test path | Created as `/labs/source-attribution-test` with localhost, flag, query, sourceId, and PAUSED-status gates | $5 internal source-attributed buy test remains blocked until ACTIVE ceremony and fresh readbacks |
+| Buyer disclosure / clear-source UX | Internal harness previews sourceId, status, class, wallets, commission bps, caps, and quote fields before future controls can appear | Public source-aware UX still requires separate legal/product approval |
 | ACTIVE source ceremony | Separate founder transaction; not bundled with UI or claim activation | Source-attributed buy test |
 | $5 internal source-attributed buy readback | Proves receipt, payout, escrow, attribution, cache, Activity, My Syndicate, and Registry truth | Public source/referral planning |
 | Claim/escrow policy | Required before any claim surface or balance display | Claim UI |
@@ -237,6 +237,13 @@ Outcome:
 - fresh-buyer-wallet checklist,
 - $5 test amount boundary,
 - readback checklist.
+
+Current implementation note: this sprint is represented by
+`docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`,
+`src/lib/source-aware-test-mode.ts`, and the noindex internal route
+`/labs/source-attribution-test?sourceTest=INTERNAL_PROTOCOL_TEST_SOURCE_001`.
+It remains non-executable while the source status is PAUSED and it does not
+authorize activation.
 
 ### Sprint 3 - Controlled ACTIVE Ceremony And $5 Test
 
@@ -303,7 +310,11 @@ Do not create another source record yet.
 
 Do not build claim UI yet.
 
-The next highest-leverage sprint after the readiness packet is the localhost-only source-aware test path boundary. That work increases institutional integrity because it makes the next possible source-attributed purchase understandable before it becomes usable.
+The localhost-only source-aware test path boundary now exists as an internal,
+noindex `/labs` route guarded by localhost, an explicit environment flag, the
+frozen internal source label, and the source's current `PAUSED` status. That
+work increases institutional integrity because it makes the next possible
+source-attributed purchase understandable before it becomes usable.
 
 The protocol should move from:
 
@@ -314,7 +325,7 @@ PAUSED source policy fact
 to:
 
 ```text
-activation preflight -> local-only source-aware test path -> controlled ACTIVE test -> receipt/readback truth
+activation preflight -> source terms/window review -> controlled ACTIVE test -> receipt/readback truth
 ```
 
 Only after that should public referral/source UX be reconsidered.

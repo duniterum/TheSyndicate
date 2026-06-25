@@ -91,8 +91,8 @@ The protocol is not ready for:
 | No active source exists today | SATISFIED | If any ACTIVE source already exists before the controlled test, stop and reconcile source state before another activation action. |
 | SourceRegistry owner and network | READBACK REQUIRED | Re-read chain ID `43114`, bytecode, `owner()`, and `pendingOwner()` immediately before signing. |
 | Source terms and window | READBACK REQUIRED | Confirm the planned test can happen inside the approved window. If not, update terms with a new approved packet and metadata hash before activation. |
-| Localhost-only source-aware test path | MISSING IMPLEMENTATION | Build an environment-gated local test path before any non-zero sourceId purchase test. |
-| Buyer disclosure / clear-source UX | MISSING IMPLEMENTATION | Before any non-zero sourceId wallet signature, show sourceId, source class, status, commission bps, cap terms, acquisition commission, and Net USDC Routed implications. |
+| Localhost-only source-aware test path | SATISFIED AS BOUNDARY | `/labs/source-attribution-test` exists under a noindex internal route and hard-fails unless localhost development, `VITE_ENABLE_SOURCE_TEST_MODE=true`, and `sourceTest=INTERNAL_PROTOCOL_TEST_SOURCE_001` are all present. It remains non-executable while the source is PAUSED. |
+| Buyer disclosure / clear-source UX | SATISFIED AS INTERNAL BOUNDARY | The internal harness previews sourceId, status, class, source wallet, payout wallet, commission bps, caps, $5 test amount, and Net USDC Routed/acquisition commission fields before any future wallet controls can appear. |
 | Founder ACTIVE ceremony approval | FOUNDER APPROVAL REQUIRED | Founder must approve the exact transaction after fresh readbacks. |
 | Legal/product copy | FOUNDER APPROVAL REQUIRED | Approve acquisition-first wording with no source ownership, no agency/employment implication, no MLM/downline framing, and no yield/passive-income/ROI framing. |
 | Public/default ZERO_SOURCE_ID boundary | SATISFIED | Public/default production buys must continue to pass `ZERO_SOURCE_ID`. |
@@ -132,14 +132,17 @@ If all gates clear later, the activation transaction to review would be:
 
 This table is for future review only. It is not an instruction to sign.
 
-## Immediate Next Sprint
+## Localhost-Only Source-Aware Test Path
 
-Build the localhost-only source-aware test path.
+The local boundary now exists at:
+
+`/labs/source-attribution-test?sourceTest=INTERNAL_PROTOCOL_TEST_SOURCE_001`
 
 Required constraints:
 
 - local development only,
 - explicit environment gate,
+- `VITE_ENABLE_SOURCE_TEST_MODE=true`,
 - loud internal-test banner,
 - exact sourceId supplied intentionally,
 - fresh buyer wallet,
@@ -149,6 +152,15 @@ Required constraints:
 - no public referral link,
 - no source dashboard,
 - no claim UI.
+
+Current result: the route can render the internal boundary on localhost, but it
+does not expose wallet controls while the frozen source remains `PAUSED`.
+
+## Immediate Next Sprint
+
+Prepare the current-authority preflight for a possible future ACTIVE ceremony
+and decide whether the July 1-15, 2026 UTC test window still fits. If it does
+not fit, stop and update source terms before any activation decision.
 
 ## Stop Conditions
 
@@ -161,7 +173,7 @@ Stop before any future activation if any of these are true:
 - `sourceConfig(sourceId).status` is not `PAUSED`.
 - Terms differ from the approved packet.
 - The planned test cannot occur inside the approved window.
-- The local-only source-aware path is missing.
+- The local-only source-aware path fails its localhost/flag/query/sourceId gate.
 - Public/default buy path does not use `ZERO_SOURCE_ID`.
 - `/referral` shows a public source link, claim UI, or source dashboard.
 - Any UI implies source ownership, public referral activation, passive income,
