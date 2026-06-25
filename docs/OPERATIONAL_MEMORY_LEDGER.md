@@ -1,6 +1,6 @@
 # Operational Memory Ledger
 
-Last updated: 2026-06-24
+Last updated: 2026-06-25
 
 Status: operational first-read for synchronization, release, deployment,
 environment, Git, Replit, sandbox, credential, and handoff work.
@@ -417,6 +417,26 @@ Status guide:
 | Future "never again" rule | Do not classify boundary copy as live UI. Do not treat expected `check-commission-router-freeze` blockers as release failures unless the frozen-router posture changes. |
 | Source links / commit hashes | GitHub canonical `e19927b1b6caf846fa72531bcfdb034f9a892ec6`; Replit deploy checkpoint reported as `5a6b7b70`; no Replit fix pushed back. |
 
+### OML-016 - Use the environment with current authority, but sync first
+
+| Field | Detail |
+| --- | --- |
+| Date discovered | 2026-06-25 |
+| System | Codex / Replit / GitHub / Avalanche RPC / source ceremony preflight |
+| Severity | High |
+| Status | Resolved as process rule; must remain guarded |
+| Category | Environment authority / current-authority readback |
+| Affected surfaces | Codex shell, Replit workspace, GitHub main, production, Avalanche RPC, source activation preflight |
+| Symptom | Codex could prepare the source ACTIVE preflight but could not run live Avalanche readbacks because `AVAX_RPC` was missing locally. |
+| Root cause | Different environments have different authority and access. Codex may lack RPC/secrets while Replit may have the correct read environment and production context. Replit checkpoint hashes may not equal GitHub hashes because its lineage is separate, so file-content parity matters more than literal HEAD equality. |
+| Why it mattered | A source activation preflight must compare live chain truth against the latest repo truth. Stopping at "RPC unavailable" wastes time, but running readbacks from stale Replit truth risks approving the wrong values. |
+| Fix | Use Replit as a readback executor when it has the needed RPC, but only after syncing or byte-parity checking against the target GitHub commit. Preserve intentional Replit local divergences, verify required truth files exist, do not expose secrets, and report exact readbacks as `READBACK GREEN`, `READBACK PARTIAL`, or `READBACK BLOCKED`. |
+| Process guard | If Codex lacks RPC, do not stop there. Identify whether Replit or the founder machine has read authority. Before using Replit, confirm current commit/branch/status, sync to GitHub truth or prove content parity, then run readbacks read-only. |
+| Founder-work impact | Reduces founder manual command running and prevents unnecessary delays while keeping signing/activation under founder approval only. |
+| Release implication | Replit readback, Replit sync, Replit publish, and production QA remain separate states. A readback task can sync the workspace without requiring publish. |
+| Future "never again" rule | When blocked by missing local RPC or secrets, look for an authorized read environment before declaring the task blocked. Never run current-authority readbacks from a stale workspace. Never expose RPC URLs or secrets. |
+| Source links / commit hashes | GitHub canonical `1dd28205e6bb60f4d35c66174e461a2d11718b4c`; Replit synced file-content parity to canonical, ran server-side readbacks, and reported `READBACK GREEN`; no GitHub push-back required. |
+
 ## 5. Required Pre-Work Operational Truth Check
 
 Before any implementation, release, sync, or handoff sprint:
@@ -436,6 +456,9 @@ Before any implementation, release, sync, or handoff sprint:
 11. Confirm the validation command required for the batch.
 12. Classify the batch using `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`
     if GitHub/Replit/production/on-chain alignment may be affected.
+13. If local Codex lacks RPC, secrets, production context, or another read
+    authority, check whether Replit or the founder machine can perform the
+    read-only task after syncing to GitHub truth. Do not expose secrets.
 
 If any of these cannot be confirmed, report the unknown before presenting the
 work as synchronized.
@@ -525,6 +548,7 @@ or a sprint explicitly requires it.
 | Production synchronization classification | `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`, this ledger, release handoff, production coherence guard | Guarded in docs/tests | Add a script that prints required Replit/publish/QA class if production drift repeats. |
 | Replit dev watcher limits are not production failures | This ledger, production synchronization doctrine's separate completion states | Guarded by process | If ENOSPC repeats, consider a canonical Vite dev watch-ignore for `.local`, `.pythonlibs`, `contracts`, `artifacts`, reports, and generated local state. |
 | Live QA text matches are not live controls | This ledger, production coherence guard | Guarded in docs/tests | Add a DOM-aware live QA helper if grep false positives repeat. |
+| Replit can serve as readback executor when Codex lacks RPC | This ledger, source ceremony preflight docs | Guarded by process | Add a reusable readback script if current-authority readbacks repeat often. |
 
 ## 10. Validation Policy
 

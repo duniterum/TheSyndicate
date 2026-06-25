@@ -1423,6 +1423,11 @@ describe("production coherence guards", () => {
     expect(ledger).toContain("buttons, links, inputs, forms, selectors, wallet actions, or source-aware buy paths");
     expect(ledger).toContain("local `vite.config.ts` watch-ignore fix as an intentional local divergence");
     expect(ledger).toContain("`check-commission-router-freeze` `BLOCKED` output as expected pre-activation posture");
+    expect(ledger).toContain("OML-016 - Use the environment with current authority, but sync first");
+    expect(ledger).toContain("Replit may have the correct read environment and production context");
+    expect(ledger).toContain("file-content parity matters more than literal HEAD equality");
+    expect(ledger).toContain("Never run current-authority readbacks from a stale workspace");
+    expect(ledger).toContain("Never expose RPC URLs or secrets");
 
     expect(syncDoctrine).toContain("Status: OPERATIONAL DOCTRINE / NO DEPLOYMENT AUTHORITY / NO PUBLISH AUTHORITY");
     expect(syncDoctrine).toContain("Source-Of-Truth Model");
