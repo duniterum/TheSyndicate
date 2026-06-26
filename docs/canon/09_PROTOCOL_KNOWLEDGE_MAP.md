@@ -60,7 +60,7 @@ The post-source-ceremony system uses one shared lifecycle vocabulary, exposed by
 | `proof` | What capability or boundary was proven? | Protocol Evolution, lifecycle proof models, Transparency, Registry, guarded proof cards | Not public launch, referral activation, claim UI, source dashboard, or product-wide attribution. |
 | `register-memory` | What permanent fact should remain on the record? | Institutional Register by promotion or lawful seed | Not Chronicle publication, public product activation, or live operational state. |
 | `chronicle-review` | Does the fact deserve story and context? | Chronicle admission/review and curated Chronicle entries | Not automatic storytelling or product launch. |
-| `public-product` | Should users be able to act on it? | Product, legal/disclosure, UX, security, release, and founder approval gates | Not backfilled from proof, memory, or Chronicle alone. |
+| `public-product` | Should users be able to act on it? | Product, legal/disclosure, UX, security, release, founder approval gates, and public-product decision models such as `src/lib/public-product-decision-gate.ts` | Not backfilled from proof, memory, or Chronicle alone. |
 
 ---
 
@@ -111,6 +111,12 @@ below names every layer and its key properties. Layer ids are shown in `code`.
   **live**. It is the reusable proof pattern: packet -> terms -> controlled
   ACTIVE -> real action -> PAUSED closure. It can seed the Institutional Register;
   Chronicle admission and public product activation remain separate decisions.
+- **Public Product Decision Gate** - not its own knowledge layer; it is the final
+  decision stage for whether a proven capability may become user-actionable
+  product. Home: `src/lib/public-product-decision-gate.ts` and
+  `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`. The current Source Attribution
+  decision is not ready for public product: proof exists, but public source links,
+  source dashboards, claim UI, and public source-aware buys remain unapproved.
 
 ### Knowledge Pipeline (Truth → Events → Signals → Memory → Story)
 

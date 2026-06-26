@@ -1,0 +1,172 @@
+import { FIRST_SOURCE_ATTRIBUTION_LIFECYCLE } from "./protocol-lifecycle";
+import {
+  CURRENT_SOURCE_POLICY_SNAPSHOT,
+  INTERNAL_PROTOCOL_TEST_SOURCE_001,
+  ZERO_SOURCE_ID,
+  type SourcePolicySnapshot,
+} from "./source-policy-observability";
+
+export type PublicProductGateStatus =
+  | "SATISFIED"
+  | "REQUIRED"
+  | "FOUNDER_APPROVAL_REQUIRED"
+  | "BLOCKED_BY_DESIGN";
+
+export type PublicProductDecisionStatus = "NOT_READY_FOR_PUBLIC_PRODUCT";
+
+export type PublicProductGate = {
+  readonly id: string;
+  readonly label: string;
+  readonly status: PublicProductGateStatus;
+  readonly proof: string;
+  readonly requirement: string;
+  readonly blocksPublicProduct: boolean;
+};
+
+export type PublicProductDecisionGate = {
+  readonly capabilityId: "source-attribution-public-product-v1";
+  readonly proofLifecycleId: typeof FIRST_SOURCE_ATTRIBUTION_LIFECYCLE.id;
+  readonly factLifecycleStage: "public-product";
+  readonly decisionStatus: PublicProductDecisionStatus;
+  readonly publicProductReady: false;
+  readonly currentReason: string;
+  readonly defaultBuySourceId: typeof ZERO_SOURCE_ID;
+  readonly gates: readonly PublicProductGate[];
+  readonly allowedNextWork: readonly string[];
+  readonly forbiddenUntilApproved: readonly string[];
+};
+
+export function buildSourceAttributionPublicProductDecisionGate(
+  snapshot: SourcePolicySnapshot = CURRENT_SOURCE_POLICY_SNAPSHOT,
+): PublicProductDecisionGate {
+  const target = snapshot.records.find(
+    (record) => record.sourceId === INTERNAL_PROTOCOL_TEST_SOURCE_001.sourceId,
+  );
+  const targetClosedSafe =
+    target?.status === "PAUSED" &&
+    snapshot.activeCount === 0 &&
+    snapshot.defaultBuySourceId === ZERO_SOURCE_ID;
+
+  const gates: readonly PublicProductGate[] = [
+    {
+      id: "internal-proof-recorded",
+      label: "Internal proof exists",
+      status: "SATISFIED",
+      proof:
+        "The first Source Attribution lifecycle is recorded as packet -> terms -> controlled ACTIVE -> real action -> PAUSED closure.",
+      requirement:
+        "Use the proof as evidence only; do not treat it as public referral, claim UI, source dashboard, or public source-aware buy authority.",
+      blocksPublicProduct: false,
+    },
+    {
+      id: "safe-closure-state",
+      label: "Safe closure state",
+      status: targetClosedSafe ? "SATISFIED" : "REQUIRED",
+      proof: targetClosedSafe
+        ? `The target source is PAUSED, active source count is ${snapshot.activeCount}, and public/default buys use ${ZERO_SOURCE_ID}.`
+        : "Current source state is not safe enough for a public-product decision.",
+      requirement:
+        "Before any public product decision, latest-chain readback must confirm the internal source is closed safely and public/default buys remain ZERO_SOURCE_ID.",
+      blocksPublicProduct: !targetClosedSafe,
+    },
+    {
+      id: "public-scope-definition",
+      label: "Public scope definition",
+      status: "REQUIRED",
+      proof:
+        "The internal test proved MembershipSaleV3 source attribution only; it did not prove Archive, SwapRail, SeatRecord721, ProductSaleRouter, or product-wide attribution.",
+      requirement:
+        "Founder/product review must define whether the first public product is membership-only, which source classes are eligible, and which products remain excluded.",
+      blocksPublicProduct: true,
+    },
+    {
+      id: "source-link-and-buyer-ux",
+      label: "Source link and buyer UX",
+      status: "REQUIRED",
+      proof:
+        "No public source link, source selector, source dashboard, alias flow, or buyer clear-source interaction exists today.",
+      requirement:
+        "Design and test public source-aware preview/quote/buy UX that shows source terms before signature and lets a buyer clear a source.",
+      blocksPublicProduct: true,
+    },
+    {
+      id: "anti-abuse-eligibility",
+      label: "Anti-abuse and eligibility rules",
+      status: "REQUIRED",
+      proof:
+        "The internal test used one controlled source wallet and one fresh buyer wallet; it did not prove public onboarding or abuse resistance.",
+      requirement:
+        "Define source eligibility, seated-member/referrer rules, rate limits, repeat-purchase posture, identity/privacy boundaries, and revocation operations.",
+      blocksPublicProduct: true,
+    },
+    {
+      id: "legal-accounting-disclosure",
+      label: "Legal, accounting, and disclosure posture",
+      status: "REQUIRED",
+      proof:
+        "The internal test produced one acquisition commission and direct payout; it did not approve public copy, tax/accounting treatment, or source reporting language.",
+      requirement:
+        "Approve acquisition-first copy with no agency, employment, ownership, yield, ROI, passive-income, MLM, downline, or upline framing.",
+      blocksPublicProduct: true,
+    },
+    {
+      id: "claim-and-escrow-policy",
+      label: "Claim and escrow policy",
+      status: "BLOCKED_BY_DESIGN",
+      proof:
+        "The completed test had zero escrow owed and direct payout succeeded. Contract escrow mechanics exist, but claim UI remains absent.",
+      requirement:
+        "Do not expose claim UI or claim balances until escrow readback, source-status gating, recovery language, and disclosure copy are separately approved.",
+      blocksPublicProduct: true,
+    },
+    {
+      id: "release-and-production-qa",
+      label: "Release and production QA",
+      status: "REQUIRED",
+      proof:
+        "Production currently preserves ZERO_SOURCE_ID public/default buys and inactive referral boundaries.",
+      requirement:
+        "Any future public source product requires GitHub validation, Replit sync/publish, live route QA, anti-leakage checks, and current-authority chain readback.",
+      blocksPublicProduct: true,
+    },
+    {
+      id: "founder-public-product-approval",
+      label: "Founder public-product approval",
+      status: "FOUNDER_APPROVAL_REQUIRED",
+      proof:
+        "No founder approval exists for public referral activation, public source links, source dashboards, claim UI, or public source-aware buy paths.",
+      requirement:
+        "Founder must approve the exact public product surface, copy, gates, source scope, and release packet before implementation can expose user-actionable controls.",
+      blocksPublicProduct: true,
+    },
+  ] as const;
+
+  return {
+    capabilityId: "source-attribution-public-product-v1",
+    proofLifecycleId: FIRST_SOURCE_ATTRIBUTION_LIFECYCLE.id,
+    factLifecycleStage: "public-product",
+    decisionStatus: "NOT_READY_FOR_PUBLIC_PRODUCT",
+    publicProductReady: false,
+    currentReason:
+      "The first Source Attribution lifecycle is proven internally, but public source/referral product remains blocked until product, legal, UX, security, release, and founder gates are satisfied.",
+    defaultBuySourceId: ZERO_SOURCE_ID,
+    gates,
+    allowedNextWork: [
+      "Chronicle admission review for the proven lifecycle, if founder wants curated public meaning.",
+      "Public source product design brief with no implementation or activation authority.",
+      "Anti-abuse, disclosure, accounting, and source-operator policy design.",
+      "Read-only proof and guard hardening that preserves ZERO_SOURCE_ID public/default buys.",
+    ],
+    forbiddenUntilApproved: [
+      "Do not activate public referral.",
+      "Do not create public source links or aliases.",
+      "Do not add source dashboards.",
+      "Do not add claim UI or claim balances.",
+      "Do not route public/default buys through a non-zero sourceId.",
+      "Do not imply product-wide attribution for Archive1155, SeatRecord721, SwapRail, ProductSaleRouter, or future commerce.",
+    ],
+  } as const;
+}
+
+export const SOURCE_ATTRIBUTION_PUBLIC_PRODUCT_DECISION_GATE =
+  buildSourceAttributionPublicProductDecisionGate();

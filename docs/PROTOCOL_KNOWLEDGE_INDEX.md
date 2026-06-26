@@ -32,6 +32,7 @@ publish.
 | SeatRecord721 | Future identity layer only. No contract, mint path, or live identity claim exists. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/MODULE_INTEGRATION_STANDARD.md` |
 | SwapRail | Future utility/commercial layer only. Not implemented and cannot inherit MembershipSaleV3 source terms. | `docs/MODULE_INTEGRATION_STANDARD.md`, `src/lib/protocol-evolution.ts` |
 | Protocol Evolution | Live read-only evolution/status/episode/lifecycle layer. It now includes the first proven internal lifecycle pattern and has no governance, activation, transaction, source-record, or registry authority. The completed lifecycle is also preserved as durable Institutional Register memory; Chronicle remains a separate curation decision. | `src/lib/protocol-evolution.ts`, `src/lib/protocol-lifecycle.ts`, `src/lib/institutional-register-lifecycle.ts`, `src/routes/evolution.tsx` |
+| Public source/referral product decision | NOT APPROVED. The completed internal Source Attribution lifecycle can inform future product design, but public source links, source dashboards, claim UI, and public source-aware buys require a separate product/legal/UX/security/release/founder gate. | `src/lib/public-product-decision-gate.ts`, `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md` |
 | Transaction / contract-change truth | No transaction, source activation, referral activation, claim UI, registry switch, or contract change is authorized by this index. | This file; relevant runbooks only after founder approval |
 
 ## 2. Protocol Domain Map
@@ -67,7 +68,7 @@ fact does not jump directly from chain activity to public product.
 | Proof | Evolution, Registry, Transparency, guarded proof cards | A capability or boundary was proven. | Public referral, claim UI, source dashboard, or product-wide attribution. |
 | Register memory | Institutional Register | A permanent institutional fact is on record. | Chronicle publication or product activation. |
 | Chronicle review | Chronicle admission and human curation | The fact may deserve meaning and story. | Automatic storytelling or public product launch. |
-| Public product decision | Product/legal/UX/security/release gates | Users may be allowed to act, if separately approved. | Backfilling activation from proof, memory, or Chronicle alone. |
+| Public product decision | Product/legal/UX/security/release gates and `src/lib/public-product-decision-gate.ts` | Users may be allowed to act, if separately approved. | Backfilling activation from proof, memory, or Chronicle alone. |
 
 Source of truth: `src/lib/protocol-knowledge-map.ts` and
 `docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md`.
@@ -95,16 +96,18 @@ Before referral or source attribution work:
 1. `docs/PROTOCOL_CHECKPOINT_2026_06_25.md`
 2. `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`
 3. `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`
-4. `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`
-5. `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`
-6. `src/lib/source-policy-observability.ts`
-7. `src/lib/source-registry-lifecycle.ts`
-8. `src/lib/source-attributed-receipts.ts`
-9. `src/lib/source-real-condition-test.ts`
-10. `src/lib/source-activation-readiness.ts`
-11. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
-12. `src/lib/source-aware-test-mode.ts`
-13. `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`
+4. `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`
+5. `src/lib/public-product-decision-gate.ts`
+6. `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`
+7. `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`
+8. `src/lib/source-policy-observability.ts`
+9. `src/lib/source-registry-lifecycle.ts`
+10. `src/lib/source-attributed-receipts.ts`
+11. `src/lib/source-real-condition-test.ts`
+12. `src/lib/source-activation-readiness.ts`
+13. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
+14. `src/lib/source-aware-test-mode.ts`
+15. `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`
 
 Before any source ceremony or source status transaction:
 
@@ -198,8 +201,9 @@ referral-only thinking.
 | 4 | Post-Test Truth Update | First runtime proof surface added: completed source-attributed receipt, payout/escrow, final PAUSED readback, Activity proof, and Transparency proof. Deeper public referral product remains separate. | Real tx/readback now exists. | Do not imply public referral is live. |
 | 5 | Protocol Lifecycle Proof | Completed as a read-only Evolution model: policy fact -> terms -> ACTIVE -> real action -> PAUSED closure. This is now a reusable institution pattern, not only a referral artifact. | Post-test truth update. | Do not turn lifecycle proof into activation authority. |
 | 6 | Durable Memory Boundary | Completed Source Attribution lifecycle enters the Institutional Register as active durable memory; Chronicle remains a separate curation decision. | Protocol Lifecycle Proof. | Do not imply public referral launch or auto-publish Chronicle. |
-| 7 | Public Source/Referral Product Decision | Decide whether to build public referrer UX, source links, aliases, and dashboards. | Legal/product signoff, test evidence, anti-abuse design. | Do not use the internal test source as public UX template. |
-| 8 | Whole-Protocol Continuous Excellence | Keep surfaces, docs, tests, status labels, and proof paths clean while referral matures. | Current GitHub truth. | Do not start unrelated future modules as fake-live placeholders. |
+| 7 | Public Source/Referral Product Decision Gate | Added as the proof-to-public-product boundary. It confirms the lifecycle proof is real but public source/referral product is not approved until scope, UX, anti-abuse, disclosure, release QA, and founder approval are complete. | Completed lifecycle proof and Register memory. | Do not use the internal test source as public UX template or expose user-actionable source controls. |
+| 8 | Public Source/Referral Product Design Decision | Decide whether to design public referrer UX, source links, aliases, and dashboards against the gate. | `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`, legal/product signoff, anti-abuse design. | Do not activate, publish user-actionable controls, or create claim UI. |
+| 9 | Whole-Protocol Continuous Excellence | Keep surfaces, docs, tests, status labels, and proof paths clean while referral matures. | Current GitHub truth. | Do not start unrelated future modules as fake-live placeholders. |
 
 ## 7. Guard / Test Hooks
 
@@ -213,6 +217,7 @@ The following guards must keep the index aligned with runtime truth:
 - `src/lib/__tests__/source-attributed-receipts.test.ts` - source-attributed receipt projection plus completed internal proof/readback reconciliation.
 - `src/lib/__tests__/protocol-lifecycle.test.ts` - first completed lifecycle proof and non-activation boundary.
 - `src/lib/__tests__/institutional-register-lifecycle.test.ts` - completed lifecycle as Register memory, safe-closure anchor, Activity link, and Chronicle-review-only boundary.
+- `src/lib/__tests__/public-product-decision-gate.test.ts` - proof-to-public-product gate; completed internal proof is not enough for public referral, claim UI, source dashboard, or public source-aware buys.
 - `src/lib/__tests__/purchase-events-cache.test.ts` - purchase source preservation across cache restore.
 - `src/lib/__tests__/chain-registry-guard.test.ts` - canonical chain/RPC guardrails.
 - Archive/visibility/evolution tests - future modules cannot become fake-live by copy drift.

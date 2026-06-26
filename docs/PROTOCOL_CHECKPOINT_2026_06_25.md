@@ -93,9 +93,10 @@ This record is source policy state plus one completed internal proof receipt. It
 | Protocol lifecycle proof | The first full lifecycle is now modeled as policy fact -> terms update -> controlled ACTIVE -> real buy -> PAUSED closure, without public referral activation. |
 | Durable memory boundary | The completed Source Attribution lifecycle is now active Institutional Register memory, anchored to the re-pause closure transaction. Chronicle remains a separate curation decision; public referral remains inactive. |
 | Knowledge architecture boundary | The Knowledge Map now names the full fact lifecycle: raw event -> current-authority readback -> proof -> Register memory -> Chronicle review -> public product decision. |
+| Public product decision gate | Source Attribution now has a specific proof-to-public-product gate in `src/lib/public-product-decision-gate.ts` and `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`; the current decision is not ready for public product activation. |
 | Activity/My Syndicate readiness | The first real source-attributed receipt can be understood without activating public source paths. |
 | Registry/referral truth | Public surfaces can say a PAUSED source policy fact exists while still saying referral is inactive. |
-| Production truth | Replit production was synced to `e19927b` and QA confirmed the PAUSED readback state. |
+| Production truth | Replit production was last reported live and QA green through the lifecycle proof publication; later GitHub-only knowledge/gate commits still require a separate Replit decision before becoming production truth. |
 | Operational memory | OML-015 records that loose text grep can confuse boundary copy with live controls, that Replit's dev watch-ignore fix is local divergence, and that `check-commission-router-freeze` BLOCKED is expected pre-activation posture. |
 | Operator memory | OML-017 and OML-018 record that ceremony consoles must be explicit and approval is not a buy; OML-019 records the completed source test closure discipline. |
 
@@ -319,18 +320,20 @@ Outcome:
 
 ### Sprint 5 - Public Source/Referral Product Decision
 
-Goal: decide if and how the protocol should expose public referral/source mechanics.
+Goal: prevent the completed Source Attribution proof from becoming public product
+by implication.
 
 Outcome:
 
-- source link/alias design,
-- public disclosure copy,
-- source lifecycle display,
-- abuse/fraud handling,
-- clear-source UX,
-- no MLM/downline/passive-income framing,
-- legal/product approval,
-- Replit production sync plan.
+- `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md` defines the current no-go public
+  product decision,
+- `src/lib/public-product-decision-gate.ts` makes the gate machine-readable,
+- proof, Register memory, and Chronicle review cannot activate public referral
+  by themselves,
+- source link/alias design, public disclosure copy, source lifecycle display,
+  abuse/fraud handling, clear-source UX, no MLM/downline/passive-income framing,
+  legal/product approval, and Replit production QA remain required before any
+  public source/referral product exists.
 
 ## What To Skip For Now
 

@@ -397,5 +397,7 @@ Before creating another source record or activating the existing PAUSED source a
 5. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
 6. Do not build public source links, claim UI, Archive source attribution, or
-   product-wide attribution until the completed internal source-attributed test
-   is translated into approved public product rules.
+   product-wide attribution until `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`
+   and `src/lib/public-product-decision-gate.ts` are satisfied by separate
+   founder-approved product, legal/disclosure, UX, security, release, and
+   current-authority gates.

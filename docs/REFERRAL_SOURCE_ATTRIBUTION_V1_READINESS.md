@@ -124,6 +124,9 @@ Every future source record should have a public policy packet before creation:
 ### Phase F - Public Activation
 
 - Only after source readback, check-release, Replit publish, wallet QA, legal/product signoff, anti-abuse review, and founder approval.
+- Must satisfy `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md` and
+  `src/lib/public-product-decision-gate.ts`; proof, Register memory, or
+  Chronicle review cannot activate public referral by themselves.
 - Source-aware buy must display source terms before wallet signature.
 - Buyer must be able to clear a source before signing.
 
@@ -163,6 +166,8 @@ Before any source/referral activation:
 
 - Replit/public site must be synced to the V3 direct-buy commit and QA'd.
 - `SourceRegistryV1` source count/readback must be known.
+- The public-product decision gate must be satisfied, not merely the internal
+  proof lifecycle.
 - Legal/product copy must be approved.
 - A source metadata packet must be approved.
 - The existing source is PAUSED; any future ACTIVE transaction must be separately approved and performed.

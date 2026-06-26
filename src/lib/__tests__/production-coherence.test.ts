@@ -1776,6 +1776,46 @@ describe("production coherence guards", () => {
     expect(fakeLiveSurface).not.toMatch(/public referral is live|claim UI is live|source links are live|top earner|leaderboard is live|guaranteed return|yield opportunity/i);
   });
 
+  it("keeps proof-to-public-product decisions gated after the completed source lifecycle", () => {
+    const decisionDoc = read("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
+    const decisionModel = read("src/lib/public-product-decision-gate.ts");
+    const decisionTest = read("src/lib/__tests__/public-product-decision-gate.test.ts");
+    const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
+    const index = read("docs/PROTOCOL_KNOWLEDGE_INDEX.md");
+    const canonKnowledge = read("docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md");
+    const knowledgeModel = read("src/lib/protocol-knowledge-map.ts");
+
+    expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
+    expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
+    expect(index).toContain("src/lib/public-product-decision-gate.ts");
+    expect(canonKnowledge).toContain("src/lib/public-product-decision-gate.ts");
+    expect(knowledgeModel).toContain("src/lib/public-product-decision-gate.ts");
+
+    expect(decisionDoc).toContain("Status: OPERATIONAL GATE / PROOF EXISTS / PUBLIC PRODUCT NOT APPROVED");
+    expect(decisionDoc).toContain("Source Attribution is **not ready for public product activation**.");
+    expect(decisionDoc).toContain("The Source Attribution lifecycle has reached proof and Register memory.");
+    expect(decisionDoc).toContain("Proof, Register memory, and");
+    expect(decisionDoc).toContain("Chronicle do not launch referral.");
+
+    expect(decisionModel).toContain("NOT_READY_FOR_PUBLIC_PRODUCT");
+    expect(decisionModel).toContain("publicProductReady: false");
+    expect(decisionModel).toContain("public-scope-definition");
+    expect(decisionModel).toContain("source-link-and-buyer-ux");
+    expect(decisionModel).toContain("anti-abuse-eligibility");
+    expect(decisionModel).toContain("legal-accounting-disclosure");
+    expect(decisionModel).toContain("claim-and-escrow-policy");
+    expect(decisionModel).toContain("founder-public-product-approval");
+    expect(decisionTest).toContain("proof, not public product readiness");
+
+    const gateSurface = [decisionDoc, decisionModel].join("\n");
+    expect(gateSurface).toContain("ZERO_SOURCE_ID");
+    expect(gateSurface).toContain("Do not activate public referral");
+    expect(gateSurface).toContain("Do not add claim UI");
+    expect(gateSurface).toContain("Do not route public/default buys through a non-zero sourceId");
+    expect(gateSurface).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
+    expect(gateSurface).not.toMatch(/top earner|guaranteed return|yield opportunity/i);
+  });
+
   it("keeps the current runtime free of legacy platform dependencies", () => {
     const currentRuntime = [
       "package.json",
