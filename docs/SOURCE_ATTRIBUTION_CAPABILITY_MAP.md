@@ -330,8 +330,10 @@ What it does not enable:
 
 Still needed:
 
-- Non-activating execution work from
-  `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md`.
+- Review of the non-activating Verified Introduction buyer skeleton from
+  `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md`,
+  `src/lib/verified-introduction-v1-buyer-experience.ts`, and
+  `src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx`.
 - Legal/product copy posture for any public exposure.
 - Anti-abuse, source eligibility, prohibited-promotion, and source onboarding
   rules before any member-introduction UX.
@@ -404,9 +406,12 @@ again, or building public source/referral UX:
    `src/lib/source-public-product-framework.ts` as the approved-direction
    framework for invite-only Verified Introduction V1. The framework is not
    launch approval.
-6. Use `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md` and
-   `src/lib/verified-introduction-v1-execution.ts` for the next non-activating
-   buyer preview, clear-source, and failure-state skeleton.
+6. Use `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md`,
+   `src/lib/verified-introduction-v1-execution.ts`,
+   `src/lib/verified-introduction-v1-buyer-experience.ts`, and
+   `src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx` for the
+   non-activating buyer preview, clear-source, and failure-state skeleton. It
+   is not a launch surface.
 7. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
 8. Do not build public source links, aliases, claim UI, source dashboards,

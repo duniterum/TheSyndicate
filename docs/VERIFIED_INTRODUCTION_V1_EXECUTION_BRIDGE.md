@@ -16,6 +16,10 @@ publish, or product-wide attribution.
 
 Machine-readable bridge: `src/lib/verified-introduction-v1-execution.ts`.
 
+Buyer experience skeleton:
+`src/lib/verified-introduction-v1-buyer-experience.ts` and
+`src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx`.
+
 Decision framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`.
 
 Founder review record: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
@@ -41,7 +45,7 @@ source-aware path exists.
 | Phase | Status | Purpose | Output |
 | --- | --- | --- | --- |
 | 1. Non-activating UX/spec | AUTHORIZED NOW | Define buyer preview, disclosure, clear-source behavior, failure states, route posture, and release gates. | Testable source-aware experience contract with no public controls. |
-| 2. Internal implementation skeleton | NEXT SAFE SPRINT | Build read-only or hard-gated components for preview, clear-source, and failure states. | Components/models that can be tested without public activation. |
+| 2. Internal implementation skeleton | COMPLETED / NON-ACTIVATING | Build read-only or hard-gated components for preview, clear-source, and failure states. | Components/models that can be tested without public activation. |
 | 3. Source packet / launch packet | FOUNDER APPROVAL REQUIRED | Freeze exact source, eligible buyer path, disclosure, readbacks, stop conditions, and release posture. | Founder-approved launch packet only. |
 | 4. Replit / production QA | LATER RUNTIME-VISIBLE | Sync/publish only when runtime-visible truth should reach production. | Route QA, sitemap/robots checks, ZERO_SOURCE_ID default check, no-leakage proof. |
 | 5. Founder launch decision | FOUNDER APPROVAL REQUIRED | Decide whether to approve, revise, defer, or reject public release. | Separate approval for user-actionable public controls, if any. |
@@ -135,18 +139,21 @@ The following are done enough for this phase:
 - public-product decision gate,
 - Verified Introduction V1 direction,
 - founder review package,
-- non-activating execution bridge.
+- non-activating execution bridge,
+- non-activating buyer preview, clear-source, and failure-state skeleton.
 
 Do not keep re-litigating those before building the next safe slice.
 
 ## Next Exact Sprint
 
-Build the non-activating Verified Introduction buyer preview, clear-source, and
-failure-state skeleton behind tests only.
+Review the non-activating Verified Introduction buyer skeleton, then decide the
+next safe slice: hidden/internal integration review, launch-packet design, or
+further anti-abuse/disclosure hardening.
 
-The sprint must not add navigation, sitemap entries, aliases, claim UI, source
-dashboard, public source links, or a public source-aware buy path. Public
-`/join` must remain `ZERO_SOURCE_ID`.
+The next sprint must not add navigation, sitemap entries, aliases, claim UI,
+source dashboard, public source links, or a public source-aware buy path unless
+a separate founder-approved launch packet authorizes it. Public `/join` must
+remain `ZERO_SOURCE_ID`.
 
 ## Priority Order
 
