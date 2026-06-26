@@ -24,6 +24,10 @@ Internal review surface:
 `src/routes/labs.verified-introduction-review.tsx`
 (`/labs/verified-introduction-review?review=VERIFIED_INTRODUCTION_V1`).
 
+Launch packet draft:
+`docs/VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT.md` and
+`src/lib/verified-introduction-v1-launch-packet.ts`.
+
 Decision framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`.
 
 Founder review record: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
@@ -51,7 +55,7 @@ source-aware path exists.
 | 1. Non-activating UX/spec | AUTHORIZED NOW | Define buyer preview, disclosure, clear-source behavior, failure states, route posture, and release gates. | Testable source-aware experience contract with no public controls. |
 | 2. Internal implementation skeleton | COMPLETED / NON-ACTIVATING | Build read-only or hard-gated components for preview, clear-source, and failure states. | Components/models that can be tested without public activation. |
 | 3. Internal review surface | COMPLETED / NOINDEX / DIRECT URL ONLY | Make the skeleton reviewable for founder/operator inspection. | `/labs/verified-introduction-review` with exact review query; absent from public nav and sitemap; no wallet controls. |
-| 4. Source packet / launch packet | FOUNDER APPROVAL REQUIRED | Freeze exact source, eligible buyer path, disclosure, readbacks, stop conditions, and release posture. | Founder-approved launch packet only. |
+| 4. Source packet / launch packet | DRAFT BOUNDARY / FOUNDER APPROVAL REQUIRED | Freeze exact source, eligible buyer path, disclosure, readbacks, stop conditions, and release posture. | Draft launch-decision boundary exists; founder-approved launch packet still required. |
 | 5. Replit / production QA | LATER RUNTIME-VISIBLE | Sync/publish only when runtime-visible truth should reach production. | Route QA, sitemap/robots checks, ZERO_SOURCE_ID default check, no-leakage proof. |
 | 6. Founder launch decision | FOUNDER APPROVAL REQUIRED | Decide whether to approve, revise, defer, or reject public release. | Separate approval for user-actionable public controls, if any. |
 
@@ -147,15 +151,17 @@ The following are done enough for this phase:
 - non-activating execution bridge,
 - non-activating buyer preview, clear-source, and failure-state skeleton,
 - noindex internal review surface.
+- launch packet draft boundary.
 
 Do not keep re-litigating those before building the next safe slice.
 
 ## Next Exact Sprint
 
 Review the non-activating Verified Introduction buyer skeleton at the internal
-review surface, then decide the next safe slice: launch-packet design,
-anti-abuse/disclosure hardening, or a separately approved runtime integration
-plan.
+review surface and the launch packet draft together, then decide the next safe
+slice: anti-abuse/source-eligibility hardening, disclosure/legal/accounting
+review, current-authority readback/release QA packet, or a separately approved
+runtime integration plan.
 
 The next sprint must not add navigation, sitemap entries, aliases, claim UI,
 source dashboard, public source links, or a public source-aware buy path unless

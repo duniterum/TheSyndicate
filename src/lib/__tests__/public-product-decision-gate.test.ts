@@ -104,7 +104,7 @@ describe("source attribution public-product decision gate", () => {
     expect(copy).toContain("verified-introduction-v1-execution-bridge");
     expect(copy).toContain("FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED");
     expect(copy).toContain(
-      "noindex non-activating Verified Introduction internal surface",
+      "noindex Verified Introduction internal surface and launch packet draft",
     );
     expect(copy).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(copy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);

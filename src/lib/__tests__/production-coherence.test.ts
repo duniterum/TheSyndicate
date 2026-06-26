@@ -1786,6 +1786,7 @@ describe("production coherence guards", () => {
     const decisionModel = read("src/lib/public-product-decision-gate.ts");
     const frameworkModel = read("src/lib/source-public-product-framework.ts");
     const executionModel = read("src/lib/verified-introduction-v1-execution.ts");
+    const launchPacketModel = read("src/lib/verified-introduction-v1-launch-packet.ts");
     const buyerExperienceModel = read("src/lib/verified-introduction-v1-buyer-experience.ts");
     const buyerExperienceComponent = read("src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx");
     const buyerExperienceRoute = read("src/routes/labs.verified-introduction-review.tsx");
@@ -1795,7 +1796,9 @@ describe("production coherence guards", () => {
     const decisionTest = read("src/lib/__tests__/public-product-decision-gate.test.ts");
     const frameworkTest = read("src/lib/__tests__/source-public-product-framework.test.ts");
     const executionTest = read("src/lib/__tests__/verified-introduction-v1-execution.test.ts");
+    const launchPacketTest = read("src/lib/__tests__/verified-introduction-v1-launch-packet.test.ts");
     const buyerExperienceTest = read("src/lib/__tests__/verified-introduction-v1-buyer-experience.test.ts");
+    const launchPacketDoc = read("docs/VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT.md");
     const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
     const index = read("docs/PROTOCOL_KNOWLEDGE_INDEX.md");
     const canonKnowledge = read("docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md");
@@ -1807,22 +1810,27 @@ describe("production coherence guards", () => {
     expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
     expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     expect(authority).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
+    expect(authority).toContain("docs/VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT.md");
     expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
     expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
     expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     expect(index).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
+    expect(index).toContain("docs/VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT.md");
     expect(index).toContain("src/lib/public-product-decision-gate.ts");
     expect(index).toContain("src/lib/source-public-product-framework.ts");
     expect(index).toContain("src/lib/verified-introduction-v1-execution.ts");
     expect(index).toContain("src/lib/verified-introduction-v1-buyer-experience.ts");
+    expect(index).toContain("src/lib/verified-introduction-v1-launch-packet.ts");
     expect(index).toContain("src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx");
     expect(index).toContain("src/routes/labs.verified-introduction-review.tsx");
     expect(canonKnowledge).toContain("src/lib/public-product-decision-gate.ts");
     expect(canonKnowledge).toContain("src/lib/source-public-product-framework.ts");
     expect(canonKnowledge).toContain("src/lib/verified-introduction-v1-execution.ts");
+    expect(canonKnowledge).toContain("src/lib/verified-introduction-v1-launch-packet.ts");
     expect(knowledgeModel).toContain("src/lib/public-product-decision-gate.ts");
     expect(knowledgeModel).toContain("src/lib/source-public-product-framework.ts");
     expect(knowledgeModel).toContain("src/lib/verified-introduction-v1-execution.ts");
+    expect(knowledgeModel).toContain("src/lib/verified-introduction-v1-launch-packet.ts");
 
     expect(decisionDoc).toContain("Status: OPERATIONAL GATE / PROOF EXISTS / PUBLIC PRODUCT NOT APPROVED");
     expect(decisionDoc).toContain("Source Attribution is **not ready for public product activation**.");
@@ -1893,6 +1901,7 @@ describe("production coherence guards", () => {
     expect(executionBridge).toContain("NFT / Archive evolution");
     expect(executionModel).toContain("VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE");
     expect(executionModel).toContain("launchApproved === false");
+    expect(executionModel).toContain("DRAFT_BOUNDARY");
     expect(executionModel).toContain("No public source-aware buy path.");
     expect(executionModel).toContain("Verified Introduction / Source Attribution public-product path");
     expect(buyerExperienceModel).toContain("VERIFIED_INTRODUCTION_BUYER_SKELETON_BOUNDARY");
@@ -1913,6 +1922,18 @@ describe("production coherence guards", () => {
     expect(buyerExperienceRoute).not.toMatch(/useWriteContract|writeContract|sendTransaction|buyWithSource|claimReward|claimSourceEscrow/);
     expect(buyerExperienceRoute).not.toContain("<button");
     expect(buyerExperienceRoute).not.toContain("href=");
+    expect(launchPacketDoc).toContain("Status: DRAFT BOUNDARY / NOT APPROVED / NO PUBLIC CONTROLS");
+    expect(launchPacketDoc).toContain("This packet turns the internal Verified Introduction review surface into a");
+    expect(launchPacketDoc).toContain("It does not approve launch.");
+    expect(launchPacketDoc).toContain("No public source-aware buy path.");
+    expect(launchPacketDoc).toContain("No non-zero default `/join` sourceId.");
+    expect(launchPacketModel).toContain("DRAFT_BOUNDARY_NOT_APPROVED");
+    expect(launchPacketModel).toContain("launchApproved: false");
+    expect(launchPacketModel).toContain("publicControlsApproved: false");
+    expect(launchPacketModel).toContain("NO_PUBLIC_SOURCE_ROUTE_APPROVED");
+    expect(launchPacketModel).toContain("NO_CLAIM_UI_APPROVED");
+    expect(launchPacketModel).toContain("No public source-aware buy path.");
+    expect(launchPacketModel).toContain("No non-zero default /join sourceId.");
     expect(joinRoute).not.toContain("VerifiedIntroductionBuyerExperience");
     expect(joinRoute).not.toContain("labs/verified-introduction-review");
     expect(labsIndex).not.toContain("/labs/verified-introduction-review");
@@ -1920,6 +1941,8 @@ describe("production coherence guards", () => {
     expect(decisionTest).toContain("proof, not public product readiness");
     expect(frameworkTest).toContain("recommends a constrained V1 shape without approving launch");
     expect(executionTest).toContain("converts founder direction approval into non-activating implementation authority");
+    expect(launchPacketTest).toContain("keeps launch and public controls unapproved");
+    expect(launchPacketTest).toContain("marks the review surface done while leaving launch gates blocked");
     expect(buyerExperienceTest).toContain("keeps approval separate from purchase completion");
     expect(buyerExperienceTest).toContain("falls back to ZERO_SOURCE_ID");
     expect(checkpoint).toContain("Public product decision framework");
@@ -1929,7 +1952,9 @@ describe("production coherence guards", () => {
     expect(capability).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
     expect(capability).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     expect(capability).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
+    expect(capability).toContain("docs/VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT.md");
     expect(capability).toContain("src/lib/verified-introduction-v1-buyer-experience.ts");
+    expect(capability).toContain("src/lib/verified-introduction-v1-launch-packet.ts");
     expect(capability).toContain("VerifiedIntroductionBuyerExperience.tsx");
     expect(capability).toContain("src/routes/labs.verified-introduction-review.tsx");
     expect(capability).toContain("invite-only Verified Introduction V1");
@@ -1942,6 +1967,8 @@ describe("production coherence guards", () => {
       founderReview,
       executionBridge,
       executionModel,
+      launchPacketDoc,
+      launchPacketModel,
       buyerExperienceModel,
       buyerExperienceComponent,
       buyerExperienceRoute,

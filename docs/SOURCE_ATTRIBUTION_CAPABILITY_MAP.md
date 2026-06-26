@@ -336,6 +336,9 @@ Still needed:
   `src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx`, now
   inspectable at the noindex internal route
   `src/routes/labs.verified-introduction-review.tsx`.
+- Review of the launch-decision draft in
+  `docs/VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT.md` and
+  `src/lib/verified-introduction-v1-launch-packet.ts`.
 - Legal/product copy posture for any public exposure.
 - Anti-abuse, source eligibility, prohibited-promotion, and source onboarding
   rules before any member-introduction UX.

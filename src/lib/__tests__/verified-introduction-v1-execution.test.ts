@@ -52,11 +52,12 @@ describe("Verified Introduction V1 execution bridge", () => {
     expect(bridge.phases[0].status).toBe("AUTHORIZED_NOW");
     expect(bridge.phases[1].status).toBe("DONE_ENOUGH");
     expect(bridge.phases[2].status).toBe("DONE_ENOUGH");
+    expect(bridge.phases[3].status).toBe("DRAFT_BOUNDARY");
     expect(safeNow).toContain("buyer preview");
     expect(safeNow).toContain("Failure-state components");
     expect(safeNow).toContain("Noindex internal review surface");
-    expect(getVerifiedIntroductionNextSprint()).toContain("non-activating");
-    expect(getVerifiedIntroductionNextSprint()).toContain("launch-packet");
+    expect(getVerifiedIntroductionNextSprint()).toContain("launch packet draft");
+    expect(getVerifiedIntroductionNextSprint()).toContain("anti-abuse");
     expect(getVerifiedIntroductionNextSprint()).toContain("ZERO_SOURCE_ID");
     expect(forbidden).toContain("No public source-aware buy path.");
     expect(forbidden).toContain("No claim UI.");

@@ -3,6 +3,7 @@ import { SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION } from "./source-public-product
 
 export type VerifiedIntroductionPhaseStatus =
   | "DONE_ENOUGH"
+  | "DRAFT_BOUNDARY"
   | "AUTHORIZED_NOW"
   | "NEXT_SAFE_SPRINT"
   | "FOUNDER_APPROVAL_REQUIRED"
@@ -104,11 +105,11 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     {
       id: "phase-4-source-launch-packet",
       title: "Source packet / launch packet",
-      status: "FOUNDER_APPROVAL_REQUIRED",
+      status: "DRAFT_BOUNDARY",
       purpose:
         "Freeze the exact source, eligible buyer path, legal/accounting copy, anti-abuse posture, current-authority readbacks, and stop conditions for any launch candidate.",
       output:
-        "Founder-approved launch packet only; not implied by the framework, Register memory, Chronicle review, or tests.",
+        "Draft launch-decision boundary exists; founder-approved launch packet still required before public controls.",
       blocks: [
         "Source status changes",
         "Public source-aware purchase path",
@@ -253,7 +254,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
 } as const;
 
 export function getVerifiedIntroductionNextSprint(): string {
-  return "Review the noindex non-activating Verified Introduction internal surface, then choose launch-packet design, anti-abuse/disclosure hardening, or a separately approved runtime integration plan; keep public /join on ZERO_SOURCE_ID.";
+  return "Review the noindex Verified Introduction internal surface and launch packet draft together, then choose anti-abuse/source-eligibility hardening, disclosure/legal/accounting review, current-authority readback/release QA, or a separately approved runtime integration plan; keep public /join on ZERO_SOURCE_ID.";
 }
 
 export function isVerifiedIntroductionLaunchBlocked(): boolean {
