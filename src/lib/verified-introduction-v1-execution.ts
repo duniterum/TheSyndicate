@@ -47,7 +47,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.implementationAuthority,
   launchPosture: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.launchPosture,
   publicJoinDefaultSourceId: ZERO_SOURCE_ID,
-  currentPhase: "PHASE_3_INTERNAL_REVIEW_SURFACE_DONE_ENOUGH",
+  currentPhase: "PHASE_6_FOUNDER_LAUNCH_DECISION_PACKET_READY",
   priorityOrder: VERIFIED_INTRODUCTION_PRIORITY_ORDER,
   phases: [
     {
@@ -141,7 +141,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
       purpose:
         "Make the final public-product decision after UX, anti-abuse, disclosure, readback, and release gates are satisfied.",
       output:
-        "Approve, revise, defer, or reject public release. Approval must be separate from direction approval.",
+        "Founder launch-decision packet is assembled; founder must approve preparation, approve with revisions, defer, or reject.",
       blocks: ["Public launch"],
       mustNotDo: [
         "Do not infer launch from direction approval.",
@@ -217,6 +217,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     "Anti-abuse and source eligibility draft review model.",
     "Buyer disclosure and legal/accounting draft review model.",
     "Current-authority and release QA draft packet.",
+    "Founder launch-decision packet assembly.",
     "Production-coherence guards that prevent public /join source drift.",
     "Docs that turn approved direction into execution steps without launch authority.",
   ],
@@ -233,7 +234,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     "Post-purchase receipt, payout, escrow, and final source status after any approved test.",
   ],
   launchBlockers: [
-    "No founder launch approval packet exists.",
+    "No founder launch decision has been selected.",
     "No public source route/link posture is approved.",
     "No legal/accounting disclosure signoff is recorded.",
     "No anti-abuse acceptance packet is recorded.",
@@ -257,7 +258,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
 } as const;
 
 export function getVerifiedIntroductionNextSprint(): string {
-  return "Review the noindex Verified Introduction internal surface, launch packet draft, anti-abuse/source eligibility model, buyer disclosure/legal-accounting model, and current-authority/release QA packet together; then assemble a founder launch-decision packet or revise the blocked gates while public /join stays ZERO_SOURCE_ID.";
+  return "Founder reviews the Verified Introduction launch-decision packet and chooses: approve launch-candidate preparation only, approve with revisions, defer public product, or reject the V1 posture while public /join stays ZERO_SOURCE_ID.";
 }
 
 export function isVerifiedIntroductionLaunchBlocked(): boolean {

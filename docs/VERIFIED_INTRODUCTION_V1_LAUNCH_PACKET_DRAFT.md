@@ -22,6 +22,10 @@ Buyer disclosure/legal-accounting review:
 Current-authority/release QA review:
 `src/lib/verified-introduction-v1-release-qa.ts`.
 
+Founder launch-decision packet:
+`docs/VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.md` and
+`src/lib/verified-introduction-v1-founder-launch-decision.ts`.
+
 Internal review surface:
 `/labs/verified-introduction-review?review=VERIFIED_INTRODUCTION_V1`.
 
@@ -38,6 +42,8 @@ Internal review surface:
 - A draft current-authority/release QA packet now defines latest-chain reads,
   Replit sync/publish gates, live route QA, no-leakage checks, and stop
   conditions.
+- A founder launch-decision packet now assembles the review ingredients into
+  approve-preparation, revise, defer, or reject options.
 - Public `/join` remains `ZERO_SOURCE_ID`.
 - `/referral` remains inactive.
 - Claim UI, source dashboards, aliases, public source links, and public
@@ -97,16 +103,12 @@ Before any public controls exist, the founder must explicitly decide:
 
 ## Next Safe Work
 
-Review the internal buyer surface and this launch packet draft together.
+Review the founder launch-decision packet and choose exactly one path:
 
-After review, choose exactly one next slice:
-
-1. founder/operator review of source eligibility and disclosure models,
-2. final founder launch packet assembly using the current-authority/release QA
-   packet,
-3. revision of any blocked eligibility, disclosure, or release-QA gate,
-4. or defer public-product work and keep Verified Introduction at the review
-   boundary.
+1. approve launch-candidate preparation only,
+2. approve with revisions,
+3. defer public product,
+4. or reject the V1 posture.
 
 Do not start SeatRecord721 / ERC721 or NFT / Archive evolution until Verified
 Introduction reaches a clear safe implementation or launch-decision boundary.

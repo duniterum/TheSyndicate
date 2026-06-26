@@ -103,9 +103,10 @@ describe("source attribution public-product decision gate", () => {
     expect(copy).toContain("verified-introduction-v1");
     expect(copy).toContain("verified-introduction-v1-execution-bridge");
     expect(copy).toContain("FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED");
-    expect(copy).toContain("noindex Verified Introduction internal surface");
-    expect(copy).toContain("launch packet draft");
-    expect(copy).toContain("anti-abuse/source eligibility model");
+    expect(copy).toContain("Founder launch-decision review");
+    expect(copy).toContain("approve launch-candidate preparation only");
+    expect(copy).toContain("Anti-abuse, disclosure, accounting");
+    expect(copy).toContain("docs/VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.md");
     expect(copy).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(copy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
     expect(copy).not.toMatch(/top earner|guaranteed return|yield opportunity/i);

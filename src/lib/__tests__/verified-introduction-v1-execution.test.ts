@@ -59,12 +59,12 @@ describe("Verified Introduction V1 execution bridge", () => {
     expect(safeNow).toContain("Anti-abuse and source eligibility draft review model");
     expect(safeNow).toContain("Buyer disclosure and legal/accounting draft review model");
     expect(safeNow).toContain("Current-authority and release QA draft packet");
-    expect(getVerifiedIntroductionNextSprint()).toContain("launch packet draft");
-    expect(getVerifiedIntroductionNextSprint()).toContain("anti-abuse");
-    expect(getVerifiedIntroductionNextSprint()).toContain("source eligibility model");
-    expect(getVerifiedIntroductionNextSprint()).toContain("buyer disclosure/legal-accounting model");
-    expect(getVerifiedIntroductionNextSprint()).toContain("current-authority/release QA packet");
-    expect(getVerifiedIntroductionNextSprint()).toContain("founder launch-decision packet");
+    expect(safeNow).toContain("Founder launch-decision packet assembly");
+    expect(getVerifiedIntroductionNextSprint()).toContain("Founder reviews");
+    expect(getVerifiedIntroductionNextSprint()).toContain("approve launch-candidate preparation only");
+    expect(getVerifiedIntroductionNextSprint()).toContain("approve with revisions");
+    expect(getVerifiedIntroductionNextSprint()).toContain("defer public product");
+    expect(getVerifiedIntroductionNextSprint()).toContain("reject the V1 posture");
     expect(getVerifiedIntroductionNextSprint()).toContain("ZERO_SOURCE_ID");
     expect(forbidden).toContain("No public source-aware buy path.");
     expect(forbidden).toContain("No claim UI.");
@@ -105,7 +105,7 @@ describe("Verified Introduction V1 execution bridge", () => {
     expect(failureCopy).toContain("already seated");
     expect(failureCopy).toContain("stale");
     expect(failureCopy).toContain("Fail closed before signature");
-    expect(blockers).toContain("No founder launch approval packet exists");
+    expect(blockers).toContain("No founder launch decision has been selected");
     expect(blockers).toContain("No legal/accounting disclosure signoff");
     expect(blockers).toContain("No latest-chain current-authority readback");
     expect(blockers).toContain("No founder-approved Replit publish/live QA packet");

@@ -345,6 +345,11 @@ Still needed:
   `src/lib/verified-introduction-v1-disclosure.ts`.
 - Review of the current-authority/release QA draft packet in
   `src/lib/verified-introduction-v1-release-qa.ts`.
+- Review of the founder launch-decision packet in
+  `docs/VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.md` and
+  `src/lib/verified-introduction-v1-founder-launch-decision.ts`. It offers
+  approve-preparation, revise, defer, or reject options, but does not approve
+  launch.
 - Final legal/product copy posture for any public exposure.
 - Founder-approved anti-abuse, source eligibility, prohibited-promotion, and
   source onboarding rules before any member-introduction UX.
@@ -426,9 +431,14 @@ again, or building public source/referral UX:
    non-activating buyer preview, clear-source, and failure-state skeleton. Use
    `src/routes/labs.verified-introduction-review.tsx` as the direct-URL
    internal review surface. It is not a launch surface.
-7. Keep public referral/source copy aligned with acquisition-first,
+7. Use `docs/VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.md` and
+   `src/lib/verified-introduction-v1-founder-launch-decision.ts` before any
+   public-product implementation sprint. Decision-packet readiness is not
+   launch approval; the founder must choose approve-preparation, revise, defer,
+   or reject.
+8. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
-8. Do not build public source links, aliases, claim UI, source dashboards,
+9. Do not build public source links, aliases, claim UI, source dashboards,
    Archive source attribution, open self-serve member referral, or
    product-wide attribution until `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`
    and `src/lib/public-product-decision-gate.ts` are satisfied by separate

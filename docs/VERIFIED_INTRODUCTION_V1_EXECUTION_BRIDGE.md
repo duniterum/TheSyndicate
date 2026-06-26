@@ -37,6 +37,10 @@ Buyer disclosure/legal-accounting review:
 Current-authority/release QA review:
 `src/lib/verified-introduction-v1-release-qa.ts`.
 
+Founder launch-decision packet:
+`docs/VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.md` and
+`src/lib/verified-introduction-v1-founder-launch-decision.ts`.
+
 Decision framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`.
 
 Founder review record: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
@@ -66,7 +70,7 @@ source-aware path exists.
 | 3. Internal review surface | COMPLETED / NOINDEX / DIRECT URL ONLY | Make the skeleton reviewable for founder/operator inspection. | `/labs/verified-introduction-review` with exact review query; absent from public nav and sitemap; no wallet controls. |
 | 4. Source packet / launch packet | DRAFT BOUNDARY / FOUNDER APPROVAL REQUIRED | Freeze exact source, eligible buyer path, disclosure, readbacks, stop conditions, and release posture. | Draft launch-decision boundary exists; founder-approved launch packet still required. |
 | 5. Current-authority / release QA | DRAFT BOUNDARY / LATEST CHAIN REQUIRED | Define latest-chain reads, Replit publish gates, route QA, sitemap/robots checks, ZERO_SOURCE_ID default check, and no-leakage proof. | Draft release-QA packet exists; actual latest-chain readbacks and founder launch approval still required. |
-| 6. Founder launch decision | FOUNDER APPROVAL REQUIRED | Decide whether to approve, revise, defer, or reject public release. | Separate approval for user-actionable public controls, if any. |
+| 6. Founder launch decision | PACKET READY / FOUNDER APPROVAL REQUIRED | Decide whether to approve launch-candidate preparation, approve with revisions, defer, or reject public release. | Founder launch-decision packet is assembled; no user-actionable public controls are approved. |
 
 ## What Can Be Implemented Safely Now
 
@@ -75,6 +79,7 @@ source-aware path exists.
 - Failure-state components and tests.
 - Buyer disclosure and legal/accounting draft review model.
 - Current-authority and release QA draft packet.
+- Founder launch-decision packet assembly.
 - Production-coherence guards that prevent public `/join` source drift.
 - Documentation that turns approved direction into implementation steps without
   launch authority.
@@ -140,7 +145,7 @@ Introduction surface requires a Replit handoff with:
 
 Verified Introduction V1 cannot launch until all of these are true:
 
-- Founder launch approval packet exists.
+- Founder launch decision has been selected.
 - Public route/link posture is approved.
 - Buyer preview and clear-source UX are reviewed.
 - Legal/accounting disclosure is approved.
@@ -166,16 +171,18 @@ The following are done enough for this phase:
 - anti-abuse/source eligibility draft review model.
 - buyer disclosure/legal-accounting draft review model.
 - current-authority/release QA draft packet.
+- founder launch-decision packet.
 
 Do not keep re-litigating those before building the next safe slice.
 
 ## Next Exact Sprint
 
-Review the non-activating Verified Introduction buyer skeleton at the internal
-review surface, launch packet draft, anti-abuse/source eligibility model, buyer
-disclosure/legal-accounting model, and current-authority/release QA packet
-together, then assemble a founder launch-decision packet or revise the blocked
-gates.
+Founder reviews the launch-decision packet and chooses one path:
+
+1. approve launch-candidate preparation only,
+2. approve with revisions,
+3. defer public product,
+4. or reject the V1 posture.
 
 The next sprint must not add navigation, sitemap entries, aliases, claim UI,
 source dashboard, public source links, or a public source-aware buy path unless

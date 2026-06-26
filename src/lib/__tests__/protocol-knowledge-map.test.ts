@@ -225,7 +225,9 @@ describe("protocol-knowledge-map: fact lifecycle", () => {
     expect(product?.belongsIn).toContain("founder approval gates");
     expect(product?.belongsIn).toContain("verified-introduction-v1-execution");
     expect(product?.belongsIn).toContain("verified-introduction-v1-release-qa");
+    expect(product?.belongsIn).toContain("verified-introduction-v1-founder-launch-decision");
     expect(product?.notAuthorityFor).toContain("direction approval");
+    expect(product?.notAuthorityFor).toContain("decision-packet readiness");
     expect(product?.notAuthorityFor).toContain("framework text");
   });
 });

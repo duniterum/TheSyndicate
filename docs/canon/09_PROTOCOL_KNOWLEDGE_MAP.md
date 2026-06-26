@@ -60,7 +60,7 @@ The post-source-ceremony system uses one shared lifecycle vocabulary, exposed by
 | `proof` | What capability or boundary was proven? | Protocol Evolution, lifecycle proof models, Transparency, Registry, guarded proof cards | Not public launch, referral activation, claim UI, source dashboard, or product-wide attribution. |
 | `register-memory` | What permanent fact should remain on the record? | Institutional Register by promotion or lawful seed | Not Chronicle publication, public product activation, or live operational state. |
 | `chronicle-review` | Does the fact deserve story and context? | Chronicle admission/review and curated Chronicle entries | Not automatic storytelling or product launch. |
-| `public-product` | Should users be able to act on it? | Product, legal/disclosure, UX, security, release, founder approval gates, and public-product decision models such as `src/lib/public-product-decision-gate.ts`, `src/lib/source-public-product-framework.ts`, `src/lib/verified-introduction-v1-execution.ts`, `src/lib/verified-introduction-v1-buyer-experience.ts`, and `src/lib/verified-introduction-v1-release-qa.ts` | Not backfilled from proof, memory, Chronicle, framework text, or direction approval alone. |
+| `public-product` | Should users be able to act on it? | Product, legal/disclosure, UX, security, release, founder approval gates, and public-product decision models such as `src/lib/public-product-decision-gate.ts`, `src/lib/source-public-product-framework.ts`, `src/lib/verified-introduction-v1-execution.ts`, `src/lib/verified-introduction-v1-buyer-experience.ts`, `src/lib/verified-introduction-v1-release-qa.ts`, and `src/lib/verified-introduction-v1-founder-launch-decision.ts` | Not backfilled from proof, memory, Chronicle, framework text, direction approval, or decision-packet readiness alone. |
 
 ---
 
@@ -132,11 +132,15 @@ below names every layer and its key properties. Layer ids are shown in `code`.
   in `src/lib/verified-introduction-v1-disclosure.ts` as draft review facts only.
   Current-authority/release QA now lives in
   `src/lib/verified-introduction-v1-release-qa.ts` as draft release facts only.
+  Founder launch-decision assembly now lives in
+  `docs/VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.md` and
+  `src/lib/verified-introduction-v1-founder-launch-decision.ts` as
+  approve-preparation/revise/defer/reject options only.
   The current Source Attribution decision is still not ready for public product
   launch: proof exists, direction is approved, and the draft boundary exists,
-  but actual latest-chain readbacks, final founder approval, public source links,
-  source dashboards, claim UI, aliases, and public source-aware buys remain
-  unapproved.
+  but actual latest-chain readbacks, a selected founder decision, final launch
+  approval, public source links, source dashboards, claim UI, aliases, and
+  public source-aware buys remain unapproved.
 
 ### Knowledge Pipeline (Truth → Events → Signals → Memory → Story)
 

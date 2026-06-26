@@ -23,6 +23,11 @@ import {
   type VerifiedIntroductionLiveQaCheck,
   type VerifiedIntroductionReleaseGate,
 } from "@/lib/verified-introduction-v1-release-qa";
+import {
+  VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET,
+  type VerifiedIntroductionFounderDecisionItem,
+  type VerifiedIntroductionFounderDecisionOption,
+} from "@/lib/verified-introduction-v1-founder-launch-decision";
 
 export const VERIFIED_INTRODUCTION_REVIEW_TOKEN = "VERIFIED_INTRODUCTION_V1";
 
@@ -100,6 +105,12 @@ function VerifiedIntroductionReviewRoute() {
           gates={VERIFIED_INTRODUCTION_V1_RELEASE_QA_PACKET.releaseGates}
           liveQa={VERIFIED_INTRODUCTION_V1_RELEASE_QA_PACKET.liveQaChecks}
           stopConditions={VERIFIED_INTRODUCTION_V1_RELEASE_QA_PACKET.stopConditions}
+        />
+        <FounderDecisionReview
+          options={VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.decisionOptions}
+          decisions={VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.requiredFounderDecisions}
+          stopConditions={VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.stopConditions}
+          nextSteps={VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.nextIfApprovedForPreparation}
         />
         <LaunchBoundary />
       </div>
@@ -461,6 +472,102 @@ function ReleaseQaReview({
           </div>
         </div>
 
+        <div className="rounded-md border border-red-900/60 bg-red-950/20 p-4">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-red-200">Stop conditions</h3>
+          <ul className="mt-4 space-y-2 text-sm leading-6 text-red-50">
+            {stopConditions.map((condition) => (
+              <li key={condition}>{condition}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FounderDecisionReview({
+  options,
+  decisions,
+  stopConditions,
+  nextSteps,
+}: {
+  options: readonly VerifiedIntroductionFounderDecisionOption[];
+  decisions: readonly VerifiedIntroductionFounderDecisionItem[];
+  stopConditions: readonly string[];
+  nextSteps: readonly string[];
+}) {
+  return (
+    <section className="rounded-lg border border-emerald-800/60 bg-emerald-950/20 p-5">
+      <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
+            Founder Launch Decision Assembly
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold text-white">The next step is a decision, not a launch.</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+            This section assembles the buyer skeleton, launch packet draft, anti-abuse review, disclosure review, and
+            release-QA packet into one founder choice. It does not expose public controls.
+          </p>
+        </div>
+        <div className="rounded-md border border-emerald-600/50 bg-emerald-950/40 px-3 py-2 text-sm font-semibold text-emerald-100">
+          Decision packet ready - no launch authority
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3 lg:grid-cols-4">
+        {options.map((option) => (
+          <div key={option.id} className="rounded-md border border-slate-800 bg-black/20 p-4">
+            <h3 className="text-sm font-semibold text-white">{option.label}</h3>
+            <p className="mt-3 text-xs leading-5 text-emerald-100">{option.founderPhrase}</p>
+            <p className="mt-3 text-sm leading-6 text-slate-300">{option.meaning}</p>
+            <p className="mt-3 text-xs leading-5 text-slate-400">
+              <strong className="text-slate-200">If chosen:</strong> {option.ifChosen}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 overflow-x-auto">
+        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
+          <thead className="text-xs uppercase tracking-[0.14em] text-slate-500">
+            <tr>
+              <th className="border-b border-slate-800 py-3 pr-4">Decision</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Question</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Recommendation</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {decisions.map((decision) => (
+              <tr key={decision.id} className="border-b border-slate-900/80 align-top">
+                <td className="py-3 pr-4">
+                  <div className="font-semibold text-slate-100">{decision.label}</div>
+                  <div className="mt-1 text-xs text-slate-500">
+                    Blocks public controls: {decision.blocksPublicControls ? "yes" : "no"}
+                  </div>
+                </td>
+                <td className="py-3 pr-4 text-slate-300">{decision.question}</td>
+                <td className="py-3 pr-4 text-slate-300">{decision.defaultRecommendation}</td>
+                <td className="py-3 pr-4">
+                  <StatusPill value={decision.status} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-md border border-slate-800 bg-black/20 p-4">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-300">
+            If preparation is approved
+          </h3>
+          <ul className="mt-4 space-y-2 text-sm leading-6 text-slate-300">
+            {nextSteps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ul>
+        </div>
         <div className="rounded-md border border-red-900/60 bg-red-950/20 p-4">
           <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-red-200">Stop conditions</h3>
           <ul className="mt-4 space-y-2 text-sm leading-6 text-red-50">

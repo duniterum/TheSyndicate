@@ -172,6 +172,7 @@ export function buildSourceAttributionPublicProductDecisionGate(
       getVerifiedIntroductionNextSprint(),
       "Keep docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md aligned as the implementation bridge from approved direction to non-activating execution.",
       "Anti-abuse, disclosure, accounting, and source-operator policy design.",
+      "Founder launch-decision review through docs/VERIFIED_INTRODUCTION_V1_FOUNDER_LAUNCH_DECISION_PACKET.md.",
       "Read-only proof and guard hardening that preserves ZERO_SOURCE_ID public/default buys.",
     ],
     forbiddenUntilApproved: [
