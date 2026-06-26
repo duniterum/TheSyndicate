@@ -26,8 +26,12 @@ describe("source attribution public-product decision gate", () => {
     expect(gate.recommendedFrameworkStatus).toBe(
       "FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED",
     );
+    expect(gate.directionApproved).toBe(true);
+    expect(gate.launchApproved).toBe(false);
+    expect(gate.executionBridgeId).toBe("verified-introduction-v1-execution-bridge");
     expect(gate.defaultBuySourceId).toBe(ZERO_SOURCE_ID);
     expect(gate.currentReason).toContain("proven internally");
+    expect(gate.currentReason).toContain("approved as direction only");
     expect(gate.currentReason).toContain("public source/referral product remains blocked");
   });
 
@@ -41,7 +45,7 @@ describe("source attribution public-product decision gate", () => {
 
     expect(statuses.get("internal-proof-recorded")).toBe("SATISFIED");
     expect(statuses.get("safe-closure-state")).toBe("SATISFIED");
-    expect(statuses.get("public-scope-definition")).toBe("REQUIRED");
+    expect(statuses.get("public-scope-definition")).toBe("SATISFIED");
     expect(statuses.get("source-link-and-buyer-ux")).toBe("REQUIRED");
     expect(statuses.get("anti-abuse-eligibility")).toBe("REQUIRED");
     expect(statuses.get("legal-accounting-disclosure")).toBe("REQUIRED");
@@ -55,7 +59,6 @@ describe("source attribution public-product decision gate", () => {
       (gate) => gate.blocksPublicProduct,
     );
     expect(blockers.map((gate) => gate.id)).toEqual([
-      "public-scope-definition",
       "source-link-and-buyer-ux",
       "anti-abuse-eligibility",
       "legal-accounting-disclosure",
@@ -86,6 +89,7 @@ describe("source attribution public-product decision gate", () => {
       gate.recommendedFrameworkId,
       gate.recommendedFrameworkName,
       gate.recommendedFrameworkStatus,
+      gate.executionBridgeId,
       ...gate.gates.flatMap((item) => [item.label, item.proof, item.requirement]),
       ...gate.allowedNextWork,
       ...gate.forbiddenUntilApproved,
@@ -97,9 +101,10 @@ describe("source attribution public-product decision gate", () => {
     expect(copy).toContain("Do not add claim UI");
     expect(copy).toContain("Do not route public/default buys through a non-zero sourceId");
     expect(copy).toContain("verified-introduction-v1");
+    expect(copy).toContain("verified-introduction-v1-execution-bridge");
     expect(copy).toContain("FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED");
-    expect(copy).toContain("SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET");
-    expect(copy).toContain("Chronicle admission review");
+    expect(copy).toContain("non-activating Verified Introduction buyer preview");
+    expect(copy).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(copy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
     expect(copy).not.toMatch(/top earner|guaranteed return|yield opportunity/i);
   });

@@ -6,10 +6,16 @@ export type SourcePublicProductDecisionStatus =
 export type SourcePublicProductLaunchPosture =
   "DO_NOT_LAUNCH_PUBLIC_PRODUCT_YET";
 
+export type SourcePublicProductImplementationAuthority =
+  "NON_ACTIVATING_PLANNING_AND_INFRASTRUCTURE_ONLY";
+
 export type SourcePublicProductV1Shape = {
   readonly id: "verified-introduction-v1";
   readonly status: SourcePublicProductDecisionStatus;
   readonly launchPosture: SourcePublicProductLaunchPosture;
+  readonly directionApproved: true;
+  readonly launchApproved: false;
+  readonly implementationAuthority: SourcePublicProductImplementationAuthority;
   readonly userFacingName: "Verified Introduction";
   readonly protocolName: "Source Attribution";
   readonly accountingName: "Acquisition Source";
@@ -25,6 +31,7 @@ export type SourcePublicProductV1Shape = {
   readonly v1Exclusions: readonly V1Exclusion[];
   readonly buyerDisclosureTemplate: string;
   readonly founderApprovalRequired: true;
+  readonly founderLaunchApprovalRequired: true;
   readonly defaultPublicSourceId: typeof ZERO_SOURCE_ID;
 };
 
@@ -74,6 +81,9 @@ export const SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION: SourcePublicProductV1Shape
   id: "verified-introduction-v1",
   status: "FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED",
   launchPosture: "DO_NOT_LAUNCH_PUBLIC_PRODUCT_YET",
+  directionApproved: true,
+  launchApproved: false,
+  implementationAuthority: "NON_ACTIVATING_PLANNING_AND_INFRASTRUCTURE_ONLY",
   userFacingName: "Verified Introduction",
   protocolName: "Source Attribution",
   accountingName: "Acquisition Source",
@@ -81,6 +91,7 @@ export const SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION: SourcePublicProductV1Shape
   scope: "MEMBERSHIP_SALE_V3_ONLY",
   accessModel: "INVITE_ONLY_MANUAL_APPROVAL",
   founderApprovalRequired: true,
+  founderLaunchApprovalRequired: true,
   defaultPublicSourceId: ZERO_SOURCE_ID,
   sourceEligibility: [
     {

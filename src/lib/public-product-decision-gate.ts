@@ -1,6 +1,10 @@
 import { FIRST_SOURCE_ATTRIBUTION_LIFECYCLE } from "./protocol-lifecycle";
 import { SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION } from "./source-public-product-framework";
 import {
+  VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE,
+  getVerifiedIntroductionNextSprint,
+} from "./verified-introduction-v1-execution";
+import {
   CURRENT_SOURCE_POLICY_SNAPSHOT,
   INTERNAL_PROTOCOL_TEST_SOURCE_001,
   ZERO_SOURCE_ID,
@@ -33,6 +37,9 @@ export type PublicProductDecisionGate = {
   readonly recommendedFrameworkId: typeof SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.id;
   readonly recommendedFrameworkName: typeof SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.userFacingName;
   readonly recommendedFrameworkStatus: typeof SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.status;
+  readonly directionApproved: typeof SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.directionApproved;
+  readonly launchApproved: typeof SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.launchApproved;
+  readonly executionBridgeId: typeof VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.id;
   readonly currentReason: string;
   readonly defaultBuySourceId: typeof ZERO_SOURCE_ID;
   readonly gates: readonly PublicProductGate[];
@@ -76,12 +83,12 @@ export function buildSourceAttributionPublicProductDecisionGate(
     {
       id: "public-scope-definition",
       label: "Public scope definition",
-      status: "REQUIRED",
+      status: "SATISFIED",
       proof:
-        "The internal test proved MembershipSaleV3 source attribution only. The V1 decision framework recommends Verified Introduction as MembershipSaleV3-only, not product-wide.",
+        "The founder approved Verified Introduction V1 as product direction only: MembershipSaleV3-only, invite-only, manually approved, buyer-visible, buyer-clearable, direct-payout-first, and not product-wide.",
       requirement:
-        "Founder/product review must approve or revise docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md before any user-actionable product surface is built.",
-      blocksPublicProduct: true,
+        "Use the approved direction to build only non-activating execution infrastructure. Public launch still requires a separate launch packet.",
+      blocksPublicProduct: false,
     },
     {
       id: "source-link-and-buyer-ux",
@@ -138,7 +145,7 @@ export function buildSourceAttributionPublicProductDecisionGate(
       label: "Founder public-product approval",
       status: "FOUNDER_APPROVAL_REQUIRED",
       proof:
-        "No founder approval exists for public referral activation, public source links, source dashboards, claim UI, or public source-aware buy paths.",
+        "Founder direction approval exists, but no founder launch approval exists for public referral activation, public source links, source dashboards, claim UI, or public source-aware buy paths.",
       requirement:
         "Founder must approve the exact public product surface, copy, gates, source scope, and release packet before implementation can expose user-actionable controls.",
       blocksPublicProduct: true,
@@ -154,13 +161,16 @@ export function buildSourceAttributionPublicProductDecisionGate(
     recommendedFrameworkId: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.id,
     recommendedFrameworkName: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.userFacingName,
     recommendedFrameworkStatus: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.status,
+    directionApproved: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.directionApproved,
+    launchApproved: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.launchApproved,
+    executionBridgeId: VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.id,
     currentReason:
-      "The first Source Attribution lifecycle is proven internally, but public source/referral product remains blocked until product, legal, UX, security, release, and founder gates are satisfied.",
+      "The first Source Attribution lifecycle is proven internally and Verified Introduction V1 is approved as direction only, but public source/referral product remains blocked until product, legal, UX, security, release, and founder launch gates are satisfied.",
     defaultBuySourceId: ZERO_SOURCE_ID,
     gates,
     allowedNextWork: [
-      "Chronicle admission review for the proven lifecycle, if founder wants curated public meaning.",
-      "Founder review of docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md with no implementation or activation authority.",
+      getVerifiedIntroductionNextSprint(),
+      "Keep docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md aligned as the implementation bridge from approved direction to non-activating execution.",
       "Anti-abuse, disclosure, accounting, and source-operator policy design.",
       "Read-only proof and guard hardening that preserves ZERO_SOURCE_ID public/default buys.",
     ],

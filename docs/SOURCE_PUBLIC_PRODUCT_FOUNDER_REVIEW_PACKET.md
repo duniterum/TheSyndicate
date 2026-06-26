@@ -1,10 +1,9 @@
 # Verified Introduction V1 Founder Review Packet
 
-Status: FOUNDER REVIEW PACKET / NO IMPLEMENTATION AUTHORITY / PUBLIC PRODUCT NOT APPROVED
+Status: FOUNDER REVIEW PACKET / DIRECTION APPROVED / NO LAUNCH AUTHORITY
 
-This packet helps the founder decide whether the recommended public
-Source Attribution V1 posture should be approved as direction, approved with
-changes, rejected, or deferred.
+This packet records the founder decision that Verified Introduction V1 is
+approved as direction only. It remains a review record, not launch authority.
 
 It does not authorize transactions, source activation, referral activation,
 public source links, aliases, source dashboards, claim UI, public source-aware
@@ -13,6 +12,23 @@ buys, registry changes, contract changes, deployment, or production publish.
 Decision framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`
 
 Machine-readable recommendation: `src/lib/source-public-product-framework.ts`
+
+Execution bridge: `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md`
+
+## Founder Decision Recorded
+
+Decision: **Option A - Approve As Direction**.
+
+Verified Introduction V1 is approved as the product direction:
+MembershipSaleV3-only, invite-only, manually approved, buyer-visible before
+signing, buyer-clearable back to `ZERO_SOURCE_ID`, direct-payout-first, escrow
+fallback only, no aliases, no claim UI, no source dashboard, no open self-serve
+member referral, and no product-wide attribution.
+
+This decision authorizes planning and non-activating implementation work only.
+It does not authorize public source links, aliases, claim UI, source dashboards,
+public source-aware buys, source activation, transactions, deployment, or
+production publish.
 
 ## Recommendation Summary
 
@@ -140,6 +156,8 @@ The founder should decide these before any design or implementation sprint:
 
 ### Option A - Approve As Direction
 
+Current outcome: **selected**.
+
 Meaning:
 
 - Verified Introduction V1 becomes the approved product direction.
@@ -148,8 +166,8 @@ Meaning:
 
 Next step:
 
-- Create a non-activating UX/design specification for the future buyer flow,
-  disclosure, clear-source state, and anti-abuse gates.
+- Use `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md` to build the
+  non-activating buyer preview, clear-source, and failure-state skeleton.
 
 ### Option B - Approve With Changes
 
@@ -210,12 +228,12 @@ If the founder agrees with the recommendation:
 
 > I approve Verified Introduction V1 as product direction only: MembershipSaleV3-only, invite-only, manually approved, buyer-visible, buyer-clearable back to ZERO_SOURCE_ID, direct-payout-first with escrow fallback, no aliases, no claim UI, no source dashboard, no open self-serve member referral, and no product-wide attribution. This approval does not authorize source activation, public source links, claim UI, dashboards, public source-aware buys, transactions, deployment, or production publish.
 
-## Next Work If Approved
+## Next Work After Approval
 
-If approved as direction, the next safe sprint is not activation.
+Now that the direction is approved, the next safe sprint is not activation.
 
-The next safe sprint is a **non-activating Verified Introduction UX and release
-gate specification**:
+The next safe sprint is the **non-activating Verified Introduction buyer
+preview, clear-source, and failure-state skeleton**:
 
 - buyer preview states,
 - clear-source interaction,
@@ -226,4 +244,5 @@ gate specification**:
 - production QA plan,
 - no public launch authority.
 
-Only after that specification is reviewed should implementation be considered.
+This may be implemented only as non-activating infrastructure. Public launch
+still requires a separate launch packet and founder approval.

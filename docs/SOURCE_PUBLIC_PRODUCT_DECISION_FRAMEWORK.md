@@ -1,9 +1,9 @@
 # Source Public Product Decision Framework
 
-Status: DECISION FRAMEWORK / V1 RECOMMENDATION / PUBLIC PRODUCT NOT APPROVED
+Status: DECISION FRAMEWORK / DIRECTION APPROVED / PUBLIC PRODUCT NOT APPROVED
 
 This document answers whether a public source/referral product should exist and
-what its first approved shape should be if the founder later approves it.
+what its first approved shape should be if the founder later approves launch.
 
 It does not authorize activation, source links, aliases, dashboards, claim UI,
 public source-aware buys, registry changes, contract changes, transactions,
@@ -14,12 +14,16 @@ Machine-readable source: `src/lib/source-public-product-framework.ts`.
 Founder review packet:
 `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
 
+Execution bridge:
+`docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md`.
+
 ## Executive Decision
 
-The engine is proven. The public product should still wait.
+The engine is proven. Verified Introduction V1 is approved as product direction.
+The public product should still wait.
 
 If The Syndicate later creates a first user-actionable source product, the
-recommended V1 is:
+approved direction for V1 is:
 
 **Verified Introduction V1**
 
@@ -159,11 +163,10 @@ Before any public source-aware path is released:
 
 ## Current No-Go Conditions
 
-Do not proceed to user-actionable implementation until:
+Direction approval does not authorize launch. Do not proceed to user-actionable
+implementation until:
 
-- founder approves this V1 posture or edits it through
-  `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`,
-- public scope is frozen,
+- public scope is frozen in a launch packet,
 - buyer UX is designed and reviewed,
 - anti-abuse rules are accepted,
 - legal/accounting/disclosure posture is accepted,
@@ -172,3 +175,7 @@ Do not proceed to user-actionable implementation until:
 
 Until then, public/default MembershipSaleV3 buys remain `ZERO_SOURCE_ID`, and
 the completed internal Source Attribution lifecycle remains proof, not product.
+
+The next authorized work is the non-activating execution bridge and buyer
+experience skeleton described in
+`docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md`.

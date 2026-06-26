@@ -1782,10 +1782,13 @@ describe("production coherence guards", () => {
     const decisionDoc = read("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
     const frameworkDoc = read("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
     const founderReview = read("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
+    const executionBridge = read("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     const decisionModel = read("src/lib/public-product-decision-gate.ts");
     const frameworkModel = read("src/lib/source-public-product-framework.ts");
+    const executionModel = read("src/lib/verified-introduction-v1-execution.ts");
     const decisionTest = read("src/lib/__tests__/public-product-decision-gate.test.ts");
     const frameworkTest = read("src/lib/__tests__/source-public-product-framework.test.ts");
+    const executionTest = read("src/lib/__tests__/verified-introduction-v1-execution.test.ts");
     const authority = read("docs/DOCUMENTATION_AUTHORITY_MAP.md");
     const index = read("docs/PROTOCOL_KNOWLEDGE_INDEX.md");
     const canonKnowledge = read("docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md");
@@ -1796,18 +1799,25 @@ describe("production coherence guards", () => {
     expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
     expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
     expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
+    expect(authority).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
     expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
     expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
+    expect(index).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(index).toContain("src/lib/public-product-decision-gate.ts");
     expect(index).toContain("src/lib/source-public-product-framework.ts");
+    expect(index).toContain("src/lib/verified-introduction-v1-execution.ts");
     expect(canonKnowledge).toContain("src/lib/public-product-decision-gate.ts");
     expect(canonKnowledge).toContain("src/lib/source-public-product-framework.ts");
+    expect(canonKnowledge).toContain("src/lib/verified-introduction-v1-execution.ts");
     expect(knowledgeModel).toContain("src/lib/public-product-decision-gate.ts");
     expect(knowledgeModel).toContain("src/lib/source-public-product-framework.ts");
+    expect(knowledgeModel).toContain("src/lib/verified-introduction-v1-execution.ts");
 
     expect(decisionDoc).toContain("Status: OPERATIONAL GATE / PROOF EXISTS / PUBLIC PRODUCT NOT APPROVED");
     expect(decisionDoc).toContain("Source Attribution is **not ready for public product activation**.");
+    expect(decisionDoc).toContain("SATISFIED AS DIRECTION");
+    expect(decisionDoc).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(decisionDoc).toContain("The Source Attribution lifecycle has reached proof and Register memory.");
     expect(decisionDoc).toContain("Proof, Register memory, Chronicle,");
     expect(decisionDoc).toContain("and the framework do not launch referral.");
@@ -1816,16 +1826,21 @@ describe("production coherence guards", () => {
     expect(decisionModel).toContain("publicProductReady: false");
     expect(decisionModel).toContain("recommendedFrameworkId");
     expect(decisionModel).toContain("SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION");
+    expect(decisionModel).toContain("VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE");
+    expect(decisionModel).toContain("directionApproved");
+    expect(decisionModel).toContain("launchApproved");
     expect(decisionModel).toContain("public-scope-definition");
     expect(decisionModel).toContain("source-link-and-buyer-ux");
     expect(decisionModel).toContain("anti-abuse-eligibility");
     expect(decisionModel).toContain("legal-accounting-disclosure");
     expect(decisionModel).toContain("claim-and-escrow-policy");
     expect(decisionModel).toContain("founder-public-product-approval");
-    expect(decisionModel).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
-    expect(frameworkDoc).toContain("Status: DECISION FRAMEWORK / V1 RECOMMENDATION / PUBLIC PRODUCT NOT APPROVED");
+    expect(decisionModel).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
+    expect(frameworkDoc).toContain("Status: DECISION FRAMEWORK / DIRECTION APPROVED / PUBLIC PRODUCT NOT APPROVED");
     expect(frameworkDoc).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
+    expect(frameworkDoc).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(frameworkDoc).toContain("Verified Introduction V1");
+    expect(frameworkDoc).toContain("approved direction");
     expect(frameworkDoc).toContain("MembershipSaleV3-only");
     expect(frameworkDoc).toContain("buyer-clearable back to `ZERO_SOURCE_ID`");
     expect(frameworkDoc).toContain("no claim UI");
@@ -1836,11 +1851,15 @@ describe("production coherence guards", () => {
     expect(frameworkModel).toContain("verified-introduction-v1");
     expect(frameworkModel).toContain("FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED");
     expect(frameworkModel).toContain("DO_NOT_LAUNCH_PUBLIC_PRODUCT_YET");
+    expect(frameworkModel).toContain("directionApproved: true");
+    expect(frameworkModel).toContain("launchApproved: false");
+    expect(frameworkModel).toContain("NON_ACTIVATING_PLANNING_AND_INFRASTRUCTURE_ONLY");
     expect(frameworkModel).toContain("INVITE_ONLY_MANUAL_APPROVAL");
     expect(frameworkModel).toContain("MEMBERSHIP_SALE_V3_ONLY");
     expect(frameworkModel).toContain("defaultPublicSourceId: ZERO_SOURCE_ID");
-    expect(founderReview).toContain("Status: FOUNDER REVIEW PACKET / NO IMPLEMENTATION AUTHORITY / PUBLIC PRODUCT NOT APPROVED");
+    expect(founderReview).toContain("Status: FOUNDER REVIEW PACKET / DIRECTION APPROVED / NO LAUNCH AUTHORITY");
     expect(founderReview).toContain("approve Verified Introduction V1 as direction only");
+    expect(founderReview).toContain("Decision: **Option A - Approve As Direction**");
     expect(founderReview).toContain("Approve As Direction");
     expect(founderReview).toContain("Approve With Changes");
     expect(founderReview).toContain("Defer");
@@ -1850,13 +1869,27 @@ describe("production coherence guards", () => {
     expect(founderReview).toContain("No claim UI");
     expect(founderReview).toContain("No source dashboard");
     expect(founderReview).toContain("No public source-aware buy path");
+    expect(executionBridge).toContain("Status: APPROVED DIRECTION / NON-ACTIVATING EXECUTION BRIDGE / NO LAUNCH AUTHORITY");
+    expect(executionBridge).toContain("Non-activating UX/spec");
+    expect(executionBridge).toContain("Internal implementation skeleton");
+    expect(executionBridge).toContain("Public");
+    expect(executionBridge).toContain("`/join` must remain `ZERO_SOURCE_ID`");
+    expect(executionBridge).toContain("SeatRecord721 / ERC721 identity");
+    expect(executionBridge).toContain("NFT / Archive evolution");
+    expect(executionModel).toContain("VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE");
+    expect(executionModel).toContain("launchApproved === false");
+    expect(executionModel).toContain("No public source-aware buy path.");
+    expect(executionModel).toContain("Verified Introduction / Source Attribution public-product path");
     expect(decisionTest).toContain("proof, not public product readiness");
     expect(frameworkTest).toContain("recommends a constrained V1 shape without approving launch");
+    expect(executionTest).toContain("converts founder direction approval into non-activating implementation authority");
     expect(checkpoint).toContain("Public product decision framework");
     expect(checkpoint).toContain("Public product founder review packet");
+    expect(checkpoint).toContain("Verified Introduction execution bridge");
     expect(checkpoint).toContain("invite-only **Verified Introduction**");
     expect(capability).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
     expect(capability).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
+    expect(capability).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(capability).toContain("invite-only Verified Introduction V1");
 
     const gateSurface = [
@@ -1865,6 +1898,8 @@ describe("production coherence guards", () => {
       frameworkDoc,
       frameworkModel,
       founderReview,
+      executionBridge,
+      executionModel,
     ].join("\n");
     expect(gateSurface).toContain("ZERO_SOURCE_ID");
     expect(gateSurface).toContain("Do not activate public referral");

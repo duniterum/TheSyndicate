@@ -330,7 +330,8 @@ What it does not enable:
 
 Still needed:
 
-- Founder review of `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
+- Non-activating execution work from
+  `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md`.
 - Legal/product copy posture for any public exposure.
 - Anti-abuse, source eligibility, prohibited-promotion, and source onboarding
   rules before any member-introduction UX.
@@ -400,12 +401,15 @@ again, or building public source/referral UX:
    boundary for localhost and explicit production-internal mode.
 5. Use `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`,
    `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`, and
-   `src/lib/source-public-product-framework.ts` as the founder-review framework
-   for a possible invite-only Verified Introduction V1. The framework is a
-   recommendation, not launch approval.
-6. Keep public referral/source copy aligned with acquisition-first,
+   `src/lib/source-public-product-framework.ts` as the approved-direction
+   framework for invite-only Verified Introduction V1. The framework is not
+   launch approval.
+6. Use `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md` and
+   `src/lib/verified-introduction-v1-execution.ts` for the next non-activating
+   buyer preview, clear-source, and failure-state skeleton.
+7. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
-7. Do not build public source links, aliases, claim UI, source dashboards,
+8. Do not build public source links, aliases, claim UI, source dashboards,
    Archive source attribution, open self-serve member referral, or
    product-wide attribution until `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`
    and `src/lib/public-product-decision-gate.ts` are satisfied by separate

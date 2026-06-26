@@ -13,6 +13,11 @@ describe("source public product decision framework", () => {
     expect(framework.id).toBe("verified-introduction-v1");
     expect(framework.status).toBe("FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED");
     expect(framework.launchPosture).toBe("DO_NOT_LAUNCH_PUBLIC_PRODUCT_YET");
+    expect(framework.directionApproved).toBe(true);
+    expect(framework.launchApproved).toBe(false);
+    expect(framework.implementationAuthority).toBe(
+      "NON_ACTIVATING_PLANNING_AND_INFRASTRUCTURE_ONLY",
+    );
     expect(framework.userFacingName).toBe("Verified Introduction");
     expect(framework.protocolName).toBe("Source Attribution");
     expect(framework.accountingName).toBe("Acquisition Source");
@@ -21,6 +26,7 @@ describe("source public product decision framework", () => {
     expect(framework.accessModel).toBe("INVITE_ONLY_MANUAL_APPROVAL");
     expect(framework.defaultPublicSourceId).toBe(ZERO_SOURCE_ID);
     expect(framework.founderApprovalRequired).toBe(true);
+    expect(framework.founderLaunchApprovalRequired).toBe(true);
   });
 
   it("excludes the risky public-product surfaces from V1", () => {

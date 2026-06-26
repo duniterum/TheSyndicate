@@ -94,8 +94,9 @@ This record is source policy state plus one completed internal proof receipt. It
 | Durable memory boundary | The completed Source Attribution lifecycle is now active Institutional Register memory, anchored to the re-pause closure transaction. Chronicle remains a separate curation decision; public referral remains inactive. |
 | Knowledge architecture boundary | The Knowledge Map now names the full fact lifecycle: raw event -> current-authority readback -> proof -> Register memory -> Chronicle review -> public product decision. |
 | Public product decision gate | Source Attribution now has a specific proof-to-public-product gate in `src/lib/public-product-decision-gate.ts` and `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`; the current decision is not ready for public product activation. |
-| Public product decision framework | The recommended V1 public posture is invite-only **Verified Introduction** for MembershipSaleV3 only, manually approved, buyer-visible, buyer-clearable, direct-payout-first, and without aliases, claim UI, source dashboard, open self-serve referral, or product-wide attribution. It is a founder-review recommendation, not launch approval. |
-| Public product founder review packet | `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md` converts the Verified Introduction V1 recommendation into approve/revise/reject/defer founder options. It has no implementation or activation authority. |
+| Public product decision framework | The V1 public posture is direction-approved as invite-only **Verified Introduction** for MembershipSaleV3 only, manually approved, buyer-visible, buyer-clearable, direct-payout-first, and without aliases, claim UI, source dashboard, open self-serve referral, or product-wide attribution. It is not launch approval. |
+| Public product founder review packet | `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md` now records Option A - approve as direction. It has no launch, implementation-of-public-controls, or activation authority. |
+| Verified Introduction execution bridge | `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md` and `src/lib/verified-introduction-v1-execution.ts` define the safe path from approved direction to non-activating buyer preview, clear-source, and failure-state infrastructure. |
 | Activity/My Syndicate readiness | The first real source-attributed receipt can be understood without activating public source paths. |
 | Registry/referral truth | Public surfaces can say a PAUSED source policy fact exists while still saying referral is inactive. |
 | Production truth | Replit production was last reported live and QA green through the lifecycle proof publication; later GitHub-only knowledge/gate commits still require a separate Replit decision before becoming production truth. |
@@ -342,10 +343,24 @@ Outcome:
   legal/product approval, and Replit production QA remain required before any
   public source/referral product exists.
 
-Current implementation note: the founder review packet now exists at
-`docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`. The recommended next
-decision is not launch; it is whether to approve, revise, reject, or defer
-Verified Introduction V1 as product direction only.
+Current implementation note: the founder review packet now records approval as
+direction only. The next step is not launch; it is the non-activating execution
+bridge and buyer/source skeleton that keeps public `/join` on `ZERO_SOURCE_ID`.
+
+### Sprint 5A - Verified Introduction Execution Bridge
+
+Goal: convert approved direction into executable, non-activating implementation
+work.
+
+Outcome:
+
+- `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md` defines phases, launch
+  blockers, readbacks, Replit posture, and priority order,
+- `src/lib/verified-introduction-v1-execution.ts` makes the bridge
+  machine-readable,
+- public launch remains blocked,
+- public/default buys remain `ZERO_SOURCE_ID`,
+- ERC721 and NFT work remain ordered after the Verified Introduction path.
 
 ## What To Skip For Now
 

@@ -46,7 +46,7 @@ Founder review packet: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
 | --- | --- | --- |
 | Internal proof recorded | SATISFIED | The capability exists as internal proof. |
 | Safe closure state | SATISFIED | Source is PAUSED, active source count is zero, and public/default buys remain `ZERO_SOURCE_ID`. |
-| Public scope definition | REQUIRED | The V1 framework recommends Verified Introduction as MembershipSaleV3-only, invite-only, and manually approved; founder must approve or revise it. |
+| Public scope definition | SATISFIED AS DIRECTION | The founder approved Verified Introduction V1 as MembershipSaleV3-only, invite-only, manually approved, buyer-visible, buyer-clearable, direct-payout-first, and not product-wide. |
 | Source link and buyer UX | REQUIRED | Design source preview/quote, buyer disclosure, hard-fail source readback, and clear-source behavior before wallet signature. |
 | Anti-abuse and eligibility rules | REQUIRED | Define source eligibility, seated/referrer rules, repeat-purchase posture, privacy, and revocation operations. |
 | Legal, accounting, and disclosure posture | REQUIRED | Approve acquisition-first language and tax/accounting posture. |
@@ -58,8 +58,8 @@ Founder review packet: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
 
 - Chronicle admission review for the completed lifecycle, if the founder wants
   curated public meaning.
-- Founder review of `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md` with
-  no implementation or activation authority.
+- Non-activating Verified Introduction execution work from
+  `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md`.
 - Anti-abuse, disclosure, accounting, and source-operator policy design.
 - Read-only proof and guard hardening that preserves `ZERO_SOURCE_ID`
   public/default buys.
