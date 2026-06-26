@@ -58,6 +58,7 @@ import { Route as LabsMemoryCandidatesRouteImport } from './routes/labs.memory-c
 import { Route as LabsKnowledgeMapRouteImport } from './routes/labs.knowledge-map'
 import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
 import { Route as LabsInstitutionalRegisterRouteImport } from './routes/labs.institutional-register'
+import { Route as LabsHomeStudioRouteImport } from './routes/labs.home-studio'
 import { Route as LabsDesignMuseumRouteImport } from './routes/labs.design-museum'
 import { Route as LabsDesignArchiveRouteImport } from './routes/labs.design-archive'
 import { Route as LabsComponentIndexRouteImport } from './routes/labs.component-index'
@@ -325,6 +326,11 @@ const LabsInstitutionalRegisterRoute =
     path: '/institutional-register',
     getParentRoute: () => LabsRoute,
   } as any)
+const LabsHomeStudioRoute = LabsHomeStudioRouteImport.update({
+  id: '/home-studio',
+  path: '/home-studio',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsDesignMuseumRoute = LabsDesignMuseumRouteImport.update({
   id: '/design-museum',
   path: '/design-museum',
@@ -458,6 +464,7 @@ export interface FileRoutesByFullPath {
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
+  '/labs/home-studio': typeof LabsHomeStudioRoute
   '/labs/institutional-register': typeof LabsInstitutionalRegisterRoute
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
@@ -525,6 +532,7 @@ export interface FileRoutesByTo {
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
+  '/labs/home-studio': typeof LabsHomeStudioRoute
   '/labs/institutional-register': typeof LabsInstitutionalRegisterRoute
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
@@ -594,6 +602,7 @@ export interface FileRoutesById {
   '/labs/component-index': typeof LabsComponentIndexRoute
   '/labs/design-archive': typeof LabsDesignArchiveRoute
   '/labs/design-museum': typeof LabsDesignMuseumRoute
+  '/labs/home-studio': typeof LabsHomeStudioRoute
   '/labs/institutional-register': typeof LabsInstitutionalRegisterRoute
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
@@ -664,6 +673,7 @@ export interface FileRouteTypes {
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
+    | '/labs/home-studio'
     | '/labs/institutional-register'
     | '/labs/invariants'
     | '/labs/knowledge-map'
@@ -731,6 +741,7 @@ export interface FileRouteTypes {
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
+    | '/labs/home-studio'
     | '/labs/institutional-register'
     | '/labs/invariants'
     | '/labs/knowledge-map'
@@ -799,6 +810,7 @@ export interface FileRouteTypes {
     | '/labs/component-index'
     | '/labs/design-archive'
     | '/labs/design-museum'
+    | '/labs/home-studio'
     | '/labs/institutional-register'
     | '/labs/invariants'
     | '/labs/knowledge-map'
@@ -1215,6 +1227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsInstitutionalRegisterRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/home-studio': {
+      id: '/labs/home-studio'
+      path: '/home-studio'
+      fullPath: '/labs/home-studio'
+      preLoaderRoute: typeof LabsHomeStudioRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/design-museum': {
       id: '/labs/design-museum'
       path: '/design-museum'
@@ -1358,6 +1377,7 @@ interface LabsRouteChildren {
   LabsComponentIndexRoute: typeof LabsComponentIndexRoute
   LabsDesignArchiveRoute: typeof LabsDesignArchiveRoute
   LabsDesignMuseumRoute: typeof LabsDesignMuseumRoute
+  LabsHomeStudioRoute: typeof LabsHomeStudioRoute
   LabsInstitutionalRegisterRoute: typeof LabsInstitutionalRegisterRoute
   LabsInvariantsRoute: typeof LabsInvariantsRoute
   LabsKnowledgeMapRoute: typeof LabsKnowledgeMapRoute
@@ -1382,6 +1402,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsComponentIndexRoute: LabsComponentIndexRoute,
   LabsDesignArchiveRoute: LabsDesignArchiveRoute,
   LabsDesignMuseumRoute: LabsDesignMuseumRoute,
+  LabsHomeStudioRoute: LabsHomeStudioRoute,
   LabsInstitutionalRegisterRoute: LabsInstitutionalRegisterRoute,
   LabsInvariantsRoute: LabsInvariantsRoute,
   LabsKnowledgeMapRoute: LabsKnowledgeMapRoute,
