@@ -155,10 +155,11 @@ Second pass completed: Protocol Evolution now treats this as the first proven
 protocol lifecycle: packet, terms, controlled ACTIVE, real action, PAUSED
 closure, and safe-state readback.
 
-The next sprint should decide whether the lifecycle proof should enter
-Chronicle/Register memory, then separately decide whether any public
-referral/source product should exist. Public/default buying still uses
-`ZERO_SOURCE_ID`; public source links, claim UI, source dashboards, and broad
-activation remain deferred until anti-abuse, legal/accounting, and UX rules are
-approved.
+Durable memory decision completed: the lifecycle proof now enters the
+Institutional Register as active memory anchored to the re-pause closure
+transaction. Chronicle remains a separate human curation decision, and any
+public referral/source product remains a separate future approval path.
+Public/default buying still uses `ZERO_SOURCE_ID`; public source links, claim
+UI, source dashboards, and broad activation remain deferred until anti-abuse,
+legal/accounting, and UX rules are approved.
 

@@ -23,6 +23,7 @@
 // no source transaction is skipped (nothing to match a feed row on).
 
 import { deriveGenesisRegisterEntries } from "./institutional-register-genesis";
+import { deriveProtocolLifecycleRegisterEntries } from "./institutional-register-lifecycle";
 import type { InstitutionalRegisterEntry } from "./institutional-register-registry";
 
 /** Route that renders the durable Institutional Register (the link target). */
@@ -92,4 +93,7 @@ export function institutionalLinkForTx(
 export const ACTIVE_INSTITUTIONAL_TX_INDEX: ReadonlyMap<
   string,
   ActivityInstitutionalLink
-> = buildActivityInstitutionalIndex(deriveGenesisRegisterEntries());
+> = buildActivityInstitutionalIndex([
+  ...deriveGenesisRegisterEntries(),
+  ...deriveProtocolLifecycleRegisterEntries(),
+]);

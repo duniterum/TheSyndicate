@@ -8,6 +8,7 @@ import {
   institutionalLinkForTx,
 } from "../activity-institutional-link";
 import { deriveGenesisRegisterEntries } from "../institutional-register-genesis";
+import { deriveProtocolLifecycleRegisterEntries } from "../institutional-register-lifecycle";
 import type { InstitutionalRegisterEntry } from "../institutional-register-registry";
 
 const SRC_PATH = resolve(process.cwd(), "src/lib/activity-institutional-link.ts");
@@ -97,7 +98,10 @@ describe("activity-institutional-link: default genesis index", () => {
   });
 
   it("matches the active+tx subset of the genesis seed exactly", () => {
-    const expected = deriveGenesisRegisterEntries().filter(
+    const expected = [
+      ...deriveGenesisRegisterEntries(),
+      ...deriveProtocolLifecycleRegisterEntries(),
+    ].filter(
       (e) =>
         e.entryStatus === "active" &&
         typeof e.sourceTxHash === "string" &&
@@ -110,6 +114,16 @@ describe("activity-institutional-link: default genesis index", () => {
       expect(link?.title).toBe(e.title);
     }
   });
+
+  it("indexes the completed protocol lifecycle safe-closure transaction", () => {
+    const [lifecycleEntry] = deriveProtocolLifecycleRegisterEntries();
+    const link = ACTIVE_INSTITUTIONAL_TX_INDEX.get(
+      lifecycleEntry.sourceTxHash!.toLowerCase(),
+    );
+
+    expect(link?.entryId).toBe(lifecycleEntry.id);
+    expect(link?.title).toBe(lifecycleEntry.title);
+  });
 });
 
 describe("activity-institutional-link: purity & determinism", () => {
@@ -121,8 +135,12 @@ describe("activity-institutional-link: purity & determinism", () => {
   });
 
   it("is deterministic across calls", () => {
-    const a = buildActivityInstitutionalIndex(deriveGenesisRegisterEntries());
-    const b = buildActivityInstitutionalIndex(deriveGenesisRegisterEntries());
+    const entries = [
+      ...deriveGenesisRegisterEntries(),
+      ...deriveProtocolLifecycleRegisterEntries(),
+    ];
+    const a = buildActivityInstitutionalIndex(entries);
+    const b = buildActivityInstitutionalIndex(entries);
     expect([...a.entries()]).toEqual([...b.entries()]);
   });
 });
@@ -131,9 +149,10 @@ describe("activity-institutional-link: adjacency & purity (source scan)", () => 
   const src = readFileSync(SRC_PATH, "utf8");
   const importLines = src.split("\n").filter((l) => /^\s*import\b/.test(l)).join("\n");
 
-  it("imports only the register registry + genesis seed (downstream consumer)", () => {
+  it("imports only the register registry + static register seeds (downstream consumer)", () => {
     const lines = src.split("\n").filter((l) => /^\s*import\b/.test(l));
-    const allowed = /institutional-register-registry|institutional-register-genesis/;
+    const allowed =
+      /institutional-register-registry|institutional-register-genesis|institutional-register-lifecycle/;
     for (const line of lines) {
       expect(allowed.test(line), `unexpected import: ${line}`).toBe(true);
     }

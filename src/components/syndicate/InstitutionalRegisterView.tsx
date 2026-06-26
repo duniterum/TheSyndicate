@@ -28,6 +28,7 @@ import { deriveChronicleReviewCandidates } from "@/lib/chronicle-review-candidat
 import { deriveChroniclePromotionDecisions } from "@/lib/chronicle-promotion";
 import { deriveInstitutionalRegister } from "@/lib/institutional-register";
 import { deriveGenesisRegisterEntries } from "@/lib/institutional-register-genesis";
+import { deriveProtocolLifecycleRegisterEntries } from "@/lib/institutional-register-lifecycle";
 import {
   selectPublicInstitutionalEntries,
   mergeInstitutionalEntries,
@@ -330,6 +331,7 @@ export function InstitutionalRegisterView() {
   // Curated, verified protocol-birth seeds that predate the event scanner
   // (spec §3). Pure + deterministic, so this is computed once.
   const genesisEntries = useMemo(() => deriveGenesisRegisterEntries(), []);
+  const lifecycleEntries = useMemo(() => deriveProtocolLifecycleRegisterEntries(), []);
 
   const entries = useMemo(() => {
     const signals = deriveSignals(events, { windowCoversDeployment: false });
@@ -338,9 +340,9 @@ export function InstitutionalRegisterView() {
     const decisions = deriveChroniclePromotionDecisions(review);
     const register = deriveInstitutionalRegister(decisions);
     return selectPublicInstitutionalEntries(
-      mergeInstitutionalEntries(genesisEntries, register),
+      mergeInstitutionalEntries([...genesisEntries, ...lifecycleEntries], register),
     );
-  }, [events, genesisEntries]);
+  }, [events, genesisEntries, lifecycleEntries]);
 
   // Reliability status (Sprint 8). Coverage stays conservative (the public view
   // never proves genesis coverage); the window is "truncated" when it hits the

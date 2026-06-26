@@ -142,13 +142,14 @@ specs that match the deployed reality. Safe to reference for current work.
 - `docs/PROTOCOL_KNOWLEDGE_INDEX.md` - whole-protocol knowledge front door
   that routes current work across V3, SourceRegistryV1, referral/source
   attribution, Activity, Registry, Chronicle, My Syndicate, Transparency,
-  Protocol Evolution lifecycle proof, Archive1155, future modules, operational
-  memory, production sync, and guard files. It has no deployment, publish,
+  Protocol Evolution lifecycle proof, Institutional Register lifecycle memory,
+  Archive1155, future modules, operational memory, production sync, and guard
+  files. It has no deployment, publish,
   transaction, source-record, activation, registry-switch, referral, or
   claim-UI authority.
 - `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, current-authority readback, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
 - `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md` - operational doctrine for GitHub/Replit/production synchronization, change classification, Replit pull/publish decisions, route QA, wallet/write-path QA, push-back rules, Codex after-Replit protocol, and final reporting. It has no deployment, publish, transaction, registry, source-record, activation, or claim-UI authority.
-- `docs/PROTOCOL_CHECKPOINT_2026_06_25.md` - whole-protocol continuity checkpoint after the first internal source readback, source-operator console, first completed internal source-attribution real-condition ceremony, and Replit live sync. It has no deployment, publish, transaction, source-record, activation, registry-switch, referral, or claim-UI authority.
+- `docs/PROTOCOL_CHECKPOINT_2026_06_25.md` - whole-protocol continuity checkpoint after the first internal source readback, source-operator console, first completed internal source-attribution real-condition ceremony, durable Register memory decision, and Replit live sync. It has no deployment, publish, transaction, source-record, activation, registry-switch, referral, or claim-UI authority.
 - `docs/SOURCE_ACTIVATION_READINESS_PACKET.md` - non-transactional readiness packet for the existing internal PAUSED source record before any possible future ACTIVE status ceremony. It has no deployment, publish, transaction, source-record, source-activation, referral, registry-switch, public-source-link, source-aware-buy-path, or claim-UI authority.
 - `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md` - current-authority preflight packet and readback command list for a possible future ACTIVE source status ceremony. It has no deployment, publish, transaction, source-activation, referral, registry-switch, public-source-link, source-aware-buy-path, or claim-UI authority.
 - `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md` - internal source-aware test boundary for the internal PAUSED source record, including localhost and explicit production-internal modes. It has no deployment, publish, production-route, transaction, source-record, source-activation, referral, registry-switch, public-source-link, public source-aware-buy-path, or claim-UI authority.

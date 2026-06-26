@@ -310,6 +310,47 @@ describe("Institutional register GENESIS SEED — Adjacency Law (CONFIG → SEED
 // language guard, and the Chronicle's own register map (chronicle-entries) — it
 // decides Chronicle eligibility, so it reads the Chronicle's classification
 // vocabulary, never its candidate pipeline.
+// PROTOCOL LIFECYCLE PROOF -> INSTITUTIONAL REGISTER ENTRY. Completed lifecycle
+// facts are lawful static register seeds when a capability is proven by a whole
+// ceremony rather than one raw event. Like genesis seeds, they must never import
+// upstream event/signal/memory/Chronicle pipeline layers.
+const LIFECYCLE_SEED_MODULES = ["institutional-register-lifecycle.ts"];
+
+describe("Institutional register LIFECYCLE SEED - Adjacency Law (LIFECYCLE PROOF -> SEED only)", () => {
+  for (const mod of LIFECYCLE_SEED_MODULES) {
+    const src = read(mod);
+    const importLines = src
+      .split(/\r?\n/)
+      .filter((l) => /^\s*import\b/.test(l) || /\bfrom\s+["']/.test(l));
+    const imports = importLines.join("\n");
+
+    it(`${mod} does not import the raw event layer (protocol-events)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-events["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Signal layer (deriver or registry)`, () => {
+      expect(/from\s+["'][^"']*\/protocol-signals["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*signal-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Memory layer`, () => {
+      expect(/from\s+["'][^"']*\/memory-candidates["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*memory-candidate-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} does not import the Chronicle-review or Chronicle-promotion layers`, () => {
+      expect(/from\s+["'][^"']*chronicle-review-candidate/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*\/chronicle-promotion["']/.test(imports)).toBe(false);
+      expect(/from\s+["'][^"']*chronicle-promotion-registry["']/.test(imports)).toBe(false);
+    });
+
+    it(`${mod} builds from lifecycle proof + Institutional Register vocabulary`, () => {
+      expect(/from\s+["'][^"']*protocol-lifecycle["']/.test(imports)).toBe(true);
+      expect(/from\s+["'][^"']*institutional-register-registry["']/.test(imports)).toBe(true);
+    });
+  }
+});
+
 const ADMISSION_MODULES = [
   "chronicle-admission-registry.ts",
   "chronicle-admission.ts",

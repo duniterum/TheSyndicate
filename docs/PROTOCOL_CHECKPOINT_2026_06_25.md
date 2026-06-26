@@ -91,6 +91,7 @@ This record is source policy state plus one completed internal proof receipt. It
 | Source lifecycle model | `SourceCreated`, `SourceStatusChanged`, `SourceTermsUpdated`, and payout-wallet update facts have read-only modeling. |
 | Source-attributed receipts | One real-condition internal V3 source-attributed purchase receipt exists and is read back; public receipt surfacing remains a product decision. |
 | Protocol lifecycle proof | The first full lifecycle is now modeled as policy fact -> terms update -> controlled ACTIVE -> real buy -> PAUSED closure, without public referral activation. |
+| Durable memory boundary | The completed Source Attribution lifecycle is now active Institutional Register memory, anchored to the re-pause closure transaction. Chronicle remains a separate curation decision; public referral remains inactive. |
 | Activity/My Syndicate readiness | The first real source-attributed receipt can be understood without activating public source paths. |
 | Registry/referral truth | Public surfaces can say a PAUSED source policy fact exists while still saying referral is inactive. |
 | Production truth | Replit production was synced to `e19927b` and QA confirmed the PAUSED readback state. |
@@ -194,6 +195,7 @@ Archive1155 / SeatRecord721 / SwapRail / ProductSaleRouter
 | `/join` | V3 direct buy. Public/default buys remain `ZERO_SOURCE_ID`; no source selector or source link. |
 | `/referral` | Inactive source/referral explanation and PAUSED source policy readback; no claim UI or live referral. |
 | `/registry` | Contract and source-policy proof surface, including SourceRegistryV1 and MembershipSaleV3. |
+| `/institutional-register` | Durable protocol memory. The completed Source Attribution lifecycle is recorded here as a verified internal capability proof, not as public referral launch. |
 | `/activity` | Live heartbeat and receipt/event context; the internal source-attributed receipt may be represented only with clear non-public status. |
 | `/my-syndicate` | Member cockpit and source receipt context; no claim/balance dashboard. |
 | `/transparency` | Protocol Economy and readback truth; source policy is not commission/revenue. |
@@ -300,6 +302,18 @@ Outcome:
 - lifecycle proof has no activation, claim, source-link, or write authority.
 
 Status: completed in the runtime model and guarded by lifecycle/coherence tests.
+
+### Sprint 4B - Durable Memory Boundary
+
+Goal: decide where the completed lifecycle belongs in permanent institutional memory.
+
+Outcome:
+
+- the completed Source Attribution lifecycle is active Institutional Register memory,
+- the memory entry is anchored to the re-pause closure transaction because the proof became complete only after safe closure,
+- Activity can point the closure transaction to the Register entry,
+- Chronicle is not auto-published and remains a separate human curation decision,
+- public referral, claim UI, public source links, source dashboards, and public source-aware buys remain inactive.
 
 ### Sprint 5 - Public Source/Referral Product Decision
 

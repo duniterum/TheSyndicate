@@ -161,6 +161,7 @@ export const INSTITUTIONAL_EVENT_CLASSES: ReadonlyArray<InstitutionalEventClass>
   { class: "external protocol revenue", availability: "reserved", description: "Revenue from an external protocol integration. Reserved — not detectable yet." },
   { class: "system-wallet action", availability: "live", description: "An action by a protocol system wallet; held for human framing." },
   { class: "protocol-steward action", availability: "live", description: "A protocol-wallet (steward) funding or burn, framed protocol-centrically; held for human framing, never as a personal achievement." },
+  { class: "protocol lifecycle proof", availability: "seeded", description: "A completed capability lifecycle proven by current-authority readback and recorded as durable memory without making the capability public product." },
 ];
 
 /**

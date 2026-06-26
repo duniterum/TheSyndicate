@@ -141,7 +141,7 @@ export const FIRST_SOURCE_ATTRIBUTION_LIFECYCLE: ProtocolLifecycle = {
     "Future modules do not inherit MembershipSaleV3 source terms automatically.",
   ],
   nextQuestions: [
-    "Should this proof enter Chronicle/Register memory as a material institutional milestone?",
+    "Register now preserves this as durable institutional memory; Chronicle remains a separate curation decision.",
     "What legal, accounting, anti-abuse, and UX gates are required before any public source product exists?",
     "Which future modules need their own source-aware lifecycle before using attribution?",
   ],

@@ -200,6 +200,8 @@ describe("production coherence guards", () => {
   it("keeps Protocol Evolution read-only and evidence-backed without activation authority", () => {
     const registry = read("src/lib/protocol-evolution.ts");
     const lifecycle = read("src/lib/protocol-lifecycle.ts");
+    const lifecycleRegister = read("src/lib/institutional-register-lifecycle.ts");
+    const institutionalRegisterView = read("src/components/syndicate/InstitutionalRegisterView.tsx");
     const lifecyclePanel = read("src/components/syndicate/ProtocolLifecycleProofPanel.tsx");
     const route = read("src/routes/evolution.tsx");
     const header = read("src/components/syndicate/Header.tsx");
@@ -223,8 +225,17 @@ describe("production coherence guards", () => {
     expect(lifecycle).toContain("PROVEN_INTERNAL");
     expect(lifecycle).toContain("Source re-paused and closed");
     expect(lifecycle).toContain("Public referral product");
+    expect(lifecycle).toContain("Register now preserves this as durable institutional memory");
     expect(lifecycle).toContain("No claim UI, source dashboard, public source link, or public source-aware buy path exists.");
     expect(lifecycle).toContain("Future modules do not inherit MembershipSaleV3 source terms automatically.");
+    expect(lifecycleRegister).toContain("deriveProtocolLifecycleRegisterEntries");
+    expect(lifecycleRegister).toContain("Protocol completed first controlled Source Attribution lifecycle");
+    expect(lifecycleRegister).toContain("entryStatus: \"active\"");
+    expect(lifecycleRegister).toContain("verificationStatus: \"locked\"");
+    expect(lifecycleRegister).toContain("createdFrom: \"protocol lifecycle proof\"");
+    expect(lifecycleRegister).toContain("transactions.rePaused.hash");
+    expect(lifecycleRegister).toContain("not public referral activation");
+    expect(institutionalRegisterView).toContain("deriveProtocolLifecycleRegisterEntries");
     expect(lifecyclePanel).toContain("Institutional lifecycle proof");
     expect(lifecyclePanel).toContain("Current safe state");
     expect(lifecyclePanel).toContain("Boundaries still active");
