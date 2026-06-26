@@ -28,6 +28,9 @@ Launch packet draft:
 `docs/VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT.md` and
 `src/lib/verified-introduction-v1-launch-packet.ts`.
 
+Anti-abuse/source eligibility review:
+`src/lib/verified-introduction-v1-anti-abuse.ts`.
+
 Decision framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`.
 
 Founder review record: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
@@ -152,6 +155,7 @@ The following are done enough for this phase:
 - non-activating buyer preview, clear-source, and failure-state skeleton,
 - noindex internal review surface.
 - launch packet draft boundary.
+- anti-abuse/source eligibility draft review model.
 
 Do not keep re-litigating those before building the next safe slice.
 
@@ -159,9 +163,9 @@ Do not keep re-litigating those before building the next safe slice.
 
 Review the non-activating Verified Introduction buyer skeleton at the internal
 review surface and the launch packet draft together, then decide the next safe
-slice: anti-abuse/source-eligibility hardening, disclosure/legal/accounting
-review, current-authority readback/release QA packet, or a separately approved
-runtime integration plan.
+slice: founder review of source eligibility, disclosure/legal/accounting review,
+current-authority readback/release QA packet, or a separately approved runtime
+integration plan.
 
 The next sprint must not add navigation, sitemap entries, aliases, claim UI,
 source dashboard, public source links, or a public source-aware buy path unless

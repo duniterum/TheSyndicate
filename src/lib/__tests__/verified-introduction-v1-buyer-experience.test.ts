@@ -162,6 +162,9 @@ describe("Verified Introduction V1 buyer experience skeleton", () => {
     expect(reviewRouteSource).toContain("Internal Review / Not Public Referral");
     expect(reviewRouteSource).toContain("LockedReviewSurface");
     expect(reviewRouteSource).toContain("data-public-source-aware-path");
+    expect(reviewRouteSource).toContain("VERIFIED_INTRODUCTION_V1_ANTI_ABUSE_REVIEW");
+    expect(reviewRouteSource).toContain("Source Eligibility / Anti-Abuse Review");
+    expect(reviewRouteSource).toContain("Draft review - not launch approval");
     expect(reviewRouteSource).not.toMatch(/useWriteContract|writeContract|sendTransaction|buyWithSource|claimReward|claimSourceEscrow/);
     expect(reviewRouteSource).not.toContain("<button");
     expect(reviewRouteSource).not.toContain("href=");

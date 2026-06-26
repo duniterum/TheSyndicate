@@ -6,6 +6,11 @@ import {
   VERIFIED_INTRODUCTION_BUYER_SKELETON_BOUNDARY,
   type VerifiedIntroductionBuyerScenario,
 } from "@/lib/verified-introduction-v1-buyer-experience";
+import {
+  VERIFIED_INTRODUCTION_V1_ANTI_ABUSE_REVIEW,
+  type VerifiedIntroductionAbuseState,
+  type VerifiedIntroductionEligibilityRule,
+} from "@/lib/verified-introduction-v1-anti-abuse";
 
 export const VERIFIED_INTRODUCTION_REVIEW_TOKEN = "VERIFIED_INTRODUCTION_V1";
 
@@ -69,6 +74,10 @@ function VerifiedIntroductionReviewRoute() {
         <BoundaryStrip />
         <VerifiedIntroductionBuyerExperience />
         <ScenarioMatrix scenarios={VERIFIED_INTRODUCTION_BUYER_SCENARIOS} />
+        <AntiAbuseReview
+          rules={VERIFIED_INTRODUCTION_V1_ANTI_ABUSE_REVIEW.eligibilityRules}
+          states={VERIFIED_INTRODUCTION_V1_ANTI_ABUSE_REVIEW.abuseStates}
+        />
         <LaunchBoundary />
       </div>
     </main>
@@ -180,6 +189,80 @@ function ScenarioMatrix({ scenarios }: { scenarios: readonly VerifiedIntroductio
                 </td>
                 <td className="py-3 pr-4 text-slate-300">{scenario.buyerMessage}</td>
                 <td className="py-3 pr-4 text-slate-300">{scenario.stopCondition}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+function AntiAbuseReview({
+  rules,
+  states,
+}: {
+  rules: readonly VerifiedIntroductionEligibilityRule[];
+  states: readonly VerifiedIntroductionAbuseState[];
+}) {
+  return (
+    <section className="rounded-lg border border-slate-800 bg-slate-900/70 p-5">
+      <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">
+            Source Eligibility / Anti-Abuse Review
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold text-white">The launch blocker is source quality.</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+            This draft model defines who can be a source, who can be a buyer, when the flow must fail closed, and
+            what conduct keeps Verified Introduction from becoming referral marketing.
+          </p>
+        </div>
+        <div className="rounded-md border border-amber-600/50 bg-amber-950/30 px-3 py-2 text-sm font-semibold text-amber-100">
+          Draft review - not launch approval
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3 lg:grid-cols-2">
+        {rules.map((rule) => (
+          <div key={rule.id} className="rounded-md border border-slate-800 bg-black/20 p-4">
+            <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+              <h3 className="text-sm font-semibold text-white">{rule.label}</h3>
+              <StatusPill value={rule.status} />
+            </div>
+            <p className="mt-3 text-sm leading-6 text-slate-300">{rule.requirement}</p>
+            <p className="mt-3 text-xs leading-5 text-slate-400">
+              <strong className="text-slate-200">Evidence:</strong> {rule.evidenceNeeded}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-amber-100">
+              <strong>Fail closed:</strong> {rule.failClosedBehavior}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 overflow-x-auto">
+        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
+          <thead className="text-xs uppercase tracking-[0.14em] text-slate-500">
+            <tr>
+              <th className="border-b border-slate-800 py-3 pr-4">Abuse state</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Trigger</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Control</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Operator action</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Buyer outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            {states.map((state) => (
+              <tr key={state.id} className="border-b border-slate-900/80 align-top">
+                <td className="py-3 pr-4">
+                  <div className="font-semibold text-slate-100">{state.risk}</div>
+                  <code className="mt-1 block text-xs text-slate-500">{state.id}</code>
+                </td>
+                <td className="py-3 pr-4 text-slate-300">{state.trigger}</td>
+                <td className="py-3 pr-4 text-slate-300">{state.control}</td>
+                <td className="py-3 pr-4 text-slate-300">{state.operatorAction}</td>
+                <td className="py-3 pr-4 text-slate-300">{state.buyerOutcome}</td>
               </tr>
             ))}
           </tbody>

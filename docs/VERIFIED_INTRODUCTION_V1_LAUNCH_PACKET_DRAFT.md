@@ -13,6 +13,9 @@ publish, or non-zero default `/join` source attribution.
 Machine-readable packet:
 `src/lib/verified-introduction-v1-launch-packet.ts`.
 
+Anti-abuse/source eligibility review:
+`src/lib/verified-introduction-v1-anti-abuse.ts`.
+
 Internal review surface:
 `/labs/verified-introduction-review?review=VERIFIED_INTRODUCTION_V1`.
 
@@ -22,6 +25,8 @@ Internal review surface:
 - The buyer skeleton is implemented as non-activating review infrastructure.
 - The review surface is noindex, direct-URL only, absent from public navigation,
   and absent from the sitemap.
+- A draft anti-abuse/source eligibility model now defines the major fail-closed
+  states for founder/operator review.
 - Public `/join` remains `ZERO_SOURCE_ID`.
 - `/referral` remains inactive.
 - Claim UI, source dashboards, aliases, public source links, and public
@@ -46,7 +51,7 @@ current-authority readbacks, release QA, and live-site anti-leakage checks.
 | --- | --- | --- | --- |
 | Internal buyer review surface | SATISFIED FOR REVIEW | Design review | Stop if the surface appears in public nav, sitemap, or exposes controls. |
 | Founder launch approval | PENDING FOUNDER APPROVAL | Public release | Direction approval, proof, Register memory, Chronicle review, or this draft cannot authorize launch. |
-| Source eligibility policy | PENDING REVIEW | Implementation | Stop if source class, manual approval, seated-member rules, self-source blocking, or revocation operations are ambiguous. |
+| Source eligibility policy | PENDING REVIEW | Implementation | Review `src/lib/verified-introduction-v1-anti-abuse.ts`; stop if source class, manual approval, seated-member rules, self-source blocking, or revocation operations are ambiguous. |
 | Buyer disclosure policy | PENDING REVIEW | Implementation | Stop if the buyer cannot understand and clear attribution before signing. |
 | Legal/accounting review | PENDING REVIEW | Public release | Stop if copy implies ownership, employment, yield, passive income, ROI, downline, upline, or guaranteed income. |
 | Current-authority readbacks | PENDING REVIEW | Public release | Stop if readback is historical, stale, mismatched, or source state is not approved. |
