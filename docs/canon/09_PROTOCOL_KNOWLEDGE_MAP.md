@@ -7,7 +7,7 @@ Institutional Register Memory?*
 > **Source of truth:** the machine-readable map is `src/lib/protocol-knowledge-map.ts`.
 > Per the precedence law in `00_AUTHORITY_MAP.md` (code registries outrank canon docs),
 > **that file wins** when it and this doc disagree. This doc is the human index; the
-> registry is the law. The inspection surface is `/labs/knowledge-map`.
+> registry is the law. The inspection surface is `/knowledge-map`.
 
 This is a **map, not an audit and not a redesign.** It is additive: it names homes that
 already exist, indexes the doctrine that already governs them (canon 00 precedence,
@@ -48,6 +48,20 @@ anchor — it never copies their live values.**
    is **held**, and remains fully available in its Protocol-Knowledge home. Held, never
    invented; nothing is lost.
 
+## The fact lifecycle
+
+The post-source-ceremony system uses one shared lifecycle vocabulary, exposed by
+`KNOWLEDGE_FACT_LIFECYCLE` in the registry:
+
+| Stage | Question | Home | Boundary |
+| --- | --- | --- | --- |
+| `raw-event` | What happened? | Activity / Events | Not meaning, activation, product launch, or durable memory by itself. |
+| `readback` | What does current authority confirm now? | Readback docs, contract registries, source policy observability, guarded runtime projections | Not future state or copy beyond the readback. |
+| `proof` | What capability or boundary was proven? | Protocol Evolution, lifecycle proof models, Transparency, Registry, guarded proof cards | Not public launch, referral activation, claim UI, source dashboard, or product-wide attribution. |
+| `register-memory` | What permanent fact should remain on the record? | Institutional Register by promotion or lawful seed | Not Chronicle publication, public product activation, or live operational state. |
+| `chronicle-review` | Does the fact deserve story and context? | Chronicle admission/review and curated Chronicle entries | Not automatic storytelling or product launch. |
+| `public-product` | Should users be able to act on it? | Product, legal/disclosure, UX, security, release, and founder approval gates | Not backfilled from proof, memory, or Chronicle alone. |
+
 ---
 
 ## The canonical homes (layers)
@@ -82,6 +96,22 @@ below names every layer and its key properties. Layer ids are shown in `code`.
   on-chain-permanent · Coverage: config-pinned · identity-free · **partial** (ID 1 &
   ID 3 active; ID 2 reserved). Mint events flow to Activity → Chronicle → Register.
 
+### Source Attribution & Lifecycle
+
+- **Source Policy / Attribution** - `source-policy`. Home:
+  `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`,
+  `src/lib/source-attributed-receipts.ts`, `src/lib/source-real-condition-test.ts`.
+  Permanence: recomputed-projection - Coverage: config-pinned - identity-free -
+  **partial**. It is the home for SourceRegistry policy state, source lifecycle
+  readbacks, and source-attributed receipt proof boundaries. It is not public
+  referral launch.
+- **Protocol Lifecycle Proof** - `protocol-lifecycle-proof`. Home:
+  `src/lib/protocol-lifecycle.ts`, `src/lib/source-real-condition-test.ts`.
+  Permanence: recomputed-projection - Coverage: config-pinned - identity-free -
+  **live**. It is the reusable proof pattern: packet -> terms -> controlled
+  ACTIVE -> real action -> PAUSED closure. It can seed the Institutional Register;
+  Chronicle admission and public product activation remain separate decisions.
+
 ### Knowledge Pipeline (Truth → Events → Signals → Memory → Story)
 
 Governed by the **Adjacency Law** in `05_FOUNDATION_FREEZE.md` — a layer may consume
@@ -101,9 +131,11 @@ only the one directly above it. This map does not restate those rules; it points
   → Institutional Register.
 - **Institutional Register** — `institutional-register`. Home:
   `src/lib/institutional-register.ts`, `src/lib/institutional-register-registry.ts`,
-  `src/lib/institutional-register-genesis.ts`. Durable, identity-blind overlay of
+  `src/lib/institutional-register-genesis.ts`,
+  `src/lib/institutional-register-lifecycle.ts`. Durable, identity-blind overlay of
   protocol-institutional facts. Permanence: append-only-curated · Coverage:
-  config-pinned · **live**. Terminal.
+  config-pinned · **live**. Terminal. It admits normal promotion-derived entries plus
+  lawful seeds for genesis facts and completed lifecycle proofs.
 - **Recognition** — `recognition`. Home: `src/lib/recognition-candidates.ts`. A memory
   *output* (distinct from the Rank *attribute*). Coverage: derived · **partial**
   (alias/public tiers reserved).

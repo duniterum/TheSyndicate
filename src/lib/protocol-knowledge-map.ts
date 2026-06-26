@@ -61,6 +61,7 @@ export type IdentityPosture =
 export type LayerCluster =
   | "foundation-identity"
   | "artifact"
+  | "source-attribution"
   | "pipeline"
   | "economic"
   | "access-verification";
@@ -101,6 +102,7 @@ export interface ProtocolLayer {
 export const CLUSTER_ORDER: LayerCluster[] = [
   "foundation-identity",
   "artifact",
+  "source-attribution",
   "pipeline",
   "economic",
   "access-verification",
@@ -109,6 +111,7 @@ export const CLUSTER_ORDER: LayerCluster[] = [
 export const CLUSTER_LABELS: Record<LayerCluster, string> = {
   "foundation-identity": "Foundation & Identity",
   artifact: "Artifact",
+  "source-attribution": "Source Attribution & Lifecycle",
   pipeline: "Knowledge Pipeline (Truth → Events → Signals → Memory → Story)",
   economic: "Economic",
   "access-verification": "Access & Verification",
@@ -290,6 +293,79 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     },
   },
 
+  // Source Attribution & Lifecycle
+  {
+    id: "source-policy",
+    name: "Source Policy / Attribution",
+    cluster: "source-attribution",
+    purpose:
+      "The canonical home for SourceRegistry policy state, source lifecycle readbacks, and source-attributed receipt proof boundaries. It records what source policy proved, not public referral launch.",
+    sourceOfTruth: {
+      description:
+        "SourceRegistryV1 readbacks, source policy snapshot constants, lifecycle event projections, and the completed internal MembershipSaleV3 source-attributed receipt proof.",
+      homeFiles: [
+        "src/lib/source-policy-observability.ts",
+        "src/lib/source-registry-lifecycle.ts",
+        "src/lib/source-attributed-receipts.ts",
+        "src/lib/source-real-condition-test.ts",
+      ],
+    },
+    permanence: "recomputed-projection",
+    coverageModel: "config-pinned",
+    promotionPath:
+      "Source readback -> source-attributed receipt proof -> protocol lifecycle proof -> Institutional Register memory; public referral remains a separate product decision.",
+    publicSurfaces: ["/referral", "/registry", "/activity", "/transparency"],
+    internalSurfaces: ["/labs/source-attribution-test"],
+    status: "partial",
+    statusNote:
+      "One internal SourceRegistryV1 source record exists, completed one controlled source-attributed MembershipSaleV3 buy, and returned to PAUSED; public referral, claim UI, source dashboard, and public source-aware buy paths remain inactive. Evidence: src/lib/source-policy-observability.ts, src/lib/source-real-condition-test.ts.",
+    identityPosture: "identity-free",
+    indexes: {
+      canonDocs: [
+        "docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md",
+        "docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md",
+      ],
+      registries: [
+        "src/lib/source-policy-observability.ts",
+        "src/lib/source-registry-lifecycle.ts",
+      ],
+    },
+  },
+  {
+    id: "protocol-lifecycle-proof",
+    name: "Protocol Lifecycle Proof",
+    cluster: "source-attribution",
+    purpose:
+      "The reusable proof pattern for a capability lifecycle: packet, terms, controlled ACTIVE, real action, and PAUSED closure. It explains proven operation without granting activation authority.",
+    sourceOfTruth: {
+      description:
+        "Read-only lifecycle model derived from current-authority ceremony facts and final safe-state readback.",
+      homeFiles: [
+        "src/lib/protocol-lifecycle.ts",
+        "src/lib/source-real-condition-test.ts",
+      ],
+    },
+    permanence: "recomputed-projection",
+    coverageModel: "config-pinned",
+    promotionPath:
+      "Protocol lifecycle proof -> lawful Institutional Register seed; Chronicle admission remains review-only; public product activation requires separate approval.",
+    publicSurfaces: ["/evolution"],
+    internalSurfaces: [],
+    status: "live",
+    statusNote: null,
+    identityPosture: "identity-free",
+    indexes: {
+      canonDocs: [
+        "docs/PROTOCOL_EVOLUTION_LAYER_ARCHITECTURE.md",
+        "docs/PROTOCOL_CHECKPOINT_2026_06_25.md",
+      ],
+      registries: [
+        "src/lib/protocol-lifecycle.ts",
+        "src/lib/institutional-register-lifecycle.ts",
+      ],
+    },
+  },
+
   // ── Knowledge Pipeline (Truth → Events → Signals → Memory → Story) ──────────
   {
     id: "activity",
@@ -412,11 +488,12 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
       "The durable, identity-blind overlay that records protocol-institutional FACTS (assertion + anchor) — not live values, never member-living.",
     sourceOfTruth: {
       description:
-        "Durable register of promotion decisions, plus a lawful genesis seed for verified protocol-birth facts that predate the event scanner.",
+        "Durable register of promotion decisions, plus lawful genesis and lifecycle seeds for verified facts that predate or sit outside the event scanner.",
       homeFiles: [
         "src/lib/institutional-register.ts",
         "src/lib/institutional-register-registry.ts",
         "src/lib/institutional-register-genesis.ts",
+        "src/lib/institutional-register-lifecycle.ts",
       ],
     },
     permanence: "append-only-curated",
@@ -430,7 +507,7 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     ],
     status: "live",
     statusNote:
-      "Each register entry's full provenance — promotion → review → memory → signal → event → tx/block, plus the lawful genesis seed for facts that predate the scanner — is carried verbatim on the entry's lineage trail and exposed read-only by the Protocol Lineage projection (/labs/protocol-lineage, src/lib/protocol-lineage.ts). The projection re-expresses the carried trail; it creates no new intelligence and mutates nothing.",
+      "Each register entry's full provenance is carried verbatim on the entry's lineage trail and exposed read-only by the Protocol Lineage projection (/labs/protocol-lineage, src/lib/protocol-lineage.ts). Event-derived entries carry promotion -> review -> memory -> signal -> event -> tx/block lineage. Seeded entries carry their own discrete anchors: genesis seeds for protocol-birth facts and lifecycle seeds for completed capability proof. The projection re-expresses carried trails; it creates no new intelligence and mutates nothing.",
     identityPosture: "identity-free",
     indexes: {
       canonDocs: [
@@ -715,5 +792,80 @@ export const ANTI_FRAGMENTATION_RULES: AntiFragmentationRule[] = [
     title: "Promotion or seed, otherwise held",
     statement:
       "A fact enters durable memory only by promotion (lineage-covered) or by seed (a discrete config anchor). Otherwise it is held, and remains fully available in its Protocol-Knowledge home.",
+  },
+];
+
+export type KnowledgeFactLifecycleStageId =
+  | "raw-event"
+  | "readback"
+  | "proof"
+  | "register-memory"
+  | "chronicle-review"
+  | "public-product";
+
+export interface KnowledgeFactLifecycleStage {
+  id: KnowledgeFactLifecycleStageId;
+  order: number;
+  label: string;
+  question: string;
+  belongsIn: string;
+  next: string;
+  notAuthorityFor: string;
+}
+
+export const KNOWLEDGE_FACT_LIFECYCLE: KnowledgeFactLifecycleStage[] = [
+  {
+    id: "raw-event",
+    order: 1,
+    label: "Raw event",
+    question: "What happened?",
+    belongsIn: "Activity / Events",
+    next: "Read back current authority before claiming meaning.",
+    notAuthorityFor: "Narrative, activation, public product claims, or durable memory by itself.",
+  },
+  {
+    id: "readback",
+    order: 2,
+    label: "Current-authority readback",
+    question: "What does the latest authoritative source confirm now?",
+    belongsIn: "Readback docs, contract registries, source policy observability, and guarded runtime projections.",
+    next: "Convert only verified, scoped facts into proof.",
+    notAuthorityFor: "Future state, stale snapshots, activation, or production copy that exceeds the readback.",
+  },
+  {
+    id: "proof",
+    order: 3,
+    label: "Proof model",
+    question: "What capability or boundary did the readback prove?",
+    belongsIn: "Protocol Evolution, lifecycle proof models, Transparency, Registry, and guarded proof cards.",
+    next: "If material and anchored, register as durable memory or hold for more evidence.",
+    notAuthorityFor: "Public launch, referral activation, claim UI, source dashboard, or product-wide attribution.",
+  },
+  {
+    id: "register-memory",
+    order: 4,
+    label: "Register memory",
+    question: "What permanent institutional fact should remain on the record?",
+    belongsIn: "Institutional Register entries created by promotion or lawful seed.",
+    next: "Consider Chronicle admission only when the fact also deserves curated meaning.",
+    notAuthorityFor: "Chronicle publication, public product activation, or live operational state.",
+  },
+  {
+    id: "chronicle-review",
+    order: 5,
+    label: "Chronicle review",
+    question: "Does this permanent fact deserve institutional story and context?",
+    belongsIn: "Chronicle admission/review, curated Chronicle entries, and human curation decisions.",
+    next: "Publish meaning only when curation is explicit; otherwise keep the Register fact intact.",
+    notAuthorityFor: "Routine event promotion, automatic storytelling, or public referral/product launch.",
+  },
+  {
+    id: "public-product",
+    order: 6,
+    label: "Public product decision",
+    question: "Should users be able to act on this capability?",
+    belongsIn: "Product, legal/disclosure, UX, security, release, and founder approval gates.",
+    next: "Only after separate approval should navigation, public controls, source links, claim UI, or write paths exist.",
+    notAuthorityFor: "Backfilling activation from proof, memory, or Chronicle alone.",
   },
 ];

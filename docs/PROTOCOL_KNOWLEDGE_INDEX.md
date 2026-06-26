@@ -55,6 +55,23 @@ publish.
 | Smart-contract lessons | SECURITY memory ledger. | `docs/SMART_CONTRACT_LESSONS_AND_REGRESSION_LEDGER.md` | Foundry tests, contract docs | Foundry tests, production coherence guard | Keep lessons updated after every contract/security issue. | Relearning previously closed contract risks. |
 | Documentation authority / canon | AUTHORITY router. | `docs/DOCUMENTATION_AUTHORITY_MAP.md`, `docs/CANONICAL_REGISTRY.md`, `docs/canon/*` | This index, checkpoint docs, docs tree | production coherence guard | Keep operational/historical/superseded lines clear. | Old docs overriding current authority. |
 
+## 2A. Institutional Knowledge Architecture
+
+The current knowledge architecture now has a tested lifecycle vocabulary. A
+fact does not jump directly from chain activity to public product.
+
+| Stage | Belongs in | Meaning | Must not imply |
+| --- | --- | --- | --- |
+| Raw event | Activity / event read models | Something happened. | Meaning, memory, activation, or launch. |
+| Current-authority readback | Readback docs, registries, source observability | Current truth was verified at the right authority. | Future state or copy beyond the readback. |
+| Proof | Evolution, Registry, Transparency, guarded proof cards | A capability or boundary was proven. | Public referral, claim UI, source dashboard, or product-wide attribution. |
+| Register memory | Institutional Register | A permanent institutional fact is on record. | Chronicle publication or product activation. |
+| Chronicle review | Chronicle admission and human curation | The fact may deserve meaning and story. | Automatic storytelling or public product launch. |
+| Public product decision | Product/legal/UX/security/release gates | Users may be allowed to act, if separately approved. | Backfilling activation from proof, memory, or Chronicle alone. |
+
+Source of truth: `src/lib/protocol-knowledge-map.ts` and
+`docs/canon/09_PROTOCOL_KNOWLEDGE_MAP.md`.
+
 ## 3. Reading Paths By Task
 
 Before smart-contract work:

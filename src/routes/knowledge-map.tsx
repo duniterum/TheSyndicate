@@ -28,6 +28,7 @@ import {
   KNOWLEDGE_KIND_LABELS,
   KNOWLEDGE_KIND_ORDER,
   ANTI_FRAGMENTATION_RULES,
+  KNOWLEDGE_FACT_LIFECYCLE,
   PROTOCOL_LAYERS,
   layersByKnowledgeKind,
   type ProtocolLayer,
@@ -212,6 +213,42 @@ function KnowledgeMapRoute() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 rounded-[4px] border border-border/60 bg-muted/15 p-4">
+          <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Fact lifecycle
+          </div>
+          <div className="mt-4 grid gap-3">
+            {KNOWLEDGE_FACT_LIFECYCLE.map((stage) => (
+              <div
+                key={stage.id}
+                className="grid gap-3 rounded-[4px] border border-border/50 bg-background/30 p-3 md:grid-cols-[56px_1fr_1fr]"
+              >
+                <div className="mono text-xs text-muted-foreground">
+                  {String(stage.order).padStart(2, "0")}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-foreground">{stage.label}</div>
+                  <p className="mt-1 text-xs text-foreground/75 leading-relaxed">
+                    {stage.question}
+                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                    <span className="text-foreground/75">Home:</span> {stage.belongsIn}
+                  </p>
+                </div>
+                <div className="text-xs text-muted-foreground leading-relaxed">
+                  <p>
+                    <span className="text-foreground/75">Next:</span> {stage.next}
+                  </p>
+                  <p className="mt-2">
+                    <span className="text-foreground/75">Not authority for:</span>{" "}
+                    {stage.notAuthorityFor}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <p className="mt-6 mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">

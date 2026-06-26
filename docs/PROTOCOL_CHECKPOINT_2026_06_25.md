@@ -92,6 +92,7 @@ This record is source policy state plus one completed internal proof receipt. It
 | Source-attributed receipts | One real-condition internal V3 source-attributed purchase receipt exists and is read back; public receipt surfacing remains a product decision. |
 | Protocol lifecycle proof | The first full lifecycle is now modeled as policy fact -> terms update -> controlled ACTIVE -> real buy -> PAUSED closure, without public referral activation. |
 | Durable memory boundary | The completed Source Attribution lifecycle is now active Institutional Register memory, anchored to the re-pause closure transaction. Chronicle remains a separate curation decision; public referral remains inactive. |
+| Knowledge architecture boundary | The Knowledge Map now names the full fact lifecycle: raw event -> current-authority readback -> proof -> Register memory -> Chronicle review -> public product decision. |
 | Activity/My Syndicate readiness | The first real source-attributed receipt can be understood without activating public source paths. |
 | Registry/referral truth | Public surfaces can say a PAUSED source policy fact exists while still saying referral is inactive. |
 | Production truth | Replit production was synced to `e19927b` and QA confirmed the PAUSED readback state. |
@@ -196,6 +197,7 @@ Archive1155 / SeatRecord721 / SwapRail / ProductSaleRouter
 | `/referral` | Inactive source/referral explanation and PAUSED source policy readback; no claim UI or live referral. |
 | `/registry` | Contract and source-policy proof surface, including SourceRegistryV1 and MembershipSaleV3. |
 | `/institutional-register` | Durable protocol memory. The completed Source Attribution lifecycle is recorded here as a verified internal capability proof, not as public referral launch. |
+| `/knowledge-map` | Knowledge architecture map. Shows where facts live and how they move from event/readback/proof into Register memory, Chronicle review, or a separate product decision. |
 | `/activity` | Live heartbeat and receipt/event context; the internal source-attributed receipt may be represented only with clear non-public status. |
 | `/my-syndicate` | Member cockpit and source receipt context; no claim/balance dashboard. |
 | `/transparency` | Protocol Economy and readback truth; source policy is not commission/revenue. |

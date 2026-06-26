@@ -21,6 +21,7 @@ import {
   PROTOCOL_LAYERS,
   PROTOCOL_LAYER_IDS,
   CLUSTER_ORDER,
+  KNOWLEDGE_FACT_LIFECYCLE,
   type ProtocolLayer,
 } from "../protocol-knowledge-map";
 
@@ -164,6 +165,65 @@ describe("protocol-knowledge-map: doctrine invariants", () => {
         expect(total, `${l.id} must have a surface`).toBeGreaterThan(0);
       }
     }
+  });
+
+  it("models source policy and lifecycle proof as knowledge homes without public activation authority", () => {
+    const sourcePolicy = PROTOCOL_LAYERS.find((l) => l.id === "source-policy");
+    const lifecycleProof = PROTOCOL_LAYERS.find((l) => l.id === "protocol-lifecycle-proof");
+    const register = PROTOCOL_LAYERS.find((l) => l.id === "institutional-register");
+
+    expect(sourcePolicy).toBeTruthy();
+    expect(sourcePolicy?.cluster).toBe("source-attribution");
+    expect(sourcePolicy?.status).toBe("partial");
+    expect(sourcePolicy?.promotionPath).toContain("protocol lifecycle proof");
+    expect(sourcePolicy?.promotionPath).toContain("public referral remains a separate product decision");
+    expect(sourcePolicy?.statusNote).toContain("public referral");
+    expect(sourcePolicy?.statusNote).toContain("remain inactive");
+    expect(sourcePolicy?.sourceOfTruth.homeFiles).toContain("src/lib/source-policy-observability.ts");
+    expect(sourcePolicy?.sourceOfTruth.homeFiles).toContain("src/lib/source-real-condition-test.ts");
+
+    expect(lifecycleProof).toBeTruthy();
+    expect(lifecycleProof?.status).toBe("live");
+    expect(lifecycleProof?.promotionPath).toContain("Institutional Register seed");
+    expect(lifecycleProof?.promotionPath).toContain("Chronicle admission remains review-only");
+    expect(lifecycleProof?.promotionPath).toContain("public product activation requires separate approval");
+    expect(lifecycleProof?.sourceOfTruth.homeFiles).toContain("src/lib/protocol-lifecycle.ts");
+
+    expect(register?.sourceOfTruth.homeFiles).toContain(
+      "src/lib/institutional-register-lifecycle.ts",
+    );
+  });
+});
+
+describe("protocol-knowledge-map: fact lifecycle", () => {
+  it("keeps the lifecycle ordered and complete", () => {
+    const ids = KNOWLEDGE_FACT_LIFECYCLE.map((stage) => stage.id);
+
+    expect(ids).toEqual([
+      "raw-event",
+      "readback",
+      "proof",
+      "register-memory",
+      "chronicle-review",
+      "public-product",
+    ]);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(KNOWLEDGE_FACT_LIFECYCLE.map((stage) => stage.order)).toEqual([1, 2, 3, 4, 5, 6]);
+  });
+
+  it("prevents proof, memory, or Chronicle from implying product launch", () => {
+    const proof = KNOWLEDGE_FACT_LIFECYCLE.find((stage) => stage.id === "proof");
+    const register = KNOWLEDGE_FACT_LIFECYCLE.find((stage) => stage.id === "register-memory");
+    const chronicle = KNOWLEDGE_FACT_LIFECYCLE.find((stage) => stage.id === "chronicle-review");
+    const product = KNOWLEDGE_FACT_LIFECYCLE.find((stage) => stage.id === "public-product");
+
+    expect(proof?.notAuthorityFor).toMatch(/public launch/i);
+    expect(proof?.notAuthorityFor).toContain("claim UI");
+    expect(proof?.notAuthorityFor).toContain("source dashboard");
+    expect(register?.notAuthorityFor).toContain("public product activation");
+    expect(chronicle?.notAuthorityFor).toContain("product launch");
+    expect(product?.belongsIn).toContain("founder approval gates");
+    expect(product?.notAuthorityFor).toContain("proof, memory, or Chronicle alone");
   });
 });
 

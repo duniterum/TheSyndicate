@@ -143,8 +143,9 @@ specs that match the deployed reality. Safe to reference for current work.
   that routes current work across V3, SourceRegistryV1, referral/source
   attribution, Activity, Registry, Chronicle, My Syndicate, Transparency,
   Protocol Evolution lifecycle proof, Institutional Register lifecycle memory,
-  Archive1155, future modules, operational memory, production sync, and guard
-  files. It has no deployment, publish,
+  Archive1155, future modules, operational memory, production sync, guard
+  files, and the tested fact lifecycle from raw event to readback, proof,
+  Register memory, Chronicle review, and public product decision. It has no deployment, publish,
   transaction, source-record, activation, registry-switch, referral, or
   claim-UI authority.
 - `docs/OPERATIONAL_MEMORY_LEDGER.md` - operational first-read for synchronization, release, deployment, current-authority readback, Git, Replit, sandbox, credential, and handoff work. It has no deployment authority.
