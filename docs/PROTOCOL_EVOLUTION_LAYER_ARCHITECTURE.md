@@ -52,7 +52,8 @@ Evolution layer.
 | `docs/SMART_CONTRACT_LESSONS_AND_REGRESSION_LEDGER.md` | Records contract lessons and regression guards. | Supplies security and contract-quality evolution episodes. |
 | `docs/DEFERRED_WORK_LEDGER.md` | Records intentionally parked work. | Source for DEFERRED and FUTURE module states. |
 | `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md` | PAUSED source ceremony boundary. | Source for source-attribution ceremony state. |
-| `src/lib/source-policy-observability.ts` | Current source-policy truth: zero records, referral inactive, claims inactive. | Runtime-style model for source module status. |
+| `src/lib/source-policy-observability.ts` | Current source-policy truth: one internal source record, completed controlled source-attributed buy, final PAUSED state, referral inactive, claims inactive. | Runtime-style model for source module status. |
+| `src/lib/protocol-lifecycle.ts` | First completed capability lifecycle: packet, terms, controlled ACTIVE, real action, PAUSED closure, and current-authority readback. | Reusable proof model for future capability lifecycles. |
 | `src/lib/contract-registry.ts` | Contract status, addresses, lifecycle posture. | Contract evidence source for module cards. |
 | `src/lib/archive-id-registry.ts` | Archive1155 ID truth and reserved states. | Memory-layer module evidence. |
 | `src/lib/protocol-event-registry.ts` | Event vocabulary and protocol event truth. | Activity/Chronicle event evidence. |
@@ -103,6 +104,7 @@ Recommended supporting vocabulary:
 | Protocol Evolution | Public layer and route concept. |
 | Evolution Register | Evidence-backed status record inside the layer. |
 | Module Episode | One module's idea -> research -> design -> build -> test -> readback -> active/deferred/deprecated path. |
+| Lifecycle Proof | A complete capability path from approved packet to real action to safe closure, with evidence for every state change. |
 | Member Signal | Non-binding member feedback or observed friction. |
 | Builder Feedback | Non-binding builder/operator input. |
 | Founder Decision | Explicit operator decision; not governance. |
@@ -188,7 +190,7 @@ Initial modules that the layer should track:
 | Module | Current broad status | Evolution notes |
 | --- | --- | --- |
 | Membership Engine | LIVE | V3 direct buy is the current frontend target; source-neutral by default. |
-| Source / Referral Attribution | PAUSED / INTERNAL ONLY | SourceRegistryV1 exists; one internal PAUSED source record is created and read back; referral/source UI remains inactive. |
+| Source / Referral Attribution | PAUSED / INTERNAL ONLY | SourceRegistryV1 exists; one internal source record completed a controlled source-attributed V3 buy and returned to PAUSED; referral/source UI remains inactive. |
 | Protocol Economy | LIVE / PARTIAL | Read-only observatory exists; future reporting/export remains deferred. |
 | Activity | LIVE | Heartbeat layer; future source policy events can be classified after readback. |
 | Register | LIVE | Durable truth surface; should receive evidence-backed evolution milestones. |
@@ -382,7 +384,8 @@ After V1 stabilizes:
 - episode timeline per module;
 - "what changed since last visit" in My Syndicate;
 - accepted/rejected/blocked decision records;
-- source policy readback episode after any PAUSED source ceremony.
+- source policy readback episode after any PAUSED source ceremony;
+- lifecycle proof surface after a capability completes real action and safe-state closure.
 
 ### V3 - Community signal intake
 

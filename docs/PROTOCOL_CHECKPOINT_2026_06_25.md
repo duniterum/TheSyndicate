@@ -90,6 +90,7 @@ This record is source policy state plus one completed internal proof receipt. It
 | Source policy observability | One internal PAUSED source record is represented in `src/lib/source-policy-observability.ts`. |
 | Source lifecycle model | `SourceCreated`, `SourceStatusChanged`, `SourceTermsUpdated`, and payout-wallet update facts have read-only modeling. |
 | Source-attributed receipts | One real-condition internal V3 source-attributed purchase receipt exists and is read back; public receipt surfacing remains a product decision. |
+| Protocol lifecycle proof | The first full lifecycle is now modeled as policy fact -> terms update -> controlled ACTIVE -> real buy -> PAUSED closure, without public referral activation. |
 | Activity/My Syndicate readiness | The first real source-attributed receipt can be understood without activating public source paths. |
 | Registry/referral truth | Public surfaces can say a PAUSED source policy fact exists while still saying referral is inactive. |
 | Production truth | Replit production was synced to `e19927b` and QA confirmed the PAUSED readback state. |
@@ -198,7 +199,7 @@ Archive1155 / SeatRecord721 / SwapRail / ProductSaleRouter
 | `/transparency` | Protocol Economy and readback truth; source policy is not commission/revenue. |
 | `/chronicle` | Institutional memory; source milestones only if admitted as meaningful history. |
 | `/archive` / `/nft` | Archive1155 memory surface; not source-aware. |
-| `/evolution` | Protocol evolution and boundary proof; no governance, activation, source, or claim authority. |
+| `/evolution` | Protocol evolution, episode, and lifecycle proof; first completed lifecycle is visible as internal proof, with no governance, activation, source, or claim authority. |
 
 ## Pending Work
 
@@ -284,6 +285,21 @@ Outcome:
 - Chronicle candidate only if meaningful,
 - no claim UI unless separately approved,
 - public/default buys still `ZERO_SOURCE_ID` unless a separate public activation decision is made.
+
+### Sprint 4A - Protocol Lifecycle Proof
+
+Goal: make the completed ceremony legible as the first reusable protocol
+lifecycle pattern, not only as a referral receipt.
+
+Outcome:
+
+- Protocol Evolution shows the full lifecycle from packet to safe closure,
+- future modules can copy the lifecycle discipline without inheriting source
+  terms,
+- public/default buys remain `ZERO_SOURCE_ID`,
+- lifecycle proof has no activation, claim, source-link, or write authority.
+
+Status: completed in the runtime model and guarded by lifecycle/coherence tests.
 
 ### Sprint 5 - Public Source/Referral Product Decision
 

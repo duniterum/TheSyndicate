@@ -31,7 +31,7 @@ publish.
 | Archive1155 | Live protocol memory layer. Not a seat, not financial rights, and not source-aware today. | `src/lib/archive-id-registry.ts`, `docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md` |
 | SeatRecord721 | Future identity layer only. No contract, mint path, or live identity claim exists. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/MODULE_INTEGRATION_STANDARD.md` |
 | SwapRail | Future utility/commercial layer only. Not implemented and cannot inherit MembershipSaleV3 source terms. | `docs/MODULE_INTEGRATION_STANDARD.md`, `src/lib/protocol-evolution.ts` |
-| Protocol Evolution | Live read-only evolution/status/episode layer. It has no governance, activation, transaction, source-record, or registry authority. | `src/lib/protocol-evolution.ts`, `src/routes/evolution.tsx` |
+| Protocol Evolution | Live read-only evolution/status/episode/lifecycle layer. It now includes the first proven internal lifecycle pattern and has no governance, activation, transaction, source-record, or registry authority. | `src/lib/protocol-evolution.ts`, `src/lib/protocol-lifecycle.ts`, `src/routes/evolution.tsx` |
 | Transaction / contract-change truth | No transaction, source activation, referral activation, claim UI, registry switch, or contract change is authorized by this index. | This file; relevant runbooks only after founder approval |
 
 ## 2. Protocol Domain Map
@@ -49,7 +49,7 @@ publish.
 | Archive1155 / NFT memory | LIVE memory artifact layer; not source-aware. | `docs/ARCHIVE1155_CANONICAL_ARCHITECTURE.md`, `docs/NFT_ARCHIVE_SMART_CONTRACT_ARCHITECTURE_V1.md` | `src/lib/archive-id-registry.ts`, `src/routes/archive.tsx`, `src/routes/nft.tsx` | archive ABI/readback/production guards | Keep current mints read-gated and proof-backed. | Claiming NFTs are seats, source-aware, or financial rights. |
 | SeatRecord721 | FUTURE identity layer. | `docs/SEAT_RECORD_ARCHITECTURE_DECISION.md`, `docs/MODULE_INTEGRATION_STANDARD.md` | Reserved archive/status copy only | production coherence guards | Separate identity design/audit if ever revived. | Starting Privy/SeatRecord identity as if approved. |
 | SwapRail / ProductSaleRouter / commerce | FUTURE modules. | `docs/MODULE_INTEGRATION_STANDARD.md`, `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md` | Visibility/evolution copy only | fake-live and production coherence guards | Future module review only after need is real. | Product-wide attribution claims without a source-aware sale path. |
-| Protocol Evolution | LIVE read-only evolution/status/episode layer. | `docs/PROTOCOL_EVOLUTION_LAYER_ARCHITECTURE.md` | `src/lib/protocol-evolution.ts`, `src/lib/protocol-visibility.ts`, `src/routes/evolution.tsx` | evolution/visibility/production guards | Keep proof board and episode layer current after meaningful events. | Roadmap theatre, governance implication, or fake activation. |
+| Protocol Evolution | LIVE read-only evolution/status/episode/lifecycle layer. | `docs/PROTOCOL_EVOLUTION_LAYER_ARCHITECTURE.md` | `src/lib/protocol-evolution.ts`, `src/lib/protocol-lifecycle.ts`, `src/lib/protocol-visibility.ts`, `src/routes/evolution.tsx` | evolution/visibility/lifecycle/production guards | Keep proof board, episode layer, and lifecycle proof current after meaningful events. | Roadmap theatre, governance implication, or fake activation. |
 | Production / Replit workflow | OPERATIONAL discipline. | `docs/PRODUCTION_SYNCHRONIZATION_DOCTRINE.md`, `docs/RELEASE_HANDOFF.md` | Replit workspace, production QA scripts, GitHub main | `npm run check-release`, route/status scripts | Sync only when runtime/product truth should reach production. | Treating GitHub green as production green. |
 | Operational memory | OPERATIONAL memory ledger. | `docs/OPERATIONAL_MEMORY_LEDGER.md` | Release handoff and authority-map links | production coherence guard | Add incidents when repeated environment mistakes occur. | Repeating local-only, patch-handoff, or Replit divergence mistakes. |
 | Smart-contract lessons | SECURITY memory ledger. | `docs/SMART_CONTRACT_LESSONS_AND_REGRESSION_LEDGER.md` | Foundry tests, contract docs | Foundry tests, production coherence guard | Keep lessons updated after every contract/security issue. | Relearning previously closed contract risks. |
@@ -179,8 +179,9 @@ referral-only thinking.
 | 2 | Internal Source-Aware Test Path | Completed as a gated `/labs/source-attribution-test` operator console for production-internal mode. | Source remains PAUSED after the completed ceremony. | Do not expose source links or source selector in public production. |
 | 3 | Controlled ACTIVE Ceremony And $5 Test | Completed. One $5 source-attributed V3 buy was read back and the source was re-paused. | Final readback lives in `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`. | Do not repeat without new founder approval. |
 | 4 | Post-Test Truth Update | First runtime proof surface added: completed source-attributed receipt, payout/escrow, final PAUSED readback, Activity proof, and Transparency proof. Deeper public referral product remains separate. | Real tx/readback now exists. | Do not imply public referral is live. |
-| 5 | Public Source/Referral Product Decision | Decide whether to build public referrer UX, source links, aliases, and dashboards. | Legal/product signoff, test evidence, anti-abuse design. | Do not use the internal test source as public UX template. |
-| 6 | Whole-Protocol Continuous Excellence | Keep surfaces, docs, tests, status labels, and proof paths clean while referral matures. | Current GitHub truth. | Do not start unrelated future modules as fake-live placeholders. |
+| 5 | Protocol Lifecycle Proof | Completed as a read-only Evolution model: policy fact -> terms -> ACTIVE -> real action -> PAUSED closure. This is now a reusable institution pattern, not only a referral artifact. | Post-test truth update. | Do not turn lifecycle proof into activation authority. |
+| 6 | Public Source/Referral Product Decision | Decide whether to build public referrer UX, source links, aliases, and dashboards. | Legal/product signoff, test evidence, anti-abuse design. | Do not use the internal test source as public UX template. |
+| 7 | Whole-Protocol Continuous Excellence | Keep surfaces, docs, tests, status labels, and proof paths clean while referral matures. | Current GitHub truth. | Do not start unrelated future modules as fake-live placeholders. |
 
 ## 7. Guard / Test Hooks
 
@@ -192,6 +193,7 @@ The following guards must keep the index aligned with runtime truth:
 - `src/lib/__tests__/source-activation-readiness.test.ts` - PAUSED to ACTIVE readiness gates.
 - `src/lib/__tests__/source-aware-test-mode.test.ts` - internal source-aware test gate for localhost and explicit production-internal mode.
 - `src/lib/__tests__/source-attributed-receipts.test.ts` - source-attributed receipt projection plus completed internal proof/readback reconciliation.
+- `src/lib/__tests__/protocol-lifecycle.test.ts` - first completed lifecycle proof and non-activation boundary.
 - `src/lib/__tests__/purchase-events-cache.test.ts` - purchase source preservation across cache restore.
 - `src/lib/__tests__/chain-registry-guard.test.ts` - canonical chain/RPC guardrails.
 - Archive/visibility/evolution tests - future modules cannot become fake-live by copy drift.

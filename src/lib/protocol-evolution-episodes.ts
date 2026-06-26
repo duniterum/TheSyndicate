@@ -174,24 +174,24 @@ export const PROTOCOL_EVOLUTION_EPISODES = [
   },
   {
     id: "source-policy-rehearsal",
-    title: "Source policy is in rehearsal, not public referral",
-    eyebrow: "What is unfolding",
-    state: "UNFOLDING",
-    timelineLabel: "Controlled next proof",
+    title: "Source Attribution proved one full lifecycle",
+    eyebrow: "What became true",
+    state: "BECAME_TRUE",
+    timelineLabel: "Internal proof",
     plainSummary:
       PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT > 0
-        ? "One internal source record was tested in real conditions and returned to PAUSED, but the public site still has no referral activation, no claim UI, and no source-aware buy path."
+        ? "One internal source record moved through updated terms, controlled ACTIVE status, a real $5 source-attributed V3 buy, and final PAUSED readback."
         : "SourceRegistryV1 exists, but the public site still has no referral activation, no claim UI, and no source-aware buy path.",
     whatBecameTrue:
       PROTOCOL_EVOLUTION_SOURCE_RECORD_COUNT > 0
         ? "The first internal source-policy lifecycle has been proven: terms update, temporary ACTIVE state, one source-attributed buy, and re-pause."
         : "The source policy contracts and source observability layer are ready to record source-policy facts when separately approved.",
     whatIsUnfolding:
-      "The next source step is post-test read-model and product hardening, not a public referral launch.",
+      "The next source step is deciding how this proof enters Chronicle/Register memory and what public source product, if any, should exist later.",
     whyItMattersToMembers:
       "The institution proved acquisition attribution without confusing members about referral availability or rewards.",
     proofToWatchNext:
-      "Watch for post-test receipt/read-model hardening, unchanged public ZERO_SOURCE_ID buys, and zero public source links.",
+      "Watch whether this lifecycle becomes curated institutional memory while public/default buys stay ZERO_SOURCE_ID.",
     whatDidNotChange:
       "No source record should be treated as referral activation. Public/default buys remain direct.",
     moduleIds: assertKnownModules(["source-attribution", "activity", "institutional-register"]),
@@ -217,8 +217,8 @@ export const PROTOCOL_EVOLUTION_EPISODES = [
       ),
     ],
     safetyBoundary:
-      "A PAUSED source record is not a public referral system, not a source link, and not a claim path.",
-    chronicleCandidate: false,
+      "The completed internal lifecycle is not a public referral system, not a source link, and not a claim path.",
+    chronicleCandidate: true,
     registerCandidate: true,
   },
   {
@@ -303,7 +303,7 @@ export const PROTOCOL_EVOLUTION_EPISODES = [
 ] as const satisfies readonly ProtocolEvolutionEpisode[];
 
 export const PROTOCOL_EVOLUTION_LATEST_EPISODE_ID =
-  PROTOCOL_EVOLUTION_EPISODES[0].id;
+  "source-policy-rehearsal";
 
 export function getProtocolEvolutionLatestEpisode() {
   return PROTOCOL_EVOLUTION_EPISODES.find(

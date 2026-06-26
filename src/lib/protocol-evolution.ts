@@ -98,8 +98,9 @@ export const PROTOCOL_EVOLUTION_MODULES: readonly ProtocolEvolutionModule[] = [
         ? "SourceRegistryV1 is deployed with zero source records. Public/default buys use ZERO_SOURCE_ID."
         : sourcePolicy.currentSummary,
     notLive: "No referral activation, no public source link, no source dashboard, and no claim UI.",
-    nextMilestone: "If founder-approved, use an internal gated source-attributed test path before any public activation.",
-    blocker: "Source activation and source-aware product paths remain separate from the PAUSED policy record.",
+    nextMilestone:
+      "Decide whether the completed lifecycle enters Chronicle/Register memory, then separately decide whether any public source product should exist.",
+    blocker: "Public source/referral product paths remain separate from the completed internal lifecycle proof.",
     safetyBoundary:
       "A source record is policy state only. It is not public referral activation and does not create a claim UI.",
     evidence: [
@@ -151,7 +152,8 @@ export const PROTOCOL_EVOLUTION_MODULES: readonly ProtocolEvolutionModule[] = [
     summary: "The protocol heartbeat shows recent verifiable movement.",
     currentTruth: "Activity reads purchase and protocol events into a public heartbeat layer.",
     notLive: "Activity is not a governance feed and does not activate future systems.",
-    nextMilestone: "Classify future source-policy readbacks only after real SourceCreated events exist.",
+    nextMilestone:
+      "Keep source lifecycle facts readable as proof events while deciding which ones deserve Register or Chronicle memory.",
     blocker: null,
     safetyBoundary: "Events can become candidates for memory, but not every event becomes Chronicle or Archive.",
     evidence: [

@@ -151,9 +151,14 @@ First pass completed: the validated source-attributed receipt now has a
 readback-confirmed proof model and appears as non-activating proof on Activity
 and Transparency. My Syndicate remains wallet-specific and guarded.
 
-The next sprint should decide whether the proof should enter Chronicle/Register
-memory, then separately decide whether any public referral/source product should
-exist. Public/default buying still uses `ZERO_SOURCE_ID`; public source links,
-claim UI, source dashboards, and broad activation remain deferred until
-anti-abuse, legal/accounting, and UX rules are approved.
+Second pass completed: Protocol Evolution now treats this as the first proven
+protocol lifecycle: packet, terms, controlled ACTIVE, real action, PAUSED
+closure, and safe-state readback.
+
+The next sprint should decide whether the lifecycle proof should enter
+Chronicle/Register memory, then separately decide whether any public
+referral/source product should exist. Public/default buying still uses
+`ZERO_SOURCE_ID`; public source links, claim UI, source dashboards, and broad
+activation remain deferred until anti-abuse, legal/accounting, and UX rules are
+approved.
 

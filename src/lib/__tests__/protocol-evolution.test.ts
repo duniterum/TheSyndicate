@@ -107,22 +107,23 @@ describe("protocol evolution registry", () => {
     }
 
     expect(getProtocolEvolutionEpisodesByState("BECAME_TRUE").length).toBeGreaterThan(0);
-    expect(getProtocolEvolutionEpisodeCounts().UNFOLDING).toBeGreaterThan(0);
+    expect(getProtocolEvolutionEpisodeCounts().WATCH_NEXT).toBeGreaterThan(0);
   });
 
-  it("keeps the source episode framed as internal rehearsal, not public referral activation", () => {
+  it("keeps the source episode framed as completed internal proof, not public referral activation", () => {
     const sourceEpisode = PROTOCOL_EVOLUTION_EPISODES.find(
       (episode) => episode.id === "source-policy-rehearsal",
     );
 
     expect(sourceEpisode).toBeTruthy();
-    expect(sourceEpisode?.state).toBe("UNFOLDING");
-    expect(sourceEpisode?.plainSummary).toContain("no referral activation");
-    expect(sourceEpisode?.plainSummary).toContain("no claim UI");
-    expect(sourceEpisode?.plainSummary).toContain("returned to PAUSED");
+    expect(sourceEpisode?.state).toBe("BECAME_TRUE");
+    expect(getProtocolEvolutionLatestEpisode()?.id).toBe("source-policy-rehearsal");
+    expect(sourceEpisode?.plainSummary).toContain("real $5 source-attributed V3 buy");
+    expect(sourceEpisode?.plainSummary).toContain("final PAUSED readback");
     expect(sourceEpisode?.whatBecameTrue).toContain("temporary ACTIVE state");
-    expect(sourceEpisode?.proofToWatchNext).toContain("post-test receipt/read-model hardening");
+    expect(sourceEpisode?.proofToWatchNext).toContain("public/default buys stay ZERO_SOURCE_ID");
     expect(sourceEpisode?.whatDidNotChange).toContain("Public/default buys remain direct");
+    expect(sourceEpisode?.safetyBoundary).toContain("not a public referral system");
   });
 
   it("does not contain activation or entitlement drift language", () => {

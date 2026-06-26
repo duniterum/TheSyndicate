@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
 import { RouteFinalCTA } from "@/components/syndicate/RouteFinalCTA";
+import { ProtocolLifecycleProofPanel } from "@/components/syndicate/ProtocolLifecycleProofPanel";
 import { CTAButton, Panel, Pill, Section, SectionHeader } from "@/components/syndicate/Primitives";
+import { getCompletedProtocolLifecycleCount } from "@/lib/protocol-lifecycle";
 import {
   PROTOCOL_EVOLUTION_BOUNDARIES,
   PROTOCOL_EVOLUTION_MODULES,
@@ -402,6 +404,11 @@ function EvolutionPage() {
               note="Referral/source remains inactive unless a separate ceremony proves otherwise."
             />
             <CommandMetric
+              label="Proven lifecycles"
+              value={getCompletedProtocolLifecycleCount()}
+              note="Capabilities proven end-to-end under current-authority readback."
+            />
+            <CommandMetric
               label="Write actions here"
               value="0"
               note="This page cannot deploy, activate, create records, or switch registry state."
@@ -415,6 +422,15 @@ function EvolutionPage() {
           <Pill tone="muted">Claim UI absent</Pill>
           <Pill tone="navy">Proof board below</Pill>
         </div>
+      </Section>
+
+      <Section id="evolution-lifecycle-proof">
+        <SectionHeader
+          eyebrow="Lifecycle proof"
+          title="The first capability completed the whole ceremony"
+          description="Source Attribution is no longer only a planned capability. One internal source moved through policy, terms, ACTIVE, a real MembershipSaleV3 receipt, and PAUSED closure without becoming public referral."
+        />
+        <ProtocolLifecycleProofPanel />
       </Section>
 
       <Section id="evolution-return-loop">

@@ -199,6 +199,8 @@ describe("production coherence guards", () => {
 
   it("keeps Protocol Evolution read-only and evidence-backed without activation authority", () => {
     const registry = read("src/lib/protocol-evolution.ts");
+    const lifecycle = read("src/lib/protocol-lifecycle.ts");
+    const lifecyclePanel = read("src/components/syndicate/ProtocolLifecycleProofPanel.tsx");
     const route = read("src/routes/evolution.tsx");
     const header = read("src/components/syndicate/Header.tsx");
     const docs = read("src/routes/docs.tsx");
@@ -216,7 +218,22 @@ describe("production coherence guards", () => {
     expect(registry).toContain('"FUTURE"');
     expect(registry).toContain('"DEFERRED"');
 
+    expect(lifecycle).toContain("FIRST_SOURCE_ATTRIBUTION_LIFECYCLE");
+    expect(lifecycle).toContain("source-attribution-real-condition-001");
+    expect(lifecycle).toContain("PROVEN_INTERNAL");
+    expect(lifecycle).toContain("Source re-paused and closed");
+    expect(lifecycle).toContain("Public referral product");
+    expect(lifecycle).toContain("No claim UI, source dashboard, public source link, or public source-aware buy path exists.");
+    expect(lifecycle).toContain("Future modules do not inherit MembershipSaleV3 source terms automatically.");
+    expect(lifecyclePanel).toContain("Institutional lifecycle proof");
+    expect(lifecyclePanel).toContain("Current safe state");
+    expect(lifecyclePanel).toContain("Boundaries still active");
+    expect(lifecyclePanel).toContain("Questions unlocked");
+
     expect(route).toContain('createFileRoute("/evolution")');
+    expect(route).toContain("ProtocolLifecycleProofPanel");
+    expect(route).toContain("evolution-lifecycle-proof");
+    expect(route).toContain("Proven lifecycles");
     expect(route).toContain("This surface explains state. It does not change state.");
     expect(route).toContain("No fake-live systems");
     expect(route).toContain("no public");
@@ -231,6 +248,11 @@ describe("production coherence guards", () => {
     expect(docs).toContain('title: "Protocol Evolution"');
     expect(roadmap).toContain("Protocol Evolution");
     expect(sitemap).toContain('{ path: "/evolution"');
+
+    const evolutionCopy = [registry, lifecycle, lifecyclePanel, route].join("\n");
+    expect(evolutionCopy).not.toMatch(/claimSourceEscrow\(/);
+    expect(evolutionCopy).not.toMatch(/public source link is live|source dashboard is live|public referral is live/i);
+    expect(evolutionCopy).not.toMatch(/passive income|yield-bearing|\bROI\b|guaranteed return|downline/i);
   });
 
   it("keeps sitemap and production route smoke checks aligned with current route truth", () => {
