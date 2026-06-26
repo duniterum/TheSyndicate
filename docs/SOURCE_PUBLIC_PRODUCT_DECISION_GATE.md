@@ -38,6 +38,8 @@ Machine-readable source: `src/lib/public-product-decision-gate.ts`.
 Public product framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`
 and `src/lib/source-public-product-framework.ts`.
 
+Founder review packet: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
+
 ## Required Gates Before Public Product
 
 | Gate | Current status | Meaning |
@@ -56,8 +58,8 @@ and `src/lib/source-public-product-framework.ts`.
 
 - Chronicle admission review for the completed lifecycle, if the founder wants
   curated public meaning.
-- Founder review of the public source product decision framework with no
-  implementation or activation authority.
+- Founder review of `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md` with
+  no implementation or activation authority.
 - Anti-abuse, disclosure, accounting, and source-operator policy design.
 - Read-only proof and guard hardening that preserves `ZERO_SOURCE_ID`
   public/default buys.

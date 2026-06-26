@@ -118,9 +118,10 @@ below names every layer and its key properties. Layer ids are shown in `code`.
   `src/lib/source-public-product-framework.ts` and
   `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`, which recommend an
   invite-only Verified Introduction V1 for founder review only. The current
-  Source Attribution decision is not ready for public product: proof exists, but
-  public source links, source dashboards, claim UI, aliases, and public
-  source-aware buys remain unapproved.
+  founder review packet is `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
+  The current Source Attribution decision is not ready for public product: proof
+  exists, but public source links, source dashboards, claim UI, aliases, and
+  public source-aware buys remain unapproved.
 
 ### Knowledge Pipeline (Truth → Events → Signals → Memory → Story)
 

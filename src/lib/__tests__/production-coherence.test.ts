@@ -1781,6 +1781,7 @@ describe("production coherence guards", () => {
   it("keeps proof-to-public-product decisions gated after the completed source lifecycle", () => {
     const decisionDoc = read("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
     const frameworkDoc = read("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
+    const founderReview = read("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     const decisionModel = read("src/lib/public-product-decision-gate.ts");
     const frameworkModel = read("src/lib/source-public-product-framework.ts");
     const decisionTest = read("src/lib/__tests__/public-product-decision-gate.test.ts");
@@ -1794,8 +1795,10 @@ describe("production coherence guards", () => {
 
     expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
     expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
+    expect(authority).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md");
     expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
+    expect(index).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     expect(index).toContain("src/lib/public-product-decision-gate.ts");
     expect(index).toContain("src/lib/source-public-product-framework.ts");
     expect(canonKnowledge).toContain("src/lib/public-product-decision-gate.ts");
@@ -1819,7 +1822,9 @@ describe("production coherence guards", () => {
     expect(decisionModel).toContain("legal-accounting-disclosure");
     expect(decisionModel).toContain("claim-and-escrow-policy");
     expect(decisionModel).toContain("founder-public-product-approval");
+    expect(decisionModel).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     expect(frameworkDoc).toContain("Status: DECISION FRAMEWORK / V1 RECOMMENDATION / PUBLIC PRODUCT NOT APPROVED");
+    expect(frameworkDoc).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     expect(frameworkDoc).toContain("Verified Introduction V1");
     expect(frameworkDoc).toContain("MembershipSaleV3-only");
     expect(frameworkDoc).toContain("buyer-clearable back to `ZERO_SOURCE_ID`");
@@ -1834,14 +1839,33 @@ describe("production coherence guards", () => {
     expect(frameworkModel).toContain("INVITE_ONLY_MANUAL_APPROVAL");
     expect(frameworkModel).toContain("MEMBERSHIP_SALE_V3_ONLY");
     expect(frameworkModel).toContain("defaultPublicSourceId: ZERO_SOURCE_ID");
+    expect(founderReview).toContain("Status: FOUNDER REVIEW PACKET / NO IMPLEMENTATION AUTHORITY / PUBLIC PRODUCT NOT APPROVED");
+    expect(founderReview).toContain("approve Verified Introduction V1 as direction only");
+    expect(founderReview).toContain("Approve As Direction");
+    expect(founderReview).toContain("Approve With Changes");
+    expect(founderReview).toContain("Defer");
+    expect(founderReview).toContain("Reject");
+    expect(founderReview).toContain("This approval does not authorize source activation");
+    expect(founderReview).toContain("No public source link");
+    expect(founderReview).toContain("No claim UI");
+    expect(founderReview).toContain("No source dashboard");
+    expect(founderReview).toContain("No public source-aware buy path");
     expect(decisionTest).toContain("proof, not public product readiness");
     expect(frameworkTest).toContain("recommends a constrained V1 shape without approving launch");
     expect(checkpoint).toContain("Public product decision framework");
+    expect(checkpoint).toContain("Public product founder review packet");
     expect(checkpoint).toContain("invite-only **Verified Introduction**");
     expect(capability).toContain("docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md");
+    expect(capability).toContain("docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md");
     expect(capability).toContain("invite-only Verified Introduction V1");
 
-    const gateSurface = [decisionDoc, decisionModel, frameworkDoc, frameworkModel].join("\n");
+    const gateSurface = [
+      decisionDoc,
+      decisionModel,
+      frameworkDoc,
+      frameworkModel,
+      founderReview,
+    ].join("\n");
     expect(gateSurface).toContain("ZERO_SOURCE_ID");
     expect(gateSurface).toContain("Do not activate public referral");
     expect(gateSurface).toContain("Do not add claim UI");

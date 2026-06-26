@@ -95,6 +95,7 @@ This record is source policy state plus one completed internal proof receipt. It
 | Knowledge architecture boundary | The Knowledge Map now names the full fact lifecycle: raw event -> current-authority readback -> proof -> Register memory -> Chronicle review -> public product decision. |
 | Public product decision gate | Source Attribution now has a specific proof-to-public-product gate in `src/lib/public-product-decision-gate.ts` and `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`; the current decision is not ready for public product activation. |
 | Public product decision framework | The recommended V1 public posture is invite-only **Verified Introduction** for MembershipSaleV3 only, manually approved, buyer-visible, buyer-clearable, direct-payout-first, and without aliases, claim UI, source dashboard, open self-serve referral, or product-wide attribution. It is a founder-review recommendation, not launch approval. |
+| Public product founder review packet | `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md` converts the Verified Introduction V1 recommendation into approve/revise/reject/defer founder options. It has no implementation or activation authority. |
 | Activity/My Syndicate readiness | The first real source-attributed receipt can be understood without activating public source paths. |
 | Registry/referral truth | Public surfaces can say a PAUSED source policy fact exists while still saying referral is inactive. |
 | Production truth | Replit production was last reported live and QA green through the lifecycle proof publication; later GitHub-only knowledge/gate commits still require a separate Replit decision before becoming production truth. |
@@ -340,6 +341,11 @@ Outcome:
   abuse/fraud handling, clear-source UX, no MLM/downline/passive-income framing,
   legal/product approval, and Replit production QA remain required before any
   public source/referral product exists.
+
+Current implementation note: the founder review packet now exists at
+`docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`. The recommended next
+decision is not launch; it is whether to approve, revise, reject, or defer
+Verified Introduction V1 as product direction only.
 
 ## What To Skip For Now
 

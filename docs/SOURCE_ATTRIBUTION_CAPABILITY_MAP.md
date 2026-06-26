@@ -330,7 +330,7 @@ What it does not enable:
 
 Still needed:
 
-- Founder review of `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`.
+- Founder review of `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
 - Legal/product copy posture for any public exposure.
 - Anti-abuse, source eligibility, prohibited-promotion, and source onboarding
   rules before any member-introduction UX.
@@ -398,7 +398,8 @@ again, or building public source/referral UX:
 4. Use `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md` and
    `src/lib/source-aware-test-mode.ts` as the internal source-aware test
    boundary for localhost and explicit production-internal mode.
-5. Use `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md` and
+5. Use `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`,
+   `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`, and
    `src/lib/source-public-product-framework.ts` as the founder-review framework
    for a possible invite-only Verified Introduction V1. The framework is a
    recommendation, not launch approval.

@@ -32,7 +32,7 @@ publish.
 | SeatRecord721 | Future identity layer only. No contract, mint path, or live identity claim exists. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/MODULE_INTEGRATION_STANDARD.md` |
 | SwapRail | Future utility/commercial layer only. Not implemented and cannot inherit MembershipSaleV3 source terms. | `docs/MODULE_INTEGRATION_STANDARD.md`, `src/lib/protocol-evolution.ts` |
 | Protocol Evolution | Live read-only evolution/status/episode/lifecycle layer. It now includes the first proven internal lifecycle pattern and has no governance, activation, transaction, source-record, or registry authority. The completed lifecycle is also preserved as durable Institutional Register memory; Chronicle remains a separate curation decision. | `src/lib/protocol-evolution.ts`, `src/lib/protocol-lifecycle.ts`, `src/lib/institutional-register-lifecycle.ts`, `src/routes/evolution.tsx` |
-| Public source/referral product decision | NOT APPROVED. The completed internal Source Attribution lifecycle can inform future product design, and the current framework recommends invite-only Verified Introduction V1 for founder review. Public source links, aliases, source dashboards, claim UI, and public source-aware buys still require a separate product/legal/UX/security/release/founder approval. | `src/lib/public-product-decision-gate.ts`, `src/lib/source-public-product-framework.ts`, `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`, `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md` |
+| Public source/referral product decision | NOT APPROVED. The completed internal Source Attribution lifecycle can inform future product design, and the current framework recommends invite-only Verified Introduction V1 for founder review. The founder review packet now gives approve/revise/reject/defer options. Public source links, aliases, source dashboards, claim UI, and public source-aware buys still require a separate product/legal/UX/security/release/founder approval. | `src/lib/public-product-decision-gate.ts`, `src/lib/source-public-product-framework.ts`, `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`, `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`, `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md` |
 | Transaction / contract-change truth | No transaction, source activation, referral activation, claim UI, registry switch, or contract change is authorized by this index. | This file; relevant runbooks only after founder approval |
 
 ## 2. Protocol Domain Map
@@ -41,7 +41,7 @@ publish.
 | --- | --- | --- | --- | --- | --- | --- |
 | V3 MembershipSaleV3 / Join | LIVE direct buy target. Public buys use `ZERO_SOURCE_ID`. | `docs/V3_PROTOCOL_ENGINE_CONSTITUTION.md`, `docs/V3_DEPLOYMENT_PARAMETER_SHEET.md`, `contracts/src/MembershipSaleV3.sol` | `src/lib/syndicate-config.ts`, `src/lib/sale-hooks.ts`, `src/components/syndicate/LivePurchase.tsx`, `src/routes/join.tsx` | `contracts/test/MembershipSaleV3.t.sol`, `src/lib/__tests__/production-coherence.test.ts` | Continue readback discipline and direct-buy QA. | Accidentally routing public buys through a non-zero sourceId. |
 | SourceRegistryV1 | DEPLOYED with one internal source record now PAUSED after a completed controlled source-attributed buy. | `contracts/src/SourceRegistryV1.sol`, `docs/SOURCE_CREATION_CEREMONY_RUNBOOK.md`, `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`, `docs/SOURCE_ACTIVE_CEREMONY_PREFLIGHT.md`, `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`, `docs/SOURCE_REAL_CONDITION_FOUNDER_CEREMONY_GUIDE.md` | `src/lib/source-policy-observability.ts`, `src/lib/source-registry-lifecycle.ts`, `src/lib/source-activation-readiness.ts`, `src/lib/source-aware-test-mode.ts`, `src/routes/referral.tsx`, `src/routes/registry.tsx` | `contracts/test/SourceRegistryV1.t.sol`, source lifecycle tests, activation-readiness tests, source-aware test-mode tests, production coherence guards | Run latest-chain current-authority preflight before any future status transaction. | Treating a validated internal source proof as public referral activation. |
-| Referral / Source Attribution | INACTIVE public product; one internal real-condition source-attributed V3 receipt has been validated under staged guardrails. Public-facing V1, if ever approved, should be reviewed as Verified Introduction rather than broad referral. | `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`, `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`, `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`, source packet docs | `src/routes/referral.tsx`, `src/lib/source-attributed-receipts.ts`, `src/lib/future-referral.ts`, `src/lib/source-real-condition-test.ts`, `src/lib/source-public-product-framework.ts` | source receipt tests, source lifecycle tests, public product framework tests, production coherence guards | Founder review of Verified Introduction V1 framework; no user-actionable controls before approval. | Claim UI, public links, aliases, source dashboard, product-wide attribution, or MLM-style language before approval. |
+| Referral / Source Attribution | INACTIVE public product; one internal real-condition source-attributed V3 receipt has been validated under staged guardrails. Public-facing V1, if ever approved, should be reviewed as Verified Introduction rather than broad referral. | `docs/REFERRAL_SOURCE_ATTRIBUTION_V1_READINESS.md`, `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`, `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`, `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`, source packet docs | `src/routes/referral.tsx`, `src/lib/source-attributed-receipts.ts`, `src/lib/future-referral.ts`, `src/lib/source-real-condition-test.ts`, `src/lib/source-public-product-framework.ts` | source receipt tests, source lifecycle tests, public product framework tests, production coherence guards | Founder decision on Verified Introduction V1 posture; no user-actionable controls before approval. | Claim UI, public links, aliases, source dashboard, product-wide attribution, or MLM-style language before approval. |
 | Activity | LIVE heartbeat/read-model surface. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/MODULE_INTEGRATION_STANDARD.md` | `src/routes/activity.tsx`, `src/lib/protocol-events.ts`, `src/lib/protocol-event-registry.ts`, purchase caches | event/cache tests, production coherence guards | Source lifecycle and source-attributed purchase display should use non-public/internal status labels. | Letting routine events become fake Chronicle/history claims. |
 | Register / Registry | LIVE proof and contract/source-policy surface. Institutional Register now preserves the completed Source Attribution lifecycle as active durable memory, anchored to the re-pause closure transaction. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, `docs/canon/02_SOURCE_OF_TRUTH_TABLE.md` | `src/routes/registry.tsx`, `src/lib/contract-registry.ts`, `src/lib/institutional-register.ts`, `src/lib/institutional-register-lifecycle.ts` | production coherence guards, lifecycle register tests | Keep source and V3 readbacks aligned after any ceremony. | Showing old V2/V1 sale truth as active current sale or mistaking Register memory for public referral launch. |
 | Chronicle | PARTIAL curated memory. The completed Source Attribution lifecycle is not auto-published to Chronicle; it is a review/candidate question after Register memory. | `docs/PROTOCOL_ORGANISM_GRAPH.md`, Chronicle docs | `src/routes/chronicle.tsx`, `src/lib/chronicle-entries.ts`, `src/lib/chronicle-admission.ts` | content and production guards | Admit only material milestones through human curation. | Turning every task, receipt, or routine source change into history or implying public referral is live. |
@@ -98,18 +98,19 @@ Before referral or source attribution work:
 3. `docs/SOURCE_ATTRIBUTION_CAPABILITY_MAP.md`
 4. `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`
 5. `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`
-6. `src/lib/public-product-decision-gate.ts`
-7. `src/lib/source-public-product-framework.ts`
-8. `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`
-9. `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`
-10. `src/lib/source-policy-observability.ts`
-11. `src/lib/source-registry-lifecycle.ts`
-12. `src/lib/source-attributed-receipts.ts`
-13. `src/lib/source-real-condition-test.ts`
-14. `src/lib/source-activation-readiness.ts`
-15. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
-16. `src/lib/source-aware-test-mode.ts`
-17. `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`
+6. `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`
+7. `src/lib/public-product-decision-gate.ts`
+8. `src/lib/source-public-product-framework.ts`
+9. `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`
+10. `docs/SOURCE_PACKETS/SOURCE_PACKET_INTERNAL_TEST_001_DRAFT.md`
+11. `src/lib/source-policy-observability.ts`
+12. `src/lib/source-registry-lifecycle.ts`
+13. `src/lib/source-attributed-receipts.ts`
+14. `src/lib/source-real-condition-test.ts`
+15. `src/lib/source-activation-readiness.ts`
+16. `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`
+17. `src/lib/source-aware-test-mode.ts`
+18. `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md`
 
 Before any source ceremony or source status transaction:
 
@@ -205,8 +206,9 @@ referral-only thinking.
 | 6 | Durable Memory Boundary | Completed Source Attribution lifecycle enters the Institutional Register as active durable memory; Chronicle remains a separate curation decision. | Protocol Lifecycle Proof. | Do not imply public referral launch or auto-publish Chronicle. |
 | 7 | Public Source/Referral Product Decision Gate | Added as the proof-to-public-product boundary. It confirms the lifecycle proof is real but public source/referral product is not approved until scope, UX, anti-abuse, disclosure, release QA, and founder approval are complete. | Completed lifecycle proof and Register memory. | Do not use the internal test source as public UX template or expose user-actionable source controls. |
 | 8 | Public Source Product Framework | Completed as a founder-review recommendation: invite-only Verified Introduction V1, MembershipSaleV3-only, manual approval, buyer-visible, buyer-clearable, direct-payout-first, and no aliases, claim UI, source dashboard, open self-serve referral, or product-wide attribution. | Gate from order 7. | Do not treat the framework as approval to build or launch public controls. |
-| 9 | Public Source Product Founder Decision | Decide whether to approve, revise, or reject the Verified Introduction V1 posture before any public product UX sprint. | `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`, legal/product signoff, anti-abuse design. | Do not activate, publish user-actionable controls, create aliases, or create claim UI. |
-| 10 | Whole-Protocol Continuous Excellence | Keep surfaces, docs, tests, status labels, and proof paths clean while referral matures. | Current GitHub truth. | Do not start unrelated future modules as fake-live placeholders. |
+| 9 | Public Source Product Founder Review Packet | Completed as the non-technical decision package for approving as direction, approving with changes, rejecting, or deferring Verified Introduction V1. | Framework from order 8. | Do not treat founder-review options as implementation authority. |
+| 10 | Public Source Product Founder Decision | Decide whether to approve, revise, reject, or defer the Verified Introduction V1 posture before any public product UX sprint. | `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`, legal/product signoff, anti-abuse design. | Do not activate, publish user-actionable controls, create aliases, or create claim UI. |
+| 11 | Whole-Protocol Continuous Excellence | Keep surfaces, docs, tests, status labels, and proof paths clean while referral matures. | Current GitHub truth. | Do not start unrelated future modules as fake-live placeholders. |
 
 ## 7. Guard / Test Hooks
 

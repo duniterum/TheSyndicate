@@ -11,6 +11,9 @@ deployment, or production publish.
 
 Machine-readable source: `src/lib/source-public-product-framework.ts`.
 
+Founder review packet:
+`docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
+
 ## Executive Decision
 
 The engine is proven. The public product should still wait.
@@ -158,7 +161,8 @@ Before any public source-aware path is released:
 
 Do not proceed to user-actionable implementation until:
 
-- founder approves this V1 posture or edits it,
+- founder approves this V1 posture or edits it through
+  `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`,
 - public scope is frozen,
 - buyer UX is designed and reviewed,
 - anti-abuse rules are accepted,

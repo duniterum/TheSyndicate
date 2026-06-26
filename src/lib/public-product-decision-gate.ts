@@ -160,7 +160,7 @@ export function buildSourceAttributionPublicProductDecisionGate(
     gates,
     allowedNextWork: [
       "Chronicle admission review for the proven lifecycle, if founder wants curated public meaning.",
-      "Founder review of docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md with no implementation or activation authority.",
+      "Founder review of docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md with no implementation or activation authority.",
       "Anti-abuse, disclosure, accounting, and source-operator policy design.",
       "Read-only proof and guard hardening that preserves ZERO_SOURCE_ID public/default buys.",
     ],

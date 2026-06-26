@@ -98,6 +98,7 @@ describe("source attribution public-product decision gate", () => {
     expect(copy).toContain("Do not route public/default buys through a non-zero sourceId");
     expect(copy).toContain("verified-introduction-v1");
     expect(copy).toContain("FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED");
+    expect(copy).toContain("SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET");
     expect(copy).toContain("Chronicle admission review");
     expect(copy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
     expect(copy).not.toMatch(/top earner|guaranteed return|yield opportunity/i);
