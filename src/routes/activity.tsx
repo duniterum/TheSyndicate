@@ -22,6 +22,7 @@ import { ActivityHeartbeat } from "@/components/syndicate/ActivityHeartbeat";
 import { ProofOfFireCard } from "@/components/syndicate/ProofOfFireCard";
 import { StoryTimeline } from "@/components/syndicate/StoryTimeline";
 import { ProtocolMemoryPipeline } from "@/components/syndicate/ProtocolJourneySpine";
+import { SourceAttributionProofCard } from "@/components/syndicate/SourceAttributionProofCard";
 
 import { useProtocolEvents } from "@/lib/protocol-events";
 import type { ActivityFilterKey } from "@/lib/activity-filters";
@@ -69,6 +70,15 @@ function ActivityPage() {
 
       {/* Proof of Burn #001 — recognition of the first verified SYN burn */}
       <ProofOfFireCard />
+
+      <Section id="source-attribution-proof">
+        <SectionHeader
+          eyebrow="Source Attribution Proof"
+          title={<>The first controlled <span className="text-gradient-gold">source receipt</span> is verified</>}
+          description="Activity now carries the completed internal source-attribution ceremony as proof: one non-zero-source V3 receipt, current-authority readback, final PAUSED status, and no public referral activation."
+        />
+        <SourceAttributionProofCard />
+      </Section>
 
       {/* Feed health banner — one-glance LIVE / INDEXED / PARTIAL / FAIL state */}
       <Section id="activity-health">

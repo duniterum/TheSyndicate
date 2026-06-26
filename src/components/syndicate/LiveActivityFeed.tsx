@@ -258,13 +258,18 @@ function PurchaseRow({ ev }: { ev: PurchaseEvent }) {
 }
 
 function SourceAttributedReceiptStrip({ receipt }: { receipt: SourceAttributedReceiptReadModel }) {
+  const isConfirmedRepaused = receipt.sourceStatusProof === "READBACK_CONFIRMED_SOURCE_REPAUSED";
+
   return (
     <div className="rounded-md border border-[var(--gold)]/30 bg-[var(--gold)]/[0.04] p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
           Source-attributed receipt
         </div>
-        <Pill tone="gold">{receipt.sourceClassLabel}</Pill>
+        <div className="flex flex-wrap gap-2">
+          <Pill tone="gold">{receipt.sourceClassLabel}</Pill>
+          {isConfirmedRepaused && <Pill tone="warning">SOURCE RE-PAUSED</Pill>}
+        </div>
       </div>
       <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 mono text-[11px]">
         <MiniAmount label="Source" value={`${receipt.sourceId.slice(0, 8)}…${receipt.sourceId.slice(-6)}`} />
@@ -273,9 +278,9 @@ function SourceAttributedReceiptStrip({ receipt }: { receipt: SourceAttributedRe
         <MiniAmount label="Terms" value={`${receipt.commissionRateLabel} · ${receipt.attributionScopeLabel}`} />
       </div>
       <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-        Read-only Activity proof from the V3 receipt event. It does not create a public source link,
-        claim surface, source dashboard, or referral activation; current source status still requires
-        SourceRegistry readback.
+        {isConfirmedRepaused
+          ? "Read-only Activity proof from the completed internal test. Current-authority readback confirms the source returned to PAUSED; no public source link, claim surface, source dashboard, or referral activation exists."
+          : "Read-only Activity proof from the V3 receipt event. It does not create a public source link, claim surface, source dashboard, or referral activation; current source status still requires SourceRegistry readback."}
       </p>
     </div>
   );

@@ -178,7 +178,7 @@ referral-only thinking.
 | 1 | Source Activation Readiness Packet | Completed as a non-transactional readiness model and packet. | Fresh readbacks are still required before any future status action. | Do not activate. |
 | 2 | Internal Source-Aware Test Path | Completed as a gated `/labs/source-attribution-test` operator console for production-internal mode. | Source remains PAUSED after the completed ceremony. | Do not expose source links or source selector in public production. |
 | 3 | Controlled ACTIVE Ceremony And $5 Test | Completed. One $5 source-attributed V3 buy was read back and the source was re-paused. | Final readback lives in `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`. | Do not repeat without new founder approval. |
-| 4 | Post-Test Truth Update | Record source receipt, payout/escrow, Activity, My Syndicate, Registry, and cache truth. | Real tx/readback now exists. | Do not imply public referral is live. |
+| 4 | Post-Test Truth Update | First runtime proof surface added: completed source-attributed receipt, payout/escrow, final PAUSED readback, Activity proof, and Transparency proof. Deeper public referral product remains separate. | Real tx/readback now exists. | Do not imply public referral is live. |
 | 5 | Public Source/Referral Product Decision | Decide whether to build public referrer UX, source links, aliases, and dashboards. | Legal/product signoff, test evidence, anti-abuse design. | Do not use the internal test source as public UX template. |
 | 6 | Whole-Protocol Continuous Excellence | Keep surfaces, docs, tests, status labels, and proof paths clean while referral matures. | Current GitHub truth. | Do not start unrelated future modules as fake-live placeholders. |
 
@@ -191,7 +191,7 @@ The following guards must keep the index aligned with runtime truth:
 - `src/lib/__tests__/source-registry-lifecycle.test.ts` - SourceCreated/status lifecycle projection.
 - `src/lib/__tests__/source-activation-readiness.test.ts` - PAUSED to ACTIVE readiness gates.
 - `src/lib/__tests__/source-aware-test-mode.test.ts` - internal source-aware test gate for localhost and explicit production-internal mode.
-- `src/lib/__tests__/source-attributed-receipts.test.ts` - future source-attributed receipt projection.
+- `src/lib/__tests__/source-attributed-receipts.test.ts` - source-attributed receipt projection plus completed internal proof/readback reconciliation.
 - `src/lib/__tests__/purchase-events-cache.test.ts` - purchase source preservation across cache restore.
 - `src/lib/__tests__/chain-registry-guard.test.ts` - canonical chain/RPC guardrails.
 - Archive/visibility/evolution tests - future modules cannot become fake-live by copy drift.

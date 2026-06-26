@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { PurchaseEvent } from "../activity-hooks";
 import {
+  completedInternalSourceAttributionPurchaseEvent,
+  getCompletedInternalSourceAttributionProof,
   projectSourceAttributedReceipt,
   summarizeSourceAttributedReceipts,
 } from "../source-attributed-receipts";
@@ -105,6 +107,41 @@ describe("source-attributed receipt read model", () => {
       sourceStatusProof: "REQUIRES_SOURCE_REGISTRY_READBACK",
     });
     expect(restored!.events[0].blockNumber).toBe(90_000_001n);
+  });
+
+  it("marks the completed internal source-attribution ceremony as readback-confirmed and re-paused", () => {
+    const receipt = getCompletedInternalSourceAttributionProof();
+
+    expect(receipt).toMatchObject({
+      txHash: "0x58f4d5a78ab14ed1eda546226ca5d6ca4098487d90429677633f911f9d049c46",
+      sourceStatusProof: "READBACK_CONFIRMED_SOURCE_REPAUSED",
+      finalSourceStatus: "PAUSED",
+      finalIsActive: false,
+      latestAuthorityReadbackBlock: 88808111,
+      grossUsdc: 5,
+      acquisitionCommission: 0.25,
+      netUsdcRouted: 4.75,
+      sourceEscrowOwed: 0,
+      sourceGrossAttributed: 5,
+      buyerGrossAttributedToSource: 5,
+      publicReferralActive: false,
+      claimUiActive: false,
+      publicSourceAwareBuyPathActive: false,
+      sourceClassLabel: "BUILDER_SOURCE",
+      attributionScopeLabel: "WINDOWED",
+    });
+    expect(receipt.memberNumber).toBe(10n);
+    expect(receipt.boundarySummary).toContain("Public referral");
+  });
+
+  it("projects the completed ceremony event through the same receipt path used by Activity", () => {
+    const event = completedInternalSourceAttributionPurchaseEvent();
+    const receipt = projectSourceAttributedReceipt(event);
+
+    expect(receipt?.sourceStatusProof).toBe("READBACK_CONFIRMED_SOURCE_REPAUSED");
+    expect(receipt?.buyer).toBe("0x620febd921E7B8d123c7DFB6731ed58fCfbcC75F");
+    expect(receipt?.sourceGrossRemaining).toBe(20);
+    expect(receipt?.buyerGrossRemaining).toBe(0);
   });
 
   it("contains no fake-live referral, claim, or financial-leaderboard language", () => {

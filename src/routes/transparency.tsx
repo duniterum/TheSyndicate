@@ -10,6 +10,7 @@ import { RoutingFlow } from "@/components/syndicate/RoutingFlow";
 import { UseOfFunds } from "@/components/syndicate/UseOfFunds";
 import { LpStatusCard } from "@/components/syndicate/LpStatus";
 import { ProtocolEconomyBand } from "@/components/syndicate/ProtocolEconomyBand";
+import { SourceAttributionProofCard } from "@/components/syndicate/SourceAttributionProofCard";
 import { Section, SectionHeader } from "@/components/syndicate/Primitives";
 import { RiskDisclaimer } from "@/components/syndicate/RiskDisclaimer";
 
@@ -43,6 +44,15 @@ export const Route = createFileRoute("/transparency")({
       <TransparencyCenter />
 
       <ProtocolEconomyBand />
+
+      <Section id="source-attribution-proof">
+        <SectionHeader
+          eyebrow="Source Attribution Proof"
+          title="The first internal source-attributed receipt is now proven"
+          description="One controlled source-attributed V3 purchase has been read back end-to-end: gross USDC, acquisition commission, net routing, source escrow owed, and final PAUSED status."
+        />
+        <SourceAttributionProofCard compact />
+      </Section>
 
       <TransparencyTimeline />
 

@@ -83,8 +83,11 @@ describe("production coherence guards", () => {
     const mySyndicate = read("src/routes/my-syndicate.tsx");
     const activityFeed = read("src/components/syndicate/LiveActivityFeed.tsx");
     const purchaseRouting = read("src/components/syndicate/MyPurchaseRouting.tsx");
+    const sourceProofCard = read("src/components/syndicate/SourceAttributionProofCard.tsx");
     const sourceReceipts = read("src/lib/source-attributed-receipts.ts");
     const sourceLifecycle = read("src/lib/source-registry-lifecycle.ts");
+    const activity = read("src/routes/activity.tsx");
+    const transparency = read("src/routes/transparency.tsx");
     const registry = read("src/routes/registry.tsx");
 
     expect(sourcePolicy).toContain("INTERNAL_PROTOCOL_TEST_SOURCE_001");
@@ -115,6 +118,8 @@ describe("production coherence guards", () => {
     expect(sourceReceipts).toContain("projectSourceAttributedReceipt");
     expect(sourceReceipts).toContain("summarizeSourceAttributedReceipts");
     expect(sourceReceipts).toContain("REQUIRES_SOURCE_REGISTRY_READBACK");
+    expect(sourceReceipts).toContain("READBACK_CONFIRMED_SOURCE_REPAUSED");
+    expect(sourceReceipts).toContain("getCompletedInternalSourceAttributionProof");
     expect(sourceReceipts).toContain("ZERO_SOURCE_ID");
     expect(sourceLifecycle).toContain("SOURCE_REGISTRY_LIFECYCLE_VISIBILITY");
     expect(sourceLifecycle).toContain("SourceCreated");
@@ -146,17 +151,44 @@ describe("production coherence guards", () => {
     expect(registry).toContain("not as proof that referral, claim UI, or public source links are available");
     expect(economyBand).toContain("CURRENT_SOURCE_POLICY_SNAPSHOT");
     expect(economyBand).toContain("sourcePolicy.productCapabilities");
+    expect(activity).toContain("SourceAttributionProofCard");
+    expect(activity).toContain("source-attribution-proof");
+    expect(transparency).toContain("SourceAttributionProofCard");
+    expect(transparency).toContain("source-attribution-proof");
+    expect(sourceProofCard).toContain("Completed internal source-attribution proof");
+    expect(sourceProofCard).toContain("SOURCE PAUSED");
+    expect(sourceProofCard).toContain("PUBLIC ZERO_SOURCE_ID");
+    expect(sourceProofCard).toContain("public referral activation");
+    expect(sourceProofCard).toContain("No claim UI");
+    expect(sourceProofCard).toContain("public source-aware buy path");
+    expect(sourceProofCard).toContain("Capability validated; product activation still deferred");
     expect(activityFeed).toContain("projectSourceAttributedReceipt");
     expect(activityFeed).toContain("Source-attributed receipt");
+    expect(activityFeed).toContain("SOURCE RE-PAUSED");
+    expect(activityFeed).toContain("Current-authority readback confirms the source returned to PAUSED");
     expect(activityFeed).toContain("current source status still requires");
     expect(purchaseRouting).toContain("summarizeSourceAttributedReceipts");
     expect(purchaseRouting).toContain("Source-attributed receipt proof");
+    expect(purchaseRouting).toContain("SOURCE RE-PAUSED");
+    expect(purchaseRouting).toContain("Current-authority readback confirms the source returned to PAUSED");
     expect(purchaseRouting).toContain("Current source status still requires SourceRegistry readback");
     expect(mySyndicate).toContain("REQUIRES SOURCE RECORD");
     expect(mySyndicate).toContain("until a source record exists, is read back, activated, and wired");
     expect(mySyndicate).not.toMatch(/Referral routing[\s\S]{0,160}until a contract exists/i);
 
-    const publicSource = [sourcePolicy, sourceLifecycle, referral, registry, economyBand, mySyndicate, activityFeed, purchaseRouting].join("\n");
+    const publicSource = [
+      sourcePolicy,
+      sourceLifecycle,
+      referral,
+      registry,
+      economyBand,
+      mySyndicate,
+      activityFeed,
+      purchaseRouting,
+      sourceProofCard,
+      activity,
+      transparency,
+    ].join("\n");
     const publicCopySource = publicSource
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .replace(/\/\/.*$/gm, "");

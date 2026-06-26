@@ -278,6 +278,8 @@ Goal: record the test as institutional memory without turning it into public ref
 Outcome:
 
 - source observability update,
+- first runtime proof surface on Activity and Transparency,
+- My Syndicate wallet-specific source receipt read model remains guarded,
 - Registry/Activity/My Syndicate copy aligned to receipt facts,
 - Chronicle candidate only if meaningful,
 - no claim UI unless separately approved,

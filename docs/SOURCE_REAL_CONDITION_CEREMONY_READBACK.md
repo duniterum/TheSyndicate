@@ -147,14 +147,13 @@ public referral launch.
 
 ## Next Recommended Sprint
 
-The next sprint should be a post-ceremony product/read-model hardening sprint:
+First pass completed: the validated source-attributed receipt now has a
+readback-confirmed proof model and appears as non-activating proof on Activity
+and Transparency. My Syndicate remains wallet-specific and guarded.
 
-1. make the validated source-attributed receipt legible in Activity/My
-   Syndicate without implying public referral,
-2. keep public/default buying on `ZERO_SOURCE_ID`,
-3. add operator-history and receipt-proof copy where useful,
-4. decide whether to keep the internal source PAUSED indefinitely or prepare a
-   separate public referral product design,
-5. avoid public source links, claim UI, source dashboards, or broad activation
-   until anti-abuse, legal/accounting, and UX rules are approved.
+The next sprint should decide whether the proof should enter Chronicle/Register
+memory, then separately decide whether any public referral/source product should
+exist. Public/default buying still uses `ZERO_SOURCE_ID`; public source links,
+claim UI, source dashboards, and broad activation remain deferred until
+anti-abuse, legal/accounting, and UX rules are approved.
 

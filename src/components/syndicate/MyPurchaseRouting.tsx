@@ -116,6 +116,7 @@ function SourceAttributedReceiptBriefing({
 }) {
   const latest = summary.latestReceipt;
   if (!latest) return null;
+  const isConfirmedRepaused = latest.sourceStatusProof === "READBACK_CONFIRMED_SOURCE_REPAUSED";
 
   return (
     <div className="mt-4 rounded-md border border-[var(--gold)]/30 bg-[var(--gold)]/[0.04] p-3">
@@ -123,7 +124,10 @@ function SourceAttributedReceiptBriefing({
         <div className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">
           Source-attributed receipt proof
         </div>
-        <Pill tone="gold">{summary.count} receipt{summary.count === 1 ? "" : "s"}</Pill>
+        <div className="flex flex-wrap gap-2">
+          <Pill tone="gold">{summary.count} receipt{summary.count === 1 ? "" : "s"}</Pill>
+          {isConfirmedRepaused && <Pill tone="warning">SOURCE RE-PAUSED</Pill>}
+        </div>
       </div>
       <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2">
         <Tile label="Source class" value={latest.sourceClassLabel} hint="from V3 receipt" />
@@ -132,9 +136,9 @@ function SourceAttributedReceiptBriefing({
         <Tile label="Latest terms" value={latest.commissionRateLabel} hint={latest.attributionScopeLabel} />
       </div>
       <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed">
-        This appears only when indexed V3 receipt events include a non-zero sourceId.
-        It is a read-model proof, not a source dashboard, public link, referral activation,
-        or claim surface. Current source status still requires SourceRegistry readback.
+        {isConfirmedRepaused
+          ? "This appears only when indexed V3 receipt events include a non-zero sourceId. Current-authority readback confirms the source returned to PAUSED. It is a read-model proof, not a source dashboard, public link, referral activation, or claim surface."
+          : "This appears only when indexed V3 receipt events include a non-zero sourceId. It is a read-model proof, not a source dashboard, public link, referral activation, or claim surface. Current source status still requires SourceRegistry readback."}
       </p>
     </div>
   );
