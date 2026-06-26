@@ -79,7 +79,7 @@ const COLLECT: CollectItem[] = [
     name: "Patron Seal",
     chapter: "Cross-chapter",
     meaning:
-      "Optional flat-support artifact. One tier only — no rank, no wealth-coding, no financial rights.",
+      "Optional flat-support artifact. One tier only — no contribution-depth band, no wealth-coding, no financial rights.",
     status: "ACTIVE_MINT_OPEN",
     readGated: true,
     supplyMode: "capped",
@@ -206,9 +206,9 @@ const MEMORY_ARTIFACTS: ArtifactMemoryConfig[] = [
     emblem: "seal",
     accent: "var(--navy-soft)",
     ownedMeaning:
-      "Your sealed mark of support for the Archive — no rank, no wealth-coding, no financial rights.",
+      "Your sealed mark of support for the Archive — no contribution-depth band, no wealth-coding, no financial rights.",
     unownedMeaning:
-      "An optional mark of support, one tier only — no rank, no wealth-coding, no financial rights.",
+      "An optional mark of support, one tier only — no contribution-depth band, no wealth-coding, no financial rights.",
   },
 ];
 

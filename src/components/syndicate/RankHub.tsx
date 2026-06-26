@@ -1,12 +1,12 @@
-// RankHub — the "Where do I fit?" surface.
+// RankHub — contribution-depth and capital-footprint reference surface.
 //
 // Composition (one focused page, no leaderboard, no wealth ranking):
-//   1. What are Ranks (intro)
-//   2. Where do I fit (wallet-aware: current rank + next rank)
-//   3. Rank definitions (canonical ladder from RANKS_V2)
+//   1. What is contribution depth (intro)
+//   2. Where do I fit (wallet-aware: current band + next band)
+//   3. Band definitions (canonical thresholds from RANKS_V2)
 //   4. Aggregate distribution (totals.rankDistribution)
-//   5. Members per rank (collapsible, paginated to first 24)
-//   6. Latest rank changes — rendered ONLY when real promotions exist
+//   5. Members per band (collapsible, paginated to first 24)
+//   6. Latest depth changes — rendered ONLY when real movements exist
 //   7. Verification block + cross-links (Members/Founders/Chapters)
 //
 // All data derives from useHolderIndex + RANKS_V2. No new sources.
@@ -35,32 +35,32 @@ type Group = typeof GROUPS[number];
 
 const GROUP_DESC: Record<Group, string> = {
   "Open Entry": "Where most members start. Any participation counts.",
-  "Active Members": "Members shaping protocol formation week over week.",
-  "Deep Supporters": "Higher-conviction members. Rare by design.",
-  "High-Conviction": "The protocol's smallest, highest-conviction tier — available online via wallet checkout.",
+  "Active Members": "Members with a deeper verified capital footprint.",
+  "Deep Supporters": "Higher-conviction capital footprint bands. Rare by design.",
+  "High-Conviction": "The smallest capital-footprint bands available online via wallet checkout.",
 };
 
 /* ─────────── 1. Intro ─────────── */
 function WhatAreRanks() {
   return (
-    <Section id="what-are-ranks">
+    <Section id="what-is-contribution-depth">
       <SectionHeader
-        eyebrow="01 — What are ranks?"
-        title={<>Ranks describe <span className="text-gradient-gold">where you fit</span>, not what you've won.</>}
-        description="A rank is a recognition label derived from how much SYN a wallet holds. It is not a reward, not a payout, not an entitlement. Ranks exist so members can locate themselves inside a structured community — nothing more."
+        eyebrow="01 — Contribution depth"
+        title={<>Capital is recognized <span className="text-gradient-gold">without becoming identity</span>.</>}
+        description="Seat identity is binary. Contribution depth is variable. Capital footprint reflects verified USDC routed through receipts; it is one recognition axis, not a reward, payout, entitlement, or whole member identity."
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <GlassCard className="p-5">
-          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Recognition</div>
-          <p className="text-sm">Each rank carries a badge and a short label. Visible on wallet pages and member tiles.</p>
+          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Capital footprint</div>
+          <p className="text-sm">Verified USDC routed is visible and respected as protocol proof.</p>
         </GlassCard>
         <GlassCard className="p-5">
-          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Participation</div>
-          <p className="text-sm">Higher ranks signal deeper participation in protocol formation. They do not unlock revenue or entitlement.</p>
+          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Multi-axis recognition</div>
+          <p className="text-sm">Builder work, operations, proof, introductions, security, and time can matter too.</p>
         </GlassCard>
         <GlassCard className="p-5">
-          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Identity</div>
-          <p className="text-sm">Ranks let a visitor say "I'm Builder" and link to a page that explains what that means.</p>
+          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Seat identity</div>
+          <p className="text-sm">A 5 USDC member and a 10,000 USDC member both hold one seat. The footprint differs; the seat does not.</p>
         </GlassCard>
       </div>
     </Section>
@@ -83,7 +83,7 @@ function YourRank({ record, nextMemberNumber, hasData }: {
           <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">No wallet connected</span>
         </div>
         <p className="text-sm text-muted-foreground">
-          Connect a wallet to see the rank your cumulative USDC reflects. Rank is recognition only — no payout, no entitlement. The ranks below are public — nothing requires connection to read.
+          Connect a wallet to see the capital-footprint band your cumulative verified USDC routed reflects. It is recognition only — no payout, no entitlement. The bands below are public — nothing requires connection to read.
         </p>
       </GlassCard>
     );
@@ -105,10 +105,10 @@ function YourRank({ record, nextMemberNumber, hasData }: {
             <div className="text-2xl font-semibold">Member #{nextMemberNumber}</div>
           </div>
           <div>
-            <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">First rank you'd unlock</div>
+            <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">First contribution band</div>
             <div className="text-xl font-semibold text-gradient-gold">{next?.name ?? "—"}</div>
             <div className="text-xs text-muted-foreground mt-1">
-              At {next ? fmtUsd(next.usdc) : "—"} USDC. Rank is recognition only — no payouts, no entitlements.
+              At {next ? fmtUsd(next.usdc) : "—"} verified USDC routed. Recognition only — no payouts, no entitlements.
             </div>
           </div>
         </div>
@@ -127,16 +127,16 @@ function YourRank({ record, nextMemberNumber, hasData }: {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Current rank</div>
+          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Current band</div>
           <div className="text-2xl font-semibold text-gradient-gold">{current?.name ?? "Citizen"}</div>
           <div className="text-xs text-muted-foreground mt-1">{current?.group ?? "Open Entry"}</div>
         </div>
         <div>
-          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Next rank</div>
-          <div className="text-xl font-semibold">{next?.name ?? "Top tier reached"}</div>
+          <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">Next band</div>
+          <div className="text-xl font-semibold">{next?.name ?? "Top band reached"}</div>
           {next && (
             <div className="text-xs text-muted-foreground mt-1">
-              Recognition only — no payout, no entitlement.
+              Capital footprint only — no payout, no entitlement.
             </div>
           )}
         </div>
@@ -149,7 +149,7 @@ function YourRank({ record, nextMemberNumber, hasData }: {
         </div>
       </div>
       <p className="text-[11px] text-muted-foreground mt-4 border-l-2 border-[var(--navy)]/30 pl-3">
-        Ranks reflect SYN held. They do not promise dividends, airdrops, revenue share, treasury claims, or guaranteed NFTs.
+        Capital-footprint bands reflect verified membership purchase receipts. They do not promise dividends, airdrops, revenue share, treasury claims, governance rights, or guaranteed NFTs.
       </p>
     </GlassCard>
   );
@@ -184,17 +184,17 @@ function Distribution({ dist, total }: { dist: { name: string; count: number; gr
   );
 }
 
-/* ─────────── 5. Rank ladder (definitions) ─────────── */
+/* ─────────── 5. Contribution-depth bands (definitions) ─────────── */
 function RankLadder() {
   return (
     <div className="surface overflow-hidden">
       <div className="hidden md:grid grid-cols-12 gap-3 px-5 py-3 border-b border-border/60 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
         <div className="col-span-1">#</div>
-        <div className="col-span-3">Rank</div>
+        <div className="col-span-3">Band</div>
         <div className="col-span-2">Group</div>
         <div className="col-span-2 text-right">USDC</div>
         <div className="col-span-2 text-right">SYN</div>
-        <div className="col-span-2">Recognition</div>
+        <div className="col-span-2">Meaning</div>
       </div>
       <ul>
         {RANKS_V2.map((r, i) => (
@@ -216,7 +216,7 @@ function RankLadder() {
   );
 }
 
-/* ─────────── 5b. Members per rank (collapsible) ─────────── */
+/* ─────────── 5b. Members per band (collapsible) ─────────── */
 const SHOW = 24;
 function MembersByRank({ ordered }: { ordered: HolderRecord[] }) {
   const [openRank, setOpenRank] = useState<string | null>(null);
@@ -279,10 +279,10 @@ function MembersByRank({ ordered }: { ordered: HolderRecord[] }) {
   );
 }
 
-/* ─────────── 6. Latest rank changes (only when real) ─────────── */
+/* ─────────── 6. Latest depth states (only when real) ─────────── */
 function LatestRankChanges({ ordered }: { ordered: HolderRecord[] }) {
   const promotions = useMemo(() => {
-    // A meaningful promotion needs at least one rank above Citizen.
+    // A meaningful movement needs at least one band above Citizen.
     return ordered
       .filter((r) => r.currentRank && r.currentRank.name !== "Citizen")
       .sort((a, b) => (a.lastPurchaseBlock === b.lastPurchaseBlock ? 0 : a.lastPurchaseBlock > b.lastPurchaseBlock ? -1 : 1))
@@ -294,10 +294,10 @@ function LatestRankChanges({ ordered }: { ordered: HolderRecord[] }) {
       <GlassCard className="p-5">
         <div className="flex items-center gap-2 mb-2">
           <StatusPill status="PENDING" />
-          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">No promotions indexed yet</span>
+          <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">No band movements indexed yet</span>
         </div>
         <p className="text-xs text-muted-foreground">
-          Once a member crosses a rank threshold, the promotion appears here — derived live from purchase events.
+          Once a member crosses a contribution-depth threshold, the movement appears here — derived live from purchase events.
         </p>
       </GlassCard>
     );
@@ -307,7 +307,7 @@ function LatestRankChanges({ ordered }: { ordered: HolderRecord[] }) {
     <GlassCard className="p-5">
       <div className="flex items-center gap-2 mb-3">
         <StatusPill status="LIVE" />
-        <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Latest rank states</span>
+        <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Latest depth states</span>
       </div>
       <ul className="space-y-2">
         {promotions.map((m) => (
@@ -335,8 +335,8 @@ function Verification({ asOfBlock }: { asOfBlock: bigint | undefined }) {
         <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Verify on-chain</span>
       </div>
       <ul className="text-xs space-y-1.5 text-muted-foreground">
-        <li>Rank assignment is derived from <span className="mono">TokensPurchased</span> events emitted by the Membership Sale contract.</li>
-        <li>Distribution counts above are a pure aggregation — no editorial weighting, no off-chain inputs.</li>
+        <li>Capital-footprint bands are derived from <span className="mono">TokensPurchased</span> events emitted by the Membership Sale contract.</li>
+        <li>Distribution counts above are a pure aggregation of verified routed USDC — no editorial weighting, no bought rights.</li>
         <li>
           {saleUrl ? (
             <>Sale contract: <a href={saleUrl} target="_blank" rel="noopener noreferrer" className="mono hover:text-[var(--gold)]">{fmtAddress(saleAddr)} ↗</a></>
@@ -393,18 +393,18 @@ export function RankHub() {
 
       <Section id="where-do-i-fit">
         <SectionHeader
-          eyebrow="02 — Where do I fit?"
-          title={<>Your current rank, and the <span className="text-gradient-gold">next one</span>.</>}
-          description="Derived live from your connected wallet. Recognition only — never an entitlement."
+          eyebrow="02 — Your footprint"
+          title={<>Your current band, and the <span className="text-gradient-gold">next one</span>.</>}
+          description="Derived live from your connected wallet. Capital is recognized as proof, never as entitlement."
         />
         <YourRank record={record} nextMemberNumber={idx.totals.nextMemberNumber} hasData={idx.hasData} />
       </Section>
 
-      <Section id="rank-ladder">
+      <Section id="contribution-depth-reference">
         <SectionHeader
-          eyebrow="03 — The ladder"
-          title={<>Twelve ranks, in four <span className="text-gradient-gold">groups</span>.</>}
-          description="The canonical definition. Same source the wallet pages and member tiles read from."
+          eyebrow="03 — Contribution depth"
+          title={<>Twelve bands, in four <span className="text-gradient-gold">groups</span>.</>}
+          description="The canonical capital-footprint reference. Same source the wallet pages and member tiles read from."
         />
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
           {GROUPS.map((g) => (
@@ -421,7 +421,7 @@ export function RankHub() {
         <SectionHeader
           eyebrow="04 — Distribution"
           title={<>How the protocol is <span className="text-gradient-gold">forming</span>.</>}
-          description="Aggregate counts across every rank. No member names, no spend amounts — just the shape of the community."
+          description="Aggregate counts across every band. No wealth leaderboard — just the shape of verified contribution depth."
         />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <Distribution dist={dist} total={idx.totals.members} />
@@ -429,10 +429,10 @@ export function RankHub() {
         </div>
       </Section>
 
-      <Section id="members-per-rank">
+      <Section id="members-per-band">
         <SectionHeader
-          eyebrow="05 — Members at each rank"
-          title={<>Expand a rank to see <span className="text-gradient-gold">who is there</span>.</>}
+          eyebrow="05 — Members at each band"
+          title={<>Expand a band to see <span className="text-gradient-gold">who is there</span>.</>}
           description="Wallet-level visibility, sorted by founder number — never by spend. Full archive lives on Members."
         />
         <MembersByRank ordered={idx.ordered} />
@@ -442,7 +442,7 @@ export function RankHub() {
         <SectionHeader
           eyebrow="06 — Verify"
           title={<>Every count <span className="text-gradient-gold">on-chain</span>.</>}
-          description="Ranks are not curated. They are a deterministic function of public purchase events."
+          description="Capital-footprint bands are not curated. They are a deterministic function of public purchase events."
         />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <Verification asOfBlock={idx.asOfBlock} />

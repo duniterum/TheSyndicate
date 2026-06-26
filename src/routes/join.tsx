@@ -100,7 +100,7 @@ function TransactionOutcomeBand() {
     {
       label: "Depth",
       title: "Contribution is variable",
-      body: "A 5 USDC entrant and a 10,000 USDC entrant both have one seat. The difference is SYN acquired, routing impact, rank, and footprint.",
+      body: "A 5 USDC entrant and a 10,000 USDC entrant both have one seat. The difference is SYN acquired, verified USDC routed, capital footprint, and contribution depth.",
     },
     {
       label: "Route",

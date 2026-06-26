@@ -57,9 +57,10 @@ export const VAULT_ALLOCATION = {
   operationsCommunity: 0.1,
 };
 
-// ─── Unified Rank Ladder (V1 — single source of truth) ─────────────────
-// Current Era I quote: 100 SYN per 1 USDC. Bigger amounts unlock visible
-// membership rank — never bonus tokens, cheaper SYN, or private terms.
+// ─── Contribution-depth bands (legacy export: RANKS_V2) ─────────────────
+// Current Era I quote: 100 SYN per 1 USDC. Larger verified routed-USDC
+// footprints can reflect a visible contribution-depth band — never bonus
+// tokens, cheaper SYN, bought identity, or private terms.
 export const ACCESS_RATE_USDC_PER_SYN = 0.01;
 export const ACCESS_RATE_LABEL = "1 SYN = $0.01 USDC";
 
@@ -102,12 +103,12 @@ export const MEMBERSHIP_POOL = {
 };
 
 export type RankTier = {
-  name: string;
-  usdc: number;       // entry USDC amount
+  name: string;       // contribution-depth band label
+  usdc: number;       // verified routed-USDC threshold for this capital band
   syn: number;        // SYN shown at the current Era I quote
   group: "Open Entry" | "Active Members" | "Deep Supporters" | "High-Conviction";
   badge: string;
-  benefits: string[];
+  benefits: string[]; // recognition notes only; no rights, payout, or terms
 };
 
 export const RANKS_V2: RankTier[] = [
@@ -643,8 +644,8 @@ export const ALLOCATION_EXPECTED_SYN: Record<string, number> = {
   "Future Ecosystem":                        50_000_000,
 };
 
-// ─── Homepage Rank Ladder (12 canonical tiers, $5 → $10,000) ───
-// Mirrors RANKS_V2 exactly. Single source of truth for ladder UI.
+// ─── Homepage contribution-depth reference (12 capital bands, $5 → $10,000) ───
+// Mirrors RANKS_V2 exactly. Single source of truth for band UI.
 export type HomeRank = { name: string; usdc: number; syn: number; group: "open" | "active" | "deep" | "keystone" };
 export const HOME_RANK_LADDER: HomeRank[] = [
   { name: "Citizen",           usdc: 5,      syn: 500,       group: "open" },
@@ -665,7 +666,7 @@ export const HOME_RANK_LADDER: HomeRank[] = [
 export type JourneyStep = { key: string; label: string; status: "live" | "next" | "pending"; detail: string };
 export const JOURNEY_STEPS: JourneyStep[] = [
   { key: "buy",       label: "Buy SYN",         status: "live",    detail: "USDC → SYN at $0.01, on Avalanche." },
-  { key: "rank",      label: "Reflect Rank",    status: "live",    detail: "Your purchases map to a public rank — recognition only." },
+  { key: "rank",      label: "Record Footprint", status: "live",    detail: "Verified routed USDC maps to a capital-footprint band — one recognition axis only." },
   { key: "registry",  label: "Join Registry",   status: "live",    detail: "Wallet recorded onchain in the sale contract." },
   { key: "archive",   label: "Access Archive",  status: "next",    detail: "Member archive + episode access (rolling)." },
   { key: "participate", label: "Participate",   status: "next",    detail: "Verified activity and contributor paths." },

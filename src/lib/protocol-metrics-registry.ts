@@ -454,16 +454,16 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
   m({
     id: "rankDistribution",
     aliases: [],
-    label: "Rank Distribution",
-    shortLabel: "Rank Distribution",
+    label: "Capital Footprint Distribution",
+    shortLabel: "Footprint Distribution",
     category: "membership",
     type: "AGGREGATE",
     status: "PENDING",
     unit: "count",
     description:
-      "How many members sit at each recognition rank. Rank is structural recognition derived from cumulative USDC and confers nothing. Not yet surfaced as a live aggregate.",
-    source: "Derived from cumulative USDC per member against the canonical rank thresholds (rankForUsdc).",
-    formula: "count(members) grouped by rankForUsdc(cumulativeUsdc)",
+      "How many members sit at each capital-footprint band. The band is structural recognition derived from verified routed USDC and confers nothing. Not yet surfaced as a live aggregate.",
+    source: "Derived from cumulative routed USDC per member against the canonical contribution-depth thresholds (rankForUsdc).",
+    formula: "count(members) grouped by contribution-depth band from rankForUsdc(cumulativeUsdc)",
     verification: {
       primaryHref: SALE_HREF,
       links: links(saleLink),
@@ -473,7 +473,7 @@ export const PROTOCOL_METRICS: ProtocolMetric[] = [
     displayPriority: 33,
     surfaces: ["members", "registry"],
     dependencies: ["members"],
-    hook: "RANKS_V2 / rankForUsdc (not yet aggregated)",
+    hook: "RANKS_V2 / rankForUsdc contribution-depth bands (not yet aggregated)",
   }),
 
   // ── Sale ───────────────────────────────────────────────────────────────────

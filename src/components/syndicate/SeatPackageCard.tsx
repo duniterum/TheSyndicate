@@ -1,7 +1,7 @@
 // SeatPackageCard — the shared premium "path" card used by the homepage
 // Featured Paths section and the /join Seat Packages grid. Pure presentation:
 // it renders ONE SeatPackage (projected 1:1 from RANKS_V2) with strong
-// hierarchy — recognition meaning, who it is for, SYN at the live Genesis
+// hierarchy — capital-footprint meaning, who it is for, SYN at the live Genesis
 // rate, and a single CTA. Recognition only; no payout, rate change, or rights.
 
 import type { SeatPackage } from "@/lib/package-catalog";
@@ -83,7 +83,7 @@ export function SeatPackageCard({
         )}
       </div>
 
-      {/* recognition meaning */}
+      {/* capital-footprint meaning */}
       <p className="text-sm leading-relaxed text-muted-foreground">{tagline}</p>
 
       {/* who it's for */}

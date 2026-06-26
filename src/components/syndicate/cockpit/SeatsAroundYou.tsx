@@ -5,7 +5,7 @@
 // your own seat, and the nearest later member — your co-witnesses to the same
 // moment in the order of entry.
 //
-// This is deliberately NOT a leaderboard: there are no amounts, no rank, no
+// This is deliberately NOT a leaderboard: there are no amounts, no capital band, no
 // USDC, no standing, no comparison. It shows position only — three adjacent
 // seats — so the cockpit feels socially alive without turning members against
 // each other. Wake Behind You remains the primary emotional surface; this sits

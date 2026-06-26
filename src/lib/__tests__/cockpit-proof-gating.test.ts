@@ -107,7 +107,7 @@ describe("CockpitProof — claim → source integrity", () => {
       "USDC routed",
       "Artifacts owned",
       "Chapter",
-      "Rank / recognition",
+      "Capital footprint",
       "Live activity",
     ]) {
       expect(src).toContain(claim);

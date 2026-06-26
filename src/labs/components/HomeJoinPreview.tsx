@@ -77,17 +77,17 @@ export function HomeJoinPreview() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Cell label="SYN Received" value={`${syn.toLocaleString("en-US")} SYN`} />
-            <Cell label="Rank Unlocked" value={current?.name ?? "Below entry"} />
+            <Cell label="Capital Footprint" value={current?.name ?? "Below entry"} />
             <Cell label="→ Vault (70%)" value={`$${vault.toLocaleString("en-US")}`} />
             <Cell label="→ Liquidity (20%)" value={`$${lp.toLocaleString("en-US")}`} />
             <Cell label="→ Operations (10%)" value={`$${ops.toLocaleString("en-US")}`} />
-            <Cell label="Next Rank" value={next ? `${next.name} · $${next.usdc}` : "Top of ladder"} />
+            <Cell label="Next Footprint" value={next ? `${next.name} · $${next.usdc}` : "Top band"} />
           </div>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <Pill tone="gold">● {SALE_STATUS_LABEL}</Pill>
           <div className="flex flex-wrap gap-3">
-            <CTAButton variant="ghost" href="/join">Full Calculator & Tiers →</CTAButton>
+            <CTAButton variant="ghost" href="/join">Full Calculator & Bands →</CTAButton>
             <CTAButton variant="gold" href="/join">Join The Syndicate →</CTAButton>
           </div>
         </div>

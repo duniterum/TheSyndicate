@@ -6,10 +6,10 @@ import { RankHub } from "@/components/syndicate/RankHub";
 export const Route = createFileRoute("/ranks")({
   head: () => ({
     meta: [
-      { title: "Ranks — Where do I fit? | The Syndicate" },
-      { name: "description", content: "Twelve ranks across four groups. See your current rank, the next one, and how the protocol is forming. Recognition only — never entitlement." },
-      { property: "og:title", content: "The Syndicate — Where do I fit?" },
-      { property: "og:description", content: "Twelve ranks, four groups, one question: where do I fit? Aggregate distribution, no leaderboards." },
+      { title: "Contribution Depth — Capital Footprint | The Syndicate" },
+      { name: "description", content: "Capital-footprint bands reflect verified USDC routed through receipts. Seat identity stays binary; contribution depth is one recognition axis only." },
+      { property: "og:title", content: "The Syndicate — Contribution Depth" },
+      { property: "og:description", content: "Verified capital footprint, aggregate distribution, no leaderboards, no bought titles." },
       { property: "og:url", content: "https://thesyndicate.money/ranks" },
       { property: "og:type", content: "website" },
     ],
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/ranks")({
           "@type": "BreadcrumbList",
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: "https://thesyndicate.money/" },
-            { "@type": "ListItem", position: 2, name: "Ranks", item: "https://thesyndicate.money/ranks" },
+            { "@type": "ListItem", position: 2, name: "Contribution Depth", item: "https://thesyndicate.money/ranks" },
           ],
         }),
       },
@@ -30,9 +30,9 @@ export const Route = createFileRoute("/ranks")({
   }),
   component: () => (
     <PageShell
-      eyebrow="Ranks"
-      title="Where do I fit?"
-      description="Twelve ranks across four groups. Recognition, not entitlement. Derived live from on-chain purchase events."
+      eyebrow="Contribution Depth"
+      title="Capital footprint, not member identity"
+      description="Seat identity is binary. Contribution depth is variable. Capital footprint reflects verified USDC routed through receipts — one recognition axis, never a payout or entitlement."
     >
       <RankHub />
     <RouteFinalCTA preset="editorial" />

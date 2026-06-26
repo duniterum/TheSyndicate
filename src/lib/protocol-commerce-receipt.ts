@@ -55,7 +55,7 @@ export interface MembershipCommerceReceiptInput {
   liquidityAmount: string;
   operationsAmount: string;
   proof: CommerceReceiptProof;
-  rank?: string;
+  capitalFootprintBand?: string;
 }
 
 export interface ArtifactMintCommerceReceiptInput {
@@ -77,7 +77,7 @@ export function buildMembershipCommerceReceipt({
   liquidityAmount,
   operationsAmount,
   proof,
-  rank,
+  capitalFootprintBand,
 }: MembershipCommerceReceiptInput): ProtocolCommerceReceipt {
   const seatValue =
     memberNumber !== undefined ? `Member #${memberNumber}` : "Seated wallet; member number indexing";
@@ -87,7 +87,9 @@ export function buildMembershipCommerceReceipt({
     { label: "USDC paid", value: usdcPaid },
   ];
 
-  if (rank) lines.push({ label: "Rank reflected", value: rank });
+  if (capitalFootprintBand) {
+    lines.push({ label: "Capital footprint", value: capitalFootprintBand });
+  }
 
   return {
     kind: "membership",

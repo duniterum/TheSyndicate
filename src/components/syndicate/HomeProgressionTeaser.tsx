@@ -6,7 +6,7 @@
 // Presents the package/progression system as a premium purchase surface: a
 // compact, truthful live-Genesis context strip, then six curated featured
 // paths (one per group) with strong hierarchy — a single "Start here" default
-// and one high-conviction headline. Two doors out: the full recognition ladder
+// and one high-conviction headline. Two doors out: the contribution-depth reference
 // (/join) for new members, /my-syndicate for members who already hold a seat.
 //
 // Pure presentation: reads shared config (eras, packages, access rate) + the
@@ -46,7 +46,7 @@ export function HomeProgressionTeaser() {
             <span className="text-gradient-gold">take your seat</span>
           </>
         }
-        description="Every member starts the same way — take a seat in the live Genesis era, then move at your own pace. Each path below is a featured entry amount mapped 1:1 to a recognition tier. Recognition only — no payout, no rate change, no entitlement."
+        description="Every member starts the same way — take a seat in the live Genesis era, then move at your own pace. Each path below is a featured entry amount mapped 1:1 to a capital-footprint band. Capital is visible and respected, but it is one recognition axis only — no payout, no rate change, no entitlement."
       />
 
       {/* live Genesis context — one compact, truthful strip (no fake urgency) */}
@@ -107,7 +107,7 @@ export function HomeProgressionTeaser() {
           href="/join"
           className="mono inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.18em] text-[var(--gold)] underline-offset-4 hover:underline"
         >
-          View full recognition ladder →
+          View contribution-depth reference →
         </a>
         <a
           href="/my-syndicate"

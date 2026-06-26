@@ -8,9 +8,9 @@
 // them.
 //
 // Doctrine / language:
-//   • Recognition only — naming a tier is not a reward, payout, or rate change.
-//     We name the actual tier (e.g. "Reach Steward"); we never use the
-//     gamification phrase "next rank", nor XP / score / points / streak.
+//   • Recognition only — naming a capital-footprint band is not a reward,
+//     payout, right, or rate change. We name the actual band (e.g. "Reach
+//     Steward"); we never use XP / score / points / streak.
 //   • Member-state gating: while the holder index loads we show a neutral
 //     "reading your seat" primary, never a Join CTA flashed at a real member.
 //   • Future modules (marketplace, signal chamber) are clearly PENDING.
@@ -74,7 +74,7 @@ export function CockpitNextMove() {
   } else {
     primary = {
       label: "Buy More SYN",
-      detail: "You hold the deepest recognition tier. Buy more SYN any time.",
+      detail: "You hold the deepest capital-footprint band. Buy more SYN any time.",
     };
   }
 
@@ -87,7 +87,7 @@ export function CockpitNextMove() {
       label: "Recognition",
       detail: next
         ? `Reach ${next.name} · +${fmtUsd(delta)} routed`
-        : "Deepest recognition tier held",
+        : "Deepest capital-footprint band held",
       status: "LIVE",
       to: "/ranks",
     },

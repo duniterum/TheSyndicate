@@ -66,7 +66,7 @@ function eventMeaning(event: CanonicalProtocolEvent): string {
     case "new-member":
       return "A seated wallet became visible in the membership index. The seat comes from SYN, not from an NFT.";
     case "rank-reached":
-      return "A seated wallet crossed a protocol rank threshold derived from verified membership purchases.";
+      return "A seated wallet crossed a capital-footprint band derived from verified membership purchases.";
     case "swap-buy":
     case "swap-sell":
       return "The secondary market access layer moved. This is DEX activity, not membership entry.";

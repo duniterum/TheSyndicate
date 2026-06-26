@@ -7,15 +7,16 @@
 //
 // Division of labour (intentional, do not blur):
 //   • /member/$number  — the human surface. "Who is Member #27?" Recognition
-//                        only: number, chapter, rank, SYN received, the share
-//                        card. The thing you send to a person.
+//                        only: number, chapter, capital-footprint band, SYN
+//                        received, the share card. The thing you send to a
+//                        person.
 //   • /wallet/$address — the verification surface. The full purchase trail,
 //                        70/20/10 routing totals, eligibility flags, live
 //                        balance. The thing you send to a skeptic.
 //
 // Every profile links to its wallet page and to Avascan, so "don't trust,
-// verify" stays one tap away. Rank is recognition only — never a return,
-// reward, or claim.
+// verify" stays one tap away. Contribution depth is recognition only — never a
+// return, reward, right, or claim.
 
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/syndicate/PageShell";
@@ -58,7 +59,7 @@ export const Route = createFileRoute("/member/$number")({
     const label = n ? `Member #${n.toLocaleString("en-US")}` : "Member";
     const title = `${label} — The Syndicate`;
     const desc = n
-      ? `Member #${n.toLocaleString("en-US")} of The Syndicate — chapter, rank, and SYN received, all derived from on-chain Membership Sale activity. Verifiable on Avalanche.`
+      ? `Member #${n.toLocaleString("en-US")} of The Syndicate — chapter, capital footprint, and SYN received, all derived from on-chain Membership Sale activity. Verifiable on Avalanche.`
       : "A verifiable member of The Syndicate — derived from on-chain Membership Sale activity.";
     const url = n ? `${CANONICAL_ORIGIN}/member/${n}` : `${CANONICAL_ORIGIN}/members`;
     const img = `${CANONICAL_ORIGIN}/og/og-protocol-default.png`;
@@ -265,14 +266,14 @@ function MemberProfile({ record, idx, n }: { record: HolderRecord; idx: HolderIn
       <Section id="member-stats">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <Stat label="Founder #" value={`#${record.founderNumber.toLocaleString("en-US")}`} />
-          <Stat label="Rank" value={rankName} hint="Recognition only" />
+          <Stat label="Capital footprint" value={rankName} hint="Recognition only" />
           <Stat label="Chapter" value={chapterLabel} />
           <Stat label="SYN received" value={fmtN(Math.round(record.cumulativeSyn))} />
         </div>
         <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
-          Rank is recognition only — derived from cumulative USDC, it confers no
-          rights, returns, or discounts. The full purchase trail and 70/20/10
-          routing totals live on the wallet page.
+          Capital footprint is recognition only — derived from verified routed
+          USDC, it confers no rights, returns, governance, or discounts. The full
+          purchase trail and 70/20/10 routing totals live on the wallet page.
         </p>
       </Section>
 

@@ -29,7 +29,7 @@ export const PROTOCOL_MILESTONES: Milestone[] = [
   { id: "patron-seal-mint",  kind: "first-mint", target: 1,      label: "First Patron Seal minted",            description: "Archive1155 ID 3 — contract/read gated Patron Seal mint at 5.00 USDC." },
   { id: "raise-100",         kind: "usdc",       target: 100,    label: "$100 routed",                         description: "First $100 of USDC routed through the Membership Sale." },
   { id: "raise-1k",          kind: "usdc",       target: 1_000,  label: "$1,000 routed",                       description: "First $1K through the sale." },
-  { id: "raise-10k",         kind: "usdc",       target: 10_000, label: "$10,000 routed",                      description: "Crossing $10K of cumulative USDC." },
+  { id: "raise-10k",         kind: "usdc",       target: 10_000, label: "$10,000 routed",                      description: "Crossing $10K of cumulative USDC routed." },
   { id: "members-100",       kind: "members",    target: 100,    label: "100 seats sealed",                    description: "100 unique buyers in the public registry." },
   { id: "members-333",       kind: "members",    target: 333,    label: "Genesis Signal sealed (#1 – #333)",   description: "Closes the Genesis Signal cohort." },
   { id: "members-1000",      kind: "members",    target: 1_000,  label: "First Thousand sealed (#334 – #1,000)", description: "Closes the First Thousand cohort." },

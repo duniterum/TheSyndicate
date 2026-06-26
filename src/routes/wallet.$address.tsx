@@ -5,9 +5,10 @@
 //   2. Holder  — has SYN balance > 0 but no purchase record (market participant)
 //   3. Unknown — nothing on-chain related to SYN we can index
 //
-// All identity numbers (founder #, rank, chapter, cumulative USDC/SYN, routed
-// splits, eligibility) flow from useHolderIndex. Live SYN balance for the
-// holder fallback is a single multicall. No invented data.
+// All identity numbers (founder #, contribution-depth band, chapter,
+// cumulative USDC/SYN, routed splits, eligibility) flow from useHolderIndex.
+// Live SYN balance for the holder fallback is a single multicall. No invented
+// data.
 
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { isAddress, formatUnits } from "viem";
@@ -40,15 +41,16 @@ export const Route = createFileRoute("/wallet/$address")({
     const short = `${addr.slice(0, 8)}…${addr.slice(-6)}`;
     const title = `Wallet ${short} — The Syndicate`;
     const desc =
-      "Per-wallet member profile: founder number, rank, chapter, purchase routing total, and verifiable on-chain history.";
+      "Per-wallet member profile: founder number, capital footprint, chapter, purchase routing total, and verifiable on-chain history.";
     const url = `${CANONICAL_ORIGIN}/wallet/${addr}`;
     const img = `${CANONICAL_ORIGIN}/api/public/og/wallet/${addr}`;
     // X / Twitter strips SVG og:image. twitter:image points to a static
     // branded PNG fallback (see docs/OG_RENDERING_STRATEGY.md). Telegram /
     // Discord / iMessage / Slack / Bluesky read og:image and get the
-    // dynamic SVG card with founder #, rank, chapter, cumulative USDC.
+    // dynamic SVG card with founder #, capital-footprint band, chapter, and
+    // cumulative USDC.
     const twImg = `${CANONICAL_ORIGIN}/og/og-protocol-default.png`;
-    const imgAlt = `Member identity card for ${short} on The Syndicate — founder number, rank, chapter, and purchase routing total.`;
+    const imgAlt = `Member identity card for ${short} on The Syndicate — founder number, capital footprint, chapter, and purchase routing total.`;
     return {
       meta: [
         { title },
@@ -107,7 +109,7 @@ function WalletPage() {
           <EmptyState
             status="PENDING"
             title="Invalid address"
-            description="Use a 0x-prefixed 20-byte hex address. You can find member addresses on the Activity feed or the Ranks leaderboard."
+            description="Use a 0x-prefixed 20-byte hex address. You can find member addresses on the Activity feed or the contribution-depth reference."
             action={<Link to="/activity" className="mono text-[11px] uppercase tracking-[0.18em] text-[var(--gold)]">View activity →</Link>}
           />
         </Section>
@@ -197,7 +199,7 @@ function MemberView({
     };
   }, [idx.ordered, record.wallet]);
 
-  const identitySentence = `Member #${record.founderNumber} of The Syndicate · ${CHAPTER_LABEL[record.chapter]} · Rank ${record.currentRank?.name ?? "—"} · ${fmtUsd(record.cumulativeUsdc)} routed on-chain.`;
+  const identitySentence = `Member #${record.founderNumber} of The Syndicate · ${CHAPTER_LABEL[record.chapter]} · ${record.currentRank?.name ?? "Member"} capital footprint · ${fmtUsd(record.cumulativeUsdc)} routed on-chain.`;
   const chapterLabel = getChapterByMemberNumber(record.memberNumber).shortLabel;
   // Public sharing prefers the human /member/N URL when a member number exists;
   // the wallet page itself stays the verification surface.
@@ -254,13 +256,13 @@ function MemberView({
       <Section id="wallet-stats">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <Stat label="Founder #" value={`#${record.founderNumber}`} />
-          <Stat label="Rank" value={record.currentRank?.name ?? "—"} />
+          <Stat label="Capital footprint" value={record.currentRank?.name ?? "—"} />
           <Stat label="Purchases" value={fmtN(record.purchaseCount)} />
           <Stat label="Largest ticket" value={fmtUsd(record.largestSinglePurchaseUsdc)} />
           <Stat label="Cumulative USDC" value={fmtUsd(record.cumulativeUsdc)} />
           <Stat label="SYN received" value={fmtN(Math.round(record.cumulativeSyn))} />
           <Stat
-            label="Next rank"
+            label="Next footprint"
             value={record.nextRank ? record.nextRank.name : "Top tier"}
           />
           <Stat
@@ -288,7 +290,7 @@ function MemberView({
         <SectionHeader
           eyebrow="Eligibility (derived)"
           title={<>What this wallet <span className="text-gradient-gold">unlocks</span></>}
-          description="Eligibility flags are pure functions of founder number and cumulative state. They are not stored on-chain yet — the relevant modules ship later."
+          description="Eligibility flags are pure functions of founder number and cumulative state. They are not stored on-chain yet, confer no rights, and the relevant modules ship later."
         />
         <div className="flex flex-wrap gap-2">
           <Flag on={record.eligibility.foundersBadge} label="Founders badge (top 100)" />
@@ -396,8 +398,8 @@ function HolderView({
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
             A <strong className="text-foreground">holder</strong> can acquire SYN
             via transfer or a swap on the public LP. That is fine, but it does
-            not produce a founder number, a rank, or a chapter — and it does not
-            route USDC to the Vault.
+            not produce a founder number, a contribution-depth band, or a chapter
+            — and it does not route USDC to the Vault.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link

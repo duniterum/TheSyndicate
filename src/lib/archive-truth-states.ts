@@ -205,7 +205,7 @@ export const CATEGORY_FUTURE_BINDING: Record<string, FutureBinding> = {
     eventOrCall: "ArtifactMinted",
     eligibility: "open-to-all",
     dataShape: { tokenId: "uint256", supporter: "address", amountUsdc: "uint256" },
-    note: "Flat single support amount. No tiers, no rank, no entitlement.",
+    note: "Flat single support amount. No tiers, no contribution-depth band, no entitlement.",
   },
   secret: {
     providerKind: "archive-nft-contract",

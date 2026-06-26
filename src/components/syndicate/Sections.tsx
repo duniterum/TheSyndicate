@@ -71,7 +71,7 @@ const FLOW = [
   "SYN distributed to wallet",
   "70/20/10 routed on-chain",
   "Member number assigned",
-  "Rank updates from SYN balance",
+  "Capital footprint updates from receipts",
   "Wallet recorded on public archive",
 ];
 
@@ -112,7 +112,7 @@ export function Ranks() {
     <Section id="ranks">
       <SectionHeader
         eyebrow="06 — Ranks"
-        title={<>Ranks are based on <span className="text-gradient-gold">SYN held.</span></>}
+        title={<>Capital footprint is based on <span className="text-gradient-gold">verified USDC routed.</span></>}
         description="Twelve unlockable ranks under one current era quote. Status is derived from on-chain SYN balance — larger purchases unlock recognition and archive placement, never bonus tokens."
       />
       <div className="surface overflow-hidden">
@@ -150,7 +150,7 @@ export function Ranks() {
         </ul>
       </div>
       <p className="mt-4 text-xs text-muted-foreground border-l-2 border-[var(--navy)]/30 pl-3 max-w-3xl">
-        Status and archive placement scale with cumulative purchase size. Rank never changes the current era quote or creates a private rate.
+        Status and archive placement can reflect cumulative purchase size. Capital footprint never changes the current era quote or creates a private rate.
       </p>
     </Section>
   );
@@ -425,7 +425,7 @@ export function EpisodeEngine() {
 
 /* ─────────────────────── 14. Token Utility ─────────────────────── */
 export function TokenUtility() {
-  const isList = ["membership access","rank qualification","member archive status","future ecosystem utility","access to selected Syndicate experiences"];
+  const isList = ["membership access","contribution-depth context","member archive status","future ecosystem utility","access to selected Syndicate experiences"];
   const isNotList = ["equity","debt","a dividend right","treasury ownership","a guaranteed return","a passive income product","a claim against the company or Vault"];
   return (
     <Section id="token">
@@ -608,8 +608,8 @@ export function RankLadder() {
     <Section id="ladder">
       <SectionHeader
         eyebrow="18 — Progression"
-        title={<>The <span className="text-gradient-gold">Rank Ladder</span></>}
-        description="A single recognition ladder. Twelve unlockable ranks from $5 to $10,000. The current era quote is predictable and verifiable."
+        title={<>The <span className="text-gradient-gold">Contribution Depth Reference</span></>}
+        description="A single capital-footprint reference. Twelve visible bands from $5 to $10,000 in verified USDC routed. The current era quote is predictable and verifiable."
       />
       <div className="surface p-6 md:p-8">
         <div className="hidden md:block relative h-1.5 rounded-full bg-border/50 mb-8">
@@ -741,7 +741,7 @@ export function MembershipCalculator() {
               <div className="mono text-3xl font-semibold text-gradient-gold mt-1">{Math.round(calc.syn).toLocaleString("en-US")}</div>
             </div>
             <div className="surface p-4">
-              <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Rank Reflected</div>
+              <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Capital Footprint</div>
               <div className="text-2xl font-semibold text-foreground mt-1">{calc.rank}</div>
               <div className="mono mt-1 text-[11px] text-muted-foreground">
                 Recognition only — no bonus tokens, no better rate.
@@ -786,7 +786,7 @@ export function AccessRate() {
       <SectionHeader
         eyebrow="21 — V3 Era Quote"
         title={<>One seat. <span className="text-gradient-gold">One supply. One door.</span></>}
-        description="The DEX is an optional secondary market and exit route. The website is the main V3 onboarding experience so members understand the current era quote, rank system, Vault flow, and utility before joining."
+        description="The DEX is an optional secondary market and exit route. The website is the main V3 onboarding experience so members understand the current era quote, contribution-depth reference, Vault flow, and utility before joining."
       />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <GlassCard glow="gold" className="lg:col-span-1">
@@ -988,7 +988,7 @@ export function WhyComeBackTomorrow() {
     { t: "Vault Growth",      d: "Watch The Vault balance sheet evolve daily.",       tone: "gold"  as const },
     { t: "New Members",       d: "Every founding member is publicly archived.",       tone: "navy"  as const },
     { t: "Archive Memory", d: "The First Signal and Patron Seal move only when Archive1155 reads say so.",  tone: "gold"  as const },
-    { t: "Rank Changes",      d: "Citizen → Operator → Vanguard → Architect…",        tone: "navy"  as const },
+    { t: "Footprint Bands",   d: "Citizen → Operator → Vanguard → Architect…",        tone: "navy"  as const },
     { t: "Member Movements",  d: "Who entered, who advanced, who held longest.",      tone: "gold"  as const },
     { t: "New Episodes",      d: "Every milestone becomes a published chapter.",      tone: "navy"  as const },
     { t: "Reserved Governance", d: "Governance stays pending until a real module exists.",  tone: "gold"  as const },
@@ -1236,17 +1236,17 @@ export function Footer() {
 /* ─────────────────────── 29. FAQ ─────────────────────── */
 const FAQS: Array<{ q: string; a: string }> = [
   { q: "What is The Syndicate?", a: "A transparent public experiment in onchain membership, archive identity, and shared Vault monitoring. Members join with USDC and receive SYN utility tokens." },
-  { q: "Is this an investment?", a: "No. SYN is not equity, debt, dividends, or Vault ownership. It is utility access for rank, archive identity, and participation." },
+  { q: "Is this an investment?", a: "No. SYN is not equity, debt, dividends, or Vault ownership. It is utility access for membership, archive identity, and participation." },
   { q: "Can I lose money?", a: "Yes. Participation may result in total loss of the amount you spend. Only join if you understand the risks." },
   { q: "Why can people join from $5?", a: "The Syndicate is an open membership experiment. Anyone should be able to enter the Archive — not just large buyers." },
-  { q: "What is SYN?", a: "A utility token representing membership rank, archive identity, and access to future Syndicate experiences." },
+  { q: "What is SYN?", a: "A utility token representing membership, archive identity, and access to future Syndicate experiences." },
   { q: "Do members own the Vault?", a: "No. The Vault is an ecosystem resource. SYN does not represent ownership of Vault assets." },
   { q: "Are there dividends?", a: "No. There is no dividend, no passive income, and no guaranteed return." },
   { q: "What happens to USDC paid by members?", a: "70% reinforces the Vault, 20% strengthens liquidity, 10% funds operations and community. Every flow is publicly verifiable onchain today via the Membership Sale contract and the three allocation wallets." },
   { q: "Can I buy a custom amount?", a: "Yes. The simulator accepts any USDC amount. Official Citizen entry starts at $5." },
   { q: "What is a Founder Number?", a: "A permanent archive ID assigned in join order. The first members carry the lowest numbers, forever." },
-  { q: "How does membership rank work?", a: "Rank is derived from SYN held and contribution depth. It is recognition only — not a payout, governance entitlement, discount, or claim on the Vault." },
-  { q: "Can larger members get cheaper tokens?", a: "No. Bigger amounts can change visible membership rank and contribution depth — never bonus tokens, private terms, or rank-based discounts." },
+  { q: "How does contribution depth work?", a: "Capital-footprint bands are derived from verified USDC routed and contribution depth. They are recognition only — not a payout, governance entitlement, discount, or claim on the Vault." },
+  { q: "Can larger members get cheaper tokens?", a: "No. Larger routed amounts can change visible capital footprint and contribution depth — never bonus tokens, private terms, or band-based discounts." },
   { q: "Why are some sections labeled PENDING?", a: "SYN token, the Membership Sale, and the Trader Joe SYN/USDC LP are live and verifiable onchain right now. Modules that depend on contracts not yet deployed are clearly labeled PENDING — never mixed with live data." },
   { q: "What is verifiable today?", a: "The SYN token, the Membership Sale contract, the Vault / Liquidity / Operations wallets, every USDC purchase and 70/20/10 routing transfer, every SYN allocation wallet balance, and the Trader Joe SYN/USDC LP — all live on Avalanche and verifiable on Avascan, Sourcify, and Routescan. PENDING modules are clearly labeled." },
   { q: "Is SYN live?", a: "Yes. SYN is deployed on Avalanche C-Chain at 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 and verifiable on Avascan, Sourcify, and Routescan." },
@@ -1268,7 +1268,7 @@ const FAQS: Array<{ q: string; a: string }> = [
   { q: "What is the Archive?", a: "An optional collectible memory layer for what happens around each seat — The First Signal, Patron Seals, Chapter Artifacts, Milestone Artifacts, Liquidity Marks, Protocol Milestones, Secret Artifacts, and Legacy Artifacts. SYN is the seat. Artifacts are the memory. SeatRecord721 is future identity infrastructure, separate from Archive1155." },
   { q: "Is the Archive live?", a: "Yes — The First Signal (ID 1) public mint is OPEN on Avalanche at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is contract/read gated and only appears mintable from live Archive1155 reads. Other Artifacts are protocol-memory surfaces sealed by event. See /nft to mint or browse." },
   { q: "Do Archive artifacts grant ownership or yield?", a: "No. Artifacts are collectible records only. They are not equity, debt, Vault ownership, dividend instruments, revenue share, governance rights, or promises of profit. Participation may result in total loss." },
-  { q: "Will artifacts have tiers or wealth-coded ranks?", a: "No. Patron Seal is a single flat support amount with no tiers and no status. All artifact identity is positional (seat / chapter / on-chain event), never wealth-coded." },
+  { q: "Will artifacts have tiers or wealth-coded status bands?", a: "No. Patron Seal is a single flat support amount with no tiers and no contribution-depth status. All artifact identity is positional (seat / chapter / on-chain event), never wealth-coded." },
 ];
 
 export function FAQ() {
@@ -1298,12 +1298,12 @@ export function FAQ() {
 /* ─────────────────────── 30. Docs ─────────────────────── */
 const DOCS: Array<{ title: string; summary: string; href: string }> = [
   { title: "Start Here",         summary: "What The Syndicate is, who it's for, and how to participate.",     href: "/whitepaper" },
-  { title: "Membership & Ranks", summary: "Twelve ranks from Citizen ($5) to Cornerstone ($10,000).",        href: "/ranks" },
+  { title: "Membership & Depth", summary: "One seat, with capital-footprint bands from Citizen ($5) to Cornerstone ($10,000).", href: "/ranks" },
   { title: "Token Utility",      summary: "What SYN does — and what it is not.",                               href: "/token" },
   { title: "Vault Flow",         summary: "70% Vault · 20% Liquidity · 10% Operations.",                       href: "/vault" },
   { title: "Risk Disclosure",    summary: "Public experiment, total-loss possibility, no guarantees.",         href: "/faq" },
-  { title: "Governance",         summary: "Proposal eligibility, voting weight, and Snapshot wiring.",         href: "/ranks" },
-  { title: "Reputation",         summary: "Reputation grows with participation, not just size.",               href: "/ranks" },
+  { title: "Governance",         summary: "Future modules are not live and no purchase grants governance rights.", href: "/ranks" },
+  { title: "Recognition",        summary: "Recognition may grow through capital, work, time, and verified introductions.", href: "/ranks" },
   { title: "AI Layer",           summary: "Future AI Vault analyst, governance assistant, risk monitor.",      href: "/ai" },
   { title: "Roadmap",            summary: "What is live today, what is pending, and what ships next.",          href: "/roadmap" },
   { title: "Whitepaper",         summary: "Draft chapters and progress tracker.",                              href: "/whitepaper" },

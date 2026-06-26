@@ -34,7 +34,7 @@ export function RankSimulator() {
         style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)" }}
       >
         <span className="mono text-[10px] uppercase tracking-[0.18em] text-[oklch(0.22_0.025_260)]">
-          {open ? "Close" : "Simulate Rank"}
+          {open ? "Close" : "Simulate Footprint"}
         </span>
       </button>
 
@@ -45,7 +45,7 @@ export function RankSimulator() {
           className="flex-1 rounded-md px-3 py-2.5 text-sm font-medium"
           style={{ background: "var(--gradient-gold)" }}
         >
-          Reserve Founder Rank
+          Preview Seat Depth
         </button>
         <a
           href="#vault"
@@ -71,9 +71,9 @@ export function RankSimulator() {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <div className="mono text-[10px] uppercase tracking-[0.22em] text-[color:oklch(0.5_0.13_75)]">
-                    Join / Rank Simulator
+                    Join / Footprint Simulator
                   </div>
-                  <div className="text-base font-semibold mt-0.5">Reserve your Founder Rank</div>
+                  <div className="text-base font-semibold mt-0.5">Preview your contribution depth</div>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
@@ -114,9 +114,9 @@ export function RankSimulator() {
 
               <div className="mt-4 rounded-md border border-border/60 bg-panel/40 p-3 space-y-2">
                 <Row label="SYN received" value={fmtSyn(calc.syn)} accent="gold" />
-                <Row label="Rank unlocked" value={calc.current?.name ?? "Below Citizen"} accent="navy" />
+                <Row label="Capital footprint" value={calc.current?.name ?? "Below Citizen"} accent="navy" />
                 <Row
-                  label="Next rank gap"
+                  label="Next footprint gap"
                   value={calc.next ? `${fmt(calc.gapUsdc)} → ${calc.next.name}` : "Top tier"}
                 />
               </div>
@@ -153,7 +153,7 @@ export function RankSimulator() {
                 className="mt-4 w-full rounded-md px-3 py-3 text-sm font-medium"
                 style={{ background: "var(--gradient-gold)", boxShadow: "var(--shadow-glow-gold)" }}
               >
-                Reserve Founder Rank
+                Preview Seat Depth
               </button>
               <a
                 href="#vault"

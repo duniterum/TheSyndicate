@@ -109,7 +109,7 @@ const BUCKETS: Bucket[] = [
       { title: "Yield product or dividend program", what: "SYN is not equity, not debt, not a yield-bearing instrument.", why: "Protects members and matches every contract on-chain." },
       { title: "Custodial vault", what: "Members never deposit assets into a Syndicate-controlled custody contract.", why: "Non-custodial is a hard line." },
       { title: "Hidden admin keys / upgradeable token", what: "SYN has no owner, no mint, no pause, no blacklist.", why: "The token's guarantees are immutable." },
-      { title: "Pay-to-rank bonus tokens", what: "Larger purchases never receive bonus tokens or private terms.", why: "Rank is recognition only; it never changes the current era quote." },
+      { title: "Pay-to-status bonus tokens", what: "Larger purchases never receive bonus tokens or private terms.", why: "Capital footprint is recognition only; it never changes the current era quote." },
     ],
   },
 ];

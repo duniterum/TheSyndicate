@@ -8,7 +8,7 @@ export const Route = createFileRoute("/docs")({
   head: () => ({
     meta: [
       { title: "Docs — Knowledge Hub | The Syndicate" },
-      { name: "description", content: "Structured documentation hub for The Syndicate: vision, protocol model, token, sale, routing, vault, liquidity, ranks, verification, risk, and roadmap." },
+      { name: "description", content: "Structured documentation hub for The Syndicate: vision, protocol model, token, sale, routing, vault, liquidity, contribution depth, verification, risk, and roadmap." },
       { property: "og:title", content: "The Syndicate — Docs" },
       { property: "og:description", content: "A real knowledge hub for members, builders, verifiers, and researchers." },
       { property: "og:url", content: "https://thesyndicate.money/docs" },
@@ -60,12 +60,12 @@ const GROUPS: Group[] = [
   },
   {
     eyebrow: "Identity",
-    title: "Members & ranks",
-    description: "How identity, ranks, and recognition work — and why the product is not a wealth leaderboard.",
+    title: "Members & contribution depth",
+    description: "How identity, capital footprint, and recognition work — and why the product is not a wealth leaderboard.",
     cards: [
-      { title: "Member identity", purpose: "What changes after joining: wallet-readable rank, chapter, and archive identity.", href: "/#what-changes-after-joining", status: "LIVE", audience: ["Member"] },
-      { title: "Ranks", purpose: "Identity tiers from wallet-readable SYN balance. No payouts, no yield.", href: "/ranks", status: "LIVE", audience: ["Member"] },
-      { title: "Rank distribution", purpose: "Aggregate counts across every rank — the shape of the community, never a leaderboard.", href: "/ranks#distribution", status: "LIVE", audience: ["Member"] },
+      { title: "Member identity", purpose: "What changes after joining: wallet-readable seat, chapter, contribution depth, and archive context.", href: "/#what-changes-after-joining", status: "LIVE", audience: ["Member"] },
+      { title: "Contribution depth", purpose: "Capital-footprint bands from verified USDC routed. No payouts, no yield, no bought title.", href: "/ranks", status: "LIVE", audience: ["Member"] },
+      { title: "Depth distribution", purpose: "Aggregate counts across every band — the shape of the community, never a leaderboard.", href: "/ranks#distribution", status: "LIVE", audience: ["Member"] },
     ],
   },
   {
@@ -87,7 +87,7 @@ const GROUPS: Group[] = [
       { title: "Roadmap", purpose: "Live · Next · Pending · Future · Never — no fake dates.", href: "/roadmap", status: "LIVE", audience: ["Beginner", "Member", "Builder", "Verifier"] },
       { title: "Protocol Evolution", purpose: "Evidence-backed module status: live, paused, inactive, future, deferred, and blocked without fake activation.", href: "/evolution", status: "LIVE", audience: ["Member", "Builder", "Verifier"] },
       { title: "V3 Preview", purpose: "Read-only candidate model for quote, receipt, acquisition routing, source attribution, era pricing, and source progression. Not live.", href: "/v3-preview", status: "PENDING", audience: ["Builder", "Verifier"] },
-      { title: "FAQ", purpose: "Basics, SYN, joining, routing, vault, liquidity, ranks, verification, risks.", href: "/faq", status: "LIVE", audience: ["Beginner", "Member"] },
+      { title: "FAQ", purpose: "Basics, SYN, joining, routing, vault, liquidity, contribution depth, verification, risks.", href: "/faq", status: "LIVE", audience: ["Beginner", "Member"] },
       { title: "Whitepaper", purpose: "Long-form protocol reference. Mission, mechanics, modules.", href: "/whitepaper", status: "REFERENCE", audience: ["Builder", "Verifier"] },
     ],
   },

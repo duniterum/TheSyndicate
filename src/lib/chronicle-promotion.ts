@@ -180,7 +180,7 @@ function memberRule(
 ): MemoryRuleResult {
   let bucket = "member-living moment";
   if (category === "membership")
-    bucket = createdFrom === "rank-reached" ? "member rank recognition" : "member arrival";
+    bucket = createdFrom === "rank-reached" ? "member capital-footprint recognition" : "member arrival";
   else if (category === "continuity") bucket = "continuity / repeat participation";
   else if (category === "burn") bucket = "community burn";
   return {

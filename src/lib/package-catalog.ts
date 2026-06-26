@@ -1,17 +1,18 @@
 // ─── Seat Package Catalog (derived — no new vocabulary) ──────────────────
 //
-// A "package" is a friendly, purchasable presentation of an EXISTING rank
-// tier — NOT a new parallel naming system. Every package is projected 1:1
+// A "package" is a friendly presentation of an EXISTING contribution-depth
+// band — NOT a new parallel naming system. Every package is projected 1:1
 // from RANKS_V2 (src/lib/syndicate-config.ts), so there is exactly one source
 // of truth for thresholds and SYN amounts. Adding/renaming a tier happens in
 // RANKS_V2 only; this catalog follows automatically.
 //
 // DOCTRINE:
-//   • A package shows: entry USDC · SYN at the current V3 era rate · the rank it
-//     maps to · a recognition-only tagline · who the path is for. No returns,
-//     no payouts, no yield.
-//   • Rank is recognition only — derived from cumulative USDC. A package does
-//     not buy rights, discounts, or governance.
+//   • A package shows: entry USDC · SYN at the current V3 era rate · the capital
+//     band it maps to · a recognition-only tagline · who the path is for. No
+//     returns, no payouts, no yield.
+//   • Capital footprint is derived from verified routed USDC and remains one
+//     recognition axis. A package does not buy identity, rights, discounts, or
+//     governance.
 //   • Every tier is self-service: any amount above the $5 minimum is taken
 //     online via wallet checkout at the current deterministic era price, up to the sale's
 //     remaining on-chain SYN inventory. No tier is gated, manual, or off-site.
@@ -25,7 +26,7 @@ export type SeatPackage = {
   id: string;
   /** The rank tier this package maps to (the source of truth). */
   rank: RankTier;
-  /** Entry USDC — identical to the rank threshold. */
+  /** Entry USDC — identical to the contribution-depth band threshold. */
   usdc: number;
   /** SYN received at the current deterministic V3 era rate. */
   synAtGenesis: number;
@@ -123,9 +124,10 @@ export function getPackageByRankName(name: string): SeatPackage | undefined {
 }
 
 /**
- * The next package above a member's cumulative USDC — the package that maps to
- * their NEXT rank. Returns null once the top tier is reached. Used by the
- * cockpit "next move" orchestrator so package and rank stay in lockstep.
+ * The next package above a member's cumulative routed USDC — the package that
+ * maps to their next capital-footprint band. Returns null once the top band is
+ * reached. Used by the cockpit "next move" orchestrator so package and band
+ * stay in lockstep.
  */
 export function nextSeatPackage(cumulativeUsdc: number): SeatPackage | null {
   const { next } = rankForUsdc(cumulativeUsdc);

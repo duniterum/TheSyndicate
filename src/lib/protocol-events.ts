@@ -177,7 +177,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
     const seenBuyer = new Set<string>();
 
     // Purchases — walk oldest→newest first to compute "new member" flag
-    // and rank-promotion events (derived from cumulative USDC per buyer),
+    // and capital-footprint movement events (derived from cumulative routed USDC per buyer),
     // then re-emit newest-first below.
     const sortedPurchases = [...(purchases.data ?? [])].sort((a, b) =>
       a.blockNumber === b.blockNumber ? a.logIndex - b.logIndex : a.blockNumber > b.blockNumber ? 1 : -1,
@@ -185,7 +185,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
     const memberIndex = new Map<string, number>();
     const cumulativeByBuyer = new Map<string, number>();
     const lastRankByBuyer = new Map<string, string | null>();
-    const rankPromotions = new Map<string, { rank: string; cumulative: number }>();
+    const bandMovements = new Map<string, { band: string; cumulative: number }>();
     let memberCounter = 0;
     for (const p of sortedPurchases) {
       const k = p.buyer.toLowerCase();
@@ -200,7 +200,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
       const newRank = rankForUsdc(nextCum).current?.name ?? null;
       const prevRank = lastRankByBuyer.has(k) ? lastRankByBuyer.get(k) ?? null : null;
       if (newRank && newRank !== prevRank) {
-        rankPromotions.set(`${p.txHash}-${p.logIndex}`, { rank: newRank, cumulative: nextCum });
+        bandMovements.set(`${p.txHash}-${p.logIndex}`, { band: newRank, cumulative: nextCum });
       }
       lastRankByBuyer.set(k, newRank);
     }
@@ -212,7 +212,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
     const SYN = CONTRACTS.SYN_CONTRACT_ADDRESS;
 
     for (const p of purchases.data ?? []) {
-      const rank = rankForUsdc(p.usdcAmount).current?.name ?? "Member";
+      const band = rankForUsdc(p.usdcAmount).current?.name ?? "Member";
       // Attribute each purchase to the sale contract it actually came from.
       // V2 is dormant today (null address ⇒ no v2 events), so this resolves to
       // SALE for every current event — byte-identical until V2 deploys.
@@ -227,7 +227,7 @@ export function useProtocolEvents(opts?: { limit?: number }) {
           {
             id: `p-${p.txHash}-${p.logIndex}`,
             kind: "purchase",
-            title: `${short(p.buyer)} joined as ${rank}`,
+            title: `${short(p.buyer)} joined with ${band} capital footprint`,
             detail: `${fmtUsd(p.usdcAmount)} · received ${fmtSyn(p.synAmount)}`,
             amountUsd: p.usdcAmount,
             blockNumber: p.blockNumber,
@@ -258,9 +258,9 @@ export function useProtocolEvents(opts?: { limit?: number }) {
           ),
         );
       }
-      const promo = rankPromotions.get(`${p.txHash}-${p.logIndex}`);
-      // Only emit a rank-reached event when it's an UPGRADE (not the very
-      // first rank assignment at member creation — that's already covered
+      const promo = bandMovements.get(`${p.txHash}-${p.logIndex}`);
+      // Only emit a rank-reached schema event when it's a capital-footprint
+      // movement (not the first band assignment at member creation — that's already covered
       // by the purchase + new-member entries).
       if (promo && memberNo === undefined) {
         out.push(
@@ -268,8 +268,8 @@ export function useProtocolEvents(opts?: { limit?: number }) {
             {
               id: `r-${p.txHash}-${p.logIndex}`,
               kind: "rank-reached",
-              title: `${short(p.buyer)} reached ${promo.rank}`,
-              detail: `Cumulative ${fmtUsd(promo.cumulative)} — derived from on-chain purchase history`,
+              title: `${short(p.buyer)} reached ${promo.band} capital footprint`,
+              detail: `Cumulative ${fmtUsd(promo.cumulative)} routed — derived from on-chain purchase history`,
               blockNumber: p.blockNumber,
               logIndex: p.logIndex + 0.6,
               txHash: p.txHash,

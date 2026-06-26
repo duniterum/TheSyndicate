@@ -99,6 +99,14 @@ const BANNED: Array<{ name: string; re: RegExp; allowFiles?: Set<string> }> = [
   { name: "Rank wealth multiplier",        re: /scoreMultiplier/ },
   { name: "Compounder Score (retired)",    re: /[Cc]ompounder/ },
   { name: "Genesis Circle rank (renamed)", re: /Genesis Circle/ },
+  { name: "Rank unlocked framing",         re: /Rank unlocked/i },
+  { name: "Rank ladder framing",           re: /The Rank Ladder/i },
+  { name: "Rank reflected framing",        re: /Rank reflected|Rank Reflected/i },
+  { name: "First rank unlock framing",     re: /First rank you'd unlock/i },
+  { name: "Rank from cumulative USDC copy", re: /Rank is derived from cumulative USDC/i },
+  { name: "Membership rank identity copy", re: /membership rank/i },
+  { name: "Rank as wallet reflection copy", re: /your rank reflects/i },
+  { name: "Rank utility copy",             re: /utility access for rank/i },
   // ─── Retired rank vocabulary (renamed: Patron→Steward, Council Candidate→
   //     Custodian, Council→Keystone). "Patron Seal"/"Patronage" and a future
   //     "Governance Council" stay valid — only the rank forms below are banned.

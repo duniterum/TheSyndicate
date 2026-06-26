@@ -121,6 +121,7 @@ describe("home candidate", () => {
       "buy-target",
       "default-source",
       "receipt-routing",
+      "capital-footprint",
       "verification-surfaces",
       "source-boundary",
     ]);

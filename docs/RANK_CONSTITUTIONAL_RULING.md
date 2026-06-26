@@ -15,13 +15,17 @@ scope of this ruling and tracked as named follow-ups below.
 
 ## 1. Canonical definition
 
-> **Rank is a mutable, on-chain-derived, structural recognition label that
-> reflects a member's depth of cumulative participation in the protocol. It is
-> descriptive standing, not status; it confers nothing; and it is permanently
-> subordinate to the seat (identity) and to cohort/chapter (belonging).**
+> **Rank / contribution-depth standing is a mutable, on-chain-derived,
+> structural recognition label that reflects a member's depth of cumulative
+> participation in the protocol. Capital footprint may be visible as verified
+> USDC routed through receipts, but it is one recognition axis only. Standing is
+> descriptive, not status; it confers nothing; and it is permanently subordinate
+> to the seat (identity) and to cohort/chapter (belonging).**
 
 This is **Model D — structural on-chain recognition**, disciplined so it cannot
-drift back into wealth, reward, identity, or leaderboard framing.
+drift back into wealth, reward, identity, or leaderboard framing. The operating
+line is: **The Syndicate recognizes capital without reducing identity to
+capital.**
 
 ---
 
@@ -44,9 +48,9 @@ drift back into wealth, reward, identity, or leaderboard framing.
 - **Not identity.** Identity is the permanent seat + five constitutive facts
   (member number, chapter-of-joining, founders-cohort flag, block-height anchor,
   co-witness set). Rank is not one of them.
-- **Not wealth-coded.** No public "USDC entry-size" status tiers, no
-  "rank up your USDC." (USDC may remain a private input; it may not be the
-  public meaning.)
+- **Not wealth-coded.** Verified USDC routed may be public as capital footprint,
+  but it must be framed as proof of contribution depth, never as a bought title,
+  wealth leaderboard, or whole member identity.
 - **Not a reward or multiplier.** The `scoreMultiplier` field and any
   "Compounder Score" advantage are unconstitutional and retired.
 - **Not positional in the scarce-rung sense.** No finite winner slots, no
@@ -92,8 +96,9 @@ or OPERATIONAL docs (recorded in `DOCUMENTATION_AUTHORITY_MAP.md` →
 "Superseded doctrines"):
 
 1. **Rank as a USDC entry-size public status tier** ("status tier unlocked by
-   USDC entry size") → Rank is structural recognition; USDC may be a private
-   input, never the public meaning.
+   USDC entry size") → Rank / standing is structural recognition. Verified USDC
+   routed may be visible as capital footprint, but it is one recognition axis,
+   never the public meaning of the member.
 2. **`scoreMultiplier`-based rank / "Compounder Score" multiplier tied to rank**
    → rank confers nothing.
 3. **"Founder" as a rank name** (e.g. a $100 tier) → "Founder" is a frozen
@@ -119,13 +124,11 @@ founder; the ruling above stands regardless of the label chosen.
 These are deliberately deferred and require separate, explicitly-authorized
 passes:
 
-- **Implementation pass:** retire `scoreMultiplier` and the "Founder" /
-  "Genesis Circle" tier names in `src/lib/syndicate-config.ts`; reframe rank
-  copy to structural recognition. (Code — not authorized here.)
-- **Guard wiring:** add the six retired rank meanings as regexes to
-  `src/lib/__tests__/doctrine-guard.test.ts` `DOC_BANNED`, and add the newly
-  constitutional docs to its `CANONICAL_DOCS` scan list. (Code — not authorized
-  here.)
+- **Implementation pass:** keep rank / contribution-depth copy framed as capital
+  footprint and structural recognition, with no payout, discount, governance,
+  or bought-title implication.
+- **Guard wiring:** keep retired rank meanings and pay-to-win framing covered in
+  doctrine guards.
 - **Participation-signal design:** define honest, non-monetary participation
   inputs (longevity, distinct on-chain actions, artifacts, witnessed sealings)
   so rank can reflect participation rather than spend.

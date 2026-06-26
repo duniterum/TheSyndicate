@@ -110,7 +110,7 @@ export const PREVIEW_ARTIFACTS: PreviewArtifact[] = [
   {
     id: 3,
     whyItMatters:
-      "A flat support Artifact. No tiers. No rank. No financial rights.",
+      "A flat support Artifact. No tiers. No contribution-depth band. No financial rights.",
     name: "Patron Seal",
     category: "Support Seal",
     chapterLabel: "Cross-chapter",
@@ -122,7 +122,7 @@ export const PREVIEW_ARTIFACTS: PreviewArtifact[] = [
     proposedMaxSupply: 10_000,
     proposedWalletLimit: 5,
     description:
-      "A single, flat patron seal. One tier only — no Bronze/Silver/Gold, no rank, no wealth-coded status.",
+      "A single, flat patron seal. One tier only — no Bronze/Silver/Gold, no contribution-depth band, no wealth-coded status.",
     rights: baseRights,
     primaryColor: "#0B1220",
     accentColor: "#C9A227",

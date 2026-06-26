@@ -29,7 +29,7 @@ export type Quest = {
  * - First Purchase: any TokensPurchased event with buyer = user
  * - Long-Term Holder: earliest purchase ≥ 90 days ago AND SYN balance > 0
  * - LP Provider: user holds JLP tokens (balanceOf > 0 on the pair)
- * - Rank Climber: SYN balance reaches Vanguard rank (10,000 SYN)
+ * - Footprint Builder: SYN balance reaches the Vanguard footprint band (10,000 SYN)
  * - Episode Participant: governance not live → locked
  * - Referral: tracking not live → locked
  *
@@ -136,7 +136,7 @@ export function useUserQuestProgress(): {
       },
       {
         id: "rank-climber",
-        title: "Reach Vanguard Rank",
+        title: "Reach Vanguard Footprint",
         detail: "Hold ≥ 10,000 SYN (≈ $100 contribution).",
         recognition: "Vanguard archive marker",
         state: !connected
@@ -165,7 +165,7 @@ export function useUserQuestProgress(): {
       {
         id: "referral",
         title: "Referral",
-        detail: "Refer a member who reaches Operator rank.",
+        detail: "Refer a member who reaches the Operator footprint band.",
         recognition: "Referral tracking not live",
         state: "locked",
         progress: 0,

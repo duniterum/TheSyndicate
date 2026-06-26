@@ -220,7 +220,7 @@ describe("deriveChroniclePromotionDecisions — institutional memory rule", () =
 describe("deriveChroniclePromotionDecisions — member memory rule", () => {
   const members: Array<[MemoryCategory, ProtocolEventKind, SignalSubject, string]> = [
     ["membership", "new-member", "member", "member arrival"],
-    ["membership", "rank-reached", "member", "member rank recognition"],
+    ["membership", "rank-reached", "member", "member capital-footprint recognition"],
     ["continuity", "purchase", "member", "continuity / repeat participation"],
     ["burn", "burn-community", "member", "community burn"],
   ];

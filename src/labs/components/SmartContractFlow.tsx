@@ -153,9 +153,9 @@ export function SmartContractFlow() {
             <div className="rounded-lg border border-border/50 bg-background/60 p-4 space-y-2">
               <PreviewRow label="USDC amount" value={fmtUsd(usdc)} />
               <PreviewRow label="SYN received" value={fmtSyn(calc.syn)} accent />
-              <PreviewRow label="Rank unlocked" value={calc.current?.name ?? "Below Citizen"} />
+              <PreviewRow label="Capital footprint" value={calc.current?.name ?? "Below Citizen"} />
               <PreviewRow
-                label="Next rank gap"
+                label="Next footprint gap"
                 value={calc.next ? `${fmtUsd(calc.gap)} → ${calc.next.name}` : "Top tier"}
               />
               <div className="h-px bg-border/40 my-2" />

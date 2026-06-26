@@ -247,10 +247,10 @@ export const MEMBER_MEMORY_GUIDANCE: ReadonlyArray<PromotionGuidanceRow> = [
       "Promote the protocol milestone (institutional), not the member subject. The member-living recognition is held pending member-register ratification.",
   },
   {
-    bucket: "member rank recognition",
+    bucket: "member capital-footprint recognition",
     baseline: "hold-context",
     guidance:
-      "Rank is recognition only and confers nothing; a member-living moment, held pending member-register ratification.",
+      "Capital footprint is recognition only and confers nothing; a member-living moment, held pending member-register ratification.",
   },
   {
     bucket: "continuity / repeat participation",

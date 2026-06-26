@@ -98,7 +98,7 @@ const CLAIM_ENTRIES: ClaimEntry[] = [
   { claim: "Artifacts owned", source: "Archive1155 — balanceOf read", kind: "contract read" },
   { claim: "Artifact mintability", source: "Archive1155 — active + paused reads · mint shown only when active and not paused", kind: "contract read" },
   { claim: "Chapter", source: "Derived from member number · chapters.ts thresholds", kind: "derived config" },
-  { claim: "Rank / recognition", source: "Derived from USDC routed · RANKS_V2 ladder", kind: "derived config" },
+  { claim: "Capital footprint", source: "Derived from verified USDC routed · contribution-depth bands", kind: "derived config" },
   { claim: "Live activity", source: "Protocol events — indexed on-chain movement", kind: "indexed event" },
   { claim: "SeatRecord721", source: "Future identity contract — not deployed", kind: "pending" },
 ];

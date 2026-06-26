@@ -645,16 +645,16 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
             </label>
 
             {/* Harmonize the three entry points (packages, presets, custom) and
-                make the seat / rate / recognition rules explicit for ANY amount. */}
+                make the seat / rate / capital-footprint rules explicit for ANY amount. */}
             <p className="-mt-1 mb-4 text-[11px] text-muted-foreground leading-relaxed">
               Any amount at or above the {liveMinUsdc} USDC minimum works. A
               custom amount still creates exactly{" "}
               <span className="text-foreground">one permanent seat</span> on your
               first purchase; the SYN you receive follows the live era rate
-              (shown below) and your rank reflects your{" "}
-              <span className="text-foreground">cumulative USDC</span> — not the
-              figure you type here. Packages and presets are simply shortcuts
-              that prefill this amount.
+              (shown below) and your capital footprint reflects your{" "}
+              <span className="text-foreground">cumulative verified USDC routed</span> —
+              not just the figure you type here. Packages and presets are simply
+              shortcuts that prefill this amount.
             </p>
 
             <div className="rounded-lg border border-border/50 bg-background/60 p-4 space-y-2">
@@ -672,10 +672,10 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
                 }
                 accent
               />
-              <Row label="Rank reflected" value={current?.name ?? "Below Citizen"} />
+              <Row label="Capital footprint" value={current?.name ?? "Below Citizen"} />
               <Row
                 label="Recognition"
-                value="No payout · no rate change"
+                value="One axis · no payout · no rights"
               />
               <div className="h-px bg-border/40 my-2" />
               <Row label="→ Vault (70%)" value={fmtUsd(flow.vault)} />
@@ -764,7 +764,7 @@ export function LivePurchase({ initialAmount }: { initialAmount?: number } = {})
                 synRaw={purchasedSynRaw ?? quotedSynRaw}
                 flow={flow}
                 hash={effectiveBuyHash}
-                rank={current?.name}
+                capitalFootprintBand={current?.name}
                 onReset={() => {
                   setPhase("idle");
                   approveTx.reset();
@@ -976,7 +976,7 @@ function SuccessReceipt({
   synRaw,
   flow,
   hash,
-  rank,
+  capitalFootprintBand,
   onReset,
 }: {
   usdc: number;
@@ -984,7 +984,7 @@ function SuccessReceipt({
   synRaw?: bigint;
   flow: { vault: number; lp: number; ops: number };
   hash: `0x${string}`;
-  rank?: string;
+  capitalFootprintBand?: string;
   onReset: () => void;
 }) {
   const { address } = useAccount();
@@ -1005,7 +1005,7 @@ function SuccessReceipt({
     vaultAmount: fmtUsd(flow.vault),
     liquidityAmount: fmtUsd(flow.lp),
     operationsAmount: fmtUsd(flow.ops),
-    rank,
+    capitalFootprintBand,
     proof: {
       txHash: hash,
       explorerUrl: txExplorerUrl(hash),

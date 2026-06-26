@@ -4,7 +4,7 @@
 // Doctrine: docs/PROTOCOL_IN_PUBLIC_DOCTRINE.md
 //   • One primary object: MY SEAT. Everything else orbits the seat.
 //   • Story model: My Seat → My Chapter → My Memory → My Future.
-//   • Identity is consolidated — Member #, Chapter, Rank, SYN, USDC,
+//   • Identity is consolidated — Member #, Chapter, capital footprint, SYN, USDC,
 //     Purchases, Artifacts, First action all live in the seat panel.
 //   • Protocol state is secondary context, not a competing dashboard.
 //   • No documentation paragraphs. State over explanation.
@@ -122,7 +122,7 @@ function MySeatPrimary() {
 
         {!isConnected ? (
           <EmptySeatPrompt
-            text="Connect a wallet to see your seat — member number, chapter, rank, receipts, and artifacts."
+            text="Connect a wallet to see your seat — member number, chapter, capital footprint, receipts, and artifacts."
             cta="See the Membership Sale →"
           />
         ) : idx.isLoading ? (
@@ -165,7 +165,7 @@ function MySeatPrimary() {
                 </div>
               </div>
 
-              {/* Rank inline */}
+              {/* Capital-footprint inline */}
               <RankInline
                 rank={record.currentRank}
                 nextRank={record.nextRank}
@@ -273,7 +273,7 @@ function RankInline({
   if (!rank) {
     return (
       <div className="rounded-md border border-dashed border-border/60 p-3 text-sm text-foreground/75">
-        No rank yet — first purchase seals one on-chain.
+        No capital footprint yet — first purchase seals one on-chain.
       </div>
     );
   }
@@ -283,7 +283,7 @@ function RankInline({
     <div
       className="rounded-md border border-[var(--gold)]/30 bg-[var(--gold)]/[0.04] p-3 md:p-4"
       role="group"
-      aria-label={`Rank: ${rank.name}`}
+      aria-label={`Capital footprint: ${rank.name}`}
     >
       <div className="flex items-center gap-3">
         <div
@@ -294,7 +294,7 @@ function RankInline({
         </div>
         <div className="min-w-0 flex-1">
           <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Rank · {rank.group}
+            Capital footprint · {rank.group}
           </div>
           <div className="font-serif text-lg leading-tight text-foreground truncate">
             {rank.name}
@@ -302,10 +302,10 @@ function RankInline({
         </div>
         <Link
           to="/ranks"
-          aria-label="View all ranks"
+          aria-label="View all footprint bands"
           className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--navy-soft)] hover:text-[var(--gold)] underline-offset-4 hover:underline shrink-0"
         >
-          All ranks →
+          All bands →
         </Link>
       </div>
       {nextRank && usdcToNext !== null && (
@@ -398,7 +398,7 @@ function ProtocolWatchCompact() {
   const KIND_LABEL: Record<string, string> = {
     "purchase": "Purchase", "swap-buy": "LP Buy", "swap-sell": "LP Sell",
     "lp-add": "LP Add", "lp-remove": "LP Remove", "vault-in": "Vault In",
-    "vault-out": "Vault Out", "new-member": "New Member", "rank-reached": "Rank",
+    "vault-out": "Vault Out", "new-member": "New Member", "rank-reached": "Footprint",
     "nft-mint-first-signal": "Mint", "nft-mint-patron-seal": "Mint", "nft-mint-other": "Mint",
   };
   const slice = events.slice(0, 5);

@@ -15,7 +15,7 @@ describe("protocol commerce receipt", () => {
       vaultAmount: "$17.50",
       liquidityAmount: "$5",
       operationsAmount: "$2.50",
-      rank: "Operator",
+      capitalFootprintBand: "Operator",
       proof: {
         txHash: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         explorerUrl: txExplorerUrl("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
@@ -35,7 +35,7 @@ describe("protocol commerce receipt", () => {
       { label: "Wallet seated", value: "Member #42" },
       { label: "SYN received", value: "2,500 SYN" },
       { label: "USDC paid", value: "$25" },
-      { label: "Rank reflected", value: "Operator" },
+      { label: "Capital footprint", value: "Operator" },
     ]);
     expect(receipt.routingEffects).toEqual([
       { label: "Vault", pct: 70, value: "$17.50" },

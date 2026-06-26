@@ -5,15 +5,16 @@
 // reusable block used on /my-syndicate (the cockpit) and /wallet/$address.
 //
 // Truth doctrine: every field is a live on-chain read or a value derived from
-// indexed Membership Sale purchases — member number, chapter, rank, SYN
-// received, wallet. Nothing is fabricated. Language stays recognition-only:
+// indexed Membership Sale purchases — member number, chapter,
+// capital-footprint band, SYN received, wallet. Nothing is fabricated.
+// Language stays recognition-only:
 // "Verified on Avalanche", "Member #N" — never profit / yield / ROI.
 //
-// Hierarchy: Member # (hero) → chapter + rank → SYN received → wallet (short,
-// de-emphasized). The full address is never the visual subject; the footer
-// prints only the host so the card stays clean and shareable. Full
-// verification stays one tap away via the explorer link on the profile page
-// and the Copy-link / share actions below.
+// Hierarchy: Member # (hero) → chapter + capital footprint → SYN received →
+// wallet (short, de-emphasized). The full address is never the visual subject;
+// the footer prints only the host so the card stays clean and shareable. Full
+// verification stays one tap away via the explorer link on the profile page and
+// the Copy-link / share actions below.
 
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { ShareActions } from "./ShareActions";

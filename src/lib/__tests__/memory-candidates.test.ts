@@ -103,7 +103,7 @@ describe("deriveMemoryCandidates — creation rule (tiers)", () => {
     const [c] = deriveMemoryCandidates([s]);
     expect(c.register).toBe("member-living");
     expect(c.category).toBe("membership");
-    expect(c.title.toLowerCase()).toContain("rank");
+    expect(c.title.toLowerCase()).toContain("capital-footprint");
   });
 
   it("S2 with a PRIMITIVE subject → protocol-institutional (patron-seal artifact)", () => {

@@ -182,13 +182,13 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
   },
   {
     id: "rank",
-    name: "Rank / Progression",
+    name: "Contribution Depth / Capital Footprint",
     cluster: "foundation-identity",
     purpose:
-      "Structural recognition tier derived from cumulative USDC. Recognition only — confers no rights, returns, or discounts.",
+      "Capital-footprint band derived from verified routed USDC. Capital is visible and respected as one recognition axis — confers no rights, returns, governance, or discounts.",
     sourceOfTruth: {
       description:
-        "RANKS_V2 thresholds (config) mapped against cumulativeUsdc computed during the Holder Index build.",
+        "RANKS_V2 contribution-depth thresholds (config) mapped against cumulativeUsdc computed during the Holder Index build.",
       homeFiles: ["src/lib/syndicate-config.ts", "src/lib/holder-index.ts"],
     },
     permanence: "recomputed-projection",
@@ -525,7 +525,7 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     name: "Recognition (partial)",
     cluster: "pipeline",
     purpose:
-      "Derives recognition candidates (e.g. patron-seal-holder, early-chapter-member) from on-chain facts — a memory OUTPUT, distinct from the Rank attribute.",
+      "Derives recognition candidates (e.g. patron-seal-holder, early-chapter-member) from on-chain facts — a memory OUTPUT, distinct from the capital-footprint attribute.",
     sourceOfTruth: {
       description:
         "Pure derivation over on-chain facts; surfaced as recognition pills in the cockpit and rank hub.",
@@ -534,12 +534,12 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     permanence: "recomputed-projection",
     coverageModel: "derived",
     promotionPath:
-      "PARTIAL — derivation only; alias/public recognition tiers reserved (not built).",
+      "PARTIAL — capital-footprint derivation only; aliases and advanced public recognition axes are reserved (not built).",
     publicSurfaces: ["/my-syndicate", "/ranks"],
     internalSurfaces: ["/labs/protocol-memory"],
     status: "partial",
     statusNote:
-      "Derivation logic live; advanced alias/public recognition tiers are reserved and not built. Evidence: src/lib/recognition-candidates.ts.",
+      "Capital-footprint derivation logic live; advanced aliases and non-capital public recognition axes are reserved and not built. Evidence: src/lib/recognition-candidates.ts.",
     identityPosture: "member-derived",
     indexes: {
       canonDocs: ["docs/canon/01_FOUNDER_INTENT_MAP.md"],

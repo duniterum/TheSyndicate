@@ -26,11 +26,11 @@ export interface LabsEntry {
 export const LABS_REGISTRY: LabsEntry[] = [
   // ─── LABS — may revisit ────────────────────────────────────────────────
   { name: "HomeMetricsStrip",       classification: "LABS",     origin: "Homepage metrics tiles",        reason: "Demoted from homepage per P6; tiles duplicated Loop A/B counters. Useful pattern for a future /metrics page." },
-  { name: "HomeRankLadder",         classification: "LABS",     origin: "Homepage rank preview",         reason: "Demoted from homepage (rank ladder owns /ranks). Pattern reusable for a compact rank widget." },
+  { name: "HomeRankLadder",         classification: "LABS",     origin: "Homepage footprint preview",    reason: "Demoted from homepage (contribution-depth reference owns /ranks). Pattern reusable for a compact footprint widget." },
   { name: "MarketDashboard",        classification: "LABS",     origin: "DEX/market ticker",             reason: "Replaced by a static DexScreener link. Component preserved in case we self-host a chart later." },
   { name: "MilestoneTracker",       classification: "LABS",     origin: "Past milestone timeline",       reason: "Replaced on homepage by ProtocolMoments. Preserve until we decide whether /timeline page is built." },
   { name: "LiveRecencyStrip",       classification: "LABS",     origin: "Activity recency ribbon",       reason: "Collapsed into LivePulseStrip. Preserve in case we want a dedicated recency surface." },
-  { name: "RankIntelligence",       classification: "LABS",     origin: "Rank explainer w/ analytics",   reason: "Heavy module not needed on homepage; may anchor a future /ranks/intelligence subroute." },
+  { name: "RankIntelligence",       classification: "LABS",     origin: "Footprint explainer w/ analytics", reason: "Heavy module not needed on homepage; may anchor a future /ranks/intelligence subroute." },
   { name: "ShareableCards",         classification: "LABS",     origin: "Generated share-card system",   reason: "Share intents currently deferred (Wave 3B gate). Preserve the generator — large prior investment." },
   { name: "HomeShareCTA",           classification: "LABS",     origin: "Homepage share CTA",            reason: "Awaiting share intents wave. Preserve to avoid re-designing the CTA later." },
   { name: "ProtocolFlywheel",       classification: "LABS",     origin: "Flywheel diagram",              reason: "Useful explainer for a future /how-it-works page." },

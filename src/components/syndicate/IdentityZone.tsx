@@ -1,6 +1,6 @@
 // Identity Zone — one component, three states.
 //   1. Disconnected / first-time : "You could be Member #N."
-//   2. Connected wallet          : "You are Member #N · Chapter X · Rank Y."
+//   2. Connected wallet          : "You are Member #N · Chapter X · Footprint Y."
 //   3. Returning visitor         : delegates to SinceYourLastVisit (already mounted inside).
 //
 // Source-of-truth hooks only. No invented numbers.
@@ -25,7 +25,7 @@ export function IdentityZone() {
       <SectionHeader
         eyebrow="Where you fit"
         title={<>Your place in the <span className="text-gradient-gold">archive</span></>}
-        description="Membership is wallet-based. Your number, chapter, and rank are derived from the same on-chain data you can verify yourself."
+        description="Membership is wallet-based. Your number, chapter, and capital footprint are derived from the same on-chain data you can verify yourself."
       />
 
       {/* Always render the returning-visitor delta when present */}

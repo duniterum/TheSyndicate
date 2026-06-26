@@ -12,8 +12,8 @@ export function HomeRankLadder() {
     <Section id="home-ranks">
       <SectionHeader
         eyebrow="Ranks"
-        title={<>Public <span className="text-gradient-gold">rank ladder</span></>}
-        description="Twelve public tiers, from Citizen at $5 to Cornerstone at $10,000. Rank is derived from cumulative USDC contributed — no tier gives cheaper SYN, only visibility and status."
+        title={<>Public <span className="text-gradient-gold">footprint bands</span></>}
+        description="Twelve public capital-footprint bands, from Citizen at $5 to Cornerstone at $10,000. Bands reflect verified USDC routed — no band gives cheaper SYN, rights, payout, or a bought title."
       />
       <div className="mb-3 flex items-center gap-2">
         <StatusPill status={idx.hasData ? "LIVE" : "PENDING"} />

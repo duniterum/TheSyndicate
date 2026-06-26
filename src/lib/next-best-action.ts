@@ -20,9 +20,10 @@
 //     emitted. This is STRICTER than isLiveProtocolAction(), which also admits
 //     `preview`.
 //   • Output is always a subset of the registry's emittable actions.
-//   • Recognition only: rank/tier is identity, never a reward, payout or rate
-//     change. "Reach <tier>" vs "Buy More SYN" is a label concern carried by
-//     `joinIntent`, not a difference in emitted ids.
+//   • Recognition only: contribution-depth band is capital footprint, never the
+//     whole identity and never a reward, payout, right, or rate change. "Reach
+//     <band>" vs "Buy More SYN" is a label concern carried by `joinIntent`, not
+//     a difference in emitted ids.
 //
 // Wallet connection is the IDENTITY layer, not a protocol action: it has no
 // ProtocolActionId. A disconnected visitor surfaces `requiresConnect: true`
@@ -37,8 +38,9 @@ import { rankForUsdc } from "./syndicate-config";
 
 // ─── Identity state (membership axis) ───────────────────────────────────────
 // The primary classification that drives the journey. Collector and
-// higher-rank are OVERLAYS on these states (a member can also collect and can
-// also sit at the top tier), surfaced as `isCollector` / `atTopRank` on the
+// top capital-band status is an OVERLAY on these states (a member can also
+// collect and can also sit at the top band), surfaced as `isCollector` /
+// `atTopRank` on the
 // plan rather than as mutually-exclusive states — that is the honest
 // normalization of states that genuinely co-occur.
 export type IdentityState =
@@ -72,7 +74,7 @@ export interface NextActionPlan {
   state: IdentityState;
   /** Owns ≥1 Archive1155 artifact (collection axis overlay). */
   isCollector: boolean;
-  /** Member at the deepest recognition tier (no further tier). */
+  /** Member at the deepest capital-footprint band (no further band). */
   atTopRank: boolean;
   /** Connect the wallet first (identity layer precondition). */
   requiresConnect: boolean;
@@ -183,7 +185,7 @@ export function selectNextActions(ctx: NextActionContext): NextActionPlan {
   const state = deriveIdentityState(ctx);
   const isCollector = ctx.ownsArtifacts === true;
 
-  // Rank is a PURE derivation from already-computed cumulative USDC.
+  // Capital-footprint band is a pure derivation from already-computed routed USDC.
   const { next } = rankForUsdc(ctx.cumulativeUsdc);
   const atTopRank = ctx.isMember && next === null;
 

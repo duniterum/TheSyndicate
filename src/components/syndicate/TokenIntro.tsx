@@ -5,12 +5,12 @@ import { Section, SectionHeader, Pill, StatusPill } from "./Primitives";
 
 const IS = [
   { title: "A utility token", body: "Fixed-supply ERC20 on Avalanche. No admin, no mint, no tax, no pause, no transfer restrictions." },
-  { title: "Your membership key", body: "Holding SYN is what places you on the rank ladder and into the public archive." },
+  { title: "Your membership key", body: "Holding SYN is what seats the wallet and places it into the public archive." },
   { title: "Verifiable on-chain", body: "Contract, supply, holders, transfers — all readable today on Avascan, Sourcify, and Routescan." },
 ];
 
 const ENABLES = [
-  { title: "Rank & identity", body: "Your SYN balance maps to one of twelve public ranks, from Citizen to Cornerstone." },
+  { title: "Contribution depth", body: "Verified routed USDC maps to one of twelve public capital-footprint bands, from Citizen to Cornerstone." },
   { title: "Archive identity", body: "Your membership is recorded as verifiable on-chain participation, not as a payout claim." },
   { title: "Future modules", body: "Pending modules only count once they are deployed, public, and verifiable." },
   { title: "Archive presence", body: "A permanent Founder Number and a row in the public member registry." },

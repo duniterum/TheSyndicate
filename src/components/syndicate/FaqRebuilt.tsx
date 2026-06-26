@@ -8,7 +8,7 @@ type Category =
   | "Membership & Sale"
   | "Vault & Routing"
   | "Liquidity"
-  | "Ranks & Identity"
+  | "Contribution Depth"
   | "Archive"
   | "Risk & Legal";
 
@@ -20,10 +20,10 @@ const ENTRIES: Entry[] = [
   { cat: "Basics", q: "What is verifiable today?", a: "SYN token contract, Membership Sale contract, the Vault / Liquidity / Operations wallets, every USDC purchase, every 70/20/10 routing transfer, every SYN allocation wallet, and the SYN/USDC LP on Trader Joe. All live on Avalanche C-Chain, verifiable on Avascan, Sourcify, and Routescan." },
   { cat: "Basics", q: "What is PENDING vs LIVE?", a: "LIVE means the contract is deployed and the data is read directly from chain. PENDING means the underlying primitive (programmatic Vault contract, SeatRecord721 identity contract, on-chain governance, AI Layer) is not yet deployed and is clearly labeled — never mixed with live numbers." },
   { cat: "Basics", q: "Why early matters?", a: "The first members shape culture, get the lowest Founder Numbers, and are visible in the public archive forever. Recognition and archive placement compound for those present at the start — no bonus tokens, no yield." },
-  { cat: "Basics", q: "What is the Signal Chamber?", a: "A planned future module that would surface member signals derived from on-chain activity. It is advisory only and clearly labeled PENDING — not live, conferring no rights, and never influencing the sale rate, rank, or any value. It would only describe what is already on-chain — never predict price or promise a return." },
+  { cat: "Basics", q: "What is the Signal Chamber?", a: "A planned future module that would surface member signals derived from on-chain activity. It is advisory only and clearly labeled PENDING — not live, conferring no rights, and never influencing the sale rate, standing, or any value. It would only describe what is already on-chain — never predict price or promise a return." },
 
   // SYN
-  { cat: "SYN Token", q: "What is SYN?", a: "A fixed-supply ERC20 utility token on Avalanche C-Chain. SYN is the V1 membership seat: holding SYN means the wallet is seated. It powers rank, identity in the archive, and access to Syndicate participation. Any future governance or identity contract remains reserved until deployed. It is not equity, not a security, and not a claim on Vault assets." },
+  { cat: "SYN Token", q: "What is SYN?", a: "A fixed-supply ERC20 utility token on Avalanche C-Chain. SYN is the V1 membership seat: holding SYN means the wallet is seated. It powers membership, contribution depth, identity in the archive, and access to Syndicate participation. Any future governance or identity contract remains reserved until deployed. It is not equity, not a security, and not a claim on Vault assets." },
   { cat: "SYN Token", q: "Is SYN live?", a: "Yes. SYN is deployed at 0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170 on Avalanche C-Chain and verified on Avascan, Sourcify, and Routescan." },
   { cat: "SYN Token", q: "Is the token mintable?", a: "No. Fixed supply of 1,000,000,000 SYN. No mint function exists." },
   { cat: "SYN Token", q: "Can the owner change the token?", a: "No. The ERC20 has no owner, no admin, no upgrade path, no pause, no blacklist, no whitelist, no max wallet, no max tx, and 0% tax." },
@@ -31,12 +31,12 @@ const ENTRIES: Entry[] = [
 
   // Membership & Sale
   { cat: "Membership & Sale", q: "How do I become a member?", a: "Go to /join, connect a wallet on Avalanche C-Chain, approve USDC, and call buy() on the live V3 Membership Sale contract. Minimum entry is 5 USDC. Era I currently returns 100 SYN per 1 USDC; later eras follow the deterministic sale schedule." },
-  { cat: "Membership & Sale", q: "Can larger members get cheaper tokens?", a: "No. The current era sets the SYN per USDC quote for every wallet in that era. Larger purchases can deepen SYN held, protocol contribution, routing impact, rank progression, historical footprint, and future recognition candidates — never bonus tokens, never private terms." },
+  { cat: "Membership & Sale", q: "Can larger members get cheaper tokens?", a: "No. The current era sets the SYN per USDC quote for every wallet in that era. Larger purchases can deepen SYN held, protocol contribution, routing impact, capital footprint, historical footprint, and future recognition candidates — never bonus tokens, never private terms." },
   { cat: "Membership & Sale", q: "Can I buy a custom amount?", a: "Yes. Any USDC amount above the $5 minimum works." },
-  { cat: "Membership & Sale", q: "Can I buy multiple seats?", a: "No. The seat is binary. A wallet becomes seated by holding SYN. A 5 USDC entrant and a 10,000 USDC entrant both hold one seat identity; what changes is contribution depth, SYN acquired, USDC routed, rank progression, historical footprint, chapter position, and future recognition." },
-  { cat: "Membership & Sale", q: "What changes after I join?", a: "You receive a permanent Founder Number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship. My Syndicate becomes the home for the seat, its proofs, contribution depth, memory path, and future pending systems." },
+  { cat: "Membership & Sale", q: "Can I buy multiple seats?", a: "No. The seat is binary. A wallet becomes seated by holding SYN. A 5 USDC entrant and a 10,000 USDC entrant both hold one seat identity; what changes is contribution depth, SYN acquired, USDC routed, capital footprint, historical footprint, chapter position, and future recognition." },
+  { cat: "Membership & Sale", q: "What changes after I join?", a: "You receive a permanent Founder Number, an on-chain SYN balance, a contribution-depth band, an entry in the public archive, and visibility in future identity and verification modules as they ship. My Syndicate becomes the home for the seat, its proofs, contribution depth, memory path, and future pending systems." },
   { cat: "Membership & Sale", q: "Is member count the same as economic scale?", a: "No. Member count measures seated wallets and institutional reach. Economic scale comes from routed USDC, liquidity growth, operations capacity, approved acquisition cost if future systems go live, and future product or service revenue. The site keeps those signals separate." },
-  { cat: "Membership & Sale", q: "What is a seat package?", a: "A package is simply a featured entry amount on /join. Each one maps 1:1 to an existing recognition tier and shows the SYN you receive from the current V3 era quote. Recognition only — no payout, no entitlement, no private terms, and no bonus tokens. Any custom amount above the $5 minimum works just the same." },
+  { cat: "Membership & Sale", q: "What is a seat package?", a: "A package is simply a featured entry amount on /join. Each one maps 1:1 to an existing capital-footprint band and shows the SYN you receive from the current V3 era quote. Recognition only — no payout, no entitlement, no private terms, and no bonus tokens. Any custom amount above the $5 minimum works just the same." },
   { cat: "Membership & Sale", q: "What are the distribution eras?", a: "Distribution eras are the deterministic V3 pricing schedule layered over the member archive. Era I (Genesis, members #1–#333) is the current active era at 100 SYN per 1 USDC. Later eras are scheduled by member-seat ranges. Chapter is history and belonging; era is pricing." },
 
   // Vault & Routing
@@ -53,11 +53,11 @@ const ENTRIES: Entry[] = [
   { cat: "Liquidity", q: "What risks do LP providers face?", a: "Impermanent loss, price movement, smart-contract risk, low-liquidity slippage, and total loss. Providing liquidity is risky." },
   { cat: "Liquidity", q: "Is the sale quote the same as the market price?", a: "No — they are independent. The current V3 era quote is the protocol's own sale quote for taking a seat. Once you hold SYN, it may also trade on Trader Joe at a separate, market-set price. The sale quote is not a market quote, and the market price is not the sale quote." },
 
-  // Ranks & Identity
-  { cat: "Ranks & Identity", q: "What is a Founder Number?", a: "A permanent archive ID assigned in join order. The first members carry the lowest numbers forever." },
-  { cat: "Ranks & Identity", q: "How do ranks work?", a: "Rank is derived directly from on-chain SYN balance — there are twelve tiers from Citizen to Cornerstone. Rank reflects contribution depth, archive recognition, and visibility, never a wealth leaderboard, bonus tokens, payouts, or a better rate." },
-  { cat: "Ranks & Identity", q: "What is institutional trust capital?", a: "It is future recognition of what a participant helped the institution become: building, documenting, operating, verifying, auditing, introducing, preserving, or creating meaningful infrastructure. It is not yield, governance, equity, or a claim. Future Builder Records, Chronicle, Register, Archive, and SeatRecord721 may reflect it only when real gates exist." },
-  { cat: "Ranks & Identity", q: "Do ranks give cheaper SYN?", a: "No. Rank reflects status, visibility, and future module access only. Rank never changes the current era quote and never creates a discount, payout, or entitlement." },
+  // Contribution Depth
+  { cat: "Contribution Depth", q: "What is a Founder Number?", a: "A permanent archive ID assigned in join order. The first members carry the lowest numbers forever." },
+  { cat: "Contribution Depth", q: "How do contribution-depth bands work?", a: "Capital-footprint bands are derived from verified USDC routed through membership receipts — there are twelve bands from Citizen to Cornerstone. They reflect contribution depth, archive recognition, and visibility, never a wealth leaderboard, bonus tokens, payouts, governance rights, or a better rate." },
+  { cat: "Contribution Depth", q: "What is institutional trust capital?", a: "It is future recognition of what a participant helped the institution become: building, documenting, operating, verifying, auditing, introducing, preserving, or creating meaningful infrastructure. It is not yield, governance, equity, or a claim. Future Builder Records, Chronicle, Register, Archive, and SeatRecord721 may reflect it only when real gates exist." },
+  { cat: "Contribution Depth", q: "Do contribution-depth bands give cheaper SYN?", a: "No. A band reflects capital footprint, visibility, and future recognition context only. It never changes the current era quote and never creates a discount, payout, or entitlement." },
 
   // Archive
   { cat: "Archive", q: "What is the Archive?", a: "The Archive is the collectible memory layer of The Syndicate on Avalanche. The Archive1155 contract is deployed; The First Signal (ID 1) is an open public Artifact mint — OPEN at 0.50 USDC (wallet limit 5). Patron Seal (ID 3) is CONTRACT_GATED / PUBLIC_MINT_READ_GATED and only appears mintable from live Archive1155 reads. Other Artifact IDs are sealed or reserved. Artifacts do not grant equity, debt, Vault ownership, dividends, revenue share, governance rights, or promises of profit." },
@@ -68,7 +68,7 @@ const ENTRIES: Entry[] = [
   { cat: "Archive", q: "What does PENDING SEPARATE CONTRACT mean?", a: "It means the artifact depends on a future contract distinct from Archive1155 — for example SyndicateSeatRecord721. The Archive1155 contract itself is deployed and verified on Avalanche; The First Signal (ID 1) is mintable today." },
 
   // Risk & Legal
-  { cat: "Risk & Legal", q: "Is this an investment?", a: "No. SYN is utility access for rank, identity, and participation — not equity, debt, dividend, or a Vault claim." },
+  { cat: "Risk & Legal", q: "Is this an investment?", a: "No. SYN is utility access for membership, identity, and participation — not equity, debt, dividend, or a Vault claim." },
   { cat: "Risk & Legal", q: "Can I lose money?", a: "Yes. Participation may result in total loss of the amount you spend. Only join if you fully understand the risks." },
   { cat: "Risk & Legal", q: "What is LIVE vs PENDING?", a: "LIVE modules (SYN, Sale, LP, routing wallets) display chain-verified data read directly from Avalanche RPC. PENDING modules (programmatic Vault contract, on-chain governance, SeatRecord721 identity record) are clearly labeled and never mixed with live numbers — the UI shows PENDING until the underlying contract is deployed." },
 ];
@@ -79,7 +79,7 @@ const CATEGORIES: Category[] = [
   "Membership & Sale",
   "Vault & Routing",
   "Liquidity",
-  "Ranks & Identity",
+  "Contribution Depth",
   "Archive",
   "Risk & Legal",
 ];
@@ -127,7 +127,7 @@ export function FaqRebuilt() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Token, vault, routing, liquidity, ranks…"
+            placeholder="Token, vault, routing, liquidity, contribution depth…"
             className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground/60"
             aria-label="Search FAQ"
           />

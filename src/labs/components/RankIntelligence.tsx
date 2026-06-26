@@ -1,5 +1,5 @@
-// Ranks page intelligence — Rank Distribution + Latest Members + Closest to
-// Next Rank. All derived live from the leaderboard hook (TokensPurchased
+// Ranks page intelligence — Footprint Distribution + Latest Members + Closest to
+// Next Footprint. All derived live from the leaderboard hook (TokensPurchased
 // events). Renders helpful empty states when no purchases yet.
 
 import { useMemo } from "react";
@@ -42,9 +42,9 @@ export function RankIntelligence() {
   return (
     <Section id="rank-intelligence">
       <SectionHeader
-        eyebrow="Rank Intelligence"
+        eyebrow="Footprint Intelligence"
         title={<>Live <span className="text-gradient-gold">distribution & momentum</span></>}
-        description="Who joined recently, how the ranks are filling, and who is one purchase away from leveling up. Everything below is derived live from on-chain purchase events."
+        description="Who joined recently, how capital-footprint bands are filling, and who is near the next contribution-depth band. Everything below is derived live from on-chain purchase events."
       />
 
       <div className="mb-3 flex items-center gap-2">
@@ -55,9 +55,9 @@ export function RankIntelligence() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* Rank Distribution */}
+        {/* Footprint Distribution */}
         <GlassCard className="p-5">
-          <h3 className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Rank Distribution</h3>
+          <h3 className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Footprint Distribution</h3>
           {isLoading && !isDemo ? (
             <div className="text-xs text-muted-foreground">Loading…</div>
           ) : (
@@ -109,9 +109,9 @@ export function RankIntelligence() {
           )}
         </GlassCard>
 
-        {/* Closest to Next Rank */}
+        {/* Closest to Next Footprint */}
         <GlassCard className="p-5">
-          <h3 className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Closest to Next Rank</h3>
+          <h3 className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Closest to Next Footprint</h3>
           {closest.length === 0 ? (
             <p className="text-xs text-muted-foreground">No members yet. Once buyers exist, the ones nearest to leveling up appear here.</p>
           ) : (

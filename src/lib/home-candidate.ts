@@ -120,7 +120,7 @@ export const HOME_CANDIDATE_POSITIONING = {
   oneLine:
     "The Syndicate is a transparent on-chain membership institution forming in public.",
   rationale:
-    "This blend keeps proof close to story, explains the member path quickly, and lets future modules be visible without making them appear live.",
+    "This blend keeps proof close to story, explains the member path quickly, and lets future modules be visible without making them appear live. The Syndicate recognizes capital without reducing identity to capital.",
   primaryPreviewAction: "Join / Take Your Seat",
   secondaryPreviewActions: [
     "Verify the Protocol",
@@ -272,6 +272,12 @@ export const HOME_CANDIDATE_PROOF_POINTS: readonly HomeCandidateProofPoint[] = [
     id: "receipt-routing",
     label: "Receipt and routing proof",
     value: "SYN received, USDC routed 70 / 20 / 10, receipt verifiable",
+    status: "READ_ONLY",
+  },
+  {
+    id: "capital-footprint",
+    label: "Capital footprint",
+    value: "Verified USDC routed is visible proof and one recognition axis, not member identity.",
     status: "READ_ONLY",
   },
   {

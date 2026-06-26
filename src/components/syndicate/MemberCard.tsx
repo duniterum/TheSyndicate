@@ -1,8 +1,8 @@
 // MemberCard — first canonical UI consumer of useHolderIndex.
 //
 // Two modes:
-//   • Connected wallet IS a member  → real card (founder #, rank, chapter,
-//     cumulative USDC routed, first/last tx).
+//   • Connected wallet IS a member  → real card (founder #, capital band,
+//     chapter, cumulative USDC routed, first/last tx).
 //   • Connected wallet is NOT a member (or no wallet) → preview card
 //     ("You would be member #N") sourced from holder totals.
 //
@@ -66,8 +66,9 @@ export function MemberCard() {
         </div>
         <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
           Member number is derived from the order of your first TokensPurchased
-          event. Recognition is derived from cumulative USDC routed across all
-          your purchases. Both are immutable once recorded on-chain.
+          event. Capital footprint is derived from cumulative verified USDC
+          routed across all your purchases. Both are immutable once recorded
+          on-chain.
         </p>
       </GlassCard>
     );
@@ -76,7 +77,7 @@ export function MemberCard() {
   // Member mode — real card from canonical record.
   const walletUrl = explorerUrlForAddress(record.wallet);
   const firstTxUrl = txExplorerUrl(record.firstPurchaseTx);
-  const identitySentence = `Member #${record.founderNumber} of The Syndicate · ${CHAPTER_LABEL[record.chapter]} · Rank ${record.currentRank?.name ?? "—"} · ${fmtUsd(record.cumulativeUsdc)} routed on-chain.`;
+  const identitySentence = `Member #${record.founderNumber} of The Syndicate · ${CHAPTER_LABEL[record.chapter]} · Capital footprint ${record.currentRank?.name ?? "—"} · ${fmtUsd(record.cumulativeUsdc)} routed on-chain.`;
   const shareUrl = buildReferralShareUrl(
     `${CANONICAL_ORIGIN}/wallet/${record.wallet}`,
     record.founderNumber,
@@ -107,7 +108,7 @@ export function MemberCard() {
         </div>
         <div className="text-right">
           <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Rank
+            Capital footprint
           </div>
           <div className="text-lg font-semibold">{record.currentRank?.name ?? "—"}</div>
           {record.nextRank ? (

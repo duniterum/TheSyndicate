@@ -86,7 +86,7 @@ export function walletOgSvg(d: WalletOgData): string {
 ${header("Member identity", d.status, "Member · indexed")}
 <text x="64" y="178" fill="#7a8298" font-size="26" font-family="ui-monospace, 'JetBrains Mono', monospace">${esc(shortAddr(d.address))}</text>
 <text x="64" y="278" fill="#e8edf6" font-size="92" font-weight="700">Member <tspan fill="#d4af37">#${founder}</tspan></text>
-<text x="64" y="328" fill="#a8b0c2" font-size="26">${esc(d.chapterLabel ?? "")} · Rank ${esc(d.rankName ?? "—")}</text>
+<text x="64" y="328" fill="#a8b0c2" font-size="26">${esc(d.chapterLabel ?? "")} · ${esc(d.rankName ?? "—")} capital footprint</text>
 ${metric(64, 430, "Cumulative USDC", fmtUsd(d.cumulativeUsdc), "gold")}
 ${metric(360, 430, "SYN received", fmtN(Math.round(d.cumulativeSyn)))}
 ${metric(640, 430, "Purchases", fmtN(d.purchaseCount))}

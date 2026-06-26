@@ -8,7 +8,7 @@
 // ADJACENCY LAW (canon 05 §2.1): this module reads EVENTS only. It imports the
 // event layer (type-only), the signal registry, the pre-declared milestone
 // thresholds, and the language guard — NEVER Memory (Chronicle entries /
-// candidates, Recognition candidates, protocol-memory, leaderboard / referral).
+// candidates, Recognition candidates, protocol-memory, source attribution).
 //
 // MONEY GUARDRAIL (canon 05 §4.5): person-subject signals (member / wallet) are
 // capped at S2 by the rule table; protocol significance is emitted as SEPARATE
@@ -43,7 +43,7 @@ const MEMBER_MILESTONE_BY_TARGET = new Map(
 const BASE_REASON: Record<ProtocolEventKind, string> = {
   purchase: "A membership purchase routed USDC through the sale.",
   "new-member": "A new seat entered the public registry.",
-  "rank-reached": "Cumulative USDC moved this seat to a new recognition rank.",
+  "rank-reached": "Cumulative routed USDC moved this seat to a new capital-footprint band.",
   "swap-buy": "An LP buy moved the SYN/USDC pair.",
   "swap-sell": "An LP sell moved the SYN/USDC pair.",
   "lp-add": "Liquidity was added to the SYN/USDC pair.",

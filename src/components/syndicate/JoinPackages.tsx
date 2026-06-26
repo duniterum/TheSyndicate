@@ -1,10 +1,10 @@
 // JoinPackages — two additive Join-page surfaces:
 //
 //   • SeatPackages       — a curated strip of "featured ways to take your seat".
-//                          Each card is an EXISTING rank tier (no new naming),
+//                          Each card is an EXISTING contribution-depth band (no new naming),
 //                          rendered through the shared premium SeatPackageCard:
 //                          entry USDC · SYN at the current V3 era rate ·
-//                          recognition meaning · who it is for · CTA.
+//                          capital-footprint meaning · who it is for · CTA.
 //                          Recognition only — no payout/entitlement/private terms.
 //   • EraSchedulePreview — the distribution-era schedule. Era I (Genesis) is the
 //                          current active era; Eras II+ are scheduled later
@@ -42,8 +42,8 @@ export function SeatPackages() {
         }
         description={
           genesisLive
-            ? "A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier; the SYN shown uses the current Era I quote (100 SYN per 1 USDC), and the live quote is always confirmed in your wallet at checkout. Recognition only — no payout, no entitlement, no private terms. Every tier is self-service: taken online through your own wallet."
-            : "A package is simply a featured entry amount. Each one maps 1:1 to a recognition tier; the SYN you receive is set by the current era and always confirmed in your wallet at checkout. Recognition only — no payout, no entitlement, no private terms. Every tier is self-service: taken online through your own wallet."
+            ? "A package is simply a featured entry amount. Each one maps 1:1 to a capital-footprint band; the SYN shown uses the current Era I quote (100 SYN per 1 USDC), and the live quote is always confirmed in your wallet at checkout. Capital is visible and respected, but it is one recognition axis only — no payout, no entitlement, no private terms."
+            : "A package is simply a featured entry amount. Each one maps 1:1 to a capital-footprint band; the SYN you receive is set by the current era and always confirmed in your wallet at checkout. Capital is visible and respected, but it is one recognition axis only — no payout, no entitlement, no private terms."
         }
       />
 
@@ -60,8 +60,9 @@ export function SeatPackages() {
 
       <p className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mt-5 leading-relaxed">
         Era {era.roman} ({era.name}) is the current V3 pricing era. The
-        full recognition ladder — all twelve tiers — is below. Rank is derived
-        from cumulative USDC routed; it is recognition only.
+        full contribution-depth reference — all twelve bands — is below. Capital
+        footprint reflects verified USDC routed through receipts; it is one
+        recognition axis, not member identity.
       </p>
     </Section>
   );

@@ -198,9 +198,9 @@ function suggestCopy(s: Signal, category: MemoryCategory): Copy {
   if (category === "membership") {
     if (s.createdFrom === "rank-reached") {
       return {
-        title: "A member reached a new recognition rank.",
+        title: "A member reached a new capital-footprint band.",
         summary:
-          "Cumulative on-chain activity moved a seat to a new recognition rank.",
+          "Cumulative routed USDC moved a seat to a new capital-footprint band.",
         reason:
           "Membership signal (recognized action) — rank is structural " +
           "recognition only; it confers no rights, rewards, or return.",

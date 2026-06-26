@@ -357,7 +357,7 @@ export const MUSEUM_WIDGETS: MuseumWidget[] = [
     category: "Growth / Referral / Reputation",
     status: "lab",
     labClass: "LABS",
-    why: "Rank explainer with analytics — possible /ranks/intelligence subroute.",
+    why: "Footprint explainer with analytics — possible /ranks/intelligence subroute.",
     reuse: "rewrite",
     needs: "Leaderboard query",
     duplicateOf: "RankHub",

@@ -80,9 +80,10 @@ export function CanonicalSpec() {
               <h3 className="text-lg font-semibold text-foreground mb-2">Current Era Quote</h3>
               <p className="text-2xl font-mono text-primary">100 SYN / 1 USDC</p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Era I currently returns 100 SYN per 1 USDC. Larger cumulative
-                purchases reflect a higher rank and archive recognition — never
-                cheaper SYN or private terms.
+                Era I currently returns 100 SYN per 1 USDC. Larger verified
+                routed-USDC footprints reflect a visible contribution-depth
+                band and archive recognition — never cheaper SYN, private terms,
+                or a purchased title.
               </p>
             </div>
             <div>

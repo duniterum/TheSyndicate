@@ -335,7 +335,7 @@ export function MemberCard() {
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
             The card records who you are inside a transparent on-chain protocol — not what you are
-            owed. Rank reflects SYN held. Archive weight is identity-only. No payout, no yield,
+            owed. Capital footprint reflects verified routed USDC. Archive weight is identity-only. No payout, no yield,
             no claim on protocol revenue is implied.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed">

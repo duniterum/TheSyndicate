@@ -220,7 +220,7 @@ export const ARCHIVE_ARTIFACTS: ArtifactRecord[] = [
     targetPriceUsdc: 5,
     status: "ACTIVE_MINT_OPEN",
     blurb:
-      "Optional support artifact. Single flat amount - no tiers, no rank. Active on the deployed Archive contract at 5.00 USDC, but shown as mintable only from live Archive1155 wallet reads (wallet limit 5, supply 10,000).",
+      "Optional support artifact. Single flat amount - no tiers, no contribution-depth band. Active on the deployed Archive contract at 5.00 USDC, but shown as mintable only from live Archive1155 wallet reads (wallet limit 5, supply 10,000).",
     unlock: "Connect a wallet on Avalanche to check read-gated mintability.",
   },
   {

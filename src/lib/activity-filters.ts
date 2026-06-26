@@ -31,7 +31,7 @@ export const ACTIVITY_FILTER_GROUPS: ActivityFilterGroup[] = [
   {
     key: "membership",
     label: "Membership",
-    description: "Sale purchases, new members, rank reached.",
+    description: "Sale purchases, new members, contribution-depth movements.",
     kinds: ["purchase", "new-member", "rank-reached"],
   },
   {

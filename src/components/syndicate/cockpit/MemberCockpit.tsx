@@ -251,7 +251,7 @@ function CockpitHeader({
   const walletUrl = address ? explorerUrlForAddress(address) : null;
 
   const shareText = record && chapter
-    ? `I hold Member #${record.memberNumber} of The Syndicate — ${chapter.shortLabel} · ${record.currentRank?.name ?? "Member"} · ${fmtInt(Math.round(record.cumulativeSyn))} SYN received. Verified on-chain.`
+    ? `I hold Member #${record.memberNumber} of The Syndicate — ${chapter.shortLabel} · ${record.currentRank?.name ?? "Member"} capital footprint · ${fmtInt(Math.round(record.cumulativeSyn))} SYN received. Verified on-chain.`
     : "";
 
   return (
@@ -293,7 +293,7 @@ function CockpitHeader({
               </p>
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 {[
-                  ["Identity", "Member number, chapter, rank, and wallet proof."],
+                  ["Identity", "Member number, chapter, capital footprint, and wallet proof."],
                   ["Position", "SYN received, purchases, routing receipt, and joined block."],
                   ["Memory", "Artifact ownership and activity history from indexed reads."],
                 ].map(([label, body]) => (
@@ -370,13 +370,13 @@ function CockpitHeader({
                 {record ? (
                   <div className="rounded-lg border border-border/50 bg-card/40 px-3.5 py-3">
                     <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                      Recognition
+                      Capital footprint
                     </span>
                     <div className="mono text-sm text-foreground mt-1">
                       {record.currentRank?.name ?? "Citizen"}
                     </div>
                     <p className="mono text-[10px] text-muted-foreground mt-1 leading-relaxed">
-                      Derived from USDC routed. Recognition only — no payout, no rate change, no entitlement.
+                      Derived from verified USDC routed. Recognition only — no payout, no rate change, no entitlement.
                     </p>
                   </div>
                 ) : (
@@ -634,9 +634,9 @@ function CockpitPortfolio({
         live: Boolean(record),
       },
       {
-        label: "Recognition",
+        label: "Capital footprint",
         value: record?.currentRank?.name ?? "—",
-        sub: "derived from USDC routed · no payout",
+        sub: "derived from verified USDC routed · no payout",
         live: Boolean(record),
       },
       {

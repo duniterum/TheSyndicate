@@ -11,7 +11,7 @@ import { rankForSyn } from "@/lib/syndicate-config";
  * PRINCIPLE): the Syndicate should feel like a transparent on-chain protocol
  * for ambitious long-term builders. This component shows the identity arc
  * a member follows — Discover → Join → Verify → Participate → Build
- * Reputation → Earn Rank → Archive — and now lights up each step using the
+ * Reputation → Build Recognition → Archive — and now lights up each step using the
  * connected wallet's onchain state.
  *
  * State derivation (all from chain, no fake claims):
@@ -20,7 +20,7 @@ import { rankForSyn } from "@/lib/syndicate-config";
  *   03 Verify             → same as Join (purchase is publicly verifiable)
  *   04 Participate        → buyerUsdcTotal >= rank.next.usdc step (kept lightweight)
  *   05 Build reputation   → buyerUsdcTotal >= 50 USDC (Builder gate)
- *   06 Earn rank          → rank.current !== Citizen (>= Scout)
+ *   06 Build recognition  → rank.current !== Citizen (>= Scout)
  *   07 Archive            → buyerUsdcTotal >= 100 USDC (Founder gate)
  */
 
@@ -69,9 +69,9 @@ const STEPS: Array<{
   },
   {
     num: "06",
-    label: "Earn rank",
+    label: "Build recognition",
     body:
-      "Public, transparent rank reflects what you've actually done on-chain — never a payout, never a yield claim.",
+      "Public, transparent capital footprint reflects verified routed USDC on-chain — never a payout, never a yield claim.",
     outcome: "Progress is visible and verifiable.",
   },
   {
@@ -118,7 +118,7 @@ function useJourneyStates(): State[] {
     syn > 0 ? "DONE" : "PENDING", // 03 Verify
     usdc >= 25 ? "DONE" : syn > 0 ? "ACTIVE" : "PENDING", // 04 Participate
     usdc >= 50 ? "DONE" : usdc > 0 ? "ACTIVE" : "PENDING", // 05 Build reputation
-    current && current.name !== "Citizen" ? "DONE" : syn > 0 ? "ACTIVE" : "PENDING", // 06 Earn rank
+    current && current.name !== "Citizen" ? "DONE" : syn > 0 ? "ACTIVE" : "PENDING", // 06 Build recognition
     usdc >= 100 ? "DONE" : usdc > 0 ? "ACTIVE" : "PENDING", // 07 Archive
   ];
 

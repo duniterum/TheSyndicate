@@ -130,10 +130,10 @@ function suggestChronicleCopy(mc: MemoryCandidate): ChronicleCopy {
   if (category === "membership") {
     if (createdFrom === "rank-reached") {
       return {
-        proposedTitle: "A seat reached a new recognition rank.",
+        proposedTitle: "A seat reached a new capital-footprint band.",
         proposedSummary:
-          "Cumulative on-chain activity moved a seat to a new recognition rank.",
-        proposedStoryAngle: "rank-recognition",
+          "Cumulative routed USDC moved a seat to a new capital-footprint band.",
+        proposedStoryAngle: "capital-footprint-recognition",
       };
     }
     if (createdFrom === "new-member") {

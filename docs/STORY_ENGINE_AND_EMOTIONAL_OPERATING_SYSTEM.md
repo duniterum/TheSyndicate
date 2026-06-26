@@ -170,12 +170,15 @@ NOT** (the boundary that, when crossed, becomes a forbidden drift — see §7).
 - **Is NOT:** a raw feed, a personal timeline, or a real-time ticker. *"Chronicle
   is the canon."* If everything is in it, it is Activity, not Chronicle.
 
-### Rank
-- **Technical:** A recognition tier derived from a member's cumulative routed USDC.
+### Contribution-Depth Standing
+- **Technical:** A recognition layer that currently includes capital-footprint
+  bands derived from verified routed USDC and may later include non-capital
+  institutional trust-capital axes.
 - **Emotional:** Recognition of participation and longevity — *becoming*, not
   earning.
-- **Is NOT:** a wealth ranking, a payout tier, a yield multiplier, or a claim. No
-  rank confers financial benefit. Recognition is positional standing, never reward.
+- **Is NOT:** a wealth ranking, a payout tier, a yield multiplier, a bought title,
+  or a claim. No standing label confers financial benefit. Recognition is
+  positional standing, never reward.
 
 ### Horizon
 - **Technical:** The honest, clearly-labeled PENDING surface for systems not yet

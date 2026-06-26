@@ -91,7 +91,7 @@ export function PatronSealReadiness() {
         title={<>The <span className="text-gradient-gold">Patron Seal</span></>}
         description={
           liveActive === true
-            ? "Live on Avalanche at 5.00 USDC and shown as mintable only from live Archive1155 reads. Optional, flat support Artifact — one tier only, no rank, no financial rights. Wallet limit 5, supply 10,000."
+            ? "Live on Avalanche at 5.00 USDC and shown as mintable only from live Archive1155 reads. Optional, flat support Artifact — one tier only, no contribution-depth band, no financial rights. Wallet limit 5, supply 10,000."
             : "Configured on-chain at 5.00 USDC. Live reads will enable the mint button as soon as the contract reports active === true."
         }
       />
@@ -132,8 +132,9 @@ export function PatronSealReadiness() {
             <p className="text-sm text-foreground/90 leading-relaxed">
               The Patron Seal is an optional, flat support NFT for people who
               want to help fund development, infrastructure, design and public
-              storytelling. One tier only — no Bronze/Silver/Gold, no rank, no
-              wealth-coded status, no financial rights.
+              storytelling. One tier only — no Bronze/Silver/Gold, no
+              contribution-depth band, no wealth-coded status, no financial
+              rights.
             </p>
           </div>
 

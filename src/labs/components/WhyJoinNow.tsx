@@ -33,7 +33,7 @@ export function WhyJoinNow() {
       eyebrow: "03 · Same access for everyone",
       title: "No private allocations, no insider price",
       body:
-        "Fixed access rate of 1 SYN = $0.01 USDC. The same for a $5 entry and a $5,000 entry. Bigger entries change visible membership rank — never bonus tokens or a cheaper price.",
+        "Fixed access rate of 1 SYN = $0.01 USDC. The same for a $5 entry and a $5,000 entry. Larger entries change visible capital footprint — never bonus tokens, a cheaper price, or a bought title.",
       status: "LIVE" as const,
       verifyHref: "/tokenomics",
       verifyLabel: "See the tokenomics",
