@@ -1,4 +1,5 @@
 import { FIRST_SOURCE_ATTRIBUTION_LIFECYCLE } from "./protocol-lifecycle";
+import { SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION } from "./source-public-product-framework";
 import {
   CURRENT_SOURCE_POLICY_SNAPSHOT,
   INTERNAL_PROTOCOL_TEST_SOURCE_001,
@@ -29,6 +30,9 @@ export type PublicProductDecisionGate = {
   readonly factLifecycleStage: "public-product";
   readonly decisionStatus: PublicProductDecisionStatus;
   readonly publicProductReady: false;
+  readonly recommendedFrameworkId: typeof SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.id;
+  readonly recommendedFrameworkName: typeof SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.userFacingName;
+  readonly recommendedFrameworkStatus: typeof SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.status;
   readonly currentReason: string;
   readonly defaultBuySourceId: typeof ZERO_SOURCE_ID;
   readonly gates: readonly PublicProductGate[];
@@ -74,9 +78,9 @@ export function buildSourceAttributionPublicProductDecisionGate(
       label: "Public scope definition",
       status: "REQUIRED",
       proof:
-        "The internal test proved MembershipSaleV3 source attribution only; it did not prove Archive, SwapRail, SeatRecord721, ProductSaleRouter, or product-wide attribution.",
+        "The internal test proved MembershipSaleV3 source attribution only. The V1 decision framework recommends Verified Introduction as MembershipSaleV3-only, not product-wide.",
       requirement:
-        "Founder/product review must define whether the first public product is membership-only, which source classes are eligible, and which products remain excluded.",
+        "Founder/product review must approve or revise docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md before any user-actionable product surface is built.",
       blocksPublicProduct: true,
     },
     {
@@ -86,7 +90,7 @@ export function buildSourceAttributionPublicProductDecisionGate(
       proof:
         "No public source link, source selector, source dashboard, alias flow, or buyer clear-source interaction exists today.",
       requirement:
-        "Design and test public source-aware preview/quote/buy UX that shows source terms before signature and lets a buyer clear a source.",
+        "Design and test the Verified Introduction buyer UX from docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md: source preview before signature, clear-source control, and hard-fail on stale source state.",
       blocksPublicProduct: true,
     },
     {
@@ -94,9 +98,9 @@ export function buildSourceAttributionPublicProductDecisionGate(
       label: "Anti-abuse and eligibility rules",
       status: "REQUIRED",
       proof:
-        "The internal test used one controlled source wallet and one fresh buyer wallet; it did not prove public onboarding or abuse resistance.",
+        "The internal test used one controlled source wallet and one fresh buyer wallet; it did not prove public onboarding, aliases, open member referral, or abuse resistance.",
       requirement:
-        "Define source eligibility, seated-member/referrer rules, rate limits, repeat-purchase posture, identity/privacy boundaries, and revocation operations.",
+        "Approve manual source eligibility, seated-member rules for MEMBER_INTRODUCTION, source/buyer self-source blocking, cap/window checks, promotion rules, and revocation operations.",
       blocksPublicProduct: true,
     },
     {
@@ -147,13 +151,16 @@ export function buildSourceAttributionPublicProductDecisionGate(
     factLifecycleStage: "public-product",
     decisionStatus: "NOT_READY_FOR_PUBLIC_PRODUCT",
     publicProductReady: false,
+    recommendedFrameworkId: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.id,
+    recommendedFrameworkName: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.userFacingName,
+    recommendedFrameworkStatus: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.status,
     currentReason:
       "The first Source Attribution lifecycle is proven internally, but public source/referral product remains blocked until product, legal, UX, security, release, and founder gates are satisfied.",
     defaultBuySourceId: ZERO_SOURCE_ID,
     gates,
     allowedNextWork: [
       "Chronicle admission review for the proven lifecycle, if founder wants curated public meaning.",
-      "Public source product design brief with no implementation or activation authority.",
+      "Founder review of docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md with no implementation or activation authority.",
       "Anti-abuse, disclosure, accounting, and source-operator policy design.",
       "Read-only proof and guard hardening that preserves ZERO_SOURCE_ID public/default buys.",
     ],

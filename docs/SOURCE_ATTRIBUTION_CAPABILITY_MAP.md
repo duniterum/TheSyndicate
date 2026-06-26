@@ -330,10 +330,13 @@ What it does not enable:
 
 Still needed:
 
-- Final source wallet and payout wallet.
+- Founder review of `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`.
 - Legal/product copy posture for any public exposure.
-- Public/Replit V3 frontend confidence if the source will ever be exposed.
-- Anti-abuse and source onboarding rules before member referral UX.
+- Anti-abuse, source eligibility, prohibited-promotion, and source onboarding
+  rules before any member-introduction UX.
+- Buyer disclosure, source preview, and clear-source UX before any wallet
+  signature can carry a non-zero sourceId.
+- Release and production QA for any future public source-aware path.
 
 ## Future Contract Candidates
 
@@ -383,7 +386,8 @@ Never show:
 
 ## Next Recommended Sprint
 
-Before creating another source record or activating the existing PAUSED source again:
+Before creating another source record, activating the existing PAUSED source
+again, or building public source/referral UX:
 
 1. Rebuild current-authority readbacks.
 2. Confirm whether source terms/window remain suitable for any future controlled test.
@@ -394,9 +398,14 @@ Before creating another source record or activating the existing PAUSED source a
 4. Use `docs/SOURCE_AWARE_LOCAL_TEST_PATH.md` and
    `src/lib/source-aware-test-mode.ts` as the internal source-aware test
    boundary for localhost and explicit production-internal mode.
-5. Keep public referral/source copy aligned with acquisition-first,
+5. Use `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md` and
+   `src/lib/source-public-product-framework.ts` as the founder-review framework
+   for a possible invite-only Verified Introduction V1. The framework is a
+   recommendation, not launch approval.
+6. Keep public referral/source copy aligned with acquisition-first,
    MembershipSaleV3-only source attribution.
-6. Do not build public source links, claim UI, Archive source attribution, or
+7. Do not build public source links, aliases, claim UI, source dashboards,
+   Archive source attribution, open self-serve member referral, or
    product-wide attribution until `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`
    and `src/lib/public-product-decision-gate.ts` are satisfied by separate
    founder-approved product, legal/disclosure, UX, security, release, and

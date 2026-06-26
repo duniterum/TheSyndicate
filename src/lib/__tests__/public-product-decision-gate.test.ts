@@ -21,6 +21,11 @@ describe("source attribution public-product decision gate", () => {
     expect(gate.factLifecycleStage).toBe("public-product");
     expect(gate.decisionStatus).toBe("NOT_READY_FOR_PUBLIC_PRODUCT");
     expect(gate.publicProductReady).toBe(false);
+    expect(gate.recommendedFrameworkId).toBe("verified-introduction-v1");
+    expect(gate.recommendedFrameworkName).toBe("Verified Introduction");
+    expect(gate.recommendedFrameworkStatus).toBe(
+      "FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED",
+    );
     expect(gate.defaultBuySourceId).toBe(ZERO_SOURCE_ID);
     expect(gate.currentReason).toContain("proven internally");
     expect(gate.currentReason).toContain("public source/referral product remains blocked");
@@ -78,6 +83,9 @@ describe("source attribution public-product decision gate", () => {
     const gate = SOURCE_ATTRIBUTION_PUBLIC_PRODUCT_DECISION_GATE;
     const copy = [
       gate.currentReason,
+      gate.recommendedFrameworkId,
+      gate.recommendedFrameworkName,
+      gate.recommendedFrameworkStatus,
       ...gate.gates.flatMap((item) => [item.label, item.proof, item.requirement]),
       ...gate.allowedNextWork,
       ...gate.forbiddenUntilApproved,
@@ -88,6 +96,8 @@ describe("source attribution public-product decision gate", () => {
     expect(copy).toContain("Do not activate public referral");
     expect(copy).toContain("Do not add claim UI");
     expect(copy).toContain("Do not route public/default buys through a non-zero sourceId");
+    expect(copy).toContain("verified-introduction-v1");
+    expect(copy).toContain("FRAMEWORK_DEFINED_PUBLIC_PRODUCT_NOT_APPROVED");
     expect(copy).toContain("Chronicle admission review");
     expect(copy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
     expect(copy).not.toMatch(/top earner|guaranteed return|yield opportunity/i);

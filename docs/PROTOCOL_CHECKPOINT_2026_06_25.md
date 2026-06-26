@@ -94,6 +94,7 @@ This record is source policy state plus one completed internal proof receipt. It
 | Durable memory boundary | The completed Source Attribution lifecycle is now active Institutional Register memory, anchored to the re-pause closure transaction. Chronicle remains a separate curation decision; public referral remains inactive. |
 | Knowledge architecture boundary | The Knowledge Map now names the full fact lifecycle: raw event -> current-authority readback -> proof -> Register memory -> Chronicle review -> public product decision. |
 | Public product decision gate | Source Attribution now has a specific proof-to-public-product gate in `src/lib/public-product-decision-gate.ts` and `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md`; the current decision is not ready for public product activation. |
+| Public product decision framework | The recommended V1 public posture is invite-only **Verified Introduction** for MembershipSaleV3 only, manually approved, buyer-visible, buyer-clearable, direct-payout-first, and without aliases, claim UI, source dashboard, open self-serve referral, or product-wide attribution. It is a founder-review recommendation, not launch approval. |
 | Activity/My Syndicate readiness | The first real source-attributed receipt can be understood without activating public source paths. |
 | Registry/referral truth | Public surfaces can say a PAUSED source policy fact exists while still saying referral is inactive. |
 | Production truth | Replit production was last reported live and QA green through the lifecycle proof publication; later GitHub-only knowledge/gate commits still require a separate Replit decision before becoming production truth. |
@@ -328,6 +329,11 @@ Outcome:
 - `docs/SOURCE_PUBLIC_PRODUCT_DECISION_GATE.md` defines the current no-go public
   product decision,
 - `src/lib/public-product-decision-gate.ts` makes the gate machine-readable,
+- `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md` and
+  `src/lib/source-public-product-framework.ts` recommend the safest V1 posture as
+  invite-only Verified Introduction, MembershipSaleV3-only, manual approval,
+  buyer-visible, buyer-clearable, direct-payout-first, and no aliases, claim UI,
+  source dashboard, open self-serve member referral, or product-wide attribution,
 - proof, Register memory, and Chronicle review cannot activate public referral
   by themselves,
 - source link/alias design, public disclosure copy, source lifecycle display,

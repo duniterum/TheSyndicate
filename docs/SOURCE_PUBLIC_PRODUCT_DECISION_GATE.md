@@ -35,14 +35,17 @@ It does not approve:
 
 Machine-readable source: `src/lib/public-product-decision-gate.ts`.
 
+Public product framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`
+and `src/lib/source-public-product-framework.ts`.
+
 ## Required Gates Before Public Product
 
 | Gate | Current status | Meaning |
 | --- | --- | --- |
 | Internal proof recorded | SATISFIED | The capability exists as internal proof. |
 | Safe closure state | SATISFIED | Source is PAUSED, active source count is zero, and public/default buys remain `ZERO_SOURCE_ID`. |
-| Public scope definition | REQUIRED | Decide membership-only vs product-wide, source classes, products excluded, and onboarding boundaries. |
-| Source link and buyer UX | REQUIRED | Design source links, aliases, preview/quote, buyer disclosure, and clear-source behavior before wallet signature. |
+| Public scope definition | REQUIRED | The V1 framework recommends Verified Introduction as MembershipSaleV3-only, invite-only, and manually approved; founder must approve or revise it. |
+| Source link and buyer UX | REQUIRED | Design source preview/quote, buyer disclosure, hard-fail source readback, and clear-source behavior before wallet signature. |
 | Anti-abuse and eligibility rules | REQUIRED | Define source eligibility, seated/referrer rules, repeat-purchase posture, privacy, and revocation operations. |
 | Legal, accounting, and disclosure posture | REQUIRED | Approve acquisition-first language and tax/accounting posture. |
 | Claim and escrow policy | BLOCKED BY DESIGN | No claim UI or claim balances until escrow/readback/legal policy is separately approved. |
@@ -53,8 +56,8 @@ Machine-readable source: `src/lib/public-product-decision-gate.ts`.
 
 - Chronicle admission review for the completed lifecycle, if the founder wants
   curated public meaning.
-- Public source product design brief with no implementation or activation
-  authority.
+- Founder review of the public source product decision framework with no
+  implementation or activation authority.
 - Anti-abuse, disclosure, accounting, and source-operator policy design.
 - Read-only proof and guard hardening that preserves `ZERO_SOURCE_ID`
   public/default buys.
@@ -81,5 +84,8 @@ The Source Attribution lifecycle has reached proof and Register memory.
 Chronicle review may decide whether the proof deserves curated institutional
 meaning.
 
-Public product requires this separate gate. Proof, Register memory, and
-Chronicle do not launch referral.
+The public product decision framework recommends a possible V1 shape, but it
+does not approve launch.
+
+Public product requires this separate gate. Proof, Register memory, Chronicle,
+and the framework do not launch referral.

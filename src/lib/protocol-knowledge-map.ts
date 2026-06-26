@@ -865,7 +865,7 @@ export const KNOWLEDGE_FACT_LIFECYCLE: KnowledgeFactLifecycleStage[] = [
     label: "Public product decision",
     question: "Should users be able to act on this capability?",
     belongsIn:
-      "Product, legal/disclosure, UX, security, release, founder approval gates, and public-product decision models such as src/lib/public-product-decision-gate.ts.",
+      "Product, legal/disclosure, UX, security, release, founder approval gates, and public-product decision models such as src/lib/public-product-decision-gate.ts and src/lib/source-public-product-framework.ts.",
     next: "Only after separate approval should navigation, public controls, source links, claim UI, or write paths exist.",
     notAuthorityFor: "Backfilling activation from proof, memory, or Chronicle alone.",
   },
