@@ -34,6 +34,9 @@ Anti-abuse/source eligibility review:
 Buyer disclosure/legal-accounting review:
 `src/lib/verified-introduction-v1-disclosure.ts`.
 
+Current-authority/release QA review:
+`src/lib/verified-introduction-v1-release-qa.ts`.
+
 Decision framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`.
 
 Founder review record: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
@@ -62,7 +65,7 @@ source-aware path exists.
 | 2. Internal implementation skeleton | COMPLETED / NON-ACTIVATING | Build read-only or hard-gated components for preview, clear-source, and failure states. | Components/models that can be tested without public activation. |
 | 3. Internal review surface | COMPLETED / NOINDEX / DIRECT URL ONLY | Make the skeleton reviewable for founder/operator inspection. | `/labs/verified-introduction-review` with exact review query; absent from public nav and sitemap; no wallet controls. |
 | 4. Source packet / launch packet | DRAFT BOUNDARY / FOUNDER APPROVAL REQUIRED | Freeze exact source, eligible buyer path, disclosure, readbacks, stop conditions, and release posture. | Draft launch-decision boundary exists; founder-approved launch packet still required. |
-| 5. Replit / production QA | LATER RUNTIME-VISIBLE | Sync/publish only when runtime-visible truth should reach production. | Route QA, sitemap/robots checks, ZERO_SOURCE_ID default check, no-leakage proof. |
+| 5. Current-authority / release QA | DRAFT BOUNDARY / LATEST CHAIN REQUIRED | Define latest-chain reads, Replit publish gates, route QA, sitemap/robots checks, ZERO_SOURCE_ID default check, and no-leakage proof. | Draft release-QA packet exists; actual latest-chain readbacks and founder launch approval still required. |
 | 6. Founder launch decision | FOUNDER APPROVAL REQUIRED | Decide whether to approve, revise, defer, or reject public release. | Separate approval for user-actionable public controls, if any. |
 
 ## What Can Be Implemented Safely Now
@@ -71,6 +74,7 @@ source-aware path exists.
 - Read-only or test-only source status components.
 - Failure-state components and tests.
 - Buyer disclosure and legal/accounting draft review model.
+- Current-authority and release QA draft packet.
 - Production-coherence guards that prevent public `/join` source drift.
 - Documentation that turns approved direction into implementation steps without
   launch authority.
@@ -142,7 +146,7 @@ Verified Introduction V1 cannot launch until all of these are true:
 - Legal/accounting disclosure is approved.
 - Anti-abuse rules are accepted.
 - Current-authority readbacks are green.
-- Replit sync/publish and live QA plan are approved.
+- Founder-approved Replit sync/publish and live QA plan are approved.
 - Public `/join` default remains `ZERO_SOURCE_ID`.
 
 ## Done Enough
@@ -161,16 +165,17 @@ The following are done enough for this phase:
 - launch packet draft boundary.
 - anti-abuse/source eligibility draft review model.
 - buyer disclosure/legal-accounting draft review model.
+- current-authority/release QA draft packet.
 
 Do not keep re-litigating those before building the next safe slice.
 
 ## Next Exact Sprint
 
 Review the non-activating Verified Introduction buyer skeleton at the internal
-review surface, launch packet draft, anti-abuse/source eligibility model, and
-buyer disclosure/legal-accounting model together, then decide the next safe
-slice: current-authority readback/release QA packet or a separately approved
-runtime integration plan.
+review surface, launch packet draft, anti-abuse/source eligibility model, buyer
+disclosure/legal-accounting model, and current-authority/release QA packet
+together, then assemble a founder launch-decision packet or revise the blocked
+gates.
 
 The next sprint must not add navigation, sitemap entries, aliases, claim UI,
 source dashboard, public source links, or a public source-aware buy path unless

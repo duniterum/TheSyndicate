@@ -216,6 +216,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     "Noindex internal review surface with exact review query.",
     "Anti-abuse and source eligibility draft review model.",
     "Buyer disclosure and legal/accounting draft review model.",
+    "Current-authority and release QA draft packet.",
     "Production-coherence guards that prevent public /join source drift.",
     "Docs that turn approved direction into execution steps without launch authority.",
   ],
@@ -236,8 +237,8 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     "No public source route/link posture is approved.",
     "No legal/accounting disclosure signoff is recorded.",
     "No anti-abuse acceptance packet is recorded.",
-    "No production QA plan for a public source-aware path is approved.",
-    "No Replit publish/live QA packet exists for any runtime-visible public source product.",
+    "No latest-chain current-authority readback is green for a public source-aware path.",
+    "No founder-approved Replit publish/live QA packet exists for any runtime-visible public source product.",
   ],
   forbiddenUntilLaunchApproval: [
     "No transactions.",
@@ -256,7 +257,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
 } as const;
 
 export function getVerifiedIntroductionNextSprint(): string {
-  return "Review the noindex Verified Introduction internal surface, launch packet draft, anti-abuse/source eligibility model, and buyer disclosure/legal-accounting model together, then choose current-authority readback/release QA or a separately approved runtime integration plan; keep public /join on ZERO_SOURCE_ID.";
+  return "Review the noindex Verified Introduction internal surface, launch packet draft, anti-abuse/source eligibility model, buyer disclosure/legal-accounting model, and current-authority/release QA packet together; then assemble a founder launch-decision packet or revise the blocked gates while public /join stays ZERO_SOURCE_ID.";
 }
 
 export function isVerifiedIntroductionLaunchBlocked(): boolean {

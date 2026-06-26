@@ -83,8 +83,9 @@ describe("Verified Introduction V1 launch packet draft", () => {
     expect(copy).toContain("Direction approval");
     expect(copy).toContain("cannot authorize launch");
     expect(copy).toContain(
-      "If copy implies ownership, employment, yield, passive income, ROI, downline, upline, or guaranteed income, stop.",
+      "If copy implies prohibited financial-return, hierarchy, agency, employment, or ownership framing, stop.",
     );
+    expect(copy).toContain("Verified Introduction release-QA packet");
     expect(copy).not.toMatch(/public referral is live|claim UI is live|source links are live/i);
     expect(copy).not.toMatch(/yield opportunity|earn passive income|guaranteed return|top earner/i);
   });

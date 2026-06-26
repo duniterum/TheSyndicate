@@ -343,12 +343,15 @@ Still needed:
   `src/lib/verified-introduction-v1-anti-abuse.ts`.
 - Review of the buyer disclosure/legal-accounting draft model in
   `src/lib/verified-introduction-v1-disclosure.ts`.
+- Review of the current-authority/release QA draft packet in
+  `src/lib/verified-introduction-v1-release-qa.ts`.
 - Final legal/product copy posture for any public exposure.
 - Founder-approved anti-abuse, source eligibility, prohibited-promotion, and
   source onboarding rules before any member-introduction UX.
 - Founder-approved buyer disclosure, source preview, and clear-source UX before
   any wallet signature can carry a non-zero sourceId.
-- Release and production QA for any future public source-aware path.
+- Latest-chain current-authority readbacks plus release and production QA for
+  any future public source-aware path.
 
 ## Future Contract Candidates
 
@@ -401,7 +404,8 @@ Never show:
 Before creating another source record, activating the existing PAUSED source
 again, or building public source/referral UX:
 
-1. Rebuild current-authority readbacks.
+1. Use `src/lib/verified-introduction-v1-release-qa.ts` to run current-authority
+   readbacks only at latest chain state.
 2. Confirm whether source terms/window remain suitable for any future controlled test.
 3. Use `docs/SOURCE_REAL_CONDITION_CEREMONY_READBACK.md`,
    `docs/SOURCE_ACTIVATION_READINESS_PACKET.md`, and

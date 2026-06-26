@@ -169,7 +169,7 @@ export const VERIFIED_INTRODUCTION_V1_DISCLOSURE_REVIEW = {
       saferReplacement: "Source payout is direct first; escrow fallback remains an operational readback state.",
     },
     {
-      id: "no-investment-framing",
+      id: "no-financial-promise-framing",
       forbiddenPattern: "yield / ROI / passive income / guaranteed return",
       reason: "Acquisition commission is not an investment return or financial promise.",
       saferReplacement: "Acquisition commission is a direct on-chain acquisition cost when an approved source-attributed purchase succeeds.",

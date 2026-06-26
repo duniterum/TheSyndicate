@@ -17,6 +17,12 @@ import {
   type VerifiedIntroductionDisclosureItem,
   type VerifiedIntroductionForbiddenCopyRule,
 } from "@/lib/verified-introduction-v1-disclosure";
+import {
+  VERIFIED_INTRODUCTION_V1_RELEASE_QA_PACKET,
+  type VerifiedIntroductionLatestRead,
+  type VerifiedIntroductionLiveQaCheck,
+  type VerifiedIntroductionReleaseGate,
+} from "@/lib/verified-introduction-v1-release-qa";
 
 export const VERIFIED_INTRODUCTION_REVIEW_TOKEN = "VERIFIED_INTRODUCTION_V1";
 
@@ -88,6 +94,12 @@ function VerifiedIntroductionReviewRoute() {
         <AntiAbuseReview
           rules={VERIFIED_INTRODUCTION_V1_ANTI_ABUSE_REVIEW.eligibilityRules}
           states={VERIFIED_INTRODUCTION_V1_ANTI_ABUSE_REVIEW.abuseStates}
+        />
+        <ReleaseQaReview
+          reads={VERIFIED_INTRODUCTION_V1_RELEASE_QA_PACKET.latestChainReads}
+          gates={VERIFIED_INTRODUCTION_V1_RELEASE_QA_PACKET.releaseGates}
+          liveQa={VERIFIED_INTRODUCTION_V1_RELEASE_QA_PACKET.liveQaChecks}
+          stopConditions={VERIFIED_INTRODUCTION_V1_RELEASE_QA_PACKET.stopConditions}
         />
         <LaunchBoundary />
       </div>
@@ -356,6 +368,107 @@ function AntiAbuseReview({
             ))}
           </tbody>
         </table>
+      </div>
+    </section>
+  );
+}
+
+function ReleaseQaReview({
+  reads,
+  gates,
+  liveQa,
+  stopConditions,
+}: {
+  reads: readonly VerifiedIntroductionLatestRead[];
+  gates: readonly VerifiedIntroductionReleaseGate[];
+  liveQa: readonly VerifiedIntroductionLiveQaCheck[];
+  stopConditions: readonly string[];
+}) {
+  return (
+    <section className="rounded-lg border border-slate-800 bg-slate-900/70 p-5">
+      <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-300">
+            Current-Authority / Release QA
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold text-white">Launch review must read current truth.</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+            This packet defines the latest-chain reads, Replit gates, live QA checks, and stop conditions for a future
+            Verified Introduction launch candidate. It is not approval to publish public controls.
+          </p>
+        </div>
+        <div className="rounded-md border border-violet-600/50 bg-violet-950/30 px-3 py-2 text-sm font-semibold text-violet-100">
+          Draft QA packet - latest block only
+        </div>
+      </div>
+
+      <div className="mt-5 overflow-x-auto">
+        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
+          <thead className="text-xs uppercase tracking-[0.14em] text-slate-500">
+            <tr>
+              <th className="border-b border-slate-800 py-3 pr-4">Read</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Target</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Expected</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Stop condition</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reads.map((read) => (
+              <tr key={read.id} className="border-b border-slate-900/80 align-top">
+                <td className="py-3 pr-4">
+                  <div className="font-semibold text-slate-100">{read.label}</div>
+                  <div className="mt-1 text-xs text-violet-200">{read.read}</div>
+                </td>
+                <td className="py-3 pr-4">
+                  <code className="break-all text-xs text-slate-300">{read.contractOrSurface}</code>
+                </td>
+                <td className="py-3 pr-4 text-slate-300">{read.expected}</td>
+                <td className="py-3 pr-4 text-slate-300">{read.stopCondition}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-5 grid gap-3 lg:grid-cols-3">
+        {gates.map((gate) => (
+          <div key={gate.id} className="rounded-md border border-slate-800 bg-black/20 p-4">
+            <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+              <h3 className="text-sm font-semibold text-white">{gate.label}</h3>
+              <StatusPill value={gate.status} />
+            </div>
+            <p className="mt-3 text-sm leading-6 text-slate-300">{gate.requirement}</p>
+            <p className="mt-3 text-xs leading-5 text-violet-100">
+              <strong>Stop:</strong> {gate.stopCondition}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_0.85fr]">
+        <div className="rounded-md border border-slate-800 bg-black/20 p-4">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-300">Live QA checks</h3>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {liveQa.map((check) => (
+              <div key={check.id} className="rounded-md border border-slate-800 bg-slate-950/50 p-3">
+                <div className="font-semibold text-slate-100">{check.routeOrSurface}</div>
+                <p className="mt-2 text-xs leading-5 text-slate-300">{check.mustConfirm}</p>
+                <p className="mt-2 text-xs leading-5 text-violet-100">
+                  <strong>Must not expose:</strong> {check.mustNotExpose}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-md border border-red-900/60 bg-red-950/20 p-4">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-red-200">Stop conditions</h3>
+          <ul className="mt-4 space-y-2 text-sm leading-6 text-red-50">
+            {stopConditions.map((condition) => (
+              <li key={condition}>{condition}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

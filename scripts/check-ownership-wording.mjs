@@ -100,6 +100,9 @@ for (const f of files) {
     // skip line comments
     const stripped = line.replace(/^\s*(?:\/\/).*/, "").replace(/\s*\/\/.*$/, "");
     if (!stripped.trim()) return;
+    // Banlist-definition lines intentionally contain blocked phrases so tests
+    // can prove product copy rejects them. Do not treat the list itself as copy.
+    if (/\bforbiddenPattern\s*:/.test(stripped)) return;
     // 3-line window: this line + previous 2 (catches denial sentences that
     // wrap, and array literals whose declaration line says ISNOT / disclaimers).
     const ctx =

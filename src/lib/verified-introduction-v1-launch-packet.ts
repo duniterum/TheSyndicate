@@ -99,7 +99,7 @@ export const VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT = {
       requirement:
         "Review acquisition-commission language, tax/accounting posture, no-agency framing, and payout/escrow explanations.",
       stopCondition:
-        "If copy implies ownership, employment, yield, passive income, ROI, downline, upline, or guaranteed income, stop.",
+        "If copy implies prohibited financial-return, hierarchy, agency, employment, or ownership framing, stop.",
     },
     {
       id: "current-authority-readbacks",
@@ -107,7 +107,7 @@ export const VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT = {
       status: "PENDING_REVIEW",
       requiredBefore: "PUBLIC_RELEASE",
       requirement:
-        "Latest-chain readbacks must confirm SourceRegistryV1, MembershipSaleV3 wiring, source status/terms, and public/default ZERO_SOURCE_ID.",
+        "Use the Verified Introduction release-QA packet to confirm SourceRegistryV1, MembershipSaleV3 wiring, source status/terms, and public/default ZERO_SOURCE_ID at latest chain state.",
       stopCondition:
         "If readback is historical, stale, mismatched, or source is not in the approved status, stop.",
     },
@@ -117,7 +117,7 @@ export const VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT = {
       status: "PENDING_REVIEW",
       requiredBefore: "PUBLIC_RELEASE",
       requirement:
-        "GitHub validation, Replit sync decision, route QA, sitemap/robots/noindex checks, and anti-leakage checks must be green.",
+        "Use the Verified Introduction release-QA packet to run GitHub validation, Replit sync decision, route QA, sitemap/robots/noindex checks, and anti-leakage checks.",
       stopCondition:
         "If /join, /referral, sitemap, robots, or any public route implies launch before approval, stop.",
     },
