@@ -142,7 +142,11 @@ describe("Verified Introduction V1 buyer experience skeleton", () => {
       join(repoRoot, "src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx"),
       "utf8",
     );
+    const reviewRouteSource = readFileSync(join(repoRoot, "src/routes/labs.verified-introduction-review.tsx"), "utf8");
     const joinRouteSource = readFileSync(join(repoRoot, "src/routes/join.tsx"), "utf8");
+    const labsIndexSource = readFileSync(join(repoRoot, "src/routes/labs.index.tsx"), "utf8");
+    const sitemapSource = readFileSync(join(repoRoot, "src/routes/sitemap[.]xml.ts"), "utf8");
+    const robotsSource = readFileSync(join(repoRoot, "public/robots.txt"), "utf8");
     const routeFiles = readdirSync(join(repoRoot, "src/routes"));
 
     expect(VERIFIED_INTRODUCTION_BUYER_SKELETON_BOUNDARY.mountedInPublicJoin).toBe(false);
@@ -152,8 +156,20 @@ describe("Verified Introduction V1 buyer experience skeleton", () => {
     expect(componentSource).not.toMatch(/useWriteContract|writeContract|sendTransaction|buyWithSource|claimReward/);
     expect(componentSource).not.toContain("<button");
     expect(componentSource).not.toContain("href=");
+    expect(reviewRouteSource).toContain('createFileRoute("/labs/verified-introduction-review")');
+    expect(reviewRouteSource).toContain('content: "noindex, nofollow"');
+    expect(reviewRouteSource).toContain('VERIFIED_INTRODUCTION_REVIEW_TOKEN = "VERIFIED_INTRODUCTION_V1"');
+    expect(reviewRouteSource).toContain("Internal Review / Not Public Referral");
+    expect(reviewRouteSource).toContain("LockedReviewSurface");
+    expect(reviewRouteSource).toContain("data-public-source-aware-path");
+    expect(reviewRouteSource).not.toMatch(/useWriteContract|writeContract|sendTransaction|buyWithSource|claimReward|claimSourceEscrow/);
+    expect(reviewRouteSource).not.toContain("<button");
+    expect(reviewRouteSource).not.toContain("href=");
     expect(joinRouteSource).not.toContain("VerifiedIntroductionBuyerExperience");
     expect(joinRouteSource).not.toContain("verified-introduction-v1-buyer-experience");
+    expect(labsIndexSource).not.toContain("/labs/verified-introduction-review");
+    expect(sitemapSource).not.toContain("/labs/verified-introduction-review");
+    expect(robotsSource).toMatch(/Disallow:\s*\/labs/);
     expect(routeFiles.some((file) => file.toLowerCase().includes("alias"))).toBe(false);
     expect(existsSync(join(repoRoot, "src/routes/verified-introduction.tsx"))).toBe(false);
   });

@@ -122,9 +122,11 @@ below names every layer and its key properties. Layer ids are shown in `code`.
   bridge is `docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md` plus
   `src/lib/verified-introduction-v1-execution.ts`. The non-activating buyer
   skeleton is `src/lib/verified-introduction-v1-buyer-experience.ts` and
-  `src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx`. The current
-  Source Attribution decision is still not ready for public product launch:
-  proof exists and direction is approved, but public source links, source dashboards,
+  `src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx`, with an
+  internal direct-URL review surface at
+  `src/routes/labs.verified-introduction-review.tsx`. The current Source
+  Attribution decision is still not ready for public product launch: proof
+  exists and direction is approved, but public source links, source dashboards,
   claim UI, aliases, and public source-aware buys remain unapproved.
 
 ### Knowledge Pipeline (Truth → Events → Signals → Memory → Story)

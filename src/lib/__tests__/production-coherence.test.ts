@@ -1788,7 +1788,10 @@ describe("production coherence guards", () => {
     const executionModel = read("src/lib/verified-introduction-v1-execution.ts");
     const buyerExperienceModel = read("src/lib/verified-introduction-v1-buyer-experience.ts");
     const buyerExperienceComponent = read("src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx");
+    const buyerExperienceRoute = read("src/routes/labs.verified-introduction-review.tsx");
     const joinRoute = read("src/routes/join.tsx");
+    const labsIndex = read("src/routes/labs.index.tsx");
+    const sitemap = read("src/routes/sitemap[.]xml.ts");
     const decisionTest = read("src/lib/__tests__/public-product-decision-gate.test.ts");
     const frameworkTest = read("src/lib/__tests__/source-public-product-framework.test.ts");
     const executionTest = read("src/lib/__tests__/verified-introduction-v1-execution.test.ts");
@@ -1813,6 +1816,7 @@ describe("production coherence guards", () => {
     expect(index).toContain("src/lib/verified-introduction-v1-execution.ts");
     expect(index).toContain("src/lib/verified-introduction-v1-buyer-experience.ts");
     expect(index).toContain("src/components/syndicate/VerifiedIntroductionBuyerExperience.tsx");
+    expect(index).toContain("src/routes/labs.verified-introduction-review.tsx");
     expect(canonKnowledge).toContain("src/lib/public-product-decision-gate.ts");
     expect(canonKnowledge).toContain("src/lib/source-public-product-framework.ts");
     expect(canonKnowledge).toContain("src/lib/verified-introduction-v1-execution.ts");
@@ -1900,7 +1904,19 @@ describe("production coherence guards", () => {
     expect(buyerExperienceComponent).toContain("data-source-aware-public-path");
     expect(buyerExperienceComponent).not.toMatch(/useWriteContract|writeContract|sendTransaction|buyWithSource|claimReward/);
     expect(buyerExperienceComponent).not.toContain("<button");
+    expect(buyerExperienceRoute).toContain('createFileRoute("/labs/verified-introduction-review")');
+    expect(buyerExperienceRoute).toContain("VERIFIED_INTRODUCTION_REVIEW_TOKEN");
+    expect(buyerExperienceRoute).toContain("noindex, nofollow");
+    expect(buyerExperienceRoute).toContain("Internal Review / Not Public Referral");
+    expect(buyerExperienceRoute).toContain("No wallet signing.");
+    expect(buyerExperienceRoute).toContain("No public source-aware buy path.");
+    expect(buyerExperienceRoute).not.toMatch(/useWriteContract|writeContract|sendTransaction|buyWithSource|claimReward|claimSourceEscrow/);
+    expect(buyerExperienceRoute).not.toContain("<button");
+    expect(buyerExperienceRoute).not.toContain("href=");
     expect(joinRoute).not.toContain("VerifiedIntroductionBuyerExperience");
+    expect(joinRoute).not.toContain("labs/verified-introduction-review");
+    expect(labsIndex).not.toContain("/labs/verified-introduction-review");
+    expect(sitemap).not.toContain("/labs/verified-introduction-review");
     expect(decisionTest).toContain("proof, not public product readiness");
     expect(frameworkTest).toContain("recommends a constrained V1 shape without approving launch");
     expect(executionTest).toContain("converts founder direction approval into non-activating implementation authority");
@@ -1915,6 +1931,7 @@ describe("production coherence guards", () => {
     expect(capability).toContain("docs/VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE.md");
     expect(capability).toContain("src/lib/verified-introduction-v1-buyer-experience.ts");
     expect(capability).toContain("VerifiedIntroductionBuyerExperience.tsx");
+    expect(capability).toContain("src/routes/labs.verified-introduction-review.tsx");
     expect(capability).toContain("invite-only Verified Introduction V1");
 
     const gateSurface = [
@@ -1927,6 +1944,7 @@ describe("production coherence guards", () => {
       executionModel,
       buyerExperienceModel,
       buyerExperienceComponent,
+      buyerExperienceRoute,
     ].join("\n");
     expect(gateSurface).toContain("ZERO_SOURCE_ID");
     expect(gateSurface).toContain("Do not activate public referral");

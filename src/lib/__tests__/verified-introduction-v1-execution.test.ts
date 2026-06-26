@@ -44,15 +44,19 @@ describe("Verified Introduction V1 execution bridge", () => {
     expect(phaseIds).toEqual([
       "phase-1-non-activating-ux-spec",
       "phase-2-internal-implementation-skeleton",
-      "phase-3-source-launch-packet",
-      "phase-4-replit-production-qa",
-      "phase-5-founder-launch-decision",
+      "phase-3-internal-review-surface",
+      "phase-4-source-launch-packet",
+      "phase-5-replit-production-qa",
+      "phase-6-founder-launch-decision",
     ]);
     expect(bridge.phases[0].status).toBe("AUTHORIZED_NOW");
-    expect(bridge.phases[1].status).toBe("NEXT_SAFE_SPRINT");
+    expect(bridge.phases[1].status).toBe("DONE_ENOUGH");
+    expect(bridge.phases[2].status).toBe("DONE_ENOUGH");
     expect(safeNow).toContain("buyer preview");
     expect(safeNow).toContain("Failure-state components");
+    expect(safeNow).toContain("Noindex internal review surface");
     expect(getVerifiedIntroductionNextSprint()).toContain("non-activating");
+    expect(getVerifiedIntroductionNextSprint()).toContain("launch-packet");
     expect(getVerifiedIntroductionNextSprint()).toContain("ZERO_SOURCE_ID");
     expect(forbidden).toContain("No public source-aware buy path.");
     expect(forbidden).toContain("No claim UI.");

@@ -46,6 +46,7 @@ import { Route as LabsIndexRouteImport } from './routes/labs.index'
 import { Route as WalletAddressRouteImport } from './routes/wallet.$address'
 import { Route as MilestoneIdRouteImport } from './routes/milestone.$id'
 import { Route as MemberNumberRouteImport } from './routes/member.$number'
+import { Route as LabsVerifiedIntroductionReviewRouteImport } from './routes/labs.verified-introduction-review'
 import { Route as LabsSourceAttributionTestRouteImport } from './routes/labs.source-attribution-test'
 import { Route as LabsSignalsRouteImport } from './routes/labs.signals'
 import { Route as LabsProtocolMemoryRouteImport } from './routes/labs.protocol-memory'
@@ -259,6 +260,12 @@ const MemberNumberRoute = MemberNumberRouteImport.update({
   path: '/member/$number',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LabsVerifiedIntroductionReviewRoute =
+  LabsVerifiedIntroductionReviewRouteImport.update({
+    id: '/verified-introduction-review',
+    path: '/verified-introduction-review',
+    getParentRoute: () => LabsRoute,
+  } as any)
 const LabsSourceAttributionTestRoute =
   LabsSourceAttributionTestRouteImport.update({
     id: '/source-attribution-test',
@@ -455,6 +462,7 @@ export interface FileRoutesByFullPath {
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
   '/labs/source-attribution-test': typeof LabsSourceAttributionTestRoute
+  '/labs/verified-introduction-review': typeof LabsVerifiedIntroductionReviewRoute
   '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -520,6 +528,7 @@ export interface FileRoutesByTo {
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
   '/labs/source-attribution-test': typeof LabsSourceAttributionTestRoute
+  '/labs/verified-introduction-review': typeof LabsVerifiedIntroductionReviewRoute
   '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -587,6 +596,7 @@ export interface FileRoutesById {
   '/labs/protocol-memory': typeof LabsProtocolMemoryRoute
   '/labs/signals': typeof LabsSignalsRoute
   '/labs/source-attribution-test': typeof LabsSourceAttributionTestRoute
+  '/labs/verified-introduction-review': typeof LabsVerifiedIntroductionReviewRoute
   '/member/$number': typeof MemberNumberRoute
   '/milestone/$id': typeof MilestoneIdRoute
   '/wallet/$address': typeof WalletAddressRoute
@@ -655,6 +665,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-memory'
     | '/labs/signals'
     | '/labs/source-attribution-test'
+    | '/labs/verified-introduction-review'
     | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -720,6 +731,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-memory'
     | '/labs/signals'
     | '/labs/source-attribution-test'
+    | '/labs/verified-introduction-review'
     | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -786,6 +798,7 @@ export interface FileRouteTypes {
     | '/labs/protocol-memory'
     | '/labs/signals'
     | '/labs/source-attribution-test'
+    | '/labs/verified-introduction-review'
     | '/member/$number'
     | '/milestone/$id'
     | '/wallet/$address'
@@ -1106,6 +1119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MemberNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/labs/verified-introduction-review': {
+      id: '/labs/verified-introduction-review'
+      path: '/verified-introduction-review'
+      fullPath: '/labs/verified-introduction-review'
+      preLoaderRoute: typeof LabsVerifiedIntroductionReviewRouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/source-attribution-test': {
       id: '/labs/source-attribution-test'
       path: '/source-attribution-test'
@@ -1329,6 +1349,7 @@ interface LabsRouteChildren {
   LabsProtocolMemoryRoute: typeof LabsProtocolMemoryRoute
   LabsSignalsRoute: typeof LabsSignalsRoute
   LabsSourceAttributionTestRoute: typeof LabsSourceAttributionTestRoute
+  LabsVerifiedIntroductionReviewRoute: typeof LabsVerifiedIntroductionReviewRoute
   LabsIndexRoute: typeof LabsIndexRoute
 }
 
@@ -1351,6 +1372,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsProtocolMemoryRoute: LabsProtocolMemoryRoute,
   LabsSignalsRoute: LabsSignalsRoute,
   LabsSourceAttributionTestRoute: LabsSourceAttributionTestRoute,
+  LabsVerifiedIntroductionReviewRoute: LabsVerifiedIntroductionReviewRoute,
   LabsIndexRoute: LabsIndexRoute,
 }
 

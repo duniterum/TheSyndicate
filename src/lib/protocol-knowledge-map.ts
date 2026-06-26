@@ -315,7 +315,7 @@ export const PROTOCOL_LAYERS: ProtocolLayer[] = [
     promotionPath:
       "Source readback -> source-attributed receipt proof -> protocol lifecycle proof -> Institutional Register memory; public referral remains a separate product decision.",
     publicSurfaces: ["/referral", "/registry", "/activity", "/transparency"],
-    internalSurfaces: ["/labs/source-attribution-test"],
+    internalSurfaces: ["/labs/source-attribution-test", "/labs/verified-introduction-review"],
     status: "partial",
     statusNote:
       "One internal SourceRegistryV1 source record exists, completed one controlled source-attributed MembershipSaleV3 buy, and returned to PAUSED; public referral, claim UI, source dashboard, and public source-aware buy paths remain inactive. Evidence: src/lib/source-policy-observability.ts, src/lib/source-real-condition-test.ts.",

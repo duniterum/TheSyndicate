@@ -46,7 +46,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.implementationAuthority,
   launchPosture: SOURCE_PUBLIC_PRODUCT_V1_RECOMMENDATION.launchPosture,
   publicJoinDefaultSourceId: ZERO_SOURCE_ID,
-  currentPhase: "PHASE_1_NON_ACTIVATING_UX_SPEC_AND_GUARDS",
+  currentPhase: "PHASE_3_INTERNAL_REVIEW_SURFACE_DONE_ENOUGH",
   priorityOrder: VERIFIED_INTRODUCTION_PRIORITY_ORDER,
   phases: [
     {
@@ -70,7 +70,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     {
       id: "phase-2-internal-implementation-skeleton",
       title: "Internal implementation skeleton",
-      status: "NEXT_SAFE_SPRINT",
+      status: "DONE_ENOUGH",
       purpose:
         "Build read-only or hard-gated components that render source preview, clear-source, and failure states without unlocking public action.",
       output:
@@ -85,7 +85,24 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
       ],
     },
     {
-      id: "phase-3-source-launch-packet",
+      id: "phase-3-internal-review-surface",
+      title: "Internal review surface",
+      status: "DONE_ENOUGH",
+      purpose:
+        "Make the non-activating buyer skeleton reviewable by founder/operators without public launch authority.",
+      output:
+        "A noindex, direct-URL /labs review surface with exact review query, scenario matrix, and no wallet controls.",
+      blocks: [
+        "Public launch inference",
+        "User-actionable source controls",
+      ],
+      mustNotDo: [
+        "Do not link from public navigation or sitemap.",
+        "Do not add wallet write hooks, buttons, source links, aliases, claim UI, or source dashboards.",
+      ],
+    },
+    {
+      id: "phase-4-source-launch-packet",
       title: "Source packet / launch packet",
       status: "FOUNDER_APPROVAL_REQUIRED",
       purpose:
@@ -103,7 +120,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
       ],
     },
     {
-      id: "phase-4-replit-production-qa",
+      id: "phase-5-replit-production-qa",
       title: "Replit / production QA",
       status: "LATER_RUNTIME_VISIBLE",
       purpose:
@@ -117,7 +134,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
       ],
     },
     {
-      id: "phase-5-founder-launch-decision",
+      id: "phase-6-founder-launch-decision",
       title: "Founder launch decision",
       status: "FOUNDER_APPROVAL_REQUIRED",
       purpose:
@@ -195,6 +212,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     "Non-activating buyer preview and clear-source models.",
     "Read-only or test-only source status components.",
     "Failure-state components and tests.",
+    "Noindex internal review surface with exact review query.",
     "Production-coherence guards that prevent public /join source drift.",
     "Docs that turn approved direction into execution steps without launch authority.",
   ],
@@ -235,7 +253,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
 } as const;
 
 export function getVerifiedIntroductionNextSprint(): string {
-  return "Build the non-activating Verified Introduction buyer preview, clear-source, and failure-state skeleton behind tests only; keep public /join on ZERO_SOURCE_ID.";
+  return "Review the noindex non-activating Verified Introduction internal surface, then choose launch-packet design, anti-abuse/disclosure hardening, or a separately approved runtime integration plan; keep public /join on ZERO_SOURCE_ID.";
 }
 
 export function isVerifiedIntroductionLaunchBlocked(): boolean {
