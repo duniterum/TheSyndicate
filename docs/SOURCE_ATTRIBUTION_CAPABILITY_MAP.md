@@ -341,11 +341,13 @@ Still needed:
   `src/lib/verified-introduction-v1-launch-packet.ts`.
 - Review of the anti-abuse and source eligibility draft model in
   `src/lib/verified-introduction-v1-anti-abuse.ts`.
-- Legal/product copy posture for any public exposure.
+- Review of the buyer disclosure/legal-accounting draft model in
+  `src/lib/verified-introduction-v1-disclosure.ts`.
+- Final legal/product copy posture for any public exposure.
 - Founder-approved anti-abuse, source eligibility, prohibited-promotion, and
   source onboarding rules before any member-introduction UX.
-- Buyer disclosure, source preview, and clear-source UX before any wallet
-  signature can carry a non-zero sourceId.
+- Founder-approved buyer disclosure, source preview, and clear-source UX before
+  any wallet signature can carry a non-zero sourceId.
 - Release and production QA for any future public source-aware path.
 
 ## Future Contract Candidates

@@ -215,6 +215,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
     "Failure-state components and tests.",
     "Noindex internal review surface with exact review query.",
     "Anti-abuse and source eligibility draft review model.",
+    "Buyer disclosure and legal/accounting draft review model.",
     "Production-coherence guards that prevent public /join source drift.",
     "Docs that turn approved direction into execution steps without launch authority.",
   ],
@@ -255,7 +256,7 @@ export const VERIFIED_INTRODUCTION_V1_EXECUTION_BRIDGE = {
 } as const;
 
 export function getVerifiedIntroductionNextSprint(): string {
-  return "Review the noindex Verified Introduction internal surface, launch packet draft, and anti-abuse/source eligibility model together, then choose source-eligibility founder decisions, disclosure/legal/accounting review, current-authority readback/release QA, or a separately approved runtime integration plan; keep public /join on ZERO_SOURCE_ID.";
+  return "Review the noindex Verified Introduction internal surface, launch packet draft, anti-abuse/source eligibility model, and buyer disclosure/legal-accounting model together, then choose current-authority readback/release QA or a separately approved runtime integration plan; keep public /join on ZERO_SOURCE_ID.";
 }
 
 export function isVerifiedIntroductionLaunchBlocked(): boolean {

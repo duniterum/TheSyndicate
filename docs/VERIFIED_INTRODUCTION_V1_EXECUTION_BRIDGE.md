@@ -31,6 +31,9 @@ Launch packet draft:
 Anti-abuse/source eligibility review:
 `src/lib/verified-introduction-v1-anti-abuse.ts`.
 
+Buyer disclosure/legal-accounting review:
+`src/lib/verified-introduction-v1-disclosure.ts`.
+
 Decision framework: `docs/SOURCE_PUBLIC_PRODUCT_DECISION_FRAMEWORK.md`.
 
 Founder review record: `docs/SOURCE_PUBLIC_PRODUCT_FOUNDER_REVIEW_PACKET.md`.
@@ -67,6 +70,7 @@ source-aware path exists.
 - Non-activating buyer preview and clear-source models.
 - Read-only or test-only source status components.
 - Failure-state components and tests.
+- Buyer disclosure and legal/accounting draft review model.
 - Production-coherence guards that prevent public `/join` source drift.
 - Documentation that turns approved direction into implementation steps without
   launch authority.
@@ -92,7 +96,7 @@ non-zero default sourceId on `/join`.
 
 ## What Stays Docs-Only Until Further Approval
 
-- Legal/accounting acquisition-commission copy.
+- Final legal/accounting acquisition-commission signoff.
 - Prohibited promotion acknowledgments.
 - Source onboarding policy for real external sources.
 - Claim/escrow user-facing policy.
@@ -156,16 +160,17 @@ The following are done enough for this phase:
 - noindex internal review surface.
 - launch packet draft boundary.
 - anti-abuse/source eligibility draft review model.
+- buyer disclosure/legal-accounting draft review model.
 
 Do not keep re-litigating those before building the next safe slice.
 
 ## Next Exact Sprint
 
 Review the non-activating Verified Introduction buyer skeleton at the internal
-review surface and the launch packet draft together, then decide the next safe
-slice: founder review of source eligibility, disclosure/legal/accounting review,
-current-authority readback/release QA packet, or a separately approved runtime
-integration plan.
+review surface, launch packet draft, anti-abuse/source eligibility model, and
+buyer disclosure/legal-accounting model together, then decide the next safe
+slice: current-authority readback/release QA packet or a separately approved
+runtime integration plan.
 
 The next sprint must not add navigation, sitemap entries, aliases, claim UI,
 source dashboard, public source links, or a public source-aware buy path unless

@@ -57,9 +57,12 @@ describe("Verified Introduction V1 execution bridge", () => {
     expect(safeNow).toContain("Failure-state components");
     expect(safeNow).toContain("Noindex internal review surface");
     expect(safeNow).toContain("Anti-abuse and source eligibility draft review model");
+    expect(safeNow).toContain("Buyer disclosure and legal/accounting draft review model");
     expect(getVerifiedIntroductionNextSprint()).toContain("launch packet draft");
     expect(getVerifiedIntroductionNextSprint()).toContain("anti-abuse");
     expect(getVerifiedIntroductionNextSprint()).toContain("source eligibility model");
+    expect(getVerifiedIntroductionNextSprint()).toContain("buyer disclosure/legal-accounting model");
+    expect(getVerifiedIntroductionNextSprint()).toContain("current-authority readback/release QA");
     expect(getVerifiedIntroductionNextSprint()).toContain("ZERO_SOURCE_ID");
     expect(forbidden).toContain("No public source-aware buy path.");
     expect(forbidden).toContain("No claim UI.");

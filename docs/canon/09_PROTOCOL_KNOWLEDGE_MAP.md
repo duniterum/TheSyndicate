@@ -128,11 +128,13 @@ below names every layer and its key properties. Layer ids are shown in `code`.
   boundary is `docs/VERIFIED_INTRODUCTION_V1_LAUNCH_PACKET_DRAFT.md` and
   `src/lib/verified-introduction-v1-launch-packet.ts`. Anti-abuse and source
   eligibility review now live in `src/lib/verified-introduction-v1-anti-abuse.ts`
-  as draft review facts only. The current Source Attribution decision is still
-  not ready for public product launch: proof exists, direction is approved, and
-  the draft boundary exists, but source eligibility, disclosure/legal/accounting,
-  current-authority release QA, public source links, source dashboards, claim UI,
-  aliases, and public source-aware buys remain unapproved.
+  as draft review facts only. Buyer disclosure/legal-accounting review now lives
+  in `src/lib/verified-introduction-v1-disclosure.ts` as draft review facts only.
+  The current Source Attribution decision is still not ready for public product
+  launch: proof exists, direction is approved, and the draft boundary exists,
+  but current-authority release QA, final founder approval, public source links,
+  source dashboards, claim UI, aliases, and public source-aware buys remain
+  unapproved.
 
 ### Knowledge Pipeline (Truth → Events → Signals → Memory → Story)
 

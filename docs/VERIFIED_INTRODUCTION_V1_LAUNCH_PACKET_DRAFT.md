@@ -16,6 +16,9 @@ Machine-readable packet:
 Anti-abuse/source eligibility review:
 `src/lib/verified-introduction-v1-anti-abuse.ts`.
 
+Buyer disclosure/legal-accounting review:
+`src/lib/verified-introduction-v1-disclosure.ts`.
+
 Internal review surface:
 `/labs/verified-introduction-review?review=VERIFIED_INTRODUCTION_V1`.
 
@@ -27,6 +30,8 @@ Internal review surface:
   and absent from the sitemap.
 - A draft anti-abuse/source eligibility model now defines the major fail-closed
   states for founder/operator review.
+- A draft buyer disclosure/legal-accounting model now defines required
+  before-signature copy, accounting labels, forbidden copy, and stop conditions.
 - Public `/join` remains `ZERO_SOURCE_ID`.
 - `/referral` remains inactive.
 - Claim UI, source dashboards, aliases, public source links, and public
@@ -52,8 +57,8 @@ current-authority readbacks, release QA, and live-site anti-leakage checks.
 | Internal buyer review surface | SATISFIED FOR REVIEW | Design review | Stop if the surface appears in public nav, sitemap, or exposes controls. |
 | Founder launch approval | PENDING FOUNDER APPROVAL | Public release | Direction approval, proof, Register memory, Chronicle review, or this draft cannot authorize launch. |
 | Source eligibility policy | PENDING REVIEW | Implementation | Review `src/lib/verified-introduction-v1-anti-abuse.ts`; stop if source class, manual approval, seated-member rules, self-source blocking, or revocation operations are ambiguous. |
-| Buyer disclosure policy | PENDING REVIEW | Implementation | Stop if the buyer cannot understand and clear attribution before signing. |
-| Legal/accounting review | PENDING REVIEW | Public release | Stop if copy implies ownership, employment, yield, passive income, ROI, downline, upline, or guaranteed income. |
+| Buyer disclosure policy | PENDING REVIEW | Implementation | Review `src/lib/verified-introduction-v1-disclosure.ts`; stop if the buyer cannot understand source identity, Acquisition Commission, Net USDC Routed, clear-source behavior, or approval-vs-buy separation before signing. |
+| Legal/accounting review | PENDING REVIEW | Public release | Review `src/lib/verified-introduction-v1-disclosure.ts`; stop if copy implies ownership, employment, yield, passive income, ROI, downline, upline, guaranteed income, claim balances, or source dashboards. |
 | Current-authority readbacks | PENDING REVIEW | Public release | Stop if readback is historical, stale, mismatched, or source state is not approved. |
 | Release and live QA | PENDING REVIEW | Public release | Stop if `/join`, `/referral`, sitemap, robots, or any public route implies launch before approval. |
 | Claim/dashboard/alias exclusions | BLOCKED BY DESIGN | Public release | If any excluded surface becomes necessary, create a separate founder-approved product sprint first. |
@@ -90,9 +95,9 @@ Review the internal buyer surface and this launch packet draft together.
 
 After review, choose exactly one next slice:
 
-1. anti-abuse and source eligibility hardening,
-2. buyer disclosure and legal/accounting copy review,
-3. current-authority readback and release QA packet,
+1. founder/operator review of source eligibility and disclosure models,
+2. current-authority readback and release QA packet,
+3. final founder launch packet assembly,
 4. or defer public-product work and keep Verified Introduction at the review
    boundary.
 

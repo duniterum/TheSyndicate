@@ -11,6 +11,12 @@ import {
   type VerifiedIntroductionAbuseState,
   type VerifiedIntroductionEligibilityRule,
 } from "@/lib/verified-introduction-v1-anti-abuse";
+import {
+  VERIFIED_INTRODUCTION_V1_DISCLOSURE_REVIEW,
+  type VerifiedIntroductionAccountingLabel,
+  type VerifiedIntroductionDisclosureItem,
+  type VerifiedIntroductionForbiddenCopyRule,
+} from "@/lib/verified-introduction-v1-disclosure";
 
 export const VERIFIED_INTRODUCTION_REVIEW_TOKEN = "VERIFIED_INTRODUCTION_V1";
 
@@ -73,6 +79,11 @@ function VerifiedIntroductionReviewRoute() {
         <ReviewHeader />
         <BoundaryStrip />
         <VerifiedIntroductionBuyerExperience />
+        <DisclosureReview
+          accountingLabels={VERIFIED_INTRODUCTION_V1_DISCLOSURE_REVIEW.accountingLabels}
+          disclosureItems={VERIFIED_INTRODUCTION_V1_DISCLOSURE_REVIEW.disclosureItems}
+          forbiddenCopy={VERIFIED_INTRODUCTION_V1_DISCLOSURE_REVIEW.forbiddenCopy}
+        />
         <ScenarioMatrix scenarios={VERIFIED_INTRODUCTION_BUYER_SCENARIOS} />
         <AntiAbuseReview
           rules={VERIFIED_INTRODUCTION_V1_ANTI_ABUSE_REVIEW.eligibilityRules}
@@ -198,6 +209,84 @@ function ScenarioMatrix({ scenarios }: { scenarios: readonly VerifiedIntroductio
   );
 }
 
+function DisclosureReview({
+  accountingLabels,
+  disclosureItems,
+  forbiddenCopy,
+}: {
+  accountingLabels: readonly VerifiedIntroductionAccountingLabel[];
+  disclosureItems: readonly VerifiedIntroductionDisclosureItem[];
+  forbiddenCopy: readonly VerifiedIntroductionForbiddenCopyRule[];
+}) {
+  return (
+    <section className="rounded-lg border border-slate-800 bg-slate-900/70 p-5">
+      <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">
+            Buyer Disclosure / Accounting Review
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold text-white">The buyer must understand attribution before signing.</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+            This draft copy model standardizes the labels and stop conditions for a future Verified Introduction
+            purchase without approving public controls.
+          </p>
+        </div>
+        <div className="rounded-md border border-cyan-600/50 bg-cyan-950/30 px-3 py-2 text-sm font-semibold text-cyan-100">
+          Draft review - not legal or launch approval
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3 lg:grid-cols-4">
+        {accountingLabels.map((label) => (
+          <div key={label.id} className="rounded-md border border-slate-800 bg-black/20 p-4">
+            <h3 className="text-sm font-semibold text-white">{label.label}</h3>
+            <p className="mt-3 text-sm leading-6 text-slate-300">{label.definition}</p>
+            <p className="mt-3 text-xs leading-5 text-cyan-100">
+              <strong>Must not mean:</strong> {label.mustNotMean}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 overflow-x-auto">
+        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
+          <thead className="text-xs uppercase tracking-[0.14em] text-slate-500">
+            <tr>
+              <th className="border-b border-slate-800 py-3 pr-4">Disclosure</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Buyer must understand</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Required copy</th>
+              <th className="border-b border-slate-800 py-3 pr-4">Stop condition</th>
+            </tr>
+          </thead>
+          <tbody>
+            {disclosureItems.map((item) => (
+              <tr key={item.id} className="border-b border-slate-900/80 align-top">
+                <td className="py-3 pr-4">
+                  <div className="font-semibold text-slate-100">{item.label}</div>
+                  <StatusPill value={item.status} />
+                </td>
+                <td className="py-3 pr-4 text-slate-300">{item.buyerMustUnderstand}</td>
+                <td className="py-3 pr-4 text-slate-300">{item.requiredCopy}</td>
+                <td className="py-3 pr-4 text-slate-300">{item.stopCondition}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+        {forbiddenCopy.map((rule) => (
+          <div key={rule.id} className="rounded-md border border-red-900/60 bg-red-950/20 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-red-200">Forbidden copy</div>
+            <p className="mt-2 text-sm text-red-50">{rule.forbiddenPattern}</p>
+            <p className="mt-3 text-xs leading-5 text-slate-300">{rule.reason}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function AntiAbuseReview({
   rules,
   states,
@@ -299,8 +388,11 @@ function LaunchBoundary() {
 }
 
 function StatusPill({ value }: { value: string }) {
-  const active = value === "PREVIEW_ALLOWED";
-  const pending = value === "APPROVAL_NEEDED" || value === "APPROVAL_COMPLETE_BUY_PENDING";
+  const active = value === "PREVIEW_ALLOWED" || value === "SATISFIED_FOR_REVIEW";
+  const pending =
+    value === "APPROVAL_NEEDED" ||
+    value === "APPROVAL_COMPLETE_BUY_PENDING" ||
+    value.startsWith("PENDING_");
   const stop = value === "BUY_SUBMITTED_STOP";
   const tone = active
     ? "border-emerald-500/50 bg-emerald-950/40 text-emerald-100"
