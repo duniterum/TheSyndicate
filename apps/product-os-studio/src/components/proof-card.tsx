@@ -21,7 +21,7 @@ export type ProofCardData = {
   lines?: { label: string; value: string }[];
   accent?: Accent;
   badge?: React.ComponentProps<typeof StatusBadge>["status"];
-  /** Show the canonical 70/20/10 routing bar. */
+  /** Show the canonical 70% / 20% / 10% routing bar. */
   routing?: boolean;
   /** Small footer caption, e.g. a proof reference. */
   footnote?: string;

@@ -30,7 +30,9 @@
 - **Everything else is SIMULATED prototype data**: balances, prototype addresses, hashes,
   receipts, activity, recognition standing, the burn aggregate, chronicle entries, member identity.
 
-See `docs/STUDIO_KNOWN_SIMULATIONS.md` for the definitive line-by-line list.
+See `docs/STUDIO_KNOWN_SIMULATIONS.md` for the definitive line-by-line list, and
+`docs/STUDIO_COVERAGE_RECONCILIATION.md` for the coverage audit against the original
+prototype paper and the production porting map.
 
 ## Isolation status
 

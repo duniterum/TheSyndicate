@@ -6,7 +6,7 @@
 // memory, and WHERE each step surfaces in the app.
 //
 // TRUTH POSTURE
-// - Canonical truths are accurate: routing is 70/20/10, ZERO_SOURCE_ID is the default
+// - Canonical truths are accurate: routing is 70% / 20% / 10%, ZERO_SOURCE_ID is the default
 //   source, the doctrine line is verbatim, and module live/future statuses match the repo.
 // - Every concrete instance below (specific events, candidates, chronicle entries,
 //   contributor standing) is SIMULATED prototype data. Nothing here reads a live chain,
@@ -623,7 +623,7 @@ export function getTruthDrift(): TruthDriftAlert[] {
     }
   });
 
-  // 2. Canonical routing split integrity (must stay 70 / 20 / 10 summing to 100).
+  // 2. Canonical routing split integrity (must stay 70% / 20% / 10% summing to 100).
   const splitSum = ROUTING_SPLIT.vault + ROUTING_SPLIT.liquidity + ROUTING_SPLIT.operations;
   const splitCanonical =
     ROUTING_SPLIT.vault === 70 && ROUTING_SPLIT.liquidity === 20 && ROUTING_SPLIT.operations === 10;
