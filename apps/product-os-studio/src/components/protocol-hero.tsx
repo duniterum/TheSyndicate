@@ -238,11 +238,9 @@ export function ProtocolHero() {
           >
             <div className="flex items-center justify-between gap-3 mb-6">
               <div className="flex items-center gap-2">
-                <span
-                  className={`w-2 h-2 rounded-full bg-green-500 ${noMotion ? "" : "animate-pulse"}`}
-                />
+                <span className="w-2 h-2 rounded-full bg-primary/70" />
                 <h2 className="text-sm font-semibold text-foreground">
-                  Live capital routing
+                  Capital routing preview
                 </h2>
               </div>
               <StatusBadge status="SIMULATED PROTOTYPE" />

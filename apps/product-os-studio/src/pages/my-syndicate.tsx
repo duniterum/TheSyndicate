@@ -6,6 +6,7 @@ import { ShareDialog, type SharePayload } from "@/components/share-dialog";
 import { MOCK_DATA, routeUsdc } from "@/lib/mock-data";
 import { RETURN_SURFACE } from "@/lib/protocol-graph";
 import { useApp } from "@/lib/store";
+import { WalletStatePanel } from "@/components/wallet/wallet-state-panel";
 import { Link } from "wouter";
 import {
   ArrowRight,
@@ -178,6 +179,19 @@ export default function MySyndicate() {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* Real wallet reality layer — SEPARATE from the simulated seat & balances above */}
+      <div className="space-y-2">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          Real wallet (read-only)
+        </h2>
+        <p className="text-xs text-muted-foreground max-w-2xl">
+          Your real wallet, read-only and clearly separate from the simulated seat, balances, and receipts
+          above. Connect to read your live SYN balance through your own provider — nothing here is wired to
+          write or move funds.
+        </p>
+        <WalletStatePanel />
       </div>
 
       {/* Routing proof + Recognition axes */}

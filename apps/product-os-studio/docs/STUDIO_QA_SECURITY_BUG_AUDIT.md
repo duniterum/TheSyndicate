@@ -79,8 +79,11 @@ No other safe fixes were warranted — see deferrals below.
 - **Proof of Fire / burn.** `PROOF_OF_FIRE_001` and `SYN_BURN_ADDRESS` are read-only
   production proof; all burn controls ("Submit Proposal (Simulated)", founder "Approve")
   are toast-only and explicitly simulated. No live "Burn now" control.
-- **Dead buttons.** SeatRecord claim, referral "Claim Escrowed Payouts", DEX/LP/swap
-  actions, and wallet network-switch are all disabled or toast-only with clear reasons.
+- **Dead buttons.** SeatRecord claim, referral "Claim Escrowed Payouts", and DEX/LP/swap
+  actions are all disabled or toast-only with clear reasons. The real wallet layer has **no**
+  network-switch control at all — wrong-network is manual guidance (the Studio never calls
+  `wallet_switchEthereumChain` / `wallet_addEthereumChain`); only the simulated join flow keeps
+  a clearly-labeled "Switch Network (Simulated)" toast.
 - **Referral example link.** `https://syndicate.money/join?source=0xABCD...1234` carries
   V1 CANDIDATE + SIMULATED PROTOTYPE badges and an explicit "Not Live Today / illustrative
   only" disclaimer, and uses an obvious placeholder source id. Adequately marked.

@@ -5,6 +5,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Layers, Fingerprint, Search } from "lucide-react";
 import { ContractCopyRow } from "@/components/contract-copy-row";
+import { CanonicalContractsList } from "@/components/canonical-contracts";
+import { PostureLegend } from "@/components/posture-legend";
 
 export default function Registry() {
   return (
@@ -132,6 +134,36 @@ export default function Registry() {
           {MOCK_DATA.contractLayers.map((layer) => (
             <ContractCopyRow key={layer.name} layer={layer} />
           ))}
+        </CardContent>
+      </Card>
+
+      <Card className="bg-white/5 border-white/10">
+        <CardHeader className="pb-3 border-b border-white/5">
+          <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
+            <Layers className="w-4 h-4" /> Canonical Contract Registry
+            <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4 space-y-4">
+          <p className="text-sm text-muted-foreground">
+            The full set of canonical production addresses from the porting map — the SYN accounting
+            unit and USDC, the active membership engine, the routing wallets behind the 70% / 20% / 10%
+            split, the Trader Joe SYN/USDC pair, the Archive, and the Proof-of-Fire burn sink. Each is
+            READ-ONLY PRODUCTION PROOF: a copyable canonical address with a read-only explorer link.
+            Nothing here is wired — a live read or write is ADAPTER REQUIRED.
+          </p>
+          <CanonicalContractsList />
+        </CardContent>
+      </Card>
+
+      <Card className="bg-white/5 border-white/10">
+        <CardHeader className="pb-3 border-b border-white/5">
+          <CardTitle className="text-base">Data posture legend</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4">
+          <PostureLegend
+            postures={["LIVE_READ", "READ_ONLY_PROOF", "ADAPTER_REQUIRED", "NOT_LIVE", "EXTERNAL"]}
+          />
         </CardContent>
       </Card>
     </div>

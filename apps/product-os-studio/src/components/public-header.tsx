@@ -12,6 +12,7 @@ import { Moon, Sun, Shield, Menu, X, ChevronDown, ExternalLink } from "lucide-re
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { PROOF_SURFACES } from "@/lib/surfaces";
+import { WalletChip } from "@/components/wallet/wallet-chip";
 
 // Public proof surfaces are open, read-only links — selecting one NEVER connects
 // a wallet. Personal/member surfaces are reached via the connection-aware CTAs.
@@ -134,6 +135,7 @@ export function PublicHeader() {
           <Button variant="ghost" size="icon" onClick={toggleTheme} data-testid="btn-theme">
             {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </Button>
+          <WalletChip className="hidden md:inline-flex" />
           {isConnected ? (
             <div className="hidden sm:flex items-center gap-2">
               <Button variant="ghost" onClick={() => goMember("/member/my-syndicate")} data-testid="btn-my-syndicate">My Syndicate</Button>
@@ -155,6 +157,10 @@ export function PublicHeader() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 top-16 bg-background border-t border-white/5 lg:hidden overflow-y-auto z-40 p-4">
           <div className="flex flex-col gap-4 text-lg font-medium">
+            <div className="flex items-center justify-between gap-2 pb-2 border-b border-white/5">
+              <span className="text-xs uppercase tracking-wider text-muted-foreground/60">Real wallet · read-only</span>
+              <WalletChip />
+            </div>
             {isConnected ? (
               <>
                 <button onClick={() => goMember("/member/my-syndicate")} className="text-left py-3 border-b border-white/5" data-testid="mobile-nav-mysyndicate">My Syndicate</button>

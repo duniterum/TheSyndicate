@@ -4,6 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tool
 
 export type Status = 
   | "LIVE NOW"
+  | "LIVE READ"
   | "READ-ONLY"
   | "READ-ONLY PRODUCTION PROOF"
   | "PAUSED"
@@ -11,6 +12,7 @@ export type Status =
   | "V1 CANDIDATE"
   | "V2 CANDIDATE"
   | "FUTURE"
+  | "NOT LIVE"
   | "BLOCKED NOW"
   | "SIMULATED PROTOTYPE"
   | "PROTOTYPE ONLY"
@@ -21,6 +23,9 @@ export type Status =
   | "BACKEND REQUIRED"
   | "ADAPTER REQUIRED"
   | "NOT WIRED"
+  | "EXTERNAL"
+  | "MEMBER-ONLY"
+  | "FOUNDER-ONLY"
   | "NOT PRODUCTION AUTH";
 
 const STATUS_TOOLTIPS: Partial<Record<Status, string>> = {
@@ -40,6 +45,11 @@ const STATUS_TOOLTIPS: Partial<Record<Status, string>> = {
   "PROTOTYPE WALLET STATE": "Simulated wallet/connection state — not a real wallet.",
   "ADAPTER REQUIRED": "Needs a Codex production adapter before it can be real.",
   "NOT WIRED": "No live interaction is wired in the Studio.",
+  "LIVE READ": "Live, read-only value read through the connected wallet's own provider. No writes, no transactions.",
+  "NOT LIVE": "Not active today. Shown for completeness — no live data or execution.",
+  "EXTERNAL": "Opens a canonical third-party tool in a new tab. Not part of the Studio.",
+  "MEMBER-ONLY": "Member surface in the prototype role demo — simulated gating, not production auth.",
+  "FOUNDER-ONLY": "Founder / operator surface — simulated gating, not production authentication.",
   "NOT PRODUCTION AUTH": "Frontend role/connection is not production authority or security."
 };
 
@@ -63,6 +73,11 @@ export function StatusBadge({ status, className, showTooltip = true }: { status:
     "BACKEND REQUIRED": "bg-neutral-500/10 text-neutral-500 border-neutral-500/20",
     "ADAPTER REQUIRED": "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
     "NOT WIRED": "bg-neutral-500/10 text-neutral-400 border-neutral-500/20",
+    "LIVE READ": "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    "NOT LIVE": "bg-neutral-500/10 text-neutral-400 border-neutral-500/20",
+    "EXTERNAL": "bg-violet-500/10 text-violet-400 border-violet-500/20",
+    "MEMBER-ONLY": "bg-sky-500/10 text-sky-400 border-sky-500/20",
+    "FOUNDER-ONLY": "bg-red-500/10 text-red-400 border-red-500/20",
     "NOT PRODUCTION AUTH": "bg-red-500/10 text-red-400 border-red-500/20",
   };
 

@@ -25,6 +25,21 @@
 - `syn-seated` and `syn-founder` are local flags. **Founder/operator mode is not security.**
 - Settings → "Prototype / Demo State" flips roles for demonstration; grants no real access.
 
+## Real read-only wallet layer — LIVE READ (separate, NOT PRODUCTION AUTH)
+
+- Phase 1 adds a **real** EIP-1193 read-only wallet layer (`src/lib/wallet-adapter.ts` +
+  `wallet-context.tsx`, surfaced by `WalletChip` / `WalletStatePanel`). It is **separate**
+  from the simulated role flags below and grants **no** role. See
+  `STUDIO_LIVE_READ_REALITY_LAYER.md`.
+- It really reads (read-only): connected address, current chain, and the user's own SYN
+  balance (`eth_call balanceOf`, decimals read live first) — labeled `LIVE READ`. The only
+  user-initiated wallet write is `wallet_watchAsset` (Import SYN). It does **not** change the
+  wallet network (no `wallet_switchEthereumChain` / `wallet_addEthereumChain` — wrong-network
+  is manual guidance) and does **not** revoke permissions (no `wallet_revokePermissions` —
+  "Forget" is local-only). **No `eth_sendTransaction`, no write path exists.**
+- This is the **one** place a value may be genuinely live. Everything in the sections below
+  stays simulated. A live *event* scan (burn/member/activity/archive) is still `ADAPTER REQUIRED`.
+
 ## Wallet / token / chain — SIMULATED (NOT CHAIN TRUTH)
 
 - All balances (`avaxBalance`, `usdcBalance`, `synBalance`, `synAcquired`, `usdcRouted`) are mock.
@@ -36,7 +51,9 @@
   (e.g. ProductSaleRouter, SwapRail) stay `FUTURE` placeholders, not production truth.
 - Prototype transactions/hashes are simulated and their `explorerUrl` values are `#` (inert).
   The **one** real transaction is `PROOF_OF_FIRE_001` (see Burn section), shown read-only.
-- "Import SYN" makes **no** `wallet_watchAsset` call — labeled preview.
+- The **simulated toolkit** "Import SYN" action (`ACTION_REGISTRY`) makes **no**
+  `wallet_watchAsset` call — labeled preview, disabled. (Distinct from the real reality-layer
+  Import SYN button, which *does* call `wallet_watchAsset` with live-read decimals.)
 - "SYN address status" copies a status note; the SYN address is read-only production proof.
 
 ## Capital routing display — SIMULATED values, canonical math

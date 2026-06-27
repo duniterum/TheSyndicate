@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MOCK_DATA } from "@/lib/mock-data";
+import { AVALANCHE } from "@/lib/production-constants";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -21,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { ActionCard } from "@/components/action-card";
 import { getActionsByCategory } from "@/lib/actions";
+import { WalletStatePanel } from "@/components/wallet/wallet-state-panel";
 
 type ConnState = "connected" | "pending" | "failed" | "success";
 
@@ -92,6 +94,8 @@ export default function WalletPage() {
         </div>
       </div>
 
+      <WalletStatePanel />
+
       <div className="space-y-4 bg-background/50 border border-white/5 p-4 rounded-xl">
         <div className="flex items-center gap-2 flex-wrap">
           <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
@@ -107,9 +111,9 @@ export default function WalletPage() {
           </span>{" "}
           (plus <span className="font-mono">reconnect</span> and a{" "}
           <span className="font-mono">stale</span> read-freshness flag). The Studio simulates a
-          representative subset below. Connecting and switching networks
-          are a connect-flow preview only — no wallet is contacted and no transaction is signed
-          (NO WALLET WRITE).
+          representative subset below — a connect-flow preview only. No wallet is contacted, no
+          network change is requested, and no transaction is signed (NO WALLET WRITE). Wrong-network
+          is surfaced as manual guidance; switching to {AVALANCHE.name} happens in your own wallet.
         </p>
         <div className="flex flex-wrap items-center gap-2">
           {(["connected", "pending", "failed", "success"] as ConnState[]).map((s) => (
