@@ -78,14 +78,29 @@ export default function Registry() {
                     <span className="font-medium">{layer.purpose}</span>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs text-muted-foreground uppercase tracking-wider">Contract Address</span>
-                      {layer.mocked && <StatusBadge status="SIMULATED PROTOTYPE" showTooltip={false} className="scale-90 origin-left" />}
+                      {layer.proof ? (
+                        <>
+                          <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
+                          <StatusBadge status="ADAPTER REQUIRED" showTooltip={false} className="scale-90 origin-left" />
+                        </>
+                      ) : (
+                        <StatusBadge status="PROTOTYPE PLACEHOLDER" showTooltip={false} className="scale-90 origin-left" />
+                      )}
                     </div>
                     {layer.address.startsWith("0x") ? (
                       <>
                         <span className="font-mono text-xs text-muted-foreground break-all">{layer.address}</span>
-                        <span className="text-[10px] text-muted-foreground/70 italic">Simulated — no canonical address</span>
+                        {layer.proof ? (
+                          <span className="text-[10px] text-emerald-500/80 uppercase tracking-wider">
+                            Read-only production proof — canonical address from the porting map. Nothing is wired (a live read is ADAPTER REQUIRED).
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-muted-foreground/70 italic">
+                            Placeholder — not a canonical address; a Studio concept, not in the production porting map.
+                          </span>
+                        )}
                       </>
                     ) : (
                       <span className="font-mono text-xs text-muted-foreground">Not Deployed</span>
@@ -101,14 +116,18 @@ export default function Registry() {
       <Card className="bg-white/5 border-white/10">
         <CardHeader className="pb-3 border-b border-white/5">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Fingerprint className="w-4 h-4" /> Contract Layer Status (Simulated)
-            <StatusBadge status="SIMULATED PROTOTYPE" showTooltip={false} className="scale-90 origin-left" />
+            <Fingerprint className="w-4 h-4" /> Contract Layer Status
+            <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-4 space-y-3">
           <p className="text-sm text-muted-foreground">
-            No canonical on-chain addresses exist in this prototype, so there is nothing real to copy. Each row copies a
-            simulated status note only; explorer links are inert. Verify any real address from an official channel once one exists.
+            Module names, purposes, and the PAUSED source posture use production vocabulary and
+            module roles. Production-deployed contracts now show their canonical address as
+            READ-ONLY PRODUCTION PROOF, copied from the production porting map
+            (<span className="font-mono">STUDIO_PRODUCTION_FUNCTIONALITY_PORTING_MAP.md</span>) — a
+            static reference with a read-only explorer link. Nothing here is wired: a live read or
+            write is ADAPTER REQUIRED. Roadmap and Studio-only concepts have no canonical address.
           </p>
           {MOCK_DATA.contractLayers.map((layer) => (
             <ContractCopyRow key={layer.name} layer={layer} />

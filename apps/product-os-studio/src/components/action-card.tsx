@@ -60,7 +60,7 @@ export function ActionCard({ action, className }: { action: ProtocolAction; clas
   const walletPreview = () => {
     toast.info("Simulated token preview", {
       description:
-        "SYN · 18 decimals · accounting unit (not a financial right). No wallet call is made — the address is mocked in this prototype.",
+        "SYN · 18 decimals · accounting unit (not a financial right). The SYN address is a READ-ONLY PRODUCTION PROOF constant, but the Studio makes no wallet call (not wired).",
     });
   };
 

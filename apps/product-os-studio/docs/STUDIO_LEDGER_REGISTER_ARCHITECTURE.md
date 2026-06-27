@@ -57,8 +57,10 @@ invent a parallel truth. Hard rules baked in:
 
 - A burn **retires SYN supply**. It is **NOT** minting, **NOT** yield, **NOT** a price pump,
   **NOT** a promised return.
-- **Nothing executes a burn.** `hash` and `explorerUrl` are **deliberately absent** — there
-  are no fake transaction hashes and no explorer links.
+- **Nothing executes a burn.** Prototype entries carry no fake hashes/explorer links. The one
+  exception is `PROOF_OF_FIRE_001` — a real Founder Burn (1,000 SYN, confirmed block) plus
+  `SYN_BURN_ADDRESS`, shown as `READ-ONLY PRODUCTION PROOF` with read-only explorer links,
+  **separate** from the simulated aggregate (`getProofOfFire()`). A live scan is `ADAPTER REQUIRED`.
 - The aggregate `burnedSyn` total (`MOCK_DATA.protocolStats.burnedSyn = 10000`) is
   **SIMULATED** and always labeled. `getBurnSummary()` always returns
   `simulated: true`, `statusLabel: "SIMULATED PROTOTYPE"`.
@@ -67,26 +69,41 @@ invent a parallel truth. Hard rules baked in:
 
 ## Registry / contract architecture (`MOCK_DATA.contractLayers`)
 
-8 layers. **Every `address` is mocked and every `explorerUrl` is `#` (inert).**
+9 layers, each carrying a `proof` boolean. **`proof: true` rows are `READ-ONLY PRODUCTION
+PROOF`** — the real deployed address copied from the porting map, shown with a **read-only
+explorer link** (nothing wired). **`proof: false` rows stay prototype placeholders** with inert
+`#` links — concepts **not** in the porting map (`FUTURE`), not production truth.
 
-| Layer | Status | Mocked address | Purpose |
-|-------|--------|----------------|---------|
-| MembershipSaleV3 | LIVE NOW | `0xMEMBERSHIP...SIMULATED` | Process USDC into SYN. |
-| SourceRegistryV1 | IN REVIEW | `0xSOURCE...SIMULATED` | Track verified introductions. |
-| SYN token | LIVE NOW | `0xSYN...SIMULATED` | Accounting unit. |
-| USDC | LIVE NOW | `0xUSDC...SIMULATED` | Capital input. |
-| Archive1155 | LIVE NOW | `0xARCHIVE...SIMULATED` | Memory artifacts. |
-| SeatRecord721 | FUTURE | `Not yet deployed` | Identity (ERC-721). |
-| ProductSaleRouter | FUTURE | `Not yet deployed` | B2B allocations & products. |
-| SwapRail | FUTURE | `Not yet deployed` | Provider-layer swaps. |
+| Layer | Status | Source | Purpose |
+|-------|--------|--------|---------|
+| MembershipSaleV3 | LIVE NOW (`proof: true`) | porting map (real) | Active V3 sale: USDC in, SYN acquired (default `ZERO_SOURCE_ID`). |
+| MembershipSaleV1 | READ-ONLY (`proof: true`) | porting map (real) | Historical V1 sale (sealed). |
+| SourceRegistryV1 | PAUSED (`proof: true`) | porting map (real) | Deployed; policy PAUSED — referral/claim not live. |
+| SYN token | LIVE NOW (`proof: true`) | porting map (real) | Accounting unit (ERC-20). |
+| USDC | LIVE NOW (`proof: true`) | porting map (real) | Capital input (ERC-20). |
+| Archive1155 | LIVE NOW (`proof: true`) | porting map (real) | Memory artifacts (ERC-1155) — not a seat, no financial rights. |
+| SeatRecord721 | FUTURE (`proof: false`) | not in map | Identity (ERC-721) — reserved as Archive ID 2 pointer; not deployed. |
+| ProductSaleRouter | FUTURE (`proof: false`) | not in map | Studio concept only — not production truth. |
+| SwapRail | FUTURE (`proof: false`) | not in map | Studio concept only — not production truth. |
 
-`contract-copy-row.tsx` copies these mocked values and the explorer links go nowhere.
+`contract-copy-row.tsx` renders each row by `proof`: `proof: true` rows expose the real address
+with a **read-only** explorer link (reference only — nothing wired); `proof: false` rows stay
+prototype placeholders whose links go nowhere.
+
+**Posture (reconciliation pass):** the canonical address constants live in
+`docs/STUDIO_PRODUCTION_FUNCTIONALITY_PORTING_MAP.md`, which is **now present in this export**.
+Real deployed rows (`proof: true`) are shown as `READ-ONLY PRODUCTION PROOF` (static, with
+read-only explorer links); rows not in the map (`proof: false`) stay `FUTURE` prototype
+placeholders with inert links. **Nothing is wired** — a live read is still `ADAPTER REQUIRED`.
+The production-shaped read seam is `ContractRegistryAdapter` in `src/lib/adapters.ts`; see
+`STUDIO_ADAPTER_SEAMS.md`.
 
 ## Capital truth (routing) — canonical math
 
 `ROUTING_SPLIT = 70 / 20 / 10` (Vault / Liquidity / Operations) and `routeUsdc(amount)` are
-**canonical**. The routing wallet endpoints (`routingWallets`) are **simulated** addresses
-(`0xVAULT...SIMULATED`, etc., all `mocked: true`).
+**canonical**. The routing wallet endpoints (`routingWallets`) are now **`READ-ONLY PRODUCTION
+PROOF`** — canonical wallets from the porting map (`proof: true`, `mocked: false`), shown static
+with read-only explorer links (nothing wired). The routed *totals* displayed remain simulated.
 
 ## Truth-Drift Detector (Founder Console, READ-ONLY)
 

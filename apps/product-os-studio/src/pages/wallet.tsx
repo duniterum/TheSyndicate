@@ -85,15 +85,32 @@ export default function WalletPage() {
             <span>{MOCK_DATA.network}</span>
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap justify-end">
+          <StatusBadge status="PROTOTYPE WALLET STATE" />
+          <StatusBadge status="NOT PRODUCTION AUTH" />
           <StatusBadge status="SIMULATED PROTOTYPE" />
         </div>
       </div>
 
       <div className="space-y-4 bg-background/50 border border-white/5 p-4 rounded-xl">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
-          Simulate Wallet State
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+            Simulate Wallet State
+          </div>
+          <StatusBadge status="ADAPTER REQUIRED" className="scale-90 origin-left" />
         </div>
+        <p className="text-xs text-muted-foreground">
+          Production exposes wallet states via{" "}
+          <span className="font-mono">useWalletGate</span>:{" "}
+          <span className="font-mono">
+            unsupported · disconnected · wrongNetwork · ready
+          </span>{" "}
+          (plus <span className="font-mono">reconnect</span> and a{" "}
+          <span className="font-mono">stale</span> read-freshness flag). The Studio simulates a
+          representative subset below. Connecting and switching networks
+          are a connect-flow preview only — no wallet is contacted and no transaction is signed
+          (NO WALLET WRITE).
+        </p>
         <div className="flex flex-wrap items-center gap-2">
           {(["connected", "pending", "failed", "success"] as ConnState[]).map((s) => (
             <Button
@@ -139,7 +156,7 @@ export default function WalletPage() {
       {connState === "success" && (
         <div className="p-4 border border-green-500/30 bg-green-500/10 rounded-xl text-sm text-green-200 flex items-center gap-2" data-testid="banner-wallet-success">
           <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
-          <span>Wallet connected successfully. Session is simulated — no real wallet is linked.</span>
+          <span>Wallet connected successfully. Session is simulated — no real wallet is linked. This is a connect-flow preview, not production authentication.</span>
         </div>
       )}
 
@@ -227,8 +244,9 @@ export default function WalletPage() {
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               <p className="text-sm text-muted-foreground">
-                Import or copy the SYN accounting unit. Previews are simulated — the address is mocked and no
-                wallet call is made. SYN is an accounting unit, not a financial right.
+                Import or copy the SYN accounting unit. The SYN address is a READ-ONLY PRODUCTION PROOF
+                constant, but previews are simulated and no wallet call is made. SYN is an accounting unit,
+                not a financial right.
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
                 {getActionsByCategory("wallet")

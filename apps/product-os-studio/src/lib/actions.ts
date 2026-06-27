@@ -10,8 +10,8 @@
 //   transaction, posts on-chain, or moves funds.
 // - External tools (DEX / swap / liquidity / charts) are NOT wired. Such actions
 //   carry an `externalWarning`, a neutral risk note, and are `disabledReason`-gated.
-// - Token import / watch is a simulated preview only (addresses are mocked, so we
-//   never call wallet_watchAsset with a fake address).
+// - Token import / watch is a simulated preview only: the SYN address is a READ-ONLY
+//   PRODUCTION PROOF constant, but the Studio never calls wallet_watchAsset (not wired).
 // - Burn = Proof of Fire: a costly signal that retires supply. Never minting,
 //   never yield, never a price promise.
 
@@ -200,24 +200,24 @@ export const ACTION_REGISTRY: ProtocolAction[] = [
     displayStatus: "SIMULATED PROTOTYPE",
     actionType: "wallet-action",
     icon: Download,
-    disabledReason: "Token address is simulated — a real import requires a verified contract address.",
+    disabledReason: "Preview only — the Studio makes no wallet_watchAsset call (not wired).",
     safetyLabels: ["Simulated preview", "No real wallet call"],
-    sourceTruth: "The SYN address in this prototype is mocked, so no wallet_watchAsset call is made. This is a labeled preview only.",
+    sourceTruth: "The SYN address is a READ-ONLY PRODUCTION PROOF constant, but the Studio makes no wallet_watchAsset call — a labeled preview only.",
     proofOutput: "Token details preview",
   },
   {
     id: "act-copy-syn-address",
-    title: "SYN address status (simulated)",
-    description: "There is no canonical SYN address in this prototype. This copies a simulated status note, never a live or invented address.",
+    title: "SYN address status (read-only proof)",
+    description: "The canonical SYN token address is a READ-ONLY PRODUCTION PROOF constant, shown static in the Registry. Copies a status note — the Studio never injects it into a wallet.",
     category: "wallet",
     tier: "primary",
     visibility: "connected",
-    displayStatus: "SIMULATED PROTOTYPE",
+    displayStatus: "READ-ONLY",
     actionType: "copy",
     icon: Copy,
-    copyValue: "SIMULATED — no canonical SYN address exists in this prototype yet.",
-    safetyLabels: ["No canonical address", "Not live"],
-    sourceTruth: "No canonical SYN address exists in the prototype; explorer links are inert and no address is fabricated.",
+    copyValue: "The SYN token address is shown as READ-ONLY PRODUCTION PROOF in the Registry (static, read-only explorer link — nothing wired).",
+    safetyLabels: ["Read-only proof", "Not wired"],
+    sourceTruth: "The SYN address is a READ-ONLY PRODUCTION PROOF constant from the porting map — shown static with a read-only explorer link, never fabricated or wired.",
   },
   {
     id: "act-view-wallet",
@@ -314,7 +314,7 @@ export const ACTION_REGISTRY: ProtocolAction[] = [
     icon: Flame,
     href: "/fire",
     safetyLabels: ["Simulated total", "Proof, not price"],
-    sourceTruth: "The burned-SYN total is simulated prototype data. No real burn transactions exist.",
+    sourceTruth: "The burned-SYN aggregate is simulated prototype data. The one real record is PROOF_OF_FIRE_001 (READ-ONLY PRODUCTION PROOF, shown static); a live burn-event scan is ADAPTER REQUIRED.",
     relatedSurfaceId: "fire",
   },
   {
@@ -363,7 +363,7 @@ export const ACTION_REGISTRY: ProtocolAction[] = [
   {
     id: "act-view-registry",
     title: "Open the Registry",
-    description: "Contract and protocol proof summary. Every address is mocked and explorer links are inert.",
+    description: "Contract and protocol proof summary. Real deployed addresses are READ-ONLY PRODUCTION PROOF (static, read-only explorer links); concepts not in the porting map stay inert placeholders.",
     category: "proof",
     tier: "proof",
     visibility: "public",

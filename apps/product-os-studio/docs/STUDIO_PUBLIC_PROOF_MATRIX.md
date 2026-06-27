@@ -19,10 +19,10 @@ Public ↔ member mapping is declared once (`memberPath`) and reused by the publ
 |----------------|-------------|--------------------|-------|----------------------|
 | Activity | `/activity` | `/member/activity` | Proof | Protocol heartbeat — read-only feed. |
 | Economy / Transparency | `/economy` | `/member/transparency` | Proof | 70/20/10 routing + economy summary. |
-| Registry | `/registry` | `/member/registry` | Proof | Contract/protocol proof summary (addresses mocked). |
+| Registry | `/registry` | `/member/registry` | Proof | Contract/protocol proof summary (real addresses as READ-ONLY PRODUCTION PROOF; future concepts inert). |
 | Recognition | `/recognition` | `/member/recognition` | Proof | Anonymized contribution board (not a wealth ladder). |
 | Verified Introduction | `/referral-status` | `/member/referral` | Proof | Source-attribution status — V1 candidate, not live. |
-| Fire Ledger | `/fire` | `/member/fire` | Proof | Proof of Fire — simulated burn totals only. |
+| Fire Ledger | `/fire` | `/member/fire` | Proof | Proof of Fire — simulated aggregate + one READ-ONLY PRODUCTION PROOF burn (`PROOF_OF_FIRE_001`). |
 | Evolution | `/evolution` | `/member/evolution` | Memory | Public episodes of how the protocol moved. |
 | Chronicle | `/chronicle` | `/member/chronicle` | Memory | Curated public canon. |
 | Archive / Memory | `/archive` | `/member/archive` | Memory | Memory/milestone preview — preview, not ownership. |

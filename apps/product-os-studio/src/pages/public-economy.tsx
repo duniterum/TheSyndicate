@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RTooltip, Legend } from "recharts";
 import { MOCK_DATA, ROUTING_SPLIT, routeUsdc } from "@/lib/mock-data";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
-import { AlertTriangle, Database, Building2, Globe, ShieldOff } from "lucide-react";
+import { AlertTriangle, Database, Building2, Globe, ShieldOff, ExternalLink } from "lucide-react";
 
 const SPLIT_COLORS: Record<string, string> = {
   Vault: "hsl(var(--primary))",
@@ -190,7 +190,9 @@ export default function PublicEconomy() {
           </CardHeader>
           <CardContent className="pt-4 space-y-4">
             <p className="text-sm text-muted-foreground">
-              Capital is routed to three endpoints. Addresses are mocked for the prototype.
+              Capital is routed to three endpoints. The addresses below are READ-ONLY PRODUCTION
+              PROOF — canonical wallets from the porting map, shown as static references with
+              read-only explorer links. Nothing is wired (a live balance read is ADAPTER REQUIRED).
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {MOCK_DATA.routingWallets.map((w) => (
@@ -203,9 +205,16 @@ export default function PublicEconomy() {
                   <div className="flex items-center justify-between text-xs text-muted-foreground font-mono bg-background p-2 rounded border border-white/5">
                     <span className="truncate mr-2 text-muted-foreground/60">{w.address}</span>
                   </div>
-                  <Badge variant="outline" className="text-[10px] uppercase tracking-wider text-orange-400 border-orange-500/20 bg-orange-500/10">
-                    Mocked address
-                  </Badge>
+                  <div className="flex items-center justify-between gap-2">
+                    <Badge variant="outline" className="text-[10px] uppercase tracking-wider text-emerald-400 border-emerald-500/20 bg-emerald-500/10">
+                      Read-only proof
+                    </Badge>
+                    {w.explorerUrl && (
+                      <a href={w.explorerUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground inline-flex items-center gap-1" title="Read-only explorer — reference only, nothing wired">
+                        <ExternalLink className="w-3 h-3" /> Explorer
+                      </a>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

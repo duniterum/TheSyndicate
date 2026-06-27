@@ -31,6 +31,26 @@ export default function PublicArchive() {
         <p>NFTs are memory. NFTs are not seats. NFTs do not create financial rights. Archive is a public preview.</p>
       </motion.div>
 
+      <motion.div
+        className="p-4 border border-emerald-500/20 bg-emerald-500/5 rounded-xl text-sm text-emerald-100/90 space-y-1"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.15 }}
+        data-testid="archive-id-scheme"
+      >
+        <p className="font-bold mb-1 flex items-center gap-2">
+          Archive IDs <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
+        </p>
+        <ul className="space-y-1 text-emerald-100/80">
+          <li><span className="font-mono">#1</span> First Signal — public, open.</li>
+          <li><span className="font-mono">#2</span> Reserved / disabled — a future <span className="font-mono">SeatRecord721</span> identity record (not deployed).</li>
+          <li><span className="font-mono">#3</span> Patron Seal — gated.</li>
+        </ul>
+        <p className="text-xs text-emerald-100/70">
+          Canonical IDs from the production porting map, shown read-only. Archive is ERC-1155 protocol memory — not source-aware, no financial rights.
+        </p>
+      </motion.div>
+
       <div className="space-y-8 pt-4">
         <h2 className="text-2xl font-bold border-b border-white/10 pb-2">Preview Collection</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

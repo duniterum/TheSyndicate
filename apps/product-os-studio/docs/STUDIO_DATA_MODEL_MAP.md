@@ -2,7 +2,8 @@
 
 > `SIMULATED` · `PROTOTYPE ONLY`. There is **no database, no API, no chain**. All data is
 > static TypeScript in `src/lib/` plus a few `localStorage` flags. **Mock data is not live
-> data. Simulated addresses are not live addresses.**
+> data.** Real deployed constants from the porting map appear as `READ-ONLY PRODUCTION PROOF`
+> (static, inert); **nothing is wired.**
 
 ## Canonical vs simulated
 
@@ -22,9 +23,10 @@ explicitly marked canonical."*
 
 - **Identity / session (simulated):** `wallet`, `walletFull`, `memberNumber` (`#9`),
   `chapter` (`Genesis Signal`), `network` (`Avalanche C-Chain`).
-- **Capital (simulated):** `usdcRouted`, `synAcquired`, `avaxBalance`, `usdcBalance`,
-  `synBalance`, `routingWallets` (Vault/Liquidity/Operations, all `mocked: true`,
-  addresses like `0xVAULT...SIMULATED`).
+- **Capital:** `usdcRouted`, `synAcquired`, `avaxBalance`, `usdcBalance`, `synBalance` are
+  **simulated**. `routingWallets` (Vault/Liquidity/Operations) are **`READ-ONLY PRODUCTION
+  PROOF`** (`proof: true`, `mocked: false`) — real wallets from the porting map, shown static
+  with read-only explorer links (nothing wired). The 70/20/10 *math* is canonical.
 - **Flags asserting what is NOT live:** `sourceStatus: "paused"`, `referralActive: false`,
   `claimUiActive: false`, `sourceDashboardLive: false`, `seatRecordLive: false`.
 - **`protocolStats`** (`mocked: true`): chapter `10/333`, `members: 10`, `usdcRouted: 8450`,
@@ -36,9 +38,12 @@ explicitly marked canonical."*
 - **`recognitionAxes`** — 11 axes (Capital, Connector, Builder, Operator, Verifier,
   Historian, Steward, Infrastructure, Security, Legal/Compliance, Time/Loyalty).
 - **`liveBoard`** — module → status → surface (drives the public "what's live" board).
-- **`contractLayers`** — 8 layers (MembershipSaleV3, SourceRegistryV1, SYN, USDC,
-  Archive1155, SeatRecord721, ProductSaleRouter, SwapRail) — **every address mocked,
-  every `explorerUrl: "#"` inert**. See `STUDIO_LEDGER_REGISTER_ARCHITECTURE.md`.
+- **`contractLayers`** — 9 layers, each with a `proof` boolean. `proof: true` rows
+  (MembershipSaleV3, MembershipSaleV1, SourceRegistryV1 [PAUSED], SYN, USDC, Archive1155) are
+  **`READ-ONLY PRODUCTION PROOF`** — real addresses from the porting map with read-only explorer
+  links. `proof: false` rows (SeatRecord721, ProductSaleRouter, SwapRail) stay `FUTURE`
+  placeholders with inert `#` links — not in the porting map. See
+  `STUDIO_LEDGER_REGISTER_ARCHITECTURE.md`.
 - **Simulated records:** `activities`, `transactions` (hashes fake, `explorerUrl: "#"`,
   `mocked: true`), `approvals`, `archiveItems`, `receipts`, `notifications`, `economy`.
 
@@ -60,8 +65,11 @@ explicitly marked canonical."*
 
 - `FIRE_LEDGER` — 3 burn events (founder/community/protocol), statuses `candidate` /
   `simulated`. Amounts sum to the simulated `burnedSyn` total (5000 + 2500 + 2500 = 10000).
-- **No `hash`, no `explorerUrl`** — deliberately absent. `getBurnSummary()` always returns
-  `simulated: true`, `statusLabel: "SIMULATED PROTOTYPE"`.
+- **Prototype entries have no `hash` / `explorerUrl`.** `getBurnSummary()` always returns
+  `simulated: true`, `statusLabel: "SIMULATED PROTOTYPE"`. The one real record is
+  `getProofOfFire()` → `PROOF_OF_FIRE_001` (1,000 SYN, Founder Burn, real tx + block, burn
+  address), shown as `READ-ONLY PRODUCTION PROOF` with read-only explorer links — separate from
+  the simulated aggregate; a live burn-event scan is `ADAPTER REQUIRED`.
 
 ## Session / preferences (`store.tsx` → `localStorage`)
 

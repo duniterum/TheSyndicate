@@ -12,7 +12,7 @@
 | `actions.ts` | **`ACTION_REGISTRY`** + `ACTION_CATEGORIES` — every protocol action, role-aware and truth-labeled, with `canAccessAction` / `getVisibleCategories` selectors. |
 | `mock-data.ts` | **`MOCK_DATA`** + `ROUTING_SPLIT` + `routeUsdc()` — all simulated values; canonical routing math. |
 | `protocol-graph.ts` | The "nervous system": `PIPELINE`, `CLASSIFICATIONS`, `PROTOCOL_EVENTS`, `CHRONICLE`, `RECOGNITION_BOARD`, public-safe projections, and the **Truth-Drift Detector**. |
-| `fire-ledger.ts` | **`FIRE_LEDGER`** — Proof of Fire projection over `fire`-classified events; burn summary selectors. No hashes, no explorer links. |
+| `fire-ledger.ts` | **`FIRE_LEDGER`** — Proof of Fire projection over `fire`-classified events; burn summary selectors. Aggregate simulated; the one verified record (`PROOF_OF_FIRE_001`) is READ-ONLY PRODUCTION PROOF with a real tx hash + read-only explorer link; candidate entries stay simulated (no hashes). |
 | `brand.ts` | **`BRAND`** — press/brand SoT: palette, typography, channels, facts, approved/banned language, OG concepts. |
 | `store.tsx` | **`AppProvider` / `useApp`** — simulated session + preferences in React context, persisted to `localStorage`. |
 | `utils.ts` | `cn()` class-merge helper. |

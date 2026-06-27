@@ -45,6 +45,11 @@ export default function Referral() {
       <div className="p-4 border border-orange-500/20 bg-orange-500/5 rounded-xl text-sm text-orange-200">
         <p className="font-bold mb-1 flex items-center"><AlertTriangle className="w-4 h-4 mr-2" /> Not Live Today</p>
         <p>No public source link today, no source dashboard today, no claim UI today, no public source-aware buy path today. NFTs are memory, not financial rights. No yield. No MLM/downline/upline.</p>
+        <p className="text-xs text-orange-200/70 mt-2 border-t border-orange-500/10 pt-2">
+          In production, <span className="font-mono">SourceRegistryV1</span> is deployed but policy-PAUSED. The only registered entry,
+          {" "}<span className="font-mono">INTERNAL_PROTOCOL_TEST_SOURCE_001</span>, is an internal test source returned to PAUSED.
+          The default buy path uses <span className="font-mono">ZERO_SOURCE_ID</span> — no attribution, no acquisition. The example below is illustrative only.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

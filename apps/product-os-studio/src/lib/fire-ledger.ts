@@ -7,14 +7,18 @@
 //
 // TRUTH POSTURE (hard rules — do not soften in copy):
 // - A burn RETIRES SYN supply. It is NOT minting, NOT yield, NOT a price pump,
-//   NOT a promised return.
-// - Nothing here executes a burn. There are NO real transaction hashes, NO
-//   explorer links, NO invented on-chain proofs. `hash`/`explorerUrl` are
-//   deliberately absent.
-// - The aggregate burned figure (MOCK_DATA.protocolStats.burnedSyn) is SIMULATED
-//   and must always be labeled as such.
+//   NOT a promised return, NOT a financial benefit to holders.
+// - There IS one verified burn: PROOF_OF_FIRE (PROOF_OF_FIRE_001, 1,000 SYN, Founder
+//   Burn) with a real tx hash + block on Avalanche C-Chain. It is READ-ONLY PRODUCTION
+//   PROOF — a static reference copied from the porting map (PRODUCTION_PROOF). A live
+//   burn-event scan (useSynBurnEvents) is ADAPTER REQUIRED, and burn EXECUTION is
+//   intentionally never wired here.
+// - The candidate/community ledger entries below remain SIMULATED proposals — no real
+//   transaction hashes, no explorer links, no invented on-chain proofs.
+// - The aggregate burned figure (MOCK_DATA.protocolStats.burnedSyn) is a SIMULATED
+//   aggregate and must always be labeled as such; only provenSyn (1,000) is verified.
 
-import { MOCK_DATA } from "./mock-data";
+import { MOCK_DATA, PRODUCTION_PROOF, snowtraceTx, snowtraceAddress } from "./mock-data";
 import { getEventsForClassification, type ProtocolEvent, type DataSource } from "./protocol-graph";
 
 // Who proposed the burn. Burns are protocol-level — never tied to a member persona.
@@ -51,9 +55,53 @@ export function burnSourceLabel(source: BurnSource): string {
   return SOURCE_LABELS[source];
 }
 
+// ---- Verified Proof of Fire (READ-ONLY PRODUCTION PROOF) -------------------
+// PROOF_OF_FIRE_001 is the single VERIFIED burn from the porting map. It is a static
+// reference: a real tx hash + block on Avalanche C-Chain with read-only explorer links.
+// Nothing is wired — a live burn-event scan is ADAPTER REQUIRED; execution is never wired.
+export interface ProofOfFire {
+  /** Production proof number, e.g. "PROOF_OF_FIRE_001" (assignProofOfFireNumbers). */
+  proofNumber: string;
+  /** Verified SYN retired (read-only production proof). */
+  amountSyn: number;
+  /** e.g. "Founder Burn". */
+  category: string;
+  /** Real, verifiable transaction hash (read-only reference). */
+  txHash: string;
+  /** Confirmed block height (read-only reference). */
+  block: number;
+  /** SYN_BURN_ADDRESS (0x…dEaD) — read-only reference, never a destination control. */
+  burnAddress: string;
+  chain: string;
+  /** Read-only Snowtrace tx link. Reference only — not a wired action. */
+  txUrl: string;
+  /** Read-only Snowtrace burn-address link. Reference only. */
+  burnAddressUrl: string;
+  /** Always true — static reference, nothing wired. */
+  readOnlyProof: true;
+}
+
+export const PROOF_OF_FIRE: ProofOfFire = {
+  proofNumber: PRODUCTION_PROOF.proofOfFire001.proofNumber,
+  amountSyn: PRODUCTION_PROOF.proofOfFire001.amountSyn,
+  category: PRODUCTION_PROOF.proofOfFire001.category,
+  txHash: PRODUCTION_PROOF.proofOfFire001.txHash,
+  block: PRODUCTION_PROOF.proofOfFire001.block,
+  burnAddress: PRODUCTION_PROOF.synBurnAddress,
+  chain: PRODUCTION_PROOF.chain,
+  txUrl: snowtraceTx(PRODUCTION_PROOF.proofOfFire001.txHash),
+  burnAddressUrl: snowtraceAddress(PRODUCTION_PROOF.synBurnAddress),
+  readOnlyProof: true,
+};
+
+export function getProofOfFire(): ProofOfFire {
+  return PROOF_OF_FIRE;
+}
+
 // Burn-specific detail keyed to the graph events. The graph owns the flow/truth;
-// this owns the burn projection (amount, source, chapter). Amounts sum to the
-// SIMULATED protocol total (5,000 + 2,500 + 2,500 = 10,000) for coherence.
+// this owns the burn projection (amount, source, chapter). These are SIMULATED
+// candidates/concepts only (the verified burn is PROOF_OF_FIRE above). Amounts sum to
+// the SIMULATED aggregate (5,000 + 2,500 + 2,500 = 10,000) for coherence.
 export const FIRE_LEDGER: BurnEvent[] = [
   {
     id: "fire-founder-genesis",
@@ -112,11 +160,17 @@ export function getBurnsBySource(source: BurnSource): BurnEvent[] {
 export interface BurnSummary {
   /** SIMULATED total of SYN considered retired across the prototype. */
   totalSyn: number;
-  /** Always true in the prototype — there is no live burn figure. */
+  /** Always true in the prototype — the aggregate is not a live burn figure. */
   simulated: true;
   statusLabel: "SIMULATED PROTOTYPE";
   pendingCandidates: number;
   bySource: { source: BurnSource; label: string; amountSyn: number; count: number }[];
+  /** Verified SYN retired — READ-ONLY PRODUCTION PROOF (PROOF_OF_FIRE_001). */
+  provenSyn: number;
+  /** Production proof number for the verified burn. */
+  provenProofNumber: string;
+  /** SYN_BURN_ADDRESS — read-only reference. */
+  burnAddress: string;
 }
 
 export function getBurnSummary(): BurnSummary {
@@ -135,6 +189,9 @@ export function getBurnSummary(): BurnSummary {
         count: items.length,
       };
     }),
+    provenSyn: PROOF_OF_FIRE.amountSyn,
+    provenProofNumber: PROOF_OF_FIRE.proofNumber,
+    burnAddress: PROOF_OF_FIRE.burnAddress,
   };
 }
 

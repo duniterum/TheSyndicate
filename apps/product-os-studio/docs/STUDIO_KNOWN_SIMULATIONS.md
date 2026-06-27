@@ -11,6 +11,12 @@
 - **Doctrine** — "The Syndicate recognizes capital without reducing identity to capital."
 - **Status vocabulary** — `LIVE NOW`, `READ-ONLY`, `IN REVIEW`, `V1 CANDIDATE`, `FUTURE`,
   `SIMULATED PROTOTYPE` (and copy labels `CONCEPT ONLY`, `BACKEND REQUIRED`, `PROTOTYPE ONLY`).
+- **Production-posture vocabulary** (added by the adaptation pass — see
+  `STUDIO_PRODUCTION_ADAPTATION_PLAN.md`): `READ-ONLY PRODUCTION PROOF`,
+  `PROTOTYPE PLACEHOLDER`, `PROTOTYPE WALLET STATE`, `ADAPTER REQUIRED`, `NOT WIRED`,
+  `NOT PRODUCTION AUTH`. These name *how a surface relates to production* without making it
+  real. **`ADAPTER REQUIRED` never implies the Studio reads a value** — the porting map now
+  names the canonical constant, but the Studio still performs no live read; it marks an unwired seam.
 
 ## Auth / session / roles — SIMULATED (NOT PRODUCTION AUTH)
 
@@ -22,17 +28,23 @@
 ## Wallet / token / chain — SIMULATED (NOT CHAIN TRUTH)
 
 - All balances (`avaxBalance`, `usdcBalance`, `synBalance`, `synAcquired`, `usdcRouted`) are mock.
-- All addresses are mocked placeholders (`0x…SIMULATED`, `Not yet deployed`). **No real
-  addresses. No live addresses.**
-- All transactions/hashes are fake; `explorerUrl` values are `#` (inert).
-- "Import SYN" makes **no** `wallet_watchAsset` call (address is mocked) — labeled preview.
-- "SYN address status" copies a status note; **no address is fabricated**.
+- **Real deployed constants now appear as `READ-ONLY PRODUCTION PROOF`** (static, inert): the
+  SYN/USDC tokens, MembershipSale (V3 active / V1 sealed), SourceRegistryV1 (deployed, policy
+  PAUSED), Archive1155, the Vault/Liquidity/Operations routing wallets, and `SYN_BURN_ADDRESS`.
+  They are copied from the porting map and shown with **read-only explorer links**. Nothing is
+  wired — a live read of any of them is `ADAPTER REQUIRED`. Concepts **not** in the porting map
+  (e.g. ProductSaleRouter, SwapRail) stay `FUTURE` placeholders, not production truth.
+- Prototype transactions/hashes are simulated and their `explorerUrl` values are `#` (inert).
+  The **one** real transaction is `PROOF_OF_FIRE_001` (see Burn section), shown read-only.
+- "Import SYN" makes **no** `wallet_watchAsset` call — labeled preview.
+- "SYN address status" copies a status note; the SYN address is read-only production proof.
 
 ## Capital routing display — SIMULATED values, canonical math
 
 - `protocolStats` (members, usdcRouted, protocolControlled, burnedSyn, chapter `10/333`) are
   `mocked: true`. Receipts, approvals, economy figures are simulated. The 70/20/10 *math* is real.
-- `routingWallets` (Vault/Liquidity/Operations) addresses are simulated.
+- `routingWallets` (Vault/Liquidity/Operations) addresses are **`READ-ONLY PRODUCTION PROOF`**
+  (canonical wallets from the porting map, shown static with read-only explorer links — nothing wired).
 
 ## DEX / liquidity / market — NOT WIRED (BACKEND REQUIRED)
 
@@ -58,8 +70,12 @@
 
 ## Burn / Proof of Fire — SIMULATED (CONCEPT ONLY)
 
-- `burnedSyn: 10000` is simulated. `FIRE_LEDGER` entries are `candidate` / `simulated`.
-- **No burn executes.** No hashes, no explorer links (deliberately absent).
+- `burnedSyn: 10000` (aggregate) is simulated; `FIRE_LEDGER` entries are `candidate` / `simulated`.
+- **One verified burn is `READ-ONLY PRODUCTION PROOF`:** `PROOF_OF_FIRE_001` — 1,000 SYN,
+  Founder Burn, with a real transaction and confirmed block, plus `SYN_BURN_ADDRESS` — copied
+  from the porting map and shown with read-only explorer links, **separate** from the simulated
+  aggregate (`getProofOfFire()`, not `FIRE_LEDGER`). A live burn-event scan is `ADAPTER REQUIRED`.
+- **No burn executes.** Prototype entries carry no fake hashes/explorer links.
 - Always labeled: supply **retired, never minted**; never yield; **not a price promise**.
 
 ## Memory / chronicle / recognition / activity — SIMULATED, READ-ONLY
@@ -85,3 +101,25 @@
   treasury claim, profit share, financial rights, MLM, downline/upline, guaranteed return,
   investment. (These words may still appear inside negation disclaimers, e.g. "No yield".)
 - SYN is "an accounting unit, not a financial right"; NFTs are "memory, not financial rights".
+
+## Adapter seams — TYPE-ONLY (`src/lib/adapters.ts`)
+
+- The Studio carries **type-only** production-shaped seams (Wallet, MembershipSale,
+  MemberIndex, Activity, SourcePolicy, Archive, BurnProof, Transparency, ContractRegistry).
+  **No implementations, no production imports, no RPC / chain reads / wallet writes.** They
+  document where real machinery plugs in later. Full detail: `STUDIO_ADAPTER_SEAMS.md`.
+- Hard rules baked into the seam types: wallet `isProductionAuth` is literally `false`; sale
+  `approveUsdc` / `buy` return `Promise<never>` (no wallet write); burn exposes read-only
+  `proofs()` with **no `execute()`**; source policy `publicLinkActive` / `claimUiActive` are
+  literally `false`; archive `memoryOnly` is literally `true`; `RoutingSplit` is canonical
+  `70 / 20 / 10`.
+
+## Porting map — PRESENT (real constants are READ-ONLY PRODUCTION PROOF)
+
+- `docs/STUDIO_PRODUCTION_FUNCTIONALITY_PORTING_MAP.md` (the canonical home for real
+  addresses / live constants) is **now present in this export** (a BRIDGE INVENTORY). Because
+  it is present, the Studio shows the real deployed constants it documents as
+  **`READ-ONLY PRODUCTION PROOF`** — static, inert references with read-only explorer links,
+  **never wired**. Constants the map does **not** cover (e.g. ProductSaleRouter, SwapRail) stay
+  `FUTURE` placeholders, not production truth. A *live read* of any constant is still
+  `ADAPTER REQUIRED`. See `STUDIO_PRODUCTION_ADAPTATION_PLAN.md`.

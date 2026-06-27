@@ -12,7 +12,8 @@
 - **This is not production auth.** Roles are `localStorage` flags, not security.
 - **This is not chain truth.** No chain is read; no transaction is sent.
 - **This is not smart-contract authority.** No contract is deployed or called.
-- **Mock data is not live data.** **Simulated addresses are not live addresses.**
+- **Mock data is not live data.** Real deployed constants appear only as
+  `READ-ONLY PRODUCTION PROOF` (static, inert, with read-only explorer links); **nothing is wired.**
 - **Referral / source / claim flows are not active.** Default source stays `ZERO_SOURCE_ID`.
 - **DEX / LP links are not wired** and are not verified unless sourced from an official channel.
 - **Burn / fire values are simulated** — supply is *retired, never minted*; never yield; never a price promise.
@@ -23,8 +24,11 @@
   routing split, the `ZERO_SOURCE_ID` default source, the doctrine line
   ("The Syndicate recognizes capital without reducing identity to capital"), and the
   module `LIVE NOW / IN REVIEW / V1 CANDIDATE / FUTURE` status vocabulary.
-- **Everything else is SIMULATED prototype data**: balances, addresses, hashes,
-  receipts, activity, recognition standing, burns, chronicle entries, member identity.
+- **Real deployed constants** from the porting map (token / sale / registry / archive /
+  routing wallets / burn address + `PROOF_OF_FIRE_001`) are shown as `READ-ONLY PRODUCTION
+  PROOF` — static and inert, with read-only explorer links. **Nothing is wired.**
+- **Everything else is SIMULATED prototype data**: balances, prototype addresses, hashes,
+  receipts, activity, recognition standing, the burn aggregate, chronicle entries, member identity.
 
 See `docs/STUDIO_KNOWN_SIMULATIONS.md` for the definitive line-by-line list.
 
@@ -68,34 +72,3 @@ prototype.
 Wiring real auth, real wallet writes, real chain reads, real referral/source/claim
 activation, real DEX/LP/import execution, real burns, or any live contract — and removing
 or softening any truth label to make a surface look production-ready.
-# Product OS Studio Import Status
-
-Status: ISOLATED PROTOTYPE IMPORTED LANDING ZONE
-
-Current state:
-- Standalone Replit Product OS Studio prototype imported into the existing isolated GitHub subfolder.
-- Not connected to production build.
-- Not connected to live routes.
-- Not connected to contracts.
-- Not connected to production auth.
-- Not connected to backend.
-- Not connected to chain reads.
-
-Allowed now:
-- store Replit 2 prototype source
-- store screenshots
-- store product/design docs
-- store mock adapters
-- store future production interface contracts
-- store migration notes
-
-Not allowed now:
-- production deployment
-- homepage replacement
-- route activation
-- real wallet write actions
-- real founder/admin controls
-- public referral/source activation
-- claim UI activation
-
----
