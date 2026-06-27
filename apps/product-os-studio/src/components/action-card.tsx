@@ -227,15 +227,12 @@ export function ActionCard({ action, className }: { action: ProtocolAction; clas
           </div>
         )}
 
-        {(action.proofOutput || action.graphOutput) && (
+        {action.proofOutput && (
           <div className="space-y-1 rounded-md border border-border/40 bg-background/40 p-2.5 text-xs">
-            {action.proofOutput && (
-              <p className="text-foreground/80">
-                <span className="text-muted-foreground">Proof: </span>
-                {action.proofOutput}
-              </p>
-            )}
-            {action.graphOutput && <p className="font-mono text-[10px] text-muted-foreground">{action.graphOutput}</p>}
+            <p className="text-foreground/80">
+              <span className="text-muted-foreground">Proof: </span>
+              {action.proofOutput}
+            </p>
           </div>
         )}
 

@@ -69,11 +69,16 @@ export default function PublicEconomy() {
       </div>
 
       <div className="space-y-6">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-primary" /> Protocol Economy
-          </h2>
-          <StatusBadge status="LIVE NOW" />
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-primary" /> Protocol Economy
+            </h2>
+            <StatusBadge status="SIMULATED PROTOTYPE" />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Displayed totals are prototype figures, not live values.
+          </p>
         </div>
 
         {/* Global Stats */}

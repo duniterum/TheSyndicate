@@ -4,7 +4,6 @@ import { ActionCategorySection, ActionCard } from "@/components/action-card";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, User, Shield, Zap } from "lucide-react";
-import { StatusBadge } from "@/components/ui/status-badge";
 
 export default function Toolkit() {
   const { isConnected, isSeated, isFounder } = useApp();
@@ -31,7 +30,9 @@ export default function Toolkit() {
             <RoleIcon className="w-4 h-4" />
             <span className="font-medium tracking-wide">{activeRoleLabel}</span>
           </Badge>
-          <StatusBadge status="LIVE NOW" />
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-mono whitespace-nowrap">
+            Prototype surface · each module labeled below
+          </span>
         </div>
       </div>
 

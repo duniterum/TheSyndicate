@@ -88,7 +88,9 @@ export default function MySyndicate() {
               </Button>
             }
           />
-          <StatusBadge status="LIVE NOW" />
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-mono whitespace-nowrap">
+            Prototype surface · each module labeled below
+          </span>
         </div>
       </div>
 

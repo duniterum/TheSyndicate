@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { StatusBadge } from "@/components/ui/status-badge";
 import { MOCK_DATA } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import { Shield, ArrowRight, Activity, Users, Search, GitCommit, Target, Zap, Clock, Coins, Network, CircleSlash, Workflow, Award, Flame, Wrench, Hammer } from "lucide-react";
@@ -29,7 +28,9 @@ export default function MemberHome() {
           <p className="text-muted-foreground text-lg">Your operating surface within The Syndicate.</p>
         </div>
         <div className="shrink-0">
-          <StatusBadge status="LIVE NOW" />
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-mono whitespace-nowrap">
+            Prototype surface · each module labeled below
+          </span>
         </div>
       </motion.div>
 

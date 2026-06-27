@@ -634,12 +634,12 @@ export function getTruthDrift(): TruthDriftAlert[] {
     summary:
       splitSum === 100 && splitCanonical
         ? "Canonical 70% / 20% / 10% holds and sums to 100."
-        : `Routing split drift: ${ROUTING_SPLIT.vault}/${ROUTING_SPLIT.liquidity}/${ROUTING_SPLIT.operations} (sum ${splitSum}).`,
+        : `Routing split drift: ${ROUTING_SPLIT.vault}% / ${ROUTING_SPLIT.liquidity}% / ${ROUTING_SPLIT.operations}% (sum ${splitSum}).`,
     sources: [
       {
         source: "Routing Constant",
         label: "ROUTING_SPLIT",
-        value: `${ROUTING_SPLIT.vault}/${ROUTING_SPLIT.liquidity}/${ROUTING_SPLIT.operations}`,
+        value: `${ROUTING_SPLIT.vault}% / ${ROUTING_SPLIT.liquidity}% / ${ROUTING_SPLIT.operations}%`,
       },
     ],
   });
