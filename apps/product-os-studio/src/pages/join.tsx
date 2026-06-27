@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { MOCK_DATA, ROUTING_SPLIT, routeUsdc } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
+import { WalletStatePanel } from "@/components/wallet/wallet-state-panel";
 
 type FlowState =
   | "input"
@@ -139,19 +140,39 @@ export default function Join() {
               <SelectItem value="wrong-chain">Error: Wrong Chain</SelectItem>
             </SelectContent>
           </Select>
+          <StatusBadge status="ADAPTER REQUIRED" />
           <StatusBadge status="SIMULATED PROTOTYPE" />
         </div>
       </div>
 
       {/* Doctrine note */}
-      <div className="p-4 border border-primary/20 bg-primary/5 rounded-xl text-sm text-foreground/90">
+      <div className="p-4 border border-primary/20 bg-primary/5 rounded-xl text-sm text-foreground/90 space-y-2">
         <p>
           Seat identity is binary. Contribution depth is variable. Capital footprint reflects
           verified USDC routed through protocol receipts.
         </p>
+        <p className="text-xs text-muted-foreground">
+          Purchase-flow preview only. In production, approve + buy route USDC natively through{" "}
+          <span className="font-mono">MembershipSaleV3</span> with the default{" "}
+          <span className="font-mono">ZERO_SOURCE_ID</span>. Here every step is simulated — no wallet
+          write and no contract call (ADAPTER REQUIRED).
+        </p>
       </div>
 
-      {/* Connection + Network status */}
+      {/* Real wallet reality layer — SEPARATE from the simulated purchase flow below */}
+      <div className="space-y-2">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          Real wallet (read-only)
+        </h2>
+        <p className="text-xs text-muted-foreground max-w-2xl">
+          Your real wallet, read-only — connect, check the network, and read your live SYN balance through
+          your own provider. This is entirely separate from the simulated purchase flow below, which writes
+          nothing and routes no capital.
+        </p>
+        <WalletStatePanel />
+      </div>
+
+      {/* Connection + Network status (simulated) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div
           className="flex items-center gap-3 p-4 rounded-xl border border-white/10 bg-white/5"

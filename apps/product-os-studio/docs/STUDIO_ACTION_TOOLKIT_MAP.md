@@ -4,6 +4,11 @@
 > **No action executes a real transaction, posts on-chain, or moves funds.** Pages
 > (public toolkit, member toolkit, wallet, economy, share, Founder Console) render *from*
 > this registry so an action's access requirement, status, and safety labels never drift.
+>
+> **Note (Phase 1):** the actions below are the **simulated** toolkit. A separate, real,
+> read-only wallet layer (connect / switch / live SYN balance / Import SYN) is documented in
+> `STUDIO_LIVE_READ_REALITY_LAYER.md` and is intentionally **not** part of this registry —
+> it has no transaction path and grants no role.
 
 ## Action shape
 
@@ -81,8 +86,11 @@ are shown as `READ-ONLY PRODUCTION PROOF`, while a live read remains `ADAPTER RE
   `disabledReason` ("…not wired — source required"), carry market-risk `safetyLabels`, and
   show the shared `EXTERNAL_RISK` warning ("…Always verify the real contract address from
   an official Syndicate channel…"). `external-link-warning.tsx` confirms before opening.
-- **Token import is a labeled preview only.** Even though the SYN address is a READ-ONLY
-  PRODUCTION PROOF constant, no `wallet_watchAsset` call is ever made, and **no address is fabricated**.
+- **Token import is a labeled preview only (in this registry).** The *simulated* "Import
+  SYN" toolkit action makes no `wallet_watchAsset` call and fabricates no address. The
+  **real** `wallet_watchAsset` Import SYN lives in the separate read-only wallet reality
+  layer (`STUDIO_LIVE_READ_REALITY_LAYER.md`), which reads decimals live first and still has
+  no transaction path.
 - **Burn = Proof of Fire.** Always labeled "Retires supply · Not minting · Not yield ·
   Not a price promise". Proposals become founder-gated candidates; nothing executes.
 - **Sharing is prototype-only.** Opens public share intents with prototype text; generates

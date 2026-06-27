@@ -27,6 +27,12 @@
 - **Real deployed constants** from the porting map (token / sale / registry / archive /
   routing wallets / burn address + `PROOF_OF_FIRE_001`) are shown as `READ-ONLY PRODUCTION
   PROOF` — static and inert, with read-only explorer links. **Nothing is wired.**
+- **A real, read-only wallet reality layer** (Phase 1) can genuinely read — via the user's
+  own EIP-1193 provider — the connected address, current chain, and the user's own SYN
+  balance (`LIVE READ`). It performs `wallet_switchEthereumChain`/`addEthereumChain` and
+  `wallet_watchAsset` (Import SYN), all user-initiated, and has **no transaction path**. It
+  is **separate** from the simulated role flags and grants no role. See
+  `docs/STUDIO_LIVE_READ_REALITY_LAYER.md`.
 - **Everything else is SIMULATED prototype data**: balances, prototype addresses, hashes,
   receipts, activity, recognition standing, the burn aggregate, chronicle entries, member identity.
 
@@ -64,10 +70,11 @@ prototype paper and the production porting map.
 ## Allowed in the Studio (kept, and labeled)
 
 Mock data · `localStorage` role simulation · simulated founder mode · simulated wallet
-connection · future modules · prototype-only UI · simulated burn/fire ledger · simulated
-toolkit/actions · simulated DEX/LP/import-token previews · simulated referral / Verified
-Introduction · simulated SeatRecord · public proof previews · member app · Founder Console
-prototype.
+connection · **a real read-only EIP-1193 wallet reality layer** (connect / switch network /
+live SYN balance read / Import SYN — no writes, no auth) · future modules · prototype-only
+UI · simulated burn/fire ledger · simulated toolkit/actions · simulated DEX/LP/import-token
+previews · simulated referral / Verified Introduction · simulated SeatRecord · public proof
+previews · member app · Founder Console prototype.
 
 ## Not allowed (without a separate, founder-approved effort)
 

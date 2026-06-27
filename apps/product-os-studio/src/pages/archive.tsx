@@ -4,7 +4,8 @@ import { MOCK_DATA } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ShareDialog } from "@/components/share-dialog";
-import { Share2 } from "lucide-react";
+import { CanonicalContractsList } from "@/components/canonical-contracts";
+import { Database, Share2 } from "lucide-react";
 
 export default function Archive() {
   return (
@@ -42,6 +43,29 @@ export default function Archive() {
           Canonical IDs from the production porting map, shown read-only. Nothing is wired (MINT ADAPTER REQUIRED).
         </p>
       </div>
+
+      {/* Canonical Archive contract + holdings posture */}
+      <Card className="bg-white/5 border-white/10">
+        <CardHeader className="border-b border-white/5 pb-4">
+          <CardTitle className="flex items-center gap-2 flex-wrap text-lg">
+            <Database className="w-5 h-5 text-primary" /> Canonical Archive Contract
+            <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4 space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Protocol memory lives in the canonical <span className="font-mono">Archive1155</span> (ERC-1155)
+            contract — copied read-only from the production porting map, with a read-only explorer link.
+            Reading your own memory holdings (an ERC-1155 <span className="font-mono">balanceOf</span> scan of
+            your wallet) is ADAPTER REQUIRED, and anchoring / minting is never wired in the Studio.
+          </p>
+          <CanonicalContractsList keys={["Archive1155"]} />
+          <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
+            <StatusBadge status="ADAPTER REQUIRED" showTooltip={false} className="scale-90 origin-left" />
+            <span>Your live memory-holdings scan needs a Codex production adapter.</span>
+          </div>
+        </CardContent>
+      </Card>
 
       <h2 className="text-2xl font-bold mt-8 border-b border-white/10 pb-2">Current Collection (Simulated)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

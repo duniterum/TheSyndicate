@@ -17,6 +17,7 @@ import { useApp } from "@/lib/store";
 import { MOCK_DATA } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 import { ProductionAuthNote } from "@/components/production-auth-note";
+import { WalletStatePanel } from "@/components/wallet/wallet-state-panel";
 import {
   User,
   Palette,
@@ -445,6 +446,9 @@ export default function SettingsPage() {
           </SettingRow>
         </div>
       </SectionCard>
+
+      {/* Real wallet reality layer — read-only, separate from the simulated session above. */}
+      <WalletStatePanel />
 
       {/* 4. Notifications */}
       <SectionCard

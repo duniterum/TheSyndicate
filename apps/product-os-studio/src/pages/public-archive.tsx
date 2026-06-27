@@ -4,7 +4,8 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { MOCK_DATA } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { ShareDialog } from "@/components/share-dialog";
-import { Share2 } from "lucide-react";
+import { CanonicalContractsList } from "@/components/canonical-contracts";
+import { Database, Share2 } from "lucide-react";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 
 export default function PublicArchive() {
@@ -49,6 +50,35 @@ export default function PublicArchive() {
         <p className="text-xs text-emerald-100/70">
           Canonical IDs from the production porting map, shown read-only. Archive is ERC-1155 protocol memory — not source-aware, no financial rights.
         </p>
+      </motion.div>
+
+      {/* Canonical Archive contract + holdings posture */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.18 }}
+      >
+        <Card className="bg-white/5 border-white/10">
+          <CardHeader className="border-b border-white/5 pb-4">
+            <CardTitle className="flex items-center gap-2 flex-wrap text-lg">
+              <Database className="w-5 h-5 text-primary" /> Canonical Archive Contract
+              <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4 space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Protocol memory lives in the canonical <span className="font-mono">Archive1155</span> (ERC-1155)
+              contract — copied read-only from the production porting map, with a read-only explorer link.
+              Reading personal memory holdings (an ERC-1155 <span className="font-mono">balanceOf</span> scan
+              of a wallet) is ADAPTER REQUIRED, and anchoring / minting is never wired in the Studio.
+            </p>
+            <CanonicalContractsList keys={["Archive1155"]} />
+            <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
+              <StatusBadge status="ADAPTER REQUIRED" showTooltip={false} className="scale-90 origin-left" />
+              <span>A live memory-holdings scan needs a Codex production adapter.</span>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       <div className="space-y-8 pt-4">

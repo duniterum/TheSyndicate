@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ShareDialog } from "@/components/share-dialog";
 import { ExternalLinkWarning } from "@/components/external-link-warning";
+import { ImportSynButton } from "@/components/wallet/import-syn-button";
 import { useApp } from "@/lib/store";
 import { getSurface } from "@/lib/surfaces";
 import { cn } from "@/lib/utils";
@@ -48,9 +49,15 @@ export function ActionCard({ action, className }: { action: ProtocolAction; clas
     try {
       await navigator.clipboard.writeText(action.copyValue);
       setCopied(true);
-      toast.success("Copied (simulated)", {
-        description: "Mocked prototype value — not a live contract. Verify the real address from an official channel.",
-      });
+      if (action.copyTruth === "canonical") {
+        toast.success("Address copied", {
+          description: "Canonical SYN address — READ-ONLY PRODUCTION PROOF. Copying it wires nothing.",
+        });
+      } else {
+        toast.success("Copied (simulated)", {
+          description: "Mocked prototype value — not a live contract. Verify the real address from an official channel.",
+        });
+      }
       setTimeout(() => setCopied(false), 1600);
     } catch {
       toast.error("Could not copy to clipboard");
@@ -142,7 +149,9 @@ export function ActionCard({ action, className }: { action: ProtocolAction; clas
           </Button>
         );
       case "wallet-action":
-        return (
+        return action.realWalletImport ? (
+          <ImportSynButton size="sm" variant="outline" />
+        ) : (
           <Button size="sm" variant="outline" onClick={walletPreview} data-testid={`action-wallet-${action.id}`}>
             Preview (simulated)
           </Button>

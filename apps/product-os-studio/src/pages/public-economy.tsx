@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RTooltip, Legend } from "recharts";
 import { MOCK_DATA, ROUTING_SPLIT, routeUsdc } from "@/lib/mock-data";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
+import { CanonicalContractsList } from "@/components/canonical-contracts";
+import { PostureLegend } from "@/components/posture-legend";
 import { AlertTriangle, Database, Building2, Globe, ShieldOff, ExternalLink } from "lucide-react";
 
 const SPLIT_COLORS: Record<string, string> = {
@@ -243,6 +245,32 @@ export default function PublicEconomy() {
           ))}
         </div>
       </div>
+
+      {/* Market & token contracts + posture legend */}
+      <Card className="bg-white/5 border-white/10">
+        <CardHeader className="border-b border-white/5 pb-4">
+          <CardTitle className="flex items-center gap-2 flex-wrap">
+            <Database className="w-5 h-5 text-primary" /> Market &amp; Token Contracts
+            <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4 space-y-4">
+          <p className="text-sm text-muted-foreground">
+            The canonical token and market contracts behind the economy — the SYN accounting unit and
+            USDC, the Trader Joe SYN/USDC pair, and the Proof-of-Fire burn sink. Each is READ-ONLY
+            PRODUCTION PROOF: a copyable canonical address with a read-only explorer link. Nothing is
+            wired — a live read or write is ADAPTER REQUIRED. The full set lives in the Registry.
+          </p>
+          <CanonicalContractsList keys={["SYN", "USDC", "TraderJoeLpPair", "SynBurnAddress"]} />
+          <div className="pt-2 border-t border-white/5">
+            <h4 className="text-sm font-semibold mb-3">Data posture legend</h4>
+            <PostureLegend
+              postures={["READ_ONLY_PROOF", "ADAPTER_REQUIRED", "EXTERNAL", "NOT_LIVE"]}
+              compact
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Trust boundaries */}
       <Card className="bg-white/5 border-white/10">

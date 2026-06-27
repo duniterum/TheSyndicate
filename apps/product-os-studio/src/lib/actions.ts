@@ -40,6 +40,8 @@ import {
 import type { RouteRequirement } from "./navigation";
 import type { Status as DisplayStatus } from "@/components/ui/status-badge";
 import type { SharePayload } from "@/components/share-dialog";
+import { SYN_TOKEN } from "./production-constants";
+import { EXTERNAL_LINKS, EXTERNAL_LINK_WARNING } from "./external-links";
 
 export type { DisplayStatus };
 
@@ -105,6 +107,10 @@ export interface ProtocolAction {
   proofOutput?: string;
   /** How it flows through the organism (e.g. "Activity -> Candidate -> Chronicle"). */
   graphOutput?: string;
+  /** Render the real, safe Import SYN (wallet_watchAsset) control instead of a simulated preview. */
+  realWalletImport?: boolean;
+  /** How a copy action's value is described: a simulated note, or a canonical proof value. */
+  copyTruth?: "simulated" | "canonical";
   /** Share payload for share actions. */
   sharePayload?: SharePayload;
 }
@@ -192,32 +198,35 @@ export const ACTION_REGISTRY: ProtocolAction[] = [
   // --- Wallet & Token ---
   {
     id: "act-import-syn",
-    title: "Import SYN (simulated)",
-    description: "Preview adding SYN to a wallet's token list. SYN is the accounting unit, not a financial right.",
+    title: "Import SYN",
+    description: "Add SYN to your wallet's token list via wallet_watchAsset. SYN is the accounting unit, not a financial right.",
     category: "wallet",
     tier: "primary",
-    visibility: "connected",
-    displayStatus: "SIMULATED PROTOTYPE",
+    visibility: "public",
+    displayStatus: "LIVE NOW",
     actionType: "wallet-action",
     icon: Download,
-    disabledReason: "Preview only — the Studio makes no wallet_watchAsset call (not wired).",
-    safetyLabels: ["Simulated preview", "No real wallet call"],
-    sourceTruth: "The SYN address is a READ-ONLY PRODUCTION PROOF constant, but the Studio makes no wallet_watchAsset call — a labeled preview only.",
-    proofOutput: "Token details preview",
+    realWalletImport: true,
+    safetyLabels: ["Real wallet_watchAsset", "Decimals read live", "Not a financial right"],
+    sourceTruth: "A real wallet_watchAsset call. The SYN address is READ-ONLY PRODUCTION PROOF and decimals are read live on-chain before importing — no funds move and no transaction is sent.",
+    proofOutput: "SYN added to your wallet",
+    relatedSurfaceId: "registry",
   },
   {
     id: "act-copy-syn-address",
-    title: "SYN address status (read-only proof)",
-    description: "The canonical SYN token address is a READ-ONLY PRODUCTION PROOF constant, shown static in the Registry. Copies a status note — the Studio never injects it into a wallet.",
+    title: "Copy SYN address",
+    description: "Copy the canonical SYN token address (READ-ONLY PRODUCTION PROOF). Copying it wires nothing.",
     category: "wallet",
     tier: "primary",
-    visibility: "connected",
-    displayStatus: "READ-ONLY",
+    visibility: "public",
+    displayStatus: "READ-ONLY PRODUCTION PROOF",
     actionType: "copy",
     icon: Copy,
-    copyValue: "The SYN token address is shown as READ-ONLY PRODUCTION PROOF in the Registry (static, read-only explorer link — nothing wired).",
-    safetyLabels: ["Read-only proof", "Not wired"],
-    sourceTruth: "The SYN address is a READ-ONLY PRODUCTION PROOF constant from the porting map — shown static with a read-only explorer link, never fabricated or wired.",
+    copyValue: SYN_TOKEN.address,
+    copyTruth: "canonical",
+    safetyLabels: ["Read-only proof", "Copying wires nothing"],
+    sourceTruth: "The SYN address is a READ-ONLY PRODUCTION PROOF constant from the porting map. Copying it never calls or wires a contract; a read-only Snowtrace link lives in the Registry.",
+    relatedSurfaceId: "registry",
   },
   {
     id: "act-view-wallet",
@@ -236,51 +245,52 @@ export const ACTION_REGISTRY: ProtocolAction[] = [
   // --- Swap / DEX ---
   {
     id: "act-swap-dex",
-    title: "Swap on a DEX",
-    description: "Acquire or move SYN through an external decentralized exchange.",
+    title: "Swap on Trader Joe (LFJ)",
+    description: "Open the canonical Trader Joe (LFJ) trade route on Avalanche to swap USDC for SYN.",
     category: "dex",
-    tier: "future",
-    visibility: "connected",
-    displayStatus: "BACKEND REQUIRED",
+    tier: "primary",
+    visibility: "public",
+    displayStatus: "EXTERNAL",
     actionType: "external-link",
     icon: ArrowLeftRight,
-    disabledReason: "DEX link not wired — source required. No verified pool or router is configured in this prototype.",
+    externalUrl: EXTERNAL_LINKS.swapUsdcToSyn,
     safetyLabels: ["External tool", "Market risk", "Not a promised return"],
-    externalWarning: EXTERNAL_RISK,
-    sourceTruth: "No DEX integration exists in the prototype. SYN is acquired/anchored through membership, not pumped.",
+    externalWarning: EXTERNAL_LINK_WARNING,
+    sourceTruth: "Opens Trader Joe (LFJ) on Avalanche (USDC → SYN) — a canonical external venue. SYN is acquired/anchored through membership, not pumped.",
     relatedSurfaceId: "economy",
   },
   {
     id: "act-price-chart",
     title: "View market chart",
-    description: "Track SYN on an external charting tool.",
+    description: "Track the SYN / USDC pair on DexScreener — canonical, third-party market data.",
     category: "dex",
-    tier: "future",
+    tier: "proof",
     visibility: "public",
-    displayStatus: "BACKEND REQUIRED",
+    displayStatus: "EXTERNAL",
     actionType: "external-link",
     icon: LineChart,
-    disabledReason: "Chart link not wired — source required. No market data source is configured.",
+    externalUrl: EXTERNAL_LINKS.lpPairChart,
     safetyLabels: ["External tool", "Market risk"],
-    externalWarning: EXTERNAL_RISK,
-    sourceTruth: "No market data integration exists in the prototype.",
+    externalWarning: EXTERNAL_LINK_WARNING,
+    sourceTruth: "Opens the canonical DexScreener page for the SYN / USDC pair. Market data is third-party; nothing here is a promised return.",
+    relatedSurfaceId: "economy",
   },
 
   // --- Liquidity ---
   {
     id: "act-provide-liquidity",
     title: "Provide liquidity",
-    description: "Add SYN / USDC to an external liquidity pool.",
+    description: "Add SYN / USDC to the canonical liquidity pair. The add-liquidity deep link is not verified, so it stays not wired here.",
     category: "liquidity",
     tier: "future",
     visibility: "seated",
-    displayStatus: "BACKEND REQUIRED",
+    displayStatus: "NOT WIRED",
     actionType: "external-link",
     icon: Droplets,
-    disabledReason: "LP link not wired — source required. No verified pool is configured in this prototype.",
+    disabledReason: "Add-liquidity deep link not verified — kept not wired. The SYN / USDC LP pair is shown as READ-ONLY PRODUCTION PROOF in the Registry.",
     safetyLabels: ["External tool", "Impermanent loss", "Market risk", "Not a promised return"],
-    externalWarning: EXTERNAL_RISK,
-    sourceTruth: "Liquidity is one canonical routing destination (20%). No external LP integration exists in the prototype.",
+    externalWarning: EXTERNAL_LINK_WARNING,
+    sourceTruth: "Liquidity is one canonical routing destination (20%). The LP pair address is canonical, but no verified add-liquidity URL exists — so this stays not wired rather than guessing a link.",
     relatedSurfaceId: "economy",
   },
 

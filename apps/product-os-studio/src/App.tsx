@@ -3,6 +3,8 @@ import { AppProvider, useApp } from "./lib/store";
 import { PublicHeader } from "./components/public-header";
 import { PublicFooter } from "./components/public-footer";
 import { NotificationCenter } from "./components/notification-center";
+import { StudioWalletProvider } from "./lib/wallet-context";
+import { WalletChip } from "./components/wallet/wallet-chip";
 import PublicHome from "./pages/public-home";
 
 import { Moon, Sun, Menu, X, Shield, ShieldCheck, Lock, Copy, LogOut, ChevronDown, Users, Wallet, Settings as SettingsIcon, Share2, ArrowRight, Eye } from "lucide-react";
@@ -340,6 +342,9 @@ function MemberShell() {
               </span>
             )}
           </div>
+          <div className="mt-3">
+            <WalletChip />
+          </div>
         </div>
 
         <nav className="p-4 space-y-5 overflow-y-auto h-[calc(100dvh-4rem)]">
@@ -398,6 +403,7 @@ function MemberShell() {
             <AccountMenu onDisconnect={handleDisconnect} />
           </div>
           <div className="flex items-center gap-2">
+            <WalletChip className="hidden lg:inline-flex" />
             <NotificationCenter />
             <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -489,12 +495,14 @@ function MotionGate({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <AppProvider>
-      <MotionGate>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <AppShell />
-        </WouterRouter>
-        <Toaster />
-      </MotionGate>
+      <StudioWalletProvider>
+        <MotionGate>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <AppShell />
+          </WouterRouter>
+          <Toaster />
+        </MotionGate>
+      </StudioWalletProvider>
     </AppProvider>
   );
 }

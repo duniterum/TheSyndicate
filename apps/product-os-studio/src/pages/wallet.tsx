@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { ActionCard } from "@/components/action-card";
 import { getActionsByCategory } from "@/lib/actions";
+import { WalletStatePanel } from "@/components/wallet/wallet-state-panel";
 
 type ConnState = "connected" | "pending" | "failed" | "success";
 
@@ -91,6 +92,8 @@ export default function WalletPage() {
           <StatusBadge status="SIMULATED PROTOTYPE" />
         </div>
       </div>
+
+      <WalletStatePanel />
 
       <div className="space-y-4 bg-background/50 border border-white/5 p-4 rounded-xl">
         <div className="flex items-center gap-2 flex-wrap">
