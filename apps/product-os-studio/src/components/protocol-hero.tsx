@@ -374,10 +374,8 @@ export function ProtocolHero() {
                 Latest activity
               </span>
               <span className="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-                <span
-                  className={`w-1.5 h-1.5 rounded-full bg-green-500 ${noMotion ? "" : "animate-pulse"}`}
-                />
-                live · simulated
+                <span className="w-1.5 h-1.5 rounded-full bg-primary/70" />
+                simulated
               </span>
             </div>
             <Link href="/activity">
