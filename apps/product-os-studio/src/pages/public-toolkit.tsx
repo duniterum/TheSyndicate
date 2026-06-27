@@ -10,7 +10,10 @@ import { Wrench, Eye, Shield, Key, AlertTriangle, Info } from "lucide-react";
 export default function PublicToolkit() {
   const { isConnected, isSeated, isFounder } = useApp();
   const role: RoleState = { isConnected, isSeated, isFounder };
-  const categories = getVisibleCategories(role);
+  // Public surface: never expose operator/founder actions here, even if a
+  // `syn-founder` flag is set in this browser (role flags persist independently
+  // of connection). Operator tools live only in the member/founder console.
+  const categories = getVisibleCategories(role).filter((g) => g.def.id !== "operator");
 
   return (
     <div className="container mx-auto px-4 pt-28 pb-16 max-w-6xl space-y-12" data-testid="page-public-toolkit">
