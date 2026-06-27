@@ -19,8 +19,10 @@ export const AVALANCHE = {
   chainId: PRODUCTION_PROOF.chainId, // 43114
   chainIdHex: "0xa86a",
   name: PRODUCTION_PROOF.chain, // "Avalanche C-Chain"
-  // Canonical public Avalanche C-Chain network params (used only for a user-initiated
-  // wallet_switchEthereumChain / wallet_addEthereumChain request — never a transaction).
+  // Canonical public Avalanche C-Chain network params. These are static REFERENCE values for
+  // the future Codex-owned production adapter (see WalletAdapter in adapters.ts) and for human-
+  // readable guidance. The Studio itself NEVER requests a network change — it does not call
+  // wallet_switchEthereumChain or wallet_addEthereumChain. Wrong-network is manual guidance only.
   publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
   explorerName: "Snowtrace",
   explorerUrl: "https://snowtrace.io",

@@ -32,9 +32,11 @@
   from the simulated role flags below and grants **no** role. See
   `STUDIO_LIVE_READ_REALITY_LAYER.md`.
 - It really reads (read-only): connected address, current chain, and the user's own SYN
-  balance (`eth_call balanceOf`, decimals read live first) — labeled `LIVE READ`. It really
-  performs `wallet_switchEthereumChain`/`addEthereumChain` (Avalanche) and `wallet_watchAsset`
-  (Import SYN), all user-initiated. **No `eth_sendTransaction`, no write path exists.**
+  balance (`eth_call balanceOf`, decimals read live first) — labeled `LIVE READ`. The only
+  user-initiated wallet write is `wallet_watchAsset` (Import SYN). It does **not** change the
+  wallet network (no `wallet_switchEthereumChain` / `wallet_addEthereumChain` — wrong-network
+  is manual guidance) and does **not** revoke permissions (no `wallet_revokePermissions` —
+  "Forget" is local-only). **No `eth_sendTransaction`, no write path exists.**
 - This is the **one** place a value may be genuinely live. Everything in the sections below
   stays simulated. A live *event* scan (burn/member/activity/archive) is still `ADAPTER REQUIRED`.
 

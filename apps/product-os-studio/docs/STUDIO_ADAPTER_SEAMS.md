@@ -61,10 +61,13 @@ read-only wallet layer (`src/lib/wallet-adapter.ts` + `src/lib/wallet-context.ts
 `STUDIO_LIVE_READ_REALITY_LAYER.md`. It is **raw EIP-1193 only** (no wagmi / viem / new
 deps) and is **read-only by construction**:
 
-- It performs real, user-initiated reads: `eth_requestAccounts` (connect),
-  `wallet_switchEthereumChain` / `wallet_addEthereumChain` (Avalanche 43114 / `0xa86a`),
-  `wallet_watchAsset` (Import SYN, decimals read **live first**), and `eth_call`
-  `decimals()` + `balanceOf` for a `LIVE READ` of the user's own SYN balance.
+- It performs real, user-initiated reads: `eth_requestAccounts` (connect), `wallet_watchAsset`
+  (Import SYN, decimals read **live first**), and `eth_call` `decimals()` + `balanceOf` for a
+  `LIVE READ` of the user's own SYN balance. It does **not** request network changes —
+  wrong-network is **manual guidance** only (no `wallet_switchEthereumChain` /
+  `wallet_addEthereumChain`) — and "Forget in Studio" is **local-only** (no
+  `wallet_revokePermissions`). The production-only `WalletAdapter.switchToAvalanche()` above
+  stays a **type-only** seam (no RPC strings, not executable) for a future Codex bridge.
 - It still has **no transaction path** — there is no `eth_sendTransaction` and no
   write method anywhere; `isProductionAuth` stays the literal `false`.
 - It is **separate** from the simulated role system (`syn-*` flags) and grants no role.

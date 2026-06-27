@@ -7,18 +7,21 @@
 //   ALLOWED (and implemented here):
 //     - passive detection:        eth_accounts, eth_chainId   (no prompt)
 //     - explicit connect:         eth_requestAccounts          (user-initiated)
-//     - network switch/add:       wallet_switchEthereumChain / wallet_addEthereumChain
 //     - import token:             wallet_watchAsset (SYN)      (decimals read LIVE first)
 //     - LIVE READ:                eth_call balanceOf / decimals / symbol (read-only)
-//     - forget in Studio:         wallet_revokePermissions (best-effort) + clear local state
+//     - forget in Studio:         clears ONLY Studio-local state (no wallet call)
 //
 //   FORBIDDEN (intentionally absent — there is NO function for any of these):
+//     - network changes:          wallet_switchEthereumChain / wallet_addEthereumChain
+//     - permission revoke:        wallet_revokePermissions
 //     - eth_sendTransaction, eth_signTransaction, personal_sign, eth_sign, signTypedData
 //     - approve / buy / mint / burn / claim / source activation / founder exec
 //
 // The Studio frontend is NEVER production authority (WalletSnapshot.isProductionAuth = false).
-// Nothing here moves funds. wallet_switchEthereumChain / wallet_addEthereumChain / watchAsset
-// modify the user's wallet *environment* (not the chain) and are strictly user-initiated.
+// Nothing here moves funds and nothing here changes the user's wallet network or permissions.
+// Wrong-network is surfaced as MANUAL guidance only — the Studio never requests a switch. The
+// only wallet write of any kind is the user-initiated wallet_watchAsset (Import SYN), which
+// adds a token to the wallet's watch list and never touches the chain or funds.
 
 import {
   AVALANCHE,
@@ -107,51 +110,10 @@ export async function connect(): Promise<WalletSnapshot> {
   return snapshotFor(isCorrect ? "ready" : "wrongNetwork", accounts[0], chainId);
 }
 
-/** Request a switch to Avalanche C-Chain; adds it (canonical public params) if unknown. */
-export async function switchToAvalanche(): Promise<void> {
-  const provider = getInjectedProvider();
-  if (!provider) throw new Error("No wallet detected.");
-  try {
-    await provider.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: AVALANCHE.chainIdHex }],
-    });
-  } catch (err) {
-    const code = (err as { code?: number; data?: { originalError?: { code?: number } } })?.code
-      ?? (err as { data?: { originalError?: { code?: number } } })?.data?.originalError?.code;
-    if (code === 4902) {
-      await provider.request({
-        method: "wallet_addEthereumChain",
-        params: [
-          {
-            chainId: AVALANCHE.chainIdHex,
-            chainName: AVALANCHE.name,
-            nativeCurrency: AVALANCHE.nativeCurrency,
-            rpcUrls: [AVALANCHE.publicRpcUrl],
-            blockExplorerUrls: [AVALANCHE.explorerUrl],
-          },
-        ],
-      });
-    } else {
-      throw err;
-    }
-  }
-}
-
-/**
- * "Forget in Studio" — best-effort revoke of the Studio's read permission, then the hook
- * clears its local snapshot. This is NOT a production session/disconnect (injected wallets
- * control their own connection); it never claims one.
- */
-export async function forgetInStudio(): Promise<void> {
-  const provider = getInjectedProvider();
-  if (!provider) return;
-  try {
-    await provider.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }] });
-  } catch {
-    // Many wallets don't support revoke; the caller still clears its local snapshot.
-  }
-}
+// NOTE: there is intentionally NO switchToAvalanche / network-change function. Wrong-network
+// is handled as MANUAL guidance in the UI (the Studio never calls wallet_switchEthereumChain
+// or wallet_addEthereumChain). Network switching belongs to the user's wallet — and, in
+// production, to the Codex-owned adapter (see WalletAdapter in adapters.ts), not the Studio.
 
 // ---- read-only eth_call helpers (no ABI library) ---------------------------
 

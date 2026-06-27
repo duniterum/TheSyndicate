@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ProtocolHero } from "@/components/protocol-hero";
+import { RealityLayerStrip } from "@/components/reality-layer-strip";
 import { MOCK_DATA, ROUTING_SPLIT } from "@/lib/mock-data";
 import { PROOF_SURFACES } from "@/lib/surfaces";
 import {
@@ -63,6 +64,32 @@ export default function PublicHome() {
     <div className="pt-28 pb-24 flex flex-col gap-28 md:gap-36 overflow-hidden">
       {/* 1. Hero */}
       <ProtocolHero />
+
+      {/* 1.5 Reality Layer — Demo Persona vs Live Wallet Read vs Adapter Required */}
+      <motion.section
+        id="reality-layer"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={stagger}
+        className="container mx-auto px-4 max-w-6xl -mt-16 md:-mt-20"
+      >
+        <motion.div variants={fadeInUp} className="text-center mb-8">
+          <h2 className="text-xs font-mono tracking-[0.2em] text-muted-foreground uppercase mb-3">
+            Reality layer
+          </h2>
+          <p className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+            Three states, never mixed.
+          </p>
+          <p className="text-muted-foreground mt-2 max-w-2xl mx-auto text-sm">
+            Everything in this Studio is one of three things — demonstrated, read live from your wallet, or
+            waiting on a production adapter. Each is labeled plainly, everywhere.
+          </p>
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <RealityLayerStrip />
+        </motion.div>
+      </motion.section>
 
       {/* 2. The Loop */}
       <motion.section

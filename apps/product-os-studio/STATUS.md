@@ -29,10 +29,12 @@
   PROOF` — static and inert, with read-only explorer links. **Nothing is wired.**
 - **A real, read-only wallet reality layer** (Phase 1) can genuinely read — via the user's
   own EIP-1193 provider — the connected address, current chain, and the user's own SYN
-  balance (`LIVE READ`). It performs `wallet_switchEthereumChain`/`addEthereumChain` and
-  `wallet_watchAsset` (Import SYN), all user-initiated, and has **no transaction path**. It
-  is **separate** from the simulated role flags and grants no role. See
-  `docs/STUDIO_LIVE_READ_REALITY_LAYER.md`.
+  balance (`LIVE READ`). The only user-initiated wallet write is `wallet_watchAsset`
+  (Import SYN); it has **no transaction path**. It never changes the wallet network
+  (no `wallet_switchEthereumChain` / `wallet_addEthereumChain` — wrong-network is **manual
+  guidance** to Avalanche C-Chain) and never revokes permissions (no
+  `wallet_revokePermissions` — "Forget" is Studio-local only). It is **separate** from the
+  simulated role flags and grants no role. See `docs/STUDIO_LIVE_READ_REALITY_LAYER.md`.
 - **Everything else is SIMULATED prototype data**: balances, prototype addresses, hashes,
   receipts, activity, recognition standing, the burn aggregate, chronicle entries, member identity.
 
@@ -70,8 +72,9 @@ prototype paper and the production porting map.
 ## Allowed in the Studio (kept, and labeled)
 
 Mock data · `localStorage` role simulation · simulated founder mode · simulated wallet
-connection · **a real read-only EIP-1193 wallet reality layer** (connect / switch network /
-live SYN balance read / Import SYN — no writes, no auth) · future modules · prototype-only
+connection · **a real read-only EIP-1193 wallet reality layer** (connect / manual
+wrong-network guidance / live SYN balance read / Import SYN / Studio-local forget — no
+network change, no writes, no auth) · future modules · prototype-only
 UI · simulated burn/fire ledger · simulated toolkit/actions · simulated DEX/LP/import-token
 previews · simulated referral / Verified Introduction · simulated SeatRecord · public proof
 previews · member app · Founder Console prototype.

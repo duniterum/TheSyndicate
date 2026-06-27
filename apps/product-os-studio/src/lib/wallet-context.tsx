@@ -21,12 +21,10 @@ import {
 import type { ReadResult, WalletSnapshot } from "./adapters";
 import {
   connect as adapterConnect,
-  forgetInStudio,
   hasInjectedProvider,
   readSnapshot,
   readSynBalance,
   subscribe,
-  switchToAvalanche,
   watchSyn,
   type SynBalance,
 } from "./wallet-adapter";
@@ -39,16 +37,13 @@ interface StudioWalletContextValue {
   /** Whether an injected EIP-1193 provider exists at all. */
   isDetected: boolean;
   connecting: boolean;
-  switching: boolean;
   forgetting: boolean;
   importing: boolean;
   error: string | null;
   clearError: () => void;
   /** Explicit connect (eth_requestAccounts). */
   connect: () => Promise<void>;
-  /** Request a switch/add to Avalanche C-Chain. */
-  switchNetwork: () => Promise<void>;
-  /** Forget the wallet within the Studio (best-effort revoke + clear local snapshot). */
+  /** Forget the wallet within the Studio — clears ONLY Studio-local state (no wallet call). */
   forget: () => Promise<void>;
   /** Import SYN via wallet_watchAsset (decimals read live first). */
   importSyn: () => Promise<ImportSynResult>;
@@ -76,12 +71,16 @@ export function StudioWalletProvider({ children }: { children: ReactNode }) {
   const [snapshot, setSnapshot] = useState<WalletSnapshot>(initialSnapshot);
   const [isDetected, setIsDetected] = useState<boolean>(() => hasInjectedProvider());
   const [connecting, setConnecting] = useState(false);
-  const [switching, setSwitching] = useState(false);
   const [forgetting, setForgetting] = useState(false);
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [synBalance, setSynBalance] = useState<ReadResult<SynBalance>>({ state: "idle" });
   const [synBalanceLoading, setSynBalanceLoading] = useState(false);
+
+  // "Forget in Studio" is local-only: the Studio never revokes wallet permissions. Once
+  // forgotten, passive re-detection is suppressed (we present "disconnected") until the user
+  // explicitly reconnects. This is honest — the injected wallet still controls its own grant.
+  const forgotten = useRef(false);
 
   const mounted = useRef(true);
   useEffect(() => {
@@ -92,6 +91,14 @@ export function StudioWalletProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshSnapshot = useCallback(async () => {
+    // Respect a local "forget" — do not read the account back in until the user reconnects.
+    if (forgotten.current) {
+      const next: WalletSnapshot = hasInjectedProvider()
+        ? { state: "disconnected", isCorrectNetwork: false, isProductionAuth: false }
+        : { state: "unsupported", isCorrectNetwork: false, isProductionAuth: false };
+      if (mounted.current) setSnapshot(next);
+      return next;
+    }
     const next = await readSnapshot();
     if (mounted.current) setSnapshot(next);
     return next;
@@ -132,6 +139,8 @@ export function StudioWalletProvider({ children }: { children: ReactNode }) {
   const connect = useCallback(async () => {
     setError(null);
     setConnecting(true);
+    // A new explicit connect lifts a prior local "forget".
+    forgotten.current = false;
     try {
       const next = await adapterConnect();
       if (mounted.current) setSnapshot(next);
@@ -142,32 +151,22 @@ export function StudioWalletProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const switchNetwork = useCallback(async () => {
-    setError(null);
-    setSwitching(true);
-    try {
-      await switchToAvalanche();
-      await refreshSnapshot();
-    } catch (err) {
-      if (mounted.current) setError(friendlyError(err));
-    } finally {
-      if (mounted.current) setSwitching(false);
-    }
-  }, [refreshSnapshot]);
-
   const forget = useCallback(async () => {
+    // Local-only: clears the Studio's view of the wallet. It does NOT call the wallet (no
+    // wallet_revokePermissions) and never claims a production disconnect.
     setError(null);
     setForgetting(true);
-    try {
-      await forgetInStudio();
-    } finally {
-      if (mounted.current) {
-        await refreshSnapshot();
-        setSynBalance({ state: "idle" });
-        setForgetting(false);
-      }
+    forgotten.current = true;
+    if (mounted.current) {
+      setSnapshot(
+        hasInjectedProvider()
+          ? { state: "disconnected", isCorrectNetwork: false, isProductionAuth: false }
+          : { state: "unsupported", isCorrectNetwork: false, isProductionAuth: false },
+      );
+      setSynBalance({ state: "idle" });
+      setForgetting(false);
     }
-  }, [refreshSnapshot]);
+  }, []);
 
   const importSyn = useCallback(async (): Promise<ImportSynResult> => {
     setError(null);
@@ -187,13 +186,11 @@ export function StudioWalletProvider({ children }: { children: ReactNode }) {
     snapshot,
     isDetected,
     connecting,
-    switching,
     forgetting,
     importing,
     error,
     clearError,
     connect,
-    switchNetwork,
     forget,
     importSyn,
     synBalance,

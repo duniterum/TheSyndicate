@@ -1,7 +1,8 @@
 // Wallet reality panel — the full, honest view of the REAL read-only wallet layer. Used on the
 // Wallet page, Settings, Join, and My Syndicate. It is explicitly SEPARATE from the simulated
 // role demo (Connected / Seated / Founder), never claims production authority, and exposes no
-// transaction path — only connect / switch / live read / import / forget.
+// transaction path — only connect / manual wrong-network guidance / live read / import /
+// Studio-local forget (no network change, no permission revoke).
 
 import {
   Wallet,
@@ -26,6 +27,7 @@ import { explorerAddress } from "@/lib/external-links";
 import { AVALANCHE, SYN_TOKEN } from "@/lib/production-constants";
 import { ImportSynButton } from "./import-syn-button";
 import { PostureLegend } from "@/components/posture-legend";
+import { ChainBadge } from "@/components/chain-badge";
 import { cn } from "@/lib/utils";
 
 async function copyText(text: string): Promise<boolean> {
@@ -118,12 +120,10 @@ export function WalletStatePanel({ className }: { className?: string }) {
     snapshot,
     isDetected,
     connecting,
-    switching,
     forgetting,
     error,
     clearError,
     connect,
-    switchNetwork,
     forget,
   } = useStudioWallet();
   const { maskAddress } = useApp();
@@ -225,19 +225,27 @@ export function WalletStatePanel({ className }: { className?: string }) {
             <div className="space-y-1.5">
               <span className="text-xs uppercase tracking-wider text-muted-foreground">Network</span>
               {snapshot.state === "ready" ? (
-                <p className="flex items-center gap-2 text-sm text-emerald-400">
-                  <CheckCircle2 className="h-4 w-4" /> {AVALANCHE.name} ({AVALANCHE.chainId})
-                </p>
-              ) : (
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="flex items-center gap-2 text-sm text-amber-400">
-                    <TriangleAlert className="h-4 w-4" /> Not on {AVALANCHE.name}
-                    {snapshot.chainId ? ` (chain ${snapshot.chainId})` : ""}
-                  </span>
-                  <Button variant="outline" size="sm" onClick={() => void switchNetwork()} disabled={switching} data-testid="wallet-switch">
-                    {switching ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-                    Switch to Avalanche
-                  </Button>
+                  <p className="flex items-center gap-2 text-sm text-emerald-400">
+                    <CheckCircle2 className="h-4 w-4" /> {AVALANCHE.name} ({AVALANCHE.chainId})
+                  </p>
+                  <ChainBadge />
+                </div>
+              ) : (
+                <div className="space-y-2 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3" data-testid="wallet-wrong-network">
+                  <p className="flex flex-wrap items-center gap-2 text-sm text-amber-300">
+                    <TriangleAlert className="h-4 w-4 shrink-0" /> Wrong network detected
+                    {snapshot.chainId ? (
+                      <span className="font-mono text-xs text-amber-400/80">on chain {snapshot.chainId}</span>
+                    ) : null}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    The Syndicate runs on {AVALANCHE.name} (chain ID {AVALANCHE.chainId};{" "}
+                    {AVALANCHE.nativeCurrency.symbol} is used for gas). Switch to {AVALANCHE.name}{" "}
+                    <span className="text-foreground">manually in your wallet</span>. This Studio preview does not request
+                    network changes.
+                  </p>
+                  <ChainBadge />
                 </div>
               )}
             </div>
@@ -267,8 +275,8 @@ export function WalletStatePanel({ className }: { className?: string }) {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              “Forget in Studio” clears this layer here (best-effort permission revoke). Your wallet controls its own
-              connection — this is not a production session.
+              “Forget in Studio” clears this prototype’s local wallet state. It does not revoke permissions in your
+              wallet, and it is not a production session — your wallet still controls its own connection.
             </p>
           </div>
         )}

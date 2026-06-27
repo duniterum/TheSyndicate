@@ -1,12 +1,14 @@
 // Import SYN — a REAL wallet_watchAsset call (the SYN address is READ-ONLY PRODUCTION PROOF;
-// decimals are read LIVE before the call). Self-contained: if the wallet isn't connected or is
-// on the wrong network, the button first routes the user through connect / switch. It never
-// fakes success — the toast reflects exactly what the wallet reported.
+// decimals are read LIVE before the call). Self-contained: if the wallet isn't connected the
+// button prompts connect; on the wrong network it is disabled with MANUAL guidance (the Studio
+// never requests a network change). It never fakes success — the toast reflects exactly what
+// the wallet reported.
 
-import { Download, Loader2, Wallet, ArrowLeftRight } from "lucide-react";
+import { Download, Loader2, Wallet, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useStudioWallet } from "@/lib/wallet-context";
+import { AVALANCHE } from "@/lib/production-constants";
 import { cn } from "@/lib/utils";
 
 interface ImportSynButtonProps {
@@ -16,8 +18,7 @@ interface ImportSynButtonProps {
 }
 
 export function ImportSynButton({ variant = "default", size = "default", className }: ImportSynButtonProps) {
-  const { snapshot, isDetected, connecting, switching, importing, connect, switchNetwork, importSyn } =
-    useStudioWallet();
+  const { snapshot, isDetected, connecting, importing, connect, importSyn } = useStudioWallet();
   const { toast } = useToast();
 
   if (!isDetected || snapshot.state === "unsupported") {
@@ -54,15 +55,15 @@ export function ImportSynButton({ variant = "default", size = "default", classNa
   if (snapshot.state === "wrongNetwork") {
     return (
       <Button
-        variant={variant}
+        variant="outline"
         size={size}
         className={className}
-        onClick={() => void switchNetwork()}
-        disabled={switching}
-        data-testid="import-syn-switch"
+        disabled
+        title={`Switch to ${AVALANCHE.name} (chain ID ${AVALANCHE.chainId}, ${AVALANCHE.nativeCurrency.symbol} gas) manually in your wallet to import SYN. The Studio does not request network changes.`}
+        data-testid="import-syn-wrong-network"
       >
-        {switching ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowLeftRight className="h-4 w-4" />}
-        Switch to Avalanche to import
+        <TriangleAlert className="h-4 w-4" />
+        Switch network in wallet to import
       </Button>
     );
   }

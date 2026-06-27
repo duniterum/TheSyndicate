@@ -25,6 +25,11 @@ The reality layer never grants a role, never seats a member, never unlocks found
 
 - **No write path exists in code.** There is **no** `eth_sendTransaction`, approve, buy,
   mint, burn, claim, source activation, or founder execution anywhere in the wallet layer.
+- **No network change and no permission revoke.** The Studio never calls
+  `wallet_switchEthereumChain`, `wallet_addEthereumChain`, or `wallet_revokePermissions`.
+  Wrong-network is surfaced as **manual guidance** only (switch in your own wallet), and
+  "Forget in Studio" clears **only** Studio-local state. The single user-initiated wallet
+  write of any kind is `wallet_watchAsset` (Import SYN), which never touches chain or funds.
 - `WalletSnapshot.isProductionAuth` is the literal `false`.
 - No new dependencies. **Raw EIP-1193 only** (no wagmi / viem). No ABI imports.
 - No invented addresses or links — every constant/link derives from `PRODUCTION_PROOF`
@@ -39,7 +44,7 @@ The reality layer never grants a role, never seats a member, never unlocks found
 | provider detection (`window.ethereum`) | passive | read-only |
 | `eth_accounts` / `eth_chainId` | passive read on load | `LIVE READ` |
 | `eth_requestAccounts` | only on explicit **Connect** | user-initiated |
-| `wallet_switchEthereumChain` → `wallet_addEthereumChain` | only on explicit **Switch to Avalanche** (43114 / `0xa86a`, canonical public params) | user-initiated, no tx |
+| _(network change)_ — **removed** | wrong-network shows **manual guidance** only; the Studio never calls `wallet_switchEthereumChain` / `wallet_addEthereumChain` (the user switches in their own wallet) | guidance only — no wallet call |
 | `eth_call` `decimals()` then `balanceOf(address)` (SYN) | only on explicit **Read live / Refresh** | `LIVE READ` |
 | `wallet_watchAsset` (Import SYN) | only on explicit **Import SYN**; decimals read **live first** | user-initiated, no tx |
 | `accountsChanged` / `chainChanged` listeners | passive | keeps snapshot honest |
@@ -60,16 +65,27 @@ surfaced honestly; success is never faked.
 
 - `components/wallet/wallet-chip.tsx` — compact header chip (connect / network / short address).
 - `components/wallet/wallet-state-panel.tsx` — the full reality panel (`NOT PRODUCTION AUTH`
-  badge, address copy + Snowtrace, network + switch, live SYN balance, Import SYN, forget).
-- `components/wallet/import-syn-button.tsx` — `wallet_watchAsset` (decimals live-read first).
+  badge, address copy + Snowtrace, network + **manual wrong-network guidance**, live SYN
+  balance, Import SYN, local-only forget).
+- `components/wallet/import-syn-button.tsx` — `wallet_watchAsset` (decimals live-read first);
+  on wrong network it is disabled with manual guidance (no switch is requested).
+- `components/chain-badge.tsx` — a clean Avalanche C-Chain badge (`43114` / `AVAX` gas; a
+  generic peak glyph, not a trademark asset) shown on the wallet chip, wallet panel, and
+  reality-layer strip.
+- `components/reality-layer-strip.tsx` — the **Demo Persona / Live Wallet Read / Adapter
+  Required** strip (explanatory; reuses `StatusBadge` labels), shown near the home hero.
 - `components/canonical-contracts.tsx` — renders `CANONICAL_CONTRACTS` through the existing
   `ContractCopyRow` as `READ-ONLY PRODUCTION PROOF` (copyable address + read-only explorer).
 - `components/posture-legend.tsx` — the data-posture taxonomy rendered through `StatusBadge`.
 
 ## Surfaces wired (no redesign, nothing deleted)
 
+- **Home:** the `RealityLayerStrip` near the hero (Demo Persona / Live Wallet Read / Adapter
+  Required). The hero capital-routing panel is labeled **Capital routing preview**
+  (`SIMULATED PROTOTYPE`) — never "live" over simulated values.
 - **Header / chrome:** `WalletChip` on the member desktop top bar, member mobile identity
-  strip, and the public header (desktop + mobile menu).
+  strip, and the public header (desktop + mobile menu). Wrong-network is an informational
+  chip with manual guidance — never a switch action.
 - **Wallet page + Settings:** full `WalletStatePanel` (the real read-only layer, explicitly
   separate from the simulated role demo).
 - **Registry / public-registry:** `CanonicalContractsList` (full / compact) + `PostureLegend`.

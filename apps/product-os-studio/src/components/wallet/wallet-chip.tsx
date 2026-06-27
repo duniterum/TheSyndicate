@@ -1,6 +1,7 @@
 // Header wallet chip — the REAL, read-only wallet at a glance. Compact, honest, and fully
-// separate from the simulated role demo. No transaction path; every action is read-only or
-// environment-only (connect / switch / copy / explorer / forget).
+// separate from the simulated role demo. No transaction path and no network changes; every
+// action is read-only or environment-only (connect / copy / explorer / forget). Wrong-network
+// is surfaced as MANUAL guidance — the Studio never requests a wallet network switch.
 
 import { Wallet, ChevronDown, Copy, ExternalLink, LogOut, Loader2, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,8 @@ import { useApp } from "@/lib/store";
 import { useStudioWallet } from "@/lib/wallet-context";
 import { shortenAddress } from "@/lib/wallet-adapter";
 import { explorerAddress } from "@/lib/external-links";
+import { AVALANCHE } from "@/lib/production-constants";
+import { ChainBadge } from "@/components/chain-badge";
 import { cn } from "@/lib/utils";
 
 async function copyText(text: string): Promise<boolean> {
@@ -33,8 +36,7 @@ async function copyText(text: string): Promise<boolean> {
 }
 
 export function WalletChip({ className }: { className?: string }) {
-  const { snapshot, isDetected, connecting, switching, connect, switchNetwork, forget, forgetting } =
-    useStudioWallet();
+  const { snapshot, isDetected, connecting, connect, forget, forgetting } = useStudioWallet();
   const { maskAddress } = useApp();
   const { toast } = useToast();
 
@@ -75,24 +77,6 @@ export function WalletChip({ className }: { className?: string }) {
     );
   }
 
-  if (snapshot.state === "wrongNetwork") {
-    return (
-      <Button
-        variant="outline"
-        size="sm"
-        className={cn("border-amber-500/40 text-amber-400 hover:text-amber-300", className)}
-        onClick={() => void switchNetwork()}
-        disabled={switching}
-        title="Connected, but not on Avalanche C-Chain. Switch to read live."
-        data-testid="wallet-chip-wrong-network"
-      >
-        {switching ? <Loader2 className="h-4 w-4 animate-spin" /> : <TriangleAlert className="h-4 w-4" />}
-        Wrong network
-      </Button>
-    );
-  }
-
-  // ready
   const address = snapshot.address ?? "";
   const display = maskAddress ? "0x•••••••" : shortenAddress(address);
 
@@ -105,30 +89,47 @@ export function WalletChip({ className }: { className?: string }) {
     );
   };
 
+  const wrongNetwork = snapshot.state === "wrongNetwork";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
           className={cn(
-            "inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/5 px-2.5 py-1.5 text-xs font-mono text-foreground hover:border-emerald-500/50",
+            "inline-flex items-center gap-2 rounded-md border px-2.5 py-1.5 text-xs font-mono text-foreground",
+            wrongNetwork
+              ? "border-amber-500/40 bg-amber-500/5 hover:border-amber-500/60"
+              : "border-emerald-500/30 bg-emerald-500/5 hover:border-emerald-500/50",
             className,
           )}
-          data-testid="wallet-chip-ready"
+          data-testid={wrongNetwork ? "wallet-chip-wrong-network" : "wallet-chip-ready"}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
+          {wrongNetwork ? (
+            <TriangleAlert className="h-3.5 w-3.5 text-amber-400" aria-hidden />
+          ) : (
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
+          )}
           {display}
           <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuLabel className="space-y-1">
+      <DropdownMenuContent align="end" className="w-72">
+        <DropdownMenuLabel className="space-y-1.5">
           <span className="block text-xs font-medium">Real wallet · read-only</span>
           <span className="block font-mono text-[11px] text-muted-foreground break-all">
             {maskAddress ? "Address hidden (privacy on)" : address}
           </span>
-          <span className="block text-[10px] uppercase tracking-wider text-emerald-500/80">
-            Avalanche C-Chain · not production auth
-          </span>
+          <ChainBadge className="mt-1" />
+          {wrongNetwork ? (
+            <span className="block text-[11px] font-normal leading-relaxed text-amber-400/90">
+              Connected, but not on {AVALANCHE.name}
+              {snapshot.chainId ? ` (on chain ${snapshot.chainId})` : ""}. Switch to {AVALANCHE.name}{" "}
+              <span className="text-foreground">manually in your wallet</span> to read live. This Studio does not request
+              network changes.
+            </span>
+          ) : (
+            <span className="block text-[10px] uppercase tracking-wider text-emerald-500/80">Not production auth</span>
+          )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => void onCopy()} data-testid="wallet-chip-copy">
