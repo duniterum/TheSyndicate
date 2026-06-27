@@ -3,6 +3,7 @@ import { useApp } from "@/lib/store";
 import { getFireLedger, getBurnSummary, getFireFlow, burnSourceLabel, getProofOfFire } from "@/lib/fire-ledger";
 import { getActionsByCategory } from "@/lib/actions";
 import { ActionCard } from "@/components/action-card";
+import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -162,6 +163,14 @@ export default function Fire() {
               </div>
             </CardContent>
           </Card>
+
+          <ProtocolSnapshotPanel
+            title="Burn sink — live SYN balance"
+            description="SYN currently held at the canonical burn sink (0x…dEaD), read LIVE and read-only from the public Avalanche RPC. This cumulative sink total is DISTINCT from the verified Proof of Fire #001 above (a specific 1,000 SYN founder burn). Burning retires supply — never minted, never a price promise."
+            groups={["burn"]}
+            showChain={false}
+            showAdapterRequired={false}
+          />
 
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="border-b border-white/5 pb-4">

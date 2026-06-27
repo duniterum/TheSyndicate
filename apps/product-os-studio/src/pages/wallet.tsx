@@ -23,6 +23,7 @@ import { Link } from "wouter";
 import { ActionCard } from "@/components/action-card";
 import { getActionsByCategory } from "@/lib/actions";
 import { WalletStatePanel } from "@/components/wallet/wallet-state-panel";
+import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 
 type ConnState = "connected" | "pending" | "failed" | "success";
 
@@ -236,6 +237,13 @@ export default function WalletPage() {
               </>
             )}
           </div>
+
+          <ProtocolSnapshotPanel
+            title="Live chain read"
+            description="Your balances above are a simulated prototype (PROTOTYPE WALLET STATE). Below is a real, read-only chain read — the live mechanism the Studio uses. Real protocol token balances are shown on the Registry and Economy pages."
+            groups={[]}
+            showAdapterRequired={false}
+          />
 
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="pb-3 border-b border-white/5">
