@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/studio/"
+title = "Product OS Studio (Prototype Preview)"
+version = "1.0.0"
+id = "artifacts/product-os-studio"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/studio", "/studio/" ]
+localPort = 20083
+
+[services.development]
+run = "pnpm --filter @workspace/product-os-studio run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/product-os-studio", "run", "build" ]
+publicDir = "apps/product-os-studio/dist"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20083"
+BASE_PATH = "/studio/"

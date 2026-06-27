@@ -1,0 +1,12 @@
+{
+  "name": "@workspace/product-os-studio",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Launcher artifact only. Contains NO application code. It builds and serves the standalone app in apps/product-os-studio at the /studio preview path. Delete this directory to fully de-register the preview without affecting apps/product-os-studio.",
+  "scripts": {
+    "dev": "cd ../../apps/product-os-studio && npm install && npm run dev",
+    "build": "cd ../../apps/product-os-studio && npm ci && npm run build",
+    "preview": "cd ../../apps/product-os-studio && npm run preview",
+    "typecheck": "cd ../../apps/product-os-studio && npm run typecheck"
+  }
+}
