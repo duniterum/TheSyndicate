@@ -53,6 +53,7 @@ import { Route as LabsProtocolMemoryRouteImport } from './routes/labs.protocol-m
 import { Route as LabsProtocolLineageRouteImport } from './routes/labs.protocol-lineage'
 import { Route as LabsProtocolIntelligenceRouteImport } from './routes/labs.protocol-intelligence'
 import { Route as LabsProtocolEventsRouteImport } from './routes/labs.protocol-events'
+import { Route as LabsProductOsV1RouteImport } from './routes/labs.product-os-v1'
 import { Route as LabsMemoryCandidatesRouteImport } from './routes/labs.memory-candidates'
 import { Route as LabsKnowledgeMapRouteImport } from './routes/labs.knowledge-map'
 import { Route as LabsInvariantsRouteImport } from './routes/labs.invariants'
@@ -298,6 +299,11 @@ const LabsProtocolEventsRoute = LabsProtocolEventsRouteImport.update({
   path: '/protocol-events',
   getParentRoute: () => LabsRoute,
 } as any)
+const LabsProductOsV1Route = LabsProductOsV1RouteImport.update({
+  id: '/product-os-v1',
+  path: '/product-os-v1',
+  getParentRoute: () => LabsRoute,
+} as any)
 const LabsMemoryCandidatesRoute = LabsMemoryCandidatesRouteImport.update({
   id: '/memory-candidates',
   path: '/memory-candidates',
@@ -456,6 +462,7 @@ export interface FileRoutesByFullPath {
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
+  '/labs/product-os-v1': typeof LabsProductOsV1Route
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
@@ -522,6 +529,7 @@ export interface FileRoutesByTo {
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
+  '/labs/product-os-v1': typeof LabsProductOsV1Route
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
@@ -590,6 +598,7 @@ export interface FileRoutesById {
   '/labs/invariants': typeof LabsInvariantsRoute
   '/labs/knowledge-map': typeof LabsKnowledgeMapRoute
   '/labs/memory-candidates': typeof LabsMemoryCandidatesRoute
+  '/labs/product-os-v1': typeof LabsProductOsV1Route
   '/labs/protocol-events': typeof LabsProtocolEventsRoute
   '/labs/protocol-intelligence': typeof LabsProtocolIntelligenceRoute
   '/labs/protocol-lineage': typeof LabsProtocolLineageRoute
@@ -659,6 +668,7 @@ export interface FileRouteTypes {
     | '/labs/invariants'
     | '/labs/knowledge-map'
     | '/labs/memory-candidates'
+    | '/labs/product-os-v1'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/labs/protocol-lineage'
@@ -725,6 +735,7 @@ export interface FileRouteTypes {
     | '/labs/invariants'
     | '/labs/knowledge-map'
     | '/labs/memory-candidates'
+    | '/labs/product-os-v1'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/labs/protocol-lineage'
@@ -792,6 +803,7 @@ export interface FileRouteTypes {
     | '/labs/invariants'
     | '/labs/knowledge-map'
     | '/labs/memory-candidates'
+    | '/labs/product-os-v1'
     | '/labs/protocol-events'
     | '/labs/protocol-intelligence'
     | '/labs/protocol-lineage'
@@ -1168,6 +1180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsProtocolEventsRouteImport
       parentRoute: typeof LabsRoute
     }
+    '/labs/product-os-v1': {
+      id: '/labs/product-os-v1'
+      path: '/product-os-v1'
+      fullPath: '/labs/product-os-v1'
+      preLoaderRoute: typeof LabsProductOsV1RouteImport
+      parentRoute: typeof LabsRoute
+    }
     '/labs/memory-candidates': {
       id: '/labs/memory-candidates'
       path: '/memory-candidates'
@@ -1343,6 +1362,7 @@ interface LabsRouteChildren {
   LabsInvariantsRoute: typeof LabsInvariantsRoute
   LabsKnowledgeMapRoute: typeof LabsKnowledgeMapRoute
   LabsMemoryCandidatesRoute: typeof LabsMemoryCandidatesRoute
+  LabsProductOsV1Route: typeof LabsProductOsV1Route
   LabsProtocolEventsRoute: typeof LabsProtocolEventsRoute
   LabsProtocolIntelligenceRoute: typeof LabsProtocolIntelligenceRoute
   LabsProtocolLineageRoute: typeof LabsProtocolLineageRoute
@@ -1366,6 +1386,7 @@ const LabsRouteChildren: LabsRouteChildren = {
   LabsInvariantsRoute: LabsInvariantsRoute,
   LabsKnowledgeMapRoute: LabsKnowledgeMapRoute,
   LabsMemoryCandidatesRoute: LabsMemoryCandidatesRoute,
+  LabsProductOsV1Route: LabsProductOsV1Route,
   LabsProtocolEventsRoute: LabsProtocolEventsRoute,
   LabsProtocolIntelligenceRoute: LabsProtocolIntelligenceRoute,
   LabsProtocolLineageRoute: LabsProtocolLineageRoute,

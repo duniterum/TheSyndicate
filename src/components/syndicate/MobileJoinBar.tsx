@@ -26,6 +26,7 @@ type BarConfig = {
 };
 
 function configForRoute(path: string): BarConfig | null {
+  if (path === "/labs" || path.startsWith("/labs/")) return null;
   if (path === "/join") return null;
   if (path === "/nft" || path === "/nfts") {
     return {
