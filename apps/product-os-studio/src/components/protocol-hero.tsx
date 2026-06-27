@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { StudioPreviewBanner } from "@/components/studio-preview-banner";
+import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 import { MOCK_DATA, ROUTING_SPLIT, routeUsdc } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 
@@ -106,32 +108,33 @@ export function ProtocolHero() {
       </div>
 
       <div className="container mx-auto px-4 max-w-6xl">
-        {/* Announcement + simulation honesty */}
-        <motion.div
-          {...reveal(0)}
-          className="flex flex-wrap items-center justify-center gap-3 mb-8"
-        >
-          <span
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono backdrop-blur-sm"
-            data-testid="hero-badge"
-          >
-            <span
-              className={`w-2 h-2 rounded-full bg-green-500 ${noMotion ? "" : "animate-pulse"} shadow-[0_0_8px_rgba(34,197,94,0.6)]`}
-            />
-            <span className="text-muted-foreground">
-              THE INSTITUTION IS{" "}
-              <span className="text-foreground font-semibold">ALIVE</span>
-            </span>
-          </span>
-          <StatusBadge status="SIMULATED PROTOTYPE" />
+        {/* Studio identity — the first, unmistakable marker that this is the Studio, not / */}
+        <motion.div {...reveal(0)} className="mb-8">
+          <StudioPreviewBanner />
         </motion.div>
 
-        {/* Protocol stat strip */}
+        {/* Real, read-only live snapshot — above the fold, plainly LIVE READ */}
+        <motion.div {...reveal(0.04)} className="mb-8">
+          <ProtocolSnapshotPanel
+            title="Live protocol snapshot"
+            description="A real, read-only on-chain read (chain id · block height) from the public Avalanche RPC — the live mechanism this Studio runs on. No wallet, no writes. Routing and burn balances read live on Registry, Economy, and Fire."
+            groups={[]}
+            showAdapterRequired={false}
+          />
+        </motion.div>
+
+        {/* Protocol stat strip — DEMO data, visually distinct from the live snapshot above */}
         <motion.div
-          {...reveal(0.05)}
-          className="mb-12 rounded-2xl border border-white/10 bg-card/40 backdrop-blur-md overflow-hidden"
+          {...reveal(0.08)}
+          className="mb-12 rounded-2xl border border-orange-500/20 bg-orange-500/[0.03] backdrop-blur-md overflow-hidden"
           data-testid="hero-stat-strip"
         >
+          <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b border-orange-500/15 bg-orange-500/[0.05]">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              Demo snapshot · prototype metrics · not live totals
+            </span>
+            <StatusBadge status="SIMULATED PROTOTYPE" showTooltip={false} />
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y lg:divide-y-0 divide-white/5">
             {STRIP.map((s) => (
               <div
@@ -151,8 +154,8 @@ export function ProtocolHero() {
               </div>
             ))}
           </div>
-          <div className="px-4 py-2 border-t border-white/5 bg-background/40 text-[10px] font-mono uppercase tracking-wider text-muted-foreground text-center">
-            Prototype snapshot · simulated values · routing math is canonical 70% / 20% / 10%
+          <div className="px-4 py-2 border-t border-orange-500/15 bg-background/40 text-[10px] font-mono uppercase tracking-wider text-muted-foreground text-center">
+            Adapter required for live totals · routing math is canonical 70% / 20% / 10%
           </div>
         </motion.div>
 

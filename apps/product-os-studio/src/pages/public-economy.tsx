@@ -6,6 +6,7 @@ import { MOCK_DATA, ROUTING_SPLIT, routeUsdc } from "@/lib/mock-data";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 import { CanonicalContractsList } from "@/components/canonical-contracts";
 import { PostureLegend } from "@/components/posture-legend";
+import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 import { AlertTriangle, Database, Building2, Globe, ShieldOff, ExternalLink } from "lucide-react";
 
 const SPLIT_COLORS: Record<string, string> = {
@@ -49,6 +50,12 @@ export default function PublicEconomy() {
 
       <PublicProofNote surfaceId="economy" />
 
+      <ProtocolSnapshotPanel
+        title="Live Protocol Snapshot — routing wallets"
+        description="Live, read-only USDC currently held by each routing wallet — distinct from the simulated total-routed figures on this page. Read directly from the public Avalanche RPC; no wallet, no writes."
+        groups={["routing"]}
+      />
+
       {/* Doctrine */}
       <div className="p-5 border border-white/10 bg-white/5 rounded-xl text-center">
         <p className="font-serif text-lg tracking-wide text-muted-foreground">
@@ -63,7 +70,7 @@ export default function PublicEconomy() {
           <p className="font-bold mb-1 uppercase tracking-wider">No entitlement. No yield. No treasury claim.</p>
           <p className="opacity-90">
             This is a transparent view of capital routing. It does not imply ownership, passive income, governance promise,
-            or any future claim. Capital routing is final. All values are prototype data.
+            or any future claim. Capital routing is final. Displayed economy totals are prototype figures; the live snapshot above is read on-chain.
           </p>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { MOCK_DATA } from "@/lib/mock-data";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 import { CanonicalContractsList } from "@/components/canonical-contracts";
 import { PostureLegend } from "@/components/posture-legend";
+import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 import { Fingerprint, Search, Layers } from "lucide-react";
 
 export default function PublicRegistry() {
@@ -21,6 +22,11 @@ export default function PublicRegistry() {
       </div>
       
       <PublicProofNote surfaceId="registry" />
+
+      <ProtocolSnapshotPanel
+        title="Live Protocol Snapshot"
+        description="Using the canonical addresses on this page, this reads chain context and current ERC-20 balances LIVE and read-only from the public Avalanche RPC (the addresses themselves are static inputs). This is the real read layer — no wallet, no writes; contract writes remain ADAPTER REQUIRED."
+      />
 
       <div className="flex flex-col md:flex-row gap-4">
         <Card className="bg-blue-500/5 border-blue-500/20 flex-1">

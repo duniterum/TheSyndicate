@@ -53,8 +53,9 @@ export function PublicProofNote({ surfaceId }: { surfaceId?: string }) {
     >
       <Eye className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
       <p className="text-muted-foreground leading-relaxed">
-        Public read-only preview.{surface ? ` ${surface.publicSummary}` : ""} Values are simulated
-        for the prototype and are not live. No wallet connection is required to view this page.
+        Public read-only preview.{surface ? ` ${surface.publicSummary}` : ""} Displayed totals are
+        prototype figures, not live values; read-only chain panels are clearly marked LIVE READ. No
+        wallet connection is required to view this page.
       </p>
     </div>
   );
