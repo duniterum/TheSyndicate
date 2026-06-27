@@ -70,6 +70,9 @@ export function PublicHeader() {
         <a href="/" onClick={(e) => handleNavClick(e, "home")} className="flex items-center gap-2 font-bold tracking-tight z-50" data-testid="link-logo">
           <Shield className="w-5 h-5 text-primary" />
           <span>THE SYNDICATE</span>
+          <span className="ml-0.5 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-primary" data-testid="badge-studio">
+            Studio
+          </span>
         </a>
 
         <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-muted-foreground flex-wrap justify-center flex-1 px-8">

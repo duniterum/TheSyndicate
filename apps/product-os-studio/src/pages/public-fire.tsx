@@ -5,6 +5,7 @@ import { ActionCard } from "@/components/action-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 import { Flame, AlertTriangle, GitBranch, ArrowRight, ShieldOff, ExternalLink } from "lucide-react";
 
 export default function PublicFire() {
@@ -43,11 +44,19 @@ export default function PublicFire() {
             <p className="opacity-90 leading-relaxed">
               Burn is a costly signal to mark a milestone or show conviction. It reduces supply, 
               but does not imply a price promise. SYN is acquired through membership routing, 
-              never minted. All figures below are prototype simulations.
+              never minted. The ledger and summary figures below are prototype simulations; the live burn-sink balance is read directly on-chain and labeled LIVE READ.
             </p>
           </div>
         </div>
       </motion.div>
+
+      <ProtocolSnapshotPanel
+        title="Burn sink — live SYN balance"
+        description="SYN currently held at the canonical burn sink (0x…dEaD), read LIVE and read-only from the public Avalanche RPC. This cumulative sink total is DISTINCT from the verified Proof of Fire #001 below (a specific 1,000 SYN founder burn). Burning retires supply — never minted, never a price promise."
+        groups={["burn"]}
+        showChain={false}
+        showAdapterRequired={false}
+      />
 
       {/* Summary */}
       <motion.div
