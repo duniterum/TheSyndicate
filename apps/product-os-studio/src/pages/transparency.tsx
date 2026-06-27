@@ -27,6 +27,7 @@ import { getActionsByCategory } from "@/lib/actions";
 import { getBurnSummary } from "@/lib/fire-ledger";
 import { CanonicalContractsList } from "@/components/canonical-contracts";
 import { PostureLegend } from "@/components/posture-legend";
+import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 
 const SPLIT_COLORS: Record<string, string> = {
   Vault: "hsl(var(--primary))",
@@ -183,7 +184,8 @@ export default function Transparency() {
               <p className="text-sm text-muted-foreground">
                 Capital is routed to three endpoints. The addresses below are READ-ONLY PRODUCTION
                 PROOF — canonical wallets copied from the porting map, shown as static references
-                with read-only explorer links. Nothing is wired; a live balance read is ADAPTER REQUIRED.
+                with read-only explorer links. No writes are wired — but each wallet's current USDC
+                balance is now read LIVE and read-only in the Live Protocol Snapshot below.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {MOCK_DATA.routingWallets.map((w) => (
@@ -214,6 +216,12 @@ export default function Transparency() {
               </div>
             </CardContent>
           </Card>
+
+          <ProtocolSnapshotPanel
+            title="Live Protocol Snapshot — routing wallets"
+            description="Live, read-only USDC currently held by each routing wallet — distinct from the simulated total-routed figure above. Read directly from the public Avalanche RPC; no wallet, no writes."
+            groups={["routing"]}
+          />
 
           {/* Protocol-controlled assets concept */}
           <Card className="bg-white/5 border-white/10">

@@ -7,6 +7,7 @@ import { Layers, Fingerprint, Search } from "lucide-react";
 import { ContractCopyRow } from "@/components/contract-copy-row";
 import { CanonicalContractsList } from "@/components/canonical-contracts";
 import { PostureLegend } from "@/components/posture-legend";
+import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 
 export default function Registry() {
   return (
@@ -155,6 +156,11 @@ export default function Registry() {
           <CanonicalContractsList />
         </CardContent>
       </Card>
+
+      <ProtocolSnapshotPanel
+        title="Live Protocol Snapshot"
+        description="The same canonical addresses above, read LIVE and read-only from the public Avalanche RPC — chain context plus current ERC-20 balances. This is the real read layer (no wallet, no writes); contract writes remain ADAPTER REQUIRED."
+      />
 
       <Card className="bg-white/5 border-white/10">
         <CardHeader className="pb-3 border-b border-white/5">
