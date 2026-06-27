@@ -26,7 +26,7 @@
 | `/toolkit` | `pages/public-toolkit` | Public, role-aware action toolkit. |
 | `/activity` | `pages/public-activity` | Protocol heartbeat (anonymized). |
 | `/economy` | `pages/public-economy` | 70/20/10 routing + economy summary. |
-| `/registry` | `pages/public-registry` | Contract/protocol proof summary (addresses mocked). |
+| `/registry` | `pages/public-registry` | Contract/protocol proof summary (real addresses as READ-ONLY PRODUCTION PROOF; future concepts inert). |
 | `/recognition` | `pages/public-recognition` | Anonymized contribution board. |
 | `/referral-status` | `pages/public-referral-status` | Verified Introduction status (V1 candidate, not live). |
 | `/evolution` | `pages/public-evolution` | Protocol series / episodes. |

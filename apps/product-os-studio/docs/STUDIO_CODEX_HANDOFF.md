@@ -63,8 +63,9 @@ guard logs drift if a nav/surface entry has no page component.
 
 - Do **not** wire real auth. Roles are `localStorage` flags (`syn-connected`, `syn-seated`,
   `syn-founder`) and are **not security**. Real access control belongs server-side.
-- Do **not** add real wallet writes, chain reads, or contract calls. Addresses are mocked;
-  explorer links are inert.
+- Do **not** add real wallet writes, chain reads, or contract calls. Real deployed addresses
+  appear only as `READ-ONLY PRODUCTION PROOF` (static, with read-only explorer links); prototype
+  addresses stay mocked with inert links. **Nothing is wired** — a live read is `ADAPTER REQUIRED`.
 - Do **not** activate referral / source / claim / SeatRecord. Default source stays
   `ZERO_SOURCE_ID`; these are `V1 CANDIDATE` / `FUTURE`.
 - Do **not** wire DEX / LP / market tools. They are `BACKEND REQUIRED` and unverified.

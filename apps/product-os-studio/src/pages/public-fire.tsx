@@ -1,16 +1,17 @@
 import { motion } from "framer-motion";
-import { getPublicFireLedger, getBurnSummary, getFireFlow } from "@/lib/fire-ledger";
+import { getPublicFireLedger, getBurnSummary, getFireFlow, getProofOfFire } from "@/lib/fire-ledger";
 import { getActionsByCategory } from "@/lib/actions";
 import { ActionCard } from "@/components/action-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Flame, AlertTriangle, GitBranch, ArrowRight, ShieldOff } from "lucide-react";
+import { Flame, AlertTriangle, GitBranch, ArrowRight, ShieldOff, ExternalLink } from "lucide-react";
 
 export default function PublicFire() {
   const summary = getBurnSummary();
   const ledger = getPublicFireLedger();
   const flow = getFireFlow();
+  const proof = getProofOfFire();
   const burnActions = getActionsByCategory("burn");
 
   return (
@@ -80,6 +81,62 @@ export default function PublicFire() {
             ))}
           </div>
         </div>
+      </motion.div>
+
+      {/* Verified Proof of Fire — READ-ONLY PRODUCTION PROOF */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.12 }}
+      >
+        <Card className="bg-white/5 border-emerald-500/20">
+          <CardHeader className="border-b border-white/5 pb-4">
+            <CardTitle className="flex flex-wrap items-center gap-2 text-lg">
+              <Flame className="w-5 h-5 text-emerald-400" /> Verified Proof of Fire
+              <StatusBadge status="READ-ONLY PRODUCTION PROOF" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4 space-y-4">
+            <p className="text-sm text-muted-foreground max-w-3xl">
+              One burn is verified on-chain and copied from the production porting map. It is a static
+              reference — a real transaction with a confirmed block on {proof.chain}. Nothing is wired
+              here: a live burn-event scan is ADAPTER REQUIRED, and burn execution is never wired. The
+              aggregate above is a separate, clearly labeled simulated figure.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-3 bg-background/40 rounded-lg border border-white/5">
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Proof</div>
+                <div className="font-mono text-sm mt-1">{proof.proofNumber}</div>
+              </div>
+              <div className="p-3 bg-background/40 rounded-lg border border-white/5">
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Supply retired</div>
+                <div className="font-mono text-sm mt-1 text-emerald-400">{proof.amountSyn.toLocaleString()} SYN</div>
+              </div>
+              <div className="p-3 bg-background/40 rounded-lg border border-white/5">
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Category</div>
+                <div className="font-mono text-sm mt-1">{proof.category}</div>
+              </div>
+              <div className="p-3 bg-background/40 rounded-lg border border-white/5">
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Block</div>
+                <div className="font-mono text-sm mt-1">{proof.block.toLocaleString()}</div>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Transaction hash</span>
+                <a href={proof.txUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-muted-foreground hover:text-foreground break-all inline-flex items-center gap-1" title="Read-only explorer — reference only, nothing wired">
+                  {proof.txHash} <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Burn address</span>
+                <a href={proof.burnAddressUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-muted-foreground hover:text-foreground break-all inline-flex items-center gap-1" title="Read-only explorer — reference only, nothing wired">
+                  {proof.burnAddress} <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Burn Actions */}

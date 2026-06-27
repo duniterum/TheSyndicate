@@ -571,7 +571,7 @@ const DRIFT_CONCEPTS: DriftConceptDef[] = [
   { concept: "SwapRail", aliases: ["SwapRail"] },
 ];
 
-const NOT_LIVE_STATUSES = new Set(["FUTURE", "IN REVIEW", "V1 CANDIDATE", "V2 CANDIDATE"]);
+const NOT_LIVE_STATUSES = new Set(["FUTURE", "IN REVIEW", "V1 CANDIDATE", "V2 CANDIDATE", "PAUSED"]);
 
 function collectStatusSources(aliases: string[]): DriftSource[] {
   const found: DriftSource[] = [];

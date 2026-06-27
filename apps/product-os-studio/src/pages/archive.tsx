@@ -14,18 +14,36 @@ export default function Archive() {
           <h1 className="text-3xl font-bold">Archive / NFT Memory</h1>
           <p className="text-muted-foreground mt-2">Protocol Memory Layer</p>
         </div>
-        <div className="flex gap-2">
-          <StatusBadge status="LIVE NOW" />
-          <StatusBadge status="FUTURE" />
+        <div className="flex gap-2 flex-wrap justify-end">
+          <StatusBadge status="READ-ONLY PRODUCTION PROOF" />
+          <StatusBadge status="SIMULATED PROTOTYPE" />
         </div>
       </div>
 
-      <div className="p-4 border border-blue-500/20 bg-blue-500/5 rounded-xl text-sm text-blue-200">
+      <div className="p-4 border border-blue-500/20 bg-blue-500/5 rounded-xl text-sm text-blue-200 space-y-1">
         <p className="font-bold mb-1">Memory, Not Claims</p>
         <p>NFTs are memory. NFTs are not seats. NFTs do not create financial rights. Archive is not source-aware today.</p>
+        <p className="text-xs text-blue-200/80">
+          Backed by <span className="font-mono">Archive1155</span> (ERC-1155) read-only memory in production.
+          Anchoring and minting are not wired in the Studio (MINT ADAPTER REQUIRED).
+        </p>
       </div>
 
-      <h2 className="text-2xl font-bold mt-8 border-b border-white/10 pb-2">Current Collection (LIVE)</h2>
+      <div className="p-4 border border-emerald-500/20 bg-emerald-500/5 rounded-xl text-sm text-emerald-100/90 space-y-1" data-testid="archive-id-scheme">
+        <p className="font-bold mb-1 flex items-center gap-2">
+          Archive IDs <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
+        </p>
+        <ul className="space-y-1 text-emerald-100/80">
+          <li><span className="font-mono">#1</span> First Signal — public, open.</li>
+          <li><span className="font-mono">#2</span> Reserved / disabled — a future <span className="font-mono">SeatRecord721</span> identity record (not deployed).</li>
+          <li><span className="font-mono">#3</span> Patron Seal — gated.</li>
+        </ul>
+        <p className="text-xs text-emerald-100/70">
+          Canonical IDs from the production porting map, shown read-only. Nothing is wired (MINT ADAPTER REQUIRED).
+        </p>
+      </div>
+
+      <h2 className="text-2xl font-bold mt-8 border-b border-white/10 pb-2">Current Collection (Simulated)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {MOCK_DATA.archiveItems.map((item, i) => (
           <Card key={item.id} className="bg-white/5 border-white/10 overflow-hidden">

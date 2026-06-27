@@ -77,12 +77,20 @@ export default function PublicRegistry() {
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground uppercase tracking-wider">Contract Address</span>
-                      {layer.mocked && <StatusBadge status="SIMULATED PROTOTYPE" showTooltip={false} className="scale-90 origin-left" />}
+                      {layer.proof ? (
+                        <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
+                      ) : layer.mocked ? (
+                        <StatusBadge status="PROTOTYPE PLACEHOLDER" showTooltip={false} className="scale-90 origin-left" />
+                      ) : null}
                     </div>
                     {layer.address.startsWith("0x") ? (
                       <>
                         <span className="font-mono text-xs text-muted-foreground break-all">{layer.address}</span>
-                        <span className="text-[10px] text-muted-foreground/70 italic">Simulated — no canonical address</span>
+                        {layer.proof ? (
+                          <span className="text-[10px] text-emerald-500/80 uppercase tracking-wider">Read-only production proof — nothing wired</span>
+                        ) : (
+                          <span className="text-[10px] text-muted-foreground/70 italic">Studio concept — not in the production porting map</span>
+                        )}
                       </>
                     ) : (
                       <span className="font-mono text-xs text-muted-foreground">Not Deployed</span>

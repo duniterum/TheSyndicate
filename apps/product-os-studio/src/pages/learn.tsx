@@ -344,8 +344,8 @@ export default function Learn() {
           </CardContent>
         </Card>
         <p className="text-[11px] text-muted-foreground/70">
-          No canonical contract addresses exist in this prototype. Addresses are mocked and
-          explorer links are inert.
+          Canonical contract addresses are shown as READ-ONLY PRODUCTION PROOF (static, read-only
+          explorer links). Nothing is wired; concepts not in the porting map stay inert placeholders.
         </p>
       </section>
 

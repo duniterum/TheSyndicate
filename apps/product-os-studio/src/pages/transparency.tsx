@@ -19,6 +19,7 @@ import {
   Clock,
   ArrowRight,
   Flame,
+  ExternalLink,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ActionCard } from "@/components/action-card";
@@ -121,6 +122,11 @@ export default function Transparency() {
             <Card className="bg-white/5 border-white/10 md:col-span-2">
               <CardHeader className="border-b border-white/5 pb-4">
                 <CardTitle>Global Routing Allocation — 70% / 20% / 10%</CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Acquisition-first: Net USDC Routed = gross − acquisition, then split 70% / 20% / 10%
+                  (Vault / Liquidity / Operations). Acquisition applies only with approved source
+                  attribution; the default ZERO_SOURCE_ID buy has zero acquisition.
+                </p>
               </CardHeader>
               <CardContent className="p-0 flex flex-col md:flex-row">
                 <div className="h-[250px] w-full md:w-1/2 p-4">
@@ -173,7 +179,9 @@ export default function Transparency() {
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               <p className="text-sm text-muted-foreground">
-                Capital is routed to three endpoints. All addresses below are MOCKED for the prototype — no live wallets.
+                Capital is routed to three endpoints. The addresses below are READ-ONLY PRODUCTION
+                PROOF — canonical wallets copied from the porting map, shown as static references
+                with read-only explorer links. Nothing is wired; a live balance read is ADAPTER REQUIRED.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {MOCK_DATA.routingWallets.map((w) => (
@@ -184,14 +192,21 @@ export default function Transparency() {
                     </div>
                     <p className="text-xs text-muted-foreground">{w.purpose}</p>
                     <div className="flex items-center justify-between text-xs text-muted-foreground font-mono bg-background p-2 rounded border border-white/5">
-                      <span className="truncate mr-2">{maskAddress ? "0x\u2022\u2022\u2022\u2026MOCKED" : w.address}</span>
-                      <button onClick={() => handleCopy(w.address)} className="hover:text-primary transition-colors shrink-0" title="Copy address">
+                      <span className="truncate mr-2">{maskAddress ? "0x\u2022\u2022\u2022\u2026" : w.address}</span>
+                      <button onClick={() => handleCopy(w.address)} className="hover:text-primary transition-colors shrink-0" title="Copy address (read-only production proof — copying does not wire any contract)">
                         <Copy className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                    <Badge variant="outline" className="text-[10px] uppercase tracking-wider text-orange-400 border-orange-500/20 bg-orange-500/10">
-                      Mocked address
-                    </Badge>
+                    <div className="flex items-center justify-between gap-2">
+                      <Badge variant="outline" className="text-[10px] uppercase tracking-wider text-emerald-400 border-emerald-500/20 bg-emerald-500/10">
+                        Read-only proof
+                      </Badge>
+                      {w.explorerUrl && (
+                        <a href={w.explorerUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground inline-flex items-center gap-1" title="Read-only explorer — reference only, nothing wired">
+                          <ExternalLink className="w-3 h-3" /> Explorer
+                        </a>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

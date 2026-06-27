@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useApp } from "@/lib/store";
-import { getFireLedger, getBurnSummary, getFireFlow, burnSourceLabel } from "@/lib/fire-ledger";
+import { getFireLedger, getBurnSummary, getFireFlow, burnSourceLabel, getProofOfFire } from "@/lib/fire-ledger";
 import { getActionsByCategory } from "@/lib/actions";
 import { ActionCard } from "@/components/action-card";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
@@ -13,13 +13,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "wouter";
 import { toast } from "sonner";
-import { Flame, AlertTriangle, ArrowRight, FileText, CheckCircle2 } from "lucide-react";
+import { Flame, AlertTriangle, ArrowRight, FileText, CheckCircle2, ExternalLink } from "lucide-react";
 
 export default function Fire() {
   const { isFounder } = useApp();
   const summary = getBurnSummary();
   const ledger = getFireLedger();
   const flow = getFireFlow();
+  const proof = getProofOfFire();
   const actionCards = getActionsByCategory("burn");
 
   const [formSource, setFormSource] = useState<string>("");
@@ -58,7 +59,10 @@ export default function Fire() {
             Proof of Fire. A costly signal that retires SYN supply. Not minting, not yield, not a price promise.
           </p>
         </div>
-        <StatusBadge status="SIMULATED PROTOTYPE" />
+        <div className="flex items-center gap-2 flex-wrap justify-end">
+          <StatusBadge status="ADAPTER REQUIRED" />
+          <StatusBadge status="SIMULATED PROTOTYPE" />
+        </div>
       </div>
 
       {/* Disclaimers */}
@@ -68,6 +72,12 @@ export default function Fire() {
           <p className="font-bold mb-1 uppercase tracking-wider text-orange-500">Not yield. Not minting. Not an investment.</p>
           <p className="opacity-90">
             A burn retires supply as a verifiable signal of conviction. It does not mint new tokens, it does not distribute yield, and it is not a mechanism for price manipulation. All figures shown are simulated prototype data.
+          </p>
+          <p className="opacity-80 mt-2 text-xs">
+            In production, Proof of Fire is a read-only scan of the SYN burn address
+            (<span className="font-mono">useSynBurnEvents</span>), numbered{" "}
+            <span className="font-mono">PROOF_OF_FIRE_NNN</span>. A live scan is ADAPTER REQUIRED.
+            There is no live burn execution in the Studio — proposals are candidates only.
           </p>
         </div>
       </div>
@@ -98,6 +108,57 @@ export default function Fire() {
                     <div className="text-[10px] text-muted-foreground mt-1">{src.count} recorded</div>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Verified Proof of Fire — READ-ONLY PRODUCTION PROOF */}
+          <Card className="bg-white/5 border-emerald-500/20">
+            <CardHeader className="border-b border-white/5 pb-4">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Flame className="w-5 h-5 text-emerald-400" /> Verified Proof of Fire
+                </CardTitle>
+                <StatusBadge status="READ-ONLY PRODUCTION PROOF" />
+              </div>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4">
+              <p className="text-sm text-muted-foreground">
+                One burn is verified on-chain and copied from the production porting map — a static
+                reference on {proof.chain}. The aggregate above is a separate, clearly labeled
+                simulated figure. A live burn-event scan is ADAPTER REQUIRED; execution is never wired.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3 bg-background/40 rounded-lg border border-white/5">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Proof</div>
+                  <div className="font-mono text-sm mt-1">{proof.proofNumber}</div>
+                </div>
+                <div className="p-3 bg-background/40 rounded-lg border border-white/5">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Supply retired</div>
+                  <div className="font-mono text-sm mt-1 text-emerald-400">{proof.amountSyn.toLocaleString()} SYN</div>
+                </div>
+                <div className="p-3 bg-background/40 rounded-lg border border-white/5">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Category</div>
+                  <div className="font-mono text-sm mt-1">{proof.category}</div>
+                </div>
+                <div className="p-3 bg-background/40 rounded-lg border border-white/5">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Block</div>
+                  <div className="font-mono text-sm mt-1">{proof.block.toLocaleString()}</div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Transaction hash</span>
+                  <a href={proof.txUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-muted-foreground hover:text-foreground break-all inline-flex items-center gap-1" title="Read-only explorer — reference only, nothing wired">
+                    {proof.txHash} <ExternalLink className="w-3 h-3 shrink-0" />
+                  </a>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Burn address</span>
+                  <a href={proof.burnAddressUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-muted-foreground hover:text-foreground break-all inline-flex items-center gap-1" title="Read-only explorer — reference only, nothing wired">
+                    {proof.burnAddress} <ExternalLink className="w-3 h-3 shrink-0" />
+                  </a>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -150,7 +211,13 @@ export default function Fire() {
         <div className="space-y-6">
           <Card className="bg-white/5 border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.05)]">
             <CardHeader className="border-b border-white/5 pb-4">
-              <CardTitle className="text-lg">Propose a Burn</CardTitle>
+              <div className="flex items-center justify-between gap-2">
+                <CardTitle className="text-lg">Propose a Burn (Candidate)</CardTitle>
+                <StatusBadge status="NOT WIRED" showTooltip={false} className="scale-90 origin-left" />
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                No live burn execution. A proposal is a simulated candidate for founder review only.
+              </p>
             </CardHeader>
             <CardContent className="pt-5">
               <form onSubmit={handlePropose} className="space-y-4">
