@@ -30,10 +30,15 @@ export default defineConfig({
   },
   server: {
     port,
+    strictPort: true,
     host: true,
+    // Served through the Replit preview proxy (different origin), so allow all hosts.
+    allowedHosts: true,
   },
   preview: {
     port,
+    strictPort: true,
     host: true,
+    allowedHosts: true,
   },
 });
