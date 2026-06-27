@@ -1,0 +1,8 @@
+# Product OS Studio — standalone prototype
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+*.local
+.env
+.env.*
