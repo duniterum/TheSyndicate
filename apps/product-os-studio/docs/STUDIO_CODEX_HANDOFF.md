@@ -54,6 +54,7 @@ and `npm run build`). A `.gitignore` is included.
 | Brand / press | `src/lib/brand.ts` | (press page) |
 | Components / pages | `src/components/`, `src/pages/` | `STUDIO_COMPONENT_MAP.md` |
 | What's simulated | — | `STUDIO_KNOWN_SIMULATIONS.md` |
+| Coverage vs original paper + porting map | — | `STUDIO_COVERAGE_RECONCILIATION.md` |
 
 Whenever you add a surface or action, add it to the relevant SoT module
 (`navigation.ts` / `surfaces.ts` / `actions.ts`) — pages render *from* these, and a `DEV`
