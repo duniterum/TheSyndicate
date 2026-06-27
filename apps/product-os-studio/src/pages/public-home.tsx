@@ -197,7 +197,7 @@ export default function PublicHome() {
               {
                 icon: Database,
                 label: "Routing split",
-                value: `${ROUTING_SPLIT.vault}/${ROUTING_SPLIT.liquidity}/${ROUTING_SPLIT.operations}`,
+                value: `${ROUTING_SPLIT.vault}% / ${ROUTING_SPLIT.liquidity}% / ${ROUTING_SPLIT.operations}%`,
               },
               { icon: Receipt, label: "Receipts", value: "Public" },
               { icon: Shield, label: "Contract registry", value: "Immutable" },

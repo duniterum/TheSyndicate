@@ -104,9 +104,14 @@ export default function Transparency() {
 
         {/* ============ PROTOCOL ECONOMY ============ */}
         <TabsContent value="protocol" className="space-y-6 mt-6">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold">Protocol Economy</h2>
-            <StatusBadge status="LIVE NOW" />
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold">Protocol Economy</h2>
+              <StatusBadge status="SIMULATED PROTOTYPE" />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Displayed totals are prototype figures. Live read-only balances appear in the snapshot panel below.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -243,9 +248,9 @@ export default function Transparency() {
         <TabsContent value="member" className="space-y-6 mt-6">
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-bold">Member Economy</h2>
-            <StatusBadge status="LIVE NOW" />
+            <StatusBadge status="SIMULATED PROTOTYPE" />
           </div>
-          <p className="text-sm text-muted-foreground">Your seat's capital footprint and routing history.</p>
+          <p className="text-sm text-muted-foreground">Your seat's capital footprint and routing history — prototype figures, not live values.</p>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="bg-white/5 border-white/10">

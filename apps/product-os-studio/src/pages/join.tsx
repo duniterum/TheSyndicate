@@ -379,7 +379,7 @@ export default function Join() {
               <div className="flex items-center justify-between">
                 <div className="font-medium text-sm">Routing preview</div>
                 <span className="text-[10px] font-mono text-muted-foreground">
-                  {ROUTING_SPLIT.vault}/{ROUTING_SPLIT.liquidity}/{ROUTING_SPLIT.operations}
+                  {ROUTING_SPLIT.vault}% / {ROUTING_SPLIT.liquidity}% / {ROUTING_SPLIT.operations}%
                 </span>
               </div>
               {/* Routing bar */}

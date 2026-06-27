@@ -48,8 +48,14 @@ export function ProtocolSnapshotPanel({
   const showEmptyBalances = (groups === undefined || groups.length > 0) && !loading && !!state && state !== "error";
 
   return (
-    <Card className={cn("bg-white/5 border-white/10", className)} data-testid="protocol-snapshot-panel">
-      <CardHeader className="border-b border-white/5 pb-4">
+    <Card
+      className={cn(
+        "border-emerald-500/20 bg-emerald-500/[0.04] ring-1 ring-emerald-500/10",
+        className,
+      )}
+      data-testid="protocol-snapshot-panel"
+    >
+      <CardHeader className="border-b border-emerald-500/10 pb-4">
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
             <Radio className="w-5 h-5 text-emerald-400" /> {title}
