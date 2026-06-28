@@ -90,7 +90,8 @@ export default function Transparency() {
           <p className="font-bold mb-1 uppercase tracking-wider">No entitlement. No yield. No treasury claim.</p>
           <p className="opacity-90">
             This is a transparent view of capital routing. It does not imply ownership, passive income, governance promise,
-            or any future claim. Capital routing is final. All values are prototype data.
+            or any future claim. Capital routing is final. Displayed economy totals are prototype figures; live wallet
+            balances are read on-chain in the snapshot panels below.
           </p>
         </div>
       </div>
