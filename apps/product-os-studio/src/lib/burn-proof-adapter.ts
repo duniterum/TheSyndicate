@@ -280,15 +280,19 @@ export async function buildBurnProof(options: BuildBurnProofOptions = {}): Promi
       errors.push(`SYN decimals(): ${msg(err)}`);
     }
     // Pin the authoritative cumulative to the SAME head block the scan will bound to — this is what
-    // makes reconciliation TOCTOU-free. We deliberately do NOT fall back to "latest" on failure: a
-    // later block could include a burn the scan never sees, which would both weaken the "pinned at
-    // block N" claim and risk a misleading comparison. If the pinned read fails we fail honestly
-    // (error state below) rather than silently read the balance at a different block.
-    const blockTag = headBlock !== null ? "0x" + headBlock.toString(16) : "latest";
-    try {
-      cumulative = await readBalanceOfAt(tokenAddress, burnAddress, blockTag);
-    } catch (err) {
-      errors.push(`burn-sink balanceOf: ${msg(err)}`);
+    // makes reconciliation TOCTOU-free. We deliberately do NOT fall back to "latest": a later block
+    // could include a burn the scan never sees, which would both weaken the "pinned at block N"
+    // claim and risk a misleading comparison. Without a pinned head block there is no authoritative
+    // reconciliation, so we do NOT read balanceOf at all and fail honestly (error state below).
+    if (headBlock !== null) {
+      const blockTag = "0x" + headBlock.toString(16);
+      try {
+        cumulative = await readBalanceOfAt(tokenAddress, burnAddress, blockTag);
+      } catch (err) {
+        errors.push(`burn-sink balanceOf: ${msg(err)}`);
+      }
+    } else {
+      errors.push("Could not read a pinned chain head block; burn reconciliation unavailable.");
     }
   }
 
@@ -308,9 +312,10 @@ export async function buildBurnProof(options: BuildBurnProofOptions = {}): Promi
     rpcHost: host,
   };
 
-  // Without chain id, live decimals, AND the authoritative cumulative balance we have no honest
-  // value to show — return an error model (no invented numbers).
-  if (chainId === null || decimals === null || cumulative === null) {
+  // Without chain id, a pinned head block, live decimals, AND the authoritative cumulative balance
+  // (read only at that pinned head block) we have no honest, reconcilable value to show — return an
+  // error model (no invented numbers, no reconciled claim).
+  if (chainId === null || headBlock === null || decimals === null || cumulative === null) {
     return {
       ...staticFields,
       state: "error",
