@@ -61,9 +61,6 @@ export default function Fire() {
             Proof of Fire. A costly signal that retires SYN supply. Not minting, not yield, not a price promise.
           </p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap justify-end">
-          <StatusBadge status="SIMULATED PROTOTYPE" />
-        </div>
       </div>
 
       {/* Disclaimers */}
@@ -72,7 +69,7 @@ export default function Fire() {
         <div>
           <p className="font-bold mb-1 uppercase tracking-wider text-orange-500">Not yield. Not minting. Not an investment.</p>
           <p className="opacity-90">
-            A burn retires supply as a verifiable signal of conviction. It does not mint new tokens, it does not distribute yield, and it is not a mechanism for price manipulation. All figures shown are simulated prototype data.
+            A burn retires supply as a verifiable signal of conviction. It does not mint new tokens, it does not distribute yield, and it is not a mechanism for price manipulation. The ledger and aggregate figures below are simulated prototype data; the live burn-sink balance and burn-event scan are read on-chain and labeled LIVE READ.
           </p>
           <p className="opacity-80 mt-2 text-xs">
             Proof of Fire is a read-only scan of the SYN burn address, numbered{" "}
