@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useApp } from "@/lib/store";
-import { getFireLedger, getBurnSummary, getFireFlow, burnSourceLabel, getProofOfFire } from "@/lib/fire-ledger";
+import { getFireLedger, getBurnSummary, burnSourceLabel, getProofOfFire } from "@/lib/fire-ledger";
 import { getActionsByCategory } from "@/lib/actions";
 import { ActionCard } from "@/components/action-card";
-import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 import { BurnProofPanel } from "@/components/burn-proof-panel";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,13 +14,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "wouter";
 import { toast } from "sonner";
-import { Flame, AlertTriangle, ArrowRight, FileText, CheckCircle2, ExternalLink } from "lucide-react";
+import { Flame, ArrowRight, CheckCircle2, ExternalLink } from "lucide-react";
 
 export default function Fire() {
   const { isFounder } = useApp();
   const summary = getBurnSummary();
   const ledger = getFireLedger();
-  const flow = getFireFlow();
   const proof = getProofOfFire();
   const actionCards = getActionsByCategory("burn");
 
@@ -36,12 +34,11 @@ export default function Fire() {
       toast.error("Please fill all fields to simulate a proposal.");
       return;
     }
-    
+
     toast.success("Burn proposed (simulated) — founder review required", {
       description: "A proposed burn is a candidate, not a live action. No real transaction occurred.",
     });
-    
-    // Reset form
+
     setFormSource("");
     setFormAmount("");
     setFormChapter("");
@@ -50,173 +47,164 @@ export default function Fire() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-6xl mx-auto" data-testid="page-member-fire">
-      {/* Header */}
+      {/* Hero — short, premium; single read-only/safety framing */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <Flame className="w-8 h-8 text-orange-500" />
-            Fire Ledger
+            Proof of Fire
           </h1>
-          <p className="text-muted-foreground mt-1 max-w-2xl">
-            Proof of Fire. A costly signal that retires SYN supply. Not minting, not yield, not a price promise.
+          <p className="text-muted-foreground mt-2 max-w-2xl leading-relaxed">
+            Every SYN burn, read live from the chain and reconciled to the last token — not minting, not
+            yield, not a price promise. Burn execution is never wired; proposals here are simulated
+            candidates for founder review.
           </p>
         </div>
-      </div>
-
-      {/* Disclaimers */}
-      <div className="p-5 border border-orange-500/30 bg-orange-500/10 rounded-xl text-sm text-orange-400 flex gap-3 items-start">
-        <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-        <div>
-          <p className="font-bold mb-1 uppercase tracking-wider text-orange-500">Not yield. Not minting. Not an investment.</p>
-          <p className="opacity-90">
-            A burn retires supply as a verifiable signal of conviction. It does not mint new tokens, it does not distribute yield, and it is not a mechanism for price manipulation. The ledger and aggregate figures below are simulated prototype data; the live burn-sink balance and burn-event scan are read on-chain and labeled LIVE READ.
-          </p>
-          <p className="opacity-80 mt-2 text-xs">
-            Proof of Fire is a read-only scan of the SYN burn address, numbered{" "}
-            <span className="font-mono">PROOF_OF_FIRE_NNN</span>. The live burn-event scan is
-            available here read-only through BurnProofAdapter V1 (see the live panel below). There
-            is no live burn execution in the Studio — proposals are candidates only.
-          </p>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <StatusBadge status="LIVE READ" showTooltip={false} />
+          <StatusBadge status="NOT WIRED" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Ledger & Summary */}
+        {/* Left column: live proof primary, then connected anchor, then demoted prototype */}
         <div className="lg:col-span-2 space-y-6">
-          <Card className="bg-white/5 border-white/10">
-            <CardHeader className="border-b border-white/5 pb-4">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Aggregate Burned Supply</CardTitle>
-                <StatusBadge status="SIMULATED PROTOTYPE" />
+          {/* PRIMARY LIVE TRUTH — cumulative burned + chain + reconciliation + scan + events */}
+          <BurnProofPanel />
+
+          {/* Verified Proof of Fire #001 — connected anchor */}
+          <Card className="bg-white/5 border-emerald-500/20">
+            <CardContent className="p-5 sm:p-6 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-base font-semibold flex items-center gap-2">
+                  <Flame className="w-5 h-5 text-emerald-400" /> Verified Proof of Fire #001
+                </h2>
+                <StatusBadge status="READ-ONLY PRODUCTION PROOF" />
               </div>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="flex items-end gap-3 mb-6">
-                <div className="text-5xl font-mono font-bold tracking-tight text-orange-500">
-                  {summary.totalSyn.toLocaleString()}
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                The first of the burns reconciled above — one founder burn verified on-chain (block{" "}
+                {proof.block.toLocaleString()} on {proof.chain}), copied from the production porting map.
+                The live scan lists it as <span className="font-mono">{proof.proofNumber}</span>; it is a
+                static read-only reference, and burn execution is never wired.
+              </p>
+              <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+                <Fact label="Proof" value={proof.proofNumber} />
+                <Fact label="Supply retired" value={`${proof.amountSyn.toLocaleString()} SYN`} accent />
+                <Fact label="Category" value={proof.category} />
+                <Fact label="Block" value={proof.block.toLocaleString()} />
+              </div>
+              <div className="flex flex-col gap-2 pt-1">
+                <a
+                  href={proof.txUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-xs text-muted-foreground hover:text-foreground break-all inline-flex items-center gap-1.5"
+                  title="Read-only explorer — reference only, nothing wired"
+                >
+                  <span className="uppercase tracking-wider text-[10px] text-muted-foreground/70">tx</span>
+                  {proof.txHash} <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+                <a
+                  href={proof.burnAddressUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-xs text-muted-foreground hover:text-foreground break-all inline-flex items-center gap-1.5"
+                  title="Read-only explorer — reference only, nothing wired"
+                >
+                  <span className="uppercase tracking-wider text-[10px] text-muted-foreground/70">sink</span>
+                  {proof.burnAddress} <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Simulated Fire Ledger Preview — demoted, smaller than the live figure */}
+          <div className="pt-1 space-y-4">
+            <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-3">
+              <Flame className="w-5 h-5 text-muted-foreground" />
+              <h2 className="text-lg font-bold text-muted-foreground">Simulated Fire Ledger Preview</h2>
+              <StatusBadge status="SIMULATED PROTOTYPE" />
+            </div>
+            <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
+              Prototype ledger math only — not a live total. The canonical burned figure is the LIVE READ
+              total above; these figures preview how proposed and recorded burns would read once wired.
+            </p>
+
+            <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-10">
+              <div>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">
+                  Prototype total (simulated)
                 </div>
-                <div className="text-muted-foreground mb-1 font-mono">SYN RETIRED</div>
+                <div className="text-xl font-mono font-bold text-muted-foreground/70">
+                  {summary.totalSyn.toLocaleString()}{" "}
+                  <span className="text-sm text-muted-foreground/60">SYN</span>
+                </div>
               </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {summary.bySource.map(src => (
-                  <div key={src.source} className="p-3 bg-background/40 rounded-lg border border-white/5">
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">{src.label}</div>
-                    <div className="text-lg font-mono font-bold mt-1">{src.amountSyn.toLocaleString()}</div>
-                    <div className="text-[10px] text-muted-foreground mt-1">{src.count} recorded</div>
+              <div className="flex flex-wrap gap-x-8 gap-y-2">
+                {summary.bySource.map((src) => (
+                  <div key={src.source}>
+                    <div className="text-[11px] text-muted-foreground">{src.label}</div>
+                    <div className="font-mono text-sm text-muted-foreground/70">
+                      {src.amountSyn.toLocaleString()} SYN · {src.count}
+                    </div>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Verified Proof of Fire — READ-ONLY PRODUCTION PROOF */}
-          <Card className="bg-white/5 border-emerald-500/20">
-            <CardHeader className="border-b border-white/5 pb-4">
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Flame className="w-5 h-5 text-emerald-400" /> Verified Proof of Fire
-                </CardTitle>
-                <StatusBadge status="READ-ONLY PRODUCTION PROOF" />
-              </div>
-            </CardHeader>
-            <CardContent className="pt-4 space-y-4">
-              <p className="text-sm text-muted-foreground">
-                One burn is verified on-chain and copied from the production porting map — a static
-                reference on {proof.chain}. The aggregate above is a separate, clearly labeled
-                simulated figure. The live burn-event scan is read-only through BurnProofAdapter V1
-                (live panel below); burn execution is never wired.
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 bg-background/40 rounded-lg border border-white/5">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Proof</div>
-                  <div className="font-mono text-sm mt-1">{proof.proofNumber}</div>
-                </div>
-                <div className="p-3 bg-background/40 rounded-lg border border-white/5">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Supply retired</div>
-                  <div className="font-mono text-sm mt-1 text-emerald-400">{proof.amountSyn.toLocaleString()} SYN</div>
-                </div>
-                <div className="p-3 bg-background/40 rounded-lg border border-white/5">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Category</div>
-                  <div className="font-mono text-sm mt-1">{proof.category}</div>
-                </div>
-                <div className="p-3 bg-background/40 rounded-lg border border-white/5">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Block</div>
-                  <div className="font-mono text-sm mt-1">{proof.block.toLocaleString()}</div>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Transaction hash</span>
-                  <a href={proof.txUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-muted-foreground hover:text-foreground break-all inline-flex items-center gap-1" title="Read-only explorer — reference only, nothing wired">
-                    {proof.txHash} <ExternalLink className="w-3 h-3 shrink-0" />
-                  </a>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Burn address</span>
-                  <a href={proof.burnAddressUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-muted-foreground hover:text-foreground break-all inline-flex items-center gap-1" title="Read-only explorer — reference only, nothing wired">
-                    {proof.burnAddress} <ExternalLink className="w-3 h-3 shrink-0" />
-                  </a>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <ProtocolSnapshotPanel
-            title="Burn sink — live SYN balance"
-            description="SYN currently held at the canonical burn sink (0x…dEaD), read LIVE and read-only from the public Avalanche RPC. This cumulative sink total is DISTINCT from the verified Proof of Fire #001 above (a specific 1,000 SYN founder burn). Burning retires supply — never minted, never a price promise."
-            groups={["burn"]}
-            showChain={false}
-            showAdapterRequired={false}
-          />
-
-          <BurnProofPanel />
-
-          <Card className="bg-white/5 border-white/10">
-            <CardHeader className="border-b border-white/5 pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <FileText className="w-5 h-5 text-primary" />
-                Ledger Entries
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4 space-y-4">
-              {ledger.map(entry => (
-                <div key={entry.id} className="p-4 bg-background/40 rounded-lg border border-white/5 flex flex-col sm:flex-row gap-4 justify-between sm:items-center">
+            <div className="space-y-3">
+              {ledger.map((entry) => (
+                <div
+                  key={entry.id}
+                  className="p-4 bg-white/[0.03] rounded-lg border border-white/10 flex flex-col sm:flex-row gap-4 justify-between sm:items-start"
+                >
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="font-semibold">{entry.title}</span>
-                      <StatusBadge status={entry.status === 'simulated' ? "SIMULATED PROTOTYPE" : entry.status === 'candidate' ? "IN REVIEW" : "FUTURE"} />
+                      <StatusBadge
+                        status={
+                          entry.status === "simulated"
+                            ? "SIMULATED PROTOTYPE"
+                            : entry.status === "candidate"
+                              ? "IN REVIEW"
+                              : "FUTURE"
+                        }
+                      />
                     </div>
                     <div className="text-xs text-muted-foreground font-mono">
                       {burnSourceLabel(entry.source)} · {entry.chapter} · {entry.date}
                     </div>
-                    <p className="text-sm text-muted-foreground mt-2 max-w-xl">{entry.note}</p>
+                    <p className="text-sm text-muted-foreground mt-2 max-w-xl leading-relaxed">{entry.note}</p>
                     {entry.proofOutputs.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
-                        {entry.proofOutputs.map(po => (
-                          <Badge key={po} variant="secondary" className="text-[10px] bg-white/5">{po}</Badge>
+                        {entry.proofOutputs.map((po) => (
+                          <Badge key={po} variant="secondary" className="text-[10px] bg-white/5">
+                            {po}
+                          </Badge>
                         ))}
                       </div>
                     )}
                   </div>
                   <div className="shrink-0 text-right">
-                    <div className="font-mono text-lg font-bold text-orange-400">{entry.amountSyn.toLocaleString()}</div>
-                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider">SYN</div>
+                    <div className="font-mono text-base font-bold text-muted-foreground/70">
+                      {entry.amountSyn.toLocaleString()}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider">SYN (simulated)</div>
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Action Cards */}
+          {/* Action cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {actionCards.map(action => (
+            {actionCards.map((action) => (
               <ActionCard key={action.id} action={action} />
             ))}
           </div>
         </div>
 
-        {/* Right Column: Proposal & Flow */}
+        {/* Right column: simulated proposal + future flow */}
         <div className="space-y-6">
           <Card className="bg-white/5 border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.05)]">
             <CardHeader className="border-b border-white/5 pb-4">
@@ -245,20 +233,20 @@ export default function Fire() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="amount">Amount to Retire (SYN)</Label>
-                  <Input id="amount" placeholder="e.g. 5000" type="number" value={formAmount} onChange={e => setFormAmount(e.target.value)} />
+                  <Input id="amount" placeholder="e.g. 5000" type="number" value={formAmount} onChange={(e) => setFormAmount(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="chapter">Chapter Context</Label>
-                  <Input id="chapter" placeholder="e.g. Genesis Signal" value={formChapter} onChange={e => setFormChapter(e.target.value)} />
+                  <Input id="chapter" placeholder="e.g. Genesis Signal" value={formChapter} onChange={(e) => setFormChapter(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="intent">Signal Intent</Label>
-                  <Textarea 
-                    id="intent" 
-                    placeholder="Why is this supply being retired?" 
+                  <Textarea
+                    id="intent"
+                    placeholder="Why is this supply being retired?"
                     className="resize-none h-20 text-sm"
                     value={formIntent}
-                    onChange={e => setFormIntent(e.target.value)}
+                    onChange={(e) => setFormIntent(e.target.value)}
                   />
                 </div>
                 <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
@@ -289,7 +277,13 @@ export default function Fire() {
 
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="border-b border-white/5 pb-4">
-              <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">The Protocol Flow</CardTitle>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">The Protocol Flow</CardTitle>
+                <StatusBadge status="ADAPTER REQUIRED" />
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Propagating live burns into Activity, Chronicle, and Archive is not yet wired.
+              </p>
             </CardHeader>
             <CardContent className="pt-4">
               <div className="space-y-4">
@@ -333,6 +327,15 @@ export default function Fire() {
           </Card>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Fact({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className={`font-mono text-sm mt-1 ${accent ? "text-emerald-400" : ""}`}>{value}</div>
     </div>
   );
 }
