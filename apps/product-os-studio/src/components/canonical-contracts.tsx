@@ -8,18 +8,26 @@ import {
   CANONICAL_CONTRACTS,
   type ContractCategory,
 } from "@/lib/production-constants";
+import { BALANCE_HOLDER_KEYS } from "@/lib/protocol-snapshot-adapter";
+import type { TokenBalanceFact } from "@/lib/protocol-snapshot-types";
 import { cn } from "@/lib/utils";
 
 export function CanonicalContractsList({
   categories,
   keys,
   className,
+  liveBalances,
+  loading,
 }: {
   /** Restrict to one or more contract categories (in canonical order). */
   categories?: ContractCategory[];
   /** Restrict to explicit contract keys (in canonical order). */
   keys?: string[];
   className?: string;
+  /** Flat list of live, read-only balances. Passing this (even empty) enables live mode: rows
+   *  whose holder has a balance fact render an inline live-balance line. Omit to render none. */
+  liveBalances?: TokenBalanceFact[];
+  loading?: boolean;
 }) {
   const items = CANONICAL_CONTRACTS.filter((c) => {
     if (keys && !keys.includes(c.key)) return false;
@@ -29,21 +37,32 @@ export function CanonicalContractsList({
 
   if (items.length === 0) return null;
 
+  const liveEnabled = liveBalances !== undefined;
+  const byHolder: Record<string, TokenBalanceFact[]> = {};
+  for (const b of liveBalances ?? []) {
+    (byHolder[b.holderKey] ??= []).push(b);
+  }
+
   return (
     <div className={cn("space-y-3", className)}>
-      {items.map((c) => (
-        <ContractCopyRow
-          key={c.key}
-          layer={{
-            name: c.label,
-            status: c.status,
-            address: c.address,
-            explorerUrl: c.explorerUrl,
-            proof: true,
-            purpose: c.note,
-          }}
-        />
-      ))}
+      {items.map((c) => {
+        const expectsBalance = liveEnabled && BALANCE_HOLDER_KEYS.includes(c.key);
+        return (
+          <ContractCopyRow
+            key={c.key}
+            layer={{
+              name: c.label,
+              status: c.status,
+              address: c.address,
+              explorerUrl: c.explorerUrl,
+              proof: true,
+              purpose: c.note,
+            }}
+            liveBalances={expectsBalance ? (byHolder[c.key] ?? []) : undefined}
+            liveLoading={expectsBalance ? loading : false}
+          />
+        );
+      })}
     </div>
   );
 }

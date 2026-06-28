@@ -220,6 +220,14 @@ const BALANCE_SPECS: BalanceSpec[] = [
   },
 ];
 
+/**
+ * Canonical holder keys that have at least one live balance fact. Used to render an inline
+ * live-balance line ONLY on the matching registry rows (rows without a balance fact render none).
+ */
+export const BALANCE_HOLDER_KEYS: string[] = Array.from(
+  new Set(BALANCE_SPECS.map((spec) => spec.holderKey)),
+);
+
 // Facts the Studio intentionally does NOT read live — they need a future production adapter.
 const ADAPTER_REQUIRED_FACTS: AdapterRequiredFact[] = [
   {

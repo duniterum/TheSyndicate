@@ -6,8 +6,9 @@ import { MOCK_DATA, ROUTING_SPLIT, routeUsdc } from "@/lib/mock-data";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 import { CanonicalContractsList } from "@/components/canonical-contracts";
 import { PostureLegend } from "@/components/posture-legend";
-import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
-import { AlertTriangle, Database, Building2, Globe, ShieldOff, ExternalLink } from "lucide-react";
+import { useProtocolSnapshot } from "@/lib/protocol-snapshot-hooks";
+import { LiveHeldBalance } from "@/components/live-held-balance";
+import { Database, Building2, Globe, ShieldOff, ExternalLink } from "lucide-react";
 
 const SPLIT_COLORS: Record<string, string> = {
   Vault: "hsl(var(--primary))",
@@ -15,9 +16,22 @@ const SPLIT_COLORS: Record<string, string> = {
   Operations: "hsl(271 81% 66%)",
 };
 
+// Maps each routing wallet name to its live, read-only USDC balance fact (protocol snapshot).
+const ROUTING_BALANCE_KEY: Record<string, string> = {
+  Vault: "vault-usdc",
+  Liquidity: "liquidity-usdc",
+  Operations: "operations-usdc",
+};
+
 export default function PublicEconomy() {
   const protocol = MOCK_DATA.economy.protocol;
   const ps = MOCK_DATA.protocolStats;
+
+  // One grouped, read-only snapshot read for the routing wallets; injected inline into the
+  // existing wallet-reference cards below (no separate technical panel).
+  const { snapshot, loading } = useProtocolSnapshot({ groups: ["routing"] });
+  const heldFor = (name: string) =>
+    snapshot?.balances.find((b) => b.key === ROUTING_BALANCE_KEY[name]);
 
   const exampleAmount = 1000;
   const exampleRouting = routeUsdc(exampleAmount);
@@ -50,12 +64,6 @@ export default function PublicEconomy() {
 
       <PublicProofNote surfaceId="economy" />
 
-      <ProtocolSnapshotPanel
-        title="Live Protocol Snapshot — routing wallets"
-        description="Live, read-only USDC currently held by each routing wallet — distinct from the simulated total-routed figures on this page. Read directly from the public Avalanche RPC; no wallet, no writes."
-        groups={["routing"]}
-      />
-
       {/* Doctrine */}
       <div className="p-5 border border-white/10 bg-white/5 rounded-xl text-center">
         <p className="font-serif text-lg tracking-wide text-muted-foreground">
@@ -63,17 +71,11 @@ export default function PublicEconomy() {
         </p>
       </div>
 
-      {/* No entitlement notice */}
-      <div className="p-5 border border-destructive/30 bg-destructive/10 rounded-xl text-sm text-destructive flex gap-3 items-start">
-        <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-        <div>
-          <p className="font-bold mb-1 uppercase tracking-wider">No entitlement. No yield. No treasury claim.</p>
-          <p className="opacity-90">
-            This is a transparent view of capital routing. It does not imply ownership, passive income, governance promise,
-            or any future claim. Capital routing is final. Displayed economy totals are prototype figures; the live snapshot above is read on-chain.
-          </p>
-        </div>
-      </div>
+      {/* No entitlement — compact neutral truth note (not an alert wall) */}
+      <p className="text-xs text-muted-foreground leading-relaxed max-w-3xl">
+        No entitlement, no yield, no treasury claim. This is a transparent view of how capital routes —
+        not ownership, passive income, a governance promise, or any future claim. Capital routing is final.
+      </p>
 
       <div className="space-y-6">
         <div className="space-y-1">
@@ -205,8 +207,9 @@ export default function PublicEconomy() {
           <CardContent className="pt-4 space-y-4">
             <p className="text-sm text-muted-foreground">
               Capital is routed to three endpoints. The addresses below are READ-ONLY PRODUCTION
-              PROOF — canonical wallets from the porting map, shown as static references with
-              read-only explorer links. Nothing is wired (a live balance read is ADAPTER REQUIRED).
+              PROOF — canonical wallets from the porting map with read-only explorer links. Each shows
+              the USDC it currently holds, read live from the chain: a current on-chain balance, not the
+              simulated total routed, and never a claim, yield, or entitlement.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {MOCK_DATA.routingWallets.map((w) => (
@@ -216,6 +219,11 @@ export default function PublicEconomy() {
                     <Badge variant="outline" className="font-mono text-[10px] tracking-wider border-white/10 bg-white/5">{w.pct}%</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">{w.purpose}</p>
+                  <LiveHeldBalance
+                    balance={heldFor(w.name)}
+                    loading={loading}
+                    prefix="Current USDC held"
+                  />
                   <div className="flex items-center justify-between text-xs text-muted-foreground font-mono bg-background p-2 rounded border border-white/5">
                     <span className="truncate mr-2 text-muted-foreground/60">{w.address}</span>
                   </div>
