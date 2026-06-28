@@ -6,6 +6,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
+import { BurnProofPanel } from "@/components/burn-proof-panel";
 import { Flame, AlertTriangle, GitBranch, ArrowRight, ShieldOff, ExternalLink } from "lucide-react";
 
 export default function PublicFire() {
@@ -58,6 +59,14 @@ export default function PublicFire() {
         showAdapterRequired={false}
       />
 
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.08 }}
+      >
+        <BurnProofPanel />
+      </motion.div>
+
       {/* Summary */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -108,9 +117,10 @@ export default function PublicFire() {
           <CardContent className="pt-4 space-y-4">
             <p className="text-sm text-muted-foreground max-w-3xl">
               One burn is verified on-chain and copied from the production porting map. It is a static
-              reference — a real transaction with a confirmed block on {proof.chain}. Nothing is wired
-              here: a live burn-event scan is ADAPTER REQUIRED, and burn execution is never wired. The
-              aggregate above is a separate, clearly labeled simulated figure.
+              reference — a real transaction with a confirmed block on {proof.chain}. The live
+              burn-event scan is read-only through BurnProofAdapter V1 (live panel below); burn
+              execution is never wired. The aggregate above is a separate, clearly labeled simulated
+              figure.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="p-3 bg-background/40 rounded-lg border border-white/5">

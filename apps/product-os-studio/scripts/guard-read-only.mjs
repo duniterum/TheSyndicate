@@ -5,8 +5,10 @@
 // of the Studio's on-chain layers. It does NOT replace `npm run typecheck` / `npm run build` —
 // it is a focused safety net:
 //
-//   1) The provider-less snapshot adapter may ONLY ever send three JSON-RPC methods
-//      (eth_chainId, eth_blockNumber, eth_call) and must stay provider-less (no wallet).
+//   1) Each provider-less read-only on-chain adapter may ONLY ever send the JSON-RPC methods on
+//      its own allowlist and must stay provider-less (no wallet):
+//        - protocol-snapshot-adapter.ts: eth_chainId, eth_blockNumber, eth_call
+//        - burn-proof-adapter.ts:        eth_chainId, eth_blockNumber, eth_call, eth_getLogs
 //   2) NO file under src/ may send a forbidden write / sign / network-switch JSON-RPC method.
 //
 // It scans comment-stripped source (string literals are kept) so the documented "FORBIDDEN"
@@ -19,9 +21,20 @@ import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SRC = join(HERE, "..", "src");
-const ADAPTER = join(SRC, "lib", "protocol-snapshot-adapter.ts");
 
-const ADAPTER_ALLOWLIST = new Set(["eth_chainId", "eth_blockNumber", "eth_call"]);
+// Each read-only on-chain adapter declares the EXACT JSON-RPC methods it is permitted to send. The
+// guard asserts each adapter sends only its allowlisted methods, uses every method it claims (so a
+// refactor drift is caught), and stays provider-less. eth_getLogs lives ONLY in the burn adapter.
+const ADAPTERS = [
+  {
+    file: join(SRC, "lib", "protocol-snapshot-adapter.ts"),
+    allowlist: new Set(["eth_chainId", "eth_blockNumber", "eth_call"]),
+  },
+  {
+    file: join(SRC, "lib", "burn-proof-adapter.ts"),
+    allowlist: new Set(["eth_chainId", "eth_blockNumber", "eth_call", "eth_getLogs"]),
+  },
+];
 
 // Write / sign / network-switch methods that must never be sent anywhere in src.
 const FORBIDDEN = new Set([
@@ -107,23 +120,24 @@ for (const file of listFiles(SRC)) {
   }
 }
 
-// (1) Adapter allowlist + provider-less checks.
-{
-  const stripped = stripComments(readFileSync(ADAPTER, "utf8"));
+// (1) Per-adapter allowlist + provider-less checks.
+for (const { file, allowlist } of ADAPTERS) {
+  const name = relative(SRC, file);
+  const stripped = stripComments(readFileSync(file, "utf8"));
   for (const method of methodsIn(stripped)) {
-    if (!ADAPTER_ALLOWLIST.has(method)) {
+    if (!allowlist.has(method)) {
       violations.push(
-        `Adapter sends non-allowlisted method "${method}" (allowed: ${[...ADAPTER_ALLOWLIST].join(", ")})`,
+        `${name} sends non-allowlisted method "${method}" (allowed: ${[...allowlist].join(", ")})`,
       );
     }
   }
-  for (const allowed of ADAPTER_ALLOWLIST) {
+  for (const allowed of allowlist) {
     if (!stripped.includes(allowed)) {
-      violations.push(`Adapter is expected to use "${allowed}" but it was not found (refactor drift?)`);
+      violations.push(`${name} is expected to use "${allowed}" but it was not found (refactor drift?)`);
     }
   }
   if (/getInjectedProvider|window\.ethereum/.test(stripped)) {
-    violations.push("Adapter must stay provider-less (found getInjectedProvider / window.ethereum)");
+    violations.push(`${name} must stay provider-less (found getInjectedProvider / window.ethereum)`);
   }
 }
 
@@ -133,5 +147,5 @@ if (violations.length > 0) {
   process.exit(1);
 }
 console.log(
-  "\u2713 read-only guard passed: the provider-less snapshot adapter sends only eth_chainId, eth_blockNumber, eth_call and never touches a wallet; and no write / sign / network-switch JSON-RPC method appears anywhere in src/. (Scope: this guards the snapshot adapter's read-only posture and forbids mutating methods — it does not police the separate, pre-existing user-initiated wallet read/import layer.)",
+  "\u2713 read-only guard passed: the provider-less snapshot adapter sends only eth_chainId, eth_blockNumber, eth_call; the provider-less burn-proof adapter sends only eth_chainId, eth_blockNumber, eth_call, eth_getLogs; neither touches a wallet; and no write / sign / network-switch JSON-RPC method appears anywhere in src/. (Scope: this guards the read-only on-chain adapters' posture and forbids mutating methods — it does not police the separate, pre-existing user-initiated wallet read/import layer.)",
 );

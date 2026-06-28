@@ -4,6 +4,7 @@ import { getFireLedger, getBurnSummary, getFireFlow, burnSourceLabel, getProofOf
 import { getActionsByCategory } from "@/lib/actions";
 import { ActionCard } from "@/components/action-card";
 import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
+import { BurnProofPanel } from "@/components/burn-proof-panel";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -60,10 +61,6 @@ export default function Fire() {
             Proof of Fire. A costly signal that retires SYN supply. Not minting, not yield, not a price promise.
           </p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap justify-end">
-          <StatusBadge status="ADAPTER REQUIRED" />
-          <StatusBadge status="SIMULATED PROTOTYPE" />
-        </div>
       </div>
 
       {/* Disclaimers */}
@@ -72,13 +69,13 @@ export default function Fire() {
         <div>
           <p className="font-bold mb-1 uppercase tracking-wider text-orange-500">Not yield. Not minting. Not an investment.</p>
           <p className="opacity-90">
-            A burn retires supply as a verifiable signal of conviction. It does not mint new tokens, it does not distribute yield, and it is not a mechanism for price manipulation. All figures shown are simulated prototype data.
+            A burn retires supply as a verifiable signal of conviction. It does not mint new tokens, it does not distribute yield, and it is not a mechanism for price manipulation. The ledger and aggregate figures below are simulated prototype data; the live burn-sink balance and burn-event scan are read on-chain and labeled LIVE READ.
           </p>
           <p className="opacity-80 mt-2 text-xs">
-            In production, Proof of Fire is a read-only scan of the SYN burn address
-            (<span className="font-mono">useSynBurnEvents</span>), numbered{" "}
-            <span className="font-mono">PROOF_OF_FIRE_NNN</span>. A live scan is ADAPTER REQUIRED.
-            There is no live burn execution in the Studio — proposals are candidates only.
+            Proof of Fire is a read-only scan of the SYN burn address, numbered{" "}
+            <span className="font-mono">PROOF_OF_FIRE_NNN</span>. The live burn-event scan is
+            available here read-only through BurnProofAdapter V1 (see the live panel below). There
+            is no live burn execution in the Studio — proposals are candidates only.
           </p>
         </div>
       </div>
@@ -127,7 +124,8 @@ export default function Fire() {
               <p className="text-sm text-muted-foreground">
                 One burn is verified on-chain and copied from the production porting map — a static
                 reference on {proof.chain}. The aggregate above is a separate, clearly labeled
-                simulated figure. A live burn-event scan is ADAPTER REQUIRED; execution is never wired.
+                simulated figure. The live burn-event scan is read-only through BurnProofAdapter V1
+                (live panel below); burn execution is never wired.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="p-3 bg-background/40 rounded-lg border border-white/5">
@@ -171,6 +169,8 @@ export default function Fire() {
             showChain={false}
             showAdapterRequired={false}
           />
+
+          <BurnProofPanel />
 
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="border-b border-white/5 pb-4">
