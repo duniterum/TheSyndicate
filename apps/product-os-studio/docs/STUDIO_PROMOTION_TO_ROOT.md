@@ -3,6 +3,8 @@
 > Topology / promotion-readiness reference. **No cutover has been executed.** Do
 > not change `/` until the founder explicitly approves. This documents the exact
 > safe path so the finished Studio can become the primary app at `/`.
+>
+> **No-action boundary.** This runbook performs no cutover and involves no contracts, wallet writes, referral/source activation, claims, minting, burn execution, founder/admin execution, production auth, or smart contract changes.
 
 ## Verified current topology (deploy = the Replit workspace, not GitHub)
 
