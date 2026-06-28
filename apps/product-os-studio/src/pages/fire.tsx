@@ -62,7 +62,6 @@ export default function Fire() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap justify-end">
-          <StatusBadge status="ADAPTER REQUIRED" />
           <StatusBadge status="SIMULATED PROTOTYPE" />
         </div>
       </div>
@@ -76,10 +75,10 @@ export default function Fire() {
             A burn retires supply as a verifiable signal of conviction. It does not mint new tokens, it does not distribute yield, and it is not a mechanism for price manipulation. All figures shown are simulated prototype data.
           </p>
           <p className="opacity-80 mt-2 text-xs">
-            In production, Proof of Fire is a read-only scan of the SYN burn address
-            (<span className="font-mono">useSynBurnEvents</span>), numbered{" "}
-            <span className="font-mono">PROOF_OF_FIRE_NNN</span>. A live scan is ADAPTER REQUIRED.
-            There is no live burn execution in the Studio — proposals are candidates only.
+            Proof of Fire is a read-only scan of the SYN burn address, numbered{" "}
+            <span className="font-mono">PROOF_OF_FIRE_NNN</span>. The live burn-event scan is
+            available here read-only through BurnProofAdapter V1 (see the live panel below). There
+            is no live burn execution in the Studio — proposals are candidates only.
           </p>
         </div>
       </div>
@@ -128,7 +127,8 @@ export default function Fire() {
               <p className="text-sm text-muted-foreground">
                 One burn is verified on-chain and copied from the production porting map — a static
                 reference on {proof.chain}. The aggregate above is a separate, clearly labeled
-                simulated figure. A live burn-event scan is ADAPTER REQUIRED; execution is never wired.
+                simulated figure. The live burn-event scan is read-only through BurnProofAdapter V1
+                (live panel below); burn execution is never wired.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="p-3 bg-background/40 rounded-lg border border-white/5">

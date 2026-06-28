@@ -5,7 +5,8 @@
 // READ-ONLY PRODUCTION PROOF: static references + canonical explorer links. The Studio
 // reads no chain from this file, imports no ABI, and calls no contract. A LIVE read of any
 // of these is performed (if at all) ONLY through the user's own wallet provider in
-// wallet-adapter.ts, and a live event scan remains ADAPTER REQUIRED (a future Codex bridge).
+// wallet-adapter.ts or, for the burn-event scan, the read-only burn-proof-adapter.ts
+// (BurnProofAdapter V1); other live event scans (e.g. purchase events) remain ADAPTER REQUIRED.
 //
 // NOTE ON DECIMALS: token decimals are intentionally NOT hardcoded for SYN. They are read
 // LIVE (decimals()) through the user's provider before formatting a balance or calling
@@ -150,7 +151,7 @@ export const CANONICAL_CONTRACTS: CanonicalContract[] = [
     label: "SYN burn address (Proof of Fire)",
     address: PRODUCTION_PROOF.synBurnAddress,
     category: "burn",
-    note: "The canonical burn sink (0x…dEaD). Burn retires supply — never minted, never a price promise. Live scan is ADAPTER REQUIRED.",
+    note: "The canonical burn sink (0x…dEaD). Burn retires supply — never minted, never a price promise. The live burn-event scan is read-only via BurnProofAdapter V1.",
     ...proof(PRODUCTION_PROOF.synBurnAddress),
   },
 ];

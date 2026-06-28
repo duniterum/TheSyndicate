@@ -237,11 +237,9 @@ const ADAPTER_REQUIRED_FACTS: AdapterRequiredFact[] = [
     label: "Sale / source paused state",
     reason: "Requires a contract paused() read; source policy is known PAUSED but not live-read here — ADAPTER REQUIRED.",
   },
-  {
-    key: "burn-scan",
-    label: "Proof of Fire burn-event scan",
-    reason: "Requires a log scan of the burn sink (useSynBurnEvents) — ADAPTER REQUIRED. Execution is never wired.",
-  },
+  // NOTE: the Proof of Fire burn-event scan is intentionally NOT listed here. It is read LIVE
+  // (read-only) by the sibling BurnProofAdapter V1 (burn-proof-adapter.ts) — the only adapter
+  // allowed to use eth_getLogs. The snapshot adapter still never performs a log scan itself.
 ];
 
 function baseSnapshot(state: ReadState, chain: ChainContextFact | null, errors: string[]): ProtocolSnapshot {

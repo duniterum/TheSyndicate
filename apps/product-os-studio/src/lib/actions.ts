@@ -324,7 +324,7 @@ export const ACTION_REGISTRY: ProtocolAction[] = [
     icon: Flame,
     href: "/fire",
     safetyLabels: ["Simulated total", "Proof, not price"],
-    sourceTruth: "The burned-SYN aggregate is simulated prototype data. The one real record is PROOF_OF_FIRE_001 (READ-ONLY PRODUCTION PROOF, shown static); a live burn-event scan is ADAPTER REQUIRED.",
+    sourceTruth: "The burned-SYN aggregate is simulated prototype data. The one real record is PROOF_OF_FIRE_001 (READ-ONLY PRODUCTION PROOF, shown static); the live burn-event scan is read-only via BurnProofAdapter V1.",
     relatedSurfaceId: "fire",
   },
   {

@@ -349,7 +349,6 @@ export function BurnProofPanel({ className }: { className?: string }) {
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
               <span className="text-sm font-medium text-amber-300">Live read unavailable</span>
-              <StatusBadge status="ADAPTER REQUIRED" showTooltip={false} className="scale-90 origin-left" />
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
               The public RPC did not return the chain context or the authoritative burn-sink balance, so

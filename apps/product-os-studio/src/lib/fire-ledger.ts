@@ -10,9 +10,9 @@
 //   NOT a promised return, NOT a financial benefit to holders.
 // - There IS one verified burn: PROOF_OF_FIRE (PROOF_OF_FIRE_001, 1,000 SYN, Founder
 //   Burn) with a real tx hash + block on Avalanche C-Chain. It is READ-ONLY PRODUCTION
-//   PROOF — a static reference copied from the porting map (PRODUCTION_PROOF). A live
-//   burn-event scan (useSynBurnEvents) is ADAPTER REQUIRED, and burn EXECUTION is
-//   intentionally never wired here.
+//   PROOF — a static reference copied from the porting map (PRODUCTION_PROOF). The live
+//   burn-event scan is implemented read-only by BurnProofAdapter V1 (burn-proof-adapter.ts);
+//   burn EXECUTION is intentionally never wired here.
 // - The candidate/community ledger entries below remain SIMULATED proposals — no real
 //   transaction hashes, no explorer links, no invented on-chain proofs.
 // - The aggregate burned figure (MOCK_DATA.protocolStats.burnedSyn) is a SIMULATED
@@ -58,7 +58,7 @@ export function burnSourceLabel(source: BurnSource): string {
 // ---- Verified Proof of Fire (READ-ONLY PRODUCTION PROOF) -------------------
 // PROOF_OF_FIRE_001 is the single VERIFIED burn from the porting map. It is a static
 // reference: a real tx hash + block on Avalanche C-Chain with read-only explorer links.
-// Nothing is wired — a live burn-event scan is ADAPTER REQUIRED; execution is never wired.
+// The live burn-event scan is read-only via BurnProofAdapter V1; burn execution is never wired.
 export interface ProofOfFire {
   /** Production proof number, e.g. "PROOF_OF_FIRE_001" (assignProofOfFireNumbers). */
   proofNumber: string;

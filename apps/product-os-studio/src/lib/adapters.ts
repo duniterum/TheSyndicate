@@ -279,7 +279,8 @@ export interface BurnProof {
   proofNumber: string;
   /**
    * SYN_BURN_ADDRESS — a READ-ONLY PRODUCTION PROOF constant (0x…dEaD) copied from the
-   * porting map. Reference only; live burn-event scanning is ADAPTER REQUIRED.
+   * porting map. Reference only; the live burn-event scan is implemented read-only by the
+   * concrete burn-proof-adapter.ts (BurnProofAdapter V1).
    */
   burnAddress?: string;
   synRetired: number;
@@ -289,7 +290,7 @@ export interface BurnProof {
 }
 
 export interface BurnProofAdapter {
-  /** Read-only burn proofs. Live scan is ADAPTER REQUIRED. */
+  /** Read-only burn proofs. The live burn-event scan is implemented by the concrete burn-proof-adapter.ts (BurnProofAdapter V1). */
   proofs(): ReadResult<BurnProof[]>;
   // No execute(): burn execution is intentionally NOT part of the Studio seam.
 }
