@@ -31,9 +31,9 @@ export default function Archive() {
       </div>
 
       <div className="p-4 border border-emerald-500/20 bg-emerald-500/5 rounded-xl text-sm text-emerald-100/90 space-y-1" data-testid="archive-id-scheme">
-        <p className="font-bold mb-1 flex items-center gap-2">
+        <div className="font-bold mb-1 flex items-center gap-2">
           Archive IDs <StatusBadge status="READ-ONLY PRODUCTION PROOF" showTooltip={false} className="scale-90 origin-left" />
-        </p>
+        </div>
         <ul className="space-y-1 text-emerald-100/80">
           <li><span className="font-mono">#1</span> First Signal — public, open.</li>
           <li><span className="font-mono">#2</span> Reserved / disabled — a future <span className="font-mono">SeatRecord721</span> identity record (not deployed).</li>
