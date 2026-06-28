@@ -4,6 +4,7 @@ import { getFireLedger, getBurnSummary, getFireFlow, burnSourceLabel, getProofOf
 import { getActionsByCategory } from "@/lib/actions";
 import { ActionCard } from "@/components/action-card";
 import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
+import { BurnProofPanel } from "@/components/burn-proof-panel";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -171,6 +172,8 @@ export default function Fire() {
             showChain={false}
             showAdapterRequired={false}
           />
+
+          <BurnProofPanel />
 
           <Card className="bg-white/5 border-white/10">
             <CardHeader className="border-b border-white/5 pb-4">

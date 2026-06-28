@@ -6,6 +6,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
+import { BurnProofPanel } from "@/components/burn-proof-panel";
 import { Flame, AlertTriangle, GitBranch, ArrowRight, ShieldOff, ExternalLink } from "lucide-react";
 
 export default function PublicFire() {
@@ -57,6 +58,14 @@ export default function PublicFire() {
         showChain={false}
         showAdapterRequired={false}
       />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.08 }}
+      >
+        <BurnProofPanel />
+      </motion.div>
 
       {/* Summary */}
       <motion.div

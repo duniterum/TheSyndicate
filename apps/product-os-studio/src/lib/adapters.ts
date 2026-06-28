@@ -72,6 +72,10 @@ export type ReadState =
   | "loading"
   | "live"
   | "partial"
+  // Read succeeded but an internal consistency check failed (e.g. an enumerated event-sum that
+  // exceeds the authoritative on-chain balance it is reconciled against). Distinct from "partial":
+  // the data is not merely incomplete, it is contradictory and must not be presented as truth.
+  | "anomaly"
   | "stale"
   | "error"
   | "read-only-proof"
