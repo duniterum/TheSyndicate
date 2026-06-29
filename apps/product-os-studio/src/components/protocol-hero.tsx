@@ -17,7 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { StudioPreviewBanner } from "@/components/studio-preview-banner";
-import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
 import { MOCK_DATA, ROUTING_SPLIT, routeUsdc } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 
@@ -113,17 +112,7 @@ export function ProtocolHero() {
           <StudioPreviewBanner />
         </motion.div>
 
-        {/* Real, read-only live snapshot — above the fold, plainly LIVE READ */}
-        <motion.div {...reveal(0.04)} className="mb-8">
-          <ProtocolSnapshotPanel
-            title="Live protocol snapshot"
-            description="A real, read-only on-chain read (chain id · block height) from the public Avalanche RPC — the live mechanism this Studio runs on. No wallet, no writes. Routing and burn balances read live on Registry, Economy, and Fire."
-            groups={[]}
-            showAdapterRequired={false}
-          />
-        </motion.div>
-
-        {/* Protocol stat strip — DEMO data, visually distinct from the live snapshot above */}
+        {/* Protocol stat strip — DEMO data (prototype metrics, not live totals) */}
         <motion.div
           {...reveal(0.08)}
           className="mb-12 rounded-2xl border border-orange-500/20 bg-orange-500/[0.03] backdrop-blur-md overflow-hidden"

@@ -7,9 +7,12 @@ import { Layers, Fingerprint, Search } from "lucide-react";
 import { ContractCopyRow } from "@/components/contract-copy-row";
 import { CanonicalContractsList } from "@/components/canonical-contracts";
 import { PostureLegend } from "@/components/posture-legend";
-import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
+import { useProtocolSnapshot } from "@/lib/protocol-snapshot-hooks";
 
 export default function Registry() {
+  // One read-only snapshot read; live balances are injected inline into the Canonical Contract
+  // Registry rows below (no separate technical snapshot panel).
+  const { snapshot, loading } = useProtocolSnapshot();
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-6xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -151,16 +154,12 @@ export default function Registry() {
             unit and USDC, the active membership engine, the routing wallets behind the 70% / 20% / 10%
             split, the Trader Joe SYN/USDC pair, the Archive, and the Proof-of-Fire burn sink. Each is
             READ-ONLY PRODUCTION PROOF: a copyable canonical address with a read-only explorer link.
-            Nothing here is wired — a live read or write is ADAPTER REQUIRED.
+            Where a contract holds SYN or USDC, its current balance is read live and read-only from
+            the chain; a contract write remains ADAPTER REQUIRED.
           </p>
-          <CanonicalContractsList />
+          <CanonicalContractsList liveBalances={snapshot?.balances ?? []} loading={loading} />
         </CardContent>
       </Card>
-
-      <ProtocolSnapshotPanel
-        title="Live Protocol Snapshot"
-        description="The same canonical addresses above, read LIVE and read-only from the public Avalanche RPC — chain context plus current ERC-20 balances. This is the real read layer (no wallet, no writes); contract writes remain ADAPTER REQUIRED."
-      />
 
       <Card className="bg-white/5 border-white/10">
         <CardHeader className="pb-3 border-b border-white/5">

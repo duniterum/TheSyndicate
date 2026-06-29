@@ -4,10 +4,13 @@ import { MOCK_DATA } from "@/lib/mock-data";
 import { PublicProofNote, ConnectForPersonalCta } from "@/components/connect-cta";
 import { CanonicalContractsList } from "@/components/canonical-contracts";
 import { PostureLegend } from "@/components/posture-legend";
-import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
+import { useProtocolSnapshot } from "@/lib/protocol-snapshot-hooks";
 import { Fingerprint, Search, Layers } from "lucide-react";
 
 export default function PublicRegistry() {
+  // One read-only snapshot read; live balances are injected inline into the Canonical Contract
+  // Registry rows below (no separate technical snapshot panel).
+  const { snapshot, loading } = useProtocolSnapshot();
   return (
     <div className="container mx-auto px-4 pt-28 pb-16 max-w-6xl space-y-8" data-testid="page-public-registry">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -22,11 +25,6 @@ export default function PublicRegistry() {
       </div>
       
       <PublicProofNote surfaceId="registry" />
-
-      <ProtocolSnapshotPanel
-        title="Live Protocol Snapshot"
-        description="Using the canonical addresses on this page, this reads chain context and current ERC-20 balances LIVE and read-only from the public Avalanche RPC (the addresses themselves are static inputs). This is the real read layer — no wallet, no writes; contract writes remain ADAPTER REQUIRED."
-      />
 
       <div className="flex flex-col md:flex-row gap-4">
         <Card className="bg-blue-500/5 border-blue-500/20 flex-1">
@@ -123,10 +121,11 @@ export default function PublicRegistry() {
             Canonical production addresses from the porting map — the SYN accounting unit and USDC, the
             active membership engine, the routing wallets behind the 70% / 20% / 10% split, the Trader
             Joe SYN/USDC pair, the Archive, and the Proof-of-Fire burn sink. Each is READ-ONLY
-            PRODUCTION PROOF: a copyable canonical address with a read-only explorer link. Nothing is
-            wired — a live read or write is ADAPTER REQUIRED.
+            PRODUCTION PROOF: a copyable canonical address with a read-only explorer link. Where a
+            contract holds SYN or USDC, its current balance is read live and read-only from the chain;
+            a contract write remains ADAPTER REQUIRED.
           </p>
-          <CanonicalContractsList />
+          <CanonicalContractsList liveBalances={snapshot?.balances ?? []} loading={loading} />
         </CardContent>
       </Card>
 
@@ -136,7 +135,7 @@ export default function PublicRegistry() {
         </CardHeader>
         <CardContent className="pt-4">
           <PostureLegend
-            postures={["READ_ONLY_PROOF", "ADAPTER_REQUIRED", "NOT_LIVE", "EXTERNAL"]}
+            postures={["LIVE_READ", "READ_ONLY_PROOF", "ADAPTER_REQUIRED", "NOT_LIVE", "EXTERNAL"]}
             compact
           />
         </CardContent>

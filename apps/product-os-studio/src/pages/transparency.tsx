@@ -9,7 +9,6 @@ import { useApp } from "@/lib/store";
 import { Link } from "wouter";
 import {
   Copy,
-  AlertTriangle,
   FileText,
   Database,
   Building2,
@@ -27,12 +26,20 @@ import { getActionsByCategory } from "@/lib/actions";
 import { getBurnSummary } from "@/lib/fire-ledger";
 import { CanonicalContractsList } from "@/components/canonical-contracts";
 import { PostureLegend } from "@/components/posture-legend";
-import { ProtocolSnapshotPanel } from "@/components/protocol-snapshot-panel";
+import { useProtocolSnapshot } from "@/lib/protocol-snapshot-hooks";
+import { LiveHeldBalance } from "@/components/live-held-balance";
 
 const SPLIT_COLORS: Record<string, string> = {
   Vault: "hsl(var(--primary))",
   Liquidity: "hsl(217 91% 60%)",
   Operations: "hsl(271 81% 66%)",
+};
+
+// Maps each routing wallet name to its live, read-only USDC balance fact (protocol snapshot).
+const ROUTING_BALANCE_KEY: Record<string, string> = {
+  Vault: "vault-usdc",
+  Liquidity: "liquidity-usdc",
+  Operations: "operations-usdc",
 };
 
 export default function Transparency() {
@@ -41,6 +48,12 @@ export default function Transparency() {
 
   const protocol = MOCK_DATA.economy.protocol;
   const memberRouting = routeUsdc(MOCK_DATA.usdcRouted);
+
+  // One grouped, read-only snapshot read for the routing wallets; injected inline into the
+  // existing wallet-reference cards below (no separate technical panel).
+  const { snapshot, loading } = useProtocolSnapshot({ groups: ["routing"] });
+  const heldFor = (name: string) =>
+    snapshot?.balances.find((b) => b.key === ROUTING_BALANCE_KEY[name]);
 
   const donutData = [
     { name: "Vault", value: ROUTING_SPLIT.vault, color: SPLIT_COLORS.Vault },
@@ -83,18 +96,11 @@ export default function Transparency() {
         </p>
       </div>
 
-      {/* No entitlement notice */}
-      <div className="p-5 border border-destructive/30 bg-destructive/10 rounded-xl text-sm text-destructive flex gap-3 items-start">
-        <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-        <div>
-          <p className="font-bold mb-1 uppercase tracking-wider">No entitlement. No yield. No treasury claim.</p>
-          <p className="opacity-90">
-            This is a transparent view of capital routing. It does not imply ownership, passive income, governance promise,
-            or any future claim. Capital routing is final. Displayed economy totals are prototype figures; live wallet
-            balances are read on-chain in the snapshot panels below.
-          </p>
-        </div>
-      </div>
+      {/* No entitlement — compact neutral truth note (not an alert wall) */}
+      <p className="text-xs text-muted-foreground leading-relaxed max-w-3xl">
+        No entitlement, no yield, no treasury claim. This is a transparent view of how capital routes —
+        not ownership, passive income, a governance promise, or any future claim. Capital routing is final.
+      </p>
 
       <Tabs defaultValue="protocol" className="w-full">
         <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto sm:h-9">
@@ -111,7 +117,8 @@ export default function Transparency() {
               <StatusBadge status="SIMULATED PROTOTYPE" />
             </div>
             <p className="text-xs text-muted-foreground">
-              Displayed totals are prototype figures. Live read-only balances appear in the snapshot panel below.
+              Displayed totals are prototype figures. Each routing wallet's current USDC is read live and
+              read-only in its reference card below.
             </p>
           </div>
 
@@ -189,9 +196,9 @@ export default function Transparency() {
             <CardContent className="pt-4 space-y-4">
               <p className="text-sm text-muted-foreground">
                 Capital is routed to three endpoints. The addresses below are READ-ONLY PRODUCTION
-                PROOF — canonical wallets copied from the porting map, shown as static references
-                with read-only explorer links. No writes are wired — but each wallet's current USDC
-                balance is now read LIVE and read-only in the Live Protocol Snapshot below.
+                PROOF — canonical wallets copied from the porting map with read-only explorer links.
+                Each shows the USDC it currently holds, read live and read-only from the chain: a
+                current on-chain balance, not the simulated total routed, and never a claim or entitlement.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {MOCK_DATA.routingWallets.map((w) => (
@@ -201,6 +208,11 @@ export default function Transparency() {
                       <Badge variant="outline" className="font-mono text-[10px] tracking-wider border-white/10 bg-white/5">{w.pct}%</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">{w.purpose}</p>
+                    <LiveHeldBalance
+                      balance={heldFor(w.name)}
+                      loading={loading}
+                      prefix="Current USDC held"
+                    />
                     <div className="flex items-center justify-between text-xs text-muted-foreground font-mono bg-background p-2 rounded border border-white/5">
                       <span className="truncate mr-2">{maskAddress ? "0x\u2022\u2022\u2022\u2026" : w.address}</span>
                       <button onClick={() => handleCopy(w.address)} className="hover:text-primary transition-colors shrink-0" title="Copy address (read-only production proof — copying does not wire any contract)">
@@ -222,12 +234,6 @@ export default function Transparency() {
               </div>
             </CardContent>
           </Card>
-
-          <ProtocolSnapshotPanel
-            title="Live Protocol Snapshot — routing wallets"
-            description="Live, read-only USDC currently held by each routing wallet — distinct from the simulated total-routed figure above. Read directly from the public Avalanche RPC; no wallet, no writes."
-            groups={["routing"]}
-          />
 
           {/* Protocol-controlled assets concept */}
           <Card className="bg-white/5 border-white/10">

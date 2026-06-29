@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { Copy, Check, Link2Off, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge, type Status } from "@/components/ui/status-badge";
+import { LiveHeldBalance } from "@/components/live-held-balance";
+import type { TokenBalanceFact } from "@/lib/protocol-snapshot-types";
 import { cn } from "@/lib/utils";
 
 // A single contract / protocol layer row. Renders from MOCK_DATA.contractLayers items.
@@ -33,7 +35,19 @@ function shortAddress(address: string): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
 
-export function ContractCopyRow({ layer, className }: { layer: ContractLayerLike; className?: string }) {
+export function ContractCopyRow({
+  layer,
+  className,
+  liveBalances,
+  liveLoading,
+}: {
+  layer: ContractLayerLike;
+  className?: string;
+  /** Live, read-only balances this contract holds. `undefined` = no live-balance concept (renders
+   *  nothing); an empty array renders a single loading / unavailable state. */
+  liveBalances?: TokenBalanceFact[];
+  liveLoading?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
 
   const isProof = layer.proof === true && ADDRESS_RE.test(layer.address);
@@ -115,6 +129,17 @@ export function ContractCopyRow({ layer, className }: { layer: ContractLayerLike
           <p className="font-mono text-xs italic text-muted-foreground/70">
             Simulated — no canonical address
           </p>
+        )}
+        {isProof && liveBalances !== undefined && (
+          <div className="flex flex-col gap-1 pt-1">
+            {liveBalances.length > 0 ? (
+              liveBalances.map((b) => (
+                <LiveHeldBalance key={b.key} balance={b} loading={liveLoading} prefix="Live balance" />
+              ))
+            ) : (
+              <LiveHeldBalance loading={liveLoading} prefix="Live balance" />
+            )}
+          </div>
         )}
       </div>
 
