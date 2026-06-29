@@ -7,7 +7,7 @@ import { ContractCopyRow } from "@/components/contract-copy-row";
 import {
   CANONICAL_CONTRACTS,
   type ContractCategory,
-} from "@/lib/production-constants";
+} from "@/lib/protocol-truth-registry";
 import { BALANCE_HOLDER_KEYS } from "@/lib/protocol-snapshot-adapter";
 import type { TokenBalanceFact } from "@/lib/protocol-snapshot-types";
 import { cn } from "@/lib/utils";
